@@ -1,0 +1,1100 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Autonomous Databaseでは自動でパッチが適用されます。パッチを早期に適用し、自動ワークロード・リプレイを使うことで、パッチ適用の影響がないかテスト環境で定期的に確認することができます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/adb/adb220-autoworkload-replay/">
+
+
+  <meta property="og:description" content="Autonomous Databaseでは自動でパッチが適用されます。パッチを早期に適用し、自動ワークロード・リプレイを使うことで、パッチ適用の影響がないかテスト環境で定期的に確認することができます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/adb/adb220-autoworkload-replay/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-24T15:13:13+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/adb/adb220-autoworkload-replay/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/adb/adb220-autoworkload-replay/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション
+
+        
+      </h1>
+      
+        <p class="page__lead">Autonomous Databaseでは自動でパッチが適用されます。パッチを早期に適用し、自動ワークロード・リプレイを使うことで、パッチ適用の影響がないかテスト環境で定期的に確認することができます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/adb" itemprop="item"><span itemprop="name">Adb</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Autonomous Database</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb102-dataload/">102: ADBにデータをロードしよう(Database Actions)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb103-livelabs/">103: Oracle LiveLabsのご紹介</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb105-create-apex-app/">105: ADBの付属ツールで簡易アプリを作成しよう(APEX)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb106-json/">106: ADBでコンバージド・データベースを体験しよう（JSONデータの操作）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb107-machine-learning/">107: ADBの付属ツールで機械学習(予測モデルからデプロイまで)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb110-analyze-using-oad/">110: Oracle Analytics Desktopを使ってデータを見える化してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb111-select-ai/">111: SELECT AIを試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb201-service-names/">201: 接続サービスの理解</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb202-dataload-dbms-cloud/">202: コマンドラインから大量データをロードしてみよう(DBMS_CLOUD)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb203-bulk-query/">203: 分析系クエリの実行(Star Schema Benchmark)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb205-swingbench/">205: オンライン・トランザクション系のアプリを実行してみよう(Swingbench)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb206-appdev-nodejs/">206: Node.jsによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb209-DV/">209 : Database Vaultによる職務分掌に基づいたアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb210-VPD/">210 : 仮想プライベートデータベース(VPD:Virtual Private Database)による柔軟で細やかなアクセス制御の実装</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb211-clone/">211: クローン機能を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb212-audg/">212: Autonomous Database を災害対策構成にしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb213-tac/">213 : Application Continuityを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb214-spatial-studio/">214 : Spatial Studio で地理情報を扱おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb215-graph/">215 : Graph Studioで金融取引の分析を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb216-patch-spa/">216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb219-autoindexing/">219: Automatic Indexingを体験してみよう </a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb220-autoworkload-replay/" class="active">220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb301-create-source-db/">301 : 移行元となるデータベースを作成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb302-cpat/">302 : Cloud Premigration Advisor Tool(CPAT)を活用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb303-datapump/">303 : Data Pumpを利用してデータを移行しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb304-database-migration-prep/">304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb305-database-migration-offline/">305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb401-oci-goldengate/">401 : OCI GoldenGateによるBaseDBからADBへのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb402-database-link/">402 : Database Linkによる他のデータベースとのデータ連携</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb403-data-transforms/">403 : Data Transformsを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb501-ocicli/">501: OCICLIを利用したインスタンス操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb502-report/">502: 各種設定の確認、レポートの取得</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb503-monitoring/">503 : ADBインスタンスの監視設定をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb504-audit/">504 : 監査をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb505-backup/">505 : Autonomous Databaseのバックアップとリストアを体感しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb506-sr/">506: サポートサービスへの問い合わせ(Service Requestの起票)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb601-moviestream-load/">601: ADWでMovieStreamデータのロード・更新をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb602-moviestream-analysis/">602: ADWでMovieStreamデータの分析をしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb603-data-catalog/">603 : データ・カタログを使ってメタデータを収集しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/adb/adb701-adbd/">ADB-Dの環境を作成してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション">
+    <meta itemprop="description" content="Autonomous Databaseでは自動でパッチが適用されます。パッチを早期に適用し、自動ワークロード・リプレイを使うことで、パッチ適用の影響がないかテスト環境で定期的に確認することができます。">
+    <meta itemprop="datePublished" content="2024-09-24T15:13:13+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-環境の準備">1. 環境の準備</a></li><li><a href="#2-本番環境で使用するデータの準備">2. 本番環境で使用するデータの準備</a></li><li><a href="#3-テスト環境用adbの作成">3. テスト環境用ADBの作成</a></li><li><a href="#4-自動ワークロードリプレイの有効化">4. 自動ワークロード・リプレイの有効化</a></li><li><a href="#5-イベント通知の設定">5. イベント通知の設定</a></li><li><a href="#6-本番環境へのワークロードの実行">6. 本番環境へのワークロードの実行</a></li><li><a href="#7-レポートの確認">7. レポートの確認</a></li><li><a href="#おわりに">おわりに</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>Autonomous Database(ADB)は、毎週末事前定義されたメンテナンス・ウィンドウの中でデータベースに自動的にパッチを適用します。</p>
+
+<p>通常のパッチ周期に先行して1週早くパッチを適用できる早期パッチという機能があります。テスト環境用ADBを早期パッチで作成しておくことで、本番環境適用前にパッチ適用の影響テストを行うことができます。</p>
+
+<p>また、ADBでは、Oracle Databaseオプション「Real Application Testing(RAT)」に含まれる機能の1つであるDatabase Replay(DB Replay)を使用することができます。
+さらにDB Replayを自動で毎週行う自動ワークロード・リプレイという機能があります。こちらを使用すると、毎週決まった時間に本番環境のワークロードをキャプチャして、早期パッチを適用したテスト環境にそのワークロードをリプレイすることができます。</p>
+
+<p>こちらでパッチの影響を確認し、もしエラーが発生した場合はOracle社にサポート・リクエストを発行し報告することで、Oracle社が該当パッチを修正もしくは通常パッチでは適用しないなどの対応を行います。</p>
+
+<p>こちらが早期パッチと自動ワークロード・リプレイを利用したテストフローになります。</p>
+
+<p><img src="testflow.png" alt="testflowイメージ" /></p>
+
+<p>本チュートリアルでは、早期パッチと自動ワークロード・リプレイを併用することで、本番環境へのパッチ適用の影響をテスト環境で事前に確認する手順をご紹介します。</p>
+
+<p><strong>目次 :</strong></p>
+<ul>
+  <li><a href="#はじめに">はじめに</a></li>
+  <li><a href="#1-環境の準備">1. 環境の準備</a></li>
+  <li><a href="#2-本番環境で使用するデータの準備">2. 本番環境で使用するデータの準備</a></li>
+  <li><a href="#3-テスト環境用adbの作成">3. テスト環境用ADBの作成</a></li>
+  <li><a href="#4-自動ワークロードリプレイの有効化">4. 自動ワークロード・リプレイの有効化</a></li>
+  <li><a href="#5-イベント通知の設定">5. イベント通知の設定</a></li>
+  <li><a href="#6-本番環境へのワークロードの実行">6. 本番環境へのワークロードの実行</a></li>
+  <li><a href="#7-レポートの確認">7. レポートの確認</a></li>
+  <li><a href="#おわりに">おわりに</a></li>
+</ul>
+
+<p><strong>前提条件</strong></p>
+<ul>
+  <li>
+    <p>ADBインスタンスが構成済みであること
+  <br />※ADBインタンスの作成方法については、
+  <a href="/ocitutorials/adb/adb101-provisioning" target="_blank">101:ADBインスタンスを作成してみよう</a> を参照ください。</p>
+  </li>
+  <li>
+    <p>開発者向けの仮想マシンが構成済みであること
+  <br />※作成方法については、
+  <a href="/ocitutorials/adb/adb204-setup-VM" target="_blank">204: 開発者向け仮想マシンのセットアップ方法</a> を参照ください。</p>
+  </li>
+  <li>
+    <p>作成した仮想マシンからADBへSQL*Plusで接続ができること
+  <br />※接続方法については、
+  <a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: クレデンシャル・ウォレットを利用して接続してみよう</a> を参照ください。</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>所要時間 :</strong> 約60分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-環境の準備">1. 環境の準備</h1>
+<p>まずは本チュートリアルで使用する環境の準備を行います。</p>
+
+<p>まずは本番環境用ADBである<strong>ATPRD01</strong>を作成します。ADBの構成は以下になります。なお、本記事ではADBをはじめとする各リソースは全てTokyoリージョンで作成します。</p>
+
+<ul>
+  <li><strong>表示名</strong> : ATPRD01</li>
+  <li><strong>データベース名</strong> : ATPRD01</li>
+  <li><strong>ワークロード・タイプ</strong> : トランザクション処理</li>
+  <li><strong>デプロイメント・タイプ</strong> : サーバーレス</li>
+  <li><strong>データベース・バージョンの選択</strong> : 19c</li>
+  <li><strong>ECPU数</strong> : 任意(Swingbenchでのデータ生成時間を短縮する場合は大きく設定)</li>
+  <li><strong>ストレージ(GB)</strong> : 任意(50GB以上)</li>
+  <li><strong>バックアップ保持期間</strong> : 1~60日で選択(任意)</li>
+  <li><strong>管理者資格証明の作成</strong> : Welcome12345#</li>
+  <li><strong>ネットワーク・アクセスの選択</strong> : 任意(NW設定が面倒な場合は、すべての場所からのセキュア・アクセス)</li>
+  <li><strong>ライセンスとOracle Databaseエディションの選択</strong> : ライセンス込み</li>
+</ul>
+
+<p><br />
+<a id="anchor2"></a></p>
+
+<h1 id="2-本番環境で使用するデータの準備">2. 本番環境で使用するデータの準備</h1>
+<p>今回はOracle Database の負荷掛けツールであるSwingbenchのSOE(oewizard)スキーマを本番環境のワークロードとして利用します。</p>
+
+<p>仮想マシン上に接続し、<code class="language-plaintext highlighter-rouge">oracle</code>ユーザーへスイッチします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - oracle
+</code></pre></div></div>
+
+<p>作業用ディレクトリを作成して、移動します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">mkdir</span> <span class="nt">-p</span> labs/swingbench
+<span class="nb">cd </span>labs/swingbench
+</code></pre></div></div>
+
+<p>Swingbenchをダウンロードします。wgetもしくはcurlコマンドをご利用ください。（数分程度かかります。）</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://github.com/domgiles/swingbench-public/releases/download/production/swingbench25052023.zip <span class="nt">-O</span> swingbenchlatest.zip
+</code></pre></div></div>
+
+<p>展開します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>unzip swingbechlatest.zip
+</code></pre></div></div>
+
+<p>ADBのウォレットファイルが以下に配置されていることを確認してください。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ../wallets
+<span class="nb">ls</span>
+</code></pre></div></div>
+
+<p>以下のように出力されればOKです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Wallet_ATPRD01.zip
+</code></pre></div></div>
+
+<p>念のためSQL*Plusでログインできることを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/Welcome12345#@ATPRD01_tp
+</code></pre></div></div>
+
+<blockquote>
+  <p>ここでADBに接続できない場合、<a href="/ocitutorials/adb/adb104-connect-using-wallet" target="_blank">104: クレデンシャル・ウォレットを利用して接続してみよう</a> を参照して再度設定してください。</p>
+</blockquote>
+
+<p>カレント・ディレクトリを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+</code></pre></div></div>
+
+<p>以下のディレクトリにいればOKです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/oracle/labs/swingbench
+</code></pre></div></div>
+
+<p>SOEスキーマを作成していきます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./swingbench/bin/oewizard <span class="nt">-cf</span> ~/labs/wallets/Wallet_ATPRD01.zip <span class="nt">-cs</span> ATPRD01_tp <span class="nt">-ts</span> DATA <span class="nt">-dbap</span> Welcome12345# <span class="nt">-dba</span> admin <span class="nt">-u</span> soe <span class="nt">-p</span> Welcome12345# <span class="nt">-async_off</span> <span class="nt">-scale</span> 10 <span class="nt">-create</span> <span class="nt">-cl</span> <span class="nt">-v</span> <span class="nt">-tc</span> 10
+</code></pre></div></div>
+
+<p>それぞれのパラメータは以下の通りです。</p>
+
+<ul>
+  <li>-cf: ADBを使う場合のWalletのパスを指定</li>
+  <li>-cs: 接続サービス名(ATPRD01_tp等)</li>
+  <li>-ts: 表領域(ADBの場合はDATA)</li>
+  <li>-dbap: スキーマ作成する管理者ユーザーのパスワード(今回はWelcome12345#)</li>
+  <li>-dba: スキーマ作成する管理者ユーザー(ADMINを指定)</li>
+  <li>-u: スキーマ名(今回はsoeと指定)</li>
+  <li>-p: 作成するスキーマのパスワード(今回はWelcome12345#と指定)</li>
+  <li>-async_off: 非同期トランザクションなしで実行（デフォルトはあり）</li>
+  <li>-scale: データ量（デフォルトはデータ量1GBなので10だと10GB)</li>
+  <li>-create: ベンチマークスキーマを作成する</li>
+  <li>-cl: キャラクタモードで実行する</li>
+  <li>-v: コマンドラインから実行される場合verboseモードで実行</li>
+  <li>-tc: データ生成する場合の並列度</li>
+</ul>
+
+<p>このコマンドはECPU数によってはかなり時間がかかります。短縮したい場合は一時的にECPU数を上げて実行してください。</p>
+
+<p>作成されたスキーマを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./swingbench/bin/sbutil <span class="nt">-cf</span> ~/labs/wallets/Wallet_ATPRD01.zip <span class="nt">-cs</span> ATPRD01_tp <span class="nt">-u</span> soe <span class="nt">-p</span> Welcome12345# <span class="nt">-soe</span> <span class="nt">-val</span>
+</code></pre></div></div>
+
+<p>出力が以下のようになればスキーマが正しく作成されています。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Operation is successfully completed.
+Operation is successfully completed.
+The Order Entry Schema appears to be valid.
+<span class="nt">--------------------------------------------------</span>
+|Object Type    |     Valid|   Invalid|   Missing|
+<span class="nt">--------------------------------------------------</span>
+|Table          |        10|         0|         0|
+|Index          |        26|         0|         0|
+|Sequence       |         5|         0|         0|
+|View           |         2|         0|         0|
+|Code           |         1|         0|         0|
+<span class="nt">--------------------------------------------------</span>
+</code></pre></div></div>
+
+<p>統計情報を収集します。(オプション)</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./swingbench/bin/sbutil <span class="nt">-cf</span> ~/labs/wallets/Wallet_ATPRD01.zip <span class="nt">-cs</span> ATPRD01_tp <span class="nt">-u</span> soe <span class="nt">-p</span> Welcome12345# <span class="nt">-soe</span> <span class="nt">-stats</span>
+</code></pre></div></div>
+
+<p>出力結果</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Operation is successfully completed.
+Operation is successfully completed.
+Collecting statistics <span class="k">for </span>the schema
+Collected statistics <span class="k">in</span> : 0:03:54.529
+</code></pre></div></div>
+
+<p>どのようなテーブルが作成されているか確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./swingbench/bin/sbutil <span class="nt">-cf</span> ~/labs/wallets/Wallet_ATPRD01.zip <span class="nt">-cs</span> ATPRD01_tp <span class="nt">-u</span> soe <span class="nt">-p</span> Welcome12345# <span class="nt">-soe</span> <span class="nt">-tables</span>
+</code></pre></div></div>
+
+<p>出力結果</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Operation is successfully completed.
+Operation is successfully completed.
+Order Entry Schemas Tables
++----------------------+------------+---------+---------+-------------+--------------+
+| Table Name           | Rows       | Blocks  | Size    | Compressed? | Partitioned? |
++----------------------+------------+---------+---------+-------------+--------------+
+| ORDER_ITEMS          | 71,035,789 | 658,327 | 5.0GB   | Disabled    | No           |
+| ORDERS               | 14,297,900 | 256,800 | 2.0GB   | Disabled    | No           |
+| CUSTOMERS            | 10,000,000 | 195,932 | 1.5GB   | Disabled    | No           |
+| ADDRESSES            | 15,000,000 | 171,890 | 1.3GB   | Disabled    | No           |
+| CARD_DETAILS         | 15,000,000 | 119,237 | 936.0MB | Disabled    | No           |
+| LOGON                | 23,829,840 | 84,557  | 664.0MB | Disabled    | No           |
+| INVENTORIES          | 898,587    | 2,386   | 19.0MB  | Disabled    | No           |
+| PRODUCT_DESCRIPTIONS | 1,000      | 35      | 320KB   | Disabled    | No           |
+| PRODUCT_INFORMATION  | 1,000      | 28      | 256KB   | Disabled    | No           |
+| WAREHOUSES           | 1,000      | 5       | 64KB    | Disabled    | No           |
+| ORDERENTRY_METADATA  | 4          | 5       | 64KB    | Disabled    | No           |
++----------------------+------------+---------+---------+-------------+--------------+
+                                Total Space    11.4GB
+</code></pre></div></div>
+
+<p>ここまでで本番環境のワークロードとして利用するSOEスキーマの作成は完了です。</p>
+
+<p><br /></p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-テスト環境用adbの作成">3. テスト環境用ADBの作成</h1>
+<p>今回使用する自動ワークロード・リプレイ機能は、本番環境用インスタンスのリフレッシュ可能クローンを早期パッチで作成することが前提となっています。</p>
+
+<p>OCIコンソールからテスト環境用ADBとしてATPRD01のリフレッシュ可能クローン<strong>EarlyATPRD01</strong>を作成します。</p>
+
+<p>ATPRD01の詳細画面で、<strong>[More actions]→クローンの作成</strong>をクリックします。</p>
+
+<p><img src="create_clone1.png" alt="create_clone1イメージ" /></p>
+
+<p>クローン・タイプの作成で、<strong>リフレッシュ可能クローン</strong>を選択します。</p>
+
+<p><img src="create_clone2.png" alt="create_clone2イメージ" /></p>
+
+<p>データベースの構成やネットワーク・アクセスの選択はデフォルト設定のままでOKです。クローン元であるATPRD01の設定が引き継がれます。</p>
+
+<p>画面下部の<strong>Show advanced options</strong>をクリックし、[メンテナンス]のパッチ・レベルを<strong>早期</strong>に設定して作成します。</p>
+
+<p><img src="create_clone3.png" alt="create_clone3イメージ" /></p>
+
+<p>リフレッシュ可能クローン<strong>EarlyATPRD01</strong>が作成されたら、詳細画面からOCIDをコピーしておきます。</p>
+
+<p><img src="create_clone4.png" alt="create_clone4イメージ" /></p>
+
+<p>リフレッシュ可能クローンが早期パッチで作成されていることを確認してみます。</p>
+
+<p>まず通常パッチの<strong>ATPRD01</strong>の<strong>メンテナンス</strong>の<strong>履歴の表示</strong>をクリックします。</p>
+
+<p><img src="create_clone5.png" alt="create_clone5イメージ" /></p>
+
+<p>ここでは過去のメンテナンス履歴と適用されたパッチが確認できます。</p>
+
+<p>最新のパッチのバージョンは<code class="language-plaintext highlighter-rouge">ADBS-24.8.2.2</code>となっています。</p>
+
+<p><img src="create_clone6.png" alt="create_clone6イメージ" /></p>
+
+<p>次に早期パッチで作成した<strong>EalryATPRD01</strong>のパッチ履歴を確認してみます。</p>
+
+<p>先ほどと同様の手順で確認すると、以下のようになっています。</p>
+
+<p><img src="create_clone7.png" alt="create_clone7イメージ" /></p>
+
+<p>最新のパッチのバージョンが<code class="language-plaintext highlighter-rouge">ADBS-24.8.3.2</code>となっています。</p>
+
+<p>※作成直後はパッチが当たらないので履歴にも情報がありません。一度週末をまたいでパッチが適用された後に上記を確認してください。</p>
+
+<p><br />
+<a id="anchor4"></a></p>
+
+<h1 id="4-自動ワークロードリプレイの有効化">4. 自動ワークロード・リプレイの有効化</h1>
+<p>テスト環境の構築ができたので、本番環境で自動ワークロード・リプレイを有効化します。</p>
+
+<p>本番環境用インスタンス<strong>ATPRD01</strong>へ接続します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlplus admin/Welcome12345#@ATPRD01_tp
+</code></pre></div></div>
+
+<p>自動ワークロード・リプレイを以下のように有効化します。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span> 
+   <span class="n">DBMS_CLOUD_ADMIN</span><span class="p">.</span><span class="n">ENABLE_FEATURE</span><span class="p">(</span>
+        <span class="n">feature_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKLOAD_AUTO_REPLAY'</span><span class="p">,</span>
+        <span class="n">params</span>       <span class="o">=&gt;</span> <span class="n">JSON_OBJECT</span><span class="p">(</span>
+                          <span class="s1">'target_db_ocid'</span> <span class="n">VALUE</span> <span class="s1">'ocid1.autonomousdatabase.oc1.ap-tokyo-1.xxxxxx'</span><span class="p">,</span>
+                          <span class="s1">'capture_duration'</span> <span class="n">VALUE</span> <span class="mi">15</span><span class="p">,</span>
+                          <span class="s1">'capture_day'</span> <span class="n">VALUE</span> <span class="s1">'TUESDAY'</span><span class="p">,</span>
+                          <span class="s1">'capture_time'</span> <span class="n">VALUE</span> <span class="s1">'00:30'</span><span class="p">));</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p>それぞれのパラメータは以下の通りです。</p>
+
+<ul>
+  <li>target_db_ocid: 作成したリフレッシュ可能クローンのOCID[必須]</li>
+  <li>capture_duration: ワークロードをキャプチャする期間(1分~720分で指定可能)[必須]</li>
+  <li>capture_day: キャプチャを開始する曜日(UTC)[任意]</li>
+  <li>capture_time: キャプチャを開始する時間(UTC)[任意]</li>
+</ul>
+
+<p><code class="language-plaintext highlighter-rouge">capture_day</code>と<code class="language-plaintext highlighter-rouge">capture_time</code>を指定しない場合、上記のENABLE_FEATUREプロシージャを有効化した時点から数時間後にキャプチャが開始されます。(2024/8時点)</p>
+
+<p><code class="language-plaintext highlighter-rouge">capture_day</code>と<code class="language-plaintext highlighter-rouge">capture_time</code>を指定した場合、翌週のその曜日のその時間からキャプチャが開始されます。上記の例では毎週火曜日の9:30~9:45でキャプチャされ、その後リプレイされます。</p>
+
+<blockquote>
+  <p>注意</p>
+
+  <p>capture_dayには曜日を指定しますが、メンテナンスの時刻に近いため、金曜(FRIDAY)/土曜(SATURDAY)の指定はできません。</p>
+
+  <p>ワークロードのキャプチャを行うのは、日～木を指定してください。</p>
+</blockquote>
+
+<p>自動ワークロード・リプレイが有効化されているかは以下で確認できます。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">dba_cloud_config</span> <span class="k">where</span> <span class="n">param_name</span> <span class="o">=</span> <span class="s1">'workload_auto_replay'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>以下のように<code class="language-plaintext highlighter-rouge">enabled</code>となっていれば有効化されています。</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PARAM_NAME</span>              <span class="n">PARAM_VALUE</span>    
+<span class="n">_______________________</span> <span class="n">______________</span> 
+<span class="n">workload_auto_replay</span>    <span class="n">enabled</span>
+</code></pre></div></div>
+
+<p>なお無効化する場合は以下を実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span> 
+   <span class="n">DBMS_CLOUD_ADMIN</span><span class="p">.</span><span class="n">DISABLE_FEATURE</span><span class="p">(</span>
+       <span class="n">feature_name</span> <span class="o">=&gt;</span> <span class="s1">'WORKLOAD_AUTO_REPLAY'</span><span class="p">);</span>   
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<p><br /></p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-イベント通知の設定">5. イベント通知の設定</h1>
+<p>自動ワークロード・リプレイでは、本番環境でキャプチャが開始/終了したタイミングと、テスト環境でリプレイが開始/終了したタイミングで、イベントが発行されます。このイベントにはワークロード・リプレイのレポートをダウンロードできるPAR URL(事前認証済みリクエスト)が含まれます。</p>
+
+<p>このイベントをOCI Eventsで受け取るように設定し、Notificationsでメールアドレス等に通知させるようにすれば、自動ワークロード・リプレイの動作をユーザー側で確認することができます。</p>
+
+<p>それではこれらの設定をしていきます。</p>
+
+<p>まずは通知先の設定をしていきます。<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank">こちら</a>を参考に、メールアドレス等で通知を受け取れるようにします。</p>
+
+<p>続いてイベントの設定をしていきます。</p>
+
+<p>OCIコンソールのハンバーガーメニューから、<strong>監視および管理</strong>をクリックし、<strong>イベント・サービス</strong>の<strong>ルール</strong>をクリックします。</p>
+
+<p><img src="event1.png" alt="event1イメージ" /></p>
+
+<p>続いてルールの作成画面で以下のように設定します。</p>
+
+<p><img src="event2.png" alt="event2イメージ" /></p>
+
+<p>設定項目は以下の通りです。</p>
+
+<ul>
+  <li>表示名: 任意(ADB_WORKLOAD_REPLAY)</li>
+  <li>条件: イベント・タイプ</li>
+  <li>サービス名: Database</li>
+  <li>イベント・タイプ: Autonomous Database - Information</li>
+  <li>アクション・タイプ: 通知</li>
+  <li>通知コンパートメント: 作業中のコンパートメント</li>
+  <li>トピック: 先ほど作成したトピック</li>
+</ul>
+
+<p>こちらでルールの作成が完了です。</p>
+
+<p>Autonomous Database - Informationというイベント・タイプの中に、自動ワークロード・リプレイ関連のイベントが含まれているため、キャプチャの開始/終了、リプレイの開始/終了イベントをメールに通知させることができます。</p>
+
+<p><br />
+<a id="anchor6"></a></p>
+
+<h1 id="6-本番環境へのワークロードの実行">6. 本番環境へのワークロードの実行</h1>
+<p>実際に本番環境へSwingbenchで負荷掛けをしていきます。</p>
+
+<p>今回はコマンドラインから実行できるcharbenchを利用します。</p>
+
+<p>カレント・ディレクトリを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+</code></pre></div></div>
+
+<p>以下のように出力されればOKです。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/home/oracle/labs/swingbench
+</code></pre></div></div>
+
+<p>charbenchを実行します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./swingbench/bin/charbench <span class="nt">-c</span> ../configs/SOE_Server_Side_V2.xml <span class="nt">-cf</span> ~/labs/wallets/Wallet_ATPRD01.zip <span class="nt">-cs</span> ATPRD01_tp <span class="nt">-u</span> soe <span class="nt">-p</span> Welcome12345# <span class="nt">-uc</span> 10 <span class="nt">-min</span> 0 <span class="nt">-max</span> 10 <span class="nt">-intermin</span> 200 <span class="nt">-intermax</span> 500 <span class="nt">-v</span> <span class="nb">users</span>,tpm,tps,errs,vresp
+</code></pre></div></div>
+
+<p>しばらくすると以下のような出力がされます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>08:37:06 <span class="o">[</span>10/10]     1706     28      0        6     2     3     9     5     8     0     0     0     
+08:37:07 <span class="o">[</span>10/10]     1702     27      0        5     2     3     12    5     4     0     0     0     
+08:37:08 <span class="o">[</span>10/10]     1701     28      0        6     2     2     32    5     14    0     0     0     
+08:37:09 <span class="o">[</span>10/10]     1700     29      0        6     4     2     9     5     14    0     0     0     
+08:37:10 <span class="o">[</span>10/10]     1699     29      0        7     2     3     10    5     14    0     0     0     
+08:37:11 <span class="o">[</span>10/10]     1702     30      0        7     6     3     14    5     14    0     0     0     
+08:37:12 <span class="o">[</span>10/10]     1698     25      0        6     2     4     8     5     5     0     0     0     
+08:37:13 <span class="o">[</span>10/10]     1703     32      0        5     5     4     10    5     5     0     0     0     
+08:37:14 <span class="o">[</span>10/10]     1705     29      0        5     5     2     10    8     4     0     0     0     
+08:37:15 <span class="o">[</span>10/10]     1707     29      0        6     2     2     8     13    4     0     0     0     
+08:37:16 <span class="o">[</span>10/10]     1703     27      0        6     2     4     10    5     3     0     0     0
+</code></pre></div></div>
+
+<p>これで本番環境用インスタンスに負荷掛けができている状態です。</p>
+
+<p>キャプチャが開始される火曜日の9時30分(JST)にこの負荷掛けを行います。</p>
+
+<p><br />
+<a id="anchor7"></a></p>
+
+<h1 id="7-レポートの確認">7. レポートの確認</h1>
+<p>ここまでの手順が正しく行われていれば、自動ワークロード・リプレイを設定した曜日・時間にキャプチャが開始されるはずです。キャプチャが開始されると以下のようなメールが届きます。(一部マスクしています。)</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"eventType"</span> : <span class="s2">"com.oraclecloud.databaseservice.autonomous.database.information"</span>,
+  <span class="s2">"cloudEventsVersion"</span> : <span class="s2">"0.1"</span>,
+  <span class="s2">"eventTypeVersion"</span> : <span class="s2">"2.0"</span>,
+  <span class="s2">"source"</span> : <span class="s2">"DatabaseService"</span>,
+  <span class="s2">"eventTime"</span> : <span class="s2">"2024-09-24T00:30:19Z"</span>,
+  <span class="s2">"contentType"</span> : <span class="s2">"application/json"</span>,
+  <span class="s2">"data"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>,
+    <span class="s2">"compartmentName"</span> : <span class="s2">"xxxx"</span>,
+    <span class="s2">"resourceName"</span> : <span class="s2">"ATPRD01"</span>,
+    <span class="s2">"resourceId"</span> : <span class="s2">"OCID1.AUTONOMOUSDATABASE.OC1.AP-TOKYO-1.XXXX"</span>,
+    <span class="s2">"additionalDetails"</span> : <span class="o">{</span>
+      <span class="s2">"dbName"</span> : <span class="s2">"ATPRD01"</span>,
+      <span class="s2">"eventName"</span> : <span class="s2">"WorkloadCaptureBegin"</span>,
+      <span class="s2">"description"</span> : <span class="s2">"The workload capture AUTOCAPTURE_ATPRD01_6E4D has begun in ATPRD01."</span>,
+      <span class="s2">"autonomousDataType"</span> : <span class="s2">"Serverless"</span>,
+      <span class="s2">"workloadType"</span> : <span class="s2">"Transaction Processing"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"eventID"</span> : <span class="s2">"cb872c9b-a11f-4c2f-a0f8-f74fdceb4551"</span>,
+  <span class="s2">"extensions"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">capture_duration</code>に15と設定しているので、その約15分後にキャプチャの終了イベントが通知されます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"eventType"</span> : <span class="s2">"com.oraclecloud.databaseservice.autonomous.database.information"</span>,
+  <span class="s2">"cloudEventsVersion"</span> : <span class="s2">"0.1"</span>,
+  <span class="s2">"eventTypeVersion"</span> : <span class="s2">"2.0"</span>,
+  <span class="s2">"source"</span> : <span class="s2">"DatabaseService"</span>,
+  <span class="s2">"eventTime"</span> : <span class="s2">"2024-09-24T00:51:15Z"</span>,
+  <span class="s2">"contentType"</span> : <span class="s2">"application/json"</span>,
+  <span class="s2">"data"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>,
+    <span class="s2">"compartmentName"</span> : <span class="s2">"xxxx"</span>,
+    <span class="s2">"resourceName"</span> : <span class="s2">"ATPRD01"</span>,
+    <span class="s2">"resourceId"</span> : <span class="s2">"OCID1.AUTONOMOUSDATABASE.OC1.AP-TOKYO-1.XXXX"</span>,
+    <span class="s2">"additionalDetails"</span> : <span class="o">{</span>
+      <span class="s2">"captureDownloadURL"</span> : <span class="s2">"https://objectstorage.ap-tokyo-1.oraclecloud.com/p/xxxx/n/dwcsprod/b/adb_capture_replay/o/xxxx/CAP_22D1698050D6/cap/adb_capture_report.zip"</span>,
+      <span class="s2">"eventName"</span> : <span class="s2">"WorkloadCaptureEnd"</span>,
+      <span class="s2">"dbName"</span> : <span class="s2">"ATPRD01"</span>,
+      <span class="s2">"description"</span> : <span class="s2">"The workload AUTOCAPTURE_ATPRD01_6E4D has been successfully captured in ATPRD01. You can use the URL provided in captureDownloadURL field to download the capture reports. The URL will be valid for 7 days."</span>,
+      <span class="s2">"workloadType"</span> : <span class="s2">"Transaction Processing"</span>,
+      <span class="s2">"autonomousDataType"</span> : <span class="s2">"Serverless"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"eventID"</span> : <span class="s2">"8bba3ea9-5d83-4de4-b0ee-017a486e15f6"</span>,
+  <span class="s2">"extensions"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>キャプチャ終了時には、<code class="language-plaintext highlighter-rouge">captureDownloadURL</code>が提供されます。Oracleが管理するオブジェクトストレージにキャプチャ・レポートが保存され、そのPAR URL(事前認証済みリクエスト)です。ここからユーザーはキャプチャ結果をダウンロードできます。(期限は7日間なのでご注意ください。)</p>
+
+<p>その後、リプレイ開始のイベントが通知されます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"eventType"</span> : <span class="s2">"com.oraclecloud.databaseservice.autonomous.database.information"</span>,
+  <span class="s2">"cloudEventsVersion"</span> : <span class="s2">"0.1"</span>,
+  <span class="s2">"eventTypeVersion"</span> : <span class="s2">"2.0"</span>,
+  <span class="s2">"source"</span> : <span class="s2">"DatabaseService"</span>,
+  <span class="s2">"eventTime"</span> : <span class="s2">"2024-09-24T02:01:54Z"</span>,
+  <span class="s2">"contentType"</span> : <span class="s2">"application/json"</span>,
+  <span class="s2">"data"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>,
+    <span class="s2">"compartmentName"</span> : <span class="s2">"xxxx"</span>,
+    <span class="s2">"resourceName"</span> : <span class="s2">"EarlyATPRD01"</span>,
+    <span class="s2">"resourceId"</span> : <span class="s2">"OCID1.AUTONOMOUSDATABASE.OC1.AP-TOKYO-1.XXXX"</span>,
+    <span class="s2">"additionalDetails"</span> : <span class="o">{</span>
+      <span class="s2">"dbName"</span> : <span class="s2">"EarlyATPRD01"</span>,
+      <span class="s2">"eventName"</span> : <span class="s2">"WorkloadReplayBegin"</span>,
+      <span class="s2">"description"</span> : <span class="s2">"The workload replay has begun in EarlyATPRD01."</span>,
+      <span class="s2">"autonomousDataType"</span> : <span class="s2">"Serverless"</span>,
+      <span class="s2">"workloadType"</span> : <span class="s2">"Transaction Processing"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"eventID"</span> : <span class="s2">"77d03a0f-6c87-4e84-8b66-4fd39a9ec158"</span>,
+  <span class="s2">"extensions"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>そしてリプレイ終了のイベントが通知されます。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"eventType"</span> : <span class="s2">"com.oraclecloud.databaseservice.autonomous.database.information"</span>,
+  <span class="s2">"cloudEventsVersion"</span> : <span class="s2">"0.1"</span>,
+  <span class="s2">"eventTypeVersion"</span> : <span class="s2">"2.0"</span>,
+  <span class="s2">"source"</span> : <span class="s2">"DatabaseService"</span>,
+  <span class="s2">"eventTime"</span> : <span class="s2">"2024-09-24T02:22:28Z"</span>,
+  <span class="s2">"contentType"</span> : <span class="s2">"application/json"</span>,
+  <span class="s2">"data"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>,
+    <span class="s2">"compartmentName"</span> : <span class="s2">"xxxx"</span>,
+    <span class="s2">"resourceName"</span> : <span class="s2">"EarlyATPRD01"</span>,
+    <span class="s2">"resourceId"</span> : <span class="s2">"OCID1.AUTONOMOUSDATABASE.OC1.AP-TOKYO-1.XXXX"</span>,
+    <span class="s2">"additionalDetails"</span> : <span class="o">{</span>
+      <span class="s2">"replayDownloadURL"</span> : <span class="s2">"https://objectstorage.ap-tokyo-1.oraclecloud.com/p/xxxx/n/dwcsprod/b/adb_capture_replay/o/xxxx/CAP_22D1698050D6/rep911454787/adb_replay_report.zip"</span>,
+      <span class="s2">"eventName"</span> : <span class="s2">"WorkloadReplayEnd"</span>,
+      <span class="s2">"dbName"</span> : <span class="s2">"EarlyATPRD01"</span>,
+      <span class="s2">"description"</span> : <span class="s2">"The workload AUTOREPLAY_EarlyATPRD01_B044 has been successfully replayed in EarlyATPRD01. You can use the URL provided in replayDownloadURL field to download the replay reports. The URL will be valid for 7 days."</span>,
+      <span class="s2">"workloadType"</span> : <span class="s2">"Transaction Processing"</span>,
+      <span class="s2">"autonomousDataType"</span> : <span class="s2">"Serverless"</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">"eventID"</span> : <span class="s2">"db28ad77-ff47-49bd-98d5-f0876dbd4165"</span>,
+  <span class="s2">"extensions"</span> : <span class="o">{</span>
+    <span class="s2">"compartmentId"</span> : <span class="s2">"ocid1.compartment.oc1..aaaaaaaa"</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">replayDownloadURL</code>からテスト環境でのリプレイ結果のレポートをダウンロードできます。</p>
+
+<p>以下のようなレポートが出力されます。</p>
+
+<p><img src="replay_result.png" alt="replay_resultイメージ" /></p>
+
+<p>なおレポート結果やキャプチャ/リプレイの履歴はADBからも確認できます。</p>
+
+<p>ワークロード・リプレイのステータスの確認は<code class="language-plaintext highlighter-rouge">DBA_CAPTURE_REPLAY_STATUS</code>ビューから、履歴については<code class="language-plaintext highlighter-rouge">DBA_CAPTURE_REPLAY_HISTORY</code>ビューからクエリできます。</p>
+
+<p>ステータスの確認</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">DBA_CAPTURE_REPLAY_STATUS</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>キャプチャ開始時の出力結果</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">STATE</span>                                                <span class="n">PROGRESS</span>    
+<span class="n">____________________________________________________</span> <span class="n">___________</span> 
+<span class="n">FINISH</span> <span class="n">CAPTURE</span> <span class="n">AUTOCAPTURE_ATPRD01_6E4D</span> <span class="n">COMPLETED</span> 
+</code></pre></div></div>
+
+<p>キャプチャ終了時の出力結果</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">STATE</span>                                                <span class="n">PROGRESS</span>    
+<span class="n">____________________________________________________</span> <span class="n">___________</span> 
+<span class="n">FINISH</span> <span class="n">CAPTURE</span> <span class="n">AUTOCAPTURE_ATPRD01_6ED4</span> <span class="n">COMPLETED</span>
+</code></pre></div></div>
+
+<p>履歴の確認</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">DBA_CAPTURE_REPLAY_HISTORY</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>出力結果</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="n">ID</span> <span class="n">NAME</span>                            <span class="n">UNIQUE_NAME</span>         <span class="n">STATUS</span>     <span class="n">DATABASE_ID</span>                             <span class="k">TYPE</span>       <span class="n">REPORT_URL</span>                                                                                                                                                                                                                                    <span class="n">ERROR_MESSAGE</span>    <span class="n">START_TIME</span>                         <span class="n">END_TIME</span>                           <span class="n">DATABASE_NAME</span>    
+<span class="n">______</span> <span class="n">_______________________________</span> <span class="n">___________________</span> <span class="n">__________</span> <span class="n">_______________________________________</span> <span class="n">__________</span> <span class="n">_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________</span> <span class="n">________________</span> <span class="n">__________________________________</span> <span class="n">__________________________________</span> <span class="n">________________</span> 
+   <span class="mi">346</span> <span class="n">AUTOREPLAY_KQZ0V0VY83YYALWW_B044</span>                        <span class="n">SUCCESS</span>          <span class="n">a665449d</span><span class="o">-</span><span class="n">d5d5</span><span class="o">-</span><span class="mi">40</span><span class="n">ce</span><span class="o">-</span><span class="n">adaa</span><span class="o">-</span><span class="mi">8189</span><span class="n">b030f878</span>    <span class="n">REPLAY</span>     <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">objectstorage</span><span class="p">.</span><span class="n">ap</span><span class="o">-</span><span class="n">tokyo</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">oraclecloud</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">p</span><span class="o">/</span><span class="n">xxxx</span><span class="o">/</span><span class="n">n</span><span class="o">/</span><span class="n">dwcsprod</span><span class="o">/</span><span class="n">b</span><span class="o">/</span><span class="n">adb_capture_replay</span><span class="o">/</span><span class="n">o</span><span class="o">/</span><span class="n">xxxx</span><span class="o">/</span><span class="n">CAP_22D1698050D6</span><span class="o">/</span><span class="n">rep911454787</span><span class="o">/</span><span class="n">adb_replay_report</span><span class="p">.</span><span class="n">zip</span>                                                                                        <span class="mi">24</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">24</span> <span class="mi">02</span><span class="p">.</span><span class="mi">03</span><span class="p">.</span><span class="mi">22</span><span class="p">.</span><span class="mi">000000000</span> <span class="n">AM</span>    <span class="mi">24</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">24</span> <span class="mi">02</span><span class="p">.</span><span class="mi">19</span><span class="p">.</span><span class="mi">03</span><span class="p">.</span><span class="mi">000000000</span> <span class="n">AM</span>    <span class="n">EarlyATPRD01</span>    
+   <span class="mi">345</span> <span class="n">AUTOCAPTURE_ATPRD01_6E4D</span>            <span class="n">CAP_22D1698050D6</span>    <span class="n">SUCCESS</span>          <span class="n">aa6152db</span><span class="o">-</span><span class="n">e5ea</span><span class="o">-</span><span class="mi">4</span><span class="n">f04</span><span class="o">-</span><span class="mi">8424</span><span class="o">-</span><span class="mi">2</span><span class="n">d439e8545b7</span>    <span class="n">CAPTURE</span>    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">objectstorage</span><span class="p">.</span><span class="n">ap</span><span class="o">-</span><span class="n">tokyo</span><span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="n">oraclecloud</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">p</span><span class="o">/</span><span class="n">xxxx</span><span class="o">/</span><span class="n">n</span><span class="o">/</span><span class="n">dwcsprod</span><span class="o">/</span><span class="n">b</span><span class="o">/</span><span class="n">adb_capture_replay</span><span class="o">/</span><span class="n">o</span><span class="o">/</span><span class="n">xxxx</span><span class="o">/</span><span class="n">CAP_22D1698050D6</span><span class="o">/</span><span class="n">cap</span><span class="o">/</span><span class="n">adb_capture_report</span><span class="p">.</span><span class="n">zip</span>                                                                                                <span class="mi">24</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">24</span> <span class="mi">12</span><span class="p">.</span><span class="mi">30</span><span class="p">.</span><span class="mi">18</span><span class="p">.</span><span class="mi">000000000</span> <span class="n">AM</span>    <span class="mi">24</span><span class="o">-</span><span class="n">SEP</span><span class="o">-</span><span class="mi">24</span> <span class="mi">12</span><span class="p">.</span><span class="mi">45</span><span class="p">.</span><span class="mi">23</span><span class="p">.</span><span class="mi">000000000</span> <span class="n">AM</span>    <span class="n">ATPRD01</span>
+</code></pre></div></div>
+
+<p>このようにイベント通知の設定をせずとも、ADBからキャプチャ/リプレイの結果レポートを取得することができます。
+なおDBA_CAPTURE_REPLAY_HISTORYのデータは7日間でパージされます。</p>
+
+<p><br />
+<a id="anchor8"></a></p>
+
+<h1 id="おわりに">おわりに</h1>
+<p>本チュートリアルでは、パッチを通常より1週早く適用する早期パッチという機能と、本番環境のワークロードをキャプチャして、テスト環境で自動でリプレイする自動ワークロード・リプレイという機能をご紹介しました。これらを組み合わせることで、毎週のパッチ適用の影響を実際のワークロードに基づいたテストを自動で行うことができます。</p>
+
+<p><br />
+以上でこの章は終了です。次の章にお進みください。</p>
+
+<p><br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-24T15:13:13+09:00">September 24, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=220+%3A+%E8%87%AA%E5%8B%95%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E3%83%BB%E3%83%AA%E3%83%97%E3%83%AC%E3%82%A4%E3%81%AB%E3%82%88%E3%82%8B%E3%83%91%E3%83%83%E3%83%81%E9%81%A9%E7%94%A8%E3%81%AE%E3%83%86%E3%82%B9%E3%83%88%E3%82%BD%E3%83%AA%E3%83%A5%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb220-autoworkload-replay%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fadb%2Fadb220-autoworkload-replay%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/adb/adb220-autoworkload-replay/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/adb/adb219-autoindexing/" class="pagination--pager" title="219: Automatic Indexingを体験してみよう
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/adb/adb301-create-source-db/" class="pagination--pager" title="301 : 移行元となるデータベースを作成しよう
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
