@@ -118,7 +118,7 @@ toc: true
     * Autonomous Databaseの標準機能であるGraph Studioの使い方をご紹介します。
 
 + **[216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション](/ocitutorials/adb/adb216-patch-spa/){:target="_blank"}**  
-    * Autonomous Databaseの特徴の一つである自動パッチ適用のアプリケーションに対する影響を事前にテストします。
+    * Autonomous Databaseの特徴の一つである自動パッチ適用のSQLの性能影響を事前にテストします。
 
 + **[217: Database Actions を使ってみよう](/ocitutorials/adb/adb217-use-database-actions/){:target="_blank"}**  
     * Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。
@@ -128,6 +128,9 @@ toc: true
 
 + **[219 : Automatic Indexingを体験してみよう](/ocitutorials/adb/adb219-autoindexing/){:target="_blank"}**  
     * Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
+  
++ **[220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション](/ocitutorials/adb/adb220-autoworkload-replay/){:target="_blank"}**  
+    * 毎週の自動パッチ適用によるアプリケーションへの影響を、テスト環境で毎週自動でテストします。
 
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db){:target="_blank"}**
