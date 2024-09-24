@@ -32,7 +32,7 @@ Object Storageに格納されたログは、Logging Analyticsの「ObjectCollect
 + ユーザーがLoggingサービスを使用するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/loggingpolicyreference.htm)をご参照ください。
 + ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細はOCIチュートリアル「[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/intermediates/audit-log-analytics/)」もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/prerequisite-iam-policies.html#GUID-4CA8D8F4-2218-4C14-AF73-40111C459270)をご参照ください。
 + ユーザーがService Connectorを作成するためのポリシーが作成されていること。ポリシーの詳細は[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Reference/serviceconnectorhubpolicyreference.htm)をご参照ください。
-+ OCIチュートリアル「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)」を参考に、Network Firewallインスタンスの作成、コンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
++ OCIチュートリアル「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)」を参考に、Network Firewallインスタンスの作成およびコンピュートインスタンス（LinuxまたはWindows）の作成が終わっていること
 + OCIチュートリアル「[OCI Network FirewallのIPS/IDS機能を検証する](/ocitutorials/security/networkfirewall-idps/)」を参考に、侵入検知（IDS）もしくは侵入防止（IPS）のセキュリティ・ルールが設定されていること
 + OCIチュートリアル「[コマンドライン(CLI)でOCIを操作する](/ocitutorials/intermediates/using-cli/)」を参考に、OCI CLIコマンドのインストールと構成が終わっていること。
 
@@ -320,5 +320,5 @@ OCIコンソール画面左上のメニュー → 監視および管理 → ロ�
 
 
 
-以上でLogging AnalyticsでＮetwork Ｆirewallのログ分析は終了です。
+以上でLogging AnalyticsでNetwork Firewallのログ分析は終了です。
 手順7で紹介した方法以外にも、様々な可視化オプションを用いてログを可視化したり分析することが可能ですので、是非実際に触ってみてください。
