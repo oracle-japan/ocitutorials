@@ -29,7 +29,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 
 
-# Web Application Firewallチュートリアル
+# Web Application Firewall
 
 ## Global WAF
 <span style="color: olivedrab; ">**環境準備編**</span>
@@ -57,14 +57,17 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Network Firewallチュートリアル
+# Network Firewall
 
 <span style="color: olivedrab; ">**環境準備編**</span>
 + **[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)**  
-   本チュートリアルでは、OCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。
+   本チュートリアルでは、OCI Network Firewallの環境を構築します。
 
 
 <span style="color: olivedrab; ">**活用編**</span>
+
++ **[OCI Network Firewallの動作を検証する](/ocitutorials/security/networkfirewall-policycheck/)**  
+   本チュートリアルでは、サービス・リストとURLリストを設定し、OCI Network Firewallの動作を確認します。
 
 + **[OCI Network FirewallのIDS/IPS機能を検証する](/ocitutorials/security/networkfirewall-idps/)**  
    本チュートリアルでは、「OCI Network Firewallを構築する」の続編として、IDS/IPSの設定および動作を確認します。IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
@@ -77,7 +80,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# OCI Vaultチュートリアル
+# OCI Vault
 
 <span style="color: olivedrab; ">**環境準備編**</span>
 
@@ -100,7 +103,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Cloud Guardチュートリアル
+# Cloud Guard
 
 + **[Cloud Guardを使ってみる](https://qiita.com/western24/items/d1469545749866867191)**  
    本チュートリアルは外部のページで、Cloud Guardの設定手順および確認方法を紹介しています。
@@ -108,7 +111,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Oracle Data Safe チュートリアル
+# Oracle Data Safe
 
 + **[Oracle Data Safeチュートリアルまとめ](/ocitutorials/security/datasafe-tutorial/)**  
    本チュートリアルは外部のページで、Data Safeの有効化から、各種機能の使い方についてまとめています。   
@@ -116,7 +119,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Security Zoneチュートリアル
+# Security Zone
 
 + **[Security Zoneを有効化する](https://speakerdeck.com/oracle4engineer/scurity-zonesshe-ding-cao-zuo-gaido)**  
    本チュートリアルは外部のページで、Security Zoneの設定手順について紹介しています。
@@ -124,7 +127,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Vulnerability Scanningチュートリアル
+# Vulnerability Scanning
 
 + **[Vulnerability Scanning Serviceを設定する](https://speakerdeck.com/oracle4engineer/vulnerability-scanning-serviceshe-ding-cao-zuo-gaido)**  
    本チュートリアルは外部のページで、Vulnerability Scanning Serviceの設定手順を紹介しています。
