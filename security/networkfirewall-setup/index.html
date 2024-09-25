@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-09-24T15:13:13+09:00">
+  <meta property="article:published_time" content="2024-09-26T08:27:59+09:00">
 
 
 
@@ -231,7 +231,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
-    <meta itemprop="datePublished" content="2024-09-24T15:13:13+09:00">
+    <meta itemprop="datePublished" content="2024-09-26T08:27:59+09:00">
     
 
     <div class="page__inner-wrap">
@@ -242,17 +242,18 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-network-firewallについて">0. Network Firewallについて</a><ul><li><a href="#各サブネットとルート表について">各サブネットとルート表について</a></li><li><a href="#アプリケーションリストについて">アプリケーション・リストについて</a></li><li><a href="#サービスリストについて">サービス・リストについて</a></li><li><a href="#urlリストについて">URLリストについて</a></li><li><a href="#アドレスリストについて">アドレス・リストについて</a></li><li><a href="#セキュリティルールについて">セキュリティ・ルールについて</a></li><li><a href="#ユーザーについて">ユーザーについて</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</a></li><li><a href="#1-3-ルート表の作成">1-3. ルート表の作成</a></li><li><a href="#1-4-security-listの作成">1-4. Security Listの作成</a></li><li><a href="#1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</a></li><li><a href="#1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</a></li></ul></li><li><a href="#2-network-firewallポリシーの作成">2. Network Firewallポリシーの作成</a><ul><li><a href="#2-1-基本情報の入力">2-1. 基本情報の入力</a></li><li><a href="#2-2-サービスリストの作成">2-2. サービス・リストの作成</a></li><li><a href="#2-3-urlリストの作成">2-3. URLリストの作成</a></li><li><a href="#2-4-セキュリティルールの作成">2-4. セキュリティ・ルールの作成</a></li><li><a href="#2-5-補足sslについて">2-5. (補足)SSLについて</a></li></ul></li><li><a href="#3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</a></li><li><a href="#4-ルート表の編集">4. ルート表の編集</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</a></li><li><a href="#4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</a></li><li><a href="#4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</a></li></ul></li><li><a href="#5-security-listの編集">5. Security Listの編集</a><ul><li><a href="#5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</a></li><li><a href="#5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</a></li></ul></li><li><a href="#6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</a><ul><li><a href="#6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</a></li><li><a href="#6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</a></li></ul></li><li><a href="#7-oci-network-firewallの動作確認">7. OCI Network Firewallの動作確認</a><ul><li><a href="#7-1-wgetコマンドでの確認">7-1. wgetコマンドでの確認</a></li><li><a href="#7-2-windowsのブラウザから確認">7-2. Windowsのブラウザから確認</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a><ul><li><a href="#network-firewallについて">Network Firewallについて</a></li><li><a href="#各サブネットとルート表について">各サブネットとルート表について</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</a></li><li><a href="#1-3-ルート表の作成">1-3. ルート表の作成</a></li><li><a href="#1-4-security-listの作成">1-4. Security Listの作成</a></li><li><a href="#1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</a></li><li><a href="#1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</a></li></ul></li><li><a href="#2-ネットワークファイアウォールポリシーの作成">2. ネットワーク・ファイアウォール・ポリシーの作成</a></li><li><a href="#3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</a></li><li><a href="#4-ルート表の編集">4. ルート表の編集</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</a></li><li><a href="#4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</a></li><li><a href="#4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</a></li></ul></li><li><a href="#5-security-listの編集">5. Security Listの編集</a><ul><li><a href="#5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</a></li><li><a href="#5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</a></li></ul></li><li><a href="#6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</a><ul><li><a href="#6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</a></li><li><a href="#6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</a></li></ul></li></ul>
             </nav>
           </aside>
         
-        <p>パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。
-本チュートリアルではOCI Network Firewallの環境を構築し、OCI Network Firewallの動作を確認します。</p>
+        <p>パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。
+「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。<br />
+本チュートリアルではOCI Network Firewallが使用できる環境を構築します。</p>
 
 <p><strong>所要時間 :</strong></p>
 <ul>
   <li>約70分<br />
-(Network Firewallインスタンスの作成に40分ほどかかります)</li>
+(このうちNetwork Firewallインスタンスの作成に40分ほどかかります)</li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -265,61 +266,31 @@
   <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
 </ul>
 
-<p><strong>はじめに :</strong></p>
-<ul>
-  <li>以下が本チュートリアルで作成するNetwork Firewallの構成図です。</li>
-</ul>
+<p><br /></p>
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>以下が本チュートリアルで作成するNetwork Firewallの構成図です。</p>
 
 <p><img src="nfw0.png" alt="画面ショット0" /></p>
 
-<h1 id="0-network-firewallについて">0. Network Firewallについて</h1>
-
-<p>Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。
- Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
- Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。</p>
+<h2 id="network-firewallについて">Network Firewallについて</h2>
+<p>Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。<br />
+Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
+Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。</p>
 <ul>
   <li>パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御</li>
-  <li>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止
-<br /></li>
+  <li>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止</li>
 </ul>
+
+<p><br /></p>
 
 <h2 id="各サブネットとルート表について">各サブネットとルート表について</h2>
 
-<p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。
- Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。
-<br /></p>
+<p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。<br />
+Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。</p>
 
-<h2 id="アプリケーションリストについて">アプリケーション・リストについて</h2>
-
-<p>Network Firewallポリシーのルールの作成時に使用できるICMPまたはICMPv6コードのリストを作成することができます。
-<br /></p>
-
-<h2 id="サービスリストについて">サービス・リストについて</h2>
-
-<p>Network Firewallポリシーのルールの作成時に使用できるTCPまたはUDPのポート番号のリストを作成することができます。
-<br /></p>
-
-<h2 id="urlリストについて">URLリストについて</h2>
-
-<p>Network Firewallポリシーのルールの作成時に使用できるURLのリストを作成することができます。
-<br /></p>
-
-<h2 id="アドレスリストについて">アドレス・リストについて</h2>
-
-<p>Network Firewallポリシーのルールの作成時に使用するIPv4, IPv6またはFQDNのリストを作成することができます。
-<br /></p>
-
-<h2 id="セキュリティルールについて">セキュリティ・ルールについて</h2>
-
-<p>Network Firewallポリシーにて作成したアプリケーション・リスト、サービス・リスト、URLリスト、アドレス・リストを基にアクセスを許可/拒否、または脅威検知/脅威防御するよう設定することが可能です。<br />
- 本チュートリアルではポート番号22, 3389, 443のアクセスと、URL「www.google.com」「www.google.com」のアクセスを許可します。一方「www.yahoo.co.jp」「www.facebook.com」のアクセスを拒否し、実際にコンピュートインスタンスから各URLへアクセスが許可/拒否されることを確認します。
-<br /></p>
-
-<h2 id="ユーザーについて">ユーザーについて</h2>
-
-<p>本チュートリアルでは、Network Firewallの環境を構築したらユーザーとしてSSHでPublic Subnet内のコンピュートインスタンスにアクセスし、コンピュートインスタンスからネットワーク・ファイアウォール・ポリシーで設定したURLへのアクセスが許可/拒否されることを確認します。
- URLのアクセス制御の動作確認方法として、wgetコマンドを用いる方法と、ブラウザを用いる方法の2つを紹介します。
-<br /></p>
+<p><br /></p>
 
 <h1 id="1-ネットワークの構築">1. ネットワークの構築</h1>
 
@@ -452,11 +423,10 @@
 
 <p><br /></p>
 
-<h1 id="2-network-firewallポリシーの作成">2. Network Firewallポリシーの作成</h1>
+<h1 id="2-ネットワークファイアウォールポリシーの作成">2. ネットワーク・ファイアウォール・ポリシーの作成</h1>
 
-<p>本チュートリアルでは、Network Firewallポリシーでサービス・リストとURLリストを作成し、ポート番号とURLによりアクセスを制御するルールを作成します。</p>
+<p>Network Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー「ネットワーク・ファイアウォール・ポリシー」を指定する必要があるため、事前に用意します。</p>
 
-<h2 id="2-1-基本情報の入力">2-1. 基本情報の入力</h2>
 <p>OCIコンソール画面左上のメニューボタン → アイデンティティとセキュリティ → ファイアウォール → ネットワーク・ファイアウォール・ポリシー → ネットワーク・ファイアウォール・ポリシーの作成をクリックします。
 表示されたポリシーの作成画面にて任意のポリシー名を入力し、「ポリシーの作成」ボタンをクリックします。</p>
 
@@ -465,380 +435,6 @@
 <p>ポリシーを作成すると、ポリシーの詳細画面が表示されます。</p>
 
 <p><img src="nfw88.png" alt="画面ショット88" /></p>
-
-<p><br /></p>
-
-<h2 id="2-2-サービスリストの作成">2-2. サービス・リストの作成</h2>
-<p>アクセスを許可するポート番号を「サービス」として作成し、「サービス・リスト」に追加します。
-手順2-1で作成したポリシー詳細画面左下のポリシー・リソースから「サービス・リスト」を選択し、「サービス・リストの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw57.png" alt="画面ショット57" /></p>
-
-<p>「サービス・リストの作成」画面にて、任意のサービス・リスト名を入力します。<br />
-※例）「http-https-access」<br />
-サービス・リスト名を入力したら、「サービスの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw58.png" alt="画面ショット58" /></p>
-
-<p>「サービスの作成」画面にて、以下を入力し、「Create and select service」を選択します。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - http</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - TCP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ポート範囲</code></strong> - 80-80</li>
-</ul>
-
-<p><img src="nfw59.png" alt="画面ショット59" /></p>
-
-<p>同じように、以下httpsの443ポートをサービスとして、サービス・リストに追加します。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - https</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - TCP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ポート範囲</code></strong> - 443-443</li>
-</ul>
-
-<p><img src="nfw60.png" alt="画面ショット60" /></p>
-
-<p>httpとhttpsのサービスのボックスにチェックを入れ、「選択済へ追加」ボタンをクリックします。<br />
-サービス・リストにサービスを追加したら画面下の「サービス・リストの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw61.png" alt="画面ショット61" /></p>
-
-<p>同じ手順でsshアクセスに使用するポート22番とリモートデスクトップ接続に使用するポート3389番をサービスとして作成し、それぞれをサービス・リストに追加します。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">サービス・リスト名</code></strong> - ssh-access</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サービス名</code></strong> - ssh</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - TCP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ポート範囲</code></strong> - 22-22</li>
-</ul>
-
-<p><img src="nfw62.png" alt="画面ショット62" /></p>
-
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">サービス・リスト名</code></strong> - rdp-access</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サービス名</code></strong> - rdp</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - TCP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ポート範囲</code></strong> - 3389-3389</li>
-</ul>
-
-<p><img src="nfw63.png" alt="画面ショット63" /></p>
-
-<p>以上の手順でサービス・リストの作成は完了です。</p>
-
-<p><br /></p>
-
-<h2 id="2-3-urlリストの作成">2-3. URLリストの作成</h2>
-<p>続いて、アクセスを許可するURLのリストと、アクセスを拒否するURLのリストを作成します。<br />
-ポリシー詳細画面左下のポリシー・リソースから「URLリスト」を選択し、「URLリストの作成」ボタンをクリックします。<br />
-表示された「URLリストの作成」画面にて以下を入力し、アクセスを許可するURLリストを追加します。</p>
-
-<p><img src="nfw64.png" alt="画面ショット64" /></p>
-
-<p>本チュートリアルでは検証としてOracleとGoogleのドメインを許可リストに追加します。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - allow-urls</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - *.oracle.com, *.google.com
-URLを追加したら、画面下の「URLリストの作成」ボタンをクリックします。</li>
-</ul>
-
-<p><img src="nfw65.png" alt="画面ショット65" /></p>
-
-<p>同じ手順でアクセスを拒否するURLリストも作成します。<br />
-本チュートリアルでは検証として、FacebookとYahoo! Japanのドメインを拒否リストに追加します。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - deny-urls</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - *.facebook.com, *.yahoo.co.jp</li>
-</ul>
-
-<p><img src="nfw66.png" alt="画面ショット66" /></p>
-
-<p>以上の手順でURLリストの作成は完了です。</p>
-
-<p><br /></p>
-
-<h2 id="2-4-セキュリティルールの作成">2-4. セキュリティ・ルールの作成</h2>
-<p>セキュリティ・ルールでは、以下4種類のルールを作成します。</p>
-<ul>
-  <li>指定したURLリストへのインターネット経由のアクセスを許可するルール</li>
-  <li>指定したURLリストへのインターネット経由のアクセスを拒否するルール</li>
-  <li>SSHアクセスを許可するルール</li>
-  <li>リモート・デスクトップ接続を許可するルール</li>
-</ul>
-
-<p>まずは指定したURLへのインターネットを経由したアクセスを許可ルールを作成します。<br />
-ポリシー詳細画面左下のポリシー・リソースから「セキュリティ・ルール」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw67.png" alt="画面ショット67" /></p>
-
-<p>セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
-例）urls-allow-rule</p>
-
-<p><img src="nfw68.png" alt="画面ショット68" /></p>
-
-<p>一致条件の項目にて、「ソースIPアドレス」、「宛先IPアドレス」、「アプリケーション」はすべて「任意」を選択します。<br />
-「サービス」にて「サービス・リストの選択」をクリックし、「サービス・リストの選択」ボタンをもう一度クリックします。</p>
-
-<p><img src="nfw69.png" alt="画面ショット69" /></p>
-
-<p>「サービス・リストの選択」画面にて、手順2-1で作成したポート80,443番を追加したサービス・リストにチェックをいれ、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw70.png" alt="画面ショット70" /></p>
-
-<p>選択されたサービス・リストの欄に表示されていることを確認したら、画面下の「選択したサービス・リストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw71.png" alt="画面ショット71" /></p>
-
-<p>続いて、アクセスを許可するURLを指定します。<br />
-URLsの項目にて、「URLリストの選択」をクリックし、再度「URLリストの選択」ボタンをクリックします。</p>
-
-<p><img src="nfw72.png" alt="画面ショット72" /></p>
-
-<p>URLリストの選択画面にて、アクセスを許可するURLを追加したリストをチェックし、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw73.png" alt="画面ショット73" /></p>
-
-<p>選択されたURLリストの欄に表示されていることを確認したら、画面下の「選択したURLリストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw74.png" alt="画面ショット74" /></p>
-
-<p>続いて、セキュリティ・ルールの作成画面の「ルール・アクション」の項目にて「トラフィックの許可」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw75.png" alt="画面ショット75" /></p>
-
-<p>以上で、指定したURLへのインターネットを経由したアクセスを許可するルールを作成する手順は完了です。<br />
-続いて、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成します。</p>
-
-<p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
-例）urls-deny-rule</p>
-
-<p><img src="nfw76.png" alt="画面ショット76" /></p>
-
-<p>「サービス」にて「サービス・リストの選択」をクリックし、「サービス・リストの選択」ボタンをもう一度クリックします。</p>
-
-<p><img src="nfw69.png" alt="画面ショット69" /></p>
-
-<p>「サービス・リストの選択」画面にて、手順2-1で作成したポート80,443番を追加したサービス・リストにチェックをいれ、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw70.png" alt="画面ショット70" /></p>
-
-<p>選択されたサービス・リストの欄に表示されていることを確認したら、画面下の「選択したサービス・リストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw71.png" alt="画面ショット71" /></p>
-
-<p>続いて、アクセスを拒否するURLを指定します。<br />
-URLsの項目にて、「URLリストの選択」をクリックし、再度「URLリストの選択」ボタンをクリックします。</p>
-
-<p><img src="nfw72.png" alt="画面ショット72" /></p>
-
-<p>URLリストの選択画面にて、アクセスを拒否するURLを追加したリストをチェックし、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw77.png" alt="画面ショット77" /></p>
-
-<p>選択されたURLリストの欄に表示されていることを確認したら、画面下の「選択したURLリストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw78.png" alt="画面ショット78" /></p>
-
-<p>続いて、セキュリティ・ルールの作成画面の「ルール・アクション」の項目にて「トラフィックの拒否」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw79.png" alt="画面ショット79" /></p>
-
-<p>以上で、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成する手順は完了です。<br />
-続いて、SSHアクセスを許可するルールを作成します。</p>
-
-<p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
-例）ssh-allow</p>
-
-<p><img src="nfw80.png" alt="画面ショット80" /></p>
-
-<p>一致条件の項目にて、「ソースアドレス」、「宛先アドレス」、「アプリケーション」、「URL」はすべて「任意」を選択します。<br />
-「サービス」にて「サービス・リストの選択」をクリックし、「サービス・リストの選択」ボタンをもう一度クリックします。</p>
-
-<p><img src="nfw69.png" alt="画面ショット69" /></p>
-
-<p>「サービス・リストの選択」画面にて、手順2-1で作成したポート22番を追加したサービス・リストにチェックをいれ、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw81.png" alt="画面ショット81" /></p>
-
-<p>選択されたサービス・リストの欄に表示されていることを確認したら、画面下の「選択したサービス・リストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw82.png" alt="画面ショット82" /></p>
-
-<p>「ルール・アクション」の項目にて「トラフィックの許可」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw83.png" alt="画面ショット83" /></p>
-
-<p>以上の手順で、SSHアクセスを許可するルールを作成する手順は完了です。<br />
-最後にリモート・デスクトップ接続を許可するルールを作成します。</p>
-
-<p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
-例）rdp-allow</p>
-
-<p><img src="nfw84.png" alt="画面ショット84" /></p>
-
-<p>一致条件の項目にて、「ソースアドレス」、「宛先アドレス」、「アプリケーション」、「URL」はすべて「任意」を選択します。<br />
-「サービス」にて「サービス・リストの選択」をクリックし、「サービス・リストの選択」ボタンをもう一度クリックします。</p>
-
-<p><img src="nfw69.png" alt="画面ショット69" /></p>
-
-<p>「サービス・リストの選択」画面にて、手順2-1で作成したポート3389番を追加したサービス・リストにチェックをいれ、「選択済へ追加」ボタンをクリックします。</p>
-
-<p><img src="nfw85.png" alt="画面ショット85" /></p>
-
-<p>選択されたサービス・リストの欄に表示されていることを確認したら、画面下の「選択したサービス・リストの追加」ボタンをクリックします。</p>
-
-<p><img src="nfw86.png" alt="画面ショット86" /></p>
-
-<p>「ルール・アクション」の項目にて「トラフィックの許可」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw87.png" alt="画面ショット87" /></p>
-
-<p>以上で、リモート・デスクトップ接続を許可するルールの作成は終了です。</p>
-
-<p><br /></p>
-
-<!--
-## 2-2. リストの作成
-②リストの画面で、「アプリケーション・リストの追加」ボタンをクリックします。
-
-本チュートリアルではコンピュートインスタンスへのSSHアクセス、リモートデスクトップアクセスとHTTP/HTTPSアクセスを許可します。
-表示された「アプリケーション・リストの追加」画面で以下項目を入力します。
-+ **`名前`** - http-https-access
-+ **`アプリケーション・プロトコル`** - UDP/TCP
-+ **`プロトコル`** - TCP
-+ **`ポート範囲`** - 80-80
-
-「+別のアプリケーション」ボタンをクリックし、以下項目を入力して「アプリケーション・リストの追加」ボタンをクリックします。
-+ **`プロトコル`** - TCP
-+ **`ポート範囲`** - 443-443
-
- ![画面ショット15](nfw15.png)
-
-
-再度「アプリケーション・リストの追加」ボタンをクリックし、表示された「アプリケーション・リストの追加」画面で以下項目を入力します。
-+ **`名前`** - ssh-access
-+ **`アプリケーション・プロトコル`** - UDP/TCP
-+ **`プロトコル`** - TCP
-+ **`ポート範囲`** - 22-22
- 
- ![画面ショット21](nfw21.png)
-
-
-再度「アプリケーション・リストの追加」ボタンをクリックし、表示された「アプリケーション・リストの追加」画面で以下項目を入力します。
-+ **`名前`** - rdp-access
-+ **`アプリケーション・プロトコル`** - UDP/TCP
-+ **`プロトコル`** - TCP
-+ **`ポート範囲`** - 3389-3389
- 
- ![画面ショット44](nfw44.png)
-
-
-続いて、②リスト画面中央の「URLリストの追加」ボタンをクリックします。
-表示された「URLリストの追加」画面にて以下項目を入力し、「URLリストの追加」ボタンをクリックします。
-+ **`名前`** - allow-urls
-+ **`URL`** - *.oracle.com, *.google.com
- 
- ![画面ショット16](nfw16.png)
-
-
-続いて、アクセスを拒否するURLを登録します。もう一度「URLリストの追加」ボタンをクリックし、表示された「URLリストの追加」画面にて以下項目を入力して「URLリストの追加」ボタンをクリックします。
-+ **`名前`** - deny-urls
-+ **`URL`** - *.facebook.com, *.yahoo.co.jp
-
- ![画面ショット17](nfw17.png)
-
-
-②リストの設定は以上で終わりです。「次」ボタンをクリックします。
-③マップされたシークレット/複合化プロファイルの画面は何も設定せず、「次」をクリックします。
-
-<br>
-
-
-## 2-3. ルールの作成
-
-④ルールの画面にて、セキュリティ・ルールを作成します。
-セキュリティ・ルールでは設定したURLへのアクセスの許可/拒否ルール、sshアクセスの許可ルールを作成します。
-まずは指定したURLへのアクセスの許可ルールを作成します。「セキュリティ・ルールの追加」ボタンをクリックし、表示された「セキュリティ・ルールの追加」画面にて以下項目を入力して「変更の保存」ボタンをクリックします。
-+ **`名前`** - urls-allow
-+ **`ソースIPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`宛先IPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`アプリケーション`** - UDP/TCPを選択し、「http-https-access」を選択します。
-+ **`URL`** - 「allow-urls」を選択します。
-+ **`ルール・アクション`** - 「トラフィックの許可」を選択します。
- 
- ![画面ショット18](nfw18.png)
-
-
-次は指定したURLへのアクセス拒否ルールを作成します。「セキュリティ・ルールの追加」ボタンをクリックし、表示された「セキュリティ・ルールの追加」画面にて以下項目を入力して「変更の保存」ボタンをクリックします。
-+ **`名前`** - urls-deny
-+ **`ソースIPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`宛先IPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`アプリケーション`** - UDP/TCPを選択し、「http-https-access」を選択します。
-+ **`URL`** - 「deny-urls」を選択します。
-+ **`ルール・アクション`** - 「トラフィックの拒否」を選択します。
- 
- ![画面ショット19](nfw19.png)
-
-
-次にSSHアクセスを許可するルールを作成します。
-「セキュリティ・ルールの追加」ボタンをクリックし、表示された「セキュリティ・ルールの追加」画面にて以下項目を入力して「変更の保存」ボタンをクリックします。
-+ **`名前`** - ssh-allow
-+ **`ソースIPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`宛先IPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`アプリケーション`** - UDP/TCPを選択し、「ssh-access」を選択します。
-+ **`URL`** - 「任意のURL」を選択します。
-+ **`ルール・アクション`** - 「トラフィックの許可」を選択します。
- 
- ![画面ショット20](nfw20.png)
-
-
-最後にリモートデスクトップアクセスを許可するルールを作成します。
-「セキュリティ・ルールの追加」ボタンをクリックし、表示された「セキュリティ・ルールの追加」画面にて以下項目を入力して「変更の保存」ボタンをクリックします。
-+ **`名前`** - rdp-allow
-+ **`ソースIPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`宛先IPアドレス`** - 「任意のIPアドレス」を選択します。
-+ **`アプリケーション`** - UDP/TCPを選択し、「rdp-access」を選択します。
-+ **`URL`** - 「任意のURL」を選択します。
-+ **`ルール・アクション`** - 「トラフィックの許可」を選択します。
- 
- ![画面ショット45](nfw45.png)
-
-
-以上でネットワーク・ファイアウォール・ポリシーの設定は終了です。
-④ルールの画面の「次」ボタンをクリックし、「ネットワーク・ファイアウォール・ポリシーの作成」ボタンをクリックします。
-ネットワーク・ファイアウォール・ポリシーがすぐに作成され、アクティブとなります。
- 
- ![画面ショット22](nfw22.png)
-
-
--->
-
-<h2 id="2-5-補足sslについて">2-5. (補足)SSLについて</h2>
-<p>本チュートリアルでは設定しませんが、ネットワーク・ファイアウォール・ポリシーの「マップされたシークレット」、「復号化プロファイル」にて証明書関連の設定を行うことが可能です。
-クライアントとサーバー間の通信がSSLによって暗号化されている場合、本機能を利用することでHTTPSトラフィックを復号化し、通信の内容を検査することが可能です。</p>
-
-<p>「マップされたシークレット」とは、OCI Vaultサービスで設定された証明書認証のことを指します。「マップされたシークレット」は「SSL転送プロキシ」または「SSLインバウンド検査」を使用してSSL/TLSトラフィックを復号化、検査するために使用されます。「マップされたシークレット」を作成するには、OCI Vaultサービスでシークレット情報が作成されている必要があります。
-証明書認証の設定については<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/setting-up-certificate-authentication.htm#network-firewall-setting-up-certificate-authentication">ドキュメント</a>を参照ください。</p>
-
-<p>「復号化プロファイル」では、「SSL転送プロキシ」または「SSLインバウンド検証」の設定を行うことができます。
-「SSL転送プロキシ」では、Network Firewallが内部クライアントとサーバーの仲介サーバーとなり、内部クライアントと外部サーバーそれぞれと通信をします。
-「SSLインバウンド検査」では外からのインバウンド通信を復号化し、内容を検査します。</p>
-
-<p>「SSL転送プロキシ」は内部ユーザーからNetwork Firewallを経由してインターネットへ出るSSL/TLSトラフィックを復号化し、以下のような条件を検知しアクションを取ることが可能です。</p>
-<ul>
-  <li>期限切れ証明書をブロック</li>
-  <li>信頼されていない発行者をブロック</li>
-  <li>ブロック・タイムアウト証明書</li>
-  <li>サポートされていない暗号スイートをブロック</li>
-  <li>証明書拡張の制限</li>
-  <li>不明な証明書をブロック</li>
-  <li>処理リソースがない場合はブロック</li>
-</ul>
-
-<p>「SSLインバウンド検査」は登録されたサーバーの証明書、秘密鍵を使用して外部のクライアントからNetwork Firewallに保護されたサーバーへのインバウンドのSSL/TLS通信を復号化し、以下の条件を検知してアクションを取ることが可能です。</p>
-<ul>
-  <li>サポートされていないSSLバージョンのセッションをブロック</li>
-  <li>サポートされていないSSL暗号スイートのセッションをブロック</li>
-  <li>処理リソースがない場合はブロック</li>
-</ul>
 
 <p><br /></p>
 
@@ -860,7 +456,7 @@ OCIコンソール画面左上のメニューボタン → アイデンティテ
 
 <p>Network Firewallインスタンスは約40分程で作成が完了し、アクティブになります。</p>
 
-<p>Network Firewallの作成中に、Network Firewallインスタンスの詳細画面にIPv4アドレスが表示されるので、IPv4アドレスが割り当てられたらVCNのSecurity Listとルート表を編集します。</p>
+<p>Network Firewallの作成中に、Network Firewallインスタンスの詳細画面にIPv4アドレスが表示されるので、IPv4アドレスが割り当てられたら次の手順にてVCNのSecurity Listとルート表を編集します。</p>
 
 <p><img src="nfw56.png" alt="画面ショット56" /></p>
 
@@ -1056,12 +652,11 @@ VCN詳細画面左下のリソースから「セキュリティ・リスト」�
 
 <p><img src="nfw38.png" alt="画面ショット38" /></p>
 
-<p>以上でネットワーク周りの設定は完了です
-<br /></p>
+<p><br /></p>
 
 <h1 id="6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</h1>
 
-<p>OCI Network Firewallの動作を確認するため、Network Firewallに保護されたPublic Subnetにコンピュート・インスタンスを作成します。
+<p>つづくOCIチュートリアル「<a href="/security/networkfirewall-policycheck">OCI Network Firewallの動作を検証する</a>」にて動作を確認するため、Network Firewallに保護されたPublic Subnetにコンピュート・インスタンスを作成します。<br />
 作成するコンピュート・インスタンスはLinux/Windowsどちらでも構いません。
 手順6-1ではLinuxインスタンスの作成方法、手順6-2ではWindowsインスタンスの作成方法を紹介しています。</p>
 
@@ -1101,92 +696,14 @@ VCN詳細画面左下のリソースから「セキュリティ・リスト」�
 <p><img src="nfw46.png" alt="画面ショット46" />
  <img src="nfw47.png" alt="画面ショット47" /></p>
 
-<p><br /></p>
-
-<h1 id="7-oci-network-firewallの動作確認">7. OCI Network Firewallの動作確認</h1>
-
-<p>最後にNetwork Firewallの動作を確認します。
-手順7-1ではwgetコマンドでの確認方法を紹介します。Linuxインスタンスを作成した場合は手順7-1に従って動作を確認してください。Windowsインスタンスでも、Powershellを使用して同様に動作を確認することができます。
-またWindowsのインスタンスを作成した場合は、手順7-2に従ってブラウザで動作を確認することも可能です。</p>
-
-<h2 id="7-1-wgetコマンドでの確認">7-1. wgetコマンドでの確認</h2>
-<p>手順6-1で作成したコンピュートインスタンスにSSHでアクセスし、OCI Network Firewallの動作を確認します。</p>
-
-<p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → 手順6-1で作成したLinuxのコンピュート・インスタンス名をクリックし、コンピュート・インスタンスのパブリックIPアドレスを確認します。
-OCIのシリアルコンソールやPuttyなどのツールでコンピュート・インスタンスにSSHアクセスします。
-※本チュートリアルではPuttyを使用してSSHアクセスを実施しています。</p>
-
-<p>OCI Network Firewallの設定で、「<em>.google.com」と「</em>.oracle.com」へのアクセスを許可しているので、ターミナルを開き以下コマンドで各ドメインにアクセスできることを確認します。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.oracle.com
-</code></pre></div></div>
-
-<p><img src="nfw40.png" alt="画面ショット40" /></p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.google.com
-</code></pre></div></div>
-
-<p><img src="nfw41.png" alt="画面ショット41" /></p>
-
-<p>OCI Network Firewallの設定で、「www.facebook.com」と「www.yahoo.co.jp」へのアクセスを拒否しているので、以下コマンドで各ドメインへのアクセスに失敗することが確認できます。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.facebook.com
-</code></pre></div></div>
-
-<p><img src="nfw42.png" alt="画面ショット42" /></p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.yahoo.co.jp
-</code></pre></div></div>
-
-<p><img src="nfw43.png" alt="画面ショット43" /></p>
+<p>最後に手順3にて作成したNetwork Firewallインスタンスの作成が完了したことを確かめて、Network Firewallの構築は完了です。</p>
 
 <p><br /></p>
 
-<h2 id="7-2-windowsのブラウザから確認">7-2. Windowsのブラウザから確認</h2>
-<p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → 手順6-2で作成したWindowsのインスタンス名をクリックし、インスタンスの詳細画面を表示します。
-インスタンス詳細画面右上の「インスタンス・アクセス」に記載のある「パブリックIPアドレス」、「ユーザー名」、「初期パスワード」を手元にメモします。</p>
+<hr />
 
-<p><img src="nfw48.png" alt="画面ショット48" /></p>
-
-<p>ローカルPC（Windowsの場合）のアプリ「リモートデスクトップ接続」を開き、手順6-2で作成したWindowsのインスタンスのパブリックIPアドレスを入力し、「接続」ボタンをクリックします。</p>
-
-<p><img src="nfw49.png" alt="画面ショット49" /></p>
-
-<p>「このリモートコンピューターのIDを識別できません。接続しますか？」というメッセージが表示された場合、「はい」を選択して続行します。</p>
-
-<p><img src="nfw50.png" alt="画面ショット50" /></p>
-
-<p>表示されたログイン画面にて、ユーザー名と初期パスワードを入力します。初期パスワードのリセットを促す画面が表示されるので、パスワードをリセットし、Windowsサーバーにログインします。</p>
-
-<p>続いてWindowsのブラウザ「Internet Explorer」を使用するために、ブラウザのセキュリティ機能を無効化します。
-Windowsのホーム画面左下のメニューから「Server Manager」を選択します。</p>
-
-<p><img src="nfw51.png" alt="画面ショット51" /></p>
-
-<p>表示されたServer Manager左側のメニューから「Local Server」を選択し、「IE Enhanced Security Configuration」の”On”の部分をクリックします。</p>
-
-<p><img src="nfw52.png" alt="画面ショット52" /></p>
-
-<p>ポップアップ画面にて、AdministratorsとUsers各設定を”off”にし、「OK」ボタンをクリックします。</p>
-
-<p><img src="nfw53.png" alt="画面ショット53" /></p>
-
-<p>続いて、Windowsでブラウザ「Internet Explorer」を開き、googleのホームページにアクセスできることを確認します。</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://www.google.com
-</code></pre></div></div>
-
-<p><img src="nfw54.png" alt="画面ショット54" /></p>
-
-<p>一方で、yahooのホームページにはアクセスができないことも確認できます。</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://www.yahoo.co.jp
-</code></pre></div></div>
-
-<p><img src="nfw55.png" alt="画面ショット55" /></p>
-
-<p><br /></p>
-
-<p>以上でNetwork Firewallの構築と動作確認は完了です。
-今回設定した内容の他にも、不正トラフィックの侵入を検知/防止したり、SSL/TLSトラフィックの検査など様々なファイアウォール機能を提供しているので、是非色々な設定を試してみてください。</p>
+<p>手順2で作成したネットワーク・ファイアウォール・ポリシーにて、IDS/IPSやURLフィルタリング、SSLインスペクション等の機能が設定できます。<br />
+作成したFirewallの動作を検証するステップとして、サービス・リストとURLリストの動作検証を行うチュートリアル「<a href="/ocitutorials/security/networkfirewall-policycheck">OCI Network Firewallの動作検証を行う</a>」もご用意していますので、是非行ってみてください。</p>
 
         
       </section>
@@ -1213,7 +730,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-24T15:13:13+09:00">September 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-26T08:27:59+09:00">September 26, 2024</time></p>
 
       </footer>
 
@@ -1233,7 +750,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/security/waf-v2-setup/" class="pagination--pager" title="OCI Load Balancerに直接アタッチするタイプのWeb Application Firewallを構成する
+      <a href="/ocitutorials/security/networkfirewall-policycheck/" class="pagination--pager" title="OCI Network Firewallの動作を検証する
 ">前へ</a>
     
     
