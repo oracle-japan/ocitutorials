@@ -37,6 +37,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[Logging Analytics：OCI外部のホストからOSログを収集する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4externalhost/)**
 + **[カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_customparser/)**
 + **[Logging AnalyticsでAutonomous Databaseのログを収集する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_adb_log/)**
++ **[検出ルールを作成してアラート通知を設定する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_detect_rule/)**
 
 ## Database Management
 + **[OCI Base Database ServiceでDatabase Managementを有効化する](https://oracle-japan.github.io/ocitutorials/management/dbcs-database-management/)**
