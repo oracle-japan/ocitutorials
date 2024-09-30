@@ -341,6 +341,12 @@ var store = [{
         "url": "/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/",
         "teaser": "/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/1.png"
       },{
+        "title": "108 : SELECT AI with RAGを試してみよう",
+        "excerpt":"はじめに Autonomous DatabaseのSELECT AIがRAG（Retrieval Augmented Generation）をサポートするようになりました。自然言語でデータベース内のデータを問い合わせることができるSELECT AI機能にRAGを組み合わせることで、大規模言語モデル（LLM）の知識とエンタープライズデータベースの知識との間のギャップを埋めることが可能になります。これにより、より関連性の高い応答や最新の情報を含む応答が得られ、同時にハルシネーションのリスクも軽減されます。 SELECT AIについては111: SELECT AIを試してみようをご参照ください。 本記事では架空の製品データをベクトルストアに格納し、LLMが学習していないデータに関する質問に対してRAG構成でうまく回答できることを確認します。 前提条件 : 101:Always Freeで23aiのADBインスタンスを作成してみようの記事を参考に、Oracle Database 23aiの準備が完了していること。 OCI Generative AI Serviceを使用できること OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。 OCI アカウントのAPI署名キーの生成は完了であること 以下の情報を取得してください。必要があれば、API署名キーの生成方法をご参照ください。 user - キー・ペアが追加されるユーザーのOCID。 fingerprint - 追加されたキーのフィンガープリント。 tenancy - テナンシのOCID。 region - コンソールで現在選択されているリージョン。 key_file - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。 compartment_ocid - 利用するコンパートメントのOCIDを取得してください。 所要時間 : 約90分...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/adb-diagram-third-party-vector-db-select-ai-rag.png"
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(BaseDB)",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから Oracle Database → Oracleベース・データベース・サービス を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった...","categories": [],
         "tags": [],

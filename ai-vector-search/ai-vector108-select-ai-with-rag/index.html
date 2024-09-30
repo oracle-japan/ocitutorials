@@ -1,0 +1,848 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>108 : SELECT AI with RAGを試してみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="データベース内データを自然言語でクエリできるSELECT AIはRAG構成においても使用できます。このチュートリアルでは実際のデータを使って、ADBだけでRAG構成を組むことのできるSELECT AI with RAGを試します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="108 : SELECT AI with RAGを試してみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/">
+
+
+  <meta property="og:description" content="データベース内データを自然言語でクエリできるSELECT AIはRAG構成においても使用できます。このチュートリアルでは実際のデータを使って、ADBだけでRAG構成を組むことのできるSELECT AI with RAGを試します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/adb-diagram-third-party-vector-db-select-ai-rag.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-09-30T16:51:45+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/adb-diagram-third-party-vector-db-select-ai-rag.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          108 : SELECT AI with RAGを試してみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">データベース内データを自然言語でクエリできるSELECT AIはRAG構成においても使用できます。このチュートリアルでは実際のデータを使って、ADBだけでRAG構成を組むことのできるSELECT AI with RAGを試します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/ai-vector-search" itemprop="item"><span itemprop="name">Ai vector search</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">108 : SELECT AI with RAGを試してみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - AI Vector Search</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector103-basics/">103 : Oracle AI Vector Searchの基本操作を試してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/">104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector105-multi-vector-search/">105: マルチベクトル検索で複数のドキュメントを検索してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/">106 : Oracle Database 23aiとLangChainでRAGを構成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/">107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/" class="active">108 : SELECT AI with RAGを試してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="108 : SELECT AI with RAGを試してみよう">
+    <meta itemprop="description" content="データベース内データを自然言語でクエリできるSELECT AIはRAG構成においても使用できます。このチュートリアルでは実際のデータを使って、ADBだけでRAG構成を組むことのできるSELECT AI with RAGを試します。">
+    <meta itemprop="datePublished" content="2024-09-30T16:51:45+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-データの準備">1. データの準備</a></li><li><a href="#2-環境準備">2. 環境準備</a><ul><li><a href="#2-1-ユーザーの作成と権限の付与">2-1. ユーザーの作成と権限の付与</a></li><li><a href="#2-2-sql-developerへの接続">2-2. SQL Developerへの接続</a></li></ul></li><li><a href="#3-select-ai-with-rag使用の準備">3. SELECT AI with RAG使用の準備</a><ul><li><a href="#3-1-oci生成aiサービスのクレデンシャル作成">3-1. OCI生成AIサービスのクレデンシャル作成</a></li><li><a href="#3-2-オブジェクトストレージのクレデンシャル作成">3-2. オブジェクトストレージのクレデンシャル作成</a></li><li><a href="#3-3-プロファイルの作成">3-3. プロファイルの作成</a></li><li><a href="#3-4-ベクトル索引作成">3-4. ベクトル索引作成</a></li><li><a href="#3-5-プロファイルのセット">3-5. プロファイルのセット</a></li></ul></li><li><a href="#4-select-ai-with-ragを試してみる">4. SELECT AI with RAGを試してみる</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Autonomous DatabaseのSELECT AIがRAG（Retrieval Augmented Generation）をサポートするようになりました。自然言語でデータベース内のデータを問い合わせることができるSELECT AI機能にRAGを組み合わせることで、大規模言語モデル（LLM）の知識とエンタープライズデータベースの知識との間のギャップを埋めることが可能になります。これにより、より関連性の高い応答や最新の情報を含む応答が得られ、同時にハルシネーションのリスクも軽減されます。</p>
+
+<p>SELECT AIについては<a href="https://oracle-japan.github.io/ocitutorials/adb/adb111-select-ai/">111: SELECT AIを試してみよう</a>をご参照ください。</p>
+
+<p>本記事では架空の製品データをベクトルストアに格納し、LLMが学習していないデータに関する質問に対してRAG構成でうまく回答できることを確認します。</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p><a href="/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/" target="_blank">101:Always Freeで23aiのADBインスタンスを作成してみよう</a>の記事を参考に、Oracle Database 23aiの準備が完了していること。</p>
+  </li>
+  <li>
+    <p>OCI Generative AI Serviceを使用できること</p>
+    <ul>
+      <li>
+        <p>OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。</p>
+      </li>
+      <li>
+        <p>OCI アカウントのAPI署名キーの生成は完了であること
+<br />以下の情報を取得してください。必要があれば、<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two" target="_blank">API署名キーの生成方法</a>をご参照ください。</p>
+        <ul>
+          <li><code class="language-plaintext highlighter-rouge">user</code> - キー・ペアが追加されるユーザーのOCID。</li>
+          <li><code class="language-plaintext highlighter-rouge">fingerprint</code> - 追加されたキーのフィンガープリント。</li>
+          <li><code class="language-plaintext highlighter-rouge">tenancy</code> - テナンシのOCID。</li>
+          <li><code class="language-plaintext highlighter-rouge">region</code> - コンソールで現在選択されているリージョン。</li>
+          <li><code class="language-plaintext highlighter-rouge">key_file</code> - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。</li>
+          <li><code class="language-plaintext highlighter-rouge">compartment_ocid</code> - 利用するコンパートメントのOCIDを取得してください。</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約90分</p>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-データの準備">1. データの準備</h1>
+<p>先ずはオブジェクト・ストレージを作成し、ベクトルストアに格納するデータを格納します。</p>
+
+<ol>
+  <li>
+    <p>OCIコンソールのホームページから、メニューを開きます。
+<img src="image.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p><strong>ストレージ＞オブジェクト・ストレージとアーカイブ・ストレージ</strong>をクリックします。
+<img src="image-1.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p><strong>バケットの作成</strong>をクリックします。
+<img src="image-10.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>バケット名を入力し（本チュートリアルではselect-ai-with-ragとしています）、<strong>作成</strong>ボタンをクリックします。
+<img src="image-12.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>作成した<strong>select-ai-with-rag</strong>をクリックします。
+<img src="image-13.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p><a href="/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/rocket.txt">こちら</a>から<strong>rocket.txt</strong>というテキストファイルをダウンロードします。右クリックで[名前を付けて保存]をクリックするとダウンロードできます。</p>
+
+    <p>このテキストには、架空の製品であるロケットエンジンOraBoosterの説明文章が格納されています。企業内のデータを想定し、テキストの内容としては、存在しない製品かつ完全な創作文章のため、LLMが学習しているはずのないデータということになります。</p>
+  </li>
+  <li>
+    <p>画面下部のオブジェクトから、テキストファイルをアップロードします。<strong>アップロード</strong>ボタンをクリックします。
+<img src="image-14.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>ダウンロードした<strong>rocket.txt</strong>をドラッグアンドドロップし、<strong>アップロード</strong>をクリックします。
+<img src="image-15.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>アップロードしたrocket.txtの右側にある3つの点をクリックし、<strong>オブジェクト詳細の表示</strong>を選択します。
+<img src="image-16.png" alt="alt text" /></p>
+  </li>
+  <li>
+    <p>作成したオブジェクトストレージのURIをコピーし、メモをしておきます。このURIは後程使用します。（例：https://objectstorage.ap-tokyo-1.oraclecloud.com/n/xxxxxxxxx/b/xxxxxxxxxx/o/）
+<img src="image-17.png" alt="alt text" /></p>
+  </li>
+</ol>
+
+<h1 id="2-環境準備">2. 環境準備</h1>
+<h2 id="2-1-ユーザーの作成と権限の付与">2-1. ユーザーの作成と権限の付与</h2>
+<p>次に、チュートリアルを行うユーザーの作成と権限の付与を行います。</p>
+
+<p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a>の<a href="https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/#3-3-%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%B3">3-3. データベース・ユーザーを作成してみよう（コマンドライン)</a>を参考に、Database ActionsのSQLワークシートからチュートリアルを行うユーザーを作成し、必要なロールを付与します。</p>
+
+<p>以下のSQLを実行します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- vectorというユーザーを作成、必要なロールを付与</span>
+<span class="k">GRANT</span> <span class="n">DWROLE</span><span class="p">,</span> <span class="n">UNLIMITED</span> <span class="n">TABLESPACE</span> <span class="k">TO</span> <span class="n">vector</span> <span class="n">IDENTIFIED</span> <span class="k">BY</span> <span class="n">Welcome12345</span><span class="o">#</span><span class="p">;</span>
+<span class="c1">-- SELECT AI機能の利用に必要なDBMS_CLOUD_AIパッケージの実行権限を付与</span>
+<span class="k">GRANT</span> <span class="k">EXECUTE</span> <span class="k">ON</span> <span class="n">DBMS_CLOUD_AI</span> <span class="k">TO</span> <span class="n">vector</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>これでユーザーの作成と、権限の付与が終わりました。</p>
+
+<h2 id="2-2-sql-developerへの接続">2-2. SQL Developerへの接続</h2>
+
+<p>先程まで使用していたDatabase Actions内のSQLではSELECT AI文を直接実行することをサポートしていないため、<a href="https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/dbms-cloud-ai-package.html#GUID-7B438E87-0E9A-4318-BA01-3BE1A5851229">DBMS_CLOUD_AIパッケージのGENERATEファンクション</a>を使用する必要があります。
+そのため本チュートリアルでは、SQL Developerを使用して、データベースに接続したいと思います。SQL*Plusなどのその他のクライアント・ツールでも大丈夫です。</p>
+
+<p><a href="https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/">104: クレデンシャル・ウォレットを利用して接続してみよう</a>を参考に、作成したADBにSQL Developerから接続します。</p>
+
+<h1 id="3-select-ai-with-rag使用の準備">3. SELECT AI with RAG使用の準備</h1>
+
+<h2 id="3-1-oci生成aiサービスのクレデンシャル作成">3-1. OCI生成AIサービスのクレデンシャル作成</h2>
+<p>DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、OCI生成AIサービスに接続するためのクレデンシャルを作成します。
+以下の通りにOCID等を置き換え、プロシージャを実行します。</p>
+
+<p>OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：</p>
+<ul>
+  <li><strong>credential_name</strong>：任意（本チュートリアルではOCI_GENAI_CREDとしています）</li>
+  <li><strong>user_ocid</strong>：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力</li>
+  <li><strong>tenancy_ocid</strong>：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力</li>
+  <li><strong>private_key</strong>：先程取得した秘密キーの内容をコピー&amp;ペースト</li>
+  <li><strong>fingerprint</strong>：先ほどメモを取った構成ファイルを参照し、フィンガープリントを入力</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_GENAI_CRED'</span><span class="p">,</span>
+        <span class="n">user_ocid</span>       <span class="o">=&gt;</span> <span class="s1">'ocid1.user.oc1..axxxxxxxxxxxxxxxxq'</span><span class="p">,</span>
+        <span class="n">tenancy_ocid</span>    <span class="o">=&gt;</span> <span class="s1">'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa'</span><span class="p">,</span>
+        <span class="n">private_key</span>     <span class="o">=&gt;</span> <span class="s1">'-----BEGIN PRIVATE KEY-----
+        MIIEvAIBADANBgkqhkiGQEFA＜中略＞1D3iheu1ct50SB0aIQz9Ow==
+        -----END PRIVATE KEY-----'</span><span class="p">,</span>
+        <span class="n">fingerprint</span>     <span class="o">=&gt;</span> <span class="s1">'xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx'</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+<p>これでクレデンシャルを作成する事が出来ました。このクレデンシャルは、この後プロファイルを作成する際に繰り返し使用しますので、credential_nameをメモしておきます。</p>
+
+<h2 id="3-2-オブジェクトストレージのクレデンシャル作成">3-2. オブジェクトストレージのクレデンシャル作成</h2>
+<p>DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、オブジェクトストレージに接続するためのクレデンシャルを作成します。
+以下の通りにOCID等を置き換え、プロシージャを実行します。</p>
+
+<p>OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：</p>
+<ul>
+  <li><strong>credential_name</strong>：任意（本チュートリアルではOBS_CREDとしています）</li>
+  <li><strong>user_ocid</strong>：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力</li>
+  <li><strong>tenancy_ocid</strong>：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力</li>
+  <li><strong>private_key</strong>：先程取得した秘密キーの内容をコピー&amp;ペースト</li>
+  <li><strong>fingerprint</strong>：先ほどメモを取った構成ファイルを参照し、フィンガープリントを入力</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+    <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span><span class="p">(</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OBS_CRED'</span><span class="p">,</span>
+        <span class="n">user_ocid</span>       <span class="o">=&gt;</span> <span class="s1">'ocid1.user.oc1..axxxxxxxxxxxxxxxxq'</span><span class="p">,</span>
+        <span class="n">tenancy_ocid</span>    <span class="o">=&gt;</span> <span class="s1">'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa'</span><span class="p">,</span>
+        <span class="n">private_key</span>     <span class="o">=&gt;</span> <span class="s1">'-----BEGIN PRIVATE KEY-----
+        MIIEvAIBADANBgkqhkiGQEFA＜中略＞1D3iheu1ct50SB0aIQz9Ow==
+        -----END PRIVATE KEY-----'</span><span class="p">,</span>
+        <span class="n">fingerprint</span>     <span class="o">=&gt;</span> <span class="s1">'xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx'</span>
+    <span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<h2 id="3-3-プロファイルの作成">3-3. プロファイルの作成</h2>
+<p>DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、プロファイルを作成します。</p>
+
+<ul>
+  <li><strong>プロファイル名</strong>：OCIGENAI_ORACLE（任意）</li>
+  <li><strong>provider</strong>：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）</li>
+  <li><strong>credential_name</strong>：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）</li>
+  <li><strong>vector_index_name</strong>：MY_INDEX（任意）</li>
+  <li><strong>embedding_model</strong>：cohere.embed-multilingual-v3.0（デフォルトだとembedding_modelはcohereのenglishモデルになってしまうので、multilingualを明示的に指定）</li>
+  <li><strong>temperature</strong>：0（任意）</li>
+  <li><strong>comments</strong>：true（任意）</li>
+  <li><strong>oci_apiformat</strong>：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）</li>
+  <li><strong>model</strong>：cohere.command-r-plus（プロバイダーをOCIとし、モデルを指定しない場合は、llama-3が使用されます）</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+  <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">CREATE_PROFILE</span><span class="p">(</span>
+        <span class="n">profile_name</span> <span class="o">=&gt;</span><span class="s1">'OCIGENAI_ORACLE'</span><span class="p">,</span>
+        <span class="n">attributes</span>   <span class="o">=&gt;</span><span class="s1">'{"provider": "oci",
+          "credential_name": "OCI_GENAI_CRED",
+          "vector_index_name": "MY_INDEX",
+          "embedding_model": "cohere.embed-multilingual-v3.0",
+          "temperature": 0,
+          "comments": true,
+          "oci_apiformat": "COHERE",
+          "model": "cohere.command-r-plus"
+        }'</span><span class="p">);</span>
+<span class="k">end</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+<h2 id="3-4-ベクトル索引作成">3-4. ベクトル索引作成</h2>
+<p>DBMS_CLOUD_AI.CREATE_VECTOR_INDEXプロシージャを使用して、ベクトル索引を作成します。</p>
+
+<ul>
+  <li><strong>索引名</strong>：MY_INDEX（プロファイル作成時に指定した索引名）</li>
+  <li><strong>vector_db_provider</strong>：oracle</li>
+  <li><strong>location</strong>：先程作成したオブジェクトストレージのURI</li>
+  <li><strong>object_storage_credential_name</strong>：OBS_CRED（先ほど作成したオブジェクトストレージのクレデンシャル）</li>
+  <li><strong>profile_name</strong>：OCIGENAI_ORACLE（先程作成したプロファイル名）</li>
+  <li><strong>vector_dimension</strong>：1024（Embedding Modelは、Cohere multilingualを使うので、dimensionは1024に設定）</li>
+  <li><strong>vector_distance_metric</strong>：cosine</li>
+  <li><strong>chunk_overlap</strong>：128</li>
+  <li><strong>chunk_size</strong>：400(Embedding Modelは、Cohere multilingualを使うので、chunk_sizeはそのトークン数上限である512以下に設定)</li>
+  <li><strong>refresh_rate</strong>：1（ベクトル索引を更新する間隔。本チュートリアルでは1分毎に索引を更新するように設定します）</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span>
+       <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">CREATE_VECTOR_INDEX</span><span class="p">(</span>
+         <span class="n">index_name</span>  <span class="o">=&gt;</span> <span class="s1">'MY_INDEX'</span><span class="p">,</span>
+         <span class="n">attributes</span>  <span class="o">=&gt;</span> <span class="s1">'{"vector_db_provider": "oracle",
+                          "location": "https://objectstorage.ap-tokyo-1.oraclecloud.com/n/xxxxxxxxx/b/xxxxxxxxxx/o/",
+                          "object_storage_credential_name": "OBS_CRED",
+                          "profile_name": "OCIGENAI_ORACLE",
+                          "vector_dimension": 1024,
+                          "vector_distance_metric": "cosine",
+                          "chunk_overlap":128,
+                          "chunk_size":400,
+                          "refresh_rate":1
+      }'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<h2 id="3-5-プロファイルのセット">3-5. プロファイルのセット</h2>
+
+<p>DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したOCIGENAI_ORACLEを指定します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">EXEC</span> <span class="n">DBMS_CLOUD_AI</span><span class="p">.</span><span class="n">SET_PROFILE</span><span class="p">(</span><span class="s1">'OCIGENAI_ORACLE'</span><span class="p">);</span>
+</code></pre></div></div>
+<p>これで準備が終わりました。</p>
+
+<h1 id="4-select-ai-with-ragを試してみる">4. SELECT AI with RAGを試してみる</h1>
+<p>早速SELECT AI with RAGを試してみたいと思います。</p>
+
+<p>1.　先ずはnarrateオプションを付けて、「OraBoosterとは」と質問してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">AI</span> <span class="n">narrate</span> <span class="n">OraBooster</span><span class="err">とは</span><span class="p">;</span>
+
+
+  <span class="n">RESPONSE</span>
+  <span class="c1">--------------------------------------------------------------------------------</span>
+  <span class="nv">"OraBooster は、当社が開発した革命的なロケットエンジンです。このエンジンは、宇宙探査の未来を形作る先進的な推進技術の象徴となっています。
+
+  OraBooster の核心は、量子ダイナミックス・プラズマ・ブースターです。量子力学の原理を利用してプラズマを生成し、驚異的な速度で加速させます。これにより、従来の化学反応とは比べ物にならないほどの高い推力を実現し、遠方の惑星や星系への探査を可能にします。
+
+  さらに、エンジンの外殻には、ナノファイバー製の超軽量かつ超強度の素材が使用されています。この革新的な素材は、過酷な宇宙空間の環境に耐え、高速飛行時の激しい熱や衝撃からロケットを守ります。
+
+  また、ハイパーフォトン・ジャイロスコープを搭載しているため、ロケットの姿勢を非常に高い精度で制御し、目標物を確実に追跡することができます。これにより、長時間の宇宙飛行中でも安定した飛行を維持し、ミッションの成功を保障します。
+
+  他にも、バイオニック・リアクション・レスポンダー・システムを搭載しており、人工知能と生体認識技術を組み合わせることで、ロケットの異常な振動や動きを検知し、自己修復機能を自動的に活性化します。
+
+  OraBooster は、その革新的な技術と未来志向の設計によって、宇宙探査の新たな可能性を開拓します。優れた性能と信頼性は、人類の夢を支える強力なツールとなるでしょう。
+
+  Sources:
+    - rocket.txt (https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/select-ai-with-rag/o/rocket.txt)"</span>
+</code></pre></div></div>
+
+<p>先程オブジェクトストレージにアップロードしたrocket.txtを基に、回答を生成してくれました。LLMが回答を生成するのに使用したソースも教えてくれます。</p>
+
+<p><br /></p>
+
+<p>2.　次に、chatオプションを付けて「OraBoosterとは」と質問してみます。</p>
+
+<p>chatオプションを付けると、RAGを使用せずに一般的なAIチャット（データベースへの問合せは行わず、LLMから直接レスポンスを生成する）として回答を生成します。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">AI</span> <span class="n">chat</span> <span class="n">OraBooster</span><span class="err">とは</span><span class="p">;</span>
+
+
+  <span class="n">RESPONSE</span>
+  <span class="c1">--------------------------------------------------------------------------------</span>
+  <span class="nv">"OraBooster は、Oracle データベースのパフォーマンスを最適化し、管理を簡素化するために設計された包括的なソフトウェア スイートです。これは、データベース管理者 (DBA) と Oracle ユーザーがデータベースの効率を高め、全体的なパフォーマンスを向上させるのに役立つ一連のツールとモジュールを提供します。
+
+  OraBooster スイートには、通常、次の主要コンポーネントが含まれます。
+
+  1. パフォーマンス最適化: OraBooster は、Oracle データベースのパフォーマンスを分析し、最適化するのに役立ちます。これには、クエリの最適化、索引の管理、リソース使用率の監視、ボトルネックの特定などのタスクが含まれます。パフォーマンス最適化モジュールには、データベースの効率を高めるための推奨事項と洞察を提供する分析ツールが含まれている場合があります。
+
+  2. 自動化とメンテナンス: このスイートは、データベースのメンテナンス タスクの自動化を支援するように設計されています。これには、バックアップと復元、統計の管理、スペース管理、索引の再構築などの定期的なタスクのスケジュール設定と実行が含まれます。自動化モジュールにより、DBA の時間と労力が節約され、これらのタスクが確実に実行されます。
+
+  3. 監視とアラート: OraBooster は、データベース アクティビティをリアルタイムで監視し、重要なパフォーマンス メトリックに関するアラートを提供します。これには、CPU 使用率、メモリ使用量、I/O アクティビティ、待機統計などの監視が含まれます。監視モジュールにより、DBA は潜在的な問題を迅速に特定して解決し、データベースの正常性を維持できます。
+
+  4. 容量計画: このソフトウェアは、データベースの容量計画を支援し、将来の成長とリソース要件を予測するのに役立ちます。これには、データベースのサイズ、トランザクション量、ユーザー数の分析が含まれます。容量計画モジュールにより、組織は Oracle データベース インフラストラクチャを適切にスケーリングして管理できます。
+
+  5. セキュリティとコンプライアンス: OraBooster は、Oracle データベースのセキュリティとコンプライアンスを強化する機能を提供する場合があります。これには、アクセス制御、監査、暗号化、データ マスキングなどのタスクが含まれます。セキュリティ モジュールにより、DBA は機密データを保護し、規制要件を遵守できます。
+
+  6. レポートと分析: OraBooster は、データベースのパフォーマンス、使用状況、トレンドに関する詳細なレポートと分析を提供します。これらのレポートには、データベース管理、リソース割り当ての計画、パフォーマンスの問題の特定に役立つ洞察が含まれている場合があります。"</span>
+</code></pre></div></div>
+
+<p>今回はRAGを使用せずに回答の生成をしたので、ハルシーネーションを起こしてしまっています。RAGがハルシネーションの軽減に大いに役に立っている事が分かりました。</p>
+
+<p>※ハルシネーションが起きるため、SELECT AI chatの結果は、上記の内容と異なる返答になる可能性があります。</p>
+
+<p><br /></p>
+
+<p>3.　次に、ベクター索引の自動更新機能を試してみたいと思います。</p>
+
+<p>新たな製品AetherFlowsのデータをオブジェクト・ストレージに追加する前に、RAGを使用して質問をしてみたいと思います。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">AI</span> <span class="n">narrate</span> <span class="n">AetherFlows</span><span class="err">の電力消費量はどの程度ですか？</span><span class="p">;</span>
+
+
+  <span class="n">RESPONSE</span>
+  <span class="c1">--------------------------------------------------------------------------------</span>
+  <span class="nv">"この質問に関連する情報は見つかりませんでした。
+
+  Sources:
+    - rocket.txt (https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/select-ai-with-rag/o/rocket.txt)"</span>
+</code></pre></div></div>
+
+<p>AetherFlowsという架空の製品についての情報はまだオブジェクトストレージに追加していないため「この質問に関連する情報は見つかりませんでした」という回答が生成されます。</p>
+
+<p><br /></p>
+
+<p>4.　次に、AetherFlowsという架空の製品についての通話ログをオブジェクトストレージに追加します。</p>
+
+<p><a href="/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/sample_calllog.csv">こちら</a>をクリックし、sample_calllogというCSVファイルをダウンロードします。</p>
+
+<p>以下のような通話ログのデータが5件入っています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>通話ID</th>
+      <th>日付</th>
+      <th>時間</th>
+      <th>発信者</th>
+      <th>受信者</th>
+      <th>通話内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2001</td>
+      <td>2024/9/19</td>
+      <td>14:45</td>
+      <td>木村</td>
+      <td>AetherFlows サポート</td>
+      <td><strong>木村:</strong> 「AetherFlowsのフィルター交換頻度を教えてください。」<br /><strong>AetherFlows:</strong> 「フィルターは通常、6〜12ヶ月に一度交換を推奨しています。使用環境や空気の汚染度によって変動するため、システムのLEDインジケーターが交換時期をお知らせします。」<br /><strong>木村:</strong> 「オフィスで使っているのですが、交換頻度が早い気がします。何か原因があるのでしょうか？」<br /><strong>AetherFlows:</strong> 「おそらく空気中の粒子量が多いためです。必要に応じてフィルターの強化版にアップグレードすることも可能です。」</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>rocket.txtファイルをアップロードした時と同じように、作成したオブジェクトストレージにsample_calllog.csvをアップロードします。</p>
+
+<p>ベクトル索引を作成する時に、refresh_rateで索引を自動更新する間隔を設定する事が出来ます。デフォルトは1440（分）で、24時間毎に索引が更新されます。先程ベクトル索引を作成した時に１と指定したので、1分間隔でベクトル索引が自動更新されます。</p>
+
+<p>ベクトル索引が自動更新され、アップロードしたCSVファイルがベクターストアに格納されるまで1分待ちます。</p>
+
+<p><br /></p>
+
+<p>5.　CSVファイルをアップロードしてから1分以上経過したら、ベクトル索引が自動更新されているか確認してみます。</p>
+
+<p>RAGを使用して、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">AI</span> <span class="n">narrate</span> <span class="n">AetherFlows</span><span class="err">の電力消費量はどの程度ですか？</span><span class="p">;</span>
+
+
+  <span class="n">RESPONSE</span>
+  <span class="c1">--------------------------------------------------------------------------------</span>
+  <span class="nv">"AetherFlowsは省エネ設計を採用しており、1日24時間稼働しても電気代はおよそ200円程度です。自動オン/オフ機能を活用することで、電力をさらに節約できます。
+
+  Sources:
+    - sample_calllog.csv (https://objectstorage.ap-tokyo-1.oraclecloud.com/n/orasejapan/b/select-ai-with-rag/o/sample_calllog.csv)"</span>
+</code></pre></div></div>
+
+<p>アップロードしたCSVファイル内の情報を基に回答を生成してくれました。</p>
+
+<p><br /></p>
+
+<p>6.　最後に、RAGを使用しないでLLMが学習済みの情報のみを使って回答を生成してもらいます。</p>
+
+<p>chatオプションを付けて、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">AI</span> <span class="n">chat</span> <span class="n">AetherFlows</span><span class="err">の電力消費量はどの程度ですか？</span><span class="p">;</span>
+
+
+  <span class="n">RESPONSE</span>
+  <span class="c1">--------------------------------------------------------------------------------</span>
+  <span class="nv">"AetherFlows の電力消費量は、使用方法や構成によって異なります。 AetherFlows は、データセンターやクラウド環境で一般的に使用されるサーバーやネットワーク機器と同じ種類のハードウェア上で実行されるソフトウェア フレームワークです。
+
+  AetherFlows の電力消費量は、次の要因によって主に影響されます。
+
+  1. サーバー数: AetherFlows を実行しているサーバーの数が多いほど、電力消費量が増えます。
+
+  2. サーバーの仕様: AetherFlows で使用されるサーバーのハードウェア仕様（CPU、メモリ、ストレージなど）によって電力消費量が異なります。高性能なサーバーは通常、より多くの電力を消費します。
+</span></code></pre></div></div>
+
+<p>LLMが一見それらしい回答を生成してくれましたが、AetherFlowsはソフトウェア フレームワークではないため、ハルシネーションがおきている事が分かります。</p>
+
+<p>※ハルシネーションが起きるため、SELECT AI chatの結果は、上記の内容と異なる返答になる可能性があります。</p>
+
+<p>SELECT AI機能にRAGを組み合わせると、回答を生成するのに使用したソースを教えてくれるだけでなく、ハルシネーションを防ぐこともできました。以上で、<strong>SELECT AI with RAGを試してみよう</strong>は終了です。
+<br /></p>
+
+<p><a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-09-30T16:51:45+09:00">September 30, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=108+%3A+SELECT+AI+with+RAG%E3%82%92%E8%A9%A6%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector108-select-ai-with-rag%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fai-vector-search%2Fai-vector108-select-ai-with-rag%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/" class="pagination--pager" title="107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
