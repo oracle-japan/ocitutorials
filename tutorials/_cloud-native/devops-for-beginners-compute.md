@@ -204,7 +204,7 @@ wget https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejap
 解凍します。
 
 ```sh
-unzip oci-devops-compute.zip
+unzip compute%2Foci-devops-compute.zip
 ```
 
 これでサンプルアプリケーションと関連資材の取得は完了です。  
