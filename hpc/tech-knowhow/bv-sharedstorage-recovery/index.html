@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-10-02T15:43:03+09:00">
+  <meta property="article:published_time" content="2024-10-04T17:04:34+09:00">
 
 
 
@@ -281,7 +281,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでNFSサーバを構築する</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
@@ -380,7 +380,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法">
     <meta itemprop="description" content="ブロック・ボリュームとベアメタルインスタンスを組み合わせたNFSサーバは、HPC/GPUクラスタで必須となるファイル共有ストレージをコストパフォーマンス良く運用するためには最適なソリューションですが、NFSサーバとなるベアメタルインスタンスに障害が発生し起動できなくなった場合、どのようにデータ領域を復旧すればよいでしょうか。本テクニカルTipsは、このシナリオで発生する障害の復旧方法を解説します。">
-    <meta itemprop="datePublished" content="2024-10-02T15:43:03+09:00">
+    <meta itemprop="datePublished" content="2024-10-04T17:04:34+09:00">
     
 
     <div class="page__inner-wrap">
@@ -398,17 +398,18 @@
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>HPC/GPUクラスタで必須となるファイル共有ストレージを <strong>ブロック・ボリューム</strong> NFSサーバで構築・運用する場合、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の <strong>マウント・ターゲット</strong> がHA化され可用性が担保されているのに対し、NFSサーバのベアメタルインスタンスが単一障害点となるため、インスタンスが障害で起動しなくなった場合、NFSサーバのデータ領域にアクセスすることが出来なくなります。<br />
+<p><strong>ブロック・ボリューム</strong> とベア・メタル・インスタンスを使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）は、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> のNFSサーバに相当する <strong>マウント・ターゲット</strong> がHA化され可用性が担保されているのに対し、NFSサーバのベアメタルインスタンスが単一障害点となり、インスタンスが障害で起動しなくなった場合ファイル共有サービスが停止します。<br />
 ただこの場合でも、起動しなくなったベアメタルインスタンスと同一構成の新たなインスタンスをデプロイし、このインスタンスに既存の <strong>ブロック・ボリューム</strong> をアタッチしてファイルシステムとしてマウントすることで、復旧作業時間に相当する数時間程度のサービス停止を経て、障害発生前のデータ領域のままNFSサービスを再開することが可能です。</p>
 
-<p>この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするNFSデータ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、データ領域にアクセスできるようになります。</p>
+<p>この復旧シナリオの前提は、 <strong>ブロック・ボリューム</strong> でサービスするストレージ領域がLinuxの論理ボリュームマネージャで構築されていることです。論理ボリュームマネージャは、物理ボリューム・ボリュームグループ・論理ボリューム等のメタデータをOS上には持たず（キャッシュ情報は除く）に <strong>ブロック・ボリューム</strong> 上に保持するため、論理ボリュームマネージャをサポートするOSが稼働する別のインスタンスにアタッチすることで、ストレージ領域にアクセスできるようになります。</p>
 
-<p>また本復旧シナリオは、障害時に既存の代替となるNFSサーバインスタンスをデプロイする際、 <strong>ブロック・ボリューム</strong> NFSサーバ構築直後に取得するNFSサーバインスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を活用し、復旧に要する時間を短縮するよう配慮します。</p>
+<p>また本復旧シナリオは、障害時に既存の代替となるNFSサーバインスタンスをデプロイする際、ブロック・ボリュームNFSサーバの構築直後に取得するNFSサーバ用インスタンスの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を活用し、復旧に要する時間が最小となるよう配慮します。</p>
 
-<p>次に、 <strong>ブロック・ボリューム</strong> に障害が発生してデータ領域にアクセスできなくなる障害シナリオには、どのように対処すれはよいでしょうか。<br />
-<strong>ブロック・ボリューム</strong> は、同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持つため、NFSサーバインスタンスと比較して桁違いに高い可用性を提供します。このため本テクニカルTipsは、NFSサーバインスタンス障害に対する復旧シナリオにフォーカスし、これを解説します。</p>
+<p>次に、 <strong>ブロック・ボリューム</strong> に障害が発生してストレージ領域にアクセスできなくなる障害シナリオには、どのように対処すれはよいでしょうか。<br />
+<strong>ブロック・ボリューム</strong> は、同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持ち、NFSサーバのベア・メタル・インスタンスと比較して桁違いに高い可用性を提供します。<br />
+このため本テクニカルTipsは、NFSサーバに使用するベア・メタル・インスタンス障害の復旧シナリオにフォーカスし、これを解説します。</p>
 
-<p>本復旧シナリオは、NFSサーバインスタンスのOSに <strong>Oracle Linux</strong> 、データ領域の管理にLinuxの論理ボリュームマネージャを使用し、以下のように構成されていることを前提とします。</p>
+<p>本復旧シナリオは、NFSサーバのOSに <strong>Oracle Linux</strong> 、ストレージ領域の管理にLinuxの論理ボリュームマネージャを使用し、以下のように構成されていることを前提とします。</p>
 
 <p><img src="lv_configuration.png" alt="NFSサーバデータ領域構成図" /></p>
 
@@ -817,7 +818,7 @@ This is a <span class="nb">test </span>file.
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-02T15:43:03+09:00">October 2, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-04T17:04:34+09:00">October 4, 2024</time></p>
 
       </footer>
 
