@@ -46,7 +46,7 @@ header:
 2. **Intel MPI Benchmarks** インストール
 3. **Intel MPI Benchmarks** 実行
 
-## 1-1. **OpenMPI** インストール  
+## 1-1. OpenMPIインストール  
 
 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
