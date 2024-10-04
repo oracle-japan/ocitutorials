@@ -334,6 +334,8 @@ header:
 ***
 # 6. プロファイリング手法データの取得
 
+## 6-0. 概要
+
 本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるプロファイリングを実施します。  
 ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。
 
@@ -346,187 +348,189 @@ header:
 5. フィルタを適用してプロファイリングを実施した場合の実行時間を計測
 6. 先の実行時間の隔たりが解消したことを確認
 
+## 6-1. プロファイリング手法データの取得手順
+
 本手順は、計算ノードのうちの1ノードで実施します。
 
-1. 以下コマンドをopcユーザで実行し、プロファイリングを実施しない **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wo_scorep**）とプロファイリングを実施する **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wi_scorep**）を作成します。
+以下コマンドをopcユーザで実行し、プロファイリングを実施しない **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wo_scorep**）とプロファイリングを実施する **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wi_scorep**）を作成します。
 
-    ```sh
-    $ cd ~; wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2-MZ.tar.gz
-    $ tar -xvf ./NPB3.4.2-MZ.tar.gz
-    $ cd NPB3.4.2-MZ/NPB3.4-MZ-MPI
-    $ cp config/make.def.template config/make.def
-    $ make bt-mz CLASS=D
-    $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wo_scorep
-    $ sed -i 's/^FC =/FC = scorep/g' config/make.def
-    $ diff config/make.def.template config/make.def
-    32c32
-    < FC = mpif90
-    ---
-    > FC = scorep mpif90
-    $ make clean
-    $ make bt-mz CLASS=D
-    $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wi_scorep
-    ```
+```sh
+$ cd ~; wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2-MZ.tar.gz
+$ tar -xvf ./NPB3.4.2-MZ.tar.gz
+$ cd NPB3.4.2-MZ/NPB3.4-MZ-MPI
+$ cp config/make.def.template config/make.def
+$ make bt-mz CLASS=D
+$ mv bin/bt-mz.D.x bin/bt-mz.D.x_wo_scorep
+$ sed -i 's/^FC = mpif90/FC = scorep-mpif90/g' config/make.def
+$ diff config/make.def.template config/make.def
+32c32
+< FC = mpif90
+---
+> FC = scorep-mpif90
+$ make clean
+$ make bt-mz CLASS=D
+$ mv bin/bt-mz.D.x bin/bt-mz.D.x_wi_scorep
+```
 
-2. 以下コマンドをopcユーザで実行し、プロファイリングを実施しない場合の実行時間を計測します。
+次に、以下コマンドをopcユーザで実行し、プロファイリングを実施しない場合の実行時間を計測します。
 
-    ```sh
-    $ OMP_NUM_THREADS=2 mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 -bind-to none ./bin/bt-mz.D.x_wo_scorep | grep "Time in seconds"
-    Time in seconds =                   168.84
-    $
-    ```
+```sh
+$ OMP_NUM_THREADS=2 mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 -bind-to none ./bin/bt-mz.D.x_wo_scorep | grep "Time in seconds"
+Time in seconds =                   168.84
+$
+```
 
-3. 以下コマンドをopcユーザで実行し、プロファイリングを実施した場合の実行時間を計測します。  
+次に、以下コマンドをopcユーザで実行し、プロファイリングを実施した場合の実行時間を計測します。  
 この実行により、カレントディレクトリにディレクトリ **scorep_bt-mz_18p36x2_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
-    ```sh
-    $ OMP_NUM_THREADS=2 scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
-     Time in seconds =                   332.30
-    $
-    ```
+```sh
+$ OMP_NUM_THREADS=2 scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+    Time in seconds =                   332.30
+$
+```
 
-4. 両者の差に2倍近い隔たりがあるため、以下のコマンドをopcユーザで実行し、プロファイリングのオーバーヘッドの原因を調査します。
+次に、両者の差に2倍近い隔たりがあるため、以下のコマンドをopcユーザで実行し、プロファイリングのオーバーヘッドの原因を調査します。
 
-    ```sh
-    $ scalasca -examine -s scorep_bt-mz_18p36x2_sum
-    INFO: Post-processing runtime summarization report (profile.cubex)...
-    /opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
-    INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
-    $ head -n 35 scorep_bt-mz_18p36x2_sum/scorep.score
+```sh
+$ scalasca -examine -s scorep_bt-mz_18p36x2_sum
+INFO: Post-processing runtime summarization report (profile.cubex)...
+/opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
+INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
+$ head -n 35 scorep_bt-mz_18p36x2_sum/scorep.score
 
-    Estimated aggregate size of event trace:                   3329GB
-    Estimated requirements for largest trace buffer (max_buf): 94GB
-    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       94GB
-    (warning: The memory requirements cannot be satisfied by Score-P to avoid
-    intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the
-    maximum supported memory or reduce requirements using USR regions filters.)
+Estimated aggregate size of event trace:                   3329GB
+Estimated requirements for largest trace buffer (max_buf): 94GB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       94GB
+(warning: The memory requirements cannot be satisfied by Score-P to avoid
+intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the
+maximum supported memory or reduce requirements using USR regions filters.)
 
-    flt     type     max_buf[B]          visits  time[s] time[%] time/visit[us]  region
-            ALL 99,883,282,963 137,448,437,951 23498.25   100.0           0.17  ALL
-            USR 99,849,533,524 137,419,676,377 11594.16    49.3           0.08  USR
-            OMP     29,449,094      24,287,232 11474.83    48.8         472.46  OMP
-            COM      2,660,710       3,613,660    10.59     0.0           2.93  COM
-            MPI      1,793,206         860,646   418.66     1.8         486.45  MPI
-        SCOREP             41              36     0.00     0.0          18.57  SCOREP
+flt     type     max_buf[B]          visits  time[s] time[%] time/visit[us]  region
+        ALL 99,883,282,963 137,448,437,951 23498.25   100.0           0.17  ALL
+        USR 99,849,533,524 137,419,676,377 11594.16    49.3           0.08  USR
+        OMP     29,449,094      24,287,232 11474.83    48.8         472.46  OMP
+        COM      2,660,710       3,613,660    10.59     0.0           2.93  COM
+        MPI      1,793,206         860,646   418.66     1.8         486.45  MPI
+    SCOREP             41              36     0.00     0.0          18.57  SCOREP
 
-            USR 32,473,108,434  44,677,967,872  5741.65    24.4           0.13  binvcrhs
-            USR 32,473,108,434  44,677,967,872  3579.29    15.2           0.08  matmul_sub
-            USR 32,473,108,434  44,677,967,872  2016.34     8.6           0.05  matvec_sub
-            USR    858,664,976   1,152,495,616   134.84     0.6           0.12  lhsinit
-            USR    858,664,976   1,152,495,616    76.55     0.3           0.07  binvrhs
-            USR    783,427,736   1,080,078,336    45.42     0.2           0.04  exact_solution
-            OMP      2,533,092       1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:206
-            OMP      2,533,092       1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:217
-            OMP      2,533,092       1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:245
-            OMP      2,533,092       1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:256
-            OMP      1,271,592         516,096     0.77     0.0           1.50  !$omp parallel @rhs.f90:29
-            OMP      1,266,546         514,048     0.13     0.0           0.25  !$omp parallel @add.f90:23
-            OMP      1,266,546         514,048     0.29     0.0           0.56  !$omp parallel @z_solve.f90:44
-            OMP      1,266,546         514,048     0.28     0.0           0.54  !$omp parallel @y_solve.f90:44
-            OMP      1,266,546         514,048     0.24     0.0           0.47  !$omp parallel @x_solve.f90:47
-            MPI        781,865         286,642     0.41     0.0           1.43  MPI_Irecv
-            MPI        781,865         286,642     0.86     0.0           3.02  MPI_Isend
-            COM        757,016       1,028,096     2.13     0.0           2.07  copy_x_face
-            COM        757,016       1,028,096     1.95     0.0           1.90  copy_y_face
-    $
-    ```
+        USR 32,473,108,434  44,677,967,872  5741.65    24.4           0.13  binvcrhs
+        USR 32,473,108,434  44,677,967,872  3579.29    15.2           0.08  matmul_sub
+        USR 32,473,108,434  44,677,967,872  2016.34     8.6           0.05  matvec_sub
+        USR    858,664,976   1,152,495,616   134.84     0.6           0.12  lhsinit
+        USR    858,664,976   1,152,495,616    76.55     0.3           0.07  binvrhs
+        USR    783,427,736   1,080,078,336    45.42     0.2           0.04  exact_solution
+        OMP      2,533,092       1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:206
+        OMP      2,533,092       1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:217
+        OMP      2,533,092       1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:245
+        OMP      2,533,092       1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:256
+        OMP      1,271,592         516,096     0.77     0.0           1.50  !$omp parallel @rhs.f90:29
+        OMP      1,266,546         514,048     0.13     0.0           0.25  !$omp parallel @add.f90:23
+        OMP      1,266,546         514,048     0.29     0.0           0.56  !$omp parallel @z_solve.f90:44
+        OMP      1,266,546         514,048     0.28     0.0           0.54  !$omp parallel @y_solve.f90:44
+        OMP      1,266,546         514,048     0.24     0.0           0.47  !$omp parallel @x_solve.f90:47
+        MPI        781,865         286,642     0.41     0.0           1.43  MPI_Irecv
+        MPI        781,865         286,642     0.86     0.0           3.02  MPI_Isend
+        COM        757,016       1,028,096     2.13     0.0           2.07  copy_x_face
+        COM        757,016       1,028,096     1.95     0.0           1.90  copy_y_face
+$
+```
 
-    この出力から、呼び出された回数を示す **visits** 列の値が大きい **region** 列を特定し、これに従いプロファイリング対象からこれらの **region** を除外する以下のフィルタを作成します。
+この出力から、呼び出された回数を示す **visits** 列の値が大きい **region** 列を特定し、これに従いプロファイリング対象からこれらの **region** を除外する以下のフィルタを作成します。
 
-    ```sh
-    $ cat ./scorep.filt
-    SCOREP_REGION_NAMES_BEGIN
-        EXCLUDE
-            binvcrhs
-            matmul_sub
-            matvec_sub
-            lhsinit
-            binvrhs
-            exact_solution
-    SCOREP_REGION_NAMES_END
-    $
-    ```
+```sh
+$ cat ./scorep.filt
+SCOREP_REGION_NAMES_BEGIN
+    EXCLUDE
+        binvcrhs
+        matmul_sub
+        matvec_sub
+        lhsinit
+        binvrhs
+        exact_solution
+SCOREP_REGION_NAMES_END
+$
+```
 
-5. 以下コマンドをopcユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更し、フィルタを適用してプロファイリングを実施した場合の実行時間を計測します。
+次に、以下コマンドをopcユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更し、フィルタを適用してプロファイリングを実施した場合の実行時間を計測します。
 
-    ```sh
-    $ mv scorep_bt-mz_18p36x2_sum prof_wof_wopapi
-    $ OMP_NUM_THREADS=2 scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
-    Time in seconds =                   174.12
-    $
-    ```
+```sh
+$ mv scorep_bt-mz_18p36x2_sum prof_wof_wopapi
+$ OMP_NUM_THREADS=2 scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+Time in seconds =                   174.12
+$
+```
 
-6. **手順 2.** と **手順 5.** の結果から、両者の差の隔たりが解消したことを確認します。  
+次に、 **手順 2.** と **手順 5.** の結果から、両者の差の隔たりが解消したことを確認します。  
 また以下コマンドをopcユーザで実行し、フィルタの適用により除外した **region** が表示されないことを確認します。
 
-    ```sh
-    $ scalasca -examine -s scorep_bt-mz_18p36x2_sum
-    INFO: Post-processing runtime summarization report (profile.cubex)...
-    /opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
-    INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
-    $ head -n 35 scorep_bt-mz_18p36x2_sum/scorep.score
+```sh
+$ scalasca -examine -s scorep_bt-mz_18p36x2_sum
+INFO: Post-processing runtime summarization report (profile.cubex)...
+/opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
+INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
+$ head -n 35 scorep_bt-mz_18p36x2_sum/scorep.score
 
-    Estimated aggregate size of event trace:                   1155MB
-    Estimated requirements for largest trace buffer (max_buf): 33MB
-    Estimated memory requirements (SCOREP_TOTAL_MEMORY):       37MB
-    (hint: When tracing set SCOREP_TOTAL_MEMORY=37MB to avoid intermediate flushes
-    or reduce requirements using USR regions filters.)
+Estimated aggregate size of event trace:                   1155MB
+Estimated requirements for largest trace buffer (max_buf): 33MB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       37MB
+(hint: When tracing set SCOREP_TOTAL_MEMORY=37MB to avoid intermediate flushes
+or reduce requirements using USR regions filters.)
 
-    flt     type max_buf[B]     visits  time[s] time[%] time/visit[us]  region
-            ALL 34,411,039 29,464,767 12277.49   100.0         416.68  ALL
-            OMP 29,449,094 24,287,232 11911.62    97.0         490.45  OMP
-            COM  2,660,710  3,613,660    11.54     0.1           3.19  COM
-            MPI  1,793,206    860,646   354.25     2.9         411.61  MPI
-            USR    507,988    703,193     0.08     0.0           0.12  USR
-        SCOREP         41         36     0.00     0.0          16.30  SCOREP
+flt     type max_buf[B]     visits  time[s] time[%] time/visit[us]  region
+        ALL 34,411,039 29,464,767 12277.49   100.0         416.68  ALL
+        OMP 29,449,094 24,287,232 11911.62    97.0         490.45  OMP
+        COM  2,660,710  3,613,660    11.54     0.1           3.19  COM
+        MPI  1,793,206    860,646   354.25     2.9         411.61  MPI
+        USR    507,988    703,193     0.08     0.0           0.12  USR
+    SCOREP         41         36     0.00     0.0          16.30  SCOREP
 
-            OMP  2,533,092  1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:206
-            OMP  2,533,092  1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:217
-            OMP  2,533,092  1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:245
-            OMP  2,533,092  1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:256
-            OMP  1,271,592    516,096     0.80     0.0           1.55  !$omp parallel @rhs.f90:29
-            OMP  1,266,546    514,048     0.14     0.0           0.27  !$omp parallel @add.f90:23
-            OMP  1,266,546    514,048     0.37     0.0           0.71  !$omp parallel @z_solve.f90:44
-            OMP  1,266,546    514,048     0.34     0.0           0.65  !$omp parallel @y_solve.f90:44
-            OMP  1,266,546    514,048     0.33     0.0           0.64  !$omp parallel @x_solve.f90:47
-            MPI    781,865    286,642     0.40     0.0           1.38  MPI_Irecv
-            MPI    781,865    286,642     0.85     0.0           2.95  MPI_Isend
-            COM    757,016  1,028,096     2.48     0.0           2.41  copy_x_face
-            COM    757,016  1,028,096     2.25     0.0           2.19  copy_y_face
-            OMP    757,016  1,028,096    11.87     0.1          11.54  !$omp do @exch_qbc.f90:206
-            OMP    757,016  1,028,096     1.47     0.0           1.43  !$omp implicit barrier @exch_qbc.f90:215
-            OMP    757,016  1,028,096     8.59     0.1           8.36  !$omp do @exch_qbc.f90:217
-            OMP    757,016  1,028,096     0.94     0.0           0.91  !$omp implicit barrier @exch_qbc.f90:226
-            OMP    757,016  1,028,096    18.48     0.2          17.98  !$omp do @exch_qbc.f90:245
-            OMP    757,016  1,028,096     2.36     0.0           2.30  !$omp implicit barrier @exch_qbc.f90:254
-            OMP    757,016  1,028,096    11.81     0.1          11.49  !$omp do @exch_qbc.f90:256
-    $
-    ```
+        OMP  2,533,092  1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:206
+        OMP  2,533,092  1,028,096     0.10     0.0           0.10  !$omp parallel @exch_qbc.f90:217
+        OMP  2,533,092  1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:245
+        OMP  2,533,092  1,028,096     0.11     0.0           0.10  !$omp parallel @exch_qbc.f90:256
+        OMP  1,271,592    516,096     0.80     0.0           1.55  !$omp parallel @rhs.f90:29
+        OMP  1,266,546    514,048     0.14     0.0           0.27  !$omp parallel @add.f90:23
+        OMP  1,266,546    514,048     0.37     0.0           0.71  !$omp parallel @z_solve.f90:44
+        OMP  1,266,546    514,048     0.34     0.0           0.65  !$omp parallel @y_solve.f90:44
+        OMP  1,266,546    514,048     0.33     0.0           0.64  !$omp parallel @x_solve.f90:47
+        MPI    781,865    286,642     0.40     0.0           1.38  MPI_Irecv
+        MPI    781,865    286,642     0.85     0.0           2.95  MPI_Isend
+        COM    757,016  1,028,096     2.48     0.0           2.41  copy_x_face
+        COM    757,016  1,028,096     2.25     0.0           2.19  copy_y_face
+        OMP    757,016  1,028,096    11.87     0.1          11.54  !$omp do @exch_qbc.f90:206
+        OMP    757,016  1,028,096     1.47     0.0           1.43  !$omp implicit barrier @exch_qbc.f90:215
+        OMP    757,016  1,028,096     8.59     0.1           8.36  !$omp do @exch_qbc.f90:217
+        OMP    757,016  1,028,096     0.94     0.0           0.91  !$omp implicit barrier @exch_qbc.f90:226
+        OMP    757,016  1,028,096    18.48     0.2          17.98  !$omp do @exch_qbc.f90:245
+        OMP    757,016  1,028,096     2.36     0.0           2.30  !$omp implicit barrier @exch_qbc.f90:254
+        OMP    757,016  1,028,096    11.81     0.1          11.49  !$omp do @exch_qbc.f90:256
+$
+```
 
-7. 以下コマンドをopcユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更し、フィルタを適用して **PAPI** の浮動小数点演算数を含むプロファイリングを実施した場合の実行時間を計測、この実行時間がプロファイリングを実施しない場合と大差ないことを確認します。
+次に、以下コマンドをopcユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更し、フィルタを適用して **PAPI** の浮動小数点演算数を含むプロファイリングを実施した場合の実行時間を計測、この実行時間がプロファイリングを実施しない場合と大差ないことを確認します。
 
-    ```sh
-    $ mv scorep_bt-mz_18p36x2_sum prof_wif_wopapi
-    $ OMP_NUM_THREADS=2 SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
-     Time in seconds =                   172.89
-    $
-    ```
+```sh
+$ mv scorep_bt-mz_18p36x2_sum prof_wif_wopapi
+$ OMP_NUM_THREADS=2 SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+    Time in seconds =                   172.89
+$
+```
 
-8. 以下コマンドをopcユーザで実行し、 **PAPI** の浮動小数点演算数を含むサマリのプロファイリングを実施、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
+次に、以下コマンドをopcユーザで実行し、 **PAPI** の浮動小数点演算数を含むサマリのプロファイリングを実施、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
 
-    ```sh
-    $ scalasca -examine -s scorep_bt-mz_18p36x2_sum
-    INFO: Post-processing runtime summarization report (profile.cubex)...
-    /opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
-    INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
-    $ mv scorep_bt-mz_18p36x2_sum prof_wif_wipapi
-    ```
+```sh
+$ scalasca -examine -s scorep_bt-mz_18p36x2_sum
+INFO: Post-processing runtime summarization report (profile.cubex)...
+/opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36x2_sum/profile.cubex > ./scorep_bt-mz_18p36x2_sum/scorep.score
+INFO: Score report written to ./scorep_bt-mz_18p36x2_sum/scorep.score
+$ mv scorep_bt-mz_18p36x2_sum prof_wif_wipapi
+```
 
-    以上の手順を経て、十分精度の期待できるプロファイリング手法を用いたプロファイリングのデータを計算ノードのカレントディレクトリの以下ディレクトリに取得することが出来ました。  
-    なおこれらのディレクトリは、後にこれらのデータを **CubeGUI** で確認するため、Bastionノードにコピーします。
+以上の手順を経て、十分精度の期待できるプロファイリング手法を用いたプロファイリングのデータを計算ノードのカレントディレクトリの以下ディレクトリに取得することが出来ました。  
+なおこれらのディレクトリは、後にこれらのデータを **CubeGUI** で確認するため、Bastionノードにコピーします。
 
-    -  **prof_wif_wopapi** ：浮動小数点演算数を含まない
-    -  **prof_wif_wipapi** ：浮動小数点演算数を含む
+-  **prof_wif_wopapi** ：浮動小数点演算数を含まない
+-  **prof_wif_wipapi** ：浮動小数点演算数を含む
 
 ***
 # 7. 浮動小数点演算数を含まないプロファイリング手法データの確認

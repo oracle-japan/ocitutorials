@@ -46,8 +46,8 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 - 管理対象ノードに並列にコマンドを実行
 - 管理対象ノードからのコマンド出力が同一だった場合これをグルーピングして出力（ユーティリティーツール **dshbak** の機能）
 - 管理対象ノードをグループ分けしグループ名で指定
-- 管理対象ノードに並列にファイルを転送（ユーティリティーツール **pdcp** の機能）
-- 管理対象ノードから並列にファイルをクラスタ管理ノードに転送（ユーティリティーツール **rpdcp** の機能）
+- クラスタ管理ノードから管理対象ノードに並列にファイルを転送（ユーティリティーツール **pdcp** の機能）
+- 管理対象ノードからクラスタ管理ノードに並列にファイルを転送（ユーティリティーツール **rpdcp** の機能）
 
 **pdsh** は、クラスタ管理ノードから管理対象ノードに対してSSHでコマンドを発行するため、パスフレーズ無しでSSHコマンドを実行できるよう事前にセットアップする必要があります。また管理オペレーションは、通常管理者権限を必要とするため、このパスフレーズ無しで実行するSSHコマンドは、管理者権限を持つユーザから実行するか、sudoコマンドでパスワードを入力することなく管理者に昇格できるユーザから実行する必要があります。  
 本テクニカルTipsでは、クラスタ管理ノードと管理対象ノードのOSに **Oracle Linux** を使用し、クラスタ管理ノードから管理対象ノードにopcユーザ（sudoで管理者権限昇格が可能なユーザ）でパスフレーズ無しでSSHコマンドを実行できる環境を前提としています。  
@@ -60,7 +60,7 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 
 本章は、 **pdsh** をインストール・セットアップします。
 
-**pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+**pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来ますが、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 inst-f5fra-x9-ol8
@@ -77,22 +77,6 @@ $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
 $ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
 ```
 
-なお、上記コマンド実行時に以下のメッセージが出力される場合、
-
-```sh
-This system is receiving updates from OSMS server.
-Error: No matching repo to modify: ol8_developer_EPEL.
-```
-
-OSのパッケージ管理が **[OS管理サービス](https://docs.oracle.com/ja-jp/iaas/os-management/index.html)** で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。  
-ここで実施する **OS管理サービス** の解除は、10分程度の時間が経過すると自動的に **OS管理サービス** 管理に戻ります。
-
-```sh
-$ sudo osms unregister
-$ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-```
-
 次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
@@ -101,20 +85,20 @@ $ sudo yum install -y pdsh pdsh-mod-dshgroup
 $ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
 ```
 
-次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、管理対象ノードのSSHホストキーをクラスタ管理ノードのopcユーザのSSH **known_hosts** ファイルに登録します。  
-このステップは、後の **pdsh** の実行のために必要です。
-
-```sh
-$ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
-```
-
-次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。
+次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。  
+なお以下では、環境変数 **PDSH_SSH_ARGS_APPEND** を使用してSSHのオプション **StrictHostKeyChecking** を **accept-new** に設定しており、これにより管理対象ノードがSSHのホストキー登録ファイル（**known_hosts**）に存在しない場合自動的にこれを登録するため、 **pdsh** の初回実行時のみ以下の最初の4行のようにその旨メッセージが出力されます。
 
 ```sh
 $ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
 export PDSH_RCMD_TYPE=ssh
+$ echo "export PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=accept-new\"" | tee -a ~/.bash_profile
+export PDSH_SSH_ARGS_APPEND="-o StrictHostKeyChecking=accept-new"
 $ source ~/.bash_profile
 $ pdsh -w ^/home/opc/hostlist.txt date
+inst-f5fra-x9-ol8: Warning: Permanently added 'inst-f5fra-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
+inst-dixqy-x9-ol8: Warning: Permanently added 'inst-dixqy-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
+inst-3ktpe-x9-ol8: Warning: Permanently added 'inst-3ktpe-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
+inst-6pvpq-x9-ol8: Warning: Permanently added 'inst-6pvpq-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
 inst-f5fra-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-dixqy-x9-ol8: Fri Jul 28 16:04:47 JST 2023
 inst-3ktpe-x9-ol8: Fri Jul 28 16:04:47 JST 2023
@@ -177,109 +161,111 @@ $ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle 
 ***
 # 2. pdsh使用時の留意点
 
-本章は、 **pdsh** を使用する際に留意する点を記載します。
+## 2-1. 複数のコマンドを纏めて一度の **pdsh** で実行する場合
 
-- 複数のコマンドを纏めて一度の **pdsh** で実行する場合  
-  管理対象ノードに対して複数のコマンドを一度の **pdsh** で実行する場合、これらのコマンド群を以下のように **'** （シングルクォート）で囲みます。
+管理対象ノードに対して複数のコマンドを一度の **pdsh** で実行する場合、これらのコマンド群を以下のように **'** （シングルクォート）で囲みます。
 
-  ```sh
-  $ pdsh -g all 'date; hostname'
-  inst-f5fra-x9-ol8: Fri Jul 28 16:56:45 JST 2023
-  inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-  inst-3ktpe-x9-ol8: Fri Jul 28 16:56:45 JST 2023
-  inst-6pvpq-x9-ol8: Fri Jul 28 16:56:45 JST 2023
-  inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
-  inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
-  inst-dixqy-x9-ol8: Fri Jul 28 16:56:45 JST 2023
-  inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
-  ```
+```sh
+$ pdsh -g all 'date; hostname'
+inst-f5fra-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-6pvpq-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8: Fri Jul 28 16:56:45 JST 2023
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+```
 
-- 管理対象ノードからのコマンド出力順序  
-  **pdsh** は、管理対象ノードに対して並列にコマンドを発行しますが、これらのコマンド出力が表示される順序は、クラスタ管理ノードに到着した順になります。  
-  このため、コマンド出力が複数行に亘る場合、異なる管理対象ノードの出力が以下のように入り乱れる状況が発生します。
+## 2-2. 管理対象ノードからのコマンド出力順序  
 
-  ```sh
-  $ pdsh -g all 'hostname; sleep 1; hostname'
-  inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
-  inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-  inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
-  inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
-  inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-  inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
-  inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
-  inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
-  ```
+**pdsh** は、管理対象ノードに対して並列にコマンドを発行しますが、これらのコマンド出力が表示される順序は、クラスタ管理ノードに到着した順になります。
 
-  このような状況が問題となる場合、 **pdsh** の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に管理対象ノードにコマンドを発行することが出来ます。  
-  これは、 **pdsh** の並列実行数を制御するオプション **-f** に **1** を指定し、以下のように実行します。  
-  なおデフォルトの並列実行数は、 **32** です。
+このため、コマンド出力が複数行に亘る場合、異なる管理対象ノードの出力が以下のように入り乱れる状況が発生します。
 
-  ```sh
-  $ pdsh -g all -f 1 'hostname; sleep 1; hostname'
-  inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-  inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-  inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
-  inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
-  inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
-  inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
-  inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
-  inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
-  ```
+```sh
+$ pdsh -g all 'hostname; sleep 1; hostname'
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+```
 
-- 管理対象ノードがレスポンスしない場合  
-  管理対象ノードが障害等でSSHのコマンド要求に応じられない場合は、当然 **pdsh** の実行も問題の管理対象ノードのところで停止します。  
-  この場合、通常のコマンド同様 **Ctrl-C** を使用して **pdsh** の実行を停止させることが出来ますが、これには1秒以内の間隔で二度連続して **Ctrl-C** を入力します。  
-  一度だけ **Ctrl-C** を入力した場合は、その時点で反応が無くレスポンスを待っていた管理対象ノードのホスト名を表示し、コマンドの実行を継続します。  
+このような状況が問題となる場合、 **pdsh** の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に管理対象ノードにコマンドを発行することが出来ます。  
+これは、 **pdsh** の並列実行数を制御するオプション **-f** に **1** を指定し、以下のように実行します。  
+なおデフォルトの並列実行数は、 **32** です。
 
-  [一度だけ **Ctrl-C** を入力した場合]
+```sh
+$ pdsh -g all -f 1 'hostname; sleep 1; hostname'
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+```
+
+## 2-3. 管理対象ノードがレスポンスしない場合
+
+管理対象ノードが障害等でSSHのコマンド要求に応じられない場合は、当然 **pdsh** の実行も問題の管理対象ノードのところで停止します。  
+この場合、通常のコマンド同様 **Ctrl-C** を使用して **pdsh** の実行を停止させることが出来ますが、これには1秒以内の間隔で二度連続して **Ctrl-C** を入力します。  
+一度だけ **Ctrl-C** を入力した場合は、その時点で反応が無くレスポンスを待っていた管理対象ノードのホスト名を表示し、コマンドの実行を継続します。  
+
+[一度だけ **Ctrl-C** を入力した場合]
   
-  ```sh
-  $ pdsh -g all sleep 60
-  ^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
-  pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
-  pdsh@bastion: inst-f5fra-x9-ol8: command in progress
-  pdsh@bastion: inst-3ktpe-x9-ol8: command in progress
-  pdsh@bastion: inst-6pvpq-x9-ol8: command in progress
-  pdsh@bastion: inst-dixqy-x9-ol8: command in progress
-  ```
+```sh
+$ pdsh -g all sleep 60
+^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
+pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
+pdsh@bastion: inst-f5fra-x9-ol8: command in progress
+pdsh@bastion: inst-3ktpe-x9-ol8: command in progress
+pdsh@bastion: inst-6pvpq-x9-ol8: command in progress
+pdsh@bastion: inst-dixqy-x9-ol8: command in progress
+```
 
-  [二度連続して1秒以内に **Ctrl-C** を入力した場合]
+[1秒以内に二度連続して **Ctrl-C** を入力した場合]
 
-  ```sh
-  $ pdsh -g all sleep 60
-  ^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
-  pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
-  pdsh@bastion: inst-f5fra-x9-ol8: command in progress
-  pdsh@bastion: inst-3ktpe-x9-ol8: command in progress
-  pdsh@bastion: inst-6pvpq-x9-ol8: command in progress
-  pdsh@bastion: inst-dixqy-x9-ol8: command in progress
-  ^Csending SIGTERM to ssh inst-f5fra-x9-ol8
-  sending signal 15 to inst-f5fra-x9-ol8 [ssh] pid 49061
-  sending SIGTERM to ssh inst-3ktpe-x9-ol8
-  sending signal 15 to inst-3ktpe-x9-ol8 [ssh] pid 49062
-  sending SIGTERM to ssh inst-6pvpq-x9-ol8
-  sending signal 15 to inst-6pvpq-x9-ol8 [ssh] pid 49063
-  sending SIGTERM to ssh inst-dixqy-x9-ol8
-  sending signal 15 to inst-dixqy-x9-ol8 [ssh] pid 49064
-  pdsh@bastion: interrupt, aborting.
-  $
-  ```
+```sh
+$ pdsh -g all sleep 60
+^Cpdsh@bastion: interrupt (one more within 1 sec to abort)
+pdsh@bastion:  (^Z within 1 sec to cancel pending threads)
+pdsh@bastion: inst-f5fra-x9-ol8: command in progress
+pdsh@bastion: inst-3ktpe-x9-ol8: command in progress
+pdsh@bastion: inst-6pvpq-x9-ol8: command in progress
+pdsh@bastion: inst-dixqy-x9-ol8: command in progress
+^Csending SIGTERM to ssh inst-f5fra-x9-ol8
+sending signal 15 to inst-f5fra-x9-ol8 [ssh] pid 49061
+sending SIGTERM to ssh inst-3ktpe-x9-ol8
+sending signal 15 to inst-3ktpe-x9-ol8 [ssh] pid 49062
+sending SIGTERM to ssh inst-6pvpq-x9-ol8
+sending signal 15 to inst-6pvpq-x9-ol8 [ssh] pid 49063
+sending SIGTERM to ssh inst-dixqy-x9-ol8
+sending signal 15 to inst-dixqy-x9-ol8 [ssh] pid 49064
+pdsh@bastion: interrupt, aborting.
+$
+```
 
-- 標準入力からの入力を求めるコマンドを実行する場合  
-  コマンド実行を継続するかどうかといった、インタラクティブに標準入力からの指示を求めるコマンドの **pdsh** からの実行は、この指示をクラスタ管理ノードの標準入力から管理対象ノードに渡すことが出来ないため、そのままではこれを実行することが出来ません。  
-  この場合、これらコマンドへの指示をオプションで指定することが可能であれば、これを使用することで問題を回避することが可能です。  
-  RPMパッケージをインストールするdnfコマンドは、このための **-y** オプションを用意しており、以下のようにこの問題を回避することが出来ます。
+## 2-4. 標準入力からの入力を求めるコマンドを実行する場合
 
-  ```sh
-  $ pdsh -g all 'sudo dnf install -y httpd'
-  ```
+コマンド実行を継続するかどうかといった、インタラクティブに標準入力からの指示を求めるコマンドの **pdsh** からの実行は、この指示をクラスタ管理ノードの標準入力から管理対象ノードに渡すことが出来ないため、そのままではこれを実行することが出来ません。  
+この場合、これらコマンドへの指示をオプションで指定することが可能であれば、これを使用することで問題を回避することが可能です。  
+RPMパッケージをインストールするdnfコマンドは、このための **-y** オプションを用意しており、以下のようにこの問題を回避することが出来ます。
 
-  また、以下のようにパイプを介して当該コマンドの標準入力に指示を渡すことで、これを回避することも出来ます。
+```sh
+$ pdsh -g all 'sudo dnf install -y httpd'
+```
+
+また、以下のようにパイプを介して当該コマンドの標準入力に指示を渡すことで、これを回避することも出来ます。
   
-  ```sh
-  $ pdsh -g all 'echo yes | sudo dnf install httpd'
-  ```
-
+```sh
+$ pdsh -g all 'echo yes | sudo dnf install httpd'
+```
 
 ***
 # 3. pdshを使った代表的なクラスタ管理オペレーション
@@ -359,7 +345,7 @@ inst-cnspy-x9-ol8,inst-dw5fd-x9-ol8,inst-odzeg-x9-ol8
 0
 ```
 
-上記の例は、全対象ノードの中で1ノード（inst-slz8n-x9-ol8）だけOSアップデートがエラーしており、これをリターンコードから容易に判別しています。
+上記の例は、全対象ノードの中で1ノード（inst-slz8n-x9-ol8）だけOSアップデートに失敗しており、これをリターンコードから容易に判別しています。
 
 また **dshbak** は、クラスタ管理ノードの指定したディレクトリに、管理対象ノードからの出力をそのホスト名をファイル名として格納する機能があり、この場合以下のように実行します。
 

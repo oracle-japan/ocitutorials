@@ -52,7 +52,7 @@ MPI言語規格に準拠するMPI実装
 - ノード間並列実行（大規模構成で可能）
 - ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
 
-※1） **BM.Optimized3.36** が内蔵するNVMe SSDローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、並列数を大きくした場合のスケーラビリティを改善出来る場合があります。
+※1） **BM.Optimized3.36** が内蔵するNVMe SSDローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、高並列実行の場合や計算結果の出力頻度が高い場合にスケーラビリティを改善出来る場合があります。
 
 構築する環境は、以下を前提とします。
 
@@ -60,7 +60,7 @@ MPI言語規格に準拠するMPI実装
 - シェイプ ： **BM.Optimized3.36**
 - OS ： **Oracle Linux** 8.9（※2）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※3）
 - ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
-- ローカルディスクマウントポイント ： **/mnt/localdisk** （※5）
+- NVMe SSDローカルディスクマウントポイント ： **/mnt/localdisk** （※5）
 
 [Bastionノード]
 - シェイプ ： **VM.Optimized3.Flex**
@@ -72,7 +72,7 @@ MPI言語規格に準拠するMPI実装
 - **OpenMPI** ： 5.0.3
 - **ParaView** ： 5.11.2
 
-※2）小規模構成の場合  
+※2）小規模構成の場合です。  
 ※3）大規模構成の場合で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 ※4）詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※5）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](/ocitutorials/hpc/tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
@@ -115,6 +115,7 @@ MPI言語規格に準拠するMPI実装
 本章は、 **OpenFOAM** のインストールを以下の順に実施します。
 
 - インストール事前準備
+- **PETSc** インストール
 - **ParaView** インストール
 - **OpenFOAM** インストール
 
@@ -176,7 +177,9 @@ $ tar --no-same-owner -xvf ./qt-everywhere-src-5.12.11.tar.xz
 $ mv qt-everywhere-src-5.12.11 qt-everywhere-opensource-src-5.12.11
 ```
 
-次に、以下コマンドをrootユーザで実行し、 **PETSc** をインストールします。  
+## 2-2. **PETSc** インストール
+
+以下コマンドをrootユーザで実行し、 **PETSc** をインストールします。  
 この際、以下コマンド出力で正しくインストールされたことを確認します。
 
 ```sh
@@ -184,7 +187,7 @@ $ export PATH=$PATH:/opt/openmpi-5.0.3/bin
 $ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
 No completions for /home/opc/OpenFOAM-v2312/platforms/linux64GccDPInt32Opt/bin
 [ignore if OpenFOAM is not yet compiled]
-$ cd ..
+$ cd /opt/OpenFOAM/ThirdParty-v2312
 $ ./makePETSC
     :
     :
@@ -193,9 +196,7 @@ Installed: petsc-3.19.2   <--- この出力
 $
 ```
 
-## 2-2. ParaViewインストール
-
-本章は、 **ParaView** をインストールします。
+## 2-3. ParaViewインストール
 
 以下コマンドをrootユーザで実行し、 **ParaView** の前提ソフトウェアである **[Qt](https://www.qt.io/)** をインストールします。  
 この際、以下コマンド出力で正しくインストールされたことを確認します。  
@@ -237,7 +238,7 @@ Done
 $
 ```
 
-## 2-3. OpenFOAMインストール
+## 2-4. OpenFOAMインストール
 
 本章は、 **OpenFOAM** をインストールします。
 
@@ -407,15 +408,6 @@ $
 
 Bastionノードを経由して計算ノードのうちの1ノード（バッチジョブの場合はSlurmクライアント）にCFD解析ユーザでSSHログインします。
 
-次に、**.bashrc** ファイルの最後に以下の1行を追加します。
-
-```sh
-$ diff ~/.bashrc_org ~/.bashrc
-xxaxx
-> source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
-$
-```
-
 次に、以下コマンドを実行して **OpenFOAM** の環境設定を読み込みます。
 
 ```sh
@@ -484,7 +476,7 @@ $
 
 ### 4-2-1. 1コアを使用する非並列実行
 
-以下コマンドを実行し、プリ処理を実行します。
+以下コマンドを実行し、メッシュを生成するプリ処理を実行します。
 
 ```sh
 $ run
@@ -500,7 +492,7 @@ $ simpleFoam
 
 ### 4-2-2. 1ノード32コアを使用するノード内並列実行
 
-以下コマンドを実行し、プリ処理を実行します。
+以下コマンドを実行し、プリ処理のうちメッシュの生成を実行します。
 
 ```sh
 $ run
@@ -514,7 +506,7 @@ $ blockMesh
 $ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
 ```
 
-次に、コピーしたファイルを以下のように修正して先に生成したメッシュを32個の領域に分割します。
+次に、コピーしたファイルを以下のように修正します。
 
 ```sh
 $ diff system/decomposeParDict_org system/decomposeParDict
@@ -526,6 +518,12 @@ $ diff system/decomposeParDict_org system/decomposeParDict
 <     n           (2 2 1);
 ---
 >     n           (8 4 1);
+$
+```
+
+次に、先に生成したメッシュを32個の領域に分割してプリ処理を完了します。
+
+```sh
 $ decomposePar
     :
     :
