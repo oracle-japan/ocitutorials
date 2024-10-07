@@ -12,6 +12,10 @@ header:
 
 ---
 
+<!-- 
+リンク：
+    [OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/) 
+-->
 
 パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。
 「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。  
