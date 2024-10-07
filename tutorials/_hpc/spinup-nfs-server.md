@@ -24,7 +24,7 @@ table, th, td {
 
 また、ベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
 
-OCIは、OCIコンソールから簡単にデプロイすることが出来るNFSのマネージドサービスである **ファイル・ストレージ** も提供していますが、本チュートリアルのように **ブロック・ボリューム** とベア・メタル・シェイプ **BM.Optimized3.36** を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 **ファイル・ストレージ** よりも格段にコストパフォーマンスを引き上げることが出来ます。  
+OCIは、NFSのマネージドサービスである **ファイル・ストレージ** も提供していますが、本チュートリアルのように **ブロック・ボリューム** とベア・メタル・シェイプ **BM.Optimized3.36** を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 **ファイル・ストレージ** よりも格段にコストパフォーマンスを引き上げることが出来ます。  
 **ファイル・ストレージ** とブロック・ボリュームNFSサーバの比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 本チュートリアルは、 **GitHub** のパブリックレポジトリ（ **[tutorial_bvnfs](https://github.com/fwiw6430/tutorial_bvnfs)** ）から公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の **Deployment target** 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する **IOR** と **mdtest** で検証します。  
@@ -32,16 +32,16 @@ OCIは、OCIコンソールから簡単にデプロイすることが出来るNF
 
 ![システム構成図](architecture_diagram.png)
 
-|                                 | 構成                                               | 用途                                                     |
-| :-----------------------------: | :----------------------------------------------: | :----------------------------------------------------: |
-| ストレージ                           | **ブロック・ボリューム**<br>Min. 1 TB Balanced x 15        | ファイル共有ストレージ<br>ファイル格納領域                                |
-| NFSサーバ                          | **BM.Optimized3.36** x 1<br>**Oracle Linux** 9.4 | NFSサーバ                                                 |
-| **リソース・マネージャ** 用<br>エンドポイント | **リソース・マネージャ**<br>プライベートエンドポイント x 1              | NFSサーバ構築スクリプトを配布・起動する<br>**Terraform** プロビジョナー用エンドポイント |
-| NFSクライアント                       | **VM.Standard2.24** x 4<br>**Oracle Linux** 8.10 | ファイルシステムベンチマーク用<br>NFSクライアント                           |
+|               | 構成                                               | 用途                                                     |
+| :-----------: | :----------------------------------------------: | :----------------------------------------------------: |
+| ストレージ         | **ブロック・ボリューム**<br>Min. 1 TB Balanced x 15        | ファイル共有ストレージ<br>ファイル格納領域                                |
+| NFSサーバ        | **BM.Optimized3.36** x 1<br>**Oracle Linux** 9.4 | NFSサーバ                                                 |
+| プライベートエンドポイント | **リソース・マネージャ**<br>プライベートエンドポイント x 1              | NFSサーバ構築スクリプトを配布・起動する<br>**Terraform** プロビジョナー用エンドポイント |
+| NFSクライアント     | **VM.Standard2.24** x 4<br>**Oracle Linux** 8.10 | ファイルシステムベンチマーク用<br>NFSクライアント                           |
 
 本チュートリアルで作成するブロック・ボリュームNFSサーバ構築用の **スタック** は、適用すると以下の処理を行います。
 
-- VCNと関連するネットワークリソースのデプロイ（※1）
+-  **仮想クラウド・ネットワーク** と関連するネットワークリソースのデプロイ（※1）
 - **ブロック・ボリューム** のデプロイ
 - NFSサーバ用インスタンスのデプロイ
 - デプロイした **ブロック・ボリューム** をNFSサーバにアタッチ
@@ -50,7 +50,7 @@ OCIは、OCIコンソールから簡単にデプロイすることが出来るNF
 - **Terraform** のremote-execプロビジョナーでNFSサーバ上でNFSサーバ構成用スクリプト（※3）を実行
 - 構築したNFSサーバのホスト名・IPアドレス出力
 
-※1）既存のVCNを活用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
+※1）既存の **仮想クラウド・ネットワーク** を活用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
 
 - NFSサーバ・NFSクライアント間接続用NFSプライベートサブネットが存在（※2）
 - NFSサーバ・ **ブロック・ボリューム** 間iSCSI接続用Storageプライベートサブネットが存在（※2）
@@ -62,7 +62,7 @@ OCIは、OCIコンソールから簡単にデプロイすることが出来るNF
 
 - **ブロック・ボリューム** のストレージに
   - ボリュームグループを作成
-  - 論理ボリュームをストライブ幅15（**ブロック・ボリューム** 数の15に対応）で作成
+  - 論理ボリュームをストライブ幅15（**ブロック・ボリューム** 数15に対応）で作成
   - XFSファイルシステムを作成
 - 作成したXFSファイルシステムを **/mnt/bv** にマウント
 - NFSサービスを以下の設定で起動
@@ -101,7 +101,7 @@ OCIは、OCIコンソールから簡単にデプロイすることが出来るNF
 
 ## 1-2. IAMポリシー作成
 
-本章は、 **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** からブロック・ボリュームNFSサーバを作成するために必要な **IAMポリシー** を作成します。
+本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** からブロック・ボリュームNFSサーバを作成するために必要な **IAMポリシー** を作成します。
 
 OCIコンソールにログインし、 **アイデンティティとセキュリティ** → **ポリシー** とメニューを辿ります。
 
@@ -130,7 +130,7 @@ allow group group_name to manage all-resources in compartment compartment_name
 
 ## 1-3. スタック作成
 
-本章は、ブロック・ボリュームNFSサーバを構築するための **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** 用 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
+本章は、ブロック・ボリュームNFSサーバを構築するための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
 
 OCIコンソールにログインし、ブロック・ボリュームNFSサーバをデプロイするリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
@@ -157,8 +157,8 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
   - **Availability Domain :** ブロック・ボリュームNFSサーバをデプロイする **可用性ドメイン**
   - **SSH public key :** NFSサーバにログインする際使用するSSH秘密鍵に対応する公開鍵  
   （公開鍵ファイルのアップロード（ **SSHキー・ファイルの選択** ）と公開鍵のフィールドへの貼り付け（ **SSHキーの貼付け** ）が選択可能）
-  - **Use existing VCN :** 既存のVCNを使用するかどうかを指定（デフォルト：VCNを新規作成）  
-  （既存のVCNを使用する場合は、チェックすると表示されるVCN・Storageサブネット・NFSサブネットの各フィールドにOCIDを指定します。）
+  - **Use existing VCN :** 既存の **仮想クラウド・ネットワーク** を使用するかどうかを指定（デフォルト： **仮想クラウド・ネットワーク** を新規作成）  
+  （既存の **仮想クラウド・ネットワーク** を使用する場合は、チェックすると表示されるVCN・Storageサブネット・NFSサブネットの各フィールドにOCIDを指定します。）
 
 ![画面ショット](stack_page02.png)
 
@@ -219,21 +219,30 @@ NFS_server_instances_created = {
 
 ## 3-1. NFSサーバログイン
 
-NFSサーバは、プライベートサブネットに接続されているため、パブリックサブネットに接続されているBastionノードや、プライベートサブネットに接続するインスタンスへのSSH接続を提供する **要塞** を使用し、構築時に指定したSSH公開鍵に対応する秘密鍵を使用してSSHログインします。
+NFSサーバは、プライベートサブネットに接続されているため、パブリックサブネットに接続されているBastionノードや、プライベートサブネットに接続するインスタンスへのSSH接続を提供する **要塞** を使用し、構築時に指定したSSH公開鍵に対応する秘密鍵を使用してopcユーザでSSHログインします。
 
 ## 3-2. cloud-init完了確認
 
 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、NFSサーバが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをNFSサーバのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
-$ sudo cloud-init status
+$ cloud-init status
 status: done
 $
 ```
 
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
-## 3-3. NFSサーバファイルシステム確認
+
+## 3-3. NFSサーバOS再起動
+
+以下コマンドをNFSサーバのopcユーザで実行し、OSを再起動します。
+
+```sh
+$ sudo shutdown -r now
+```
+
+## 3-4. NFSサーバファイルシステム確認
 
 以下コマンドをNFSサーバのopcユーザで実行し、 **ブロック・ボリューム** 上に作成したファイルシステムが **/mnt/bv** にマウントされ、そのサイズが指定したものになっていることを確認します。
 
@@ -244,7 +253,7 @@ Filesystem         Size  Used Avail Use% Mounted on
 $
 ```
 
-## 3-4. NFSサーバNFSサービス確認
+## 3-5. NFSサーバNFSサービス確認
 
 以下コマンドをNFSサーバのopcユーザで実行し、NFSサービスが起動しており **ブロック・ボリューム** 上に作成したファイルシステム（ **/mnt/bv** ）がエクスポートされていることを確認します。
 
@@ -358,6 +367,14 @@ IO500_BIN_PATH=/mnt/nfs/io500/io500/bin
 IO500_DATA_DIR=/mnt/nfs/io500/datafiles
 # Set the number of times to repeat each test for mdtest and ior
 rep_count=3
+# Set MPI parameter from arguments
+if [[ "$1" =~ ^[0-9]+$ && "$2" =~ ^[0-9]+$ ]]; then
+  num_proc_total=$1
+  num_proc_pnode=$2
+else
+  echo "Specify num. of MPI total processes as 1st argument and num. of processes per node as 2nd argument."
+  exit 1
+fi
 # mdtest easy write
 for i in `seq 1 $rep_count`
 do
@@ -365,7 +382,7 @@ do
   echo "### Starting mdtest easy write $name"
   mkdir -p $IO500_DATA_DIR/$name/mdt_easy
   date '+%Y/%m/%d %T'
-  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np 8 -npernode 2 -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -Y -C -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1 -W 300
+  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -Y -C -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1 -W 300
 done
 # IOR easy write
 for i in `seq 1 $rep_count`
@@ -374,7 +391,7 @@ do
   echo "### Starting IOR easy write $name"
   mkdir -p $IO500_DATA_DIR/$name/ior_easy
   date '+%Y/%m/%d %T'
-  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np 8 -npernode 2 -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/ior -w  -a POSIX -t 2m -v -b 9920000m -F -i 1 -C -Q 1 -g -G 27 -k -e -o $IO500_DATA_DIR/$name/ior_easy -O stoneWallingStatusFile=$IO500_DATA_DIR/$name/stonewall -O stoneWallingWearOut=1 -D 300
+  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/ior -w  -a POSIX -t 2m -v -b 9920000m -F -i 1 -C -Q 1 -g -G 27 -k -e -o $IO500_DATA_DIR/$name/ior_easy -O stoneWallingStatusFile=$IO500_DATA_DIR/$name/stonewall -O stoneWallingWearOut=1 -D 300
 done
 # IOR easy read
 for i in `seq 1 $rep_count`
@@ -382,7 +399,7 @@ do
   name="try"$i
   echo "### Starting IOR easy read $name"
   date '+%Y/%m/%d %T'
-  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np 8 -npernode 2 -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/ior -r -R  -a POSIX -t 2m -v -b 9920000m -F -i 1 -C -Q 1 -g -G 27 -k -e -o $IO500_DATA_DIR/$name/ior_easy -O stoneWallingStatusFile=$IO500_DATA_DIR/$name/stonewall
+  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/ior -r -R  -a POSIX -t 2m -v -b 9920000m -F -i 1 -C -Q 1 -g -G 27 -k -e -o $IO500_DATA_DIR/$name/ior_easy -O stoneWallingStatusFile=$IO500_DATA_DIR/$name/stonewall
 done
 # mdtest easy stat
 for i in `seq 1 $rep_count`
@@ -390,7 +407,7 @@ do
   name="try"$i
   echo "### Starting mdtest easy stat $name"
   date '+%Y/%m/%d %T'
-  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np 8 -npernode 2 -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -T -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
+  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -T -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
 done
 # mdtest easy delete
 for i in `seq 1 $rep_count`
@@ -398,7 +415,7 @@ do
   name="try"$i
   echo "### Starting mdtest easy delete $name"
   date '+%Y/%m/%d %T'
-  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np 8 -npernode 2 -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -r -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
+  mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -r -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
 done
 date '+%Y/%m/%d %T'
 ```
@@ -406,12 +423,12 @@ date '+%Y/%m/%d %T'
 このスクリプトは、 **mdtest** のcreate, stat, deleteと **IOR** のwrite, readを各3回実行し、NFSファイルシステムのメタデータ性能とスループット性能を計測します。
 
 次に、以下コマンドをNFSクライアントのうちの1ノードのopcユーザで実行し、スクリプトの出力から性能値を確認します。  
-この実行に要する時間は、一時間半程度です。
+この実行に要する時間は、一時間程度です。
 
 ```sh
 $ pwd
 /mnt/nfs/io500
-$ ./io500_easy.sh
+$ ./io500_easy.sh 16 4
 ```
 
 ***

@@ -60,9 +60,12 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 # Network Firewall
 
 <span style="color: olivedrab; ">**環境準備編**</span>
+
 + **[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)**  
    本チュートリアルでは、OCI Network Firewallの環境を構築します。
 
++ **[ハブアンドスポーク構成でOCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup-hubspoke/)**  
+   本チュートリアルではOCI Network Firewallをハブアンドスポーク構成で構築します。
 
 <span style="color: olivedrab; ">**活用編**</span>
 
