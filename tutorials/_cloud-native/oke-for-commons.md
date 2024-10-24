@@ -10,6 +10,7 @@ tags:
 
 Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。この共通手順では、OCIやOKEを操作するためCLI実行環境の構築（Resource Managerを使用）と、OKEを使ってKubernetesクラスターをプロビジョニングするまでの手順を記します。
 
+
 前提条件
 --------
 - クラウド環境
@@ -351,11 +352,11 @@ Oracle Cloud Infrastructureは、北米、東京を含む多数のデータセ�
 
 「SSH認証」というダイアログが表示されたら、以下のように値を設定して`OK`をクリックします。
 
-項目|入力値
--|-
-ユーザー名|opc
-ラジオボックスの選択|`RSA/DSA/EDCSA/ED25519を使う`をオンにし、上の手順で保存した秘密鍵のファイルを(privatekey.pem)を選択する。
-（上記以外）|（デフォルトのまま）
+| 項目                 | 入力値                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| ユーザー名           | opc                                                                                                       |
+| ラジオボックスの選択 | `RSA/DSA/EDCSA/ED25519を使う`をオンにし、上の手順で保存した秘密鍵のファイルを(privatekey.pem)を選択する。 |
+| （上記以外）         | （デフォルトのまま）                                                                                      |
 
 ![](01-20.png)
 
@@ -420,16 +421,16 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 セットアップをおこなうためのインタラクションが開始されますので、提示される質問に対して、下表のように入力してください。
 
-質問|応答操作
--|-
-Enter a location for your config [/home/opc/.oci/config]|なにも入力せず`[Return]`
-Enter a user OCID|先の手順で確認したユーザーのOCIDを入力
-Enter a tenancy OCID|先の手順で確認したテナンシのOCIDを入力
-Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, ...)|CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力
-Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]|`Y + [Return]`
-Enter a directory for your keys to be created [/home/opc/.oci]|なにも入力せず`[Return]`
-Enter a name for your key [oci\_api\_key]|なにも入力せず`[Return]`
-Enter a passphrase for your private key (empty for no passphrase)|なにも入力せず`[Return]`
+| 質問                                                                                                                                                                                                                                                                          | 応答操作                                                  |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Enter a location for your config [/home/opc/.oci/config]                                                                                                                                                                                                                      | なにも入力せず`[Return]`                                  |
+| Enter a user OCID                                                                                                                                                                                                                                                             | 先の手順で確認したユーザーのOCIDを入力                    |
+| Enter a tenancy OCID                                                                                                                                                                                                                                                          | 先の手順で確認したテナンシのOCIDを入力                    |
+| Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, ...) | CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力 |
+| Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]                                                                                                                                                   | `Y + [Return]`                                            |
+| Enter a directory for your keys to be created [/home/opc/.oci]                                                                                                                                                                                                                | なにも入力せず`[Return]`                                  |
+| Enter a name for your key [oci\_api\_key]                                                                                                                                                                                                                                     | なにも入力せず`[Return]`                                  |
+| Enter a passphrase for your private key (empty for no passphrase)                                                                                                                                                                                                             | なにも入力せず`[Return]`                                  |
 
 CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめOracle Cloud上のユーザーアカウントに設定しておく必要があります。
 
