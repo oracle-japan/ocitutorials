@@ -58,7 +58,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、仮想化オーバー�
 本章は、Bastionノードから **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用して動的にHPCクラスタを構築出来るようにするための **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定を行います。
 
 **インスタンス・プリンシパル** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従います。  
-この際、Bastionノードをクラスタ管理ノードとします。
+この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、Bastionノードと読みかえて下さい。
 
 ## 1-2. スタックの作成
 

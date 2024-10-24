@@ -70,7 +70,18 @@ $
 ***
 # 3. BM.GPU.H100.8用ファイルシステム作成手順
 
-**BM.GPU.H100.8** は、3.84 TBのNVMe SSDローカルディスクを16ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
+## 3-0. 概要
+
+**BM.GPU.H100.8** は、3.84 TBのNVMe SSDローカルディスクを16ドライブ内蔵するため、これらのディスクを以下2種類の構成でファイルシステムとする方法を解説します。
+
+- 全てのディスクをミラーリング・ストライピングせずにファイルシステムを作成（総容量64 TB）
+- ソフトウェアRAIDによるRAID10でファイルシステムを作成（総容量32 TB）
+
+なお最初の方法は、16ドライブのうちの少なくとも1ドライブの故障で、ファイルシステム内の全てのファイルを消失します。
+
+## 3-1. 全てのディスクをミラーリング・ストライピングせずにファイルシステムを作成
+
+以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
 
 ```sh
 $ sudo vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1 /dev/nvme4n1 /dev/nvme5n1 /dev/nvme6n1 /dev/nvme7n1 /dev/nvme8n1 /dev/nvme9n1 /dev/nvme10n1 /dev/nvme11n1 /dev/nvme12n1 /dev/nvme13n1 /dev/nvme14n1 /dev/nvme15n1
@@ -91,3 +102,30 @@ $
 ```
 
 この手順は、16ドライブのNVMe SSDローカルディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
+
+
+## 3-2 ソフトウェアRAIDによるRAID10でファイルシステムを作成
+
+以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
+
+```sh
+$ sudo mdadm --create /dev/md0 --raid-devices=16 --level=10 --chunk=8M --layout=f2 --assume-clean /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1 /dev/nvme4n1 /dev/nvme5n1 /dev/nvme6n1 /dev/nvme7n1 /dev/nvme8n1 /dev/nvme9n1 /dev/nvme10n1 /dev/nvme11n1 /dev/nvme12n1 /dev/nvme13n1 /dev/nvme14n1 /dev/nvme15n1
+$ sudo pvcreate /dev/md0
+$ sudo vgcreate nvme /dev/md0
+$ sudo lvcreate -y -l 100%FREE -n nvme_raid nvme
+$ sudo mkfs.xfs -L localscratch /dev/nvme/nvme_raid
+$ sudo mkdir -p /mnt/localdisk
+$ echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" | sudo tee -a /etc/fstab
+$ sudo mount /mnt/localdisk
+```
+
+作成後、以下のコマンドを該当するノードのopcユーザで実行し、作成したファイルシステムを確認します。
+
+```sh
+$ df -h /mnt/localdisk
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/nvme-nvme_raid   31T   34M   31T   1% /mnt/localdisk
+$
+```
+
+この手順は、16ドライブのNVMe SSDローカルディスクをソフトウェアRAIDによるRAID10で1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
