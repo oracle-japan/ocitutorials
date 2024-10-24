@@ -64,6 +64,7 @@ HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメ�
 | 9   |         | 8.8                       | **OCA** プラグイン   | 5.8           | 535/12.2          | OracleLinux-8-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
 | 10  |         | 7.9                       | **OCA** プラグイン   | 5.8           | 535/12.2          | OracleLinux-7-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
 | 11  |         | 7.9                       | 個別RPM           | 5.4           | 515/11.7          | OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.05.18 | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 12  | HPCシェイプ | 8.10                      | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.09.18-0        | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 
 ※4）OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -130,3 +131,4 @@ OCIコンソールを使用して **[クラスタ・ネットワーク](/ocituto
 | 9          | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
 | 10         | ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia |
 | 11         | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra |
+| 12         | ocid1.image.oc1..aaaaaaaa6nrrkywosaxdd4kur5uttrfgut5l5em73rcv4em5senqtm6fogjq |
