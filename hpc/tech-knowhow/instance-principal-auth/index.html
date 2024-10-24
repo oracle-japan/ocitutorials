@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-10-24T13:09:46+09:00">
+  <meta property="article:published_time" content="2024-10-24T13:26:33+09:00">
 
 
 
@@ -285,6 +285,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -380,7 +382,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法">
     <meta itemprop="description" content="パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、インスタンス・プリンシパル認証が用意されています。本テクニカルTipsは、オンデマンドクラスタを念頭としたインスタンス・プリンシパル認証の設定方法を解説します。">
-    <meta itemprop="datePublished" content="2024-10-24T13:09:46+09:00">
+    <meta itemprop="datePublished" content="2024-10-24T13:26:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -391,15 +393,11 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a><ul><li><a href="#1-1-動的グループ作成">1-1. 動的グループ作成</a></li><li><a href="#1-2-iamポリシー作成">1-2. IAMポリシー作成</a></li></ul></li><li><a href="#2-terraform-cliからのインスタンスプリンシパル認証利用方法">2. Terraform CLIからのインスタンス・プリンシパル認証利用方法</a></li><li><a href="#3-oci-cliからのインスタンスプリンシパル認証利用方法">3. OCI CLIからのインスタンス・プリンシパル認証利用方法</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-動的グループ作成">1-1. 動的グループ作成</a></li><li><a href="#1-2-iamポリシー作成">1-2. IAMポリシー作成</a></li></ul></li><li><a href="#2-terraform-cliからのインスタンスプリンシパル認証利用方法">2. Terraform CLIからのインスタンス・プリンシパル認証利用方法</a></li><li><a href="#3-oci-cliからのインスタンスプリンシパル認証利用方法">3. OCI CLIからのインスタンス・プリンシパル認証利用方法</a></li></ul>
             </nav>
           </aside>
         
-        <p>パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。<br />
-オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なOCIリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証が用意されています。<br />
-本テクニカルTipsは、オンデマンドクラスタを念頭とした <strong>インスタンス・プリンシパル</strong> 認証の設定方法を解説します。</p>
-
-<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+        <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
@@ -412,100 +410,94 @@
   <li>作成した <strong>動的グループ</strong> に対する <strong>IAMポリシー</strong> を作成</li>
 </ul>
 
-<p>オンデマンドクラスタ管理ソフトウェアでは、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIや <strong>OCI CLI</strong> からこの <strong>インスタンス・プリンシパル</strong> 認証を利用し、HPC/GPUクラスタのライフサイクル管理を行います。</p>
+<p>オンデマンドクラスタ管理ソフトウェアは、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIや <strong>OCI CLI</strong> からこの <strong>インスタンス・プリンシパル</strong> 認証を利用し、HPC/GPUクラスタのライフサイクル管理を行います。</p>
 
 <p>なお、この <strong>インスタンス・プリンシパル</strong> 認証を利用するオンデマンドクラスタを実現する手法は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></strong> でも使われています。</p>
+
+<p>またこの <strong>インスタンス・プリンシパル</strong> 認証は、ベア・メタル・インスタンスNFSサーバのファイル共有ストレージに格納するファイルを <strong>オブジェクト・ストレージ</strong> にバックアップするバックアップサーバを構築する（※1）際にも使用し、バックアップサーバで動作する <strong><a href="https://rclone.org/">Rclone</a></strong> が <strong>オブジェクト・ストレージ</strong> にアクセスする際のIAM認証・認可を付与します。<br />
+なお、このユースケースで本テクニカルTipsを使用する場合は、クラスタ管理ノードと呼称している箇所をバックアップサーバと読みかえて下さい。</p>
+
+<p>※1）この構築手法は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-backup-server">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> を参照してください。</p>
 
 <p>以降では、上記に沿った具体的な <strong>インスタンス・プリンシパル</strong> 認証の設定手順と、オンデマンドクラスタ管理ソフトウェアからの利用を想定した <strong>Terraform</strong> CLIと <strong>OCI CLI</strong> でこの <strong>インスタンス・プリンシパル</strong> 認証を利用する方法を解説します。</p>
 
 <hr />
 <h1 id="1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</h1>
 
-<p>本章は、クラスタ管理ノードを <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証に組み込みます。</p>
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、以下のステップでクラスタ管理ノードを <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証に組み込みます。</p>
+
+<ul>
+  <li><strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> 作成</li>
+  <li>IAMポリシー作成</li>
+</ul>
 
 <h2 id="1-1-動的グループ作成">1-1. 動的グループ作成</h2>
 
-<p>本章は、クラスタ管理ノードを含む <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> を作成します。</p>
+<p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ドメイン</strong> とメニューを辿ります。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ドメイン</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>xxxx（ルート）コンパートメント内のドメイン</strong> 画面で、 <strong>インスタンス・プリンシパル</strong> 認証を設定する <strong>アイデンティティ・ドメイン</strong> を選択します。（複数の <strong>アイデンティティ・ドメイン</strong> を運用していなければ、通常”Default”です。）</p>
+<p>次に、表示される以下 <strong>xxxx（ルート）コンパートメント内のドメイン</strong> 画面で、 <strong>インスタンス・プリンシパル</strong> 認証を設定する <strong>アイデンティティ・ドメイン</strong> を選択します。（複数の <strong>アイデンティティ・ドメイン</strong> を運用していなければ、通常”Default”です。）</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される画面左側の <strong>動的グループ</strong> メニューを選択します。</p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>Defaultドメイン内の動的グループ</strong> 画面で、 <strong>動的グループの作成</strong> ボタンをクリックします。</p>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>動的グループの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+<p>次に、表示される画面左側の <strong>動的グループ</strong> メニューを選択します。</p>
+
+<p>次に、表示される以下 <strong>Defaultドメイン内の動的グループ</strong> 画面で、 <strong>動的グループの作成</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>動的グループの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
 なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
-    <ul>
-      <li><strong>名前</strong> ： <strong>動的グループ</strong> に付与する名前</li>
-      <li><strong>説明</strong> ： <strong>動的グループ</strong> に付与する説明</li>
-      <li>
-        <p><strong>ルール1</strong> ： <strong>動的グループ</strong> に含めるクラスタ管理ノード用インスタンスが存在するコンパートメントのOCIDを指定する以下構文</p>
+<ul>
+  <li><strong>名前</strong> ： <strong>動的グループ</strong> に付与する名前</li>
+  <li><strong>説明</strong> ： <strong>動的グループ</strong> に付与する説明</li>
+  <li>
+    <p><strong>ルール1</strong> ： <strong>動的グループ</strong> に含めるクラスタ管理ノード用インスタンスが存在するコンパートメントのOCIDを指定する以下構文</p>
 
-        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Any <span class="o">{</span>instance.compartment.id <span class="o">=</span> <span class="s1">'compartment_ocid'</span><span class="o">}</span>
-</code></pre></div>        </div>
-      </li>
-    </ul>
-
-    <p><img src="console_page03.png" alt="画面ショット" /></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Any <span class="o">{</span>instance.compartment.id <span class="o">=</span> <span class="s1">'compartment_ocid'</span><span class="o">}</span>
+</code></pre></div>    </div>
   </li>
-</ol>
+</ul>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
 
 <h2 id="1-2-iamポリシー作成">1-2. IAMポリシー作成</h2>
 
-<p>本章は、作成した <strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> に対する <strong>IAMポリシー</strong> を作成します。</p>
+<p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+<p>次に、表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
 この際、 <strong>コンパートメント</strong> プルダウンメニューがクラスタ管理ノード用インスタンスの存在する <strong>コンパートメント</strong> と異なる場合は、これを修正します。</p>
 
-    <p><img src="console_page04.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
+<p><img src="console_page04.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br />
 なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 
-    <ul>
-      <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
-      <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
-      <li>
-        <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
+<ul>
+  <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+  <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+  <li>
+    <p><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</p>
 
-        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service compute_management to use tag-namespace <span class="k">in </span>compartment compartment_name
-allow service compute_management to manage compute-management-family <span class="k">in </span>compartment compartment_name
-allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>compartment compartment_name
-allow group group_name to manage all-resources <span class="k">in </span>compartment compartment_name
-allow dynamic-group dynamicgroup_name to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>tenancy
-allow dynamic-group dynamicgroup_name to use tag-namespace <span class="k">in </span>tenancy
-allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment compartment_name
-</code></pre></div>        </div>
-        <p>※1）1-4行目と7行目の <strong>コンパートメント</strong> 名は、自身のものに置き換えます。<br />
-※2）4行目の <strong>グループ</strong> 名は、自身のものに置き換えます。<br />
-※3）5-7行目の <strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
-※4）最初の4行のポリシーは、  <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を伴うリソースを  <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIから利用する場合に必要です。<br />
-※5）最後の3行のポリシーは、クラスタ管理ノードに必要なリソース管理権限を付与します。</p>
-      </li>
-    </ul>
-
-    <p><img src="console_page05.png" alt="画面ショット" /></p>
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  allow service compute_management to use tag-namespace <span class="k">in </span>compartment compartment_name
+  allow service compute_management to manage compute-management-family <span class="k">in </span>compartment compartment_name
+  allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>compartment compartment_name
+  allow group group_name to manage all-resources <span class="k">in </span>compartment compartment_name
+  allow dynamic-group dynamicgroup_name to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>tenancy
+  allow dynamic-group dynamicgroup_name to use tag-namespace <span class="k">in </span>tenancy
+  allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment compartment_name
+</code></pre></div>    </div>
+    <p>※1）1-4行目と7行目の <strong>コンパートメント</strong> 名は、自身のものに置き換えます。<br />
+  ※2）4行目の <strong>グループ</strong> 名は、自身のものに置き換えます。<br />
+  ※3）5-7行目の <strong>動的グループ</strong> 名は、先に作成したものに置き換えます。<br />
+  ※4）最初の4行のポリシーは、  <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を伴うリソースを  <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIから利用する場合に必要です。<br />
+  ※5）最後の3行のポリシーは、クラスタ管理ノードに必要なリソース管理権限を付与します。</p>
   </li>
-</ol>
+</ul>
+
+<p><img src="console_page05.png" alt="画面ショット" /></p>
 
 <hr />
 <h1 id="2-terraform-cliからのインスタンスプリンシパル認証利用方法">2. Terraform CLIからのインスタンス・プリンシパル認証利用方法</h1>
@@ -543,7 +535,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:09:46+09:00">October 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:26:33+09:00">October 24, 2024</time></p>
 
       </footer>
 

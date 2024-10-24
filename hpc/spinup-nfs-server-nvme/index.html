@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-10-24T13:09:46+09:00">
+  <meta property="article:published_time" content="2024-10-24T13:26:33+09:00">
 
 
 
@@ -275,6 +275,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/" class="active">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -370,7 +372,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="短期保存データ用高速ファイル共有ストレージを構築する">
     <meta itemprop="description" content="短期保存データを対象とする高速ファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、NVMe SSDローカルディスクを搭載するベアメタルインスタンスBM.DenseIO.E5.128を使用する、短期保存データ用高速ファイル共有ストレージを構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-10-24T13:09:46+09:00">
+    <meta itemprop="datePublished" content="2024-10-24T13:26:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -381,7 +383,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-事前作業">1. 事前作業</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></li></ul></li><li><a href="#2-計算gpuノード作成">2. 計算/GPUノード作成</a></li><li><a href="#3-短期保存データ用高速ファイル共有ストレージ環境構築">3. 短期保存データ用高速ファイル共有ストレージ環境構築</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-nfsサーバインスタンス作成">3-1. NFSサーバインスタンス作成</a></li><li><a href="#3-2-nvme-ssdローカルディスク領域ファイルシステム作成">3-2. NVMe SSDローカルディスク領域ファイルシステム作成</a></li><li><a href="#3-3-nfsサーバ環境構築">3-3. NFSサーバ環境構築</a></li><li><a href="#3-4-nfsクライアントでのファイルシステムマウント">3-4. NFSクライアントでのファイルシステムマウント</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-事前作業">1. 事前作業</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></li></ul></li><li><a href="#2-計算gpuノード作成">2. 計算/GPUノード作成</a></li><li><a href="#3-denceio-nfsサーバ環境構築">3. DenceIO NFSサーバ環境構築</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-nfsサーバインスタンス作成">3-1. NFSサーバインスタンス作成</a></li><li><a href="#3-2-nvme-ssdローカルディスク領域ファイルシステム作成">3-2. NVMe SSDローカルディスク領域ファイルシステム作成</a></li><li><a href="#3-3-nfsサーバ環境構築">3-3. NFSサーバ環境構築</a></li><li><a href="#3-4-nfsクライアントでのファイルシステムマウント">3-4. NFSクライアントでのファイルシステムマウント</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -390,9 +392,11 @@
 
 <p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-dense">BM.DenseIO.E5.128</a></strong> は、6.8 TBのNVMe SSDを12台ローカル接続し、ストレージに高いスループットとIOPSを要求する様々なワークロード用途に最適なベア・メタル・シェイプです。</p>
 
-<p>また <strong>BM.DenseIO.E5.128</strong> は、100 GbpsのTCP/IP接続用ポートを1個搭載し、NVMe SSDローカルディスクに構築するストレージ領域を外部にサービスする際、100 Gbpsの帯域を全てクライアントへのサービスに割当てることで、ストレージとのアクセスにiSCSI接続によるネットワーク帯域を消費する <strong>ブロック・ボリューム</strong> を使用する場合と比較し、高速なストレージサービスサーバとして利用することが出来ます。</p>
+<p>また <strong>BM.DenseIO.E5.128</strong> は、100 GbpsのTCP/IP接続用ポートを1個搭載し、NVMe SSDローカルディスクに構築するストレージを外部にサービスする際、100 Gbpsの帯域を全てクライアントへのサービスに割当てることで、ストレージとのアクセスにiSCSI接続によるネットワーク帯域を消費する <strong>ブロック・ボリューム</strong> を使用する場合と比較し、高速なストレージサービスサーバとして利用することが出来ます。</p>
 
-<p>これに対して <strong>BM.DenseIO.E5.128</strong> のNVMe SSDローカルディスクを使用するストレージサービスは、 <strong>ブロック・ボリューム</strong> を使用する場合と比較し、以下の点を考慮する必要があります。</p>
+<p>これに対して <strong>BM.DenseIO.E5.128</strong> のNVMe SSDローカルディスクを使用するストレージサービスは、 <strong>ブロック・ボリューム</strong> を使用する場合と比較し、以下の点を考慮する必要があります。（※1）</p>
+
+<p>※1）この比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
 
 <ol>
   <li>NVMe SSDローカルディスク上のデータ保護を自身で行う必要がある</li>
@@ -404,11 +408,13 @@
 
 <ol>
   <li>ソフトウェアRAIDによるRAID10で最低限の可用性を確保</li>
-  <li>NVMe SSDローカルディスク上のファイルを定期的に他の長期保存ストレージにバックアップ（対象を短期保存データに限定）</li>
+  <li>NVMe SSDローカルディスク上のファイルを定期的に他の長期保存ストレージにバックアップ（対象を短期保存データに限定）（※2）</li>
   <li><strong>2.</strong> のアプローチでバックアップの後ファイルを削除して空き容量を確保</li>
 </ol>
 
-<p>以下構成の短期保存データ用高速ファイル共有ストレージを構築します。</p>
+<p>※2）このバックアップ環境の構築は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> を参照してください。</p>
+
+<p>以下構成の短期保存データの格納を目的とするNFSでサービスする高速なファイル共有ストレージ（以降”DenceIO NFSサーバ”と呼称）を構築します。</p>
 
 <ul>
   <li>NFSサーバ
@@ -432,7 +438,7 @@
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p>本チュートリアルで構築する短期保存データ用高速ファイル共有ストレージは、以下の条件でファイルシステムベンチマークを実行し、</p>
+<p>本チュートリアルで構築するDenceIO NFSサーバは、以下の条件でファイルシステムベンチマークを実行し検証しています。</p>
 
 <ul>
   <li>ベンチマークツール ： <strong><a href="https://io500.org/">IO500</a></strong> ISC20に含まれる <strong>IOR</strong> と <strong>mdtest</strong></li>
@@ -446,44 +452,11 @@
   <li><strong>IOR</strong> / <strong>mdtest</strong> 実行時MPIプロセス数 ： 128（ノード当たり16）</li>
 </ul>
 
-<p>以下の性能が出ています。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center"> </th>
-      <th style="text-align: right">Result (※1)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">IOR write</td>
-      <td style="text-align: right">8,967 MiB/s</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">IOR read</td>
-      <td style="text-align: right">7,526 MiB/s</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">mdtest create</td>
-      <td style="text-align: right">83,406</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">mdtest stat</td>
-      <td style="text-align: right">255,682</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">mdtest delete</td>
-      <td style="text-align: right">70,499</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>※1）3回実行した平均値です。</p>
+<p>この <strong>IOR</strong> と <strong>mdtest</strong> の検証結果は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></strong> を参照してください。</p>
 
 <p><strong>所要時間 :</strong> 約1時間</p>
 
-<p><strong>前提条件 :</strong> ファイル共有ストレージを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+<p><strong>前提条件 :</strong> DenceIO NFSサーバを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
@@ -565,16 +538,16 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 <hr />
 <h1 id="2-計算gpuノード作成">2. 計算/GPUノード作成</h1>
 
-<p>本章は、短期保存データ用高速ファイル共有ストレージのNFSクライアントとなる計算/GPUノードを作成します。</p>
+<p>本章は、DenceIO NFSサーバのNFSクライアントとなる計算/GPUノードを作成します。</p>
 
 <p>この構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリの各チュートリアルを参照してください。</p>
 
 <hr />
-<h1 id="3-短期保存データ用高速ファイル共有ストレージ環境構築">3. 短期保存データ用高速ファイル共有ストレージ環境構築</h1>
+<h1 id="3-denceio-nfsサーバ環境構築">3. DenceIO NFSサーバ環境構築</h1>
 
 <h2 id="3-0-概要">3-0. 概要</h2>
 
-<p>本章は、短期保存データ用高速ファイル共有ストレージ環境を構築します。</p>
+<p>本章は、DenceIO NFSサーバ環境を構築します。</p>
 
 <p>この構築は、以下の手順を経て行います。</p>
 
@@ -661,9 +634,9 @@ Created symlink /etc/systemd/system/multi-user.target.wants/nfs-server.service �
 
 <h2 id="3-4-nfsクライアントでのファイルシステムマウント">3-4. NFSクライアントでのファイルシステムマウント</h2>
 
-<p>本章は、短期保存データ用高速ファイル共有ストレージのNFSクライアントとなる計算/GPUノードで、当該領域をNFSマウントします。</p>
+<p>本章は、DenceIO NFSサーバのNFSクライアントとなる計算/GPUノードで、当該領域をNFSマウントします。</p>
 
-<p>以下コマンドを計算/GPUノードのopcユーザで実行し、短期保存データ用高速ファイル共有ストレージ領域をNFSマウントします。</p>
+<p>以下コマンドを計算/GPUノードのopcユーザで実行し、DenceIO NFSサーバ領域をNFSマウントします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"nfs-srv:/mnt/nvme_raid /mnt/nvme_raid nfs vers=3,defaults,noatime,nodiratime,bg,timeo=100,ac,actimeo=120,nocto,rsize=1048576,wsize=1048576,nolock,local_lock=none,proto=tcp,sec=sys,_netdev 0 0"</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/fstab
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
@@ -692,7 +665,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:09:46+09:00">October 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:26:33+09:00">October 24, 2024</time></p>
 
       </footer>
 
@@ -716,7 +689,7 @@ Filesystem                  Size  Used Avail Use% Mounted on
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/cluster-with-bv-base/" class="pagination--pager" title="ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる
+      <a href="/ocitutorials/hpc/spinup-backup-server/" class="pagination--pager" title="ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する
 ">次へ</a>
     
   </nav>

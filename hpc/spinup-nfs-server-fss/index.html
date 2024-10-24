@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-10-24T13:09:46+09:00">
+  <meta property="article:published_time" content="2024-10-24T13:26:33+09:00">
 
 
 
@@ -275,6 +275,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
@@ -370,7 +372,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ファイル・ストレージでファイル共有ストレージを構築する">
     <meta itemprop="description" content="ファイル・ストレージでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高可用性ファイル共有ストレージを、OCIのマネージドNFSサービスであるファイル・ストレージを使用してOCIコンソールから構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-10-24T13:09:46+09:00">
+    <meta itemprop="datePublished" content="2024-10-24T13:26:33+09:00">
     
 
     <div class="page__inner-wrap">
@@ -381,149 +383,74 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-事前作業">1. 事前作業</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></li></ul></li><li><a href="#2-hpcgpuノード作成">2. HPC/GPUノード作成</a></li><li><a href="#3-ファイル共有ストレージ環境構築">3. ファイル共有ストレージ環境構築</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcgpuクラスタ構築">1. HPC/GPUクラスタ構築</a></li><li><a href="#2-ファイル共有ストレージ環境構築">2. ファイル共有ストレージ環境構築</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-ファイルストレージ構築">2-1. ファイル・ストレージ構築</a></li><li><a href="#2-2-マウントターゲットのタイプ変更">2-2. マウント・ターゲットのタイプ変更</a></li></ul></li></ul>
             </nav>
           </aside>
         
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p><strong>ファイル・ストレージ</strong> は、以下の特徴を持ち、高い可用性と運用性を求められるHPC/GPUクラスタ向けのファイル共有ストレージに最適なマネージドNFSサービスです。</p>
+<p><strong>ファイル・ストレージ</strong> は、ヘッドノードとなる <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/Tasks/managingmounttargets.htm">マウント・ターゲット</a></strong> とストレージとなる <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/Tasks/managingfilesystems.htm">ファイル・システム</a></strong> から構成されるマネージドNFSサービスで、以下の特徴から高い可用性と運用性を求められるHPC/GPUクラスタ向けのファイル共有ストレージに最適なサービスです。</p>
 
 <ul>
   <li><strong>マウント・ターゲット</strong> がHA構成となっていて高いサービス可用性を提供</li>
   <li><strong>ファイル・システム</strong> 内のデータが複製されていて高いデータ可用性を提供</li>
   <li><strong>マウント・ターゲット</strong> のアップグレードによる動的な性能向上が可能（※1）</li>
-  <li>ヘッドノードの <strong>マウント・ターゲット</strong> のソフトウェアメンテナンスが不要</li>
+  <li><strong>マウント・ターゲット</strong> のソフトウェアメンテナンスが不要</li>
   <li>OCIコンソールからGUIでデプロイできるのため構築難易度が低い</li>
 </ul>
 
 <p>※1）アップグレードで選択可能なHigh Performanceタイプの <strong>マウント・ターゲット</strong> の詳細は、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/Tasks/managingmounttargets.htm#performance">ここ</a></strong> を参照してください。</p>
 
-<p>OCIは、マネージドブロックボリュームサービスの <strong>ブロック・ボリューム</strong> も提供しており、ベア・メタル・インスタンスと組み合わせることで <strong>ファイル・ストレージ</strong> よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ますが、構築手順は圧倒的に <strong>ファイル・ストレージ</strong> が簡単です。<br />
+<p>これに対しマネージドブロックボリュームサービスの <strong>ブロック・ボリューム</strong> は、ベア・メタル・インスタンスと組み合わせることで <strong>ファイル・ストレージ</strong> よりもコストパフォーマンスの高いファイル共有ストレージを構築することが出来ますが、システム構築や運用は圧倒的に <strong>ファイル・ストレージ</strong> が容易です。<br />
 <strong>ファイル・ストレージ</strong> とブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
 
-<p>以上を踏まえて本チュートリアルは、 <strong>ファイル・ストレージ</strong> を使用するファイル共有ストレージを構築、ファイル共有クライアントとなる計算/GPUノードからこの領域をマウントするまでの手順を解説します。</p>
+<p>以上を踏まえて本チュートリアルは、 <strong>ファイル・ストレージ</strong> を使用するファイル共有ストレージを構築、ファイル共有クライアントとなる計算/GPUノードからこの領域をマウントし、必要に応じて <strong>マウント・ターゲット</strong> のアップグレードを適用するまでの手順を解説します。</p>
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p><strong>所要時間 :</strong> 約30分</p>
+<p><strong>所要時間 :</strong> 約1時間</p>
 
 <p><strong>前提条件 :</strong> ファイル共有ストレージを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
-<h1 id="1-事前作業">1. 事前作業</h1>
+<h1 id="1-hpcgpuクラスタ構築">1. HPC/GPUクラスタ構築</h1>
 
-<h2 id="1-0-概要">1-0. 概要</h2>
+<p>本章は、ファイル共有ストレージのファイル共有クライアントとなるHPC/GPUノードを含む、HPC/GPUクラスタを構築します。</p>
 
-<p>本章は、 <strong>ファイル・ストレージ</strong> と計算/GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> と、通常インターネットから直接アクセス出来ないプライベートサブネットに接続する計算/GPUノードにログインする際の踏み台となるBastionノードを予め用意します。</p>
-
-<h2 id="1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</h2>
-
-<p>本章は、 <strong>ファイル・ストレージ</strong> と計算/GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。<br />
- <strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順通りに実行し、以下のリソースを作成します。</p>
-
-<ul>
-  <li><strong>仮想クラウド・ネットワーク</strong></li>
-  <li>パブリックサブネット</li>
-  <li>プライベートサブネット</li>
-  <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
-  <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
-  <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
-  <li><strong>ルート表</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
-  <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
-</ul>
-
-<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> で以下のアクセス制限が掛けられています。</p>
-
-<ul>
-  <li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
-  <li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
-</ul>
-
-<h2 id="1-2-bastionノード作成">1-2. Bastionノード作成</h2>
-
-<p>本章は、計算/GPUノードにログインする際の踏み台となるBastinノードを作成します。<br />
-Bastionノードの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> の手順を参考に、自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。<br />
-本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
-
-<ul>
-  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
-  <li><strong>シェイプ</strong> ： <strong>VM.Optimized3.Flex</strong> （任意のコア数・メモリ容量）</li>
-  <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
-</ul>
-
-<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
-
-<p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算/GPUノードにログインする際に使用します。<br />
-先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の計算/GPUノード用インスタンス作成手順で指定します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen
-Generating public/private rsa key pair.
-Enter file <span class="k">in </span>which to save the key <span class="o">(</span>/home/opc/.ssh/id_rsa<span class="o">)</span>: 
-Enter passphrase <span class="o">(</span>empty <span class="k">for </span>no passphrase<span class="o">)</span>: 
-Enter same passphrase again: 
-Your identification has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.
-Your public key has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.pub.
-The key fingerprint is:
-SHA256:2EvR7FXtEYAsDknJG1oREie1kv2r1PN3OYrYCP/Xlyg opc@bast
-The keys randomart image is:
-+---[RSA 2048]----+
-|     +<span class="o">=</span><span class="k">*</span><span class="o">=</span> <span class="nb">.</span> ..oo.|
-|      <span class="k">*</span>B.+ o <span class="nb">.</span> ..|
-|     ooo<span class="k">*</span> + <span class="nb">.</span>  ..|
-|     ..+.+ <span class="nb">.</span>    .|
-|      <span class="nb">.</span> S..      |
-|       ....      |
-|       o.+    o o|
-|      <span class="nb">.</span> + <span class="k">*</span>E.+ <span class="k">*</span>.|
-|       <span class="nb">.</span> +.<span class="o">=</span>+.o o|
-+----[SHA256]-----+
-<span class="nv">$ </span><span class="nb">cat</span> .ssh/id_rsa.pub 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+00rztZa/3eujw1DQvMsoUrJ+MHjE89fzZCkBS2t4KucqDfDqcrPuaKF3+LPBkgW0NdvytBcBP2J9zk15/O9tIVvsX8WBi8jgPGxnQMo4mQuwfvMh1zUF5dmvX3gXU3p+lH5akZa8sy/y16lupge7soN01cQLyZfsnH3BA7TKFyHxTe4MOSHnbv0r+6Cvyy7Url0RxCHpQhApA68KBIbfvhRHFg2WNtgggtVGWk+PGmTK7DTtYNaiwSfZkuqFdEQM1T6ofkELDruB5D1HgDi3z+mnWYlHMNHZU5GREH66acGJ opc@bast
-<span class="err">$</span>
-</code></pre></div></div>
-
-<p>次に、以降作成する計算/GPUノードの名前解決をインスタンス名で行うため、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算ノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
+<p>この構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリの各チュートリアルから、自身の要件に合うHPC/GPUクラスタの構築手法を選択して参照してください。</p>
 
 <hr />
-<h1 id="2-hpcgpuノード作成">2. HPC/GPUノード作成</h1>
+<h1 id="2-ファイル共有ストレージ環境構築">2. ファイル共有ストレージ環境構築</h1>
 
-<p>本章は、ファイル共有ストレージのファイル共有クライアントとなるHPC/GPUノードを作成します。</p>
+<h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>この構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> カテゴリや <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> カテゴリの各チュートリアルを参照してください。</p>
+<p>本章は、 <strong>ファイル・ストレージ</strong> を利用してファイル共有ストレージ環境を構築、必要に応じて <strong>マウント・ターゲット</strong> を標準タイプからHigh Performanceタイプに変更します。</p>
 
-<hr />
-<h1 id="3-ファイル共有ストレージ環境構築">3. ファイル共有ストレージ環境構築</h1>
+<h2 id="2-1-ファイルストレージ構築">2-1. ファイル・ストレージ構築</h2>
 
-<p>本章は、 <strong>ファイル・ストレージ</strong> を利用し、ファイル共有ストレージ環境を構築します。</p>
+<p><strong>ファイル・ストレージ</strong> の構築手順は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></strong> を参照してください。<br />
+この際、 <strong>マウント・ターゲット</strong> を接続するサブネットを計算/GPUノードが接続しているサブネットに指定します。</p>
 
-<p>この構築手順は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/using-file-storage/">その6 - ファイルストレージサービス(FSS)で共有ネットワークボリュームを利用する</a></strong> を参照してください。</p>
+<h2 id="2-2-マウントターゲットのタイプ変更">2-2. マウント・ターゲットのタイプ変更</h2>
 
-<p>次に、 <strong>マウント・ターゲット</strong> を標準タイプからHigh Performanceタイプに変更する方法を解説します。</p>
+<p>以降の手順を適用して <strong>マウント・ターゲット</strong> を標準タイプからHigh Performanceタイプに変更すると、変更が完了した時点で最低でも30日分の費用が発生する点に留意します。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、 <strong>ストレージ</strong> → <strong>マウント・ターゲット</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、対象の <strong>マウント・ターゲット</strong> をクリックします。</p>
+<p>OCIコンソールにログインし、 <strong>ストレージ</strong> → <strong>マウント・ターゲット</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下画面の <strong>マウント・ターゲット情報</strong> タブの <strong>マウント・ターゲット・スループット</strong> フィールドの <strong>編集</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下画面で、対象の <strong>マウント・ターゲット</strong> をクリックします。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>マウント・ターゲットのパフォーマンスの更新</strong> サイドバーの <strong>マウント・ターゲット・スループットの選択</strong> プルダウンメニューで <strong>80</strong> （<strong>HPMT-80</strong>）を選択し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
+<p><img src="console_page01.png" alt="画面ショット" /></p>
 
-    <p><img src="console_page03.png" alt="画面ショット" /></p>
-  </li>
-</ol>
+<p>次に、表示される以下画面の <strong>マウント・ターゲット情報</strong> タブの <strong>マウント・ターゲット・スループット</strong> フィールドの <strong>編集</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>マウント・ターゲットのパフォーマンスの更新</strong> サイドバーの <strong>マウント・ターゲット・スループットの選択</strong> プルダウンメニューで <strong>80</strong> （<strong>HPMT-80</strong>）を選択し、 <strong>変更の保存</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
 
 <p>これで、このチュートリアルは終了です。</p>
 
@@ -537,7 +464,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:09:46+09:00">October 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-24T13:26:33+09:00">October 24, 2024</time></p>
 
       </footer>
 

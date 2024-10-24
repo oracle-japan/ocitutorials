@@ -268,7 +268,7 @@ HPC/機械学習ワークロードを実行する際のパフォーマンス関�
   </li>
   <li>
     <p><strong><a href="#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong><br />
-HPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めてます。<br />
+HPC/機械学習ワークロードを実行する際に有益なテクニカルTipsを集めています。<br />
 提供するテクニカルTipsは、以下のカテゴリに分かれています。</p>
 
     <ol>
@@ -318,7 +318,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   <li>
     <p><strong><a href="#1-3-ファイル共有ストレージ">ファイル共有ストレージ</a></strong></p>
 
-    <p>このカテゴリは、HPCクラスタやGPUクラスタを運用する際に必須となるファイル共有ストレージを、OCIのサービスを組み合わせて構築するためのチュートリアルを集めています。</p>
+    <p>このカテゴリは、HPCクラスタやGPUクラスタを運用する際に必須となるファイル共有ストレージやそのバックアップ環境を、OCIのサービスを組み合わせて構築するためのチュートリアルを集めています。</p>
   </li>
   <li>
     <p><strong><a href="#1-4-チュートリアルを組み合わせた実践的hpcシステム構築">チュートリアルを組み合わせた実践的HPCシステム構築</a></strong></p>
@@ -522,7 +522,9 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 <h2 id="1-3-ファイル共有ストレージ">1-3. ファイル共有ストレージ</h2>
 
-<p>本章は、HPC/GPUクラスタから利用するファイル共有ストレージを構築するチュートリアルを集めています。<br />
+<p>本章は、HPC/GPUクラスタから利用するファイル共有ストレージやそのバックアップ環境を構築するチュートリアルを集めています。</p>
+
+<p>下表は、性能や保存するデータ特性の異なるファイル共有ストレージを、その構築手法毎にまとめています。<br />
 自身の要件に合わせてファイル共有ストレージの構築手法を選択したら、そのチュートリアル名をクリックします。</p>
 
 <table>
@@ -532,39 +534,46 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
       <th style="text-align: center">チュートリアル名</th>
       <th style="text-align: center">保存対象データ<br />（※7）</th>
       <th style="text-align: center">ターゲット<br />スループットレンジ</th>
+      <th style="text-align: center">利用可能な<br />バックアップ手法</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: center">標準FSS</td>
-      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージで<br />ファイル共有ストレージを構築する</a></strong></td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージで<br />ファイル共有ストレージを<br />構築する</a></strong></td>
       <td style="text-align: center">長期保存データ</td>
       <td style="text-align: center">120 MiB/s（※8）</td>
+      <td style="text-align: center"><strong>ファイル・ストレージ</strong> が<br />提供するバックアップ機能<br />（※10）</td>
     </tr>
     <tr>
       <td style="text-align: center">高性能FSS</td>
-      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージで<br />ファイル共有ストレージを構築する</a></strong></td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージで<br />ファイル共有ストレージを<br />構築する</a></strong></td>
       <td style="text-align: center">長期保存データ</td>
       <td style="text-align: center">10 GiB/s（※8）</td>
+      <td style="text-align: center"><strong>ファイル・ストレージ</strong> が<br />提供するバックアップ機能<br />（※10）</td>
     </tr>
     <tr>
-      <td style="text-align: center">ブロック・ボリュームNFSサーバ</td>
-      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリューム<br />でファイル共有ストレージを構築する</a></strong></td>
+      <td style="text-align: center">ブロック・ボリューム<br />NFSサーバ</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームで<br />ファイル共有ストレージを<br />構築する</a></strong></td>
       <td style="text-align: center">中期保存データ</td>
       <td style="text-align: center">5 GiB/s（※9）</td>
+      <td style="text-align: center"><strong><a href="https://rclone.org/">Rclone</a></strong> を使用した<br /> <strong>オブジェクト・ストレージ</strong> への<br />バックアップ（※11）</td>
     </tr>
     <tr>
-      <td style="text-align: center">DenceIO NFSサーバ</td>
-      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージ<br />を構築する</a></strong></td>
+      <td style="text-align: center">DenceIO<br />NFSサーバ</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用<br />高速ファイル共有ストレージ<br />を構築する</a></strong></td>
       <td style="text-align: center">短期保存データ</td>
       <td style="text-align: center">10 GiB/s（※9）</td>
+      <td style="text-align: center"><strong><a href="https://rclone.org/">Rclone</a></strong> を使用した<br /> <strong>オブジェクト・ストレージ</strong> への<br />バックアップ（※11）</td>
     </tr>
   </tbody>
 </table>
 
 <p>※7）対象の構築手法が提供するデータ可用性レベルに応じて分類しています。（データ可用性が低いほど短期保存データ用ファイル共有ストレージに分類）<br />
 ※8）<strong>マウント・ターゲット</strong> の最大スループット値を元に記載しています。<br />
-※9）<strong>IOR</strong> の測定値を元に記載しています。</p>
+※9）<strong>IOR</strong> の測定値を元に記載しています。詳細な測定値は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></strong> を参照してください。<br />
+※10）スナップショット、クローン、及びレプリケーションが用意されています。これらサービスの詳細は、OCI公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/File/home.htm">ここ</a></strong> を参照ください。<br />
+※11）このバックアップ環境は、チュートリアル <strong><a href="/ocitutorials/hpc/spinup-backup-server">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> に従って構築することが出来ます。</p>
 
 <p>どのファイル共有ストレージ構築手法を選択するかは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
 
@@ -803,7 +812,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   <li>
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong></p>
 
-    <p><strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用するインスタンスは、デプロイ時のイメージに <strong>Oracle Linux</strong> をベースOSとする <strong><a href="#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用することで、 <strong>クラスタ・ネットワーク</strong> 接続に必要なソフトウェアのインストールやセットアップ等の作業を大幅に簡素化することが可能です。<br />
+    <p><strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用して <strong>クラスター・ネットワーク</strong> に接続するするインスタンスは、デプロイ時のイメージに <strong>Oracle Linux</strong> をベースOSとする <strong><a href="#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用することで、 <strong>クラスタ・ネットワーク</strong> 接続に必要なソフトウェアのインストールやセットアップ等の作業を大幅に簡素化することが可能です。<br />
   本テクニカルTipsは、この <strong>クラスタ・ネットワーキングイメージ</strong> を使用してインスタンスを <strong>クラスタ・ネットワーク</strong> に接続する方法を解説します。</p>
   </li>
   <li>
