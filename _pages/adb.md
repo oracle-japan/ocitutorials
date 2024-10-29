@@ -132,6 +132,9 @@ toc: true
 + **[220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション](/ocitutorials/adb/adb220-autoworkload-replay/){:target="_blank"}**  
     * 毎週の自動パッチ適用によるアプリケーションへの影響を、テスト環境で毎週自動でテストします。
 
++ **[221 : 自動パーティション化（Automatic Partitioning）を使ってみよう](/ocitutorials/adb/adb221-autopartitioning/){:target="_blank"}**  
+    * 対象の表に最適なパーティション方法の分析とその実装までをAPIで簡単に行うことができます。
+
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db){:target="_blank"}**
     * この**データ移行編**における準備作業として、まずは現行ご利用いただいているOracle Databaseを想定したデータベースを一つ作成します。
