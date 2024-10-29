@@ -185,6 +185,12 @@ var store = [{
         "url": "/ocitutorials/adb/adb220-autoworkload-replay/",
         "teaser": "/ocitutorials/adb/adb220-autoworkload-replay/teaser.png"
       },{
+        "title": "221 : 自動パーティション化（Automatic Partitioning）を使ってみよう",
+        "excerpt":"はじめに 自動パーティション化は、Autonomous Databaseで提供されている自動的に表や索引をパーティション化することができる機能です。 APIとしてDBMS_AUTO_PARTITIONパッケージが提供されており、3つの運用フェーズを手動で実行します。 本チュートリアルでは、非パーティション表を作成し、それを対象に自動パーティション化を実行します。 前提条件 : バージョンが19cのAutonomous Databaseインスタンスが構成済みであること ADBインタンスの作成方法については、「101:ADBインスタンスを作成してみよう」 を参照ください。 Always FreeまたはDeveloper ADBインスタンスを利用すること 自動パーティション化の対象は表のサイズがAlways Free/DeveloperADBインスタンスでは5GB以上、商用ADBインスタンスでは64GB以上である必要があります。商用ADBインスタンスの場合は5GBを64GBに置き換えてください。 SQLコマンドを実行するユーザー・インタフェースはSQL*Plusを利用すること 環境は、「204:開発者向け仮想マシンのセットアップ方法」 で作成できます。また、ADBへの接続方法は 「104: クレデンシャル・ウォレットを利用して接続してみよう」 を参照ください。 ユーザーはADMINユーザーで実行すること Autonomous Databaseへの接続文字列は「atpdev01_medium」、各ユーザのパスワードはすべて「Welcome12345#」とします。 所要時間 : 約30分（Developerインスタンスの場合） 1. 環境の準備 まず、本チュートリアルで使用するAlways FreeインスタンスまたはDeveloperインスタンスを作成します。構成は以下のとおりです。 表示名 : ATPDEV01 データベース名 : ATPDEV01 ワークロード・タイプ : トランザクション処理 デプロイメント・タイプ : サーバーレス Always Freeの構成オプションのみを表示また開発者のどちらか：オン データベース・バージョンの選択 : 19c 管理者資格証明の作成...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb221-autopartitioning/",
+        "teaser": "/ocitutorials/adb/adb221-autopartitioning/partitioningadvantage.png"
+      },{
         "title": "301 : 移行元となるデータベースを作成しよう",
         "excerpt":"はじめに 既存Oracle DatabaseをAutonomous Databaseに移行するにはどうすれば良いでしょうか？ 従来からよく利用されるData Pumpを始め、Autonomous Databaseではいくつかの移行方法が用意されており、このチュートリアルでは移行編としてそれらの方法をご紹介しています。 Autonomous Database を使ってみよう（移行編） 301: 移行元となるデータベースを作成しよう（本章） 302: スキーマ・アドバイザを活用しよう 303: Data Pumpを利用してデータを移行しよう 304: ZDM/DMSを利用し、ダウンタイムを最小限に移行しよう 305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行 306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行 本章（301）では後続の章の準備作業として、移行元となる既存オンプレミスのOracle Databaseを想定しBaseDBインスタンスを作成します。 目次 : 1.移行元となるBaseDBインスタンスの作成 2.移行対象となるサンプルスキーマ(HR)をインストール 3.サンプルスキーマ(HR)への接続、スキーマの確認 所要時間 : 約150分 (BaseDBインスタンスの作成時間を含む) 1. 移行元となるBaseDBインスタンスの作成 まず、「Oracle Cloud で Oracle Database を使おう(BaseDB)」...","categories": [],
         "tags": [],
