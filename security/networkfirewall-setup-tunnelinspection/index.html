@@ -1,0 +1,796 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>トンネル検査構成でOCI Network Firewallを構築する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="トンネル検査構成でOCI Network Firewallを構築する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup-tunnelinspection/">
+
+
+  <meta property="og:description" content="本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup-tunnelinspection/tunnel00.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-10-31T18:03:16+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup-tunnelinspection/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/networkfirewall-setup-tunnelinspection/tunnel00.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          トンネル検査構成でOCI Network Firewallを構築する
+
+        
+      </h1>
+      
+        <p class="page__lead">本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/security" itemprop="item"><span itemprop="name">Security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">トンネル検査構成でOCI Network Firewallを構築する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="トンネル検査構成でOCI Network Firewallを構築する">
+    <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います">
+    <meta itemprop="datePublished" content="2024-10-31T18:03:16+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-事前環境の作成">1. 事前環境の作成</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-コンピュートインスタンスの作成">1-2. コンピュート・インスタンスの作成</a></li></ul></li><li><a href="#2-network-firewallを作成する">2. Network Firewallを作成する</a><ul><li><a href="#2-1-ファイアウォールポリシーの作成">2-1. ファイアウォール・ポリシーの作成</a></li><li><a href="#2-2-ポリシールールの設定">2-2. ポリシー・ルールの設定</a><ul><li><a href="#セキュリティルールの作成">・セキュリティ・ルールの作成</a></li><li><a href="#トンネル検査ルールの作成">・トンネル検査ルールの作成</a></li></ul></li><li><a href="#2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</a></li></ul></li><li><a href="#3-vtapを設定する">3. VTAPを設定する</a><ul><li><a href="#3-1-ネットワークロードバランサvtapターゲットの作成">3-1. ネットワーク・ロード・バランサ（VTAPターゲット）の作成</a></li><li><a href="#3-2-プライベートサブネットのセキュリティリストの設定">3-2. プライベートサブネットのセキュリティリストの設定</a></li><li><a href="#3-3-vtapの設定">3-3. VTAPの設定</a></li></ul></li><li><a href="#4-network-firewallを追加する">4. Network Firewallを追加する</a><ul><li><a href="#4-1-ルート表の設定">4-1. ルート表の設定</a></li><li><a href="#4-2-network-firewallのログの有効化">4-2. Network Firewallのログの有効化</a></li></ul></li><li><a href="#5-idsを確認する">5. IDSを確認する</a><ul><li><a href="#5-1-手動でidsを検知させる">5-1. 手動でIDSを検知させる</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <!-- 
+リンク：
+  networkfirewall-setup-tunnelinspection
+-->
+
+<p>「OCI Network Firewall」はパロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォールとなっており、URLフィルタリングやTSL/SSL検査などの機能を提供します。<br />
+OCI Network Firewallの説明につきましてはOCIチュートリアル「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>」を参照ください。</p>
+
+<p>Network Firewallは通信経路を仲介する形（インライン）で構成しますが、本チュートリアルで扱います「トンネルインスペクション」は通信経路の外部から監視する形（アウトオブバンド）で構成することが可能です。そのため、既存の通信経路に変更を加えずに、経路外部からトンネル検査という形でIDSを行うことができます。
+本チュートリアルでは始めに、簡易的な通信経路を用意し、その後「トンネル検査」構成を構築していく流れで進めていきます。</p>
+
+<p><strong>所要時間 :</strong></p>
+<ul>
+  <li>約90分<br />
+(このうちNetwork Firewallインスタンスの作成に40分ほどかかります)</li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/overview.htm#iam">ドキュメント</a>を参照ください。</li>
+</ul>
+
+<p><strong>使用サービス</strong></p>
+<ul>
+  <li>Compute Instance</li>
+  <li>Network Load Balancer</li>
+  <li>OCI Network Firewall</li>
+  <li>VTAP</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+</ul>
+
+<hr />
+
+<h1 id="はじめに">はじめに</h1>
+
+<p>以下が本チュートリアルで作成するNetwork Firewallの構成図と設定です。</p>
+
+<p><img src="tunnel00.png" alt="構成図と設定" /></p>
+
+<p>手順の流れとして、まずは以下のように簡易的な事前環境を作成し、その環境に後付けでNetwork Firewallを構築していきます。</p>
+
+<hr />
+
+<p><br /></p>
+
+<h1 id="1-事前環境の作成">1. 事前環境の作成</h1>
+<p>こちらの手順１では、まず事前環境として以下の構成を構築していきます。</p>
+
+<h2 id="1-1-vcnの作成">1-1. VCNの作成</h2>
+<p>[VCNウィザードの起動] を選択</p>
+
+<p><img src="tunnel01.png" alt="VCNウィザードの選択" /></p>
+
+<p>[インターネット接続性を持つVCNの作成] を選択します。
+<img src="tunnel02.png" alt="VCNウィザードの起動" /></p>
+
+<p>以下の項目を入力し、[次]を選択します。</p>
+<ul>
+  <li>基本情報
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">VCN名</code>：VCN-NFWtutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;VCNを作成するコンパートメントを選択&gt;</li>
+    </ul>
+  </li>
+  <li>VCNの構成
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">VCN IPv4 CIDRブロック</code>：10.0.0.0/16</li>
+    </ul>
+  </li>
+  <li>パブリック・サブネットの構成
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">IPv4 CIDRブロック</code>：10.0.0.0/24</li>
+    </ul>
+  </li>
+  <li>プライベート・サブネットの構成
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">IPv4 CIDRブロック</code>：10.0.1.0/24</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="tunnel03.png" alt="VCNの作成１" />
+<img src="tunnel04.png" alt="VCNの作成２" /></p>
+
+<p>その後、作成されるリソースを確認したら[作成]をクリック、リソースの作成が完了したことを確認します。</p>
+
+<p><img src="tunnel05.png" alt="VCNの作成３" /></p>
+
+<h2 id="1-2-コンピュートインスタンスの作成">1-2. コンピュート・インスタンスの作成</h2>
+<p>コンピュート・インスタンスをパブリック・サブネット上に配置します。</p>
+
+<p>OCIコンソール画面左上の[メニューボタン] → [コンピュート] → [インスタンス] → [インスタンスの作成]をクリックし、「コンピュート・インスタンスの作成」画面にて、インスタンスをそれぞれ作成します。 
+検証のため、入力項目は配置するサブネット以外は任意ですが、ここでは以下のように入力しています。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：任意（例：instance-tutorial）</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;ポリシーを作成するコンパートメントを選択&gt;</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">配置（可用性ドメイン）</code>：任意（例：AD１）</p>
+  </li>
+  <li>イメージとシェイプ
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">イメージ</code>：任意（例：Oracle Linux 8）</li>
+      <li><code class="language-plaintext highlighter-rouge">シェイプ</code>：任意（例：VM.Standard.E5.Flex）</li>
+    </ul>
+  </li>
+  <li>プライマリVNIC情報
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">VNIC名</code>：inst-tutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">VCN</code>：先ほど作成したVCN（VCN-NFWtutorial）</li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：先ほど作成したVCNのパブリック・サブネット（パブリック・サブネット-VCN-NFWtutorial（リージョナル））</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">SSHキーの追加</code>：「キー・ペアを自動で生成」を選択し、秘密キーと公開キーをそれぞれ保存。（手元に既存のSSHキーがある場合は、「公開キー・ファイルのアップロード」または「公開キーの貼りつけ」を選択し、公開キーを登録してください。）</li>
+</ul>
+
+<p><img src="tunnel06.png" alt="コンピュートの作成１" />
+<img src="tunnel07.png" alt="コンピュートの作成２" />
+<img src="tunnel08.png" alt="コンピュートの作成３" /></p>
+
+<p>作成を選択し、状態がプロビジョニング中から実行中になったことを確認します。</p>
+
+<p><img src="tunnel09.png" alt="コンピュートの作成４" /></p>
+
+<p>この時点で、作成したインスタンスにSSH接続ができるはずですので、念のため確認をしておきます。</p>
+
+<p><img src="tunnel10.png" alt="SSHの確認" /></p>
+
+<p>これで「<code class="language-plaintext highlighter-rouge">ユーザー</code> ー <code class="language-plaintext highlighter-rouge">インターネット・ゲートウェイ</code> ー <code class="language-plaintext highlighter-rouge">コンピュート</code>」という簡易的な通信構成ができました。
+次の手順からは、この構成にリソースを付け加える形でNetwork FirewallのIDSを行えるよう設定していきます。
+<img src="tunnel25.png" alt="現在の構成" /></p>
+
+<p><br /></p>
+
+<h1 id="2-network-firewallを作成する">2. Network Firewallを作成する</h1>
+<p>NFWの作成には40分ほどかかりますので、手順が前後しますが、VTAPの設定を行う前にNetwork Firewallを作成しておきます。</p>
+<h2 id="2-1-ファイアウォールポリシーの作成">2-1. ファイアウォール・ポリシーの作成</h2>
+<p>Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー「ネットワーク・ファイアウォール・ポリシー」を指定する必要があるため、インスタンス作成前に用意します。</p>
+
+<p>OCIコンソール画面左上のメニューボタン → [アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー]と選択、「ネットワーク・ファイアウォール・ポリシーの作成」をクリックし、ポリシーを作成します。
+設定項目は本チュートリアルでは以下のようにします。</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：network_firewall_policy</li>
+  <li><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;ポリシーを作成するコンパートメントを選択&gt;</li>
+</ul>
+
+<p>!<img src="tunnel11.png" alt="NFWポリシーの作成" /></p>
+
+<p>作成ボタンを選択すると詳細画面に移りますので、ファイアウォールを通過するパケットを検知できるよう、ルールを設定していきます。</p>
+
+<h2 id="2-2-ポリシールールの設定">2-2. ポリシー・ルールの設定</h2>
+<p>VTAPによりミラーリングされたパケットを検査するためには「セキュリティ・ルール」と「トンネル検査ルール」を設定する必要があります。</p>
+
+<p>ファイアウォールは通過するパケットをセキュリティ・ルールと照合し通信の可否を判断、その後にトンネル検査ルールにてVXLANプロトコルにてカプセル化されたパケットの中身から宛先・送信元IPを検査したのち、VTAPターゲットに返します。</p>
+
+<h3 id="セキュリティルールの作成">・セキュリティ・ルールの作成</h3>
+<p>「セキュリティ・ルールの作成」を選択し、以下の項目を入力してセキュリティ・ルールを作成します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：ids-rule</li>
+  <li><code class="language-plaintext highlighter-rouge">ルール・アクション</code>：侵入検知</li>
+</ul>
+
+<p><img src="tunnel12.png" alt="NFWポリシー・セキュリティルールの作成１" />
+<img src="tunnel13.png" alt="NFWポリシー・セキュリティルールの作成２" /></p>
+
+<h3 id="トンネル検査ルールの作成">・トンネル検査ルールの作成</h3>
+<p>「セキュリティ・ルールの作成」を選択し、以下の項目を入力してセキュリティ・ルールを作成します。</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：tunnel-inspection-rule</li>
+  <li><code class="language-plaintext highlighter-rouge">ルール・アクション</code>：検査とログの取得</li>
+</ul>
+
+<p><img src="tunnel14.png" alt="NFWポリシー・トンネル検査ルールの作成" /></p>
+
+<h2 id="2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</h2>
+<p>インスタンスを作成します</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：firewall-tutorial</li>
+  <li><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;ファイアウォール・インスタンスを作成するコンパートメントを選択&gt;</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ネットワーク・ファイアウォール・ポリシー</code>：network_firewall_policy_tutorial（手順2-1で作成したポリシーを選択）</p>
+  </li>
+  <li>強制ポイント
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code>：VCN-NFWtutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：プライベート・サブネット-VCN-NFWtutorial リージョナル</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="tunnel15.png" alt="NFWインスタンスの作成" /></p>
+
+<p>作成中にNetwork Firewallインスタンスの詳細画面にIPv4アドレスが表示されますので、この後の手順4にて行うルート表の設定のため、表示されたIPv4アドレスをメモに控えておきます。</p>
+
+<p><br /></p>
+
+<h1 id="3-vtapを設定する">3. VTAPを設定する</h1>
+<p>仮想アクセスポイント（VTAP）とは指定したソースが受け取ったトラフィックを、選択したターゲットに対してミラー化するサービスです。VTAPサービスは無償でご利用いただけますが、VTAPソースやVTAターゲットに対しては課金が発生しますので、ご注意ください。</p>
+
+<p>本チュートリアルではバックエンドに何も配置せず、ネットワーク・ファイアウォールによる侵入検知の確認をログで行いますが、VTAPターゲットであるロード・バランサのバックエンドにインスタンスを配置することで、パケットを取得し検査を行うことも可能です。こちらの手順に関しましては、VTAPのOCIチュートリアル「<a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a>」をご覧ください。</p>
+
+<p>ここではVTAPソースを、手順1にて作成したコンピュート・インスタンス、VTAPソースをネットワーク・ロード・バランサとして設定を行っていきます。</p>
+
+<h2 id="3-1-ネットワークロードバランサvtapターゲットの作成">3-1. ネットワーク・ロード・バランサ（VTAPターゲット）の作成</h2>
+<p>OCIコンソール画面左上のメニューボタン → [アイデンティティとセキュリティ] → [ネットワーキング] → [ロード・バランサ] → [ネットワーキング・ロード・バランサ]と選択、「ネットワーキング・ロード・バランサの作成」をクリックし、以下の項目でロード・バランサを作成します。
+ネットワーク・ロード・バランサの作成を選択</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ロード・バランサ名</code>：nlb_tutorial</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">可視性タイプの選択</code>：プライベート</p>
+  </li>
+  <li>ネットワーキングの選択
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code>：VCN-NFWtutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：プライベート・サブネット-VCN-NFWtutorial
+<img src="tunnel16.png" alt="NLBの作成１" /></li>
+    </ul>
+  </li>
+</ul>
+
+<p>[次]を選択。リスナーの構成を以下の設定で入力します。VTAPによってミラーリングされるパケットはVXLANプロトコルでカプセル化されるため、VXLANの使用するUDP/4789を設定します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">リスナー名</code>：listener_tutorial</li>
+  <li><code class="language-plaintext highlighter-rouge">リスナーで処理する</code>トラフィックのタイプ：UDP</li>
+  <li><code class="language-plaintext highlighter-rouge">ポート番号</code>：4789
+<img src="tunnel17.png" alt="NLBの作成２" /></li>
+</ul>
+
+<p>バックエンド・セットは設定を行いません。適用な名前を設定し、そのまま[次]を選択します。</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">バックエンドセット</code>：backendset_tutorial</li>
+</ul>
+
+<p>確認画面を確認し、ネットワーク・ロード・バランサの作成をクリックします。</p>
+
+<p><img src="tunnel18.png" alt="NLBの作成３" /></p>
+
+<p>この後、プライベートサブネットのセキュリティリストにて、ミラーリングされたパケットの通信（UDP/4789）を受け入れるためのイングレスルールを追加します。</p>
+
+<h2 id="3-2-プライベートサブネットのセキュリティリストの設定">3-2. プライベートサブネットのセキュリティリストの設定</h2>
+<p>プライベートサブネットのセキュリティ・リストの詳細画面に戻ります。<br />
+OCIコンソール画面にアクセスし、左上の[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からセキュリティ・リストをクリックします。</p>
+
+<p>「プライベート・サブネット-VCN-NFWtutorialのセキュリティ・リスト」をクリックし、[イングレス・ルールの追加]を選択、以下のルールを追加します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ソース・タイプ</code>：CIDR</li>
+  <li><code class="language-plaintext highlighter-rouge">ソースCIDR</code>：10.0.0.0/16</li>
+  <li><code class="language-plaintext highlighter-rouge">IPプロトコル</code>：UDP</li>
+  <li><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code>：4789
+<img src="tunnel19.png" alt="SLの設定" /></li>
+</ul>
+
+<p>追加後、イングレス・ルールに正しく追加されたことを確認します。</p>
+
+<p><img src="tunnel20.png" alt="SLの確認" /></p>
+
+<h2 id="3-3-vtapの設定">3-3. VTAPの設定</h2>
+
+<p><img src="tunnel21.png" alt="VTAPの設定" /></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">名前</code>：vtap-tunnelinspection-turorial</li>
+  <li><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;VTAPを作成するコンパートメントを選択&gt;</li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">VCN</code>：VCN-NFWtutorial</p>
+  </li>
+  <li>ソース
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">ソースタイプ</code>：インスタンスVNIC</li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：パブリック・サブネット-VCN-NFWtutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">インスタンスのVNIC</code>：inst-tutorial（instance-tutorial）</li>
+    </ul>
+  </li>
+  <li>ターゲット
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">リソース・タイプ</code>：ネットワーク・ロード・バランサ</li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：プライベートサブネット-VCN-NFWtutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">ネットワーク・ロード・バランサ</code>：nlb_tutorial（手順3-1で作成したロード・バランサ）</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="tunnel22.png" alt="VTAPの設定" /></p>
+
+<p>取得フィルタはミラー化するトラフィックの制御ルールを設定します。
+以下の項目を入力し、取得フィルタを作成したら、[VTAPの作成]を選択します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">取得フィルタ</code>：新規取得フィルタの作成
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">名前</code>：filter-tunnel-inspection-tutorial</li>
+      <li><code class="language-plaintext highlighter-rouge">コンパートメント</code>：&lt;取得フィルタを作成するコンパートメントを選択&gt;</li>
+    </ul>
+  </li>
+  <li>ルール１
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">トラフィックの方向</code>：イングレス</li>
+      <li><code class="language-plaintext highlighter-rouge">IPプロトコル</code>：すべて</li>
+    </ul>
+  </li>
+  <li>ルール2
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">トラフィックの方向</code>：エグレス</li>
+      <li><code class="language-plaintext highlighter-rouge">IPプロトコル</code>：すべて</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="tunnel23.png" alt="VTAPの設定 - フィルタの作成" /></p>
+
+<p>[起動]を選択するとステータスが実行中になり、VTAPが正常に起動されたことを確認します。
+<img src="tunnel24.png" alt="VTAPの起動" /></p>
+
+<p><br /></p>
+
+<h1 id="4-network-firewallを追加する">4. Network Firewallを追加する</h1>
+<p>手順2-3にて作成したNetwork Fireworkインスタンスの作成が完了後、以下の手順を行っていきます。</p>
+
+<h2 id="4-1-ルート表の設定">4-1. ルート表の設定</h2>
+<p>OCIコンソール画面にアクセスし、左上の[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からルート表をクリックします。</p>
+
+<p>「default route table for VCN-NFWtutorial」をクリックし、VTAPソースからVTAPターゲットまでの通信経路にNetwork Firewallを経由するよう、「ルート・ルールの追加」を選択し、以下のルールを追加します。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code>：プライベートIP</li>
+  <li><code class="language-plaintext highlighter-rouge">サブネットまたはVLANコンパートメント</code>：&lt;コンパートメントを選択&gt;</li>
+  <li><code class="language-plaintext highlighter-rouge">宛先タイプ</code>：CIDRブロック</li>
+  <li><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code>：10.0.1.0/24</li>
+  <li><code class="language-plaintext highlighter-rouge">ターゲット選択</code>：&lt;Network FirewallのプライベートIPアドレス&gt;</li>
+</ul>
+
+<p>これで、プライベート・サブネットへの通信はNetwork Firewallにルーティングされるようになります。</p>
+
+<h2 id="4-2-network-firewallのログの有効化">4-2. Network Firewallのログの有効化</h2>
+<p>[アイデンティティとセキュリティ]→[ファイアウォール]→[ネットワーク・ファイアウォール]→[ネットワーク・ファイアウォール詳細]→[ログ]と遷移し、Network Firewallのログ画面に移ります。</p>
+
+<p>「Theat Log」と「Tunnel Inspection Log」を有効化します。ログ・グループを作成していない場合は、「新規グループの作成」より、適用なログ・グループを作成し、設定します。
+<img src="tunnel26.png" alt="ログの有効化" /></p>
+
+<p><br /></p>
+
+<h1 id="5-idsを確認する">5. IDSを確認する</h1>
+<p>しばらく放置していると、Network Firewallのメトリック画面からパケットが処理されているのが分かります。
+手順1にて作成したインスタンスにSSHしてみるとより分かりやすくなります。
+<img src="tunnel27.png" alt="NFWを通過するパケットのメトリック" />
+ミラーリングされたパケットについては、Tunnel Inspection Logで確認することができます。</p>
+
+<p>また、先ほど有効化したthreat logを確認すると、以下のログのようにインスタンスがドイツからブルートフォース攻撃を受けていることなどが確認できる場合があります。
+<img src="tunnel28.png" alt="NFW脅威ログ" /></p>
+
+<h2 id="5-1-手動でidsを検知させる">5-1. 手動でIDSを検知させる</h2>
+<p>放置していると、上記のようにある程度脅威を検知していることが確認できますが、最後に意図的に検知をさせてみます。<br />
+方法としてはインスタンスにSSH接続をし、以下のコマンドでeicarファイルをhttpで取得します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://files.trendmicro.com/products/eicar-file/eicar.com
+</code></pre></div></div>
+
+<p>eicarのサイトではeicarファイルのhttpでの提供は終了しているため、<a href="https://downloadcenter.trendmicro.com/index.php?regs=jp&amp;prodid=1424&amp;ossl=2">TREND MICRO社のサイト</a>からEICARファイルを以下のコマンドで取得しています。
+httpsで取得すると暗号化により検知されないため、httpを使用することに注意してください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例）
+[opc@inst-tutorial ~]$ curl http://files.trendmicro.com/products/eicar-file/eicar.com
+X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*[opc@inst-tutorial ~]$
+</code></pre></div></div>
+
+<p>数分後、theat logで確認すると、取得したeicarファイルが検知されていることが分かります。</p>
+
+<!-- 3分ほど遅れてログで確認ができる。 
+ログは2つあるが、チュートリアルには一つだけ表示-->
+<p><img src="tunnel29.png" alt="eicarファイル脅威ログ1" />
+<!-- ![eicarファイル脅威ログ2](tunnel29.png) --></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#security" class="page__taxonomy-item p-category" rel="tag">security</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-10-31T18:03:16+09:00">October 31, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%88%E3%83%B3%E3%83%8D%E3%83%AB%E6%A4%9C%E6%9F%BB%E6%A7%8B%E6%88%90%E3%81%A7OCI+Network+Firewall%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-setup-tunnelinspection%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-setup-tunnelinspection%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup-tunnelinspection/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/security/networkfirewall-setup-hubspoke/" class="pagination--pager" title="ハブアンドスポーク構成でOCI Network Firewallを構築する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/security/networkfirewall-setup/" class="pagination--pager" title="OCI Network Firewallを構築する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
