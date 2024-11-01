@@ -1,0 +1,765 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>クラウド・シェルを使ってブラウザだけで簡単コマンド操作 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIのコンソール画面はGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途ターミナルを用いてコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができると便利です。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="クラウド・シェルを使ってブラウザだけで簡単コマンド操作">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/cloud-shell/">
+
+
+  <meta property="og:description" content="OCIのコンソール画面はGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途ターミナルを用いてコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができると便利です。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/cloud-shell/cloud-shell.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-11-01T10:23:25+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/cloud-shell/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/cloud-shell/cloud-shell.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          クラウド・シェルを使ってブラウザだけで簡単コマンド操作
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIのコンソール画面はGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途ターミナルを用いてコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができると便利です。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">クラウド・シェルを使ってブラウザだけで簡単コマンド操作</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-shell/" class="active">クラウド・シェルを使ってブラウザだけで簡単コマンド操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/budget-quota/">予算と割当て制限を設定してコストを適正化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/web-application-acceleration/">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="クラウド・シェルを使ってブラウザだけで簡単コマンド操作">
+    <meta itemprop="description" content="OCIのコンソール画面はGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途ターミナルを用いてコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができると便利です。">
+    <meta itemprop="datePublished" content="2024-11-01T10:23:25+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-iamポリシーの確認">1. IAMポリシーの確認</a></li><li><a href="#2-クラウドシェルの起動">2. クラウド・シェルの起動</a></li><li><a href="#3-oci-cliの実行">3. OCI CLIの実行</a></li><li><a href="#4-ファイルのアップロード">4. ファイルのアップロード</a></li><li><a href="#4-パブリックサブネットのインスタンスへのssh接続">4. パブリック・サブネットのインスタンスへのssh接続</a></li><li><a href="#5-プライベートサブネットのインスタンスへのssh接続">5. プライベート・サブネットのインスタンスへのssh接続</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /></p>
+
+<p>OCIのコンソール画面はWebブラウザでGUI操作ができて便利ですが、時にはコマンドラインで操作したい場合もあります。そんな時に別途パソコン上のターミナルソフトウェアを起動してコマンド操作するのではなく、ブラウザのコンソール画面の中でコマンド操作ができるととても便利です。</p>
+
+<p>クラウド・シェル（Cloud Shell）は、OCIコンソールの中で利用できるWebブラウザベースのターミナルの機能です。OCIテナンシ内の各ユーザにLinuxのBashシェル実行ができる環境が提供され、無償で利用できます。</p>
+
+<p>また、クラウド・シェルではOCIコマンドライン・インタフェース(CLI)の最新バージョンやそのほかの便利なツールがデプロイ済みですぐに使えるようになっています。ユーザごとに5GBのディレクトリが付属しているので、コンソールを閉じても次回再度起動すれば同じディレクトリを利用できます。</p>
+
+<p>詳細：<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/cloudshellintro.htm">クラウド・シェルのドキュメント</a></p>
+
+<p>このチュートリアルでは、クラウド・シェルの起動と各種ネットワークのモードの利用方法、また、OCI CLIとインスタンスへのssh接続を試します。</p>
+
+<p><img src="image-20240918145125584.png" alt="image-20240918145125584" /></p>
+
+<p><strong>所要時間 :</strong> 作業時間 約30分</p>
+
+<p><strong>前提条件 :</strong></p>
+
+<ol>
+  <li><a href="/ocitutorials/beginners/creating-vcn">チュートリアル入門編（その2）- クラウドに仮想ネットワーク(VCN)を作る</a>を通じてVCNの作成が完了しており、そのVCN内にデフォルトのプライベート・サブネットとパブリック・サブネットが作成されていること。</li>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">チュートリアル入門編（その3）- インスタンスを作成する</a> を通じてコンピュート・インスタンスの作成が完了していること。</li>
+</ol>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、現在のコンソール画面と異なっている場合があります</p>
+
+<p><strong>目次 :</strong></p>
+
+<ol>
+  <li><a href="#anchor1">事前要件の確認</a></li>
+  <li><a href="#anchor2">クラウド・シェルの起動</a></li>
+  <li><a href="#anchor3">OCI CLIの実行</a></li>
+  <li><a href="#anchor4">ファイルのアップロード</a></li>
+  <li><a href="#anchor5">パブリック・サブネットのコンピュート・インスタンスへのssh接続</a></li>
+  <li><a href="#anchor6">プライベート・サブネットのコンピュート・インスタンスへのssh接続</a></li>
+</ol>
+
+<p><br /><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-iamポリシーの確認">1. IAMポリシーの確認</h1>
+
+<p>操作ユーザーがAdministratorsグループに所属している、あるいはテナンシの管理者権限を持つ場合は特に追加の設定は不要です。それ以外の場合は、以下のポリシーを設定してください。これらのポリシーはコンパートメントではなくテナンシレベルでの設定（in tenancy）が必要なため、rootコンパートメントに配置してください。</p>
+
+<ul>
+  <li>クラウド・シェルを利用するためのポリシー</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;GROUP-NAME&gt; to use cloud-shell in tenancy
+</code></pre></div></div>
+
+<ul>
+  <li>クラウド・シェルのパブリック・ネットワーク・アクセスを利用するためのポリシー</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow group &lt;GROUP-NAME&gt; to use cloud-shell-public-network in tenancy
+</code></pre></div></div>
+
+<h1 id="2-クラウドシェルの起動">2. クラウド・シェルの起動</h1>
+
+<ol>
+  <li>
+    <p>コンソール画面右上のアイコンの中から<code class="language-plaintext highlighter-rouge">開発者ツール</code>のアイコンにカーソルを置き、表示されたメニューから <code class="language-plaintext highlighter-rouge">Cloud Shell</code> をクリックします。<img src="image-20240925142653175.png" alt="image-20240925142653175" /></p>
+  </li>
+  <li>
+    <p>（注：2024年10月現在）初回起動時に「ARM（aarch64）インスタンスが使用可能になりました」というお知らせのポップアップが表示されますが、そのまま閉じるをクリックしてください。
+<img src="image-20240925143046787.png" alt="image-20240925143046787" /></p>
+  </li>
+  <li>
+    <p>コンソール画面の下半分にCloud Shellが起動してきます。初回起動時にはチュートリアルを実行するかどうかを聞かれますので、ここでは「N」を入力します。（Yを入力するとCloud Shellの機能を一通り確認することもできます。）</p>
+
+    <p>二回目以降にCloud Shellを起動した場合はチュートリアルはスキップされます。<img src="image-20240925145112804.png" alt="image-20240925145112804" /></p>
+  </li>
+  <li>
+    <p>クラウド・シェルの左上の<code class="language-plaintext highlighter-rouge">ネットワーク</code>のプルダウンメニューを開きます。のちほどインスタンスのパブリックIPアドレス宛にssh接続を試したいので、ネットワークのモードとして<code class="language-plaintext highlighter-rouge">パブリック</code>が選択されていることを確認します。それ以外のモードが選択されている場合は、<code class="language-plaintext highlighter-rouge">パブリック</code>を選択してください。
+<img src="image-20240925150147347.png" alt="image-20240925150147347" /></p>
+  </li>
+  <li>
+    <p>クラウド・シェルのバーの右上の斜めの矢印のアイコンをクリックしてみましょう。ウィンドウがコンソール内で最大化されます。クラウド・シェルを大きく表示したい場合は最大化し、コンソール画面も同時に参照したいような場合は画面下半分にリストアしましょう。邪魔な場合は最小化アイコンでコンソールの一番下に最小化しておくこともできます。
+<img src="image-20240925152650965.png" alt="image-20240925152650965" /></p>
+
+    <p><img src="image-20240925152803562.png" alt="image-20240925152803562" /></p>
+  </li>
+  <li>
+    <p>これでクラウド・シェルの起動は完了です。クラウド・シェルにはホーム・ディレクトリ用に5GBのストレージが付属していますが、6か月を超えてクラウド・シェルを起動していない場合は、その後60日以内にこのストレージ領域は削除されますのでご注意ください。</p>
+  </li>
+</ol>
+
+<h1 id="3-oci-cliの実行">3. OCI CLIの実行</h1>
+
+<p>続いて、クラウド・シェル上でOCI CLIを実行してみます。クラウド・シェルではあらかじめOCI CLIはインストール済みでコンソールにログインしたユーザとしての認証が済んでいる状態なので、APIキーの登録やOCI CLIの初期セットアップなどは不要です。</p>
+
+<ol>
+  <li>
+    <p>クラウド・シェルで以下のコマンドを実行します。帰ってくる結果と同じ識別子がクラウドシェルのプロンプトにも表示されています。これはコンソール右上のリージョン選択で選択されているリージョンと同じリージョンになります。この場合ap-tokyo-1が表示されているため、これからこのクラウド・シェルのセッションで実行するコマンドはap-tokyo-1のリージョンのサービスに対して発行されることになります。
+もしほかのリージョン宛てにCLIを実行したい場合は、コンソールのリージョン選択をしなおしてから、クラウド・シェルのセッションを再起動してください。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo $OCI_CLI_PROFILE
+</code></pre></div>    </div>
+
+    <p><img src="image-20240925151304130.png" alt="image-20240925151304130" /></p>
+  </li>
+  <li>
+    <p>以下のOCI CLIコマンドを実行します。特にセットアップ作業は不要でコマンドが実行可能であることが分かります。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci iam availability-domain list
+</code></pre></div>    </div>
+
+    <p><img src="image-20240925152448111.png" alt="image-20240925152448111" /></p>
+  </li>
+  <li>
+    <p>続いて、あらかじめ作成されているコンピュート・インスタンスが配置されているコンパートメントのOCIDを確認します。わからない場合は、メニュー→<code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code>→<code class="language-plaintext highlighter-rouge">コンパートメント</code> のページから対象のコンパートメントのOCIDを確認します。</p>
+  </li>
+  <li>
+    <p>以下のOCI CLIコマンドを実行します。このコンパートメントに現在存在しているコンピュート・インスタンスの名前とステータスを表示します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci compute instance list --compartment-id &lt;コンパートメントのOCID&gt; --query "data[].[\"display-name\",\"lifecycle-state\"]"
+</code></pre></div>    </div>
+
+    <p><img src="image-20240925162535262.png" alt="image-20240925162535262" /></p>
+  </li>
+</ol>
+
+<h1 id="4-ファイルのアップロード">4. ファイルのアップロード</h1>
+
+<p>続いて、クラウド・シェル上にファイルをアップロードします。ここでは、インタンスのOSログインのためのsshキーをクラウド・シェル上にアップロードします。</p>
+
+<ol>
+  <li>
+    <p>クラウド・シェルの右上の歯車のアイコンにカーソルを置き、<code class="language-plaintext highlighter-rouge">アップロード</code>のメニューをクリックします。
+<img src="image-20240925163455898.png" alt="image-20240925163455898" /></p>
+  </li>
+  <li>
+    <p>インスタンスのsshキーの秘密鍵をアップロードします。表示されたポップアップウィンドウにファイルをドラック・アンド・ドロップするか、「コンピュータから選択」をクリックして対象のファイルを選択し、<code class="language-plaintext highlighter-rouge">アップロード</code> ボタンをクリックします。</p>
+
+    <p><img src="image-20240925163659678.png" alt="image-20240925163532873" /></p>
+  </li>
+  <li>
+    <p>アップロードが完了するとファイル転送のウィンドウに<code class="language-plaintext highlighter-rouge">完了済</code>と表示されます。このウィンドウは<code class="language-plaintext highlighter-rouge">非表示</code>リンクから閉じてしまって問題ないです。
+<img src="image-20240925163751498.png" alt="image-20240925163751498" /></p>
+  </li>
+  <li>
+    <p>秘密鍵のファイルがアップロードできたら、sshで利用するために以下のコマンドでファイルの権限を修正します。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod 600 &lt;ファイル名&gt;
+</code></pre></div>    </div>
+
+    <p>修正後に以下のコマンドで確認し、権限が -rw——- になっていれば問題ありません。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>id -l &lt;ファイル名&gt;
+</code></pre></div>    </div>
+
+    <p><img src="image-20240925164356030.png" alt="image-20240925164356030" /></p>
+  </li>
+</ol>
+
+<h1 id="4-パブリックサブネットのインスタンスへのssh接続">4. パブリック・サブネットのインスタンスへのssh接続</h1>
+
+<p>続いて、パブリック・サブネットに配置されたコンピュート・インスタンスのパブリックIPアドレス宛にssh接続を行います。パブリックIPアドレスに接続するためには、クラウド・シェルのネットワーク・モードは「パブリック」になっている必要があります。</p>
+
+<ol>
+  <li>
+    <p>コンピュート・インスタンスのパブリックIPアドレスが分からない場合は、コンソール画面のコンピュート→インスタンス→インスタンスの詳細画面から確認してください。
+<img src="image-20240925164707861.png" alt="image-20240925164707861" /></p>
+  </li>
+  <li>
+    <p>クラウド・シェルのネットワーク・モードが「パブリック」になっていることを確認し、以下のコマンドでssh接続を行います。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -i &lt;秘密鍵ファイル&gt; opc@&lt;上記手順で確認したパブリックIPアドレス&gt;
+</code></pre></div>    </div>
+
+    <p><img src="image-20240925165143899.png" alt="image-20240925165143899" /></p>
+  </li>
+</ol>
+
+<p>クラウド・シェルからインスタンスにssh接続できました。</p>
+
+<h1 id="5-プライベートサブネットのインスタンスへのssh接続">5. プライベート・サブネットのインスタンスへのssh接続</h1>
+
+<p>続いて、プライベート・サブネットに配置したコンピュート・インスタンスのプライベートIPアドレス宛にssh接続を行います。プライベート・ネットワークに接続するためには、「プライベート・ネットワーク・アクセス」のネットワーク・モードを利用する必要があります。また、<strong>プライベート・ネットワーク・アクセスはホーム・リージョンのみで利用可能</strong>です。</p>
+
+<ol>
+  <li>
+    <p>利用しているテナンシのホーム・リージョンで、VCNのプライベート・サブネットにインスタンスを用意します。この環境ではホーム・リージョンがUS East (Ashburn)となっています。
+<img src="image-20241030085555138.png" alt="image-20241030085555138" /></p>
+  </li>
+  <li>
+    <p>クラウド・シェルを起動し、ネットワーク・モードをプライベートに変更します。「ネットワーク」のプルダウンリストから「エフェメラル・プライベート・ネットワーク」を選択します。（今回のみ有効なプライベート・ネットワーク・アクセスとなります。永続的にプライベート・ネットワーク設定を保存したい場合は定義リストを作成する必要がありますが、今回は一度のみで構わないのでエフェメラルを選択します。）
+<img src="image-20241030085859762.png" alt="image-20241030085859762" /></p>
+  </li>
+  <li>
+    <p>クラウドシェルの画面右側に「エフェメラル・プライベート・ネットワーク設定」の画面が開きます。以下の項目を入力して、「アクティブなネットワークとして使用する」をクリックします。</p>
+
+    <ul>
+      <li>VCN：インスタンスが配置されているVCNを選択</li>
+      <li>サブネット：インスタンスが配置されているプライベート・サブネットを選択</li>
+      <li>ネットワーク・セキュリティ・グループ（オプション）：特に設定なし<img src="image-20241030090204133.png" alt="image-20241030090204133" /></li>
+    </ul>
+  </li>
+  <li>
+    <p>クラウド・シェル画面のネットワーク・モードの表示部分が「エフェメラル（接続中）」から「エフェメラル」となるまで少し待ちます。
+<img src="image-20241030090359620.png" alt="image-20241030090359620" />
+<img src="image-20241030090511756.png" alt="image-20241030090511756" /></p>
+  </li>
+  <li>
+    <p>sshキーの配置は先ほどと同様の手順で実施しておきます。インスタンスのプライベートIP宛てにssh接続を行います。</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh -i &lt;秘密鍵ファイル&gt; opc@&lt;インスタンスのプライベートIPアドレス&gt;
+</code></pre></div>    </div>
+
+    <p><img src="image-20241030090718287.png" alt="image-20241030090718287" /></p>
+  </li>
+  <li>
+    <p>プライベート・サブネット内のインスタンスに接続ができました。
+<img src="image-20241030090923165.png" alt="image-20241030090923165" /></p>
+  </li>
+</ol>
+
+<p>以上で、以下の点を試してみることができました。</p>
+
+<ul>
+  <li>クラウド・シェルを利用すれば、特別な設定なしにコンソールにログインしたユーザの権限でOCI CLIでのコマンドライン操作が可能</li>
+  <li>クラウド・シェルには5GBの永続ストレージ（6か月以上アクセスがない場合には削除される）が付属。ファイルをアップロードすることもできる。</li>
+  <li>sshなどのOSコマンドを使用してインスタンスへの接続も可能。</li>
+  <li>パブリック・ネットワーク・モードではパブリックIPに対して接続が可能。</li>
+  <li>プライベート・ネットワーク・アクセス・モードでは、ホーム・リージョン内で、指定したプライベート・サブネット内のプライベートIPに対して接続が可能。</li>
+</ul>
+
+<p>以上でこのチュートリアルは完了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#governance" class="page__taxonomy-item p-category" rel="tag">governance</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item p-category" rel="tag">intermediate</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-01T10:23:25+09:00">November 1, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%83%BB%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E3%81%A0%E3%81%91%E3%81%A7%E7%B0%A1%E5%8D%98%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E6%93%8D%E4%BD%9C%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fcloud-shell%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fcloud-shell%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/intermediates/cloud-shell/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/using-cli/" class="pagination--pager" title="コマンドライン(CLI)でOCIを操作する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/budget-quota/" class="pagination--pager" title="予算と割当て制限を設定してコストを適正化する
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
