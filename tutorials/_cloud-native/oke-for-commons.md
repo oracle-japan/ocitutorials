@@ -156,7 +156,7 @@ Cloud Shellは、必要なCLIはデフォルトでインストール済みです
 例えば以下のようなコマンドを実行できます。
 
 ```
-kubectl version --client --short
+kubectl version --client
 ```
 
 以下のような結果となれば、kubectlは正常にインストールされています。
