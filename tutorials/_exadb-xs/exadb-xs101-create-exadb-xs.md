@@ -28,7 +28,7 @@ ExaDB-XSは、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と�
 
 + **サービス制限の確認・引き上げのリクエスト**
 
-    ExaDB-Dを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については[もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について](https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits){:target="_blank"}を参照ください。
+    ExaDB-XSを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については[もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について](https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits){:target="_blank"}を参照ください。
 
 
 <br>
@@ -328,7 +328,7 @@ ExaDB-XSは、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と�
     USER is "TESTUSER"
     ```
 
-以上で この章の作業は完了です。
+以上で、この章の作業は完了です。
 
 <br>
 
