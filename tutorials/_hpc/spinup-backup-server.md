@@ -21,45 +21,27 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 ※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと **ファイル・ストレージ** の比較は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-2 可用性による比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-2-可用性による比較)** を参照してください。
 
-以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するHPC/GPUクラスタのファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。
+以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。
 
 ここでバックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージ（ **ブロック・ボリューム** やNVMe SSDドライブ）より容量単価の安価なものを選択する必要があるため、 **オブジェクト・ストレージ** を使用します。  
 この際のバックアップツールは、 **オブジェクト・ストレージ** とPOSIXファイルシステム間のデータ転送ツールとして幅広く利用されているオープンソースの **[Rclone](https://rclone.org/)** を採用し、ベア・メタル・インスタンスNFSサーバのNFSクライアントとして構成したバックアップサーバ上でこの **Rclone** のファイル同期機能を使用し、NFSマウントしたファイルシステム領域を **オブジェクト・ストレージ** に差分バックアップします。  
 **Rclone** が **オブジェクト・ストレージ** にアクセスする際は、バックアップサーバを **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証に組み込むことでIAM認証・認可を付与します。  
-またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを **マルチパート・アップロード** する際に **Rclone** がマルチスレッドにを活用してデータ転送を行う事を考慮し、コア数の十分な **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard)** の32コア・384GBメモリを使用します。  
-また、本チュートリアルで使用する各ソフトウェアのバージョンは、以下です。
+またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを **マルチパート・アップロード** する際に **Rclone** がマルチスレッドを活用してデータ転送を行う事を考慮し、コア数の十分な **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard)** の32コア・384GBメモリを使用します。  
+また、本チュートリアルで使用する各ソフトウェアのバージョンを以下に示します。
 
 - バックアップサーバOS： **Oracle Linux** 9.4（Oracle-Linux-9.4-2024.08.29-0 UEK）
 - **Rclone** ： v1.68.1
 
 ![システム構成図](architecture_diagram.png)
 
-**Rclone** は、このツールが持つ以下の機能を有効活用することで、本チュートリアルのようなPOSIXファイルシステムを **オブジェクト・ストレージ** にバックアップする際、バックアップの信頼性と性能を向上することが可能です。
+**Rclone** は、このツールが持つ以下の機能を活用することで、本チュートリアルのようなPOSIXファイルシステムを **オブジェクト・ストレージ** にバックアップする際、バックアップの信頼性と性能を向上することが可能です。
 
 - 差分バックアップ
 - マルチパート・アップロード
-- チェックサムによるバックアップファイルの検証
+- チェックサムによるファイル転送結果の確認
 
-また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能を以下の観点で検証し、
-
-- スループット検証
-    - テストファイルサイズ： 10 GiB
-    - テストファイル作成方法： /dev/urandomを元にddで作成
-- メタデータ性能検証
-    - テストファイルサイズ： 0 B
-    - ディレクトリ数： 1,000
-    - ディレクトリ当たりファイル数： 1,000
-    - 総ファイル数： 1,000,000
-
-以下の性能を計測しています。（3回計測した平均値）  
-なおこの性能値は、状況に応じて変化するため、参考値としてご利用ください。
-
-- バックアップ性能
-    - スループット： **310 MiB/s**
-    - メタデータ性能： **2,857 files/s**
-- リストア性能
-    - スループット： **240 MiB/s**
-    - メタデータ性能： **1,927 files/s**
+また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能をスループットとメタデータ性能の観点で検証します。  
+この結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オブジェクト・ストレージを使用するバックアップツールの選択方法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[3. バックアップ・リストア性能](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#3-バックアップ・リストア性能)** を参照してください。
 
 **所要時間 :** 約2時間
 
@@ -92,9 +74,9 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 ## 1-1. インスタンス・プリンシパル認証関連設定
 
-**インスタンス・プリンシパル** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い実施します。  
+**[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い実施します。  
 この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、バックアップサーバと読みかえて下さい。  
-また、このテクニカルTipsで指定しているIAMポリシーは、本チュートリアルでは以下のもののみ適用します。
+また、このテクニカルTipsで設定しているIAMポリシーは、本チュートリアルでは以下のみが必要です。
 
 ```sh
 allow dynamic-group dynamicgroup_name to manage all-resources in compartment compartment_name
@@ -341,7 +323,7 @@ $ time sudo rclone --oos-upload-cutoff 16Mi --transfers 100 --oos-chunk-size 16M
 ここで **dest_dir** と **source_dir** は、スループット検証の場合は何れも **large** 、メタデータ性能検証の場合は何れも **small** とします。
 
 ```sh
-$ time sudo rclone --oos-upload-cutoff 16Mi --transfers 100 --oos-chunk-size 16Mi --oos-upload-concurrency 128 --oos-attempt-resume-upload --oos-leave-parts-on-error --copy-links --metadata sync nfs-backup:rclone/dest_dir /mnt/nfs/restore/source_dir
+$ time sudo rclone --oos-upload-cutoff 16Mi --transfers 100 --oos-chunk-size 16Mi --oos-upload-concurrency 128 --oos-attempt-resume-upload --oos-leave-parts-on-error --copy-links --metadata --checksum sync nfs-backup:rclone/dest_dir /mnt/nfs/restore/source_dir
 ```
 
 出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。
