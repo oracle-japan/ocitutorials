@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-01T10:23:25+09:00">
+  <meta property="article:published_time" content="2024-11-05T15:22:02+09:00">
 
 
 
@@ -264,7 +264,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="101 : ExaDB-XSを使おう">
     <meta itemprop="description" content="あらゆる業界のあらゆる組織にExadataのメリットを提供するExaDB-XSの作成方法について紹介します。">
-    <meta itemprop="datePublished" content="2024-11-01T10:23:25+09:00">
+    <meta itemprop="datePublished" content="2024-11-05T15:22:02+09:00">
     
 
     <div class="page__inner-wrap">
@@ -275,7 +275,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#vmクラスタおよびデータベースの作成">VMクラスタおよびデータベースの作成</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-vmクラスタおよびデータベースの作成">1. VMクラスタおよびデータベースの作成</a></li><li><a href="#2-dbシステムへのアクセス">2. DBシステムへのアクセス</a></li><li><a href="#3-データベースpdbへのアクセス">3. データベース(PDB)へのアクセス</a></li><li><a href="#4-pdb上のスキーマへのアクセス">4. PDB上のスキーマへのアクセス</a></li><li><a href="#参考資料">参考資料</a></li></ul>
             </nav>
           </aside>
         
@@ -290,7 +290,38 @@
 
 <p><br /></p>
 
-<h1 id="vmクラスタおよびデータベースの作成">VMクラスタおよびデータベースの作成</h1>
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p><strong>VCNの作成</strong></p>
+
+    <p><a href="../..">Oracle Cloud Infrastructure チュートリアル</a> を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること</p>
+  </li>
+  <li>
+    <p><strong>サービス制限の確認・引き上げのリクエスト</strong></p>
+
+    <p>ExaDB-XSを利用するには、まずサービス制限を引き上げる必要があります。サービス制限については<a href="https://blogs.oracle.com/otnjp/post/minamin-cloud-016-servicelimits" target="_blank">もしもみなみんがDBをクラウドで動かしてみたら - 第16回 サービス制限について</a>を参照ください。</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>注意</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<p><br />
+<strong>目次 :</strong></p>
+<ul>
+  <li><a href="#1-VMクラスタおよびデータベースの作成">1. VMクラスタおよびデータベースの作成</a></li>
+  <li><a href="#2-dbシステムへのアクセス">2. DBシステムへのアクセス</a></li>
+  <li><a href="#3-データベースpdbへのアクセス">3. データベース(PDB)へのアクセス</a></li>
+  <li><a href="#4-pdb上のスキーマへのアクセス">4. PDB上のスキーマへのアクセス</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1-vmクラスタおよびデータベースの作成">1. VMクラスタおよびデータベースの作成</h1>
 <p><a href="https://docs.oracle.com/ja/learn/exadb-xs-db/index.html" target="_blank">ExascaleインフラストラクチャでのOracle Exadata Database Serviceのプロビジョニング</a>を参考に、ExaDB-XSのVMクラスタを作成し、その上にコンテナ・データベースをプロビジョニングします。</p>
 
 <blockquote>
@@ -300,6 +331,292 @@
 
   <p><img src="console_01.png" alt="" /></p>
 </blockquote>
+
+<p><br /></p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-dbシステムへのアクセス">2. <strong>DBシステムへのアクセス</strong></h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Exadata Database Service on Exascale Infrastructure</strong> に移動します。</p>
+
+    <p><img src="2-1_oci_console_home.png" alt="" /></p>
+  </li>
+  <li>
+    <p><a href="#anchor1">1. VMクラスタおよびデータベースの作成</a>で作成した<strong>VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2-2_vmcluster_all.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong>の一覧から<strong>仮想マシン</strong>をクリックします。</p>
+
+    <p><img src="2-3_resource.png" alt="" /></p>
+  </li>
+  <li>
+    <p>接続したいノードの<strong>パブリックIPアドレス</strong>に表示されているIPアドレスをメモします。</p>
+
+    <p><img src="2-4_public_IP.png" alt="" /></p>
+  </li>
+  <li>任意のターミナルソフトを起動し、以下の情報でssh接続します。
+    <ul>
+      <li><strong>IPアドレス</strong> - 上記ステップで確認したインスタンスの <strong>パブリックIPアドレス</strong></li>
+      <li><strong>ポート</strong> - 22 (デフォルト)</li>
+      <li><strong>ユーザー</strong> - opc (DBシステムは、接続用に予め opc というユーザーが用意されています)</li>
+      <li><strong>SSH鍵</strong> -  <a href="#anchor1">1. VMクラスタおよびデータベースの作成</a>で追加した公開鍵と対になる秘密鍵を使用します。</li>
+      <li><strong>パスフレーズ</strong> - 秘密鍵にパスフレーズが設定されている場合は指定してください。
+ 下記は Tera Term を利用した場合の接続の設定例です。</li>
+    </ul>
+
+    <p><img src="2-5_teraterm1.png" alt="" /></p>
+
+    <p><img src="2-5_teraterm2.png" alt="" /></p>
+
+    <p>接続が成功すると以下のように表示されます。</p>
+
+    <p><img src="2-5_teraterm3.png" alt="" /></p>
+  </li>
+  <li>
+    <p>oracleユーザーにログインします。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo su -　oracle
+</code></pre></div>    </div>
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [opc@demo1-hqilr ~]$ sudo su - oracle
+ Last login: Fri Nov  1 04:06:00 UTC 2024
+ [oracle@demo1-hqilr ~]$
+</code></pre></div>    </div>
+
+    <p>ログアウトせず、そのまま次に進んでください。</p>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="3-データベースpdbへのアクセス">3. <strong>データベース(PDB)へのアクセス</strong></h1>
+
+<p><a id="anchor3"></a></p>
+
+<ol>
+  <li>
+    <p>環境変数設定ファイルの読み込み</p>
+
+    <p>oracleユーザーのホーム・ディレクトリ(/home/oracle)に環境変数設定ファイルが自動で生成されていて、そのファイルの中身を読み込むことで簡単に環境変数が設定され、データベースの接続が簡素化されます。</p>
+
+    <p>以下のように環境変数設定ファイルを確認し、読み込みます。また、環境変数の設定が反映されたか確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ls
+ . &lt;データベース名&gt; .env
+ env | grep ORACLE
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@demo1-hqilr ~]$ ls
+ DB0720.env
+ [oracle@demo1-hqilr ~]$ . DB0720.env
+ [oracle@demo1-hqilr ~]$ env | grep ORACLE
+ ORACLE_UNQNAME=DB0720_kzw_sjc
+ ORACLE_SID=DB07201
+ ORACLE_BASE=/u02/app/oracle
+ ORACLE_HOME=/u02/app/oracle/product/23.0.0.0/dbhome_1
+ ORACLE_HOSTNAME=demo1-hqilr.sub07180912150.vcnsjc.oraclevcn.com
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>データベース(CDB)に接続する</p>
+
+    <p>以下のコマンドを用いてデータベースのコンテナ・データベース (CDB)に対してsysユーザでSQL*Plusから接続します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus / as sysdba
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@demo1-hqilr ~]$ sqlplus / as sysdba
+
+ SQL*Plus: Release 23.0.0.0.0 - Production on Fri Nov 1 04:40:20 2024
+ Version 23.4.0.24.05
+    
+ Copyright (c) 1982, 2024, Oracle.  All rights reserved.
+    
+    
+ Connected to:
+ Oracle Database 23ai EE Extreme Perf Release 23.0.0.0.0 - Production
+ Version 23.4.0.24.05
+    
+ SQL&gt;
+</code></pre></div>    </div>
+
+    <p>接続しているデータベースのデータベース名とコンテナ名を確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="k">parameter</span> <span class="n">db_name</span>
+ <span class="k">show</span> <span class="n">con_name</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show parameter db_name
+    
+ NAME                                 TYPE        VALUE
+ ------------------------------------ ----------- ------------------------------
+ db_name                              string      DB0720
+ SQL&gt; show con_name
+    
+ CON_NAME
+ ------------------------------
+ CDB$ROOT
+ SQL&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>PDBに接続する</p>
+
+    <p>データベース構築時に作成されたPDBを確認し、PDBに接続します。
+ (PDB$SEEDでない方のPDB名を指定します)</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="n">pdbs</span>
+ <span class="k">alter</span> <span class="k">session</span> <span class="k">set</span> <span class="n">container</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">PDB</span><span class="err">名</span><span class="o">&gt;</span> <span class="p">;</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show pdbs
+
+     CON_ID CON_NAME                       OPEN MODE  RESTRICTED
+ ---------- ------------------------------ ---------- ----------
+         2 PDB$SEED                       READ ONLY  NO
+         3 PDB1                           READ WRITE NO
+ SQL&gt; alter session set container = PDB1 ;
+
+ Session altered.
+
+ SQL&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>PDB上にスキーマを作成します。</p>
+
+    <p>尚、ここでは便宜上、最低限必要な権限を付与していますが、要件に応じて権限・ロールを付与するようにしてください。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">create</span> <span class="k">user</span> <span class="n">TESTUSER</span> <span class="n">identified</span> <span class="k">by</span> <span class="o">&lt;</span><span class="err">任意のパスワード</span><span class="o">&gt;</span> <span class="p">;</span>
+ <span class="k">grant</span> <span class="k">CREATE</span> <span class="k">SESSION</span><span class="p">,</span> <span class="k">CONNECT</span><span class="p">,</span><span class="n">RESOURCE</span><span class="p">,</span><span class="n">UNLIMITED</span> <span class="n">TABLESPACE</span> <span class="k">to</span> <span class="n">TESTUSER</span> <span class="p">;</span>
+ <span class="n">exit</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; create user TESTUSER identified by Welcome1 ;
+
+ User created.
+
+ SQL&gt; grant CREATE SESSION, CONNECT,RESOURCE,UNLIMITED TABLESPACE to TESTUSER ;
+
+ Grant succeeded.
+    
+ SQL&gt; exit
+ SQL&gt; exit
+ Disconnected from Oracle Database 23ai EE Extreme Perf Release 23.0.0.0.0 - Production
+ Version 23.4.0.24.05
+ [oracle@demo1-hqilr ~]$
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p><br /></p>
+
+<h1 id="4-pdb上のスキーマへのアクセス">4. <strong>PDB上のスキーマへのアクセス</strong></h1>
+
+<ol>
+  <li>
+    <p>OCIコンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Exadata Database Service on Exascale Infrastructure</strong> に移動します。</p>
+
+    <p><img src="2-1_oci_console_home.png" alt="" /></p>
+  </li>
+  <li>
+    <p><a href="#anchor1">1. VMクラスタおよびデータベースの作成</a>で作成した<strong>VMクラスタ</strong>の表示名をクリックします。</p>
+
+    <p><img src="2-2_vmcluster_all.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>データベース</strong>の一覧から作成したデータベースの名前をクリックします。</p>
+
+    <p><img src="4-3_db.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>リソース</strong>の一覧から<strong>プラガブル・データベース</strong>をクリックします。</p>
+
+    <p><img src="4-4_db_resource.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>プラガブル・データベース</strong>の一覧から接続したいPDBの名前をクリックします。</p>
+
+    <p><img src="4-5_db_pdb.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>PDB接続</strong>をクリックします。</p>
+
+    <p><img src="4-6_pdb_con.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>簡易接続</strong>の接続文字列の右にある<strong>コピー</strong>をクリックし、クリップボードに簡易接続文字列をコピーします。
+その後、<strong>閉じる</strong>をクリックし、ダイアログを閉じます。</p>
+
+    <p><img src="4-7_connection_string.png" alt="" /></p>
+  </li>
+  <li>
+    <p>DBシステムへアクセスしてoracleユーザとしてログインします。(<a href="#anchor2">2. DBシステムへのアクセス</a>を参照ください。)</p>
+  </li>
+  <li>
+    <p>環境変数設定ファイルを読み込みます。(<a href="#anchor3">3. データベース(PDB)へのアクセスの1.</a>を参照ください。)</p>
+  </li>
+  <li>
+    <p>PDB上のスキーマに接続します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sqlplus &lt;スキーマ名&gt;/&lt;パスワード&gt;@&lt;簡易接続文字列&gt;
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [oracle@demo1-hqilr ~]$ sqlplus testuser/Welcome1@&lt;簡易接続文字列&gt;
+
+ SQL*Plus: Release 23.0.0.0.0 - Production on Fri Nov 1 06:14:44 2024
+ Version 23.4.0.24.05
+
+ Copyright (c) 1982, 2024, Oracle.  All rights reserved.
+
+ Last Successful login time: Mon Sep 02 2024 05:08:30 +00:00
+
+ Connected to:
+ Oracle Database 23ai EE Extreme Perf Release 23.0.0.0.0 - Production
+ Version 23.4.0.24.05
+
+ SQL&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>接続情報を確認します。</p>
+
+    <p>実行コマンド</p>
+    <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">show</span> <span class="n">con_name</span>
+ <span class="k">show</span> <span class="k">user</span>
+</code></pre></div>    </div>
+
+    <p>実行例</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> SQL&gt; show con_name
+
+ CON_NAME
+ ------------------------------
+ PDB1
+ SQL&gt; show user
+ USER is "TESTUSER"
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>以上で、この章の作業は完了です。</p>
 
 <p><br /></p>
 
@@ -325,7 +642,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-01T10:23:25+09:00">November 1, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-05T15:22:02+09:00">November 5, 2024</time></p>
 
       </footer>
 
