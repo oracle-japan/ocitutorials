@@ -1,0 +1,897 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>オブジェクト・ストレージを使用するバックアップツールの選択方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="オブジェクト・ストレージを使用するバックアップツールの選択方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">
+
+
+  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-11-05T17:42:40+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          オブジェクト・ストレージを使用するバックアップツールの選択方法
+
+        
+      </h1>
+      
+        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">オブジェクト・ストレージを使用するバックアップツールの選択方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/" class="active">オブジェクト・ストレージを使用するバックアップツールの選択方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="オブジェクト・ストレージを使用するバックアップツールの選択方法">
+    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
+    <meta itemprop="datePublished" content="2024-11-05T17:42:40+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-検証環境">1-1. 検証環境</a></li><li><a href="#1-2-ソフトウェアバージョン">1-2. ソフトウェアバージョン</a></li><li><a href="#1-3-バックアップリストア時指定のオプション">1-3. バックアップ・リストア時指定のオプション</a><ul><li><a href="#1-3-1-oci-cli">1-3-1. OCI CLI</a></li><li><a href="#1-3-2-ocifs">1-3-2. OCIFS</a></li><li><a href="#1-3-3-rclone">1-3-3. Rclone</a></li></ul></li></ul></li><li><a href="#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></li><li><a href="#3-バックアップリストア性能">3. バックアップ・リストア性能</a></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong>ベア・メタル・インスタンス</strong> と <strong>ブロック・ボリューム</strong> 等のストレージサービスで構築するNFSでサービスするファイル共有ストレージは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を構築する必要があります。<br />
+この際バックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージより容量単価の安価なものを選択する必要があるため、 <strong>オブジェクト・ストレージ</strong> がその有力な候補になります。</p>
+
+<p>この際バックアップを行うツールは、POSIXファイルシステムと <strong>オブジェクト・ストレージ</strong> 間の差分バックアップ機能が必要になり、この機能を有する代表的なものとして以下のツールが挙げられます。</p>
+
+<ul>
+  <li><strong><a href="https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm">Command Line Interface（以降”OCI CLI”と呼称）</a></strong> の <strong><a href="https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.49.3/oci_cli_docs/cmdref/os/object/sync.html">oci os object sync</a></strong> コマンド<br />
+<strong>OCI</strong> の操作をコマンドラインインターフェースで行うための <strong>OCI CLI</strong> は、POSIXファイルシステムと <strong>オブジェクト・ストレージ</strong> を同期させるサブコマンド <strong>oci os object sync</strong> を提供しており、これを利用して差分バックアップを実現します。</li>
+  <li><strong><a href="https://docs.oracle.com/en-us/iaas/oracle-linux/ocifs/index.htm">OCIFS</a></strong> + rsync<br />
+<strong>OCI</strong> が無償で提供するユーティリティの <strong>OCIFS</strong> は、 <strong>オブジェクト・ストレージ</strong> をPOSIXファイルシステムのディレクトリ階層にマウントし、POSIXのIOシステムコールを使用するアプリケーションが <strong>オブジェクト・ストレージ</strong> にアクセスすることを可能にします。<br />
+<strong>OCIFS</strong> でマウントされた <strong>オブジェクト・ストレージ</strong> とファイル共有ストレージをrsyncで同期させることで、ファイル共有ストレージの <strong>オブジェクト・ストレージ</strong> への差分バックアップを実現します。</li>
+  <li><strong><a href="https://rclone.org/">Rclone</a></strong><br />
+<strong>Rclone</strong> は、様々なクラウトストレージで利用可能なデータ転送ツールとして幅広く利用されている高機能のオープンソースソフトウェアで、 <strong>オブジェクト・ストレージ</strong> をバックエンドのストレージとして公式にサポートしており、ストレージ間を同期させるサブコマンド <strong>rclone sync</strong> を利用し、ファイル共有ストレージの <strong>オブジェクト・ストレージ</strong> への差分バックアップを実現します。</li>
+</ul>
+
+<p>本テクニカルTipsは、ファイル共有ストレージのバックアップを <strong>オブジェクト・ストレージ</strong> に取得することを念頭に、まず初めにこれらのツールを検証する際の前提条件を提示し、次に以下の観点でこれらのツールを比較・検証することで、自身のバックアップ要件に沿ったツールをどのように選択すればよいかを解説します。</p>
+
+<ul>
+  <li>バックアップ・リストア時の制約事項</li>
+  <li>バックアップ・リストア性能</li>
+</ul>
+
+<hr />
+<h1 id="1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、本テクニカルTipsで比較するバックアップツールを検証する際の前提条件を、以下の観点で解説します。</p>
+
+<ul>
+  <li>検証環境</li>
+  <li>ソフトウェアバージョン</li>
+  <li>バックアップ・リストア時指定のオプション</li>
+</ul>
+
+<h2 id="1-1-検証環境">1-1. 検証環境</h2>
+
+<p>バックアップツールを検証する際に使用する環境は、ストレージに <strong>ブロック・ボリューム</strong> を使用しこれを <strong>ベア・メタル・インスタンス</strong> にアタッチする方法（以降”ブロック・ボリュームNFSサーバ”と呼称）でNFSでサービスするファイル共有ストレージをバックアップする前提で、何れも <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></strong> の手順に従い構築されたファイル共有ストレージと <strong><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> の手順に従い構築されたバックアップ環境を使用し、ここで構築したバックアップサーバでバックアップツールを実行して検証します。</p>
+
+<p><img src="/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png" alt="システム構成図" /></p>
+
+<p>なお、このチュートリアルで構築するバックアップ環境は、 <strong>Rclone</strong> のみを使用しているため、 <strong>OCI CLI</strong> と <strong>OCIFS</strong> を追加でバックアップサーバにインストールします。</p>
+
+<p><strong>OCI CLI</strong> のインストールは、以下の <strong>OCI</strong> 公式マニュアルに従い行います。<br />
+なお、 <strong>OCI CLI</strong> の実行時認証は、チュートリアルに従って構築されたバックアップサーバが <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を完了しているため、これを使用します。</p>
+
+<p><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm">https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm</a></strong></p>
+
+<p>また <strong>OCIFS</strong> のインストールは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ocifs
+</code></pre></div></div>
+
+<p>次に、以下コマンドをバックアップサーバのopcユーザで実行し、バックアップに使用する <strong>オブジェクト・ストレージ・バケット</strong> を <strong>/mnt/os</strong> にマウントします。<br />
+なお、 <strong>OCIFS</strong> の実行時認証は、チュートリアルに従って構築されたバックアップサーバが <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を完了しているため、これを使用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/os
+<span class="nv">$ </span><span class="nb">sudo </span>ocifs <span class="nt">--auth</span><span class="o">=</span>instance_principal <span class="nt">--cache</span><span class="o">=</span>/var/tmp/ocifs-cache bucket_name /mnt/os
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>bucket_name</strong> は、自身の環境に置き換えて指定します。</p>
+
+<h2 id="1-2-ソフトウェアバージョン">1-2. ソフトウェアバージョン</h2>
+
+<p>本テクニカルTipsで検証する各バックアップツールのバージョンを以下に示します。</p>
+
+<ul>
+  <li><strong>OCI CLI</strong> ： 3.48.2</li>
+  <li><strong>OCIFS</strong> ： 1.1.0-2</li>
+  <li><strong>Rclone</strong> ： v1.68.1</li>
+</ul>
+
+<h2 id="1-3-バックアップリストア時指定のオプション">1-3. バックアップ・リストア時指定のオプション</h2>
+
+<h3 id="1-3-1-oci-cli">1-3-1. OCI CLI</h3>
+
+<p><strong>OCI CLI</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>oci os object <span class="nb">sync</span> <span class="nt">--auth</span> instance_principal <span class="nt">--delete</span> <span class="nt">--parallel-operations-count</span> 100 <span class="nt">--bucket-name</span> bucket_name <span class="nt">--src-dir</span> /mnt/nfs/source_dir
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>bucket_name</strong> と <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<p>また、 <strong>OCI CLI</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>oci os object <span class="nb">sync</span> <span class="nt">--auth</span> instance_principal <span class="nt">--delete</span> <span class="nt">--parallel-operations-count</span> 100 <span class="nt">--bucket-name</span> bucket_name <span class="nt">--dest-dir</span> /mnt/nfs/dest_dir
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>bucket_name</strong> と <strong>dest_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<h3 id="1-3-2-ocifs">1-3-2. OCIFS</h3>
+
+<p><strong>OCIFS</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/nfs/source_dir /mnt/os/
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<p>また、 <strong>OCIFS</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。<br />
+最初の2個のコマンドは、バックアップ時のキャッシュを無効化するためのもので、これによりリストア時に <strong>オブジェクト・ストレージ</strong> からデータを読み出す際の性能を計測しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/os
+<span class="nv">$ </span><span class="nb">sudo </span>ocifs <span class="nt">--auth</span><span class="o">=</span>instance_principal <span class="nt">--cache</span><span class="o">=</span>/var/tmp/ocifs-cache bucket_name /mnt/os
+<span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/os/source_dir restore_dir 
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>source_dir</strong> と <strong>restore_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<h3 id="1-3-3-rclone">1-3-3. Rclone</h3>
+
+<p><strong>Rclone</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nt">--checksum</span> <span class="nb">sync</span> /mnt/nfs/source_dir rclone_conn:bucket_name/dest_dir
+</code></pre></div></div>
+
+<p>なお、コマンド中の <strong>source_dir</strong> 、 <strong>rclone_conn</strong> 、 <strong>bucket_name</strong> 、及び <strong>dest_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<p>また、 <strong>Rclone</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nt">--checksum</span> <span class="nb">sync </span>rclone_conn:bucket_name/dest_dir /mnt/nfs/restore/source_dir
+</code></pre></div></div>
+
+<p>なおコマンド中の <strong>rclone_conn</strong> 、 <strong>bucket_name</strong> 、 <strong>dest_dir</strong> 、及び <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<hr />
+<h1 id="2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</h1>
+
+<p>本章は、本テクニカルTipsで比較・検証するバックアップツールを <strong><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a></strong> で示した条件で利用する際、通常バックアップに求められる機能が満たせないような制約事項について、その評価項目と各バックアップツールの対応を以下の表にまとめます。<br />
+この制約事項の多くは、POSIXファイルシステムのメタデータをバックエンドストレージの <strong>オブジェクト・ストレージ</strong> がサポートしていないことに起因します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">No.</th>
+      <th style="text-align: center">評価項目</th>
+      <th style="text-align: center">OCI CLI</th>
+      <th style="text-align: center">OCIFS</th>
+      <th style="text-align: center">Rclone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">オーナーユーザーの保存</td>
+      <td style="text-align: center">✖（※1）</td>
+      <td style="text-align: center">△（※2）</td>
+      <td style="text-align: center">✖（※1）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">オーナーグループの保存</td>
+      <td style="text-align: center">✖（※1）</td>
+      <td style="text-align: center">△（※2）</td>
+      <td style="text-align: center">✖（※1）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">パーミッションの保存</td>
+      <td style="text-align: center">✖（※3）</td>
+      <td style="text-align: center">△（※4）</td>
+      <td style="text-align: center">✖（※3）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">ファイル作成・更新日時の保存</td>
+      <td style="text-align: center">✖（※5）</td>
+      <td style="text-align: center">△（※6）</td>
+      <td style="text-align: center">〇</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">ファイル属性変更日時の保存</td>
+      <td style="text-align: center">✖（※5）</td>
+      <td style="text-align: center">✖（※5）</td>
+      <td style="text-align: center">✖（※5）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">ディレクトリ作成・更新日時の保存</td>
+      <td style="text-align: center">✖（※5）</td>
+      <td style="text-align: center">△（※6）</td>
+      <td style="text-align: center">✖（※5）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">ハードリンクの保存</td>
+      <td style="text-align: center">✖（※7）</td>
+      <td style="text-align: center">✖（※7）</td>
+      <td style="text-align: center">✖（※7）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">シンボリックリンクの保存</td>
+      <td style="text-align: center">✖（※8）</td>
+      <td style="text-align: center">✖</td>
+      <td style="text-align: center">✖（※9）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">空のディレクトリの保存</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">✖</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">キャシュをローカルファイルシステムに持たない</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">✖（※10）</td>
+      <td style="text-align: center">〇</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">チェックサムによる<br />ファイル転送結果確認機能を持つ</td>
+      <td style="text-align: center">✖</td>
+      <td style="text-align: center">✖</td>
+      <td style="text-align: center">〇</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※1）リストア実行ユーザとそのプライマリグループになります。<br />
+※2）再マウントでマウント実行ユーザとそのプライマリグループになります。<br />
+※3）全てのファイルとディレクトリはそれぞれ <strong>644</strong> と <strong>755</strong> でリストアされます。<br />
+※4）再マントで全てのファイルとディレクトリはそれぞれ <strong>644</strong> と <strong>755</strong> になります。<br />
+※5）リストア時の日時になります。<br />
+※6）再マウントでリストア時の日時になります。<br />
+※7）リンク数分のファイルの実体としてリストアされます。<br />
+※8）参照元ファイルの実体としてリストアされます。<br />
+※9）参照元ファイルの実体としてリストアされます。（ <strong>–copy-links</strong> オプション指定による挙動です。）<br />
+※10）<strong>オブジェクト・ストレージ</strong> にアクセス（書込み・読込みの何れも含みます。）するファイルサイズの総容量に等しいキャッシュ用途の空き容量がローカルファイルシステムに必要です。このためフルバックアップは、バックアップ対象のファイル共有ストレージの総使用量以上の空き容量をローカルファイルシステムに用意する必要があります。 <strong>OCIFS</strong> のキャッシュに関する詳細は、 <strong>OCI</strong> 公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/ocifs/index.htm#ocifs-cache-options">ここ</a></strong> を参照してください。</p>
+
+<p>この結果から各バックアップツールを比較すると、以下のように考察することが出来ます。</p>
+
+<ol>
+  <li>評価項目 <strong>10</strong> から、 <strong>OCIFS</strong> は容量単価の安価な <strong>オブジェクト・ストレージ</strong> をバックエンドストレージに利用するメリットを享受できない。</li>
+  <li>評価項目 <strong>1</strong> 、 <strong>2</strong> 、 <strong>3</strong> 、 <strong>4</strong> 、及び <strong>6</strong> から、POSIXファイルシステムのメタデータ保持に関する <strong>OCIFS</strong> の優位性は、バックアップサーバの再起動等で発生する再マウントによりキャシュ領域に保持しているメタデータ情報が消失するため、現実的な運用ではこれを享受することが出来ない。</li>
+  <li>評価項目 <strong>4</strong> から、 <strong>Rclone</strong> はファイル作成・更新日時を保持できる点で優位性がある。</li>
+  <li>評価項目 <strong>11</strong> から、 <strong>Rclone</strong> はバックアップの信頼性で優位性がある。</li>
+</ol>
+
+<p>以上より、考察 <strong>1</strong> で<u><strong>OCI CLI</strong>か<strong>Rclone</strong>が現実的な選択肢</u>となり、考察 <strong>3</strong> と <strong>4</strong> で<u><strong>Rclone</strong>に優位性がある</u>ことになります。</p>
+
+<hr />
+<h1 id="3-バックアップリストア性能">3. バックアップ・リストア性能</h1>
+
+<p>本章は、 <strong><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a></strong> で示した条件に於ける各バックアップツールのバックアップ時とリストア時の性能を、以下の観点で検証します。</p>
+
+<ul>
+  <li>スループット<br />
+サイズの大きなファイルをバックアップ・リストアする際の性能指標として、以下の条件でスループット（単位時間当たりの転送データ量 <strong>MiB/s</strong> ）を計測します。<br />
+この際、ファイルシステムキャッシュを無効化した後に計測します。（※11）
+    <ul>
+      <li>テストファイルサイズ： 10 GiB</li>
+      <li>テストファイル作成方法： /dev/urandomを元にddで作成（※12）</li>
+      <li>テストファイル数： 1</li>
+    </ul>
+  </li>
+  <li>メタデータ性能<br />
+サイズの小さなファイルをバックアップ・リストアする際の性能指標として、以下の条件でメタデータ性能（単位時間当たりの作成ファイル数 <strong>files/s</strong> ）を計測します。
+    <ul>
+      <li>テストファイルサイズ： 0 B</li>
+      <li>ディレクトリ数： 1,000</li>
+      <li>ディレクトリ当たりファイル数： 1,000</li>
+      <li>総ファイル数： 1,000,000（※13）</li>
+    </ul>
+  </li>
+</ul>
+
+<p>※11）以下のコマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sync</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span>3 | <span class="nb">sudo tee</span> /proc/sys/vm/drop_caches
+</code></pre></div></div>
+
+<p>※12）以下のコマンドでテストファイルを作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/urandom <span class="nv">of</span><span class="o">=</span>./10G.bin <span class="nv">bs</span><span class="o">=</span>1048576 <span class="nv">count</span><span class="o">=</span><span class="k">$((</span><span class="m">1024</span><span class="o">*</span><span class="m">10</span><span class="k">))</span>
+</code></pre></div></div>
+
+<p>※13）以下のコマンドでテストファイルを作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ count</span><span class="o">=</span>1000<span class="p">;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq</span> <span class="nt">-w</span> 1 <span class="nv">$count</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$i</span><span class="p">;</span> <span class="nb">mkdir</span> <span class="nv">$i</span><span class="p">;</span> <span class="nb">cd</span> <span class="nv">$i</span><span class="p">;</span><span class="k">for </span>j <span class="k">in</span> <span class="sb">`</span><span class="nb">seq</span> <span class="nt">-w</span> 1 <span class="nv">$count</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">fname</span><span class="o">=</span><span class="nv">$j</span><span class="s2">".out"</span><span class="p">;</span> <span class="nb">touch</span> <span class="nv">$fname</span><span class="p">;</span> <span class="k">done</span><span class="p">;</span> <span class="nb">cd</span> ..<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>以下の表は、以上の条件で計測したバックアップ・リストア性能です。（各データは3回計測した平均値です。）<br />
+なおこの性能値は、状況により変化するため、参考値としてご利用ください。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">No.</th>
+      <th style="text-align: center">評価項目</th>
+      <th style="text-align: right">OCI CLI</th>
+      <th style="text-align: right">OCIFS</th>
+      <th style="text-align: right">Rclone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">バックアップ<br />スループット</td>
+      <td style="text-align: right">665 MiB/s<br />（※14）</td>
+      <td style="text-align: right">46 MiB/s</td>
+      <td style="text-align: right">301 MiB/s<br />（※14）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">バックアップ<br />メタデータ性能</td>
+      <td style="text-align: right">238 files/s</td>
+      <td style="text-align: right">3 files/s<br />（※15）</td>
+      <td style="text-align: right">2,857 files/s</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">リストア<br />スループット</td>
+      <td style="text-align: right">417 MiB/s<br />（※14）</td>
+      <td style="text-align: right">4 MiB/s</td>
+      <td style="text-align: right">217 MiB/s<br />（※14）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">リストア<br />メタデータ性能</td>
+      <td style="text-align: right">128 files/s</td>
+      <td style="text-align: right">259 files/s</td>
+      <td style="text-align: right">1,927 files/s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※14）<strong>OCI CLI</strong> と <strong>Rclone</strong> のスループットの差は、ファイル転送前後のチェックサムによる結果確認の有無が影響していると考えられ、 <strong>Rclone</strong> はチェックサム確認を実施するのに対し、 <strong>OCI CLI</strong> はチェックサム確認の機能を有していません。<br />
+※15）性能が悪く途中で検証を打ち切ったため、途中経過から算出した概略値です。</p>
+
+<p>この結果から各バックアップツールを比較すると、以下のように考察することが出来ます。</p>
+
+<ol>
+  <li>評価項目 <strong>2</strong> から、 <strong>OCIFS</strong> をバックアップツールとして利用することは現実的ではない。</li>
+  <li>評価項目 <strong>1</strong> と <strong>3</strong> から、 <strong>OCI CLI</strong> は <strong>Rclone</strong> に対して約2倍のスループットを示し、サイズの大きなファイルが存在するファイル共有ストレージのバックアップに於いて有利である。（この理由は、※14）を参照してください。）</li>
+  <li>評価項目 <strong>2</strong> と <strong>4</strong> から、 <strong>Rclone</strong> は <strong>OCI CLI</strong> に対してメタデータ性能が桁違いに高く、ファイル数が多いファイル共有ストレージのバックアップで圧倒的に有利である。</li>
+</ol>
+
+<p>以上より、考察 <strong>1</strong> で <u><strong>OCI CLI</strong>か<strong>Rclone</strong>が現実的な選択肢</u>となり、考察 <strong>2</strong> と <strong>3</strong> で<u><strong>OCI CLI</strong>と<strong>Rclone</strong>のどちらを選択するかはバックアップ対象のファイルサイズ分布で判断する</u>のが良いと考えることが出来ます。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-05T17:42:40+09:00">November 5, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%83%BB%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%83%84%E3%83%BC%E3%83%AB%E3%81%AE%E9%81%B8%E6%8A%9E%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-choose-osbackuptool%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-choose-osbackuptool%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/" class="pagination--pager" title="計算/GPUノードのブート・ボリューム動的拡張方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/" class="pagination--pager" title="計算/GPUノードの効果的な名前解決方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

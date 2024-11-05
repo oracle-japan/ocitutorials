@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-05T15:22:02+09:00">
+  <meta property="article:published_time" content="2024-11-05T17:42:40+09:00">
 
 
 
@@ -315,7 +315,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノードデプロイ時の問題判別方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
         
@@ -326,6 +326,8 @@
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">オブジェクト・ストレージを使用するバックアップツールの選択方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
         
@@ -372,7 +374,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する">
     <meta itemprop="description" content="ベア・メタル・インスタンスで構築するNFSのファイル共有ストレージを対象とする、バックアップサーバを構築してみましょう。このチュートリアルを終了すると、NFSのファイル共有ストレージに格納するファイルを安価なオブジェクト・ストレージにバックアップするバックアップサーバを構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-11-05T15:22:02+09:00">
+    <meta itemprop="datePublished" content="2024-11-05T17:42:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -398,13 +400,13 @@
 
 <p>※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと <strong>ファイル・ストレージ</strong> の比較は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-2-可用性による比較">2-2 可用性による比較</a></strong> を参照してください。</p>
 
-<p>以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するHPC/GPUクラスタのファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。</p>
+<p>以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。</p>
 
 <p>ここでバックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージ（ <strong>ブロック・ボリューム</strong> やNVMe SSDドライブ）より容量単価の安価なものを選択する必要があるため、 <strong>オブジェクト・ストレージ</strong> を使用します。<br />
 この際のバックアップツールは、 <strong>オブジェクト・ストレージ</strong> とPOSIXファイルシステム間のデータ転送ツールとして幅広く利用されているオープンソースの <strong><a href="https://rclone.org/">Rclone</a></strong> を採用し、ベア・メタル・インスタンスNFSサーバのNFSクライアントとして構成したバックアップサーバ上でこの <strong>Rclone</strong> のファイル同期機能を使用し、NFSマウントしたファイルシステム領域を <strong>オブジェクト・ストレージ</strong> に差分バックアップします。<br />
 <strong>Rclone</strong> が <strong>オブジェクト・ストレージ</strong> にアクセスする際は、バックアップサーバを <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証に組み込むことでIAM認証・認可を付与します。<br />
-またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを <strong>マルチパート・アップロード</strong> する際に <strong>Rclone</strong> がマルチスレッドにを活用してデータ転送を行う事を考慮し、コア数の十分な <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard">VM.Standard.E5.Flex</a></strong> の32コア・384GBメモリを使用します。<br />
-また、本チュートリアルで使用する各ソフトウェアのバージョンは、以下です。</p>
+またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを <strong>マルチパート・アップロード</strong> する際に <strong>Rclone</strong> がマルチスレッドを活用してデータ転送を行う事を考慮し、コア数の十分な <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard">VM.Standard.E5.Flex</a></strong> の32コア・384GBメモリを使用します。<br />
+また、本チュートリアルで使用する各ソフトウェアのバージョンを以下に示します。</p>
 
 <ul>
   <li>バックアップサーバOS： <strong>Oracle Linux</strong> 9.4（Oracle-Linux-9.4-2024.08.29-0 UEK）</li>
@@ -413,50 +415,16 @@
 
 <p><img src="architecture_diagram.png" alt="システム構成図" /></p>
 
-<p><strong>Rclone</strong> は、このツールが持つ以下の機能を有効活用することで、本チュートリアルのようなPOSIXファイルシステムを <strong>オブジェクト・ストレージ</strong> にバックアップする際、バックアップの信頼性と性能を向上することが可能です。</p>
+<p><strong>Rclone</strong> は、このツールが持つ以下の機能を活用することで、本チュートリアルのようなPOSIXファイルシステムを <strong>オブジェクト・ストレージ</strong> にバックアップする際、バックアップの信頼性と性能を向上することが可能です。</p>
 
 <ul>
   <li>差分バックアップ</li>
   <li>マルチパート・アップロード</li>
-  <li>チェックサムによるバックアップファイルの検証</li>
+  <li>チェックサムによるファイル転送結果の確認</li>
 </ul>
 
-<p>また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能を以下の観点で検証し、</p>
-
-<ul>
-  <li>スループット検証
-    <ul>
-      <li>テストファイルサイズ： 10 GiB</li>
-      <li>テストファイル作成方法： /dev/urandomを元にddで作成</li>
-    </ul>
-  </li>
-  <li>メタデータ性能検証
-    <ul>
-      <li>テストファイルサイズ： 0 B</li>
-      <li>ディレクトリ数： 1,000</li>
-      <li>ディレクトリ当たりファイル数： 1,000</li>
-      <li>総ファイル数： 1,000,000</li>
-    </ul>
-  </li>
-</ul>
-
-<p>以下の性能を計測しています。（3回計測した平均値）<br />
-なおこの性能値は、状況に応じて変化するため、参考値としてご利用ください。</p>
-
-<ul>
-  <li>バックアップ性能
-    <ul>
-      <li>スループット： <strong>310 MiB/s</strong></li>
-      <li>メタデータ性能： <strong>2,857 files/s</strong></li>
-    </ul>
-  </li>
-  <li>リストア性能
-    <ul>
-      <li>スループット： <strong>240 MiB/s</strong></li>
-      <li>メタデータ性能： <strong>1,927 files/s</strong></li>
-    </ul>
-  </li>
-</ul>
+<p>また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能をスループットとメタデータ性能の観点で検証します。<br />
+この結果は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">オブジェクト・ストレージを使用するバックアップツールの選択方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#3-バックアップ・リストア性能">3. バックアップ・リストア性能</a></strong> を参照してください。</p>
 
 <p><strong>所要時間 :</strong> 約2時間</p>
 
@@ -497,9 +465,9 @@
 
 <h2 id="1-1-インスタンスプリンシパル認証関連設定">1-1. インスタンス・プリンシパル認証関連設定</h2>
 
-<p><strong>インスタンス・プリンシパル</strong> 認証の設定は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a></strong> の手順に従い実施します。<br />
+<p><strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a></strong> の手順に従い実施します。<br />
 この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、バックアップサーバと読みかえて下さい。<br />
-また、このテクニカルTipsで指定しているIAMポリシーは、本チュートリアルでは以下のもののみ適用します。</p>
+また、このテクニカルTipsで設定しているIAMポリシーは、本チュートリアルでは以下のみが必要です。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in </span>compartment compartment_name
 </code></pre></div></div>
@@ -734,7 +702,7 @@ e/n/d/r/c/s/q&gt; q
 このコマンドは、 <strong><a href="#1-2-オブジェクトストレージバケット作成">1-2. オブジェクトストレージバケット作成</a></strong> で作成したバケット <strong>rclone</strong> の <strong>dest_dir</strong> をバックアップサーバの <strong>/mnt/nfs/restore/source_dir</strong> ディレクトリ以下にリストアします。<br />
 ここで <strong>dest_dir</strong> と <strong>source_dir</strong> は、スループット検証の場合は何れも <strong>large</strong> 、メタデータ性能検証の場合は何れも <strong>small</strong> とします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">time sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nb">sync </span>nfs-backup:rclone/dest_dir /mnt/nfs/restore/source_dir
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">time sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nt">--checksum</span> <span class="nb">sync </span>nfs-backup:rclone/dest_dir /mnt/nfs/restore/source_dir
 </code></pre></div></div>
 
 <p>出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。</p>
@@ -751,7 +719,7 @@ e/n/d/r/c/s/q&gt; q
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-05T15:22:02+09:00">November 5, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-05T17:42:40+09:00">November 5, 2024</time></p>
 
       </footer>
 
