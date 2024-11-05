@@ -18,8 +18,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の **NVIDIA A100**
 - インターコネクト: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 16）
 - インターネットからSSH接続可能なBastionノード
 - OS: **Oracle Linux** 7.9
-- コンテナランタイム: **Enroot**
-- ジョブスケジューラ: **Slurm** + **Pyxis**
+- コンテナランタイム: **[Enroot](https://github.com/NVIDIA/enroot/)**
+- ジョブスケジューラ: **[Slurm](https://slurm.schedmd.com/)** + **[Pyxis](https://github.com/NVIDIA/pyxis)**
 - オンデマンドクラスタ機能： **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)**
 - **ファイル・ストレージ** によるGPUクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
@@ -28,7 +28,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の **NVIDIA A100**
 
 またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行します。
 
-GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードである **Dokcer** コンテナを利用し、コンテナランタイムに **[Enroot](https://github.com/NVIDIA/enroot/)** 、ジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示する **Slurm** のプラグイン **[Pyxis](https://github.com/NVIDIA/pyxis)** を使用します。
+GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードである **Dokcer** コンテナを利用し、コンテナランタイムに **Enroot** 、ジョブスケジューラに **Slurm** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示する **Slurm** のプラグイン **Pyxis** を使用します。
 
 また、コンテナ環境からGPUやNICをRDMAで利用可能とする **[NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)** を含むソフトウェア群もインストールされ、ノードを跨ぐGPU間通信を高帯域・低遅延でコンテナ上から実行することが可能です。この通信性能詳細は、 **[3-0. 概要](#3-0-概要)** を参照ください。
 
