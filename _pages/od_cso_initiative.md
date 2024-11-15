@@ -16,18 +16,14 @@ lastmod: "2024-10-31"
 ## Web3層アーキテクチャ作成編
 Web3層アーキテクチャベースでOCIの製品を、手を動かして学びます。
 
-<!-- 
-
-画像は、/home/opc/ocitutorials/_pagesにod_cso_initiativeフォルダを切る。
 
 
 
-
-![](/ocitutorials/_pages/od_cso_initiative/od_cso_map.png)
--->
+![](/ocitutorials/_pages/od_cso_initiative/od_cso_map1.png)
 
 
-
++ **[サンプルページ](/ocitutorials/od_cso_initiative/od_cso_initiative_sample/)**
 
 ## 運用管理・セキュリティ編
 １で作った構成に、OCIの運用管理やセキュリティのサービスを追加して学びます。
+
