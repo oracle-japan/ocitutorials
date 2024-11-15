@@ -19,7 +19,8 @@ Web3層アーキテクチャベースでOCIの製品を、手を動かして学�
 
 
 
-![](/ocitutorials/_pages/od_cso_initiative/od_cso_map1.png)
+![](/ocitutorials/assets/images/od_cso_map1.png)
+
 
 
 + **[サンプルページ](/ocitutorials/od_cso_initiative/od_cso_initiative_sample/)**
