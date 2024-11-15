@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-08T10:11:11+09:00">
+  <meta property="article:published_time" content="2024-11-15T18:21:15+09:00">
 
 
 
@@ -231,7 +231,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="トンネル検査構成でOCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います">
-    <meta itemprop="datePublished" content="2024-11-08T10:11:11+09:00">
+    <meta itemprop="datePublished" content="2024-11-15T18:21:15+09:00">
     
 
     <div class="page__inner-wrap">
@@ -242,7 +242,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-事前環境の作成">1. 事前環境の作成</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-コンピュートインスタンスの作成">1-2. コンピュート・インスタンスの作成</a></li></ul></li><li><a href="#2-network-firewallを作成する">2. Network Firewallを作成する</a><ul><li><a href="#2-1-ファイアウォールポリシーの作成">2-1. ファイアウォール・ポリシーの作成</a></li><li><a href="#2-2-ポリシールールの設定">2-2. ポリシー・ルールの設定</a><ul><li><a href="#セキュリティルールの作成">・セキュリティ・ルールの作成</a></li><li><a href="#トンネル検査ルールの作成">・トンネル検査ルールの作成</a></li></ul></li><li><a href="#2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</a></li></ul></li><li><a href="#3-vtapを設定する">3. VTAPを設定する</a><ul><li><a href="#3-1-ネットワークロードバランサvtapターゲットの作成">3-1. ネットワーク・ロード・バランサ（VTAPターゲット）の作成</a></li><li><a href="#3-2-プライベートサブネットのセキュリティリストの設定">3-2. プライベートサブネットのセキュリティリストの設定</a></li><li><a href="#3-3-vtapの設定">3-3. VTAPの設定</a></li></ul></li><li><a href="#4-network-firewallを追加する">4. Network Firewallを追加する</a><ul><li><a href="#4-1-ルート表の設定">4-1. ルート表の設定</a></li><li><a href="#4-2-network-firewallのログの有効化">4-2. Network Firewallのログの有効化</a></li></ul></li><li><a href="#5-idsを確認する">5. IDSを確認する</a><ul><li><a href="#5-1-手動でidsを検知させる">5-1. 手動でIDSを検知させる</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-コンピュートインスタンスの作成">1-2. コンピュート・インスタンスの作成</a></li><li><a href="#2-1-ファイアウォールポリシーの作成">2-1. ファイアウォール・ポリシーの作成</a></li><li><a href="#2-2-ポリシールールの設定">2-2. ポリシー・ルールの設定</a><ul><li><a href="#セキュリティルールの作成">・セキュリティ・ルールの作成</a></li><li><a href="#トンネル検査ルールの作成">・トンネル検査ルールの作成</a></li></ul></li><li><a href="#2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</a></li><li><a href="#3-1-ネットワークロードバランサvtapターゲットの作成">3-1. ネットワーク・ロード・バランサ（VTAPターゲット）の作成</a></li><li><a href="#3-2-プライベートサブネットのセキュリティリストの設定">3-2. プライベートサブネットのセキュリティリストの設定</a></li><li><a href="#3-3-vtapの設定">3-3. VTAPの設定</a></li><li><a href="#4-1-ルート表の設定">4-1. ルート表の設定</a></li><li><a href="#4-2-network-firewallのログの有効化">4-2. Network Firewallのログの有効化</a></li><li><a href="#5-1-手動でidsを検知させる">5-1. 手動でIDSを検知させる</a></li></ul>
             </nav>
           </aside>
         
@@ -254,7 +254,7 @@
 <p>「OCI Network Firewall」はパロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォールとなっており、URLフィルタリングやTSL/SSL検査などの機能を提供します。<br />
 OCI Network Firewallの説明につきましてはOCIチュートリアル「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>」を参照ください。</p>
 
-<p>Network Firewallは通信経路を仲介する形（インライン）で構成しますが、本チュートリアルで扱います「トンネルインスペクション」は通信経路の外部から監視する形（アウトオブバンド）で構成することが可能です。そのため、既存の通信経路に変更を加えずに、経路外部からトンネル検査という形でIDSを行うことができます。
+<p>Network Firewallは通信経路を仲介する形（インライン）で構成しますが、本チュートリアルで扱います「トンネルインスペクション」は通信経路の外部から監視する形（アウトオブバンド）で構成することが可能です。そのため、既存の通信経路に変更を加えずに、経路外部からトンネル検査という形でIDSを行うことができます。<br />
 本チュートリアルでは始めに、簡易的な通信経路を用意し、その後「トンネル検査」構成を構築していく流れで進めていきます。</p>
 
 <p><strong>所要時間 :</strong></p>
@@ -281,7 +281,7 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
   <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
 </ul>
 
-<hr />
+<h2><br /></h2>
 
 <h1 id="はじめに">はじめに</h1>
 
@@ -289,21 +289,24 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
 
 <p><img src="tunnel00.png" alt="構成図と設定" /></p>
 
-<p>手順の流れとして、まずは以下のように簡易的な事前環境を作成し、その環境に後付けでNetwork Firewallを構築していきます。</p>
+<p>手順の流れとして、まずは以下のような簡易的な事前環境を作成し、その環境に後付けでNetwork Firewallを構築していきます。</p>
+
+<p><img src="tunnel25.png" alt="現在の構成" /></p>
 
 <hr />
 
-<p><br /></p>
+<p><br />
+<br /></p>
 
 <h1 id="1-事前環境の作成">1. 事前環境の作成</h1>
-<p>こちらの手順１では、まず事前環境として以下の構成を構築していきます。</p>
+<p>こちらの手順１では、まず事前環境として、上で示しました構成を構築していきます。</p>
 
 <h2 id="1-1-vcnの作成">1-1. VCNの作成</h2>
 <p>[VCNウィザードの起動] を選択</p>
 
 <p><img src="tunnel01.png" alt="VCNウィザードの選択" /></p>
 
-<p>[インターネット接続性を持つVCNの作成] を選択します。
+<p>[インターネット接続性を持つVCNの作成] を選択します。 
 <img src="tunnel02.png" alt="VCNウィザードの起動" /></p>
 
 <p>以下の項目を入力し、[次]を選択します。</p>
@@ -380,18 +383,20 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
 
 <p><img src="tunnel10.png" alt="SSHの確認" /></p>
 
-<p>これで「<code class="language-plaintext highlighter-rouge">ユーザー</code> ー <code class="language-plaintext highlighter-rouge">インターネット・ゲートウェイ</code> ー <code class="language-plaintext highlighter-rouge">コンピュート</code>」という簡易的な通信構成ができました。
-次の手順からは、この構成にリソースを付け加える形でNetwork FirewallのIDSを行えるよう設定していきます。
-<img src="tunnel25.png" alt="現在の構成" /></p>
+<p>これで「<code class="language-plaintext highlighter-rouge">ユーザー</code> ー <code class="language-plaintext highlighter-rouge">インターネット・ゲートウェイ</code> ー <code class="language-plaintext highlighter-rouge">コンピュート</code>」という簡易的な通信構成ができました。<br />
+次の手順からは、この構成にリソースを付け加える形でNetwork FirewallのIDSを行えるよう設定していきます。</p>
 
-<p><br /></p>
+<p><img src="tunnel25.png" alt="現在の構成" /></p>
+
+<p><br />
+<br /></p>
 
 <h1 id="2-network-firewallを作成する">2. Network Firewallを作成する</h1>
 <p>NFWの作成には40分ほどかかりますので、手順が前後しますが、VTAPの設定を行う前にNetwork Firewallを作成しておきます。</p>
 <h2 id="2-1-ファイアウォールポリシーの作成">2-1. ファイアウォール・ポリシーの作成</h2>
 <p>Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー「ネットワーク・ファイアウォール・ポリシー」を指定する必要があるため、インスタンス作成前に用意します。</p>
 
-<p>OCIコンソール画面左上のメニューボタン → [アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー]と選択、「ネットワーク・ファイアウォール・ポリシーの作成」をクリックし、ポリシーを作成します。
+<p>OCIコンソール画面左上の メニューボタン → [アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー] と選択、「ネットワーク・ファイアウォール・ポリシーの作成」をクリックし、ポリシーを作成します。
 設定項目は本チュートリアルでは以下のようにします。</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">名前</code>：network_firewall_policy</li>
@@ -448,7 +453,8 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
 
 <p>作成中にNetwork Firewallインスタンスの詳細画面にIPv4アドレスが表示されますので、この後の手順4にて行うルート表の設定のため、表示されたIPv4アドレスをメモに控えておきます。</p>
 
-<p><br /></p>
+<p><br />
+<br /></p>
 
 <h1 id="3-vtapを設定する">3. VTAPを設定する</h1>
 <p>仮想アクセスポイント（VTAP）とは指定したソースが受け取ったトラフィックを、選択したターゲットに対してミラー化するサービスです。VTAPサービスは無償でご利用いただけますが、VTAPソースやVTAターゲットに対しては課金が発生しますので、ご注意ください。</p>
@@ -458,7 +464,7 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
 <p>ここではVTAPソースを、手順1にて作成したコンピュート・インスタンス、VTAPソースをネットワーク・ロード・バランサとして設定を行っていきます。</p>
 
 <h2 id="3-1-ネットワークロードバランサvtapターゲットの作成">3-1. ネットワーク・ロード・バランサ（VTAPターゲット）の作成</h2>
-<p>OCIコンソール画面左上のメニューボタン → [アイデンティティとセキュリティ] → [ネットワーキング] → [ロード・バランサ] → [ネットワーキング・ロード・バランサ]と選択、「ネットワーキング・ロード・バランサの作成」をクリックし、以下の項目でロード・バランサを作成します。
+<p>OCIコンソール画面左上の メニューボタン → [アイデンティティとセキュリティ] → [ネットワーキング] → [ロード・バランサ] → [ネットワーキング・ロード・バランサ] と選択、「ネットワーキング・ロード・バランサの作成」をクリックし、以下の項目でロード・バランサを作成します。
 ネットワーク・ロード・バランサの作成を選択</p>
 
 <ul>
@@ -469,22 +475,25 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
   <li>ネットワーキングの選択
     <ul>
       <li><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code>：VCN-NFWtutorial</li>
-      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：プライベート・サブネット-VCN-NFWtutorial
-<img src="tunnel16.png" alt="NLBの作成１" /></li>
+      <li><code class="language-plaintext highlighter-rouge">サブネット</code>：プライベート・サブネット-VCN-NFWtutorial</li>
     </ul>
   </li>
 </ul>
+
+<p><img src="tunnel16.png" alt="NLBの作成１" /></p>
 
 <p>[次]を選択。リスナーの構成を以下の設定で入力します。VTAPによってミラーリングされるパケットはVXLANプロトコルでカプセル化されるため、VXLANの使用するUDP/4789を設定します。</p>
 
 <ul>
   <li><code class="language-plaintext highlighter-rouge">リスナー名</code>：listener_tutorial</li>
   <li><code class="language-plaintext highlighter-rouge">リスナーで処理する</code>トラフィックのタイプ：UDP</li>
-  <li><code class="language-plaintext highlighter-rouge">ポート番号</code>：4789
-<img src="tunnel17.png" alt="NLBの作成２" /></li>
+  <li><code class="language-plaintext highlighter-rouge">ポート番号</code>：4789</li>
 </ul>
 
+<p><img src="tunnel17.png" alt="NLBの作成２" /></p>
+
 <p>バックエンド・セットは設定を行いません。適用な名前を設定し、そのまま[次]を選択します。</p>
+
 <ul>
   <li><code class="language-plaintext highlighter-rouge">バックエンドセット</code>：backendset_tutorial</li>
 </ul>
@@ -497,7 +506,7 @@ OCI Network Firewallの説明につきましてはOCIチュートリアル「<a 
 
 <h2 id="3-2-プライベートサブネットのセキュリティリストの設定">3-2. プライベートサブネットのセキュリティリストの設定</h2>
 <p>プライベートサブネットのセキュリティ・リストの詳細画面に戻ります。<br />
-OCIコンソール画面にアクセスし、左上の[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からセキュリティ・リストをクリックします。</p>
+OCIコンソール画面にアクセスし、左上の [メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からセキュリティ・リストをクリックします。</p>
 
 <p>「プライベート・サブネット-VCN-NFWtutorialのセキュリティ・リスト」をクリックし、[イングレス・ルールの追加]を選択、以下のルールを追加します。</p>
 
@@ -505,9 +514,10 @@ OCIコンソール画面にアクセスし、左上の[メニューボタン] �
   <li><code class="language-plaintext highlighter-rouge">ソース・タイプ</code>：CIDR</li>
   <li><code class="language-plaintext highlighter-rouge">ソースCIDR</code>：10.0.0.0/16</li>
   <li><code class="language-plaintext highlighter-rouge">IPプロトコル</code>：UDP</li>
-  <li><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code>：4789
-<img src="tunnel19.png" alt="SLの設定" /></li>
+  <li><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code>：4789</li>
 </ul>
+
+<p><img src="tunnel19.png" alt="SLの設定" /></p>
 
 <p>追加後、イングレス・ルールに正しく追加されたことを確認します。</p>
 
@@ -567,16 +577,18 @@ OCIコンソール画面にアクセスし、左上の[メニューボタン] �
 
 <p><img src="tunnel23.png" alt="VTAPの設定 - フィルタの作成" /></p>
 
-<p>[起動]を選択するとステータスが実行中になり、VTAPが正常に起動されたことを確認します。
-<img src="tunnel24.png" alt="VTAPの起動" /></p>
+<p>[起動]を選択するとステータスが実行中になり、VTAPが正常に起動されたことを確認します。</p>
 
-<p><br /></p>
+<p><img src="tunnel24.png" alt="VTAPの起動" /></p>
+
+<p><br />
+<br /></p>
 
 <h1 id="4-network-firewallを追加する">4. Network Firewallを追加する</h1>
 <p>手順2-3にて作成したNetwork Fireworkインスタンスの作成が完了後、以下の手順を行っていきます。</p>
 
 <h2 id="4-1-ルート表の設定">4-1. ルート表の設定</h2>
-<p>OCIコンソール画面にアクセスし、左上の[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からルート表をクリックします。</p>
+<p>OCIコンソール画面にアクセスし、左上の [メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] と移動、作成したVCN「VCN-NFWtutorial」を選択し、左のリソース一覧からルート表をクリックします。</p>
 
 <p>「default route table for VCN-NFWtutorial」をクリックし、VTAPソースからVTAPターゲットまでの通信経路にNetwork Firewallを経由するよう、「ルート・ルールの追加」を選択し、以下のルールを追加します。</p>
 
@@ -591,30 +603,35 @@ OCIコンソール画面にアクセスし、左上の[メニューボタン] �
 <p>これで、プライベート・サブネットへの通信はNetwork Firewallにルーティングされるようになります。</p>
 
 <h2 id="4-2-network-firewallのログの有効化">4-2. Network Firewallのログの有効化</h2>
-<p>[アイデンティティとセキュリティ]→[ファイアウォール]→[ネットワーク・ファイアウォール]→[ネットワーク・ファイアウォール詳細]→[ログ]と遷移し、Network Firewallのログ画面に移ります。</p>
+<p>[アイデンティティとセキュリティ]→[ファイアウォール]→[ネットワーク・ファイアウォール]→[ネットワーク・ファイアウォール詳細]→[ログ] と遷移し、Network Firewallのログ画面に移ります。</p>
 
-<p>「Theat Log」と「Tunnel Inspection Log」を有効化します。ログ・グループを作成していない場合は、「新規グループの作成」より、適用なログ・グループを作成し、設定します。
-<img src="tunnel26.png" alt="ログの有効化" /></p>
+<p>「Theat Log」と「Tunnel Inspection Log」を有効化します。ログ・グループを作成していない場合は、「新規グループの作成」より、適用なログ・グループを作成し、設定します。</p>
 
-<p><br /></p>
+<p><img src="tunnel26.png" alt="ログの有効化" /></p>
 
-<h1 id="5-idsを確認する">5. IDSを確認する</h1>
-<p>しばらく放置していると、Network Firewallのメトリック画面からパケットが処理されているのが分かります。
-手順1にて作成したインスタンスにSSHしてみるとより分かりやすくなります。
-<img src="tunnel27.png" alt="NFWを通過するパケットのメトリック" />
-ミラーリングされたパケットについては、Tunnel Inspection Logで確認することができます。</p>
+<p><br />
+<br /></p>
 
-<p>また、先ほど有効化したthreat logを確認すると、以下のログのようにインスタンスがドイツからブルートフォース攻撃を受けていることなどが確認できる場合があります。
-<img src="tunnel28.png" alt="NFW脅威ログ" /></p>
+<h1 id="5-侵入検知idsを確認する">5. 侵入検知（IDS）を確認する</h1>
+<p>しばらく放置していると、Network Firewallのメトリック画面からパケットが処理されているのが分かります。<br />
+手順1にて作成したインスタンスにSSH接続を行うとより分かりやすくなります。</p>
+
+<p><img src="tunnel27.png" alt="NFWを通過するパケットのメトリック" /></p>
+
+<p>ミラーリングされたパケットのログについては、Tunnel Inspection Logで確認することができます。</p>
+
+<p>また、脅威のログについては先ほど有効化したthreat logで確認ができ、以下のログのようにインスタンスがドイツからブルートフォース攻撃を受けていることなどが観察できる場合があります。</p>
+
+<p><img src="tunnel28.png" alt="NFW脅威ログ" /></p>
 
 <h2 id="5-1-手動でidsを検知させる">5-1. 手動でIDSを検知させる</h2>
-<p>放置していると、上記のようにある程度脅威を検知していることが確認できますが、最後に意図的に検知をさせてみます。<br />
-方法としてはインスタンスにSSH接続をし、以下のコマンドでeicarファイルをhttpで取得します。</p>
+<p>放置していると、上記のようにある程度脅威を検知していることが確認できますが、最後の手順として意図的に検知をさせます。<br />
+方法としてはインスタンスにSSH接続をし、インスタンスから以下のコマンドでeicarファイルをhttpで取得します。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://files.trendmicro.com/products/eicar-file/eicar.com
 </code></pre></div></div>
 
-<p>eicarのサイトではeicarファイルのhttpでの提供は終了しているため、<a href="https://downloadcenter.trendmicro.com/index.php?regs=jp&amp;prodid=1424&amp;ossl=2">TREND MICRO社のサイト</a>からEICARファイルを以下のコマンドで取得しています。
+<p>eicarのサイトではeicarファイルのhttpでの提供は終了しているため、<a href="https://downloadcenter.trendmicro.com/index.php?regs=jp&amp;prodid=1424&amp;ossl=2">TREND MICRO社のサイト</a>からEICARファイルを上記のコマンドで取得しています。
 httpsで取得すると暗号化により検知されないため、httpを使用することに注意してください。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例）
@@ -654,7 +671,7 @@ X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*[opc@inst-tu
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-08T10:11:11+09:00">November 8, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-15T18:21:15+09:00">November 15, 2024</time></p>
 
       </footer>
 
