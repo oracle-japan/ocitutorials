@@ -10,8 +10,8 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>オブジェクト・ストレージを使用するバックアップツールの選択方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
+<!-- begin _includes/seo.html --><title>ファイル共有ストレージ向けバックアップ環境の最適な構築手法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、そのバックアップ環境は自身で構築する必要があり、バックアップを格納するストレージはその安価な容量単価からオブジェクト・ストレージやブロック・ボリュームのより低いコストが有力な選択肢になります。本テクニカルTipsは、ファイル共有ストレージのバックアップを容量単価の安価なストレージに取得することを念頭に、自身のバックアップ要件に沿った最適なバックアップ環境構築手法を選定する方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -23,21 +23,21 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="オブジェクト・ストレージを使用するバックアップツールの選択方法">
+<meta property="og:title" content="ファイル共有ストレージ向けバックアップ環境の最適な構築手法">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">
 
 
-  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
+  <meta property="og:description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、そのバックアップ環境は自身で構築する必要があり、バックアップを格納するストレージはその安価な容量単価からオブジェクト・ストレージやブロック・ボリュームのより低いコストが有力な選択肢になります。本テクニカルTipsは、ファイル共有ストレージのバックアップを容量単価の安価なストレージに取得することを念頭に、自身のバックアップ要件に沿った最適なバックアップ環境構築手法を選定する方法を解説します。">
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-backup-server/architecture_diagram_bv.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-11-15T18:47:23+09:00">
+  <meta property="article:published_time" content="2024-11-18T09:24:55+09:00">
 
 
 
@@ -158,18 +158,18 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-backup-server/architecture_diagram_bv.png');"
 >
   
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          オブジェクト・ストレージを使用するバックアップツールの選択方法
+          ファイル共有ストレージ向けバックアップ環境の最適な構築手法
 
         
       </h1>
       
-        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。
+        <p class="page__lead">HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、そのバックアップ環境は自身で構築する必要があり、バックアップを格納するストレージはその安価な容量単価からオブジェクト・ストレージやブロック・ボリュームのより低いコストが有力な選択肢になります。本テクニカルTipsは、ファイル共有ストレージのバックアップを容量単価の安価なストレージに取得することを念頭に、自身のバックアップ要件に沿った最適なバックアップ環境構築手法を選定する方法を解説します。
 </p>
       
       
@@ -225,7 +225,7 @@
     
       
       
-        <li class="current">オブジェクト・ストレージを使用するバックアップツールの選択方法</li>
+        <li class="current">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</li>
       
     
   </ol>
@@ -337,7 +337,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/" class="active">オブジェクト・ストレージを使用するバックアップツールの選択方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/" class="active">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
         
@@ -382,9 +382,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="オブジェクト・ストレージを使用するバックアップツールの選択方法">
-    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、このストレージをバックアップする場合そのバックアップ環境を独自に構築することになり、このバックアップを格納するストレージの有力な選択肢は、その安価な容量単価からオブジェクト・ストレージが挙げられます。この際のバックアップツールは、POSIXファイルシステムとオブジェクト・ストレージ間の差分バックアップ機能を有していることが求められ、候補となるツールがいくつか存在します。本テクニカルTipsは、ファイル共有ストレージのバックアップをオブジェクト・ストレージに取得することを想定し、自身のバックアップ要件に沿ったツールを選択する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-11-15T18:47:23+09:00">
+    <meta itemprop="headline" content="ファイル共有ストレージ向けバックアップ環境の最適な構築手法">
+    <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、そのバックアップ環境は自身で構築する必要があり、バックアップを格納するストレージはその安価な容量単価からオブジェクト・ストレージやブロック・ボリュームのより低いコストが有力な選択肢になります。本テクニカルTipsは、ファイル共有ストレージのバックアップを容量単価の安価なストレージに取得することを念頭に、自身のバックアップ要件に沿った最適なバックアップ環境構築手法を選定する方法を解説します。">
+    <meta itemprop="datePublished" content="2024-11-18T09:24:55+09:00">
     
 
     <div class="page__inner-wrap">
@@ -395,41 +395,87 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-検証環境">1-1. 検証環境</a></li><li><a href="#1-2-ソフトウェアバージョン">1-2. ソフトウェアバージョン</a></li><li><a href="#1-3-バックアップリストア時指定のオプション">1-3. バックアップ・リストア時指定のオプション</a><ul><li><a href="#1-3-1-oci-cli">1-3-1. OCI CLI</a></li><li><a href="#1-3-2-ocifs">1-3-2. OCIFS</a></li><li><a href="#1-3-3-rclone">1-3-3. Rclone</a></li></ul></li></ul></li><li><a href="#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></li><li><a href="#3-バックアップリストア性能">3. バックアップ・リストア性能</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-バックアップ環境前提条件">1. バックアップ環境前提条件</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-検証環境">1-1. 検証環境</a></li><li><a href="#1-2-ソフトウェアバージョン">1-2. ソフトウェアバージョン</a></li><li><a href="#1-3-バックアップリストア時指定のオプション">1-3. バックアップ・リストア時指定のオプション</a><ul><li><a href="#1-3-0-概要">1-3-0. 概要</a></li><li><a href="#1-3-1-バックアップ環境no-1">1-3-1. バックアップ環境No. 1</a></li><li><a href="#1-3-2-バックアップ環境no-2">1-3-2. バックアップ環境No. 2</a></li><li><a href="#1-3-3-バックアップ環境no-3">1-3-3. バックアップ環境No. 3</a></li><li><a href="#1-3-4-バックアップ環境no-4">1-3-4. バックアップ環境No. 4</a></li></ul></li></ul></li><li><a href="#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></li><li><a href="#3-バックアップリストア性能">3. バックアップ・リストア性能</a></li><li><a href="#4-ランニングコスト">4. ランニングコスト</a></li></ul>
             </nav>
           </aside>
         
-        <hr />
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<hr />
 <h1 id="0-概要">0. 概要</h1>
 
 <p><strong>ベア・メタル・インスタンス</strong> と <strong>ブロック・ボリューム</strong> 等のストレージサービスで構築するNFSでサービスするファイル共有ストレージは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を構築する必要があります。<br />
-この際バックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージより容量単価の安価なものを選択する必要があるため、 <strong>オブジェクト・ストレージ</strong> がその有力な候補になります。</p>
+この際バックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージ（<strong>ブロック・ボリューム</strong> の <strong>バランス</strong> や <strong>Dense I/Oシェイプ</strong> のNVMe SSDローカルディスク）より容量単価の安価なものを選択する必要があるため、 <strong>オブジェクト・ストレージ</strong> や <strong>ブロック・ボリューム</strong> の <strong>より低いコスト</strong> （<strong>ブロック・ボリューム</strong> の <strong>パフォーマンス・レベル</strong> が最低のサービスで、 <strong>ブロック・ボリューム</strong> の中では最も容量単価が安価です。関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Block/Concepts/blockvolumeperformance.htm">ここ</a></strong> を参照してください。以降” <strong>BVLC</strong> “と呼称します。）が候補になります。<br />
+またバックアップに使用するツールは、差分バックアップ機能を有することが求められ、バックアップ格納ストレージが <strong>オブジェクト・ストレージ</strong> の場合はこの領域へのアクセス機能を有する必要があります。</p>
 
-<p>この際バックアップを行うツールは、POSIXファイルシステムと <strong>オブジェクト・ストレージ</strong> 間の差分バックアップ機能が必要になり、この機能を有する代表的なものとして以下のツールが挙げられます。</p>
+<p>以上より本テクニカルTipsは、バックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> と <strong>BVLC</strong> 、バックアップツールに <strong>オブジェクト・ストレージ</strong> へのアクセス機能を有する以下ソフトウェアと <strong>rsync</strong> を取り上げ、</p>
 
 <ul>
-  <li><strong><a href="https://docs.oracle.com/en-us/iaas/Content/API/Concepts/cliconcepts.htm">Command Line Interface（以降”OCI CLI”と呼称）</a></strong> の <strong><a href="https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.49.3/oci_cli_docs/cmdref/os/object/sync.html">oci os object sync</a></strong> コマンド<br />
-<strong>OCI</strong> の操作をコマンドラインインターフェースで行うための <strong>OCI CLI</strong> は、POSIXファイルシステムと <strong>オブジェクト・ストレージ</strong> を同期させるサブコマンド <strong>oci os object sync</strong> を提供しており、これを利用して差分バックアップを実現します。</li>
-  <li><strong><a href="https://docs.oracle.com/en-us/iaas/oracle-linux/ocifs/index.htm">OCIFS</a></strong> + rsync<br />
-<strong>OCI</strong> が無償で提供するユーティリティの <strong>OCIFS</strong> は、 <strong>オブジェクト・ストレージ</strong> をPOSIXファイルシステムのディレクトリ階層にマウントし、POSIXのIOシステムコールを使用するアプリケーションが <strong>オブジェクト・ストレージ</strong> にアクセスすることを可能にします。<br />
-<strong>OCIFS</strong> でマウントされた <strong>オブジェクト・ストレージ</strong> とファイル共有ストレージをrsyncで同期させることで、ファイル共有ストレージの <strong>オブジェクト・ストレージ</strong> への差分バックアップを実現します。</li>
+  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/cliconcepts.htm">Command Line Interface</a></strong> （以降” <strong>OCI CLI</strong> “と呼称）<br />
+<strong>OCI</strong> の操作をコマンドラインインターフェースで行うための <strong>OCI CLI</strong> は、POSIXファイルシステムと <strong>オブジェクト・ストレージ</strong> を同期させる機能を持ち、これを利用して差分バックアップを実現します。</li>
+  <li><strong><a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/ocifs/index.htm">OCIFS</a></strong><br />
+<strong>OCI</strong> が無償で提供するユーティリティの <strong>OCIFS</strong> は、 <strong>オブジェクト・ストレージ</strong> をPOSIXファイルシステムのディレクトリ階層にマウントし、POSIXのIOシステムコールを使用するアプリケーションが <strong>オブジェクト・ストレージ</strong> にアクセスすることを可能にします。</li>
   <li><strong><a href="https://rclone.org/">Rclone</a></strong><br />
-<strong>Rclone</strong> は、様々なクラウトストレージで利用可能なデータ転送ツールとして幅広く利用されている高機能のオープンソースソフトウェアで、 <strong>オブジェクト・ストレージ</strong> をバックエンドのストレージとして公式にサポートしており、ストレージ間を同期させるサブコマンド <strong>rclone sync</strong> を利用し、ファイル共有ストレージの <strong>オブジェクト・ストレージ</strong> への差分バックアップを実現します。</li>
+<strong>Rclone</strong> は、様々なクラウドストレージで利用可能なデータ転送ツールとして幅広く利用されている高機能のオープンソースソフトウェアで、 <strong>オブジェクト・ストレージ</strong> をバックエンドのストレージとして公式にサポートし、ストレージ間を同期させる機能により差分バックアップを実現します。</li>
 </ul>
 
-<p>本テクニカルTipsは、ファイル共有ストレージのバックアップを <strong>オブジェクト・ストレージ</strong> に取得することを念頭に、まず初めにこれらのツールを検証する際の前提条件を提示し、次に以下の観点でこれらのツールを比較・検証することで、自身のバックアップ要件に沿ったツールをどのように選択すればよいかを解説します。</p>
+<p>これらを以下のように組み合わせた4種類のバックアップ環境を比較・検証します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">No.</th>
+      <th style="text-align: center">バックアップ<br />格納ストレージ</th>
+      <th style="text-align: center">バックアップツール</th>
+      <th style="text-align: center">バックアップ方法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center"><strong>オブジェクト・ストレージ</strong></td>
+      <td style="text-align: center"><strong>OCI CLI</strong></td>
+      <td style="text-align: center"><strong><a href="https://docs.oracle.com/en-us/iaas/tools/oci-cli/3.49.3/oci_cli_docs/cmdref/os/object/sync.html">oci os object sync</a></strong> コマンドで差分バックアップ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center"><strong>オブジェクト・ストレージ</strong></td>
+      <td style="text-align: center"><strong>OCIFS</strong> + <strong>rsync</strong></td>
+      <td style="text-align: center"><strong>OCIFS</strong> でマウントした <strong>オブジェクト・ストレージ</strong> に<br /><strong>rsync</strong> で差分バックアップ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center"><strong>オブジェクト・ストレージ</strong></td>
+      <td style="text-align: center"><strong>Rclone</strong></td>
+      <td style="text-align: center"><strong>rclone sync</strong> コマンドで差分バックアップ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center"><strong>BVLC</strong></td>
+      <td style="text-align: center"><strong>rsync</strong></td>
+      <td style="text-align: center"><strong>BVLC</strong> に作成したPOSIXファイルシステムに<br /><strong>rsync</strong> で差分バックアップ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以降では、まず初めにこれらのバックアップ環境の前提条件を提示し、次に以下の観点でこれらを比較・検証することで、自身のバックアップ要件に沿ったバックアップ環境をどのように選択すればよいかを解説します。</p>
 
 <ul>
   <li>バックアップ・リストア時の制約事項</li>
   <li>バックアップ・リストア性能</li>
+  <li>ランニングコスト</li>
 </ul>
 
 <hr />
-<h1 id="1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</h1>
+<h1 id="1-バックアップ環境前提条件">1. バックアップ環境前提条件</h1>
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、本テクニカルTipsで比較するバックアップツールを検証する際の前提条件を、以下の観点で解説します。</p>
+<p>本章は、本テクニカルTipsで取り上げるバックアップ環境を検証する際の前提条件を、以下の観点で解説します。</p>
 
 <ul>
   <li>検証環境</li>
@@ -439,11 +485,17 @@
 
 <h2 id="1-1-検証環境">1-1. 検証環境</h2>
 
-<p>バックアップツールを検証する際に使用する環境は、ストレージに <strong>ブロック・ボリューム</strong> を使用しこれを <strong>ベア・メタル・インスタンス</strong> にアタッチする方法（以降”ブロック・ボリュームNFSサーバ”と呼称）でNFSでサービスするファイル共有ストレージをバックアップする前提で、何れも <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></strong> の手順に従い構築されたファイル共有ストレージと <strong><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> の手順に従い構築されたバックアップ環境を使用し、ここで構築したバックアップサーバでバックアップツールを実行して検証します。</p>
+<p>各バックアップ環境は、ストレージに <strong>ブロック・ボリューム</strong> を使用しこれを <strong>ベア・メタル・インスタンス</strong> にアタッチする方法（以降”ブロック・ボリュームNFSサーバ”と呼称）でNFSでサービスするファイル共有ストレージをバックアップする前提で、何れも <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></strong> の手順に従い構築されたファイル共有ストレージと <strong><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></strong> の手順に従い構築されたバックアップ環境を使用し、ここで構築したバックアップサーバでバックアップツールを実行します。</p>
 
-<p><img src="/ocitutorials/hpc/spinup-backup-server/architecture_diagram.png" alt="システム構成図" /></p>
+<p><img src="/ocitutorials/hpc/spinup-backup-server/architecture_diagram_os.png" alt="システム構成図OS" /></p>
+<center><u>バックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用する場合</u></center>
+<p><br /></p>
 
-<p>なお、このチュートリアルで構築するバックアップ環境は、 <strong>Rclone</strong> のみを使用しているため、 <strong>OCI CLI</strong> と <strong>OCIFS</strong> を追加でバックアップサーバにインストールします。</p>
+<p><img src="/ocitutorials/hpc/spinup-backup-server/architecture_diagram_bv.png" alt="システム構成図BV" /></p>
+<center><u>バックアップ格納ストレージに <strong>BVLC</strong> を使用する場合</u></center>
+<p><br /></p>
+
+<p>なお、このチュートリアルで構築するバックアップ環境は <strong>No. 3</strong> と <strong>No. 4</strong> のため、 <strong>No. 1</strong> と <strong>No. 2</strong> のバックアップツールである <strong>OCI CLI</strong> と <strong>OCIFS</strong> を追加でバックアップサーバにインストールします。</p>
 
 <p><strong>OCI CLI</strong> のインストールは、以下の <strong>OCI</strong> 公式マニュアルに従い行います。<br />
 なお、 <strong>OCI CLI</strong> の実行時認証は、チュートリアルに従って構築されたバックアップサーバが <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を完了しているため、これを使用します。</p>
@@ -455,7 +507,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ocifs
 </code></pre></div></div>
 
-<p>次に、以下コマンドをバックアップサーバのopcユーザで実行し、バックアップに使用する <strong>オブジェクト・ストレージ・バケット</strong> を <strong>/mnt/os</strong> にマウントします。<br />
+<p>次に、以下コマンドをバックアップサーバのopcユーザで実行し、バックアップに使用する <strong>オブジェクト・ストレージ</strong> の <strong>バケット</strong> を <strong>/mnt/os</strong> にマウントします。<br />
 なお、 <strong>OCIFS</strong> の実行時認証は、チュートリアルに従って構築されたバックアップサーバが <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定を完了しているため、これを使用します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/os
@@ -472,154 +524,171 @@
   <li><strong>OCI CLI</strong> ： 3.48.2</li>
   <li><strong>OCIFS</strong> ： 1.1.0-2</li>
   <li><strong>Rclone</strong> ： v1.68.1</li>
+  <li><strong>rsync</strong> ： 3.2.3</li>
 </ul>
 
 <h2 id="1-3-バックアップリストア時指定のオプション">1-3. バックアップ・リストア時指定のオプション</h2>
 
-<h3 id="1-3-1-oci-cli">1-3-1. OCI CLI</h3>
+<h3 id="1-3-0-概要">1-3-0. 概要</h3>
 
-<p><strong>OCI CLI</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+<p>本章は、各バックアップ環境を使用してバックアップ・リストアを行う際、使用するバックアップツールに指定するオプション等をバックアップ環境毎に解説します。</p>
+
+<h3 id="1-3-1-バックアップ環境no-1">1-3-1. バックアップ環境No. 1</h3>
+
+<p><strong>OCI CLI</strong> を使用するバックアップ環境 <strong>No. 1</strong> のバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>oci os object <span class="nb">sync</span> <span class="nt">--auth</span> instance_principal <span class="nt">--delete</span> <span class="nt">--parallel-operations-count</span> 100 <span class="nt">--bucket-name</span> bucket_name <span class="nt">--src-dir</span> /mnt/nfs/source_dir
 </code></pre></div></div>
 
 <p>なおコマンド中の <strong>bucket_name</strong> と <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
-<p>また、 <strong>OCI CLI</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+<p>また、 <strong>OCI CLI</strong> を使用するバックアップ環境 <strong>No. 1</strong> のリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>oci os object <span class="nb">sync</span> <span class="nt">--auth</span> instance_principal <span class="nt">--delete</span> <span class="nt">--parallel-operations-count</span> 100 <span class="nt">--bucket-name</span> bucket_name <span class="nt">--dest-dir</span> /mnt/nfs/dest_dir
 </code></pre></div></div>
 
 <p>なおコマンド中の <strong>bucket_name</strong> と <strong>dest_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
-<h3 id="1-3-2-ocifs">1-3-2. OCIFS</h3>
+<h3 id="1-3-2-バックアップ環境no-2">1-3-2. バックアップ環境No. 2</h3>
 
-<p><strong>OCIFS</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+<p><strong>OCIFS</strong> と <strong>rsync</strong> を使用するバックアップ環境 <strong>No. 2</strong> のバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/nfs/source_dir /mnt/os/
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/nfs/source_dir /mnt/os
 </code></pre></div></div>
 
 <p>なおコマンド中の <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
-<p>また、 <strong>OCIFS</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。<br />
+<p>また、 <strong>OCIFS</strong> と <strong>rsync</strong> を使用するバックアップ環境 <strong>No. 2</strong> のリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。<br />
 最初の2個のコマンドは、バックアップ時のキャッシュを無効化するためのもので、これによりリストア時に <strong>オブジェクト・ストレージ</strong> からデータを読み出す際の性能を計測しています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/os
 <span class="nv">$ </span><span class="nb">sudo </span>ocifs <span class="nt">--auth</span><span class="o">=</span>instance_principal <span class="nt">--cache</span><span class="o">=</span>/var/tmp/ocifs-cache bucket_name /mnt/os
-<span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/os/source_dir restore_dir 
+<span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-au</span> /mnt/os/source_dir /mnt/nfs/restore_dir 
 </code></pre></div></div>
 
 <p>なおコマンド中の <strong>source_dir</strong> と <strong>restore_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
-<h3 id="1-3-3-rclone">1-3-3. Rclone</h3>
+<h3 id="1-3-3-バックアップ環境no-3">1-3-3. バックアップ環境No. 3</h3>
 
-<p><strong>Rclone</strong> を使用するバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+<p><strong>Rclone</strong> を使用するバックアップ環境 <strong>No. 3</strong> のバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nt">--checksum</span> <span class="nb">sync</span> /mnt/nfs/source_dir rclone_conn:bucket_name/dest_dir
 </code></pre></div></div>
 
 <p>なお、コマンド中の <strong>source_dir</strong> 、 <strong>rclone_conn</strong> 、 <strong>bucket_name</strong> 、及び <strong>dest_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
-<p>また、 <strong>Rclone</strong> を使用するリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+<p>また、 <strong>Rclone</strong> を使用するバックアップ環境 <strong>No. 3</strong> のリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rclone <span class="nt">--oos-upload-cutoff</span> 16Mi <span class="nt">--transfers</span> 100 <span class="nt">--oos-chunk-size</span> 16Mi <span class="nt">--oos-upload-concurrency</span> 128 <span class="nt">--oos-attempt-resume-upload</span> <span class="nt">--oos-leave-parts-on-error</span> <span class="nt">--copy-links</span> <span class="nt">--metadata</span> <span class="nt">--checksum</span> <span class="nb">sync </span>rclone_conn:bucket_name/dest_dir /mnt/nfs/restore/source_dir
 </code></pre></div></div>
 
-<p>なおコマンド中の <strong>rclone_conn</strong> 、 <strong>bucket_name</strong> 、 <strong>dest_dir</strong> 、及び <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+<p>なお、コマンド中の <strong>rclone_conn</strong> 、 <strong>bucket_name</strong> 、 <strong>dest_dir</strong> 、及び <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<h3 id="1-3-4-バックアップ環境no-4">1-3-4. バックアップ環境No. 4</h3>
+
+<p><strong>BVLC</strong> と <strong>rsync</strong> を使用するバックアップ環境 <strong>No. 4</strong> のバックアップは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-auH</span> /mnt/nfs/source_dir /mnt/bv
+</code></pre></div></div>
+
+<p>なお、コマンド中の <strong>source_dir</strong> は、自身の環境に置き換えて指定します。</p>
+
+<p>また、 <strong>BVLC</strong> と <strong>rsync</strong> を使用するバックアップ環境 <strong>No. 4</strong> のリストアは、以下コマンドをバックアップサーバのopcユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rsync <span class="nt">-auH</span> /mnt/bv/source_dir /mnt/nfs/restore_dir 
+</code></pre></div></div>
+
+<p>なお、コマンド中の <strong>source_dir</strong> と <strong>restore_dir</strong> は、自身の環境に置き換えて指定します。</p>
 
 <hr />
 <h1 id="2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</h1>
 
-<p>本章は、本テクニカルTipsで比較・検証するバックアップツールを <strong><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a></strong> で示した条件で利用する際、通常バックアップに求められる機能が満たせないような制約事項について、その評価項目と各バックアップツールの対応を以下の表にまとめます。<br />
-この制約事項の多くは、POSIXファイルシステムのメタデータをバックエンドストレージの <strong>オブジェクト・ストレージ</strong> がサポートしていないことに起因します。</p>
+<p>本章は、本テクニカルTipsで比較・検証する各バックアップ環境を <strong><a href="#1-バックアップ環境前提条件">1. バックアップ環境前提条件</a></strong> で示した条件で利用する際、本来バックアップに求められる機能が満たせないような制約事項について、その評価項目と各バックアップ環境の対応を以下の表にまとめます。<br />
+この制約事項の多くは、バックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用する際、POSIXファイルシステムのメタデータが保持されないことに起因します。</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: center">No.</th>
       <th style="text-align: center">評価項目</th>
-      <th style="text-align: center">OCI CLI</th>
-      <th style="text-align: center">OCIFS</th>
-      <th style="text-align: center">Rclone</th>
+      <th style="text-align: center">バックアップ環境<br />No. 1</th>
+      <th style="text-align: center">バックアップ環境<br />No. 2</th>
+      <th style="text-align: center">バックアップ環境<br />No. 3</th>
+      <th style="text-align: center">バックアップ環境<br />No. 4</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: center">1</td>
-      <td style="text-align: center">オーナーユーザーの保存</td>
+      <td style="text-align: center">所有者・所有グループの保存</td>
       <td style="text-align: center">✖（※1）</td>
       <td style="text-align: center">△（※2）</td>
       <td style="text-align: center">✖（※1）</td>
+      <td style="text-align: center">〇</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
-      <td style="text-align: center">オーナーグループの保存</td>
-      <td style="text-align: center">✖（※1）</td>
-      <td style="text-align: center">△（※2）</td>
-      <td style="text-align: center">✖（※1）</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">3</td>
       <td style="text-align: center">パーミッションの保存</td>
       <td style="text-align: center">✖（※3）</td>
       <td style="text-align: center">△（※4）</td>
       <td style="text-align: center">✖（※3）</td>
+      <td style="text-align: center">〇</td>
     </tr>
     <tr>
-      <td style="text-align: center">4</td>
+      <td style="text-align: center">3</td>
       <td style="text-align: center">ファイル作成・更新日時の保存</td>
       <td style="text-align: center">✖（※5）</td>
       <td style="text-align: center">△（※6）</td>
       <td style="text-align: center">〇</td>
+      <td style="text-align: center">〇</td>
     </tr>
     <tr>
-      <td style="text-align: center">5</td>
-      <td style="text-align: center">ファイル属性変更日時の保存</td>
-      <td style="text-align: center">✖（※5）</td>
-      <td style="text-align: center">✖（※5）</td>
-      <td style="text-align: center">✖（※5）</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">6</td>
+      <td style="text-align: center">4</td>
       <td style="text-align: center">ディレクトリ作成・更新日時の保存</td>
       <td style="text-align: center">✖（※5）</td>
       <td style="text-align: center">△（※6）</td>
       <td style="text-align: center">✖（※5）</td>
+      <td style="text-align: center">〇</td>
     </tr>
     <tr>
-      <td style="text-align: center">7</td>
+      <td style="text-align: center">5</td>
       <td style="text-align: center">ハードリンクの保存</td>
       <td style="text-align: center">✖（※7）</td>
       <td style="text-align: center">✖（※7）</td>
       <td style="text-align: center">✖（※7）</td>
+      <td style="text-align: center">〇（※8）</td>
     </tr>
     <tr>
-      <td style="text-align: center">8</td>
+      <td style="text-align: center">6</td>
       <td style="text-align: center">シンボリックリンクの保存</td>
-      <td style="text-align: center">✖（※8）</td>
-      <td style="text-align: center">✖</td>
       <td style="text-align: center">✖（※9）</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">9</td>
-      <td style="text-align: center">空のディレクトリの保存</td>
-      <td style="text-align: center">〇</td>
-      <td style="text-align: center">〇</td>
       <td style="text-align: center">✖</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">10</td>
-      <td style="text-align: center">キャシュをローカルファイルシステムに持たない</td>
-      <td style="text-align: center">〇</td>
       <td style="text-align: center">✖（※10）</td>
       <td style="text-align: center">〇</td>
     </tr>
     <tr>
-      <td style="text-align: center">11</td>
-      <td style="text-align: center">チェックサムによる<br />ファイル転送結果確認機能を持つ</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">空のディレクトリの保存</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">✖</td>
+      <td style="text-align: center">〇</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">キャシュ用のストレージが不要</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">✖（※11）</td>
+      <td style="text-align: center">〇</td>
+      <td style="text-align: center">〇</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">チェックサムによる<br />ファイル転送結果確認機能を持つ<br />（※12）</td>
       <td style="text-align: center">✖</td>
       <td style="text-align: center">✖</td>
       <td style="text-align: center">〇</td>
+      <td style="text-align: center">-<br />（※13）</td>
     </tr>
   </tbody>
 </table>
@@ -627,100 +696,109 @@
 <p>※1）リストア実行ユーザとそのプライマリグループになります。<br />
 ※2）再マウントでマウント実行ユーザとそのプライマリグループになります。<br />
 ※3）全てのファイルとディレクトリはそれぞれ <strong>644</strong> と <strong>755</strong> でリストアされます。<br />
-※4）再マントで全てのファイルとディレクトリはそれぞれ <strong>644</strong> と <strong>755</strong> になります。<br />
+※4）再マウントで全てのファイルとディレクトリはそれぞれ <strong>644</strong> と <strong>755</strong> になります。<br />
 ※5）リストア時の日時になります。<br />
 ※6）再マウントでリストア時の日時になります。<br />
 ※7）リンク数分のファイルの実体としてリストアされます。<br />
-※8）参照元ファイルの実体としてリストアされます。<br />
-※9）参照元ファイルの実体としてリストアされます。（ <strong>–copy-links</strong> オプション指定による挙動です。）<br />
-※10）<strong>オブジェクト・ストレージ</strong> にアクセス（書込み・読込みの何れも含みます。）するファイルサイズの総容量に等しいキャッシュ用途の空き容量がローカルファイルシステムに必要です。このためフルバックアップは、バックアップ対象のファイル共有ストレージの総使用量以上の空き容量をローカルファイルシステムに用意する必要があります。 <strong>OCIFS</strong> のキャッシュに関する詳細は、 <strong>OCI</strong> 公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/ocifs/index.htm#ocifs-cache-options">ここ</a></strong> を参照してください。</p>
+※8）<strong>-H</strong> オプション指定による挙動です。<br />
+※9）参照先のファイルの実体としてリストアされます。<br />
+※10）<strong>Rclne</strong> の <strong>–copy-links</strong> オプション指定により、参照先のファイルの実体としてリストアされます。<br />
+※11）<strong>オブジェクト・ストレージ</strong> にアクセス（書込み・読込みの何れも含みます。）するファイルサイズの総容量に等しい空き容量を持つストレージ領域が必要です。このためフルバックアップは、バックアップ対象のファイル共有ストレージの総使用量以上の空き容量がキャッシュ用ストレージに必要になります。 <strong>OCIFS</strong> のキャッシュに関する詳細は、 <strong>OCI</strong> 公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/ocifs/index.htm#ocifs-cache-options">ここ</a></strong> を参照してください。<br />
+※12）転送完了後に <strong>オブジェクト・ストレージ</strong> が計算するチェックサムを使用して、正しくファイル転送が完了したかどうかを確認する機能です。<br />
+※13）バックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用しないため、該当しません。</p>
 
-<p>この結果から各バックアップツールを比較すると、以下のように考察することが出来ます。</p>
+<p>この結果から各バックアップ環境を比較すると、以下のように考察することが出来ます。</p>
 
 <ol>
-  <li>評価項目 <strong>10</strong> から、 <strong>OCIFS</strong> は容量単価の安価な <strong>オブジェクト・ストレージ</strong> をバックエンドストレージに利用するメリットを享受できない。</li>
-  <li>評価項目 <strong>1</strong> 、 <strong>2</strong> 、 <strong>3</strong> 、 <strong>4</strong> 、及び <strong>6</strong> から、POSIXファイルシステムのメタデータ保持に関する <strong>OCIFS</strong> の優位性は、バックアップサーバの再起動等で発生する再マウントによりキャシュ領域に保持しているメタデータ情報が消失するため、現実的な運用ではこれを享受することが出来ない。</li>
-  <li>評価項目 <strong>4</strong> から、 <strong>Rclone</strong> はファイル作成・更新日時を保持できる点で優位性がある。</li>
-  <li>評価項目 <strong>11</strong> から、 <strong>Rclone</strong> はバックアップの信頼性で優位性がある。</li>
+  <li>評価項目 <strong>1</strong> ～ <strong>4</strong> のメタデータ保持がバックアップ要件となる場合は、選択肢がバックアップ環境 <strong>No. 4</strong> に限定される。</li>
+  <li>評価項目 <strong>8</strong> から、バックアップ環境 <strong>No. 2</strong> は容量単価の安価な <strong>オブジェクト・ストレージ</strong> をバックエンドストレージに利用するメリットを享受できない。</li>
+  <li>評価項目 <strong>1</strong> ～ <strong>4</strong> から、POSIXファイルシステムのメタデータ保持に関するバックアップ環境 <strong>No. 2</strong> の優位性は、バックアップサーバの再起動等で発生する再マウントによりキャシュ領域に保持しているメタデータ情報が消失するため、現実的な運用ではこれを享受することが出来ない。</li>
+  <li>評価項目 <strong>3</strong> から、バックアップ環境 <strong>No. 3</strong> は他の <strong>オブジェクト・ストレージ</strong> を使用するバックアップ環境に対して優位性がある。</li>
+  <li>評価項目 <strong>9</strong> から、バックアップ環境 <strong>No. 3</strong> はバックアップの信頼性で優位性がある。</li>
 </ol>
 
-<p>以上より、考察 <strong>1</strong> で<u><strong>OCI CLI</strong>か<strong>Rclone</strong>が現実的な選択肢</u>となり、考察 <strong>3</strong> と <strong>4</strong> で<u><strong>Rclone</strong>に優位性がある</u>ことになります。</p>
+<p>以上より、考察 <strong>2</strong> で <u><strong>OCIFS</strong>が選択肢から脱落</u> し、考察 <strong>1</strong> 、 <strong>4</strong> 、及び <strong>5</strong> で残りの選択肢からどのバックアップ環境を選定するかを判断することになります。</p>
 
 <hr />
 <h1 id="3-バックアップリストア性能">3. バックアップ・リストア性能</h1>
 
-<p>本章は、 <strong><a href="#1-バックアップツール検証時前提条件">1. バックアップツール検証時前提条件</a></strong> で示した条件に於ける各バックアップツールのバックアップ時とリストア時の性能を、以下の観点で検証します。</p>
+<p>本章は、 <strong><a href="#1-バックアップ環境前提条件">1. バックアップ環境前提条件</a></strong> で示した条件に於ける各バックアップ環境のバックアップ時とリストア時の性能を、以下の観点で検証します。</p>
 
 <ul>
   <li>スループット<br />
 サイズの大きなファイルをバックアップ・リストアする際の性能指標として、以下の条件でスループット（単位時間当たりの転送データ量 <strong>MiB/s</strong> ）を計測します。<br />
-この際、ファイルシステムキャッシュを無効化した後に計測します。（※11）
+この際、ファイルシステムキャッシュをフラッシュした後に計測します。（※14）
     <ul>
       <li>テストファイルサイズ： 10 GiB</li>
-      <li>テストファイル作成方法： /dev/urandomを元にddで作成（※12）</li>
+      <li>テストファイル作成方法： /dev/urandomを元にddで作成（※15）</li>
       <li>テストファイル数： 1</li>
     </ul>
   </li>
   <li>メタデータ性能<br />
-サイズの小さなファイルをバックアップ・リストアする際の性能指標として、以下の条件でメタデータ性能（単位時間当たりの作成ファイル数 <strong>files/s</strong> ）を計測します。
+サイズの小さなファイルをバックアップ・リストアする際の性能指標として、以下の条件でメタデータ性能（単位時間当たりの作成ファイル数 <strong>files/s</strong> ）を計測します。<br />
+この際、ファイルシステムキャッシュをフラッシュした後に計測します。（※14）
     <ul>
       <li>テストファイルサイズ： 0 B</li>
       <li>ディレクトリ数： 1,000</li>
       <li>ディレクトリ当たりファイル数： 1,000</li>
-      <li>総ファイル数： 1,000,000（※13）</li>
+      <li>総ファイル数： 1,000,000（※16）</li>
     </ul>
   </li>
 </ul>
 
-<p>※11）以下のコマンドをバックアップサーバのopcユーザで実行します。</p>
+<p>※14）以下のコマンドをバックアップサーバのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sync</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span>3 | <span class="nb">sudo tee</span> /proc/sys/vm/drop_caches
 </code></pre></div></div>
 
-<p>※12）以下のコマンドでテストファイルを作成します。</p>
+<p>※15）以下のコマンドでテストファイルを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/urandom <span class="nv">of</span><span class="o">=</span>./10G.bin <span class="nv">bs</span><span class="o">=</span>1048576 <span class="nv">count</span><span class="o">=</span><span class="k">$((</span><span class="m">1024</span><span class="o">*</span><span class="m">10</span><span class="k">))</span>
 </code></pre></div></div>
 
-<p>※13）以下のコマンドでテストファイルを作成します。</p>
+<p>※16）以下のコマンドでテストファイルを作成します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ count</span><span class="o">=</span>1000<span class="p">;</span> <span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq</span> <span class="nt">-w</span> 1 <span class="nv">$count</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$i</span><span class="p">;</span> <span class="nb">mkdir</span> <span class="nv">$i</span><span class="p">;</span> <span class="nb">cd</span> <span class="nv">$i</span><span class="p">;</span><span class="k">for </span>j <span class="k">in</span> <span class="sb">`</span><span class="nb">seq</span> <span class="nt">-w</span> 1 <span class="nv">$count</span><span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">fname</span><span class="o">=</span><span class="nv">$j</span><span class="s2">".out"</span><span class="p">;</span> <span class="nb">touch</span> <span class="nv">$fname</span><span class="p">;</span> <span class="k">done</span><span class="p">;</span> <span class="nb">cd</span> ..<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
 <p>以下の表は、以上の条件で計測したバックアップ・リストア性能です。（各データは3回計測した平均値です。）<br />
-なおこの性能値は、状況により変化するため、参考値としてご利用ください。</p>
+なお、バックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用するバックアップ環境の性能値は、計測時点の状況により大きく変動することがあるため、参考値としてご利用ください。</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: center">No.</th>
       <th style="text-align: center">評価項目</th>
-      <th style="text-align: right">OCI CLI</th>
-      <th style="text-align: right">OCIFS</th>
-      <th style="text-align: right">Rclone</th>
+      <th style="text-align: right">バックアップ環境<br />No. 1</th>
+      <th style="text-align: right">バックアップ環境<br />No. 2</th>
+      <th style="text-align: right">バックアップ環境<br />No. 3</th>
+      <th style="text-align: right">バックアップ環境<br />No. 4</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td style="text-align: center">1</td>
       <td style="text-align: center">バックアップ<br />スループット</td>
-      <td style="text-align: right">665 MiB/s<br />（※14）</td>
+      <td style="text-align: right">665 MiB/s<br />（※17）</td>
       <td style="text-align: right">46 MiB/s</td>
-      <td style="text-align: right">301 MiB/s<br />（※14）</td>
+      <td style="text-align: right">301 MiB/s<br />（※17）</td>
+      <td style="text-align: right">280 MiB/s</td>
     </tr>
     <tr>
       <td style="text-align: center">2</td>
       <td style="text-align: center">バックアップ<br />メタデータ性能</td>
       <td style="text-align: right">238 files/s</td>
-      <td style="text-align: right">3 files/s<br />（※15）</td>
+      <td style="text-align: right">3 files/s<br />（※18）</td>
       <td style="text-align: right">2,857 files/s</td>
+      <td style="text-align: right">7,082 files/s</td>
     </tr>
     <tr>
       <td style="text-align: center">3</td>
       <td style="text-align: center">リストア<br />スループット</td>
-      <td style="text-align: right">417 MiB/s<br />（※14）</td>
+      <td style="text-align: right">417 MiB/s<br />（※17）</td>
       <td style="text-align: right">4 MiB/s</td>
-      <td style="text-align: right">217 MiB/s<br />（※14）</td>
+      <td style="text-align: right">217 MiB/s<br />（※17）</td>
+      <td style="text-align: right">292 MiB/s</td>
     </tr>
     <tr>
       <td style="text-align: center">4</td>
@@ -728,22 +806,72 @@
       <td style="text-align: right">128 files/s</td>
       <td style="text-align: right">259 files/s</td>
       <td style="text-align: right">1,927 files/s</td>
+      <td style="text-align: right">236 files/s</td>
     </tr>
   </tbody>
 </table>
 
-<p>※14）<strong>OCI CLI</strong> と <strong>Rclone</strong> のスループットの差は、ファイル転送前後のチェックサムによる結果確認の有無が影響していると考えられ、 <strong>Rclone</strong> はチェックサム確認を実施するのに対し、 <strong>OCI CLI</strong> はチェックサム確認の機能を有していません。<br />
-※15）性能が悪く途中で検証を打ち切ったため、途中経過から算出した概略値です。</p>
+<p>※17）バックアップ環境 <strong>No. 1</strong> とバックアップ環境 <strong>No. 3</strong> のスループットの差は、ファイル転送前後のチェックサムによる転送結果確認の有無が影響していると考えられ、 <strong>Rclone</strong> はチェックサム確認を実施するのに対し、 <strong>OCI CLI</strong> はチェックサム確認の機能を有していません。<br />
+※18）性能が悪く途中で検証を打ち切ったため、途中経過から算出した概略値です。</p>
 
-<p>この結果から各バックアップツールを比較すると、以下のように考察することが出来ます。</p>
+<p>この結果から各バックアップ環境を比較すると、以下のように考察することが出来ます。</p>
 
 <ol>
-  <li>評価項目 <strong>2</strong> から、 <strong>OCIFS</strong> をバックアップツールとして利用することは現実的ではない。</li>
-  <li>評価項目 <strong>1</strong> と <strong>3</strong> から、 <strong>OCI CLI</strong> は <strong>Rclone</strong> に対して約2倍のスループットを示し、サイズの大きなファイルが存在するファイル共有ストレージのバックアップに於いて有利である。（この理由は、※14）を参照してください。）</li>
-  <li>評価項目 <strong>2</strong> と <strong>4</strong> から、 <strong>Rclone</strong> は <strong>OCI CLI</strong> に対してメタデータ性能が桁違いに高く、ファイル数が多いファイル共有ストレージのバックアップで圧倒的に有利である。</li>
+  <li>評価項目 <strong>2</strong> から、バックアップ環境 <strong>No. 2</strong> の採用は現実的ではない。</li>
+  <li>評価項目 <strong>1</strong> と <strong>3</strong> から、バックアップ環境 <strong>No. 1</strong> はバックアップ環境 <strong>No. 3</strong> や <strong>No. 4</strong> に対して約2倍のスループットを示し、サイズの大きなファイルが存在するファイル共有ストレージのバックアップに於いて有利である。（この理由は、※17）を参照してください。）</li>
+  <li>評価項目 <strong>2</strong> から、バックアップ環境 <strong>No. 4</strong> はバックアップ時のメタデー性能が他と比較して圧倒的に高く、サイズの小さなファイルが多数存在するファイル共有ストレージのバックアップで有利である。</li>
+  <li>評価項目 <strong>2</strong> と <strong>4</strong> から、バックアップ環境 <strong>No. 3</strong> は同じくバックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用するバックアップ環境 <strong>No. 1</strong> に対してメタデータ性能が桁違いに高く、サイズの小さなファイルが多数存在するファイル共有ストレージのバックアップ・リストアで有利である。</li>
 </ol>
 
-<p>以上より、考察 <strong>1</strong> で <u><strong>OCI CLI</strong>か<strong>Rclone</strong>が現実的な選択肢</u>となり、考察 <strong>2</strong> と <strong>3</strong> で<u><strong>OCI CLI</strong>と<strong>Rclone</strong>のどちらを選択するかはバックアップ対象のファイルサイズ分布で判断する</u>のが良いと考えることが出来ます。</p>
+<p>以上より、考察 <strong>1</strong> で <u>バックアップ環境 <strong>No. 2</strong> が選択肢から脱落</u> し、考察 <strong>2</strong> ～ <strong>4</strong> で <u>残りの選択肢からどのバックアップ環境を選定するかはバックアップ対象のファイルサイズ分布で判断する</u> のが良いと考えることが出来ます。</p>
+
+<hr />
+<h1 id="4-ランニングコスト">4. ランニングコスト</h1>
+
+<p>本章は、本テクニカルTipsで取り上げるバックアップ環境のランニングコストを、バックアップ格納ストレージにフォーカスして検証します。</p>
+
+<p>ここでバックアップ環境 <strong>No. 2</strong> は、 <strong><a href="#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></strong> の考察 <strong>2.</strong> と <strong><a href="#3-バックアップリストア性能">3. バックアップ・リストア性能</a></strong> の考察 <strong>1.</strong> から、本章の検証の対象から除外します。<br />
+また、バックアップ環境 <strong>No. 1</strong> とバックアップ環境 <strong>No. 3</strong> は、そのランニングコストが基本的に同額となるためこれらを纏めて取り扱います。</p>
+
+<p>以上より、以降ではバックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用するバックアップ環境 <strong>No. 1</strong> / <strong>No. 3</strong> と、 <strong>BVLC</strong> を使用するバックアップ環境 <strong>No. 4</strong> のランニングコストを比較します。</p>
+
+<p>ここで <strong>オブジェクト・ストレージ</strong> （<strong>標準</strong>）案と <strong>BVLC</strong> 案のランニングコストは、以下の条件を仮定します。</p>
+
+<ul>
+  <li>ファイル共有ストレージ総容量 ： 100 TB（※19）</li>
+  <li>ファイル共有ストレージ使用率 ： 70 %</li>
+</ul>
+
+<p>※19）この仮定から <strong>BVLC</strong> の総容量を100 TBと仮定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">月額定価<br />（2024年11月時点）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>オブジェクト・ストレージ</strong> （<strong>標準</strong>）案</td>
+      <td style="text-align: right"><strong>276,675</strong> 円</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>BVLC</strong> 案</td>
+      <td style="text-align: right"><strong>395,250</strong> 円</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この結果から各案を比較すると、以下のように考察することが出来ます。</p>
+
+<ol>
+  <li><strong>オブジェクト・ストレージ</strong> （<strong>標準</strong>）案は、バックアップ対象ファイルの総容量に応じた従量課金のため、ファイル共有ストレージ総容量分が固定的に課金される <strong>BVLC</strong> 案に対して有利である。</li>
+  <li>ファイル共有ストレージ使用率が上昇すると両者の価格差は縮まり、下降すると価格差は広がる。</li>
+  <li><strong>オブジェクト・ストレージ</strong> の階層に <strong>頻度の低いアクセス</strong> や <strong>アーカイブ</strong> を使用することで、 <strong>オブジェクト・ストレージ</strong> （<strong>標準</strong>）案よりランニングコストを低減できる可能性がある。（※20）</li>
+</ol>
+
+<p>※20）<strong>頻度の低いアクセス</strong> や <strong>アーカイブ</strong> がコスト計算上の最低保持期間を定義しているため、バックアップ対象ファイルの更新パターン・頻度により、ランニングコストの低減額は大きく異なり、コストアップとなる場合もあります。関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Object/Concepts/understandingstoragetiers.htm">ここ</a></strong> を参照してください。</p>
 
         
       </section>
@@ -755,7 +883,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-15T18:47:23+09:00">November 15, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-18T09:24:55+09:00">November 18, 2024</time></p>
 
       </footer>
 
@@ -764,7 +892,7 @@
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%83%BB%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%83%84%E3%83%BC%E3%83%AB%E3%81%AE%E9%81%B8%E6%8A%9E%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-choose-osbackuptool%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E5%90%91%E3%81%91%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E7%92%B0%E5%A2%83%E3%81%AE%E6%9C%80%E9%81%A9%E3%81%AA%E6%A7%8B%E7%AF%89%E6%89%8B%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-choose-osbackuptool%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fhowto-choose-osbackuptool%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 
