@@ -220,7 +220,7 @@ $
 
 本章は、NFSサーバインスタンスでNFSサーバ環境を構築します。
 
-以下コマンドをNFSサーバインスタンスのopcユーザで実行し、NFSサーバを起動します。
+以下コマンドをNFSサーバインスタンスのopcユーザで実行し、NFSサーバを起動してNVMe SSDローカルディスクに作成したファイルシステムがエクスポートされていることを確認します。
 
 ```sh
 $ echo "/mnt/nvme_raid 10.0.0.0/16(rw,sync,no_root_squash)" | sudo tee -a /etc/exports
