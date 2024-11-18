@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-18T09:24:55+09:00">
+  <meta property="article:published_time" content="2024-11-18T09:49:35+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
     <meta itemprop="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
-    <meta itemprop="datePublished" content="2024-11-18T09:24:55+09:00">
+    <meta itemprop="datePublished" content="2024-11-18T09:49:35+09:00">
     
 
     <div class="page__inner-wrap">
@@ -691,24 +691,26 @@ Oracle Database 23aiのバージョンが23.04.xxxの場合、”overlap”: “
 </blockquote>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">table</span> <span class="n">doc_chunks</span> <span class="k">as</span>
-  <span class="k">with</span> <span class="n">t_chunk</span> <span class="k">as</span> <span class="p">(</span>
-  <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_data</span> <span class="k">as</span> <span class="n">embed_data</span>
-  <span class="k">from</span>
-    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
-      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
-      <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">chunk_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.chunk_id'</span><span class="p">,</span> <span class="n">chunk_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.chunk_data'</span><span class="p">))</span> <span class="n">et</span>
-  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="n">t_embed</span> <span class="k">as</span> <span class="p">(</span>
-  <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">rownum</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">select</span> 
+    <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span>
+    <span class="n">TO_VECTOR</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
   <span class="k">from</span>
     <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
     <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
-      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
-      <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span>
-  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="k">select</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_vector</span> <span class="k">as</span> <span class="n">embed_vector</span>
-  <span class="k">from</span> <span class="n">t_chunk</span>
-  <span class="k">join</span> <span class="n">t_embed</span> <span class="k">on</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">doc_id</span> <span class="k">and</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_id</span><span class="p">;</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span>
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+      <span class="p">)</span> <span class="n">t</span><span class="p">,</span>
+      <span class="n">JSON_TABLE</span><span class="p">(</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> 
+      <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span>
+        <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> 
+        <span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span>
+        <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+       <span class="p">)</span>
+      <span class="p">)</span> <span class="n">et</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -983,24 +985,26 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 </blockquote>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">create</span> <span class="k">table</span> <span class="n">doc_chunks</span> <span class="k">as</span>
-    <span class="k">with</span> <span class="n">t_chunk</span> <span class="k">as</span> <span class="p">(</span>
-    <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">et</span><span class="p">.</span><span class="n">chunk_data</span> <span class="k">as</span> <span class="n">embed_data</span>
-    <span class="k">from</span>
-      <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
-        <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
-        <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">chunk_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.chunk_id'</span><span class="p">,</span> <span class="n">chunk_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.chunk_data'</span><span class="p">))</span> <span class="n">et</span>
-    <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="n">t_embed</span> <span class="k">as</span> <span class="p">(</span>
-    <span class="k">select</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">rownum</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
-    <span class="k">from</span>
-      <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
-      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
-        <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> 
-        <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span>
-    <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">select</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_vector</span> <span class="k">as</span> <span class="n">embed_vector</span>
-    <span class="k">from</span> <span class="n">t_chunk</span>
-    <span class="k">join</span> <span class="n">t_embed</span> <span class="k">on</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">doc_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">doc_id</span> <span class="k">and</span> <span class="n">t_chunk</span><span class="p">.</span><span class="n">embed_id</span> <span class="o">=</span> <span class="n">t_embed</span><span class="p">.</span><span class="n">embed_id</span><span class="p">;</span>
+  <span class="k">select</span> 
+    <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="k">as</span> <span class="n">doc_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_id</span> <span class="k">as</span> <span class="n">embed_id</span><span class="p">,</span>
+    <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="k">as</span> <span class="n">embed_data</span><span class="p">,</span>
+    <span class="n">TO_VECTOR</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="k">as</span> <span class="n">embed_vector</span>
+  <span class="k">from</span>
+    <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
+    <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
+      <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span>
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+      <span class="p">)</span> <span class="n">t</span><span class="p">,</span>
+      <span class="n">JSON_TABLE</span><span class="p">(</span>
+      <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> 
+      <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span>
+        <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span> 
+        <span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span>
+        <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span>
+       <span class="p">)</span>
+      <span class="p">)</span> <span class="n">et</span>
+  <span class="k">where</span> <span class="n">dt</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -1063,7 +1067,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-18T09:24:55+09:00">November 18, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-18T09:49:35+09:00">November 18, 2024</time></p>
 
       </footer>
 
