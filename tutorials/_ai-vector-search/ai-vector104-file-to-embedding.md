@@ -416,24 +416,26 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
 
   ```sql
   create table doc_chunks as
-  with t_chunk as (
-  select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
-  from
-    documentation_tab dt,
-      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
-  where dt.id = 1),
-  t_embed as (
-  select dt.id as doc_id, rownum as embed_id, to_vector(t.column_value) as embed_vector
+  select 
+    dt.id as doc_id,
+    et.embed_id as embed_id,
+    et.embed_data as embed_data,
+    TO_VECTOR(et.embed_vector) as embed_vector
   from
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
-      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-      json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
-  where dt.id = 1)
-  select t_chunk.doc_id doc_id, t_chunk.embed_id as embed_id, t_chunk.embed_data as embed_data, t_embed.embed_vector as embed_vector
-  from t_chunk
-  join t_embed on t_chunk.doc_id = t_embed.doc_id and t_chunk.embed_id = t_embed.embed_id;
+      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')),
+      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+      ) t,
+      JSON_TABLE(
+      t.column_value, 
+      '$[*]' COLUMNS (
+        embed_id NUMBER PATH '$.embed_id', 
+        embed_data VARCHAR2(4000) PATH '$.embed_data',
+        embed_vector CLOB PATH '$.embed_vector'
+       )
+      ) et
+  where dt.id = 1;
   ```
 
   出力:
@@ -725,24 +727,26 @@ object_uriには前に手順でメモをしたURIパスを入力します。
 
   ```sql
   create table doc_chunks as
-    with t_chunk as (
-    select dt.id as doc_id, et.chunk_id as embed_id, et.chunk_data as embed_data
-    from
-      documentation_tab dt,
-        dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-        json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et
-    where dt.id = 1),
-    t_embed as (
-    select dt.id as doc_id, rownum as embed_id, to_vector(t.column_value) as embed_vector
-    from
-      documentation_tab dt,
-      dbms_vector_chain.utl_to_embeddings(
-        dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), 
-        json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')), json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t
-    where dt.id = 1)
-    select t_chunk.doc_id doc_id, t_chunk.embed_id as embed_id, t_chunk.embed_data as embed_data, t_embed.embed_vector as embed_vector
-    from t_chunk
-    join t_embed on t_chunk.doc_id = t_embed.doc_id and t_chunk.embed_id = t_embed.embed_id;
+  select 
+    dt.id as doc_id,
+    et.embed_id as embed_id,
+    et.embed_data as embed_data,
+    TO_VECTOR(et.embed_vector) as embed_vector
+  from
+    documentation_tab dt,
+    dbms_vector_chain.utl_to_embeddings(
+      dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')),
+      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+      ) t,
+      JSON_TABLE(
+      t.column_value, 
+      '$[*]' COLUMNS (
+        embed_id NUMBER PATH '$.embed_id', 
+        embed_data VARCHAR2(4000) PATH '$.embed_data',
+        embed_vector CLOB PATH '$.embed_vector'
+       )
+      ) et
+  where dt.id = 1;
   ```
 
   出力:
