@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-18T09:49:35+09:00">
+  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
 
 
 
@@ -292,7 +292,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その10 - MySQLで高速分析を体験する">
     <meta itemprop="description" content="OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！">
-    <meta itemprop="datePublished" content="2024-11-18T09:49:35+09:00">
+    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
     
 
     <div class="page__inner-wrap">
@@ -350,7 +350,7 @@
 
 <h1 id="2-mysql-heatwave構成時の注意事項">2. MySQL HeatWave構成時の注意事項</h1>
 
-<p>MySQL HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>。</p>
+<p>MySQL HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい<sup id="fnref:1"><a href="#fn:1" class="footnote" rel="footnote" role="doc-noteref">1</a></sup>。</p>
 
 <p>本チュートリアルで構成するMySQL HeatWaveの構成図は以下のようになります。HeatWaveを使用する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveをデータ分析用途(OLAP)で使う場合の標準的なシェイプであるHeatWave.512GBの場合、HeatWaveノードの最小台数は1台、最大台数は64台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約1,000GBのデータを保持できます。
 <br />
@@ -734,7 +734,7 @@ e_workshop.zip
 
 <ol>
   <li>
-    <p>ALTER TABLE文を使い、tpchデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>。</p>
+    <p>ALTER TABLE文を使い、tpchデータベース内のテーブルに対して<strong>SECONDARY_ENGINE=RAPID</strong> を定義します<sup id="fnref:2"><a href="#fn:2" class="footnote" rel="footnote" role="doc-noteref">2</a></sup>。</p>
 
     <p>実行コマンド(コピー＆ペースト用)</p>
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ALTER TABLE tpch.customer SECONDARY_ENGINE=RAPID;
@@ -919,17 +919,17 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ l_returnflag, l_linestatus, &
 
 <p>これで、この章の作業は終了です。</p>
 
-<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析/集計対象データは約900MBとそれほど大きなサイズではありません。また、HeatWaveノードも1ノードで構成していますが、それでも約65倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析/集計対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>。是非、分析/集計業務で使用しているデータを対象にしてテストしてみて下さい。</p>
+<p>この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析/集計対象データは約900MBとそれほど大きなサイズではありません。また、HeatWaveノードも1ノードで構成していますが、それでも約65倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析/集計対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります<sup id="fnref:3"><a href="#fn:3" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>。是非、分析/集計業務で使用しているデータを対象にしてテストしてみて下さい。</p>
 
 <div class="footnotes" role="doc-endnotes">
   <ol>
-    <li id="fn:1" role="doc-endnote">
+    <li id="fn:1">
       <p>HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
-    <li id="fn:2" role="doc-endnote">
+    <li id="fn:2">
       <p>HeatWaveの根幹をなす技術はOracle社の研究開発部門であるOracle LabsのProject RAPIDの成果を活用しているため、RAPIDという名称が使われています。 <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
-    <li id="fn:3" role="doc-endnote">
+    <li id="fn:3">
       <p>HeatWave(旧名称：MySQL Database Service Analytics Engine)リリース時の<a href="https://www.oracle.com/jp/corporate/pressrelease/jp20201203.html">プレスリリース</a>では、「分析クエリのためのMySQLのパフォーマンスを400倍向上させます」と案内されています。こちらはTPC-Hのベンチマークを用いて、400GBのデータを対象にしてテストを行った結果です。また、Amazon Redshift、Amazon Auroraとの比較も行っています。これらのベンチマークの結果や再現手順を<a href="https://www.oracle.com/mysql/heatwave/performance/">こちら</a>で案内しています。 <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
@@ -945,7 +945,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ l_returnflag, l_linestatus, &
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-18T09:49:35+09:00">November 18, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
 
       </footer>
 

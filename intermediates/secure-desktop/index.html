@@ -1,0 +1,1038 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Secure Desktopsで簡単VDI環境構築 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="クラウド上で仮想デスクトップの環境が必要なケースはありませんか？クライアントPCにデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件の時にOCIのセキュア・デスクトップが利用可能です。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Secure Desktopsで簡単VDI環境構築">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/intermediates/secure-desktop/">
+
+
+  <meta property="og:description" content="クラウド上で仮想デスクトップの環境が必要なケースはありませんか？クライアントPCにデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件の時にOCIのセキュア・デスクトップが利用可能です。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/intermediates/secure-desktop/img1.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/intermediates/secure-desktop/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/intermediates/secure-desktop/img1.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Secure Desktopsで簡単VDI環境構築
+
+        
+      </h1>
+      
+        <p class="page__lead">クラウド上で仮想デスクトップの環境が必要なケースはありませんか？クライアントPCにデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件の時にOCIのセキュア・デスクトップが利用可能です。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/intermediates" itemprop="item"><span itemprop="name">Intermediates</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Secure Desktopsで簡単VDI環境構築</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">応用編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-load-balancer/">ロードバランサーでWebサーバーを負荷分散する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/taking-block-volume-backups/">ブロック・ボリュームをバックアップする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/object-storage-advanced/">オブジェクト・ストレージの高度な設定</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-dns/">DNSサービスを使ってWebサーバーの名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/private-dns/">プライベートDNSを使って名前解決をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/certificate/">プライベート認証局と証明書の発行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-1/">Email Deliveryを利用した外部へのメール送信(基礎編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/sending-emails-2/">Email Deliveryを利用した外部へのメール送信(応用編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/accessing-serial-console/">シリアル・コンソールでsshできないインスタンスのトラブルシュートをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/attaching-secondary-ips/">インスタンスにセカンダリIPを付与する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-cli/">コマンドライン(CLI)でOCIを操作する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-shell/">クラウド・シェルを使ってブラウザだけで簡単コマンド操作</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/budget-quota/">予算と割当て制限を設定してコストを適正化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/networkfirewall/">OCI Network Firewallを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/byok-with-vault/">OCI Valut (OCI Key Management) でBYOKをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs-database-management/">OCI Database Cloud ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/protecting-web-servers-with-waf/">Web Application Firewall(WAF)を使ってWebサーバを保護する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/web-application-acceleration/">Web Application Accelerationを用いてコンテンツ・キャッシュと圧縮を行う</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/dbcs_operations_insights/">OCIのDBCSでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-add-domains-license/">OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/identitydomains-admin-users/">OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/cloud-guard/">Cloud Guardを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/data-safe-tutorials/">Oracle Data Safe チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/storage-gateway/">ストレージ・ゲートウェイを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/resource-manager/">リソース・マネージャを使ってサンプルアプリケーションをデプロイする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/using-logging/">ロギング・サービスを使って3つのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/vtap/">VTAPでパケットをミラーリングし、パケットキャプチャをする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/serviceconnecterhub/">監査(Audit)ログを使用したテナント監視</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/mobile_app/">OCIモバイル・アプリケーションを使ってみる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oce-tutorial/">Oracle Content and Experience チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/secure-desktop/" class="active">Oracle Secure Desktopsで簡単VDI環境構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/blockchain-tutorial/">Oracle Blockchain Platform チュートリアル</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/bastion/">BastionサービスでパブリックIPを持たないリソースにアクセスする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/oracle-linux-storage-appliance/">Oracle Linux Storage Applianceでファイルストレージの構築</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/os_management/">コンピュート・インスタンスのOSを管理する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/intermediates/ocidi-tutorials/">OCI Data Integrationチュートリアル</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Secure Desktopsで簡単VDI環境構築">
+    <meta itemprop="description" content="クラウド上で仮想デスクトップの環境が必要なケースはありませんか？クライアントPCにデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件の時にOCIのセキュア・デスクトップが利用可能です。">
+    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1oci-セキュアデスクトップの構成概要">1.　OCI セキュア・デスクトップの構成概要</a></li><li><a href="#2-事前設定">2. 事前設定</a><ul><li><a href="#1-iamポリシーの作成">1. IAMポリシーの作成</a><ul><li><a href="#1-サービス向けのポリシー">1. サービス向けのポリシー</a></li><li><a href="#2-ユーザー向けのポリシー">2. ユーザー向けのポリシー</a></li></ul></li><li><a href="#2-ネットワークの準備">2. ネットワークの準備</a></li><li><a href="#3ストレージボリューム">3.ストレージ・ボリューム</a></li></ul></li><li><a href="#3-デスクトップイメージの準備">3. デスクトップ・イメージの準備</a></li><li><a href="#4-デスクトッププールの作成">4. デスクトップ・プールの作成</a></li><li><a href="#5-ユーザーからのデスクトップへのアクセスブラウザ利用">5. ユーザーからのデスクトップへのアクセス（ブラウザ利用）</a></li><li><a href="#6-ユーザーからのデスクトップへのアクセスデスクトップクライアント利用">6. ユーザーからのデスクトップへのアクセス（デスクトップ・クライアント利用）</a></li><li><a href="#7-デスクトップの休止の確認">7. デスクトップの休止の確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル一覧に戻る :</strong>  <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+
+<p>クラウド上で仮想デスクトップの環境が必要なケースはありませんか？PCなどのローカル端末にデータを配置せず、リモートからOCIにアクセスして作業したい、オフィス以外からでも社内システムにアクセスしたい、そのような要件がある場合にOCIのセキュア・デスクトップのサービスが活用できます。</p>
+
+<p>OCI上で仮想デスクトップ環境を迅速にデプロイできて、ローカル端末にデータを持たせないことでセキュリティを確保できます。</p>
+
+<p>このチュートリアルではOracle Linuxのデスクトップ環境を作ってアクセスします。（Windows OSを利用する場合はWindowsライセンスの持ち込みが必要です。）</p>
+
+<p>セキュア・デスクトップのサービス概要については以下の資料もご参照ください。</p>
+
+<ul>
+  <li><a href="https://speakerdeck.com/ocise/oci-sekiyuadesukutotupu-gai-yao"><strong>Speaker Deck：OCI セキュア・デスクトップ 概要</strong></a></li>
+</ul>
+
+<p><strong>所要時間：</strong>　約2時間</p>
+
+<p><strong>前提条件：</strong></p>
+
+<ol>
+  <li><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成</a>が完了していること</li>
+</ol>
+
+<p><strong>注意</strong>:</p>
+
+<ol>
+  <li>チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</li>
+</ol>
+
+<p><strong>目次 :</strong></p>
+
+<ol>
+  <li><a href="#anchor1">OCI セキュア・デスクトップの構成概要</a></li>
+  <li><a href="#anchor2">事前準備</a></li>
+  <li><a href="#anchor3">デスクトップ・イメージの準備</a></li>
+  <li><a href="#anchor4">デスクトップ・プールの作成</a></li>
+  <li><a href="#anchor5">ユーザーからのデスクトップへのアクセス（ブラウザ利用）</a></li>
+  <li><a href="#anchor6">ユーザーからのデスクトップへのアクセス（デスクトップ・クライアント利用）</a></li>
+  <li><a href="#anchor7">デスクトップの休止の確認</a></li>
+</ol>
+
+<p><br /></p>
+
+<p><a id="anchor1"></a></p>
+
+<h1 id="1oci-セキュアデスクトップの構成概要">1.　OCI セキュア・デスクトップの構成概要</h1>
+
+<p>環境構築にあたって理解しておくべきアーキテクチャと構成要素を整理しておきます。</p>
+
+<ul>
+  <li>デスクトップ管理者があらかじめ「デスクトップ・プール」を定義して仮想デスクトップ環境を準備します。
+    <ul>
+      <li>デスクトップ・プール：デスクトップ・イメージやシェイプ、デスクトップの数、ネットワークなどを定義したリソース。
+        <ul>
+          <li>デスクトップ・イメージ： デスクトップの実体となるコンピュート・インスタンスを起動するイメージ</li>
+        </ul>
+      </li>
+      <li>各デスクトップ・ユーザーがデスクトップを起動すると、デスクトップ・プールの設定に従ってお客様テナンシ内のプライベートなネットワークの中にデスクトップ用のコンピュート・インスタンスが起動されます。</li>
+      <li>デスクトップは各ユーザーごとに永続化されます。（ブロック・ボリュームにデータを永続保持）</li>
+      <li>データはお客様テナンシの中に存在しているためセキュアに利用できます。</li>
+    </ul>
+  </li>
+  <li>デスクトップ・ユーザーはブラウザ経由でエンドユーザ用のWebアプリケーションのURLにアクセスし、利用可能なデスクトップを選択して起動します。
+    <ul>
+      <li>デスクトップ・ユーザーの認証はOCIテナンシのIAM認証を利用します。権限を付与されているデスクトップ・プールにアクセスすることが可能です。</li>
+      <li>各ユーザーごとに個別のデスクトップが起動され、他人のデスクトップにはアクセスできないようになっています。</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="secure-desktops-002.png" alt="secure-desktops-002.png" /></p>
+
+<p>それではこれらの環境を作っていきましょう。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h1 id="2-事前設定">2. 事前設定</h1>
+
+<p>利用するための事前準備は、ドキュメントの以下の章に記載されているので、こちらに従って実施していきます。</p>
+
+<ul>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/secure-desktops/setup-tenancy.htm">テナンシの設定</a></li>
+  <li><a href="https://docs.oracle.com/ja-jp/iaas/secure-desktops/admin-first-steps.htm">管理者の最初のステップ</a></li>
+</ul>
+
+<h2 id="1-iamポリシーの作成">1. IAMポリシーの作成</h2>
+
+<p>今回はコンパートメント、ユーザー、グループはあらかじめ作成済みのものを使うため、IAMポリシーの作成から実施していきます。</p>
+
+<p>コンパートメントは役割に応じて複数に分けることもできますが、今回は簡易的に実施するためチュートリアル用のコンパートメント1つの中ですべての操作を実施していきます。</p>
+
+<h3 id="1-サービス向けのポリシー">1. サービス向けのポリシー</h3>
+
+<p>このあと作成していくセキュア・デスクトップの「デスクトップ・プール」はユーザのテナンシ内で動作します。セキュア・デスクトップのサービスを利用するためには、このデスクトップ・プールを指す動的グループに対して権限付与を行う必要があります。</p>
+
+<p><strong>動的グループの作成</strong></p>
+
+<p>利用するコンパートメントのOCIDを確認して、動的グループを作成。</p>
+
+<ol>
+  <li>
+    <p>メニュー <code class="language-plaintext highlighter-rouge">アイデンティティ</code> → <code class="language-plaintext highlighter-rouge">defaultドメイン</code> → <code class="language-plaintext highlighter-rouge">動的グループ</code> → <code class="language-plaintext highlighter-rouge">動的グループの作成</code></p>
+  </li>
+  <li>
+    <p>動的グループの作成画面で以下を入力して <code class="language-plaintext highlighter-rouge">作成</code> ボタンをクリック</p>
+
+    <ul>
+      <li><strong>名前</strong>：任意の名前</li>
+      <li><strong>説明</strong>：任意の説明</li>
+      <li><strong>一致ルール</strong>
+        <ul>
+          <li>ルール1に以下のように入力します。</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>All {resource.type = 'desktoppool', resource.compartment.id = '&lt;コンパートメントのOCID&gt;'}
+</code></pre></div></div>
+
+<p><img src="secure-desktops-003.png" alt="secure-desktops-003.png" /></p>
+
+<p><strong>ポリシーの作成</strong></p>
+
+<ol>
+  <li>
+    <p>メニュー <code class="language-plaintext highlighter-rouge">アイデンティティとセキュリティ</code> → <code class="language-plaintext highlighter-rouge">ポリシー</code></p>
+  </li>
+  <li>
+    <p>ルート・コンパートメントにポリシーを作成するため、リスト範囲のコンパートメントで <code class="language-plaintext highlighter-rouge">&lt;テナンシ名（ルート）&gt;</code> を選択し、 <code class="language-plaintext highlighter-rouge">ポリシーの作成</code> をクリック</p>
+  </li>
+  <li>
+    <p>ポリシーの作成画面で以下の情報を入力し、 <code class="language-plaintext highlighter-rouge">作成</code> をクリック</p>
+
+    <ul>
+      <li>
+        <p><strong>名前</strong>：任意の名前</p>
+      </li>
+      <li>
+        <p><strong>説明</strong>：任意の説明</p>
+      </li>
+      <li>
+        <p><strong>コンパートメント</strong>：ルート・コンパートメントが選択されていることを確認。</p>
+      </li>
+      <li>
+        <p><strong>ポリシー・ビルダー</strong>： <code class="language-plaintext highlighter-rouge">手動エディタの表示</code> を有効にしたうえで、以下のポリシーを記載。<code class="language-plaintext highlighter-rouge">&lt;dyamic-group&gt;</code> は、さきほど作成した動的グループの名前、<code class="language-plaintext highlighter-rouge">&lt;compartment-name&gt;</code> は実際に利用するコンパートメントの名前に置き換えてください。</p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow dynamic-group &lt;dynamic-group&gt; to {DOMAIN_INSPECT} in tenancy 
+Allow dynamic-group &lt;dynamic-group&gt; to inspect users in tenancy 
+Allow dynamic-group &lt;dynamic-group&gt; to inspect compartments in tenancy
+Allow dynamic-group &lt;dynamic-group&gt; to use tag-namespaces in tenancy
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow dynamic-group &lt;dynamic-group&gt; to use virtual-network-family in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to {VCN_ATTACH, VCN_DETACH} in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage virtual-network-family in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to read instance-images in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage instance-family in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage volume-family in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage dedicated-vm-hosts in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage orm-family in compartment &lt;compartment-name&gt; 
+Allow dynamic-group &lt;dynamic-group&gt; to {VNIC_CREATE, VNIC_DELETE} in compartment &lt;compartment-name&gt;
+Allow dynamic-group &lt;dynamic-group&gt; to manage instance-configurations in compartment &lt;compartment-name&gt;
+</code></pre></div></div>
+
+<p>ポリシー作成例</p>
+
+<p><img src="secure-desktops-004.png" alt="secure-desktops-004.png" /></p>
+
+<h3 id="2-ユーザー向けのポリシー">2. ユーザー向けのポリシー</h3>
+
+<p>セキュア・デスクトップの環境を作成したり管理する管理者向けのポリシーと、実際にデスクトップアクセスを行うエンドユーザー向けのポリシーを設定します。今回利用するユーザーがコンパートメント内のmanage all-resources権限を持っていればこれらはカバーされるので省略可能ですが、もし追加が必要な場合は以下の通り適切なIAMポリシーを作成してください。</p>
+
+<p><strong>管理ユーザー向け</strong></p>
+
+<p>（利用するコンパートメントのmanage all-resources権限を持っていればこれらはカバーされますので省略可能です。）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;desktop-administrators&gt; to manage desktop-pool-family in compartment &lt;desktop-compartment&gt;
+Allow group &lt;desktop-administrators&gt; to read all-resources in compartment &lt;desktop-compartment&gt;
+Allow group &lt;desktop-administrators&gt; to use virtual-network-family in compartment &lt;networks-compartment&gt;
+Allow group &lt;desktop-administrators&gt; to use instance-images in compartment &lt;images-compartment&gt;
+</code></pre></div></div>
+
+<p><strong>デスクトップ利用ユーザー向け</strong></p>
+
+<p>（利用するコンパートメントのmanage all-resources権限を持っていればこれらはカバーされますので省略可能です。）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;desktop-users&gt; to use published-desktop in compartment &lt;desktop-compartment&gt;
+</code></pre></div></div>
+
+<h2 id="2-ネットワークの準備">2. ネットワークの準備</h2>
+
+<p>デスクトップ・プール内に起動してくるコンピュート・インスタンスが配置されるVCNとサブネットを用意します。今回は、あらかじめ　<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/">その2 - クラウドに仮想ネットワーク(VCN)を作る を通じて仮想クラウド・ネットワーク(VCN)の作成</a>　で作成したVCNとサブネットを使いますので作成は不要です。</p>
+
+<p>また、デスクトップ・プールを起動すると、自動的にセキュア・デスクトップが動作するために必要なセキュリティ・ルールが設定されたNSGが作成されます。それ以外のセキュリティ・ルールを追加したい場合は自作のNSGを追加することもできます。</p>
+
+<h2 id="3ストレージボリューム">3.ストレージ・ボリューム</h2>
+
+<p>特に事前作成は必要ありません。ストレージを追加したい場合は、このあとのデスクトップ・プールで各デスクトップ用のストレージを何GBのサイズに設定するかだけ決めておきます。今回は最小サイズである50GBのボリュームをアタッチすることにします。</p>
+
+<p><a id="anchor3"></a></p>
+
+<h1 id="3-デスクトップイメージの準備">3. デスクトップ・イメージの準備</h1>
+
+<p>デスクトップを起動する際に利用するゴールデン・イメージを作成します。これは通常のコンピュート・サービスのカスタム・イメージと同じ仕組みを使います。ただし、セキュア・デスクトップで利用するカスタム・イメージには専用のタグを付与する必要があります。</p>
+
+<p>今回は下記ドキュメントのページで提供されている、Oracle提供のセキュア・デスクトップ用に事前構成済のOracle Linux 8 イメージを使っていきます。（Windowsの場合は管理者側でイメージ作成を行う必要があります。）</p>
+
+<ul>
+  <li><strong>参考ドキュメント：<a href="https://docs.oracle.com/ja-jp/iaas/secure-desktops/supported-images.htm">サポートされているイメージ</a></strong></li>
+</ul>
+
+<ol>
+  <li>メニューの <code class="language-plaintext highlighter-rouge">コンピュート</code> → <code class="language-plaintext highlighter-rouge">カスタム・イメージ</code> を開く</li>
+  <li><code class="language-plaintext highlighter-rouge">イメージのインポート</code> ボタンをクリックしてウィザードに以下を入力し、左下の <code class="language-plaintext highlighter-rouge">イメージのインポート</code> をクリック。
+    <ul>
+      <li><strong>名前</strong>：任意の名前</li>
+      <li><strong>オペレーティング・システム</strong>：Oracle Linux</li>
+      <li><strong>オブジェクト・ストレージURLからインポート</strong>：下記ドキュメントページに記載されているOracle Linux 8 のイメージのURLを張り付ける。イメージが更新される場合もあるので、実施する際に直接以下のマニュアルを参照して最新のURLを確認すること。
+        <ul>
+          <li><a href="https://docs.oracle.com/ja-jp/iaas/secure-desktops/supported-images.htm">https://docs.oracle.com/ja-jp/iaas/secure-desktops/supported-images.htm</a></li>
+        </ul>
+      </li>
+      <li><strong>イメージ・タイプ</strong>：OCI</li>
+    </ul>
+  </li>
+</ol>
+
+<p><img src="secure-desktops-005.png" alt="secure-desktops-005.png" /></p>
+
+<ol>
+  <li>
+    <p>インポートにはしばらく時間がかかるので、カスタム・イメージが使用可能になるまで待ちます。</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">カスタム・イメージの詳細画面</code> → <code class="language-plaintext highlighter-rouge">その他のアクション → タグの追加</code> をクリックして、以下3つの<strong>フリーフォーム・タグ</strong>を追加します。これを行うことにより、このあとのデスクトップ・プール作成時にこのイメージを選択できるようになります。</p>
+
+    <ul>
+      <li>
+        <p><strong>oci:desktops:is_desktop_image： true</strong></p>
+      </li>
+      <li>
+        <p><strong>oci:desktops:image_os_type： Oracle Linux</strong></p>
+      </li>
+      <li>
+        <p><strong>oci:desktops:image_version：1</strong></p>
+
+        <p><img src="secure-desktops-006.png" alt="secure-desktops-006.png" /></p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p>以上でイメージの準備は完了です。</p>
+
+<p><a id="anchor4"></a></p>
+
+<h1 id="4-デスクトッププールの作成">4. デスクトップ・プールの作成</h1>
+
+<p>続いて、デスクトップ・プールを作っていきます。起動するデスクトップの定義情報を設定する部分です。</p>
+
+<ol>
+  <li>メニューの <code class="language-plaintext highlighter-rouge">コンピュート</code> → <code class="language-plaintext highlighter-rouge">セキュア・デスクトップ</code> → <code class="language-plaintext highlighter-rouge">デスクトップ・プール</code> を開く。</li>
+</ol>
+
+<p><img src="secure-desktops-007.png" alt="secure-desktops-007.png" /></p>
+
+<ol>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">デスクトップ・プールの作成</code> をクリックして、以下の情報を入力。</p>
+
+    <ul>
+      <li>
+        <p><strong>名前</strong>：任意</p>
+      </li>
+      <li>
+        <p><strong>説明</strong>：任意</p>
+      </li>
+      <li>
+        <p><strong>プール開始時間、プール停止時間（オプション）</strong>：今回は特に設定しません。プール作成後最初の利用開始時間やプールを以後使用しないという利用終了時間を管理者側で制御したい場合に設定できます。</p>
+      </li>
+      <li>
+        <p><strong>管理者連絡先詳細（オプション）</strong>：今回は特に設定しません。デスクトップ・ユーザからの連絡を受ける連絡先です。</p>
+      </li>
+      <li>
+        <p><strong>管理者権限</strong>：デフォルトは無効です。今回は有効化にチェックを入れておきます。</p>
+
+        <p><img src="secure-desktops-008.png" alt="secure-desktops-008.png" /></p>
+
+        <ul>
+          <li>
+            <p><strong>プールサイズ</strong></p>
+
+            <ul>
+              <li><strong>最大サイズ</strong>：このデスクトップ・プールで起動できるデスクトップの最大数です。今回は最小の <strong>10</strong>に設定します。</li>
+              <li><strong>スタンバイ・サイズ</strong>：ユーザーが初回アクセスした際に迅速に利用できるようにあらかじめスタンバイ状態にしておくデスクトップの数です。今回は <strong>1</strong> に設定します。</li>
+            </ul>
+          </li>
+          <li>
+            <p><strong>配置</strong>：選択肢はAD1のみです。<img src="secure-desktops-009.png" alt="secure-desktops-009.png" /></p>
+          </li>
+          <li>
+            <p>イメージとシェイプ</p>
+
+            <ul>
+              <li>
+                <p><strong>イメージ</strong>：<strong>先ほど作成したイメージを選択。</strong></p>
+              </li>
+              <li>
+                <p><strong>Use dedicated virtual machine host</strong>：専用仮想マシンホストを利用する場合に有効化しますが、今回はデフォルトの無効のままで問題ありません。</p>
+              </li>
+              <li>
+                <p><strong>Desktop virtual machine shape type</strong>： <strong>Flexible</strong> を選択</p>
+
+                <ul>
+                  <li><strong>デスクトップ・シェイプ</strong>：<strong>VM.Standard.E5.Flex</strong> を選択</li>
+                  <li><strong>Desktop system resource configuration</strong>：<strong>カスタム</strong>を選択
+                    <ul>
+                      <li><strong>OCPUの数</strong>：1</li>
+                      <li><strong>メモリー量(GB)</strong>：4</li>
+                      <li><strong>ベースラインのOCPU使用量/OCPU</strong>：100%<img src="secure-desktops-010-1.png" alt="secure-desktops-010-1.png" /></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <p><strong>ストレージ</strong></p>
+
+                <ul>
+                  <li><strong>デスクトップ・ストレージの有効化</strong>：チェックを入れる</li>
+                  <li><strong>Desktop storage volume size(GB)</strong>：50 GB（デフォルト）</li>
+                  <li><strong>バックアップ・ポリシー</strong>：ポリシーなし（デフォルト）</li>
+                </ul>
+              </li>
+              <li>
+                <p><strong>Desktop pool network</strong>：デスクトップ・プールが起動されるネットワークを選択します。</p>
+
+                <ul>
+                  <li>
+                    <p><strong>仮想クラウド・ネットワーク</strong>：あらかじめ作成済みのVCNを選択</p>
+                  </li>
+                  <li>
+                    <p><strong>サブネット</strong>：VCN内の<strong>プライベート・サブネット</strong>を選択<img src="secure-desktops-010-2.png" alt="secure-desktops-010-2.png" /></p>
+                  </li>
+                  <li>
+                    <p><strong>Private access network</strong>：ローカル端末から専用線などのプライベート・ネットワーク経由で利用する場合に構成しますが、今回はインターネット経由で利用するので構成しません。</p>
+
+                    <ul>
+                      <li><strong>プライベート・エンドポイント・アクセスのみ</strong>：無効のまま（デフォルト）</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <p><strong>デバイス・アクセス・ポリシー</strong></p>
+
+                    <ul>
+                      <li><strong>クリップボード・アクセス</strong>：完全（デフォルト）</li>
+                      <li><strong>音声アクセス</strong>：完全（デフォルト）</li>
+                      <li><strong>ドライブ・マッピング・アクセス</strong>：読取り/書込み（デフォルト）</li>
+                    </ul>
+
+                    <p><img src="secure-desktops-010-3.png" alt="secure-desktops-010-3.png" /></p>
+
+                    <ul>
+                      <li><strong>Desktop Management Policy</strong>：デスクトップの起動停止のスケジューリングもしくはデスクトップのアクティビティの状況によって休止状態にするかを設定できます。今回は、15分なにも操作がなければセッションを切断し、さらにセッション切断後60分アクティビティがなければデスクトップを停止させるように設定します。
+                        <ul>
+                          <li><strong>Action on inactivity</strong>：切断</li>
+                          <li><strong>Grace period for inactivity（in minutes）</strong>：15</li>
+                          <li><strong>Action on disconnect</strong>：停止</li>
+                          <li><strong>Grace period for disconnect（in minutes）</strong>：60
+<img src="secure-desktops-010-4.png" alt="secure-desktops-010-4.png" /></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>デスクトップ・プールの画面が開き、<strong>作成中（CREATING）</strong> の状態になっているので完了までしばらく待ちます。進捗状況は作業リクエストから確認できます。
+<img src="secure-desktops-010-5.png" alt="secure-desktops-010-5.png" /></p>
+  </li>
+  <li>
+    <p>ステータスが <strong>ACTIVE</strong> になればデスクトップ・プールの作成は完了です。
+<img src="secure-desktops-010-6.png" alt="secure-desktops-010-6.png" /></p>
+  </li>
+  <li>
+    <p>画面下のほうの <strong>デスクトップ</strong> のところを見ると、どのユーザーにも紐づかないデスクトップが1つ作成されていることがわかります。これは、デスクトップのスタンバイを1に設定したので、スタンバイ用のデスクトップが1つ起動されている状態です。</p>
+
+    <p><img src="secure-desktops-010-7.png" alt="secure-desktops-010-7.png" /></p>
+  </li>
+</ol>
+
+<p>デスクトップ・プールが完成したので、これで管理者側の構築作業は終了です。あとはエンドユーザとして実際にデスクトップにアクセスして使ってみましょう。</p>
+
+<p><a id="anchor5"></a></p>
+
+<h1 id="5-ユーザーからのデスクトップへのアクセスブラウザ利用">5. ユーザーからのデスクトップへのアクセス（ブラウザ利用）</h1>
+
+<p>デスクトップを利用するエンドユーザーは、適切なIAMグループに所属しているユーザーである必要があります。ただし、通常のOCIコンソールを利用する必要はありません。デスクトップアクセス用の以下のURLから利用できます。通常は管理者からこのURLをエンドユーザに通知します。</p>
+
+<p>​	https://published.desktops.ap-tokyo-1.oci.oraclecloud.com/client（Tokyoリージョンの場合）</p>
+
+<p>また、利用するブラウザでポップアップ・ブロックが設定されている場合は解除しておいてください。</p>
+
+<ol>
+  <li>
+    <p>ブラウザから上記URLにアクセスし、テナンシ名、ユーザー名、パスワードを入力してログイン。必要に応じてMFAでの認証を実施。</p>
+  </li>
+  <li>
+    <p>このようなクライアント用ページが開くので、割り当て済デスクトップのロードが終わるまで<strong>しばらく待ちます</strong>。
+<img src="secure-desktops-013.png" alt="secure-desktops-013.png" /></p>
+  </li>
+  <li>
+    <p>ロードが終わると先ほど作成したデスクトップ・プールの名前が表示され、ステータスが使用可能となりました。<strong>デスクトップ・プールの名前をクリック</strong>します。<img src="secure-desktops-014.png" alt="secure-desktops-014.png" /></p>
+  </li>
+  <li>
+    <p>このようなポップアップが開きますので、<strong>何もせずに待ちます。</strong>特に初回アクセス時には新規デスクトップを起動していますのでしばらく時間がかかります。（ポップアップは閉じても問題はありません。）
+<img src="secure-desktops-015.png" alt="secure-desktops-015.png" /></p>
+  </li>
+  <li>
+    <p>しばらく待つと、別タブでこのようなLoading画面が開いてきます。
+<img src="secure-desktops-016.png" alt="secure-desktops-016.png" /></p>
+  </li>
+  <li>
+    <p>もしブラウザからクリップボードアクセスの許可を求められた場合は許可します。
+<img src="secure-desktops-016-1.png" alt="secure-desktops-016-1.png" /></p>
+  </li>
+  <li>
+    <p>gnomeのwelcome画面になっているので、ウィザードに従って、言語設定、キーボード設定、などを行ってください。
+<img src="secure-desktops-018.png" alt="secure-desktops-018.png" /></p>
+  </li>
+  <li>
+    <p>デスクトップが利用可能になります。
+<img src="secure-desktops-019.png" alt="secure-desktops-019.png" /></p>
+  </li>
+</ol>
+
+<p>自由にデスクトップを利用してみましょう。</p>
+
+<p>これでユーザに対してインスタンスが割り当て済みとなったので、二回目以降のアクセスはより迅速にデスクトップにアクセスすることが可能です。</p>
+
+<p><a id="anchor6"></a></p>
+
+<h1 id="6-ユーザーからのデスクトップへのアクセスデスクトップクライアント利用">6. ユーザーからのデスクトップへのアクセス（デスクトップ・クライアント利用）</h1>
+
+<p>ブラウザ内のみで操作するのではなくOracle Secure Global Desktop Clientというクライアント・ソフトウェアをインストールして利用することもできます。できることが少し異なります。</p>
+
+<ol>
+  <li>
+    <p>メニュー<code class="language-plaintext highlighter-rouge">プリファレンス</code> で 優先クライアントとして「<strong>インストール済クライアント</strong>」を選択する。
+<img src="secure-desktops-020.png" alt="secure-desktops-020.png" /></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">ダウンロード</code> メニューからクライアント・ソフトウェアであるOracle Secure Global Desktop Clientをダウンロードしてインストール。利用しているローカル端末のOSに応じて適切なものを選択すること。</p>
+
+    <p><img src="secure-desktops-021.png" alt="secure-desktops-021.png" />
+<img src="secure-desktops-022.png" alt="secure-desktops-022.png" /></p>
+  </li>
+  <li>
+    <p>先ほどと同様に割り当て済デスクトップから対象のデスクトップ・プール名をクリックする。
+<img src="secure-desktops-023.png" alt="secure-desktops-023.png" /></p>
+  </li>
+  <li>
+    <p>ブラウザからアプリケーションの起動について確認を求められた場合は許可してアプリケーションを開く。（優先クライアントをインストール済クライアントに設定している場合は自動的にさきほどインストールしたアプリケーションが起動し、デスクトップ・クライアントからデスクトップが開かれる。）<img src="secure-desktops-024.png" alt="secure-desktops-024.png" /></p>
+  </li>
+  <li>
+    <p>ブラウザで表示していたのと同じデスクトップが、自動的にデスクトップ・クライアントのウィンドウとして開かれます。</p>
+
+    <p><img src="secure-desktops-025.png" alt="secure-desktops-025.png" /></p>
+
+    <p>自由にデスクトップの操作をしてみましょう。</p>
+
+    <p>デスクトップ・クライアントの場合、ブラウザ・アクセスとは異なり、オーディオ（in / out）が利用できたり、ローカル端末のドライブ・マッピングが可能なので、ローカル端末上のファイルをデスクトップ上のフォルダから開いたり、ドラッグ・アンド・ドロップでコピーしたりもしやすいです。</p>
+  </li>
+</ol>
+
+<p><a id="anchor7"></a></p>
+
+<h1 id="7-デスクトップの休止の確認">7. デスクトップの休止の確認</h1>
+
+<p>デスクトップ・プール作成時に、デスクトップ上の操作が15分なければ自動的にセッションを切断、セッションが切断されてからアクティビティがなければ（再度デスクトップにアクセスすることがなければ）60分の猶予期間を経てからデスクトップを停止する設定をしました。</p>
+
+<p>この切断と休止の動作を確認してみます。</p>
+
+<ol>
+  <li>デスクトップを起動し、なにもせずにそのまま15分間放置します。ブラウザやインストール済クライアントのウィンドウ内でマウスやキーボードなどの操作を行わないようにしてください。</li>
+  <li>15分経つと、自動的にセッションが切断されることが確認できます。</li>
+  <li>さらに60分間デスクトップにアクセスしないでおくと、デスクトップが休止します。OCIコンソールのデスクトップ・プールの画面を開き、画面下部のデスクトップのセクションを確認すると、ユーザーに割り当てられているデスクトップが非アクティブになっていることが確認できます。非アクティブになっている間はコンピュートのVMインスタンスの課金が停止している状態です。再度ユーザーがデスクトップにアクセスすれば自動的に停止前の状態を保持して起動してきます。
+<img src="secure-desktops-026.png" alt="secure-desktops-026.png" /></li>
+</ol>
+
+<p>以上で、セキュア・デスクトップのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#intermediate" class="page__taxonomy-item p-category" rel="tag">intermediate</a><span class="sep">, </span>
+    
+      <a href="/ocitutorials/tags/#securedesktops" class="page__taxonomy-item p-category" rel="tag">securedesktops</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Secure+Desktops%E3%81%A7%E7%B0%A1%E5%8D%98VDI%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsecure-desktop%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintermediates%2Fsecure-desktop%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/intermediates/secure-desktop/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/intermediates/oce-tutorial/" class="pagination--pager" title="Oracle Content and Experience チュートリアル
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/intermediates/blockchain-tutorial/" class="pagination--pager" title="Oracle Blockchain Platform チュートリアル
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
