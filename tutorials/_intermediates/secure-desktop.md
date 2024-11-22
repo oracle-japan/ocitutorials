@@ -201,9 +201,17 @@ Allow group <desktop-users> to use published-desktop in compartment <desktop-com
 
 デスクトップを起動する際に利用するゴールデン・イメージを作成します。これは通常のコンピュート・サービスのカスタム・イメージと同じ仕組みを使います。ただし、セキュア・デスクトップで利用するカスタム・イメージには専用のタグを付与する必要があります。
 
-今回は下記ドキュメントのページで提供されている、Oracle提供のセキュア・デスクトップ用に事前構成済のOracle Linux 8 イメージを使っていきます。（Windowsの場合は管理者側でイメージ作成を行う必要があります。）
+今回は下記ドキュメントのページで提供されている、Oracle提供のセキュア・デスクトップ用に事前構成済のOracle Linux 8 イメージを使っていきます。
 
 - **参考ドキュメント：[サポートされているイメージ](https://docs.oracle.com/ja-jp/iaas/secure-desktops/supported-images.htm)**
+
+>**`Note`**  
+>
+>- Windows 10/11の場合はOracleからイメージ提供されていないため、利用したい場合には以下のドキュメントを参考にイメージを準備してください。また、Windows 10/11の場合はOSライセンス持ち込み(BYOL)が必要です。
+>  - https://docs.oracle.com/ja-jp/iaas/secure-desktops/windows-image.htm 
+>
+>- イメージ・ビルダーを利用してWindowsイメージを作成することも可能です。イメージ・ビルダーについては以下のサポート・ドキュメントを参照してください。 
+>  - Reference OCI Secure Desktops: How To Create a Windows Image For Use With OCI Secure Desktops Using the OCI Secure Desktops Image Builder (MOS Doc ID 3004854.1)
 
 
 
@@ -334,7 +342,7 @@ Allow group <desktop-users> to use published-desktop in compartment <desktop-com
 
 デスクトップを利用するエンドユーザーは、適切なIAMグループに所属しているユーザーである必要があります。ただし、通常のOCIコンソールを利用する必要はありません。デスクトップアクセス用の以下のURLから利用できます。通常は管理者からこのURLをエンドユーザに通知します。
 
-​	https://published.desktops.ap-tokyo-1.oci.oraclecloud.com/client（Tokyoリージョンの場合）
+​	[https://published.desktops.ap-tokyo-1.oci.oraclecloud.com/client](https://published.desktops.ap-tokyo-1.oci.oraclecloud.com/client)（Tokyoリージョンの場合）
 
 また、利用するブラウザでポップアップ・ブロックが設定されている場合は解除しておいてください。
 
