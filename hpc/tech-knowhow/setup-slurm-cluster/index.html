@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム構築方法">
     <meta itemprop="description" content="HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -395,7 +395,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-前提システム">1. 前提システム</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-サブシステム構成">1-1. サブシステム構成</a></li><li><a href="#1-2-セキュリティーポリシー">1-2. セキュリティーポリシー</a></li></ul></li><li><a href="#2-環境構築">2. 環境構築</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li><li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li><li><a href="#2-3-openmpiインストール">2-3. OpenMPIインストール</a></li><li><a href="#2-4-openpmixインストール">2-4. OpenPMIxインストール</a></li><li><a href="#2-5-ucxインストール">2-5. UCXインストール</a></li><li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm rpmパッケージ作成</a></li><li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li><li><a href="#2-9-slurmサービス起動確認">2-9. Slurmサービス起動・確認</a></li><li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li></ul></li><li><a href="#3-稼働確認">3. 稼働確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-前提システム">1. 前提システム</a></li><li><a href="#2-環境構築">2. 環境構築</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li><li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li><li><a href="#2-3-openmpiインストール">2-3. OpenMPIインストール</a></li><li><a href="#2-4-openpmixインストール">2-4. OpenPMIxインストール</a></li><li><a href="#2-5-ucxインストール">2-5. UCXインストール</a></li><li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm rpmパッケージ作成</a></li><li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li><li><a href="#2-9-slurmサービス起動確認">2-9. Slurmサービス起動・確認</a></li><li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li></ul></li><li><a href="#3-稼働確認">3. 稼働確認</a></li></ul>
             </nav>
           </aside>
         
@@ -434,15 +434,11 @@ table, th, td {
 
 <h1 id="1-前提システム">1. 前提システム</h1>
 
-<h2 id="1-0-概要">1-0. 概要</h2>
+<p>本章は、本テクニカルTipsで解説する <strong>Slurm</strong> 環境構築手順の前提となるシステムを解説します。<br />
+本テクニカルTipsは、この前提システムが予め構築されており、このシステム上に <strong>Slurm</strong> 環境を構築する手順にフォーカスします。</p>
 
-<p>本章は、本テクニカルTipsで解説する <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> 環境構築手順の前提となるシステムを解説します。</p>
-
-<p>本テクニカルTipsは、この前提システムが予めデプロイされており、このシステム上に <strong>Slurm</strong> 環境を構築する手順にフォーカスします。</p>
-
-<h2 id="1-1-サブシステム構成">1-1. サブシステム構成</h2>
-
-<p>本システムは、以下5種類のサブシステムから構成されます。</p>
+<p>前提システムは、以下4種類のサブシステムから構成されます。<br />
+また、必要に応じてこれらのサブシステムにログインするための踏み台となる、パブリックサブネットに接続するBastionノードを用意します。</p>
 
 <table>
   <thead>
@@ -456,14 +452,6 @@ table, th, td {
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td style="text-align: center">Bastion<br />ノード</td>
-      <td style="text-align: center">任意の仮想マシン<br />（※2）</td>
-      <td style="text-align: center"><strong>Oracle Linux</strong> 8.9</td>
-      <td style="text-align: center">1</td>
-      <td style="text-align: center">パブリック</td>
-      <td style="text-align: center">インターネットからログインする踏み台ノード</td>
-    </tr>
     <tr>
       <td style="text-align: center">Slurm<br />マネージャ</td>
       <td style="text-align: center">任意の仮想マシン<br />（※2）</td>
@@ -533,31 +521,7 @@ table, th, td {
   </tbody>
 </table>
 
-<h2 id="1-2-セキュリティーポリシー">1-2. セキュリティーポリシー</h2>
-
-<p>各サブシステムのセキュリティポリシーは、接続するサブネットに応じて以下のように設定します。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">接続するサブネット</th>
-      <th style="text-align: center">firewalld</th>
-      <th style="text-align: center">SElinux</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">パブリック</td>
-      <td style="text-align: center">仮想クラウド・ネットワークの<br />CIDRからのアクセスを全て許可</td>
-      <td style="text-align: center">Enforcing</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">プライベート</td>
-      <td style="text-align: center">停止</td>
-      <td style="text-align: center">Disable</td>
-    </tr>
-  </tbody>
-</table>
+<p>また、各サブシステムのセキュリティーに関するOS設定は、 <strong>firewalld</strong> を停止し、 <strong>SElinux</strong> をDisableにします。</p>
 
 <hr />
 <h1 id="2-環境構築">2. 環境構築</h1>
@@ -1026,7 +990,7 @@ $
 <span class="c">#SBATCH -o stdout.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
 </code></pre></div></div>
 
 <p>[ <strong>mpirun.sh</strong> ]</p>
@@ -1038,24 +1002,22 @@ srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28
 <span class="c">#SBATCH -o stdout.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
 </code></pre></div></div>
 
 <p>次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> sbatch srun.sh
 Submitted batch job 3
-<span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-A</span> 3 usec stdout.3
+<span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-A</span> 2 usec stdout.3
        <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
             0         1000         1.47         0.00
-    134217728            1     10967.14     12238.17
     268435456            1     21925.54     12243.05
 <span class="nv">$ </span>sbatch mpirun.sh
 Submitted batch job 4
 <span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-A</span> 3 usec stdout.4
        <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
             0         1000         1.67         0.00
-    134217728            1     10974.57     12229.88
     268435456            1     21955.08     12226.58
 <span class="err">$</span>
 </code></pre></div></div>
@@ -1083,7 +1045,7 @@ JobID             User  AllocCPUS               Start                 End
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
 
 
 
@@ -374,7 +374,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPCクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -582,29 +582,28 @@ table, th, td {
  runcmd:
  <span class="c">#</span>
  <span class="c"># Mount NVMe local storage</span>
-     - parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
-     - parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
- <span class="c"># To ensure partition is really created before mkfs phase</span>
-     - <span class="nb">sleep </span>60
-     - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
-     - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
-     - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-     - systemctl daemon-reload
-     - mount /mnt/localdisk
+   - vgcreate nvme /dev/nvme0n1
+   - lvcreate <span class="nt">-l</span> 100%FREE nvme
+   - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
+   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+   - systemctl daemon-reload
+   - mount /mnt/localdisk
  <span class="c">#</span>
  <span class="c"># Stop firewalld</span>
-     - systemctl disable <span class="nt">--now</span> firewalld
+   - systemctl disable <span class="nt">--now</span> firewalld
  <span class="c">#</span>
  <span class="c"># Expand root file system to those set by instance configuration</span>
-     - /usr/libexec/oci-growfs <span class="nt">-y</span>
+   - /usr/libexec/oci-growfs <span class="nt">-y</span>
  <span class="c">#</span>
  <span class="c"># Add public subnet to DNS search</span>
-     - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
-     - chattr <span class="nt">-R</span> +i /etc/resolv.conf
+   - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
+   - chattr <span class="nt">-R</span> +i /etc/resolv.conf
  <span class="c">#</span>
  <span class="c"># NFS mount setting</span>
-     - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-     - mount /home
+   - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+   - systemctl daemon-reload
+   - mount /home
 </code></pre></div>    </div>
 
     <p>※5）詳細は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
@@ -1104,7 +1103,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
 
       </footer>
 

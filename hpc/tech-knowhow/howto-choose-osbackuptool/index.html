@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ファイル共有ストレージ向けバックアップ環境の最適な構築手法">
     <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、コストパフォーマンスを考慮するとベア・メタル・インスタンスとブロック・ボリューム等のストレージサービスで構築することになりますが、そのバックアップ環境は自身で構築する必要があり、バックアップを格納するストレージはその安価な容量単価からオブジェクト・ストレージやブロック・ボリュームのより低いコストが有力な選択肢になります。本テクニカルTipsは、ファイル共有ストレージのバックアップを容量単価の安価なストレージに取得することを念頭に、自身のバックアップ要件に沿った最適なバックアップ環境構築手法を選定する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -451,7 +451,7 @@ table, th, td {
       <td style="text-align: center">3</td>
       <td style="text-align: center"><strong>オブジェクト・ストレージ</strong></td>
       <td style="text-align: center"><strong>Rclone</strong></td>
-      <td style="text-align: center"><strong>rclone sync</strong> コマンドで差分バックアップ</td>
+      <td style="text-align: center"><strong><a href="https://rclone.org/commands/rclone_sync/">rclone sync</a></strong> コマンドで差分バックアップ</td>
     </tr>
     <tr>
       <td style="text-align: center">4</td>
@@ -700,7 +700,7 @@ table, th, td {
 ※5）リストア時の日時になります。<br />
 ※6）再マウントでリストア時の日時になります。<br />
 ※7）リンク数分のファイルの実体としてリストアされます。<br />
-※8）<strong>-H</strong> オプション指定による挙動です。<br />
+※8）<strong>rsync</strong> の <strong>-H</strong> オプション指定による挙動です。<br />
 ※9）参照先のファイルの実体としてリストアされます。<br />
 ※10）<strong>Rclne</strong> の <strong>–copy-links</strong> オプション指定により、参照先のファイルの実体としてリストアされます。<br />
 ※11）<strong>オブジェクト・ストレージ</strong> にアクセス（書込み・読込みの何れも含みます。）するファイルサイズの総容量に等しい空き容量を持つストレージ領域が必要です。このためフルバックアップは、バックアップ対象のファイル共有ストレージの総使用量以上の空き容量がキャッシュ用ストレージに必要になります。 <strong>OCIFS</strong> のキャッシュに関する詳細は、 <strong>OCI</strong> 公式ドキュメントの <strong><a href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/ocifs/index.htm#ocifs-cache-options">ここ</a></strong> を参照してください。<br />
@@ -831,7 +831,7 @@ table, th, td {
 <p>本章は、本テクニカルTipsで取り上げるバックアップ環境のランニングコストを、バックアップ格納ストレージにフォーカスして検証します。</p>
 
 <p>ここでバックアップ環境 <strong>No. 2</strong> は、 <strong><a href="#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></strong> の考察 <strong>2.</strong> と <strong><a href="#3-バックアップリストア性能">3. バックアップ・リストア性能</a></strong> の考察 <strong>1.</strong> から、本章の検証の対象から除外します。<br />
-また、バックアップ環境 <strong>No. 1</strong> とバックアップ環境 <strong>No. 3</strong> は、そのランニングコストが基本的に同額となるためこれらを纏めて取り扱います。</p>
+また、バックアップ環境 <strong>No. 1</strong> とバックアップ環境 <strong>No. 3</strong> は、そのランニングコストが基本的に同額のためこれらを纏めて取り扱います。</p>
 
 <p>以上より、以降ではバックアップ格納ストレージに <strong>オブジェクト・ストレージ</strong> を使用するバックアップ環境 <strong>No. 1</strong> / <strong>No. 3</strong> と、 <strong>BVLC</strong> を使用するバックアップ環境 <strong>No. 4</strong> のランニングコストを比較します。</p>
 
@@ -883,7 +883,7 @@ table, th, td {
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
 
       </footer>
 

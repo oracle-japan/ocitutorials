@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
 
 
 
@@ -374,7 +374,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する">
     <meta itemprop="description" content="ベア・メタル・インスタンスで構築するNFSのファイル共有ストレージを対象とする、バックアップサーバを構築してみましょう。このチュートリアルを終了すると、NFSのファイル共有ストレージに格納するファイルを容量単価の安価なオブジェクト・ストレージやブロック・ボリュームのより低いコストにバックアップする、バックアップサーバを構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -431,7 +431,7 @@
   <li>チェックサムによるファイル転送結果の確認</li>
 </ul>
 
-<p>バックアップ環境 <strong>No.4</strong> のバックアップ格納ストレージに使用する <strong>ブロック・ボリューム</strong> は、 <strong>パフォーマンス・レベル</strong> に容量単価が最も安価な <strong>より低いコスト</strong> を使用し、1 TB以上のボリュームを基本単位として15ボリュームをLinuxの論理ボリューム機能で各ボリュームにストライピングを掛けつつ1ファイルシステムに構成します。</p>
+<p>バックアップ環境 <strong>No.4</strong> でバックアップ格納ストレージに使用する <strong>ブロック・ボリューム</strong> は、 <strong>パフォーマンス・レベル</strong> に容量単価が最も安価な <strong>より低いコスト</strong> を使用し、1 TB以上のボリュームを基本単位として15ボリュームをLinuxの論理ボリューム機能で各ボリュームにストライピングを掛けつつ1ファイルシステムに構成します。</p>
 
 <p><img src="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/lv_configuration.png" alt="論理ボリュームディスク構成図" /></p>
 
@@ -447,7 +447,6 @@
 
 <p><strong>注意 :</strong></p>
 <ul>
-  <li>本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</li>
   <li>本チュートリアルに従って取得するバックアップ環境 <strong>No.3</strong> のバックアップは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#2-バックアップリストア時の制約事項">2. バックアップ・リストア時の制約事項</a></strong> に記載の制限を受けます。</li>
 </ul>
 
@@ -476,7 +475,7 @@
 
 <h3 id="1-1-1-インスタンスプリンシパル認証関連設定">1-1-1. インスタンス・プリンシパル認証関連設定</h3>
 
-<p><strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証の設定は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a></strong> の手順に従い実施します。<br />
+<p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定">1. インスタンス・プリンシパル認証設定</a></strong> の手順に従い、<strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証関連設定を実施します。<br />
 この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、バックアップサーバと読みかえて下さい。<br />
 また、このテクニカルTipsで設定しているIAMポリシーは、本チュートリアルでは以下のみが必要です。</p>
 
@@ -739,7 +738,11 @@ sdp                  8:32   0 1000G  0 disk
 
 <p>本章は、構築したバックアップサーバ上でバックアップとリストアを実行する方法を、バックアップ環境 <strong>No.3</strong> とバックアップ環境 <strong>No.4</strong> の場合に分けて解説します。</p>
 
-<p>以降では、性能検証を兼ねてバックアップとリストアを実行することを念頭に、スループットとメタデータ性能を計測するためのテストファイルを予め作成し、このファイルを対象にバックアップとリストアを実行します。</p>
+<p>以降では、性能検証を兼ねてバックアップとリストアを実行することを念頭に、スループットとメタデータ性能を計測するためのテストファイルを予め作成し、このファイルを対象にバックアップとリストアを実行します。<br />
+この際、以下のコマンドをバックアップサーバのopcユーザで実行し、ファイルシステムキャッシュをフラッシュした後にバックアップ・リストアを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sync</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span>3 | <span class="nb">sudo tee</span> /proc/sys/vm/drop_caches
+</code></pre></div></div>
 
 <h2 id="2-1-テストファイル作成">2-1. テストファイル作成</h2>
 
@@ -811,7 +814,7 @@ sdp                  8:32   0 1000G  0 disk
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
 
       </footer>
 

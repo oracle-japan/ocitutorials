@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-20T13:59:06+09:00">
+  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Intel MPI Benchmarks実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-11-20T13:59:06+09:00">
+    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
     
 
     <div class="page__inner-wrap">
@@ -415,6 +415,7 @@
   <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
   <li><strong>OpenMPI</strong> ： 5.0.3</li>
   <li><strong>Intel MPI Library</strong> ： 2021.3.0</li>
+  <li><strong>Intel MPI Benchmarks</strong> ： 2021.7</li>
 </ul>
 
 <p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
@@ -454,9 +455,9 @@
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行する全てのノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> をインストールします。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git
-<span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> git clone https://github.com/intel/mpi-benchmarks
-<span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicxx<span class="p">;</span> <span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicc<span class="p">;</span> make <span class="nt">-j</span> 36 all
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.7.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks-IMB-v2021.7<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicxx<span class="p">;</span> <span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi-5.0.3/bin/mpicc<span class="p">;</span> make <span class="nt">-j</span> 36 all
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi-5.0.3/tests/imb
 <span class="nv">$ </span><span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi-5.0.3/tests/imb/
 </code></pre></div></div>
@@ -466,7 +467,7 @@
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
 ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.66 usec）、帯域幅は256 MiBメッセージの帯域幅（12,225.03 MB/s）を以ってその結果とします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
@@ -481,7 +482,7 @@
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong </span>
+<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -502,7 +503,6 @@
 <span class="c">#---------------------------------------------------</span>
        <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
             0         1000         1.66         0.00
-    134217728            1     10975.80     12228.52
     268435456            1     21957.85     12225.03
 
 
@@ -512,9 +512,9 @@
 </code></pre></div></div>
 
 <p>次に、以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトと256 MiBで計測しています。</p>
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 <span class="nt">-npmin</span> 144 allreduce
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 <span class="nt">-npmin</span> 144 allreduce
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
@@ -529,7 +529,7 @@
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 -npmin 144 allreduce </span>
+<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -550,7 +550,6 @@
 <span class="c">#----------------------------------------------------------------</span>
        <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
             0         1000         0.03         0.04         0.03
-    134217728            1    154320.47    162011.05    158876.90
     268435456            1    307115.36    326712.51    319229.75
 
 
@@ -664,7 +663,7 @@
 </code></pre></div></div>
 
 <p>次に、以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトと256 MiBで計測しています。</p>
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-ppn</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-genv</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 IMB-MPI1 <span class="nt">-msglog</span> 27:28 <span class="nt">-npmin</span> 144 allreduce
 <span class="c">#----------------------------------------------------------------</span>
@@ -721,7 +720,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-20T13:59:06+09:00">November 20, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
 
       </footer>
 
