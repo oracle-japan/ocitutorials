@@ -23,6 +23,7 @@ header:
 - OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
 - **OpenMPI** ： 5.0.3
 - **Intel MPI Library** ： 2021.3.0
+- **Intel MPI Benchmarks** ： 2021.7
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
@@ -56,9 +57,9 @@ header:
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ sudo dnf install -y git
-$ cd ~; git clone https://github.com/intel/mpi-benchmarks
-$ cd mpi-benchmarks; export CXX=/opt/openmpi-5.0.3/bin/mpicxx; export CC=/opt/openmpi-5.0.3/bin/mpicc; make -j 36 all
+$ cd ~; wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
+$ tar -xvf ./IMB-v2021.7.tar.gz
+$ cd mpi-benchmarks-IMB-v2021.7; export CXX=/opt/openmpi-5.0.3/bin/mpicxx; export CC=/opt/openmpi-5.0.3/bin/mpicc; make -j 36 all
 $ sudo mkdir -p /opt/openmpi-5.0.3/tests/imb
 $ sudo cp ./IMB* /opt/openmpi-5.0.3/tests/imb/
 ```
@@ -69,7 +70,7 @@ $ sudo cp ./IMB* /opt/openmpi-5.0.3/tests/imb/
 ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.66 usec）、帯域幅は256 MiBメッセージの帯域幅（12,225.03 MB/s）を以ってその結果とします。
 
 ```sh
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
@@ -84,7 +85,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/ope
 
 # Calling sequence was: 
 
-# /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong 
+# /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong 
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   268435456
@@ -105,7 +106,6 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/ope
 #---------------------------------------------------
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.66         0.00
-    134217728            1     10975.80     12228.52
     268435456            1     21957.85     12225.03
 
 
@@ -115,10 +115,10 @@ $
 ```
 
 次に、以下コマンドを **Intel MPI Benchmarks** を実行するユーザで何れか1ノードで実行します。  
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトと256 MiBで計測しています。
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。
 
 ```sh
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 -npmin 144 allreduce
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
@@ -133,7 +133,7 @@ $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/
 
 # Calling sequence was: 
 
-# /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 -npmin 144 allreduce 
+# /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce 
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   268435456
@@ -154,7 +154,6 @@ $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/
 #----------------------------------------------------------------
        #bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]
             0         1000         0.03         0.04         0.03
-    134217728            1    154320.47    162011.05    158876.90
     268435456            1    307115.36    326712.51    319229.75
 
 
@@ -268,7 +267,7 @@ $
 ```
 
 次に、以下コマンドを **Intel MPI Benchmarks** を実行するユーザで何れか1ノードで実行します。  
-ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ0バイトと256 MiBで計測しています。
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。
 
 
 ```sh

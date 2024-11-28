@@ -78,7 +78,7 @@ table, th, td {
 このIPアドレス範囲は、変更することが可能です。
 
 **OCA** プラグインは、その動作条件として **Oracle Services Network** にアクセス出来る必要があるため、インスタンスが接続するサブネットの **ルート表** と **セキュリティ・リスト** にこれを実現するための設定が必要です。  
-関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Network/Tasks/servicegateway.htm)** を参照してください。
+関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins-troubleshooting.htm#verifyservices)** を参照してください。
 
 以降では、以下のステップで手順を解説します。
 

@@ -60,7 +60,7 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 
 本章は、 **pdsh** をインストール・セットアップします。
 
-**pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来ますが、本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+**pdsh** は、管理対象ノードを指定する際、これらノードの名前解決可能なホスト名を1行に1ノード含む、以下のようなホストリストファイルを使用することが出来ますが、
 
 ```sh
 inst-f5fra-x9-ol8
@@ -69,31 +69,36 @@ inst-6pvpq-x9-ol8
 inst-dixqy-x9-ol8
 ```
 
+本テクニカルTipsでもこの管理対象ノード指定方法を使用するため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、クラスタ管理ノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+
 次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** を提供するyumレポジトリを追加します。  
 この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
 
 ```sh
 $ sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
+$ sudo yum-config-manager --enable ol9_developer_EPEL # If Oracle Linux 9
 ```
 
-次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。  
-この際、クラスタ管理ノードの **Oracle Linux** バージョンに応じて実行するコマンドが異なる点に注意します。
+次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** をインストールします。
 
 ```sh
-$ sudo yum install -y pdsh pdsh-mod-dshgroup
-$ sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+$ sudo dnf install -y pdsh pdsh-rcmd-ssh pdsh-mod-dshgroup
 ```
+
+次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の環境変数を設定します。
+
+```sh
+$ echo "export PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=accept-new\"" | tee -a ~/.bash_profile
+$ source ~/.bash_profile
+```
+
+ここでは、環境変数 **PDSH_SSH_ARGS_APPEND** を使用し、 **pdsh** が内部で使用しているSSHにオプション **StrictHostKeyChecking** を **accept-new** で設定します。  
+これにより、管理対象ノードがSSHのホストキー登録ファイル（**known_hosts**）に存在しない場合、自動的にこれを登録します。
 
 次に、以下コマンドをクラスタ管理ノードのopcユーザで実行し、 **pdsh** の動作を確認します。  
-なお以下では、環境変数 **PDSH_SSH_ARGS_APPEND** を使用してSSHのオプション **StrictHostKeyChecking** を **accept-new** に設定しており、これにより管理対象ノードがSSHのホストキー登録ファイル（**known_hosts**）に存在しない場合自動的にこれを登録するため、 **pdsh** の初回実行時のみ以下の最初の4行のようにその旨メッセージが出力されます。
+この際、先の環境変数の設定により、 **pdsh** の初回実行時に以下の最初の4行のようなメッセージが出力され、管理対象ノードがホストキー登録ファイルに登録されます。
 
 ```sh
-$ echo "export PDSH_RCMD_TYPE=ssh" | tee -a ~/.bash_profile
-export PDSH_RCMD_TYPE=ssh
-$ echo "export PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=accept-new\"" | tee -a ~/.bash_profile
-export PDSH_SSH_ARGS_APPEND="-o StrictHostKeyChecking=accept-new"
-$ source ~/.bash_profile
 $ pdsh -w ^/home/opc/hostlist.txt date
 inst-f5fra-x9-ol8: Warning: Permanently added 'inst-f5fra-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
 inst-dixqy-x9-ol8: Warning: Permanently added 'inst-dixqy-x9-ol8,10.0.2.37' (ECDSA) to the list of known hosts.
@@ -153,15 +158,14 @@ $
 
 ```sh
 $ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol8_developer_EPEL # If Oracle Linux 8
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol7_developer_EPEL # If Oracle Linux 7.9
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh
-$ pdsh -w ^/home/opc/hostlist.txt sudo yum install -y pdsh-rcmd-ssh # If Oracle Linux 8
+$ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol9_developer_EPEL # If Oracle Linux 9
+$ pdsh -w ^/home/opc/hostlist.txt sudo dnf install -y pdsh pdsh-rcmd-ssh
 ```
 
 ***
 # 2. pdsh使用時の留意点
 
-## 2-1. 複数のコマンドを纏めて一度の **pdsh** で実行する場合
+## 2-1. 複数のコマンドを纏めて一度のpdshで実行する場合
 
 管理対象ノードに対して複数のコマンドを一度の **pdsh** で実行する場合、これらのコマンド群を以下のように **'** （シングルクォート）で囲みます。
 
@@ -195,20 +199,20 @@ inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
 inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
 ```
 
-このような状況が問題となる場合、 **pdsh** の特徴である並列実行を敢えて無効化し、ホストリストファイル記載の順に管理対象ノードにコマンドを発行することが出来ます。  
+このような状況が問題となる場合、 **pdsh** の特徴である並列実行を敢えて無効化し、ホスト名の昇順に管理対象ノードにコマンドを発行することが出来ます。  
 これは、 **pdsh** の並列実行数を制御するオプション **-f** に **1** を指定し、以下のように実行します。  
 なおデフォルトの並列実行数は、 **32** です。
 
 ```sh
 $ pdsh -g all -f 1 'hostname; sleep 1; hostname'
-inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
-inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
 inst-3ktpe-x9-ol8: inst-3ktpe-x9-ol8
 inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
 inst-6pvpq-x9-ol8: inst-6pvpq-x9-ol8
 inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
 inst-dixqy-x9-ol8: inst-dixqy-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
+inst-f5fra-x9-ol8: inst-f5fra-x9-ol8
 ```
 
 ## 2-3. 管理対象ノードがレスポンスしない場合

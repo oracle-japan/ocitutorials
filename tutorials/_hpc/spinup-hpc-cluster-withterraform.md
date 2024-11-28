@@ -159,29 +159,28 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     runcmd:
     #
     # Mount NVMe local storage
-        - parted -s /dev/nvme0n1 mklabel gpt
-        - parted -s /dev/nvme0n1 -- mkpart primary xfs 1 -1
-    # To ensure partition is really created before mkfs phase
-        - sleep 60
-        - mkfs.xfs -L localscratch /dev/nvme0n1p1
-        - mkdir -p /mnt/localdisk
-        - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
-        - systemctl daemon-reload
-        - mount /mnt/localdisk
+      - vgcreate nvme /dev/nvme0n1
+      - lvcreate -l 100%FREE nvme
+      - mkfs.xfs -L localscratch /dev/nvme/lvol0
+      - mkdir -p /mnt/localdisk
+      - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
+      - systemctl daemon-reload
+      - mount /mnt/localdisk
     #
     # Stop firewalld
-        - systemctl disable --now firewalld
+      - systemctl disable --now firewalld
     #
     # Expand root file system to those set by instance configuration
-        - /usr/libexec/oci-growfs -y
+      - /usr/libexec/oci-growfs -y
     #
     # Add public subnet to DNS search
-        - sed -i '/^search/s/$/ public.vcn.oraclevcn.com/g' /etc/resolv.conf
-        - chattr -R +i /etc/resolv.conf
+      - sed -i '/^search/s/$/ public.vcn.oraclevcn.com/g' /etc/resolv.conf
+      - chattr -R +i /etc/resolv.conf
     #
     # NFS mount setting
-        - echo "bastion:/home /home nfs defaults,vers=3 0 0" >> /etc/fstab
-        - mount /home
+      - echo "bastion:/home /home nfs defaults,vers=3 0 0" >> /etc/fstab
+      - systemctl daemon-reload
+      - mount /home
     ```
 
     ※5）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
