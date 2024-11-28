@@ -40,19 +40,14 @@ table, th, td {
 
 # 1. 前提システム
 
-## 1-0. 概要
+本章は、本テクニカルTipsで解説する **Slurm** 環境構築手順の前提となるシステムを解説します。  
+本テクニカルTipsは、この前提システムが予め構築されており、このシステム上に **Slurm** 環境を構築する手順にフォーカスします。
 
-本章は、本テクニカルTipsで解説する **[Slurm](https://slurm.schedmd.com/)** 環境構築手順の前提となるシステムを解説します。
-
-本テクニカルTipsは、この前提システムが予めデプロイされており、このシステム上に **Slurm** 環境を構築する手順にフォーカスします。
-
-## 1-1. サブシステム構成
-
-本システムは、以下5種類のサブシステムから構成されます。
+前提システムは、以下4種類のサブシステムから構成されます。  
+また、必要に応じてこれらのサブシステムにログインするための踏み台となる、パブリックサブネットに接続するBastionノードを用意します。
 
 | サブシステム          | 使用するシェイプ                                                                    | OS                           | ノード数           | 接続<br>サブネット                | 役割                                                           |
 | :-------------: | :-------------------------------------------------------------------------: | :--------------------------: | :------------: | :------------------------: | :----------------------------------------------------------: |
-| Bastion<br>ノード  | 任意の仮想マシン<br>（※2）                                                            | **Oracle Linux** 8.9         | 1              | パブリック                      | インターネットからログインする踏み台ノード                                        |
 | Slurm<br>マネージャ  | 任意の仮想マシン<br>（※2）                                                            | **Oracle Linux** 8.9         | 1              | プライベート                     | **slurmctld** と **slurmdbd** が稼働するSlurm管理ノード                 |
 | Slurm<br>クライアント | 任意の仮想マシン<br>（※2）                                                            | **Oracle Linux** 8.9<br>（※6） | 1              | プライベート                     | アプリケーション開発用フロントエンドノード<br>**Slurm** にジョブを投入するジョブサブミッションクライアント |
 | 計算ノード           | **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**<br>対応ベアメタルシェイプ<br>（※3） | **Oracle Linux** 8.9<br>（※6） | 2ノード以上<br>（※3） | プライベート<br> **クラスタ・ネットワーク** | **slurmd** が稼働するジョブ実行ノード                                     |
@@ -75,14 +70,7 @@ table, th, td {
 | Slurmクライアント | slurm-cli   |
 | 計算ノード       | inst-aaaaa-x9<br>inst-bbbbb-x9 |
 
-## 1-2. セキュリティーポリシー
-
-各サブシステムのセキュリティポリシーは、接続するサブネットに応じて以下のように設定します。
-
-| 接続するサブネット | firewalld                      | SElinux                  |
-| :-------: | :----------------------------: | :----------------------: |
-| パブリック     | 仮想クラウド・ネットワークの<br>CIDRからのアクセスを全て許可 | Enforcing |
-| プライベート    | 停止                             | Disable                         |
+また、各サブシステムのセキュリティーに関するOS設定は、 **firewalld** を停止し、 **SElinux** をDisableにします。
 
 ***
 # 2. 環境構築
@@ -515,7 +503,7 @@ $ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 export UCX_NET_DEVICES=mlx5_2:1
-srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 ```
 
 [ **mpirun.sh** ]
@@ -528,7 +516,7 @@ srun /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 export UCX_NET_DEVICES=mlx5_2:1
-mpirun -n 2 -N 1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+mpirun -n 2 -N 1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 ```
 
 次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。
@@ -536,17 +524,15 @@ mpirun -n 2 -N 1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
 ```sh
 $ cd ~; sbatch srun.sh
 Submitted batch job 3
-$ grep -A 3 usec stdout.3
+$ grep -A 2 usec stdout.3
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.47         0.00
-    134217728            1     10967.14     12238.17
     268435456            1     21925.54     12243.05
 $ sbatch mpirun.sh
 Submitted batch job 4
 $ grep -A 3 usec stdout.4
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.67         0.00
-    134217728            1     10974.57     12229.88
     268435456            1     21955.08     12226.58
 $
 ```

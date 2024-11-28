@@ -137,6 +137,7 @@ timezone: Asia/Tokyo
 
 runcmd:
 #
+# Mount NVMe local storage
   - vgcreate nvme /dev/nvme0n1
   - lvcreate -l 100%FREE nvme
   - mkfs.xfs -L localscratch /dev/nvme/lvol0

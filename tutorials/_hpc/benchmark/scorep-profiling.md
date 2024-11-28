@@ -213,7 +213,7 @@ header:
     ```
 
 3. 以下コマンドをopcユーザで実行した結果となるよう、SSH関連設定ファイルを修正・作成します。  
-これは、 **Scalasca** 実行に必要な環境変数をSSH経由でリモートノードに引き渡すために必要です。  
+これは、 **Score-P** と **Scalasca** 実行に必要な環境変数をSSH経由でリモートノードに引き渡すために必要です。  
 なおこの手順と次の手順は、プロファイリングジョブをジョブスケジューラを介して実行することでリモートノードへの環境変数の引き渡しが行われる場合は、実施する必要がありません。
 
     ```sh
@@ -223,10 +223,10 @@ header:
     ---
     > PermitUserEnvironment yes
     135a136
-    > AcceptEnv OMP_NUM_THREADS SCOREP_* SCAN_*
+    > AcceptEnv SCOREP_* SCAN_*
     $ cat ~/.ssh/config 
     Host *
-    SendEnv OMP_NUM_THREADS SCOREP_* SCAN_*
+    SendEnv SCOREP_* SCAN_*
     $
     ```
 
@@ -339,7 +339,7 @@ header:
 本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるプロファイリングを実施します。  
 ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。
 
-この際、プロファイリングによるオーバーヘッド発生を考慮した精度の良いプロファイリングを実施するため、以下の手順で実施します。
+この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを実施するため、以下の手順で実施します。
 
 1. **NAS Parallel Benchmarks** バイナリの作成
 2. プロファイリングを実施しない場合の実行時間を計測
@@ -375,7 +375,7 @@ $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wi_scorep
 次に、以下コマンドをopcユーザで実行し、プロファイリングを実施しない場合の実行時間を計測します。
 
 ```sh
-$ OMP_NUM_THREADS=2 mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 -bind-to none ./bin/bt-mz.D.x_wo_scorep | grep "Time in seconds"
+$ mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 -x OMP_NUM_THREADS=2 -bind-to none ./bin/bt-mz.D.x_wo_scorep | grep "Time in seconds"
 Time in seconds =                   168.84
 $
 ```
@@ -384,7 +384,7 @@ $
 この実行により、カレントディレクトリにディレクトリ **scorep_bt-mz_18p36x2_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
-$ OMP_NUM_THREADS=2 scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+$ scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
     Time in seconds =                   332.30
 $
 ```
@@ -455,7 +455,7 @@ $
 
 ```sh
 $ mv scorep_bt-mz_18p36x2_sum prof_wof_wopapi
-$ OMP_NUM_THREADS=2 scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+$ scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
 Time in seconds =                   174.12
 $
 ```
@@ -511,7 +511,7 @@ $
 
 ```sh
 $ mv scorep_bt-mz_18p36x2_sum prof_wif_wopapi
-$ OMP_NUM_THREADS=2 SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+$ SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
     Time in seconds =                   172.89
 $
 ```
@@ -700,7 +700,7 @@ $ mv scorep_bt-mz_18p36x2_sum prof_wif_wipapi
 ここで、 **[プロファイリング手法データの取得](#6-プロファイリング手法データの取得)** の **手順 6.** の出力 **Estimated memory requirements (SCOREP_TOTAL_MEMORY)** に表示されているトレーシング手法のデータを格納するために必要なメモリ領域サイズに37MBを指定していることに留意します。
 
     ```sh
-    $ OMP_NUM_THREADS=2 SCOREP_TOTAL_MEMORY=37M scalasca -analyze -q -t -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
+    $ SCOREP_TOTAL_MEMORY=37M scalasca -analyze -q -t -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
      Time in seconds =                   173.06
     ```
 
