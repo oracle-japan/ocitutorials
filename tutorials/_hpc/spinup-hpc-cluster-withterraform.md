@@ -38,11 +38,14 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 
 ※1）構築方法に **Terraform** CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。
 
-またVCNと関連するネットワークリソースは、既に構築してあるものを活用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
+またVCNと関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
 
 - プライベートサブネットが存在する
 - パブリックサブネットが存在する（Bastionノードパブリック接続の場合）
 - パブリックサブネット・プライベートサブネット間で **セキュリティ・リスト** によりアクセスが制限されていない（Bastionノードパブリック接続の場合）
+- プライベートサブネットが **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている（※2）
+
+※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
 
 ![システム構成図（パブリック）](architecture_diagram.png)
 <br>
@@ -131,27 +134,27 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Display name postfix :** 計算ノードホスト名の接尾辞（※2）
+    - **Display name postfix :** 計算ノードホスト名の接尾辞（※3）
     - **Shape :** **BM.Optimized3.36**
     - **Node count :** 計算ノードのノード数（デフォルト：2）
-    - **Image OCID :** 計算ノードのイメージOCID（※3）
+    - **Image OCID :** 計算ノードのイメージOCID（※4）
     - **Boot volume size :** 計算ノードのブートボリュームサイズ（デフォルト：100GB）
-    - **cloud-config :** 計算ノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※4）
-    - **NPS for BM.Optimized3.36 :** 計算ノードの **NPS** 設定値 (デフォルト：NPS1) （※5）
-    - **SMT :** 計算ノードの **SMT** 設定値 (デフォルト：有効) （※5）
+    - **cloud-config :** 計算ノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※5）
+    - **NPS for BM.Optimized3.36 :** 計算ノードの **NPS** 設定値 (デフォルト：NPS1) （※6）
+    - **SMT :** 計算ノードの **SMT** 設定値 (デフォルト：有効) （※6）
 
    ![画面ショット](stack_page03.png)
 
-    ※2） 例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
-    ※3）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
+    ※3） 例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
+    ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
 
-    | No.<br>（※6） | **Oracle Linux**<br>バージョン | OCID                                                                          |
+    | No.<br>（※7） | **Oracle Linux**<br>バージョン | OCID                                                                          |
     | :---------: | :-----------------------: | :---------------------------------------------------------------------------: |
     | 1           | 8.9                       | ocid1.image.oc1..aaaaaaaaxiqlqer2ycd7hgto7in7raojq7v5kud6wlakmm7u7q64ai352tzq |
     | 3           | 8.8                       | ocid1.image.oc1..aaaaaaaa2irxaj3eqti6nlggadyo2avsinc6cscxrphsldiuqebcaljlqomq |
     | 2           | 7.9                       | ocid1.image.oc1..aaaaaaaano7btfbh7cvbaygka4fehemtsal7f7l2qx6oqvbwua6xnszdvaha |
 
-    ※4）以下をテキストファイルとして保存し、ブラウザから読み込みます。
+    ※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。
 
     ```sh
     #cloud-config
@@ -183,9 +186,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
       - mount /home
     ```
 
-    ※5）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+    ※6）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
-    ※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
+    ※7）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -270,30 +273,30 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
     | 変数名                | 設定値                                                                                  | 確認方法                                                                                                                             |
     | ------------------ | ------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------: |
     | compartment_ocid   | HPCクラスタをデプロイする **コンパートメント** のOCID                                                    | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
-    | ad                 | HPCクラスタをデプロイする **可用性ドメイン** 識別子                                                       | （※7）                                                                                                                             |
+    | ad                 | HPCクラスタをデプロイする **可用性ドメイン** 識別子                                                       | （※8）                                                                                                                             |
     | ssh_key            | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                                     | -                                                                                                                                |
     |exist_vcn|既存のVCNを使用するかどうかの指定（true/false）|-|
-    |vcn_ocid|既存のVCNを使用する場合使用するVCNのOCID（※11）|（※12）|
-    |public_ocid|既存のVCNを使用する場合使用するパブリックサブネットのOCID（※11）|（※12）|
-    |private_ocid|既存のVCNを使用する場合使用するプライベートサブネットのOCID（※11）|（※12）|
+    |vcn_ocid|既存のVCNを使用する場合使用するVCNのOCID（※12）|（※13）|
+    |public_ocid|既存のVCNを使用する場合使用するパブリックサブネットのOCID（※12）|（※13）|
+    |private_ocid|既存のVCNを使用する場合使用するプライベートサブネットのOCID（※12）|（※13）|
     | comp_shape         | 計算ノードに使用するシェイプ<br>・ **BM.Optimized3.36**                                             | -                                                                                                                                |
-    | comp_image         | 計算ノードに使用するOSイメージのOCID                                                                | （※8）                                                                                                                             |
+    | comp_image         | 計算ノードに使用するOSイメージのOCID                                                                | （※9）                                                                                                                             |
     | comp_boot_vol_size | 計算ノードの **ブートボリューム** のサイズ（GB）                                                         | -                                                                                                                                |
     | comp_cloud_config  | **user_data** ディレクトリに格納する計算ノード用 **cloud-config** ファイル名<br>・ **cloud-init_cnhpc.cfg** | -                                                                                                                                |
-    | comp_nps_x9        | 計算ノードの **NPS** BIOS設定値                                                               | （※9）                                                                                                                             |
-    | comp_smt           | 計算ノードの **SMT** BIOS設定値                                                               | （※9）                                                                                                                             |
-    | cn_display_name    | 計算ノードホスト名の接尾辞                                                                        | （※10）                                                                                                                             |
+    | comp_nps_x9        | 計算ノードの **NPS** BIOS設定値                                                               | （※10）                                                                                                                             |
+    | comp_smt           | 計算ノードの **SMT** BIOS設定値                                                               | （※10）                                                                                                                             |
+    | cn_display_name    | 計算ノードホスト名の接尾辞                                                                        | （※11）                                                                                                                             |
     | cn_node_count      | 計算ノードのノード数                                                                           | -                                                                                                                                |
 
-    ※7）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
+    ※8）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
     ![画面ショット](console_page01.png)
 
-    ※8）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
-    ※9）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-    ※10）例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
-    ※11）既存のVCNを使用する場合のみコメントを外して指定します。  
-    ※12）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。
+    ※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
+    ※10）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+    ※11）例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
+    ※12）既存のVCNを使用する場合のみコメントを外して指定します。  
+    ※13）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。
 
 ***
 # 1. HPCクラスタ構築
