@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-28T09:42:42+09:00">
+  <meta property="article:published_time" content="2024-11-29T14:25:07+09:00">
 
 
 
@@ -374,7 +374,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPCクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2024-11-28T09:42:42+09:00">
+    <meta itemprop="datePublished" content="2024-11-29T14:25:07+09:00">
     
 
     <div class="page__inner-wrap">
@@ -412,6 +412,10 @@
 <h2 id="1-0-概要">1-0. 概要</h2>
 
 <p>本章は、計算ノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。</p>
+
+<p>なおこの <strong>仮想クラウド・ネットワーク</strong> は、既存のものを使用することが可能です。<br />
+ただしこの場合、計算ノードが接続するサブネットは、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続に使用する <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> HPCプラグインの動作条件を満たしている必要があります。<br />
+この詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認">1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認</a></strong> を参照してください。</p>
 
 <h2 id="1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</h2>
 
@@ -783,7 +787,7 @@ inst-ijeeq-x9,inst-mpdri-x9
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ <strong>rdma0</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）</p>
 
-<p>※4）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-3-ネットワークアドレスのデフォルトからの変更">1-3. ネットワークアドレスのデフォルトからの変更</a></strong> を参照してください。</p>
+<p>※4）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-4-ネットワークアドレスのデフォルトからの変更">1-4. ネットワークアドレスのデフォルトからの変更</a></strong> を参照してください。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pdsh <span class="nt">-g</span> all <span class="s1">'ifconfig rdma0'</span> | dshbak <span class="nt">-c</span>
 <span class="nt">----------------</span>
@@ -942,7 +946,7 @@ rdma0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-28T09:42:42+09:00">November 28, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-29T14:25:07+09:00">November 29, 2024</time></p>
 
       </footer>
 
