@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-11-29T14:25:07+09:00">
+  <meta property="article:published_time" content="2024-12-02T10:28:17+09:00">
 
 
 
@@ -292,7 +292,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Logging AnalyticsでAutonomous Databaseのログを収集する">
     <meta itemprop="description" content="Autonomous Databaseのログを収集するためのLogging Analyticsの設定方法について紹介します。">
-    <meta itemprop="datePublished" content="2024-11-29T14:25:07+09:00">
+    <meta itemprop="datePublished" content="2024-12-02T10:28:17+09:00">
     
 
     <div class="page__inner-wrap">
@@ -316,11 +316,11 @@ Autonomous DatabaseにはOSログインできないため、ログ情報は表�
 <p><strong>前提条件 :</strong></p>
 <ul>
   <li>Logging Analyticsの有効化<br />
-参考：<a href="https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li>
+参考：<a href="/ocitutorials/management/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li>
   <li>Autonomous Databaseの作成<br />
-参考：<a href="https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li>
+参考：<a href="/ocitutorials/adb/adb101-provisioning/">101: ADBインスタンスを作成してみよう</a></li>
   <li>Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成<br />
-参考：<a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li>
+参考：<a href="/ocitutorials/beginners/creating-compute-instance/">その3 - インスタンスを作成する</a></li>
   <li>管理エージェントはOracle Cloud Agentプラグインを使用</li>
 </ul>
 
@@ -397,14 +397,14 @@ allow dynamic-group &lt;your dynamic-group-name&gt; to use metrics in tenancy / 
 <strong><code class="language-plaintext highlighter-rouge">プロパティ値</code></strong> : Autonomous Database管理コンソールの詳細画面にある「DB接続」のTNS名を参照（ここではmediumを指定）
  <img src="img9.png" alt="画面ショット9" /></li>
   <li>参考：Autonomous Database DB接続情報
- <img src="img18.png" alt="画面ショット18" />
+ <img src="atp_connection.png" alt="atp_connection.png" />
 <br /><br /></li>
 </ul>
 
 <h1 id="5-autonomous-database-ウォレットのダウンロード">5. Autonomous Database ウォレットのダウンロード</h1>
 <ul>
   <li>Autonomous Database のウォレットをダウンロードします。<br />
-参考：<a href="https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/">クレデンシャル・ウォレットを利用して接続してみよう</a>
+参考：<a href="/ocitutorials/adb/adb104-connect-using-wallet/">クレデンシャル・ウォレットを利用して接続してみよう</a>
 <br /><br /></li>
 </ul>
 
@@ -446,7 +446,7 @@ inflating: /usr/share/oracle-cloud-agent/wallet/keystore.jks
 <strong><code class="language-plaintext highlighter-rouge">Database_User_Name/Database_Password</code></strong> : Autonomous Database作成時に設定したユーザー名とパスワード<br />
 <strong><code class="language-plaintext highlighter-rouge">SSL_Truststore_Location/SSL_Truststore_Password</code></strong> : ファイルのパスとウォレットダウンロード時のパスワード<br />
 <strong><code class="language-plaintext highlighter-rouge">SSL_Keystore_Location/SSL_Keystore_Password</code></strong> : ファイルのパスとウォレットダウンロード時のパスワード<br />
-<strong><code class="language-plaintext highlighter-rouge">SSL_Server_Certificate_Domain_Name</code></strong> : Autonomous Database管理コンソールの詳細画面にある「DB接続」接続文字列の”ssl_server_cert_dn”を参照
+<strong><code class="language-plaintext highlighter-rouge">SSL_Server_Certificate_Domain_Name</code></strong> : デフォルト設定のままとします
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
  "source": "lacollector.la_database_sql",
  "name": "LCAgentDBCreds.&lt;Database_Entity_Name&gt;",
@@ -462,7 +462,7 @@ inflating: /usr/share/oracle-cloud-agent/wallet/keystore.jks
        {"name":"ssl_keyStoreType","value":"JKS"},
        {"name":"ssl_keyStoreLocation","value":"&lt;SSL_Keystore_Location&gt;"},
        {"name":"ssl_keyStorePassword","value":"&lt;SSL_Keystore_Password&gt;"},
-       {"name":"ssl_server_cert_dn","value":"&lt;SSL_Server_Certificate_Domain_Name&gt;"}]
+       {"name":"ssl_server_cert_dn","value":"yes"}]
 }
 </code></pre></div>    </div>
   </li>
@@ -482,7 +482,7 @@ inflating: /usr/share/oracle-cloud-agent/wallet/keystore.jks
        {"name":"ssl_keyStoreType","value":"JKS"},
        {"name":"ssl_keyStoreLocation","value":"/usr/share/oracle-cloud-agent/wallet/keystore.jks"},
        {"name":"ssl_keyStorePassword","value":"Welcome12345#"},
-       {"name":"ssl_server_cert_dn","value":"CN=adb.ap-tokyo-1.oraclecloud.com"}]
+       {"name":"ssl_server_cert_dn","value":"yes"}]
 }
 </code></pre></div>    </div>
   </li>
@@ -609,7 +609,7 @@ mgmt_agent_logan.log
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-11-29T14:25:07+09:00">November 29, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-02T10:28:17+09:00">December 2, 2024</time></p>
 
       </footer>
 
