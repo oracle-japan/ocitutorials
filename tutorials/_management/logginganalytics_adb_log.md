@@ -20,11 +20,11 @@ Autonomous DatabaseにはOSログインできないため、ログ情報は表�
 
 **前提条件 :**
 + Logging Analyticsの有効化  
-  参考：[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)
+  参考：[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)
 + Autonomous Databaseの作成  
-  参考：[101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/database/adb101-provisioning/)
+  参考：[101: ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning/)
 + Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成  
-  参考：[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)
+  参考：[その3 - インスタンスを作成する](/ocitutorials/beginners/creating-compute-instance/)
 + 管理エージェントはOracle Cloud Agentプラグインを使用
 
 **必要な権限 :** 以下の権限設定が最低限必要となります。
@@ -82,12 +82,12 @@ allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compar
   **`プロパティ値`** : Autonomous Database管理コンソールの詳細画面にある「DB接続」のTNS名を参照（ここではmediumを指定）
  ![画面ショット9](img9.png)
 + 参考：Autonomous Database DB接続情報
- ![画面ショット18](img18.png)
+ ![atp_connection.png](atp_connection.png)
 <br><br>
 
 # 5. Autonomous Database ウォレットのダウンロード
 + Autonomous Database のウォレットをダウンロードします。  
-  参考：[クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/database/adb104-connect-using-wallet/)
+  参考：[クレデンシャル・ウォレットを利用して接続してみよう](/ocitutorials/adb/adb104-connect-using-wallet/)
 <br><br>
 
 # 6. コンピュート・インスタンスにウォレットをコピーし、解凍する
@@ -127,7 +127,7 @@ Archive:  Wallet_atp01.zip
 **`Database_User_Name/Database_Password`** : Autonomous Database作成時に設定したユーザー名とパスワード  
 **`SSL_Truststore_Location/SSL_Truststore_Password`** : ファイルのパスとウォレットダウンロード時のパスワード  
 **`SSL_Keystore_Location/SSL_Keystore_Password`** : ファイルのパスとウォレットダウンロード時のパスワード  
-**`SSL_Server_Certificate_Domain_Name`** : Autonomous Database管理コンソールの詳細画面にある「DB接続」接続文字列の"ssl_server_cert_dn"を参照
+**`SSL_Server_Certificate_Domain_Name`** : デフォルト設定のままとします
 ```
 {
    "source": "lacollector.la_database_sql",
@@ -144,7 +144,7 @@ Archive:  Wallet_atp01.zip
          {"name":"ssl_keyStoreType","value":"JKS"},
          {"name":"ssl_keyStoreLocation","value":"<SSL_Keystore_Location>"},
          {"name":"ssl_keyStorePassword","value":"<SSL_Keystore_Password>"},
-         {"name":"ssl_server_cert_dn","value":"<SSL_Server_Certificate_Domain_Name>"}]
+         {"name":"ssl_server_cert_dn","value":"yes"}]
 }
 ```
 
@@ -165,7 +165,7 @@ Archive:  Wallet_atp01.zip
          {"name":"ssl_keyStoreType","value":"JKS"},
          {"name":"ssl_keyStoreLocation","value":"/usr/share/oracle-cloud-agent/wallet/keystore.jks"},
          {"name":"ssl_keyStorePassword","value":"Welcome12345#"},
-         {"name":"ssl_server_cert_dn","value":"CN=adb.ap-tokyo-1.oraclecloud.com"}]
+         {"name":"ssl_server_cert_dn","value":"yes"}]
 }
 ```
 
