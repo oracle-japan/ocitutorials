@@ -215,7 +215,7 @@ DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、AIプロファ�
 - **プロファイル名**：GENAI_COHERE_COMMAND_R（任意）
 - **provider**：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）
 - **credential_name**：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）
-- **model**：cohere.command-r-16K（プロバイダーをOCIとし、モデルを指定しない場合は、llama-3が使用されます）
+- **model**：cohere.command-r-08-2024（プロバイダーをOCIとし、モデルを指定しない場合は、meta.llama-3-70b-instructが使用されます）
 - **oci_apiformat**：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）
 - **object_list**：このプロファイルで使用するスキーマ・オブジェクトの所有者（本チュートリアルではselect_ai_user）とオブジェクト名（本チュートリアルではhighschools_view）を指定
 
@@ -226,7 +226,7 @@ BEGIN
         '{
             "provider": "oci",
             "credential_name": "OCI_GENAI_CRED",
-            "model":"cohere.command-r-16K",
+            "model":"cohere.command-r-08-2024",
             "oci_apiformat":"COHERE",
             "object_list": [
                     {"owner": "select_ai_user", "name": "highschools_view"}
@@ -306,8 +306,8 @@ COMMENT ON COLUMN highschools_view.SEATS IS '提供されている座席数';
 COMMENT ON COLUMN highschools_view.APPLICANTS IS '入学希望者数';
 COMMENT ON COLUMN highschools_view.LATITUDE IS '学校の緯度';
 COMMENT ON COLUMN highschools_view.LONGITUDE IS '学校の経度';
-COMMENT ON COLUMN highschools_view.LANGUAGE_CLASSES IS '提供される言語クラス。日本語で学校名が格納されています。';
-COMMENT ON COLUMN highschools_view.ADVANCED_PLACEMENT_COURSES IS '提供される上級コース。日本語で学校名が格納されています。';
+COMMENT ON COLUMN highschools_view.LANGUAGE_CLASSES IS '提供される言語クラス。日本語で言語名が格納されています。';
+COMMENT ON COLUMN highschools_view.ADVANCED_PLACEMENT_COURSES IS '提供される上級コース。日本語でコース名が格納されています。';
 COMMENT ON COLUMN highschools_view.SCHOOL_SPORTS IS '学校で提供されるスポーツ。カタカナでスポーツ名が格納されています。';
 COMMENT ON COLUMN highschools_view.OVERVIEW_PARAGRAPH IS '学校の概要';
 COMMENT ON COLUMN highschools_view.ACADEMIC_OPPORTUNITIES IS '学問的な機会';
@@ -331,7 +331,7 @@ BEGIN
         '{
             "provider": "oci",
             "credential_name": "OCI_GENAI_CRED",
-            "model":"cohere.command-r-16K",
+            "model":"cohere.command-r-08-2024",
             "oci_apiformat":"COHERE",
             "comments":"true", 
             "object_list": [
