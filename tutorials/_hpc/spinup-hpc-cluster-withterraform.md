@@ -38,20 +38,20 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 
 ※1）構築方法に **Terraform** CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。
 
-またVCNと関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
+またVCNと関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしている必要があります。
 
 - プライベートサブネットが存在する
 - パブリックサブネットが存在する（Bastionノードパブリック接続の場合）
 - パブリックサブネット・プライベートサブネット間で **セキュリティ・リスト** によりアクセスが制限されていない（Bastionノードパブリック接続の場合）
 - プライベートサブネットが **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている（※2）
 
-※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
+※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
 
 ![システム構成図（パブリック）](architecture_diagram.png)
-<br>
-<br>
-<br>
+<center><u>Bastionノードパブリックサブネット接続</u></center><br>
+
 ![システム構成図（プライベート）](architecture_diagram_private.png)
+<center><u>Bastionノードプライベートサブネット接続</u></center><br>
 
 Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノードデプロイ時に以下の処理を行います。
 

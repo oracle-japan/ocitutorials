@@ -49,7 +49,7 @@ header:
 
 ## 1-1. OpenMPIインストール  
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
 ## 1-2. Intel MPI Benchmarksインストール
 
@@ -59,9 +59,9 @@ header:
 ```sh
 $ cd ~; wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 $ tar -xvf ./IMB-v2021.7.tar.gz
-$ cd mpi-benchmarks-IMB-v2021.7; export CXX=/opt/openmpi-5.0.3/bin/mpicxx; export CC=/opt/openmpi-5.0.3/bin/mpicc; make -j 36 all
-$ sudo mkdir -p /opt/openmpi-5.0.3/tests/imb
-$ sudo cp ./IMB* /opt/openmpi-5.0.3/tests/imb/
+$ cd mpi-benchmarks-IMB-v2021.7; export CXX=/opt/openmpi-5.0.6/bin/mpicxx; export CC=/opt/openmpi-5.0.6/bin/mpicc; make -j 36 all
+$ sudo mkdir -p /opt/openmpi-5.0.6/tests/imb
+$ sudo cp ./IMB* /opt/openmpi-5.0.6/tests/imb/
 ```
 
 ## 1-3. Intel MPI Benchmarks実行
@@ -70,7 +70,7 @@ $ sudo cp ./IMB* /opt/openmpi-5.0.3/tests/imb/
 ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.66 usec）、帯域幅は256 MiBメッセージの帯域幅（12,225.03 MB/s）を以ってその結果とします。
 
 ```sh
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
@@ -118,7 +118,7 @@ $
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。
 
 ```sh
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
