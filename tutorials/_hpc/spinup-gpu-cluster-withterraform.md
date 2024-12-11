@@ -38,17 +38,20 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 
 ※1）構築方法に **Terraform** CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。
 
-またVCNと関連するネットワークリソースは、既に構築してあるものを活用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
+またVCNと関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。
 
 - プライベートサブネットが存在する
 - パブリックサブネットが存在する（Bastionノードパブリック接続の場合）
 - パブリックサブネット・プライベートサブネット間で **セキュリティ・リスト** によりアクセスが制限されていない（Bastionノードパブリック接続の場合）
+- プライベートサブネットが **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている（※2）
 
-![システム構成図（パブリック）](architecture_diagram.png)
-<br>
-<br>
-<br>
-![システム構成図（プライベート）](architecture_diagram_private.png)
+※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
+
+![システム構成図（パブリック）](/ocitutorials/hpc/spinup-cluster-network/architecture_diagram.png)
+<center><u>Bastionノードパブリックサブネット接続</u></center><br>
+
+![システム構成図（プライベート）](/ocitutorials/hpc/spinup-cluster-network/architecture_diagram_private.png)
+<center><u>Bastionノードプライベートサブネット接続</u></center><br>
 
 Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノードデプロイ時に以下の処理を行います。
 
@@ -131,27 +134,27 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
    ![画面ショット](stack_page02.png)  
 4.2 **Compute/GPU node options** フィールド
-    - **Display name postfix :** GPUノードホスト名の接尾辞（※2）
+    - **Display name postfix :** GPUノードホスト名の接尾辞（※3）
     - **Shape :** **BM.GPU4.8**
     - **Node count :** GPUノードのノード数（デフォルト：2）
-    - **Image OCID :** GPUノードのイメージOCID（※3）
+    - **Image OCID :** GPUノードのイメージOCID（※4）
     - **Boot volume size :** GPUノードのブートボリュームサイズ（200GB以上）
-    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※4）
-    - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※5）
-    - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) （※5）
+    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※5）
+    - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※6）
+    - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) （※6）
 
    ![画面ショット](stack_page03.png)
 
-    ※2） 例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
-    ※3）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
+    ※3） 例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
+    ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
 
-    | No.<br>（※6） | **Oracle Linux**<br>バージョン | OCID                                                                          |
+    | No.<br>（※7） | **Oracle Linux**<br>バージョン | OCID                                                                          |
     | :---------: | :-----------------------: | :---------------------------------------------------------------------------: |
     | 7           | 8.9                       | ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna |
     | 9           | 8.8                       | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
     | 8           | 7.9                       | ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq |
 
-    ※4）以下をテキストファイルとして保存し、ブラウザから読み込みます。
+    ※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。
 
 	```sh
 	#cloud-config
@@ -182,9 +185,9 @@ Bastionノード構築は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 		- mount /home
 	```
 
-    ※5）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+    ※6）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
-    ※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
+    ※7）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 5. 表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -269,30 +272,30 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 | 変数名                | 設定値                                                                                   | 確認方法                                                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------: |
 | compartment_ocid   | GPUクラスタをデプロイする **コンパートメント** のOCID                                                     | **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm)** を参照 |
-| ad                 | GPUクラスタをデプロイする **可用性ドメイン** 識別子                                                        | （※7）                                                                                                                             |
+| ad                 | GPUクラスタをデプロイする **可用性ドメイン** 識別子                                                        | （※8）                                                                                                                             |
 | ssh_key            | Bastionノードログインに使用するSSH秘密鍵に対する公開鍵                                                      | -                                                                                                                                |
 | exist_vcn          | 既存のVCNを使用するかどうかの指定（true/false）                                                        | -                                                                                                                                |
-| vcn_ocid           | 既存のVCNを使用する場合のVCNのOCID（※11）                                                           | （※12）                                                                                                                            |
-| public_ocid        | 既存のVCNを使用する場合のパブリックサブネットのOCID（※11）                                                    | （※12）                                                                                                                            |
-| private_ocid       | 既存のVCNを使用する場合のプライベートサブネットのOCID（※11）                                                   | （※12）                                                                                                                            |
+| vcn_ocid           | 既存のVCNを使用する場合のVCNのOCID（※12）                                                           | （※13）                                                                                                                            |
+| public_ocid        | 既存のVCNを使用する場合のパブリックサブネットのOCID（※12）                                                    | （※13）                                                                                                                            |
+| private_ocid       | 既存のVCNを使用する場合のプライベートサブネットのOCID（※12）                                                   | （※13）                                                                                                                            |
 | comp_shape         | GPUノードに使用するシェイプ<br>・ **BM.GPU4.8**                                                    | -                                                                                                                                |
-| comp_image         | GPUノードに使用するOSイメージのOCID                                                                | （※8）                                                                                                                             |
+| comp_image         | GPUノードに使用するOSイメージのOCID                                                                | （※9）                                                                                                                             |
 | comp_boot_vol_size | GPUノードの **ブートボリューム** のサイズ（GB）（最低200GB）                                                | -                                                                                                                                |
 | comp_cloud_config  | **user_data** ディレクトリに格納するGPUノード用 **cloud-config** ファイル名<br>・ **cloud-init_cngpu.cfg** | -                                                                                                                                |
-| comp_nps_gpu40     | GPUノードの **NPS** BIOS設定値                                                               | （※9）                                                                                                                             |
-| comp_smt           | GPUノードの **SMT** BIOS設定値                                                               | （※9）                                                                                                                             |
-| cn_display_name    | GPUノードホスト名の接尾辞                                                                        | （※10）                                                                                                                            |
+| comp_nps_gpu40     | GPUノードの **NPS** BIOS設定値                                                               | （※10）                                                                                                                             |
+| comp_smt           | GPUノードの **SMT** BIOS設定値                                                               | （※10）                                                                                                                             |
+| cn_display_name    | GPUノードホスト名の接尾辞                                                                        | （※11）                                                                                                                            |
 | cn_node_count      | GPUノードのノード数                                                                           | -                                                                                                                                |
 
-※7）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
+※8）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
 ![画面ショット](console_page01.png)
 
-※8）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
-※9）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※10）例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
-※11）既存のVCNを使用する場合のみコメントを外して指定します。  
-※12）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。
+※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
+※10）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※11）例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
+※12）既存のVCNを使用する場合のみコメントを外して指定します。  
+※13）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。
 
 ***
 # 1. GPUクラスタ構築
