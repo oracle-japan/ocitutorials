@@ -58,11 +58,12 @@ table, th, td {
 ※2）本テクニカルTipsは、 **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
 ※3）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用します。  
 ※4）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照ください。  
-※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードがこれをマウントします。  
-※6）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードで実行するアプリケーションの開発環境の役割を担うため、計算ノードと同じOSを採用します。
+※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
+※6）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
-また、本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
+計算ノードの構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
+
+本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
 
 | サブシステム      | ホスト名        |
@@ -279,7 +280,7 @@ $ make -j 36 && sudo make install
 
 本章は、Slurmマネージャに **OpenUCX** をインストールします。
 
-以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenUCX** をインストールします。  
+以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -450,7 +451,7 @@ StorageLoc=slurm_acct_db
 PMIxDirectConn=true
 PMIxDirectConnEarly=true
 PMIxDirectConnUCX=true
-PMIxNetDevicesUCX=mlx5_2:1
+PMIxNetDevicesUCX=mlx5_0:0
 ```
 
 ## 2-9. Slurmサービス起動・確認
@@ -485,11 +486,11 @@ $
 ```
 $ srun --mpi=list
 MPI plugin types are...
-    none
-    cray_shasta
-    pmi2
-    pmix
-specific pmix plugin versions available: pmix_v4
+	none
+	cray_shasta
+	pmi2
+	pmix
+specific pmix plugin versions available: pmix_v5
 $
 ```
 
@@ -498,9 +499,14 @@ $
 以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、 **Slurm** を利用するための環境変数を設定します。
 
 ```sh
-$ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bash_profile
-$ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
+$ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bashrc
+$ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bashrc
+$ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
+$ source ~/.bashrc
 ```
+
+ここで設定している環境変数 **UCX_NET_DEVICES** は、 **Slurm** から実行する **OpenMPI** のジョブがそのノード間通信を  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するNIC（RDMAリンク名 **mlx5_2/1** ）を介して行うことを指示しています。  
+またこの環境変数は、 **OpenPMIx** がMPIプロセス制御に **OpenUCX** を使用することも指示しているため、 **srun** でジョブを実行する際に設定する必要があります。
 
 ***
 # 3. 稼働確認
@@ -519,7 +525,6 @@ $ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
 #SBATCH -J ping_ping
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
-export UCX_NET_DEVICES=mlx5_2:1
 srun /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 ```
 
@@ -532,7 +537,6 @@ srun /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 #SBATCH -J ping_ping
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
-export UCX_NET_DEVICES=mlx5_2:1
 mpirun -n 2 -N 1 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 ```
 
