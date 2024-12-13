@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-11T18:02:59+09:00">
+  <meta property="article:published_time" content="2024-12-13T17:41:29+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-12-11T18:02:59+09:00">
+    <meta itemprop="datePublished" content="2024-12-13T17:41:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -427,9 +427,32 @@
   <li><strong>Slurm</strong> クラスタ内のパスフレーズ無しSSHアクセス設定が不要</li>
 </ul>
 
-<p>また <strong>UCX</strong> は、</p>
+<p>また <strong><a href="https://openucx.org/">UCX</a></strong> は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、ノード内・ノード間を問わず以下の多様なトランスポートレベルの通信手段を <strong>OpenMPI</strong> から利用することが出来ます。</p>
 
-<p>以上の利点を享受するべく本テクニカルTipsは、 <strong>Slurm</strong> 環境でMPIアプリケーションを <strong>1.</strong> の動作モードで実行することを想定した <strong>OpenMPI</strong> のインストール手順を解説し、インストールした <strong>OpenMPI</strong> のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。</p>
+<p>[ノード内]</p>
+<ul>
+  <li>POSIX共有メモリ</li>
+  <li>SYSTEM V共有メモリ</li>
+  <li><strong><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1">Cross Memory Attach (CMA)</a></strong></li>
+  <li><strong><a href="https://knem.gitlabpages.inria.fr/">KNEM</a></strong></li>
+  <li><strong><a href="https://github.com/hpc/xpmem">XPMEM</a></strong></li>
+</ul>
+
+<p>[ノード間]</p>
+<ul>
+  <li>InfiniBandトランスポート
+    <ul>
+      <li>Unreliable Datagram (UD)</li>
+      <li>Reliable Connected (RC)</li>
+      <li>Dynamically Connected (DC)</li>
+    </ul>
+  </li>
+  <li>TCP</li>
+</ul>
+
+<p>特に <strong>UCX</strong> を使用するノード間通信は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。</p>
+
+<p>以上の利点を享受するべく本テクニカルTipsは、 <strong>Slurm</strong> 環境でMPIアプリケーションを <strong>1.</strong> の動作モードで実行すること、通信フレームワークに <strong>UCX</strong> を使用することを想定し、このための <strong>OpenMPI</strong> のインストール手順を解説、インストールした <strong>OpenMPI</strong> のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。</p>
 
 <ul>
   <li><strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong></li>
@@ -481,6 +504,8 @@
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
+<p>ここで <strong>OpenUCX</strong> から利用する <strong>KNEM</strong> は、 <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> に含まれるもの（ <strong>/opt/knem-1.1.4.90mlnx3</strong> ）を使用するため、ここでは改めてインストールしません。</p>
+
 <h2 id="1-2-openpmixインストール">1-2. OpenPMIxインストール</h2>
 
 <p>以下コマンドをopcユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
@@ -503,6 +528,8 @@
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
+<p>ここでは、 <strong>KNEM</strong> と <strong>XPMEM</strong> を <strong>OpenUCX</strong> から利用出来るようにビルドしています。</p>
+
 <h2 id="1-4-openmpiインストール">1-4. OpenMPIインストール</h2>
 
 <p>以下コマンドをopcユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
@@ -514,10 +541,13 @@
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
+<p>ここでは、先にインストールした <strong>OpenUCX</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を使用して <strong>1.</strong> の動作モードで <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
+
 <h2 id="1-5-セットアップ">1-5. セットアップ</h2>
 
 <p>本章は、 <strong>OpenMPI</strong> を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。<br />
-ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで <strong>OpenMPI</strong> を利用するユーザで実施します。</p>
+ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで <strong>OpenMPI</strong> を利用するユーザで実施します。<br />
+このユーザのホームディレクトリが共有されていない場合は、 <strong>OpenMPI</strong> を実行する全てのノードでこれを実行します。</p>
 
 <p>以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
 
@@ -528,9 +558,10 @@
 
 <p>次に、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に <strong>hostlist.txt</strong> として作成します。（※2）</p>
 
-<p>※2）ここで作成するホストリストファイルは、 <strong>OpenMPI</strong> 単独で稼働確認を行うために実施しますが、 <strong>Slurm</strong> 環境では必要ありません。</p>
+<p>※2）ここで作成するホストリストファイルは、 <strong>OpenMPI</strong> 単独で稼働確認を行うために作成しますが、 <strong>Slurm</strong> 環境では必要ありません。</p>
 
-<p>次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※3）</p>
+<p>次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るように設定します。（※3）<br />
+このユーザのホームディレクトリが共有されていない場合は、1ノードで以下の手順を実行し、作成した <strong>id_rsa</strong> 、 <strong>authorized_keys</strong> 、 及び <strong>known_hosts</strong> の3個のファイルをパーミッションを維持して <strong>OpenMPI</strong> を実行する全てのノードの同じディレクトリに配置します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> <span class="nb">mkdir</span> .ssh<span class="p">;</span> <span class="nb">chmod </span>700 .ssh
 <span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-N</span> <span class="s2">""</span> <span class="nt">-f</span> .ssh/id_rsa
@@ -555,7 +586,7 @@
 
 <p>以下コマンドを全てのノードのopcユーザで実行し、 <strong>NAS Parallel Benchmarks</strong> をインストールします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~<span class="p">;</span> wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./NPB3.4.3-MZ.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>NPB3.4.3-MZ/NPB3.4-MZ-MPI
 <span class="nv">$ </span><span class="nb">cp </span>config/make.def.template config/make.def
@@ -650,7 +681,7 @@ npb@nas.nasa.gov
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-11T18:02:59+09:00">December 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-13T17:41:29+09:00">December 13, 2024</time></p>
 
       </footer>
 

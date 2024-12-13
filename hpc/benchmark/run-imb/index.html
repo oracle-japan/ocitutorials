@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-11T18:02:59+09:00">
+  <meta property="article:published_time" content="2024-12-13T17:41:29+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Intel MPI Benchmarks実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-12-11T18:02:59+09:00">
+    <meta itemprop="datePublished" content="2024-12-13T17:41:29+09:00">
     
 
     <div class="page__inner-wrap">
@@ -395,15 +395,22 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-openmpiインストール">1-1. OpenMPIインストール</a></li><li><a href="#1-2-intel-mpi-benchmarksインストール">1-2. Intel MPI Benchmarksインストール</a></li><li><a href="#1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</a></li></ul></li><li><a href="#2-intel-mpi-libraryでintel-mpi-benchmarksを実行する場合">2. Intel MPI LibraryでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-oneapi-hpc-toolkitインストール">2-1. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#2-2-ホストリストファイル作成">2-2. ホストリストファイル作成</a></li><li><a href="#2-3-intel-mpi-benchmarks実行">2-3. Intel MPI Benchmarks実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-openmpiインストール">1-1. OpenMPIインストール</a></li><li><a href="#1-2-intel-mpi-benchmarksインストール">1-2. Intel MPI Benchmarksインストール</a></li><li><a href="#1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</a></li><li><a href="#1-3-0-概要">1-3-0. 概要</a></li><li><a href="#1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</a></li><li><a href="#1-3-2-2ノード間のpingpong">1-3-2. 2ノード間のPingPong</a></li><li><a href="#1-3-3-4ノード間のallreduce">1-3-3. 4ノード間のAllreduce</a></li></ul></li><li><a href="#2-intel-mpi-libraryでintel-mpi-benchmarksを実行する場合">2. Intel MPI LibraryでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-oneapi-hpc-toolkitインストール">2-1. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#2-2-ホストリストファイル作成">2-2. ホストリストファイル作成</a></li><li><a href="#2-3-intel-mpi-benchmarks実行">2-3. Intel MPI Benchmarks実行</a></li></ul></li></ul>
             </nav>
           </aside>
         
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong> の実行は、 <strong>GitHub</strong> から提供される <strong>Intel MPI Benchmarks</strong> を <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> で実行する方法と、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> に含まれる <strong>Intel MPI Benchmarks</strong> と <strong><a href="https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html">Intel MPI Library</a></strong> を使用する方法を解説します。<br />
-また <strong>Intel MPI Benchmarks</strong> は、2ノード間のPingPongと4ノード間のAllreduceの計測方法をそれぞれ解説します。</p>
+<p>本ドキュメントで解説する <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong> の実行は、 <strong>GitHub</strong> から提供される <strong>Intel MPI Benchmarks</strong> を <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> で実行する方法と、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> に含まれる <strong>Intel MPI Benchmarks</strong> と <strong><a href="https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html">Intel MPI Library</a></strong> を使用する方法を解説します。</p>
+
+<p><strong>Intel MPI Benchmarks</strong> の実行は、以下3種類を解説します。</p>
+
+<ol>
+  <li>1ノード内全コアを使用するAlltoall</li>
+  <li>2ノード間のPingPong</li>
+  <li>4ノード間のAllreduce</li>
+</ol>
 
 <p>本ドキュメントで <strong>Intel MPI Benchmarks</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 4インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
 
@@ -411,14 +418,14 @@
 
 <p>[実行環境]</p>
 <ul>
-  <li>シェイプ : <strong>BM.Optimized3.36</strong></li>
-  <li>OS ： <strong>Oracle Linux</strong> 8.9ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
-  <li><strong>OpenMPI</strong> ： 5.0.3</li>
+  <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
+  <li><strong>OpenMPI</strong> ： 5.0.6</li>
   <li><strong>Intel MPI Library</strong> ： 2021.3.0</li>
   <li><strong>Intel MPI Benchmarks</strong> ： 2021.7</li>
 </ul>
 
-<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.1</strong> です。</p>
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
 
 <p>[実行結果（ <strong>OpenMPI</strong> ）]</p>
 <ul>
@@ -464,8 +471,69 @@
 
 <h2 id="1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</h2>
 
+<h2 id="1-3-0-概要">1-3-0. 概要</h2>
+
+<p>本章は、以下3種類の <strong>Intel MPI Benchmarks</strong> 実行方法を解説します。</p>
+
+<ol>
+  <li>1ノード内全コアを使用するAlltoall</li>
+  <li>2ノード間のPingPong</li>
+  <li>4ノード間のAllreduce</li>
+</ol>
+
+<h2 id="1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</h2>
+
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
-ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは1.66 usec）、帯域幅は256 MiBメッセージの帯域幅（12,225.03 MB/s）を以ってその結果とします。</p>
+ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ32 MiBで計測しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 25:25 <span class="nt">-mem</span> 2.3G <span class="nt">-npmin</span> 36 alltoall
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Date                  : Fri Dec 13 16:41:35 2024</span>
+<span class="c"># Machine               : x86_64</span>
+<span class="c"># System                : Linux</span>
+<span class="c"># Release               : 4.18.0-553.8.1.el8_10.x86_64</span>
+<span class="c"># Version               : #1 SMP Tue Jul 2 05:18:08 PDT 2024</span>
+<span class="c"># MPI Version           : 3.1</span>
+<span class="c"># MPI Thread Environment: </span>
+
+
+<span class="c"># Calling sequence was: </span>
+
+<span class="c"># /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -npmin 36 alltoall </span>
+
+<span class="c"># Minimum message length in bytes:   0</span>
+<span class="c"># Maximum message length in bytes:   33554432</span>
+<span class="c">#</span>
+<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+<span class="c"># MPI_Op                         :   MPI_SUM  </span>
+<span class="c"># </span>
+<span class="c"># </span>
+
+<span class="c"># List of Benchmarks to run:</span>
+
+<span class="c"># Alltoall</span>
+
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Benchmarking Alltoall </span>
+<span class="c"># #processes = 36 </span>
+<span class="c">#----------------------------------------------------------------</span>
+       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+            0         1000         0.03         0.05         0.03
+     33554432            1    368774.69    377145.91    373427.99
+
+
+<span class="c"># All processes entering MPI_Finalize</span>
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="1-3-2-2ノード間のpingpong">1-3-2. 2ノード間のPingPong</h2>
+
+<p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
+ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは <strong>1.66 usec</strong> ）、帯域幅は256 MiBメッセージの帯域幅（ <strong>12,225.03 MB/s</strong> ）を以ってその結果とします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
 <span class="c">#----------------------------------------------------------------</span>
@@ -511,7 +579,9 @@
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
+<h2 id="1-3-3-4ノード間のallreduce">1-3-3. 4ノード間のAllreduce</h2>
+
+<p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 <span class="nt">-npmin</span> 144 allreduce
@@ -720,7 +790,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-11T18:02:59+09:00">December 11, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-13T17:41:29+09:00">December 13, 2024</time></p>
 
       </footer>
 
