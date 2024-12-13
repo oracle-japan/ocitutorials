@@ -30,9 +30,25 @@ header:
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のパスフレーズ無しSSHアクセス設定が不要
 
-また **UCX** は、
+また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、ノード内・ノード間を問わず以下の多様なトランスポートレベルの通信手段を **OpenMPI** から利用することが出来ます。
 
-以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **1.** の動作モードで実行することを想定した **OpenMPI** のインストール手順を解説し、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
+[ノード内]
+- POSIX共有メモリ
+- SYSTEM V共有メモリ
+- **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)**
+- **[KNEM](https://knem.gitlabpages.inria.fr/)**
+- **[XPMEM](https://github.com/hpc/xpmem)**
+
+[ノード間]
+- InfiniBandトランスポート
+    - Unreliable Datagram (UD)
+    - Reliable Connected (RC)
+    - Dynamically Connected (DC)
+- TCP
+
+特に **UCX** を使用するノード間通信は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。
+
+以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **1.** の動作モードで実行すること、通信フレームワークに **UCX** を使用することを想定し、このための **OpenMPI** のインストール手順を解説、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
 
 -  **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)**
 - **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)**
@@ -81,6 +97,8 @@ $ cd xpmem; ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
+ここで **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用するため、ここでは改めてインストールしません。
+
 ## 1-2. OpenPMIxインストール
 
 以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
@@ -105,6 +123,8 @@ $ cd ucx-1.17.0; ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/
 $ make -j 36 && sudo make install
 ```
 
+ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。
+
 ## 1-4. OpenMPIインストール
 
 以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt** ディレクトリにインストールします。  
@@ -117,10 +137,13 @@ $ cd openmpi-5.0.6; ./configure --prefix=/opt/openmpi-5.0.6 --with-libevent=/opt
 $ make -j 36 all && sudo make install
 ```
 
+ここでは、先にインストールした **OpenUCX** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+
 ## 1-5. セットアップ
 
 本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。  
-ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。
+ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
+このユーザのホームディレクトリが共有されていない場合は、 **OpenMPI** を実行する全てのノードでこれを実行します。
 
 以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
 
@@ -132,9 +155,10 @@ $ source ~/.bashrc
 
 次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。（※2）
 
-※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **Slurm** 環境では必要ありません。
+※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために作成しますが、 **Slurm** 環境では必要ありません。
 
-次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※3）
+次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るように設定します。（※3）  
+このユーザのホームディレクトリが共有されていない場合は、1ノードで以下の手順を実行し、作成した **id_rsa** 、 **authorized_keys** 、 及び **known_hosts** の3個のファイルをパーミッションを維持して **OpenMPI** を実行する全てのノードの同じディレクトリに配置します。
 
 ```sh
 $ cd ~; mkdir .ssh; chmod 700 .ssh
@@ -161,7 +185,7 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 以下コマンドを全てのノードのopcユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
-$ wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+$ cd ~; wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 $ tar -xvf ./NPB3.4.3-MZ.tar.gz
 $ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def

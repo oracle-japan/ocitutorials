@@ -415,7 +415,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 ## 3-5. ソフトウェア環境
 
-- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/uild-openmpi/)**
+- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)**
 
     **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
     **OpenMPI** で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが **[Slurm](https://slurm.schedmd.com/)** の場合、 **[PMIx](https://pmix.github.io/)** を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。  
