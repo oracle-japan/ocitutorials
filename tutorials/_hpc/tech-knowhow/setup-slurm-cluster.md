@@ -38,10 +38,11 @@ table, th, td {
 
 なお、本テクニカルTipsで使用する **OpenMPI** を構築する方法は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
+***
 # 1. 前提システム
 
 本章は、本テクニカルTipsで解説する **Slurm** 環境構築手順の前提となるシステムを解説します。  
-本テクニカルTipsは、この前提システムが予め構築されており、このシステム上に **Slurm** 環境を構築する手順にフォーカスします。
+本テクニカルTipsは、このシステムが予め構築されている前提で、ここに **Slurm** 環境を構築する手順を解説します。
 
 前提システムは、以下4種類のサブシステムから構成されます。  
 また、必要に応じてこれらのサブシステムにログインするための踏み台となる、パブリックサブネットに接続するBastionノードを用意します。
@@ -342,9 +343,8 @@ $ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
 $ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
 $ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
 $ sudo su - slurm
-$ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bash_profile
-$ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bash_profile
-$ source ~/.bash_profile
+$ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
+$ source ~/.bashrc
 ```
 
 次に、以下コマンドを全ての計算ノードのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
@@ -499,8 +499,7 @@ $
 以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、 **Slurm** を利用するための環境変数を設定します。
 
 ```sh
-$ echo "export PATH=\$PATH:/opt/slurm/sbin:/opt/slurm/bin" | tee -a ~/.bashrc
-$ echo "export MANPATH=\$MANPATH:/opt/slurm/share/man" | tee -a ~/.bashrc
+$ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 $ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```

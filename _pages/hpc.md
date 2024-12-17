@@ -257,6 +257,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     **[OpenFOAM](https://www.openfoam.com/)** は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。  
     本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンス **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **OpenFOAM** を使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。
 
+- **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](/ocitutorials/hpc/benchmark/openmpi-perftips/)**
+
+    **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
+    **OpenMPI** は、 **[Modular Component Architecture (MCA)](https://docs.open-mpi.org/en/v5.0.x/mca.html)** を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、この **MCA** が用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。  
+    また **OpenMPI** は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークに **[UCX](https://openucx.org/)** を採用し、MPI通信性能を最適化するためには **UCX** のパラメータを適切に設定することが求められます。  
+    本テクニカルTipsは、 **OpenMPI** のMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。
+
 ## 2-3. プロファイリング関連Tips集
 
 本章は、HPCアプリケーションのパフォーマンス解析やチューニングに必要な情報を収集する、プロファイリング関連Tips集を提供します。
@@ -419,7 +426,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
     **OpenMPI** で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが **[Slurm](https://slurm.schedmd.com/)** の場合、 **[PMIx](https://pmix.github.io/)** を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。  
-    また **[UCX](https://openucx.org/)** は、 **OpenMPI** が **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。  
+    また **[UCX](https://openucx.org/)** は、 **OpenMPI** が **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を介して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。  
     本テクニカルTipsは、 **PMIx** を使用する **Slurm** 環境で通信フレームワークに **UCX** の使用を前提とする **OpenMPI** 構築方法を解説します。
 
 - **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)**
