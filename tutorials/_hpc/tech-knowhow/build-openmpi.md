@@ -148,8 +148,7 @@ $ make -j 36 all && sudo make install
 以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
 
 ```sh
-$ echo "export PATH=\$PATH:/opt/openmpi-5.0.6/bin" | tee -a ~/.bashrc
-$ echo "export MANPATH=\$MANPATH:/opt/openmpi-5.0.6/man" | tee -a ~/.bashrc
+$ echo "export PATH=/opt/openmpi-5.0.6/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 
