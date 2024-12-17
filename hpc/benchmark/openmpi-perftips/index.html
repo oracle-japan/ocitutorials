@@ -1,0 +1,880 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OpenMPIのMPI通信性能に影響するパラメータとその関連Tips | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftips/">
+
+
+  <meta property="og:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2024-12-17T18:35:53+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftips/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OpenMPIのMPI通信性能に影響するパラメータとその関連Tips
+
+        
+      </h1>
+      
+        <p class="page__lead">OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/" class="active">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
+    <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+    <meta itemprop="datePublished" content="2024-12-17T18:35:53+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></li><li><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></li><li><a href="#3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></li><li><a href="#3-2-hook_comm_method_display">3-2. hook_comm_method_display</a></li><li><a href="#3-3-ucx_tls">3-3. UCX_TLS</a></li><li><a href="#3-4-ucx_net_devices">3-4. UCX_NET_DEVICES</a></li><li><a href="#3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</a></li><li><a href="#3-6-ucx_proto_info">3-6. UCX_PROTO_INFO</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>本パフォーマンス関連Tipsは、 <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> のMPI通信性能にフォーカスし、 <strong>OpenMPI</strong> が採用する <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> （以降 <strong>MCA</strong> と呼称）に組み込まれたコンポーネントや、 <strong>OpenMPI</strong> が通信フレームワークに採用する <strong><a href="https://openucx.org/">UCX</a></strong> に於いて、MPI通信性能に影響するパラメータとその設定方法について、以下のTipsを解説します。</p>
+
+<ol>
+  <li><strong>MCA</strong> パラメータ設定方法関連Tips</li>
+  <li><strong>UCX</strong> パラメータ設定方法関連Tips</li>
+  <li>MPI通信性能に影響する <strong>MCA</strong> ・ <strong>UCX</strong> パラメータ</li>
+</ol>
+
+<p>これらのTipsは、全て <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> を前提に記載します。</p>
+
+<hr />
+<h1 id="1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</h1>
+
+<p>本Tipsは、 <strong>MCA</strong> パラメータの設定方法や設定した値の確認方法を解説します。</p>
+
+<p><strong>OpenMPI</strong> のアプリケーションを実行する際に <strong>MCA</strong> パラメータを指定する方法は、以下の4通りが存在します。<br />
+ここで同じパラメータが複数回指定された場合は、以下の出現順にその値が上書きされます。（全ての指定方法で同じパラメータが設定された場合は、 <strong>4.</strong> で指定されたものが採用されます。）</p>
+
+<ol>
+  <li>システム管理者により作成された設定ファイルで指定（※1）</li>
+  <li>ユーザにより作成された設定ファイルで指定（※2）</li>
+  <li>実行時の環境変数で指定（※3）</li>
+  <li><strong>mpirun</strong> コマンドのオプションで指定（※4）</li>
+</ol>
+
+<p>※1）本パフォーマンス関連Tipsでは、 <strong>/opt/openmpi-5.0.6/etc/openmpi-mca-params.conf</strong> になります。<br />
+※2）<strong>$HOME/.openmpi/mca-params.conf</strong> です。<br />
+※3）<strong>MCA</strong> パラメータ <strong>coll_hcoll_enable</strong> を値 <strong>1</strong> に設定する場合、パラメータ名に接頭辞 <strong>OMPI_MCA_</strong> を付与した環境変数 <strong>OMPI_MCA_coll_hcoll_enable</strong> を使用することが可能です。この方法は、 <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> 環境で <strong>OpenMPI</strong> アプリケーションの起動に <strong>srun</strong> を使用する場合、指定方法 <strong>4.</strong> を使用することが出来ないため、 <strong>MCA</strong> パラメータを指定する際に以下のように使用することが可能です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>1 srun a.out
+</code></pre></div></div>
+
+<p>※4）<strong>MCA</strong> パラメータ <strong>coll_hcoll_enable</strong> を値 <strong>1</strong> に設定する場合、mpirunコマンドのオプション <strong>–mca</strong> を使用して、以下のように指定します。<br />
+ここで、 <strong>MCA</strong> パラメータ名と値の間にはスペースを挟みます。また値にスペースが含まれる場合は、ダブルクォートでこれを囲みます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--mca</span> coll_hcoll_enable 1
+or
+<span class="nv">$ </span>mpirun <span class="nt">--mca</span> coll_hcoll_enable <span class="s2">"1"</span>
+</code></pre></div></div>
+
+<p>以上より、システム管理者が <strong>OpenMPI</strong> をインストールするシステム向けの推奨 <strong>MCA</strong> パラメータ値を指定方法 <strong>1.</strong> でシステムワイドに設定し、ユーザはシステム管理者の設定値とは異なるアプリケーションに最適な <strong>MCA</strong> パラメータを指定方法 <strong>2.</strong> から <strong>4.</strong> を駆使して指定することが可能になります。</p>
+
+<p>指定方法 <strong>3.</strong> より前の段階で設定される <strong>MCA</strong> パラメータは、以下コマンド出力の <strong>current value</strong> フィールドでその設定値を確認することが出来ます。<br />
+なおこの <strong>current value</strong> が設定された段階は、 <strong>data source</strong> フィールドで確認することが出来ます。以下の例は、 <strong>OpenMPI</strong> のデフォルト値によりその値が <strong>1</strong> に設定されていることを示しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ompi_info <span class="nt">--all</span> | <span class="nb">grep </span>coll_hcoll_enable
+          MCA coll hcoll: parameter <span class="s2">"coll_hcoll_enable"</span> <span class="o">(</span>current value: <span class="s2">"1"</span>, data <span class="nb">source</span>: default, level: 9 dev/all, <span class="nb">type</span>: int<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</h1>
+
+<p>本Tipsは、 <strong>UCX</strong> パラメータの設定方法や設定した値の確認方法を解説します。</p>
+
+<p><strong>OpenMPI</strong> のアプリケーションを実行する際の <strong>UCX</strong> パラメータは、実行時に指定されている接頭辞 <strong>UCX_</strong> で始まる環境変数が使用されます。</p>
+
+<p><strong>OpenMPI</strong> の起動コマンド <strong>mpirun</strong> は、起動される全てのMPIプロセスに環境変数を引き渡す <strong>-x</strong> オプションが用意されており、これを使用します。<br />
+例えば <strong>UCX</strong> パラメータ <strong>UCX_TLS</strong> を値 <strong>posix</strong> に設定する場合、以下のように指定します。<br />
+ここで、値にスペースが含まれる場合は、ダブルクォートでこれを囲みます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>posix a.out
+or
+<span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span><span class="s2">"posix"</span> a.out
+</code></pre></div></div>
+
+<p><strong>Slurm</strong> 環境で <strong>OpenMPI</strong> アプリケーションを実行する場合は、起動コマンドに <strong>Slurm</strong> 付属の <strong>srun</strong> を使用しますが、この <strong>srun</strong> は実行時環境変数を全てのMPIプロセスに引き渡すため、以下のように <strong>UCX</strong> パラメータを指定することが可能です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ UCX_TLS</span><span class="o">=</span>posix srun a.out
+</code></pre></div></div>
+
+<p>各 <strong>UCX</strong> パラメータの意味とそのデフォルト値は、以下コマンドの出力で確認することが出来ます。以下の例では、 <strong>UCX_TLS</strong> のデフォルト値が <strong>all</strong> に設定されていることが分かります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ucx_info <span class="nt">-cf</span> | <span class="nb">grep</span> <span class="nt">-B</span> 25 ^UCX_TLS
+
+<span class="c">#</span>
+<span class="c"># Comma-separated list of transports to use. The order is not meaningful.</span>
+<span class="c">#  - all     : use all the available transports.</span>
+<span class="c">#  - sm/shm  : all shared memory transports (mm, cma, knem).</span>
+<span class="c">#  - mm      : shared memory transports - only memory mappers.</span>
+<span class="c">#  - ugni    : ugni_smsg and ugni_rdma (uses ugni_udt for bootstrap).</span>
+<span class="c">#  - ib      : all infiniband transports (rc/rc_mlx5, ud/ud_mlx5, dc_mlx5).</span>
+<span class="c">#  - rc_v    : rc verbs (uses ud for bootstrap).</span>
+<span class="c">#  - rc_x    : rc with accelerated verbs (uses ud_mlx5 for bootstrap).</span>
+<span class="c">#  - rc      : rc_v and rc_x (preferably if available).</span>
+<span class="c">#  - ud_v    : ud verbs.</span>
+<span class="c">#  - ud_x    : ud with accelerated verbs.</span>
+<span class="c">#  - ud      : ud_v and ud_x (preferably if available).</span>
+<span class="c">#  - dc/dc_x : dc with accelerated verbs.</span>
+<span class="c">#  - tcp     : sockets over TCP/IP.</span>
+<span class="c">#  - cuda    : CUDA (NVIDIA GPU) memory support.</span>
+<span class="c">#  - rocm    : ROCm (AMD GPU) memory support.</span>
+<span class="c">#  - ze      : ZE (Intel GPU) memory support.</span>
+<span class="c">#  Using a \ prefix before a transport name treats it as an explicit transport name</span>
+<span class="c">#  and disables aliasing.</span>
+<span class="c"># </span>
+<span class="c">#</span>
+<span class="c"># syntax:    comma-separated list (use "all" for including all items or '^' for negation) of: string</span>
+<span class="c">#</span>
+<span class="nv">UCX_TLS</span><span class="o">=</span>all
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本Tipsは、その設定値がMPI通信性能に影響を与える代表的な <strong>MCA</strong> パラメータと <strong>UCX</strong> パラメータを解説します。</p>
+
+<p>これらパラメータの設定方法は、 <strong>MCA</strong> パラメータは <strong><a href="#1-mcaパラメータ設定方法関連tips">MCAパラメータ設定方法関連Tips</a></strong> を、 <strong>UCX</strong> パラメータは <strong><a href="#2-ucxパラメータ設定方法関連tips">UCXパラメータ設定方法関連Tips</a></strong> を参照してください。</p>
+
+<p>下表は、本Tipsで紹介する <strong>MCA</strong> ・ <strong>UCX</strong> パラメータの一覧です。<br />
+各パラメータの詳細は、 <strong>名称</strong> 列をクリックしてください。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">名称</th>
+      <th style="text-align: center">タイプ</th>
+      <th style="text-align: center">分類<br />（※5）</th>
+      <th style="text-align: center">デフォルト<br />（※6）</th>
+      <th style="text-align: center">概要</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-1-coll_hcoll_enable">coll_hcoll_enable</a></strong></td>
+      <td style="text-align: center"><strong>MCA</strong></td>
+      <td style="text-align: center">パフォーマンス</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center"><strong>hcoll</strong> コンポーネント<br />使用の制御</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-2-hook_comm_method_display">hook_comm_method_display</a></strong></td>
+      <td style="text-align: center"><strong>MCA</strong></td>
+      <td style="text-align: center">情報提供</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">通信プロトコルレポート<br />表示の制御</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-3-ucx_tls">UCX_TLS</a></strong></td>
+      <td style="text-align: center"><strong>UCX</strong></td>
+      <td style="text-align: center">パフォーマンス</td>
+      <td style="text-align: center">all</td>
+      <td style="text-align: center">通信トランスポートの指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-4-ucx_net_devices">UCX_NET_DEVICES</a></strong></td>
+      <td style="text-align: center"><strong>UCX</strong></td>
+      <td style="text-align: center">パフォーマンス</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">ネットワークデバイスを指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-5-ucx_rndv_thresh">UCX_RNDV_THRESH</a></strong></td>
+      <td style="text-align: center"><strong>UCX</strong></td>
+      <td style="text-align: center">パフォーマンス</td>
+      <td style="text-align: center">auto</td>
+      <td style="text-align: center">プロトコル切替<br />境界メッセージ長の指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-6-ucx_proto_info">UCX_PROTO_INFO</a></strong></td>
+      <td style="text-align: center"><strong>UCX</strong></td>
+      <td style="text-align: center">情報提供</td>
+      <td style="text-align: center">n</td>
+      <td style="text-align: center">メッセージ長毎の<br />使用プロトコル表示の制御</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※5）<strong>パフォーマンス</strong> に分類されるものはMPI通信性能に影響を及ぼすパラメータ、 <strong>情報提供</strong> に分類されるものはMPI通信性能を考察する際の有益な情報を提供するパラメータです。<br />
+※6）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> でのデフォルト値です。</p>
+
+<h2 id="3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</h2>
+
+<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>hcoll</strong> コンポーネントを使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> を、使用しない場合は <strong>0</strong> を指定します。</p>
+
+<p><strong>hcoll</strong> コンポーネント使用の有無は、MPI集合通信の通信性能に大きく影響を及ぼします。</p>
+
+<h2 id="3-2-hook_comm_method_display">3-2. hook_comm_method_display</h2>
+
+<p>使用したMPI通信プロトコルを表示するかどうかを制御し、MPI_INITが呼ばれた時点で表示する場合はその値に <strong>1</strong> を、MPI_FINALIZEが呼ばれた時点で表示する場合は <strong>2</strong> を、表示しない場合は <strong>0</strong> を指定します。</p>
+
+<p>以下は、MPI通信プロトコルの表示を指示した場合の実行例です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 72 <span class="nt">--host</span> inst-dq8gn-x9:36,inst-ulu8a-x9:36 <span class="nt">--mca</span> hook_comm_method_display 1 a.out
+Host 0 <span class="o">[</span>inst-dq8gn-x9] ranks 0 - 35
+Host 1 <span class="o">[</span>inst-ulu8a-x9] ranks 36 - 71
+
+ host | 0        1
+<span class="o">======</span>|<span class="o">===================</span>
+    0 : ucx[  2] ucx[  3]
+    1 : ucx[  3] ucx[  2]
+
+UCX Transport/Device
+ucx[  2]:
+    posix            memory          
+    xpmem            memory          
+    rc_mlx5          mlx5_2:1        
+ucx[  3]:
+    rc_mlx5          mlx5_2:1        
+Connection summary: <span class="o">(</span>pml<span class="o">)</span>
+  on-host:  all connections are <span class="nv">ucx</span><span class="o">=</span>posix<span class="p">;</span>memory,xpmem<span class="p">;</span>memory,rc_mlx5<span class="p">;</span>mlx5_2:1
+  off-host: all connections are <span class="nv">ucx</span><span class="o">=</span>rc_mlx5<span class="p">;</span>mlx5_2:1
+:
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-3-ucx_tls">3-3. UCX_TLS</h2>
+
+<p><strong>UCX</strong> が使用する通信トランスポートを指定します。<br />
+複数のトランスポートを指定する場合は、カンマ区切りで列挙し、指定する順序は意味を持ちません。</p>
+
+<p>使用する通信トランスポートは、MPI通信性能に大きく影響を及ぼします。</p>
+
+<p>下表は、使用可能な代表的な通信トランスポートです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">名称</th>
+      <th style="text-align: center">概要</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">all</td>
+      <td style="text-align: center">利用可能な全ての通信トランスポートから <strong>UCX</strong> が選択</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">posix</td>
+      <td style="text-align: center">POSIX共有メモリ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">sysv</td>
+      <td style="text-align: center">SYSTEM V共有メモリ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">cma</td>
+      <td style="text-align: center"><strong><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1">Cross Memory Attach (CMA)</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">knem</td>
+      <td style="text-align: center"><strong><a href="https://knem.gitlabpages.inria.fr/">KNEM</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">xpmem</td>
+      <td style="text-align: center"><strong><a href="https://github.com/hpc/xpmem">XPMEM</a></strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">rc</td>
+      <td style="text-align: center">InfiniBandトランスポートのReliable Connected</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">dc</td>
+      <td style="text-align: center">InfiniBandトランスポートのDynamically Connected</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ud</td>
+      <td style="text-align: center">InfiniBandトランスポートのUnreliable Datagram</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">tcp</td>
+      <td style="text-align: center">TCP/IPのソケット通信</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以下は、 <strong>UCX_TLS</strong> に <strong>posix</strong> 、 <strong>xpmem</strong> 、及び <strong>rc</strong> を指定しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>posix,xpmem,rc a.out
+</code></pre></div></div>
+
+<h2 id="3-4-ucx_net_devices">3-4. UCX_NET_DEVICES</h2>
+
+<p><strong>UCX</strong> が通信に使用するネットワークデバイスを指定します。<br />
+<strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用する場合は、 <strong>クラスタ・ネットワーク</strong> 接続に使用するNICのRDMAリンク名（ <strong>BM.Optimized3.36</strong> の場合は <strong>mlx5_2:1</strong> ）を指定します。</p>
+
+<p>使用するnetworkデバイスは、MPI通信性能に大きく影響を及ぼします。</p>
+
+<p>NICのRDMAリンク名は、以下のコマンドで調査することが可能です。<br />
+以下は、 <strong>BM.Optimized3.36</strong> での実行例で、表示される値の <strong>/</strong> を <strong>:</strong> に置き換えて <strong>UCX_NET_DEVICES</strong> 値とします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rdma <span class="nb">link </span>show
+<span class="nb">link </span>mlx5_0/1 state ACTIVE physical_state LINK_UP netdev eth0 
+<span class="nb">link </span>mlx5_1/1 state ACTIVE physical_state LINK_UP netdev eth1 
+<span class="nb">link </span>mlx5_2/1 state ACTIVE physical_state LINK_UP netdev rdma0 
+<span class="nb">link </span>mlx5_3/1 state DOWN physical_state DISABLED netdev rdma1 
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</h2>
+
+<p><strong>UCX</strong> が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。<br />
+メッセージ長の指定は、そのユニットにB（ <strong>b</strong> ）、KB（ <strong>kb</strong> ）、MB（ <strong>mb</strong> ）、及びGB（ <strong>gb</strong> ）を使用します。また設定値 <strong>auto</strong> は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
+
+<p>プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼします。</p>
+
+<p>以下は、 <strong>UCX_RNDV_THRESH</strong> に512KBを指定しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>512kb a.out
+</code></pre></div></div>
+
+<h2 id="3-6-ucx_proto_info">3-6. UCX_PROTO_INFO</h2>
+
+<p>メッセージ長毎に <strong>UCX</strong> が使用したプロトコルを表示する機能を制御し、表示する場合は <strong>y</strong> を、表示しない場合 <strong>n</strong> を指定します。</p>
+
+<p>以下は、 <strong>UCX_TLS</strong> を <strong>sysv</strong> と <strong>xpmem</strong> に指定し、 <strong>UCX_RNDV_THRESH</strong> を512KBに指定して、メッセージ長毎に使用したプロトコルを表示するよう指示した場合の実行例です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_PROTO_INFO</span><span class="o">=</span>y <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>sysv,xpmem <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>512kb a.out | <span class="nb">cut</span> <span class="nt">-d</span> <span class="s1">' '</span> <span class="nt">-f</span> 3-
+:
+  +--------------------------------+--------------------------------------------------------------+
+  | ucp_context_1 intra-node cfg#1 | tagged message by ucp_tag_send<span class="k">*</span><span class="o">(</span>multi<span class="o">)</span> from host memory      |
+  +--------------------------------+-----------------------------------------------+--------------+
+  |                          0..92 | eager short                                   | sysv/memory  |
+  |                       93..8248 | eager copy-in copy-out                        | sysv/memory  |
+  |                   8249..524287 | multi-frag eager copy-in copy-out             | sysv/memory  |
+  |                      512K..inf | <span class="o">(</span>?<span class="o">)</span> rendezvous copy from mapped remote memory | xpmem/memory |
+  +--------------------------------+-----------------------------------------------+--------------+
+:
+<span class="err">$</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T18:35:53+09:00">December 17, 2024</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OpenMPI%E3%81%AEMPI%E9%80%9A%E4%BF%A1%E6%80%A7%E8%83%BD%E3%81%AB%E5%BD%B1%E9%9F%BF%E3%81%99%E3%82%8B%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%A8%E3%81%9D%E3%81%AE%E9%96%A2%E9%80%A3Tips%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenmpi-perftips%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenmpi-perftips%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftips/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/openfoam-tuning/" class="pagination--pager" title="CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/benchmark/papi-profiling/" class="pagination--pager" title="PAPIでHPCアプリケーションをプロファイリング
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2024 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

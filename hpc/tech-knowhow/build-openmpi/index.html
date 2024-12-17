@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-17T17:36:28+09:00">
+  <meta property="article:published_time" content="2024-12-17T18:35:53+09:00">
 
 
 
@@ -313,6 +313,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -384,7 +386,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2024-12-17T17:36:28+09:00">
+    <meta itemprop="datePublished" content="2024-12-17T18:35:53+09:00">
     
 
     <div class="page__inner-wrap">
@@ -551,8 +553,7 @@
 
 <p>以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">PATH:/opt/openmpi-5.0.6/bin"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MANPATH=</span><span class="se">\$</span><span class="s2">MANPATH:/opt/openmpi-5.0.6/man"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/opt/openmpi-5.0.6/bin:/opt/ucx/bin:</span><span class="se">\$</span><span class="s2">PATH"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
 <span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
 </code></pre></div></div>
 
@@ -681,7 +682,7 @@ npb@nas.nasa.gov
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T17:36:28+09:00">December 17, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T18:35:53+09:00">December 17, 2024</time></p>
 
       </footer>
 

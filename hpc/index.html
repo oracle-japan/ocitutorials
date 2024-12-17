@@ -753,6 +753,14 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p><strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。<br />
   本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンス <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタで <strong>OpenFOAM</strong> を使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。</p>
   </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong></p>
+
+    <p><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。<br />
+  <strong>OpenMPI</strong> は、 <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture (MCA)</a></strong> を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、この <strong>MCA</strong> が用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。<br />
+  また <strong>OpenMPI</strong> は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークに <strong><a href="https://openucx.org/">UCX</a></strong> を採用し、MPI通信性能を最適化するためには <strong>UCX</strong> のパラメータを適切に設定することが求められます。<br />
+  本テクニカルTipsは、 <strong>OpenMPI</strong> のMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。</p>
+  </li>
 </ul>
 
 <h2 id="2-3-プロファイリング関連tips集">2-3. プロファイリング関連Tips集</h2>
@@ -964,7 +972,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     <p><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。<br />
   <strong>OpenMPI</strong> で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> の場合、 <strong><a href="https://pmix.github.io/">PMIx</a></strong> を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。<br />
-  また <strong><a href="https://openucx.org/">UCX</a></strong> は、 <strong>OpenMPI</strong> が <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。<br />
+  また <strong><a href="https://openucx.org/">UCX</a></strong> は、 <strong>OpenMPI</strong> が <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を介して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。<br />
   本テクニカルTipsは、 <strong>PMIx</strong> を使用する <strong>Slurm</strong> 環境で通信フレームワークに <strong>UCX</strong> の使用を前提とする <strong>OpenMPI</strong> 構築方法を解説します。</p>
   </li>
   <li>

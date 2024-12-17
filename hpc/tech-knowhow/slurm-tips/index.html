@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-17T17:36:28+09:00">
+  <meta property="article:published_time" content="2024-12-17T18:35:53+09:00">
 
 
 
@@ -313,6 +313,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -384,7 +386,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
     <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
-    <meta itemprop="datePublished" content="2024-12-17T17:36:28+09:00">
+    <meta itemprop="datePublished" content="2024-12-17T18:35:53+09:00">
     
 
     <div class="page__inner-wrap">
@@ -442,7 +444,7 @@
 
 <p>[Epilog]</p>
 
-<p>以下のスクリプトを使用し、完了したジョブがNVMe SSDローカルディスク領域のファイルシステム（マウントポイント  <strong>/mnt/localdisk</strong> ）に残したファイルをジョブ完了直後に全て削除します。</p>
+<p>以下のスクリプトを使用し、ジョブがNVMe SSDローカルディスク領域のファイルシステム（マウントポイント  <strong>/mnt/localdisk</strong> ）に残したファイルをジョブ終了直後に全て削除します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 /bin/rm <span class="nt">-rf</span> /mnt/localdisk/<span class="k">*</span>
@@ -476,7 +478,7 @@ total 4
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトを実行することが出来ます。</p>
+<p>なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトが実行されます。</p>
 
 <p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</p>
 
@@ -486,6 +488,15 @@ total 4
 Prolog[0]               <span class="o">=</span> /opt/slurm/etc/scripts/prolog.d/<span class="k">*</span>
 PrologFlags             <span class="o">=</span> Alloc
 <span class="err">$</span>
+</code></pre></div></div>
+
+<p>なお、 <strong>slurm.conf</strong> にProlog/Epilogを定義した状態でそのスクリプトを格納するディレクトリに実行すべきスクリプトが存在しない場合、ジョブがディスパッチされた時点で当該ノードのステータスが <strong>drain</strong> となり、以降ジョブを受け付ない状態になります。<br />
+そのため、実行すべきProlog/Epilogがない場合は、 <strong>slurm.conf</strong> 中の不要な定義を削除するか、以下のような実質的に何も実行しないスクリプトを配置することで、これを回避することが可能です。</p>
+
+<p>[99_nill.sh]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+:
 </code></pre></div></div>
 
 <h2 id="1-2-稼働確認">1-2. 稼働確認</h2>
@@ -677,7 +688,7 @@ nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T17:36:28+09:00">December 17, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T18:35:53+09:00">December 17, 2024</time></p>
 
       </footer>
 
