@@ -34,6 +34,10 @@ header:
 
 本章は、計算ノードをTCP接続する **仮想クラウド・ネットワーク** と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。
 
+なおこの **仮想クラウド・ネットワーク** は、既存のものを使用することが可能です。  
+ただしこの場合、計算ノードが接続するサブネットは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に使用する **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている必要があります。  
+この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
+
 ## 1-1. 仮想クラウド・ネットワーク作成
 
 本章は、計算ノードをTCP接続する **仮想クラウド・ネットワーク** を作成します。  
@@ -137,6 +141,7 @@ timezone: Asia/Tokyo
 
 runcmd:
 #
+# Mount NVMe local storage
   - vgcreate nvme /dev/nvme0n1
   - lvcreate -l 100%FREE nvme
   - mkfs.xfs -L localscratch /dev/nvme/lvol0
@@ -359,7 +364,7 @@ $
 
 以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェース（ **rdma0** ）に **10.224.0.0/12** のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）
 
-※4）このデフォルトのネットワークアドレスを変更する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-3. ネットワークアドレスのデフォルトからの変更](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-3-ネットワークアドレスのデフォルトからの変更)** を参照してください。
+※4）このデフォルトのネットワークアドレスを変更する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-4. ネットワークアドレスのデフォルトからの変更](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-4-ネットワークアドレスのデフォルトからの変更)** を参照してください。
 
 ```sh
 $ pdsh -g all 'ifconfig rdma0' | dshbak -c

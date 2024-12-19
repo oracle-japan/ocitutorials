@@ -44,6 +44,7 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 + [「304 : OCI Database Migration Serviceを使用したデータベース移行の前準備」](/ocitutorials/adb/adb304-database-migration-prep)を参考に、データベース移行の前準備が完了していること。
 + オンライン移行を実行する場合、Oracle GoldenGateの必須パッチ、推奨パッチが適用されている必要があります。Oracle Database 11g(11.2.0.4)用の必須パッチ、推奨パッチに関するドキュメント[「Oracle GoldenGate -- Oracle RDBMS Server Recommended Patches (Doc ID 1557031.1)」](https://mosemp.us.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=171610622943228&id=1557031.1&_afrWindowMode=0&_adf.ctrl-state=ysobl98cz_4)および、Oracle Datbase 12c以降のバージョンの必須パッチ、推奨パッチに関するドキュメント[「Latest GoldenGate/Database (OGG/RDBMS) Patch recommendations (Doc ID 2193391.1)」](https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=168484936828414&parent=DOCUMENT&sourceId=1557031.1&id=2193391.1&_afrWindowMode=0&_adf.ctrl-state=4xfa5h2e8_4)を参考に適宜パッチの確認と適用を実施してください。
 + ターゲット・データベースのタイムゾーン・バージョンがソース・データベースのタイムゾーン・バージョンよりも最新になっていることを確認する(SELECT * FROM V$TIMEZONE_FILE;)。ターゲット・データベースのタイムゾーン・バージョンの方が古い場合はSRをあげる必要があります。
++ レプリケーション用にOCI GoldenGateサービスを使用する(デフォルト)場合は、本記事の1.と2.の手順をスキップしてください。OCI GoldenGateサービスを使用する方法を推奨します。DMSとOCI GoldenGateサービスの統合に関しては、[OCI Database MigrationサービスがOCI GoldenGate統合を発表](https://blogs.oracle.com/oracle4engineer/post/ja-oci-db-migration-announces-oci-gg-integration)をご参照ください。
 
 **所要時間 :** 約40分
 
@@ -220,6 +221,17 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 
 # 3. ソース・データベースの設定
 
+データベースの事前設定は、データベース準備ユーティリティによって生成されたスクリプトを実行する方法(推奨)と、手動でSQLコマンドを実行する方法があります。前者の場合は3-a.、後者の場合は3-b.に従ってそれぞれ実施してください。
+
+## 3-a. データベース準備ユーティリティを使用した設定方法
+
++ [OCI Database Migration Service - Download & Use Database Preparation Utility to Prepare Your Databases for Migration (Doc ID 2953866.1)](https://support.oracle.com/epmos/faces/DocContentDisplay?_afrLoop=167657769976969&id=2953866.1&_afrWindowMode=0&_adf.ctrl-state=r7foparhc_4)を参考にデータベースの事前設定を実施してください。
+
+設定完了後、[4. ターゲット・データベースの設定](#anchor4)に進んでください。
+
+
+
+## 3-b. 手動で実行する設定方法
 BaseDBにあるソース・データベースに対して以下の設定を行います。2.~5.の設定は全てCDB上で行います。
 
 <a id="anchor22"></a>
@@ -456,49 +468,55 @@ BaseDBにあるソース・データベースに対して以下の設定を行�
 
 3. **詳細の追加** の各項目は以下のように設定します。その他の入力項目はデフォルトのままにします。
     + **名前** - 任意 ※名前にスペースを含めると移行の作成に失敗します。
-    + **ボールト** - **登録済みデータベース** に登録されているボールトを選択します。
-    + **暗号化キー** - **登録済みデータベース** に登録されている暗号化キーを選択します。
   
-    設定後、**次** をクリックします。
+    設定後、**Next** をクリックします。
 
-    ![](2022-03-10-13-15-20.png)
+    ![alt text](image-1.png)
 
 4. **データベースの選択** の各項目は以下のように設定します。
-    + **ソース・データベース** - 登録済みのソース・データベース（PDB）を選択します。
-    + **データベースはプラガブル・データベース(PDB)です** にチェックを付けます。
-    + **登録済みコンテナ・データベース** - 登録済みのソース・データベース（CDB）を選択します。
-    + **ターゲット・データベース** - 登録済みのターゲット・データベースを選択します。
+    + **ソース・データベース**
+        + **データベース接続** - 登録済みのソース・データベース（PDB）を選択します。
+        + **データベースはプラガブル・データベース(PDB)です** にチェックを付けます。
+        + **コンテナ・データベース接続** - 登録済みのソース・データベース（CDB）を選択します。
+    + **ターゲット・データベース**    
+        + **データベース接続** - 登録済みのターゲット・データベースを選択します。
   
-    設定後、**次** をクリックします。
+    設定後、**Next** をクリックします。
 
-    ![](2022-03-10-13-18-31.png)
+    ![alt text](image-2.png)
 
 5. **移行オプション** の各項目は以下のように設定します。
-    + **初期ロード** - オブジェクト・ストレージ経由のデータポンプを選択します。
+    + **初期ロード用の転送メディア** - オブジェクト・ストレージ経由のデータポンプを選択します。
+    + **ソース・データベース** - 
+        + **エクスポート・ディレクトリ・オブジェクト名** - 任意
+        + **エクスポート・ディレクトリ・オブジェクト・パス** - 任意
     + **オブジェクト・ストレージ・バケット** - 使用したいオブジェクト・ストレージ・バケットを選択します。
-    + **ディレクトリ・オブジェクトのエクスポート** - 
-        + 名前 - 任意
-        + パス - 任意
     + **オンライン・レプリケーションの使用** にチェックを付けます。
+
+    OCI GoldenGateサービスを使用する場合は、**作成**をクリックし、8.に進みます。Marketplace GoldenGateインスタンスを使用する場合は、6.に進みます。
+
+    ![alt text](image.png)
+
+6. **Show advanced options**をクリックし、**レプリケーション**タブをクリックします。
+
+    ![alt text](image-3.png)
+    ![alt text](image-4.png)
+
+7. スクロールダウンし、**Marketplace GoldenGateインスタンスの使用**にチェックを付け、各項目を以下のように設定します。
+    + **GoldenGateインスタンスOCID** - [1. Oracle GoldenGate Microservicesのインストール](#anchor4)で作成したGoldenGateインスタンスのOCID
     + **GoldenGateハブURL** - https://<Oracle GoldenGate MicroservicesインスタンスのパブリックIPアドレス>
     + **GoldenGate管理者ユーザー名** - [2. Oracle Goldengate Microservicesインスタンスの設定](#anchor2)で設定したユーザー名（デフォルトはoggadmin）
     + **GoldenGate管理者パスワード** - [2. Oracle Goldengate Microservicesインスタンスの設定](#anchor2)で設定したパスワード（デフォルトは `/home/opc/ogg-credentials.json`を参照）
     + **GoldenGateデプロイメント名** - [1. Oracle GoldenGate Microservicesのインストールの5.](#anchor21)で設定したソース・データベースのデプロイメント名
-    + **データベース・ユーザー名** - [3. ソース・データベースの設定の1.](#anchor22)で作成したPDBのGoldenGate管理者ユーザー名
-    + **データベース・パスワード** - [3. ソース・データベースの設定の1.](#anchor22)で作成したPDBのGoldenGate管理者パスワード
-    + **コンテナ・データベース・ユーザー名** - [3. ソース・データベースの設定の1.](#anchor22)で作成したCDBのGoldenGate管理者ユーザー名
-    + **コンテナ・データベース・パスワード** - [3. ソース・データベースの設定の1.](#anchor22)で作成したCDBのGoldenGate管理者パスワード
-    + **GoldenGateデプロイメント名** - [1. Oracle GoldenGate Microservicesのインストールの5.](#anchor21)で設定したターゲット・データベースのデプロイメント名
-    + **データベース・ユーザー名** - ggadmin
-    + **データベース・パスワード** - [4. ターゲット・データベースの設定の5.](#anchor23)で設定したADBのGoldenGate管理者パスワード
+    + **ボールト** - **登録済みデータベース** に登録されているボールトを選択します。
+    + **暗号化キー** - **登録済みデータベース** に登録されている暗号化キーを選択します。
 
     設定後、**作成** をクリックします。
 
-    ![](2022-03-10-13-24-44.png)
+    ![alt text](image-5.png)
+    
 
-    ![](2022-03-10-13-26-47.png)
-
-6. 作成した移行の状態が **アクティブ** になるまで待ちます。（3分ほどかかります。）
+8. 作成した移行の状態が **アクティブ** になるまで待ちます。（3分ほどかかります。）
 
     ![](2022-03-10-13-27-56.png)
 
@@ -591,6 +609,10 @@ BaseDBにあるソース・データベースに対して以下の設定を行�
 6. **リソース** の一覧にある **フェーズ** をクリックします。ここで実行中の移行のフェーズが確認できます。
 
     ![](2022-03-10-13-49-21.png)
+
+    OCI GoldenGateサービスを使用した場合は、最初のフェーズで**レプリケーション・インフラストラクチャの初期化**が実行され、OCI GoldenGateのプロビジョニングが内部的に実行されます。
+
+    ![alt text](image-6.png)
 
 7. 移行が失敗した場合、**フェーズ** の **ステータス** に**失敗** と表示されます。その場合、 **ログのダウンロード** ボタンをクリックしてログを参照することで、失敗の詳細を確認することができます。もう一度実行したい場合は、 **中断** ボタンをクリックして移行を再度やり直してください。
 

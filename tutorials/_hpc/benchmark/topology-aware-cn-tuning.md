@@ -96,7 +96,7 @@ $ diff slurm.conf_org slurm.conf
 $ 
 ```
 
-次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先の **slurm.conf** の修正を反映します。ます。
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先の **slurm.conf** の修正を反映します。
 
 ```
 $ sudo su - slurm -c "scontrol reconfigure"

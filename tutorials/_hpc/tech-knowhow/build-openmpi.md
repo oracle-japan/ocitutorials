@@ -1,6 +1,6 @@
 ---
-title: "Slurm環境での利用を前提とするOpenMPI構築方法"
-excerpt: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。本テクニカルTipsは、PMIxを使用するSlurm環境での利用を前提とするOpenMPI構築方法を解説します。"
+title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法"
+excerpt: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。"
 order: "351"
 layout: single
 header:
@@ -30,7 +30,25 @@ header:
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のパスフレーズ無しSSHアクセス設定が不要
 
-以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **1.** の動作モードで実行することを想定した **OpenMPI** のインストール手順を解説し、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
+また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、ノード内・ノード間を問わず以下の多様なトランスポートレベルの通信手段を **OpenMPI** から利用することが出来ます。
+
+[ノード内]
+- POSIX共有メモリ
+- SYSTEM V共有メモリ
+- **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)**
+- **[KNEM](https://knem.gitlabpages.inria.fr/)**
+- **[XPMEM](https://github.com/hpc/xpmem)**
+
+[ノード間]
+- InfiniBandトランスポート
+    - Unreliable Datagram (UD)
+    - Reliable Connected (RC)
+    - Dynamically Connected (DC)
+- TCP
+
+特に **UCX** を使用するノード間通信は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。
+
+以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **1.** の動作モードで実行すること、通信フレームワークに **UCX** を使用することを想定し、このための **OpenMPI** のインストール手順を解説、インストールした **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
 
 -  **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)**
 - **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)**
@@ -38,11 +56,12 @@ header:
 本テクニカルTipsは、以下の環境を前提とします。
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
-- **OpenMPI** ： 5.0.3
-- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 4.2.9
+- OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- **OpenMPI** ： 5.0.6
+- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.4
+- **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.17.0
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
+※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
 またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
@@ -54,26 +73,31 @@ header:
 
 ## 1-0. 概要
 
-本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンスに **OpenMPI** 、 **OpenPMIx** 、及びこれらの前提ソフトウェア・rpmパッケージをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
+本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンスに **OpenMPI** 、 **OpenPMIx** 、 **OpenUCX** 及びこれらの前提ソフトウェア・rpmパッケージをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
 
 以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。
 
 ## 1-1. 前提ソフトウェア・rpmパッケージインストール
 
-以下コマンドをopcユーザで実行し、前提rpmパッケージのインストールと前提ソフトウェアである **libevent** ・ **hwloc** の **/opt** ディレクトリへのインストールを実施します。  
+以下コマンドをopcユーザで実行し、前提rpmパッケージのインストールと前提ソフトウェアである **libevent** ・ **hwloc** ・ **XPMEM** の **/opt** ディレクトリへのインストールを実施します。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
+$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git
 $ cd ~; wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable; ./configure --prefix=/opt/libevent
 $ make -j 36 && sudo make install
-$ cd ~; wget https://download.open-mpi.org/release/hwloc/v2.10/hwloc-2.10.0.tar.gz
-$ tar -xvf ./hwloc-2.10.0.tar.gz
-$ cd hwloc-2.10.0; ./configure --prefix=/opt/hwloc
+$ cd ~; wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
+$ tar -xvf ./hwloc-2.11.2.tar.gz
+$ cd hwloc-2.11.2; ./configure --prefix=/opt/hwloc
+$ make -j 36 && sudo make install
+$ cd ~; git clone https://github.com/hpc/xpmem.git
+$ cd xpmem; ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
+
+ここで **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用するため、ここでは改めてインストールしません。
 
 ## 1-2. OpenPMIxインストール
 
@@ -81,42 +105,59 @@ $ make -j 36 && sudo make install
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd ~; wget https://github.com/openpmix/openpmix/releases/download/v4.2.9/pmix-4.2.9.tar.gz
-$ tar -xvf ./pmix-4.2.9.tar.gz
-$ cd pmix-4.2.9; ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
+$ cd ~; wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
+$ tar -xvf ./pmix-5.0.4.tar.gz
+$ cd pmix-5.0.4; ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
 $ make -j 36 && sudo make install
 ```
 
-## 1-3. OpenMPIインストール
+## 1-3. OpenUCXインストール
+
+以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd ~; wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
+$ tar -xvf ./ucx-1.17.0.tar.gz
+$ cd ucx-1.17.0; ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/knem-1.1.4.90mlnx3 --with-xpmem=/opt/xpmem
+$ make -j 36 && sudo make install
+```
+
+ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。
+
+## 1-4. OpenMPIインストール
 
 以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt** ディレクトリにインストールします。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd ~; wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.3.tar.gz
-$ tar -xvf ./openmpi-5.0.3.tar.gz
-$ cd openmpi-5.0.3; ./configure --prefix=/opt/openmpi-5.0.3 --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-slurm
+$ cd ~; wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+$ tar -xvf ./openmpi-5.0.6.tar.gz
+$ cd openmpi-5.0.6; ./configure --prefix=/opt/openmpi-5.0.6 --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-slurm
 $ make -j 36 all && sudo make install
 ```
 
-## 1-4. セットアップ
+ここでは、先にインストールした **OpenUCX** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+
+## 1-5. セットアップ
 
 本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。  
-ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。
+ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
+このユーザのホームディレクトリが共有されていない場合は、 **OpenMPI** を実行する全てのノードでこれを実行します。
 
 以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
 
 ```sh
-$ echo "export PATH=\$PATH:/opt/openmpi-5.0.3/bin" | tee -a ~/.bashrc
-$ echo "export MANPATH=\$MANPATH:/opt/openmpi-5.0.3/man" | tee -a ~/.bashrc
+$ echo "export PATH=/opt/openmpi-5.0.6/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 
 次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。（※2）
 
-※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **Slurm** 環境では必要ありません。
+※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために作成しますが、 **Slurm** 環境では必要ありません。
 
-次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るよう設定します。（※3）
+次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るように設定します。（※3）  
+このユーザのホームディレクトリが共有されていない場合は、1ノードで以下の手順を実行し、作成した **id_rsa** 、 **authorized_keys** 、 及び **known_hosts** の3個のファイルをパーミッションを維持して **OpenMPI** を実行する全てのノードの同じディレクトリに配置します。
 
 ```sh
 $ cd ~; mkdir .ssh; chmod 700 .ssh
@@ -143,9 +184,9 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 以下コマンドを全てのノードのopcユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
-$ wget https://www.nas.nasa.gov/assets/npb/NPB3.4.2-MZ.tar.gz
-$ tar -xvf ./NPB3.4.2-MZ.tar.gz
-$ cd NPB3.4.2-MZ/NPB3.4-MZ-MPI
+$ cd ~; wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+$ tar -xvf ./NPB3.4.3-MZ.tar.gz
+$ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def
 $ make bt-mz CLASS=C
 ```
@@ -207,8 +248,8 @@ Mop/s total     =                310414.25
 Mop/s/thread    =                  4311.31
 Operation type  =           floating point
 Verification    =               SUCCESSFUL
-Version         =                    3.4.2
-Compile date    =              22 Apr 2024
+Version         =                    3.4.3
+Compile date    =              10 Dec 2024
 
 Compile options:
     FC           = mpif90

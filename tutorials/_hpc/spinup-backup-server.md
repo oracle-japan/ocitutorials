@@ -1,11 +1,11 @@
 ---
 title: "ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する"
-excerpt: "ベア・メタル・インスタンスで構築するNFSのファイル共有ストレージを対象とする、バックアップサーバを構築してみましょう。このチュートリアルを終了すると、NFSのファイル共有ストレージに格納するファイルを安価なオブジェクト・ストレージにバックアップするバックアップサーバを構築することが出来るようになります。"
+excerpt: "ベア・メタル・インスタンスで構築するNFSのファイル共有ストレージを対象とする、バックアップサーバを構築してみましょう。このチュートリアルを終了すると、NFSのファイル共有ストレージに格納するファイルを容量単価の安価なオブジェクト・ストレージやブロック・ボリュームのより低いコストにバックアップする、バックアップサーバを構築することが出来るようになります。"
 order: "1340"
 layout: single
 header:
-  teaser: "/hpc/spinup-backup-server/architecture_diagram.png"
-  overlay_image: "/hpc/spinup-backup-server/architecture_diagram.png"
+  teaser: "/hpc/spinup-backup-server/architecture_diagram_os.png"
+  overlay_image: "/hpc/spinup-backup-server/architecture_diagram_os.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -17,64 +17,76 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 ※1）ベア・メタル・インスタンスNFSサーバの詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
-このベア・メタル・インスタンスNFSサーバは、NFSのマネージドサービスである **ファイル・ストレージ** の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を構築する必要があります。（※2）
+このベア・メタル・インスタンスNFSサーバは、NFSのマネージドサービスである **ファイル・ストレージ** の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を用意する必要があります。（※2）
 
 ※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと **ファイル・ストレージ** の比較は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-2 可用性による比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-2-可用性による比較)** を参照してください。
 
 以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。
 
-ここでバックアップを格納するストレージは、通常バックアップ対象のファイルを格納するストレージ（ **ブロック・ボリューム** やNVMe SSDドライブ）より容量単価の安価なものを選択する必要があるため、 **オブジェクト・ストレージ** を使用します。  
-この際のバックアップツールは、 **オブジェクト・ストレージ** とPOSIXファイルシステム間のデータ転送ツールとして幅広く利用されているオープンソースの **[Rclone](https://rclone.org/)** を採用し、ベア・メタル・インスタンスNFSサーバのNFSクライアントとして構成したバックアップサーバ上でこの **Rclone** のファイル同期機能を使用し、NFSマウントしたファイルシステム領域を **オブジェクト・ストレージ** に差分バックアップします。  
-**Rclone** が **オブジェクト・ストレージ** にアクセスする際は、バックアップサーバを **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証に組み込むことでIAM認証・認可を付与します。  
+ここで構築するバックアップ環境は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[0. 概要](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#0-概要)** に記載のバックアップ環境 **No. 3** と **No. 4** から選択して構築することとし、採用したいバックアップ格納ストレージが **オブジェクト・ストレージ** （**No.3**）と **ブロック・ボリューム** の **より低いコスト** （**No.4**）（**ブロック・ボリューム** の **パフォーマンス・レベル** が最低のサービスで、 **ブロック・ボリューム** の中では最も容量単価が安価です。関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Block/Concepts/blockvolumeperformance.htm)** を参照してください。以降" **BVLC** "と呼称します。）のどちらを採用するかにより決定します。
+
+バックアップサーバは、ファイル共有ストレージ領域をNFSマウントし、バックアップ環境 **No.3** の場合は **[Rclone](https://rclone.org/)** を使用して **オブジェクト・ストレージ** に、バックアップ環境 **No.4** の場合は **rsync** を使用して **BVLC** 上に作成したPOSIXファイルシステムに、それぞれ差分バックアップします。  
+バックアップ環境 **No.3** で、 **Rclone** の **オブジェクト・ストレージ** へのアクセスは、バックアップサーバを **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証に組み込むことでIAM認証・認可を付与します。  
 またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを **マルチパート・アップロード** する際に **Rclone** がマルチスレッドを活用してデータ転送を行う事を考慮し、コア数の十分な **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard)** の32コア・384GBメモリを使用します。  
 また、本チュートリアルで使用する各ソフトウェアのバージョンを以下に示します。
 
 - バックアップサーバOS： **Oracle Linux** 9.4（Oracle-Linux-9.4-2024.08.29-0 UEK）
 - **Rclone** ： v1.68.1
+- **rsync** ： 3.2.3（OSに予め含まれているものを使用）
 
-![システム構成図](architecture_diagram.png)
+![システム構成図OS](architecture_diagram_os.png)
+<center><u>バックアップ環境<strong> No.3</strong></u></center><br>
 
-**Rclone** は、このツールが持つ以下の機能を活用することで、本チュートリアルのようなPOSIXファイルシステムを **オブジェクト・ストレージ** にバックアップする際、バックアップの信頼性と性能を向上することが可能です。
+![システム構成図BV](architecture_diagram_bv.png)
+<center><u>バックアップ環境<strong> No.4</strong></u></center><br>
+
+バックアップ環境 **No.3** でバックアップツールに使用する **Rclone** は、このツールが持つ以下の機能を活用することで、POSIXファイルシステムを **オブジェクト・ストレージ** にバックアップする際、バックアップの信頼性と性能を向上することが可能です。
 
 - 差分バックアップ
 - マルチパート・アップロード
 - チェックサムによるファイル転送結果の確認
 
+バックアップ環境 **No.4** でバックアップ格納ストレージに使用する **ブロック・ボリューム** は、 **パフォーマンス・レベル** に容量単価が最も安価な **より低いコスト** を使用し、1 TB以上のボリュームを基本単位として15ボリュームをLinuxの論理ボリューム機能で各ボリュームにストライピングを掛けつつ1ファイルシステムに構成します。  
+
+![論理ボリュームディスク構成図](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/lv_configuration.png)
+
+総容量が15 TBより大きなバックアップ格納ストレージが必要な場合は、単一 **ブロック・ボリューム** サイズを1 TBより大きくすることで、性能を維持したままその総容量を増やすことが可能です。  
+例えば100 TBの総容量が必要な場合は、ボリューム・サイズを7 TBとすることで、7 TB x 15 = 105 TBの総容量を実現することが出来ます。
+
 また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能をスループットとメタデータ性能の観点で検証します。  
-この結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オブジェクト・ストレージを使用するバックアップツールの選択方法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[3. バックアップ・リストア性能](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#3-バックアップ・リストア性能)** を参照してください。
+この結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[3. バックアップ・リストア性能](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#3-バックアップリストア性能)** を参照してください。
 
 **所要時間 :** 約2時間
 
-**前提条件 :** バックアップサーバ環境を収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
+**前提条件 :** バックアップ環境を収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :**
-- 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
-- 本チュートリアルに従って取得するバックアップは、Rcloneを **オブジェクト・ストレージ** をバックエンドとして使用する際の制約から、以下の制限を受けます。
-
-    - シンボリックリンクをリンク先ファイルの実体としてバックアップします。  
-    （**Rclone** の **--copy-links** オプションによりこれを指示しています。）
-    - ハードリンクをリンク数分のファイルの実体としてバックアップします。
-    - 空のディレクトリをバックアップすることが出来ません。
-    - 特殊ファイルをバックアップすることが出来ません。
-    - リストア時にファイルのオーナーユーザ・オーナーグループがroot:root（リストアコマンド実行ユーザとそのプライマリグループ）になります。
-    - リストア時に全てのファイルとディレクトリのパーミッションがそれぞれ644と755になります。
-    - その他のPOSIXファイルシステムとオブジェクト・ストレージの機能差からくる制限を受けます。
+- 本チュートリアルに従って取得するバックアップ環境 **No.3** のバックアップは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[2. バックアップ・リストア時の制約事項](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#2-バックアップリストア時の制約事項)** に記載の制限を受けます。
 
 ***
-# 1. 事前準備
+# 1. バックアップ環境構築
 
 ## 1-0. 概要
 
-本章は、バックアップサーバ環境を構築する際に事前に実施しておく必要のある以下の手順を実施します。
-
--  **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定
-- **オブジェクト・ストレージ** バケット作成
+本章は、バックアップサーバを中心とするバックアップ環境の構築手順を、バックアップ環境 **No.3** とバックアップ環境 **No.4** の場合に分けて解説します。
 
 なお、バックアップ対象領域をNFSでサービスするベア・メタル・インスタンスNFSサーバは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** や **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の手順に従い予め構築されているものとします。
 
-## 1-1. インスタンス・プリンシパル認証関連設定
+## 1-1. バックアップ環境No.3構築手順
 
-**[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証の設定は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い実施します。  
+### 1-1-0. 概要
+
+バックアップ環境 **No.3** は、バックアップ格納ストレージに **オブジェクト・ストレージ** を使用し、 **Rclone** でこの領域にアクセスするため、以下のステップを経て構築を行います。
+
+- **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定
+- **バケット** 作成
+- バックアップサーバ用インスタンス作成
+- NFSクライアント設定
+- **Rclone** インストール・セットアップ
+
+### 1-1-1. インスタンス・プリンシパル認証関連設定
+
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い、**[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定を実施します。  
 この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、バックアップサーバと読みかえて下さい。  
 また、このテクニカルTipsで設定しているIAMポリシーは、本チュートリアルでは以下のみが必要です。
 
@@ -82,36 +94,25 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 allow dynamic-group dynamicgroup_name to manage all-resources in compartment compartment_name
 ```
 
-## 1-2. オブジェクト・ストレージバケット作成
+### 1-1-2. バケット作成
 
-**オブジェクト・ストレージ** バケットの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その7 - オブジェクト・ストレージを使う](https://oracle-japan.github.io/ocitutorials/beginners/object-storage/)** の **[1. コンソール画面の確認とバケットの作成](https://oracle-japan.github.io/ocitutorials/beginners/object-storage/#1-%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E7%94%BB%E9%9D%A2%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%A8%E3%83%90%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90)** の手順に従い、 **Rclone** がバックアップを格納するバケットをバックアップサーバ環境を収容する **コンパートメント** にバケット名 **rclone** で作成します。
+**[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その7 - オブジェクト・ストレージを使う](https://oracle-japan.github.io/ocitutorials/beginners/object-storage/)** の **[1. コンソール画面の確認とバケットの作成](https://oracle-japan.github.io/ocitutorials/beginners/object-storage/#1-%E3%82%B3%E3%83%B3%E3%82%BD%E3%83%BC%E3%83%AB%E7%94%BB%E9%9D%A2%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%A8%E3%83%90%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E4%BD%9C%E6%88%90)** の手順に従い、 **Rclone** がバックアップを格納する **バケット** を **rclone** で作成します。
 
-***
-# 2. バックアップサーバ構築
+### 1-1-3. バックアップサーバ用インスタンス作成
 
-## 2-0. 概要
-
-本章は、バックアップサーバを以下のステップで構築します。
-
-- インスタンス作成
-- NFSクライアント設定
-- **Rclone** インストール・セットアップ
-
-## 2-1. インスタンス作成
-
-**[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い、以下のインスタンスをベア・メタル・インスタンスNFSサーバを収容する **コンパートメント** にNFSクライアント用のプライベートサブネットを指定して作成します。
+**[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い、以下のインスタンスをNFSクライアント用のプライベートサブネットを指定して作成します。
 
 - **イメージ** ： **Oracle Linux** 9.4（Oracle-Linux-9.4-2024.08.29-0 UEK）
 - **シェイプ** ： **VM.Standard.E5.Flex** （32コア・384GBメモリ）
 
-## 2-2. NFSクライアント設定
+### 1-1-4. NFSクライアント設定
 
-**[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域を **/mnt/nfs** でマウントします。
+ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
 
 - ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
 - DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
 
-## 2-3. Rcloneインストール・セットアップ
+### 1-1-5. Rcloneインストール・セットアップ
 
 以下コマンドをバックアップサーバのopcユーザで実行し、 **Rclone** をインストールします。
 
@@ -203,7 +204,7 @@ Enter a value.
 namespace> object_storage_namespace
 ```
 
-次に、以下のプロンプトが表示されたら、 **[1-2. オブジェクトストレージバケット作成](#1-2-オブジェクトストレージバケット作成)** で作成した **オブジェクト・ストレージ** バケットが存在する **コンパートメント** のOCIDを入力します。
+次に、以下のプロンプトが表示されたら、 **[1-1-2. バケット作成](#1-1-2-バケット作成)** で作成した **オブジェクト・ストレージ** バケットが存在する **コンパートメント** のOCIDを入力します。
 
 ```sh
 Option compartment.
@@ -212,7 +213,7 @@ Enter a value.
 compartment> ocid1.compartment.oc1..xxxx
 ```
 
-次に、以下のプロンプトが表示されたら、 **[1-2. オブジェクトストレージバケット作成](#1-2-オブジェクトストレージバケット作成)** で作成した **オブジェクト・ストレージ** バケットが存在する **リージョン** 識別子を入力します。
+次に、以下のプロンプトが表示されたら、 **[1-1-2. バケット作成](#1-1-2-バケット作成)** で作成した **オブジェクト・ストレージ** バケットが存在する **リージョン** 識別子を入力します。
 
 ```sh
 Option region.
@@ -277,16 +278,89 @@ e/n/d/r/c/s/q> q
 $
 ```
 
+## 1-2. バックアップ環境No.4構築手順
+
+### 1-2-0. 概要
+
+バックアップ環境 **No.4** は、バックアップ格納ストレージに **BVLC** を使用し、 **rsync** でこの領域にアクセスするため、以下のステップを経て構築を行います。
+
+- バックアップサーバ用インスタンス作成
+- **BVLC** 作成・アタッチ
+- バックアップ格納ファイルシステム作成
+- NFSクライアント設定
+
+### 1-2-1. バックアップサーバ用インスタンス作成
+
+**[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い、以下のインスタンスをNFSクライアント用のプライベートサブネットを指定して作成します。
+
+- **イメージ** ： **Oracle Linux** 9.4（Oracle-Linux-9.4-2024.08.29-0 UEK）
+- **シェイプ** ： **VM.Standard.E5.Flex** （32コア・384GBメモリ）
+
+### 1-2-2. BVLC作成・アタッチ
+
+**[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その4 - ブロック・ボリュームをインスタンスにアタッチする](https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/)** の手順に従い、以下の **ブロック・ボリューム** を15個作成し、バックアップサーバにアタッチします。
+
+- **ボリューム・サイズ(GB)** ： 1000以上（総容量に合わせて調整）
+- **デフォルトVPU/GB** ： 0
+
+### 1-2-3. バックアップ格納ファイルシステム作成
+
+以下コマンドをバックアップサーバのopcユーザで実行し、15個の **ブロック・ボリューム** が **sdb** から **sdp** でアタッチされていることを確認します。
+
+```sh
+$ lsblk | grep ^sd | grep -v ^sda
+sdb                  8:16   0 1000G  0 disk 
+sdc                  8:32   0 1000G  0 disk 
+sdd                  8:16   0 1000G  0 disk 
+sde                  8:32   0 1000G  0 disk 
+sdf                  8:16   0 1000G  0 disk 
+sdg                  8:32   0 1000G  0 disk 
+sdh                  8:16   0 1000G  0 disk 
+sdi                  8:32   0 1000G  0 disk 
+sdj                  8:16   0 1000G  0 disk 
+sdk                  8:32   0 1000G  0 disk 
+sdl                  8:16   0 1000G  0 disk 
+sdm                  8:32   0 1000G  0 disk 
+sdn                  8:16   0 1000G  0 disk 
+sdo                  8:16   0 1000G  0 disk 
+sdp                  8:32   0 1000G  0 disk 
+$
+```
+
+次に、以下コマンドをバックアップサーバのopcユーザで実行し、アタッチした15個の **ブロック・ボリューム** にファイルシステムを作成し、これを **/mnt/bv** にマウントします。
+
+```sh
+$ sudo vgcreate bv /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf /dev/sdg /dev/sdh /dev/sdi /dev/sdj /dev/sdk /dev/sdl /dev/sdm /dev/sdn /dev/sdo /dev/sdp
+$ sudo lvcreate -y -l 100%FREE --stripes 15 --stripesize "64K" -n bv bv
+$ sudo mkfs.xfs -L blockvolume /dev/bv/bv
+$ echo "LABEL=blockvolume /mnt/bv/ xfs defaults,_netdev,noatime 0 0" | sudo tee -a /etc/fstab
+$ sudo systemctl daemon-reload
+$ sudo mkdir -p /mnt/bv
+$ sudo mount /mnt/bv
+```
+
+### 1-2-4. NFSクライアント設定
+
+ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
+
+- ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
+- DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
+
 ***
-# 3. バックアップ・リストア実行
+# 2. バックアップ・リストア実行
 
-## 3-0. 概要
+## 2-0. 概要
 
-本章は、構築したバックアップサーバ上でバックアップとリストアを実行する方法を解説します。
+本章は、構築したバックアップサーバ上でバックアップとリストアを実行する方法を、バックアップ環境 **No.3** とバックアップ環境 **No.4** の場合に分けて解説します。
 
-以降では、性能検証を兼ねてバックアップとリストアを実行することを念頭に、スループットとメタデータ性能を計測するためのテストファイルを予め作成し、このファイルを対象にバックアップとリストアを実行します。
+以降では、性能検証を兼ねてバックアップとリストアを実行することを念頭に、スループットとメタデータ性能を計測するためのテストファイルを予め作成し、このファイルを対象にバックアップとリストアを実行します。  
+この際、以下のコマンドをバックアップサーバのopcユーザで実行し、ファイルシステムキャッシュをフラッシュした後にバックアップ・リストアを実行します。
 
-## 3-1. テストファイル作成
+```sh
+$ sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+```
+
+## 2-1. テストファイル作成
 
 以下コマンドをバックアップサーバのopcユーザで実行し、テストファイルを格納するディレクトリと、リストアするファイルを格納するディレクトリを作成します。
 
@@ -297,17 +371,17 @@ $ sudo chown opc:opc /mnt/nfs/*
 $ sudo mkdir /mnt/nfs/restore
 ```
 
-次に、以下コマンドをバックアップサーバのopcユーザで実行し、 **10 GiB** のスループット検証用ファイルと、 **1,000,000** 個のメタデータ性能検証用ファイルを作成します。
+次に、以下コマンドをバックアップサーバのopcユーザで実行し、 **10 GiB** のスループット検証用ファイル1個と、 **0 B** のメタデータ性能検証用ファイル **1,000,000** 個を作成します。
 
 ```sh
 $ cd /mnt/nfs/large && dd if=/dev/urandom of=./10G.bin bs=1048576 count=$((1024*10))
 $ cd /mnt/nfs/small && count=1000; for i in `seq -w 1 $count`; do echo $i; mkdir $i; cd $i;for j in `seq -w 1 $count`; do fname=$j".out"; touch $fname; done; cd ..; done
 ```
 
-## 3-2. バックアップ実行
+## 2-2. バックアップ環境No.3バックアップ実行
 
 以下コマンドをバックアップサーバのopcユーザで実行します。  
-このコマンドは、バックアップサーバの **/mnt/nfs/source_dir** ディレクトリ以下を **[1-2. オブジェクトストレージバケット作成](#1-2-オブジェクトストレージバケット作成)** で作成したバケット **rclone** の **dest_dir** に差分バックアップします。初回実行時は、フルバックアップになります。  
+このコマンドは、バックアップサーバの **/mnt/nfs/source_dir** ディレクトリ以下を **[1-1-2. バケット作成](#1-1-2-バケット作成)** で作成したバケット **rclone** の **dest_dir** に差分バックアップします。初回実行時は、フルバックアップになります。  
 ここで **source_dir** と **dest_dir** は、スループット検証の場合は何れも **large** 、メタデータ性能検証の場合は何れも **small** とします。
 
 ```sh
@@ -316,14 +390,36 @@ $ time sudo rclone --oos-upload-cutoff 16Mi --transfers 100 --oos-chunk-size 16M
 
 出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。
 
-## 3-3. リストア実行
+## 2-3. バックアップ環境No.3リストア実行
 
 以下コマンドをバックアップサーバのopcユーザで実行します。  
-このコマンドは、 **[1-2. オブジェクトストレージバケット作成](#1-2-オブジェクトストレージバケット作成)** で作成したバケット **rclone** の **dest_dir** をバックアップサーバの **/mnt/nfs/restore/source_dir** ディレクトリ以下にリストアします。  
+このコマンドは、 **[1-1-2. バケット作成](#1-1-2-バケット作成)** で作成したバケット **rclone** の **dest_dir** をバックアップサーバの **/mnt/nfs/restore/source_dir** ディレクトリ以下にリストアします。  
 ここで **dest_dir** と **source_dir** は、スループット検証の場合は何れも **large** 、メタデータ性能検証の場合は何れも **small** とします。
 
 ```sh
 $ time sudo rclone --oos-upload-cutoff 16Mi --transfers 100 --oos-chunk-size 16Mi --oos-upload-concurrency 128 --oos-attempt-resume-upload --oos-leave-parts-on-error --copy-links --metadata --checksum sync nfs-backup:rclone/dest_dir /mnt/nfs/restore/source_dir
+```
+
+出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。
+
+## 2-4. バックアップ環境No.4バックアップ実行
+
+以下コマンドをバックアップサーバのopcユーザで実行します。  
+ここで **source_dir** と **dest_dir** は、スループット検証の場合は何れも **large** 、メタデータ性能検証の場合は何れも **small** とします。
+
+```sh
+$ time sudo rsync -auH /mnt/nfs/source_dir /mnt/bv/dest_dir
+```
+
+出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。
+
+## 2-5. バックアップ環境No.4リストア実行
+
+以下コマンドをバックアップサーバのopcユーザで実行します。  
+ここで **dest_dir** と **source_dir** は、スループット検証の場合は何れも **large** 、メタデータ性能検証の場合は何れも **small** とします。
+
+```sh
+$ time sudo rsync /mnt/bv/dest_dir /mnt/nfs/restore/source_dir
 ```
 
 出力されたtimeコマンドの時間情報から、スループットとメタデータ性能を計算し確認します。
