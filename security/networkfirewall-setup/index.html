@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/nfw1.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup/nfw00.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2024-12-17T18:35:53+09:00">
+  <meta property="article:published_time" content="2024-12-24T15:53:00+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/networkfirewall-setup/nfw1.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/networkfirewall-setup/nfw00.png');"
 >
   
     <div class="wrapper">
@@ -231,7 +231,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallを構築する">
     <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewall」を構築し、動作を確認します。">
-    <meta itemprop="datePublished" content="2024-12-17T18:35:53+09:00">
+    <meta itemprop="datePublished" content="2024-12-24T15:53:00+09:00">
     
 
     <div class="page__inner-wrap">
@@ -242,7 +242,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a><ul><li><a href="#network-firewallについて">Network Firewallについて</a></li><li><a href="#各サブネットとルート表について">各サブネットとルート表について</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</a></li><li><a href="#1-3-ルート表の作成">1-3. ルート表の作成</a></li><li><a href="#1-4-security-listの作成">1-4. Security Listの作成</a></li><li><a href="#1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</a></li><li><a href="#1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</a></li></ul></li><li><a href="#2-ネットワークファイアウォールポリシーの作成">2. ネットワーク・ファイアウォール・ポリシーの作成</a></li><li><a href="#3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</a></li><li><a href="#4-ルート表の編集">4. ルート表の編集</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</a></li><li><a href="#4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</a></li><li><a href="#4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</a></li></ul></li><li><a href="#5-security-listの編集">5. Security Listの編集</a><ul><li><a href="#5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</a></li><li><a href="#5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</a></li></ul></li><li><a href="#6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</a><ul><li><a href="#6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</a></li><li><a href="#6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-はじめに">0. はじめに</a><ul><li><a href="#実施内容">・実施内容</a></li><li><a href="#network-firewallの概要">・Network Firewallの概要</a></li><li><a href="#ルーティングについて">・ルーティングについて</a></li></ul></li><li><a href="#1-ネットワークの構築">1. ネットワークの構築</a><ul><li><a href="#1-1-vcnの作成">1-1. VCNの作成</a></li><li><a href="#1-2-network-firewall用サブネットの作成">1-2. Network Firewall用サブネットの作成</a><ul><li><a href="#ルート表の作成">・ルート表の作成</a></li><li><a href="#セキュリティリストの作成">・セキュリティ・リストの作成</a></li><li><a href="#サブネットの作成">・サブネットの作成</a></li></ul></li></ul></li><li><a href="#2-network-firewallの作成">2. Network Firewallの作成</a><ul><li><a href="#2-1-ネットワークファイアウォールポリシーの作成">2-1. ネットワーク・ファイアウォール・ポリシーの作成</a></li><li><a href="#2-2-ネットワークファイアウォールポリシーの設定">2-2. ネットワーク・ファイアウォール・ポリシーの設定</a></li><li><a href="#2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</a></li></ul></li><li><a href="#3-テストwebページ用のコンピュートインスタンスの作成と設定">3. テストWebページ用のコンピュートインスタンスの作成と設定</a><ul><li><a href="#3-1-コンピュートインスタンスの作成">3-1. コンピュートインスタンスの作成</a></li><li><a href="#3-2-httpアクセスのためのセキュリティリストの編集">3-2. HTTPアクセスのためのセキュリティ・リストの編集</a></li><li><a href="#3-3-webページへのアクセスを確認">3-3. Webページへのアクセスを確認</a></li></ul></li><li><a href="#4-firewallを経由するためのルーティング設定">4. Firewallを経由するためのルーティング設定</a><ul><li><a href="#4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</a></li><li><a href="#4-2-パブリックサブネットのルート表の編集">4-2. パブリック・サブネットのルート表の編集</a></li></ul></li><li><a href="#5-network-firewallのidp機能を確認する">5. Network FirewallのIDP機能を確認する</a><ul><li><a href="#5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</a></li><li><a href="#5-2-ログを確認する">5-2. ログを確認する</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -251,14 +251,13 @@
     [OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/) 
 -->
 
-<p>パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。
-「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。<br />
-本チュートリアルではOCI Network Firewallが使用できる環境を構築します。</p>
+<p>OCI Network Firewallは2022年7月にリリースされた、パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール・サービスです。
+主な機能として、URLフィルタリングやTLS/SSL検査などを提供します。<br />
+本チュートリアルではOCI Network Firewallが動作するための環境を構築し、簡単なテストにて動作を確認します。</p>
 
 <p><strong>所要時間 :</strong></p>
 <ul>
-  <li>約70分<br />
-(このうちNetwork Firewallインスタンスの作成に40分ほどかかります)</li>
+  <li>約70分</li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
@@ -268,447 +267,442 @@
 
 <p><strong>注意 :</strong></p>
 <ul>
-  <li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+  <li>本チュートリアル内の画面ショットは、OCIのコンソール画面と異なる場合があります。</li>
 </ul>
 
 <p><br /></p>
 
-<h1 id="はじめに">はじめに</h1>
+<h1 id="0-はじめに">0. はじめに</h1>
+<h2 id="実施内容">・実施内容</h2>
+<p>以下が本チュートリアルで作成するNetwork Firewallの構成図です。
+OCI環境を出入りする通信はNetwork Firewallを経由し、監視および検査が行われます。</p>
 
-<p>以下が本チュートリアルで作成するNetwork Firewallの構成図です。</p>
+<p><img src="nfw00.png" alt="構成図" /></p>
 
-<p><img src="nfw0.png" alt="画面ショット0" /></p>
+<p>本チュートリアルでは動作テストのためにOCI内にWEBサーバーを準備した後ウィルステストファイルを配置し、外部からの通信がNetwork Firewallによってブロックされることを確認するところまでを行います。</p>
 
-<h2 id="network-firewallについて">Network Firewallについて</h2>
-<p>Network FirewallはOCIクラウド環境に入るトラフィックと、サブネット間のトラフィックを可視化します。<br />
-Network Firewallはファイアウォールとして、Network Firewallを通過するトランスポート・レイヤー・セキュリティ（TLS）暗号化トラフィックを含むすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
-Network Firewallは以下のようなユースケースにてご利用いただくことが可能です。</p>
+<h2 id="network-firewallの概要">・Network Firewallの概要</h2>
+<p>Network Firewallは次世代ファイアウォールとして、TLSトラフィックも含め、通過するすべてのリクエストを検査し、ユーザーが構成したファイアウォール・ポリシー・ルールに基づいて、許可、拒否、ドロップ、侵入検出、防止などのアクションを実行します。
+より詳細な情報は<a href="https://speakerdeck.com/oracle4engineer/oci-network-firewallgai-yao">こちら</a>をご参照ください</p>
+
+<p><strong>主なユースケース</strong></p>
 <ul>
-  <li>パロアルトネットワークスの脅威シグネチャおよび脅威分析エンジンを用いて、既知の脆弱性に対する攻撃、マルウェア、C&amp;Cサーバー等の脅威の検知・防御</li>
-  <li>アウトバウンドへの不正通信を識別し、機密性の高いデータ流出を抑止</li>
+  <li>Palo Alto Networksの脅威シグネチャおよび脅威分析エンジンを活用し、脆弱性攻撃やマルウェア、C&amp;Cサーバーなどの脅威を検知・防御。</li>
+  <li>不正なアウトバウンド通信を識別し、機密データの流出を抑止。</li>
 </ul>
 
 <p><br /></p>
 
-<h2 id="各サブネットとルート表について">各サブネットとルート表について</h2>
-
-<p>インターネットを経由してPublic Subnet内のインスタンスに対するインバウンドのトラフィックが発生すると、「Internet Gatewayルート表」のルールによりトラフィックはNFW SubnetにあるNetwork Firewallを通過します。その後Network Firewallによって検査されたトラフィックはPublic Subnet内のインスタンスへ転送されます。<br />
-Public Subnet内のインスタンスから発生するインターネットへのアウトバウンドのトラフィックも同様に、「Public Subnetルート表」のルールによりNetwork Firewallへ転送されます。その後、「NFW Subnetルート表」のルールにより、Network Firewallによって検査されたアウトバウンド通信はInternet Gatewayを介してインターネットに出ます。</p>
+<h2 id="ルーティングについて">・ルーティングについて</h2>
+<p>インターネット経由でパブリックサブネット内のインスタンスに到達する通信は、インターネットゲートウェイのルート表に基づき、NFWサブネット内のNetwork Firewallを通過します。その後、検査済みトラフィックがパブリックサブネット内のインスタンスに転送されます。<br />
+パブリックサブネット内のインスタンスから発生する通信も、ルート表の設定によりNetwork Firewallを通過します。検査済みの通信は、NFWサブネットのルート表ルールを基にインターネットゲートウェイを介して外部へ送信されます。</p>
 
 <p><br /></p>
 
 <h1 id="1-ネットワークの構築">1. ネットワークの構築</h1>
 
 <h2 id="1-1-vcnの作成">1-1. VCNの作成</h2>
-<p>OCIコンソール画面左上のメニューボタン → ネットワーキング → 仮想クラウド・ネットワーク → 「VCNの作成」ボタンをクリックします。</p>
+<p>OCIコンソール画面にアクセスし、左上の <strong>[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク]</strong> と移動します。<br />
+<strong>[VCNウィザードの起動]</strong> を選択します。</p>
 
-<p><img src="nfw1.png" alt="画面ショット" /></p>
+<p><img src="nfw02.png" alt="VCN作成ウィザード1" /></p>
 
-<p>仮想クラウド・ネットワークの作成画面にて以下項目を入力し、残りはデフォルトのまま「VCNの作成」ボタンをクリックします。</p>
+<p><strong>「インターネット接続性を持つVCNの作成」</strong>を選択。</p>
+
+<p><img src="nfw03.png" alt="VCN作成ウィザード2" /></p>
+
+<p>VCN作成画面にて以下項目を入力し、<strong>[次]</strong> をクリックします。</p>
+
+<hr />
+
 <ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）VCN1</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong> - VCNを作成したいコンパートメントを選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">IPv4 CIDR Blocks</code></strong> - 10.0.0.0/16
- <img src="nfw2.png" alt="画面ショット" /></li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN名</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;VCNを作成するコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN IPv4 CIDRブロック</code></strong></span> - 10.0.0.0/16</li>
 </ul>
 
+<hr />
+
+<p><img src="nfw04.png" alt="VCN作成ウィザード2" /></p>
+
+<p>作成されるリソースを確認し、<strong>[作成]</strong>をクリックすると以下の環境でVCNが作成されます。</p>
+
+<p><img src="nfw05.png" alt="VCNウィザードで作成されるリソース" /></p>
+
+<p>今回はプライベート・サブネット、サービス・ゲートウェイ、NATゲートウェイを使用しません。そのため、後続の構成図ではこれらのリソースを省略しています。</p>
+
 <p><br /></p>
 
-<h2 id="1-2-internet-gatewayの作成">1-2. Internet Gatewayの作成</h2>
-<p>手順1-1で作成したVCNの詳細画面の左下のリソースから「インターネット・ゲートウェイ」→「インターネット・ゲートウェイの作成」ボタンをクリックします。</p>
+<h2 id="1-2-network-firewall用サブネットの作成">1-2. Network Firewall用サブネットの作成</h2>
 
-<p><img src="nfw3.png" alt="画面ショット3" /></p>
+<p>Network Firewallを配置するためのサブネットを作成します。
+サブネット作成前に、必要となるルート表とセキュリティ・リストを準備します。</p>
 
-<p>「インターネット・ゲートウェイの作成」画面にて、任意のインターネット・ゲートウェイの名前を入力し、「インターネット・ゲートウェイの作成」ボタンをクリックします。</p>
+<h3 id="ルート表の作成">・ルート表の作成</h3>
 
-<p><img src="nfw4.png" alt="画面ショット4" /></p>
+<p>作成したVCN詳細画面の「ルート表」セクションより <strong>[ルート表の作成]</strong>ボタンをクリックします。<br />
+ルート表作成画面にて以下項目を入力し、<strong>[作成]</strong>をクリックします。</p>
 
-<p><br /></p>
+<hr />
 
-<h2 id="1-3-ルート表の作成">1-3. ルート表の作成</h2>
-<p>本チュートリアルでは、Internet Gatewayと各サブネット用のルート表を作成します。
-手順1-1で作成したVCNの詳細画面の左下のリソースから「ルート表」を選択し、「ルート表の作成」ボタンをクリックします。</p>
-
-<p>「ルート表の作成」画面にて、任意のインターネット・ゲートウェイ名を入力し、「作成」ボタンをクリックします。</p>
 <ul>
-  <li><strong>Internet Gateway用のルート表</strong>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Route Table for NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のルート・ルール]</code></strong> を選択
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Route Table for IGW</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - インターネット・ゲートウェイ</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong></span> - インターネット・ゲートウェイ-VCN4tutorial</li>
     </ul>
   </li>
 </ul>
 
-<p><img src="nfw5.png" alt="画面ショット5" /></p>
+<hr />
+
+<p><img src="nfw06.png" alt="NFWルート表" /></p>
+
+<h3 id="セキュリティリストの作成">・セキュリティ・リストの作成</h3>
+
+<p>作成したVCN詳細画面の「セキュリティ・リスト」セクションより <strong>[セキュリティ・リストの作成]</strong>ボタンを選択します。
+セキュリティ・リスト作成画面にて以下項目を入力し、<strong>[セキュリティ・リストの作成]</strong>をクリックします。</p>
+
+<hr />
 
 <ul>
-  <li><strong>Network Firewallを配置するサブネット用のルート表</strong>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Security List for NFWサブネット</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のイングレス・ルール]</code></strong> を選択
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Route Table for NFW Subnet</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 80</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) HTTP通信を許可</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のイングレス・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 22</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) SSH接続を許可</li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のエグレス・ルール]</code></strong> を選択
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - すべてのプロトコル</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) 任意のアウトバウンド通信を許可</li>
     </ul>
   </li>
 </ul>
 
-<p><img src="nfw6.png" alt="画面ショット6" /></p>
+<hr />
+
+<p><img src="nfw07.png" alt="NFWセキュリティリスト1" />
+<img src="nfw08.png" alt="NFWセキュリティリスト2" /></p>
+
+<h3 id="サブネットの作成">・サブネットの作成</h3>
+
+<p>作成したVCN詳細画面の「サブネット」セクションより <strong>[サブネットの作成]</strong>ボタンを選択します。
+サブネット作成画面にて以下項目を入力し、<strong>[サブネットの作成]</strong>をクリックします。</p>
+
+<hr />
 
 <ul>
-  <li><strong>コンピュートインスタンスを配置するサブネット用のルート表</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Route Table for Public Subnet</li>
-    </ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット・タイプ</code></strong></span> - リージョナル</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPv4 CIDR Block</code></strong></span> - 10.0.2.0/24</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong></span> - Route Table for NFWサブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット・アクセス</code></strong></span> - パブリック・サブネット</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong></span> - Security List for NFWサブネット</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw09.png" alt="NFWサブネット" /></p>
+
+<p>ここまでで以下の構成が整いました。</p>
+
+<p><img src="nfw10.png" alt="構成途中1" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="2-network-firewallの作成">2. Network Firewallの作成</h1>
+
+<h2 id="2-1-ネットワークファイアウォールポリシーの作成">2-1. ネットワーク・ファイアウォール・ポリシーの作成</h2>
+
+<p>Network Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー、ネットワーク・ファイアウォール・ポリシーを指定する必要があります。そのため事前に以下の手順でポリシーを作成します。</p>
+
+<p>OCIコンソール画面左上のメニューボタンより、<strong>[アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー]</strong> と移動、<strong>[ネットワーク・ファイアウォール・ポリシーの作成]</strong>をクリックします。<br />
+表示された作成画面にて以下の項目を入力し、<strong>[作成]</strong>ボタンをクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - nfw_pol_tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+</ul>
+
+<hr />
+
+<p><img src="nfw11.png" alt="NFW-polの作成" /></p>
+
+<h2 id="2-2-ネットワークファイアウォールポリシーの設定">2-2. ネットワーク・ファイアウォール・ポリシーの設定</h2>
+
+<p>デフォルトではすべての通信は拒否されますので、以下の手順ですべての通信を許可しつつ、疑わしい通信をブロックするルールを設定します。</p>
+
+<p>ポリシー詳細画面の「セキュリティ・ルール」セクションで、<strong>[セキュリティ・ルールの作成]</strong>ボタンをクリックします。
+作成画面にて以下項目を入力し、セキュリティ・ルールを作成します。</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - idp</p>
   </li>
-</ul>
-
-<p><img src="nfw7.png" alt="画面ショット7" /></p>
-
-<p><br /></p>
-
-<h2 id="1-4-security-listの作成">1-4. Security Listの作成</h2>
-<p>Network Firewallインスタンスを配置するサブネット、コンピュートインスタンスを配置するサブネットそれぞれのSecurity Listを作成します。
-手順1-1で作成したVCNの詳細画面の左下のリソースから、「セキュリティ・リスト」→「セキュリティ・リストの作成」ボタンをクリックします。
-表示された「セキュリティ・リストの作成」画面にて以下項目を入力し、「セキュリティ・リストの作成」ボタンをクリックします。</p>
-
-<ul>
-  <li><strong>Network Firewallインスタンスを配置するサブネットのSecurity List</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Security List for NFW Subnet</li>
-    </ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・アドレス</code></strong></span> - 任意のアドレス</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先アドレス</code></strong></span> - 任意のアドレス</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">アプリケーション</code></strong></span> - 任意のアプリケーション</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サービス</code></strong></span> - 任意のサービス</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">URL</code></strong></span> - 任意のURL</p>
   </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ルール・アクション</code></strong></span> - 侵入防止</li>
 </ul>
 
-<p><img src="nfw8.png" alt="画面ショット8" /></p>
+<hr />
 
-<ul>
-  <li><strong>コンピュートインスタンスを配置するサブネットのSecurity List</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Security List for Public Subnet</li>
-    </ul>
-  </li>
-</ul>
+<p><img src="nfw26.png" alt="NFW-polの設定" /></p>
 
-<p><img src="nfw9.png" alt="画面ショット9" /></p>
-
-<p><br /></p>
-
-<h2 id="1-5-oci-network-firewallインスタンスを配置するsubnetの作成">1-5. OCI Network Firewallインスタンスを配置するSubnetの作成</h2>
-<p>Network Firewallインスタンスを配置するサブネットを作成します。
-手順1-1で作成したVCNの詳細画面の左下のリソースから、「サブネット」→「サブネットの作成」ボタンをクリックします。
-表示された「サブネットの作成」画面にて、以下項目を入力し、「サブネットの作成」ボタンをクリックします。</p>
-
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）NFW Subnet</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サブネット・タイプ</code></strong> - リージョナル</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">IPv4 CIDR Block</code></strong> - 10.0.2.0/24</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong> - 手順1-3で作成したNetwork Firewallを配置するサブネット用のルート表を選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サブネット・アクセス</code></strong> - パブリック</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">DHCPオプション</code></strong> - default DHCP Optionsを選択（Default DHCP OptionsはVCNの作成時に自動的に作成されます）</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> - 手順1-4で作成した、Network Firewallインスタンスを配置するサブネットのSecurity Listを選択</li>
-</ul>
-
-<p><img src="nfw10.png" alt="画面ショット10" />
- <img src="nfw11.png" alt="画面ショット11" /></p>
-
-<p><br /></p>
-
-<h2 id="1-6-コンピュートインスタンスを配置するsubnetの作成">1-6. コンピュートインスタンスを配置するSubnetの作成</h2>
-<p>インスタンスを配置するサブネットを作成します。
-手順1-1で作成したVCNの詳細画面の左下のリソースから、「サブネット」→「サブネットの作成」ボタンをクリックします。
-表示された「サブネットの作成」画面にて、以下項目を入力し、「サブネットの作成」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Public Subnet</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サブネット・タイプ</code></strong> - リージョナル</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">IPv4 CIDR Block</code></strong> - 10.0.1.0/24</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ルート表</code></strong> - 手順1-3で作成したコンピュートインスタンスを配置するサブネット用のルート表を選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サブネット・アクセス</code></strong> - パブリック</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">DHCPオプション</code></strong> - default DHCP Optionsを選択（Defualt DHCP OptionsはVCNの作成時に自動的に作成されます）</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">セキュリティ・リスト</code></strong> - 手順1-4で作成した、コンピュートインスタンスを配置するサブネットのSecurity Listを選択</li>
-</ul>
-
-<p><img src="nfw12.png" alt="画面ショット12" />
- <img src="nfw13.png" alt="画面ショット13" /></p>
-
-<p><br /></p>
-
-<h1 id="2-ネットワークファイアウォールポリシーの作成">2. ネットワーク・ファイアウォール・ポリシーの作成</h1>
-
-<p>Network Firewallインスタンスを作成する際、ネットワーク・トラフィックを制御するルールをまとめたポリシー「ネットワーク・ファイアウォール・ポリシー」を指定する必要があるため、事前に用意します。</p>
-
-<p>OCIコンソール画面左上のメニューボタン → アイデンティティとセキュリティ → ファイアウォール → ネットワーク・ファイアウォール・ポリシー → ネットワーク・ファイアウォール・ポリシーの作成をクリックします。
-表示されたポリシーの作成画面にて任意のポリシー名を入力し、「ポリシーの作成」ボタンをクリックします。</p>
-
-<p><img src="nfw14.png" alt="画面ショット14" /></p>
-
-<p>ポリシーを作成すると、ポリシーの詳細画面が表示されます。</p>
-
-<p><img src="nfw88.png" alt="画面ショット88" /></p>
-
-<p><br /></p>
-
-<h1 id="3-network-firewall-インスタンスの作成">3. Network Firewall インスタンスの作成</h1>
+<h2 id="2-3-network-firewallインスタンスの作成">2-3. Network Firewallインスタンスの作成</h2>
 
 <p>続いてNetwork Firewallインスタンスを作成します。
-OCIコンソール画面左上のメニューボタン → アイデンティティとセキュリティ → ファイアウォール → ネットワーク・ファイアウォール →「ネットワーク・ファイアウォールの作成」ボタンをクリックします。</p>
+OCIコンソール画面左上のメニューボタンより、<strong>[アイデンティティとセキュリティ] → [ファイアウォール]</strong> と移動、<strong>[ネットワーク・ファイアウォールの作成]</strong>をクリックします。</p>
 
-<p>表示された「ネットワーク・ファイアウォールの作成」画面にて以下項目を入力し、「ネットワーク・ファイアウォールの作成」ボタンをクリックします。</p>
+<p>作成画面にて以下の項目を入力し、<strong>[ネットワーク・ファイアウォールの作成]</strong>をクリックします。</p>
+
+<hr />
+
 <ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）NFW1</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーク・ファイアウォール・ポリシー</code></strong> - 手順2で作成したネットワーク・ファイアウォール・ポリシーを選択します。</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> - 手順1-1で作成したVCNを選択します。</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong> - 手順1-5で作成したサブネットを選択します。</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーク・ファイアウォール可用性ドメイン</code></strong> - 任意 （今回はBUKv:AP-TOKYO-1-AD-1を選択します）</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - NFW4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ネットワーク・ファイアウォール・ポリシー</code></strong></span> - nfw_pol_tutorial（先ほど作成したネットワーク・ファイアウォール・ポリシーを選択）</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong></span> - NFWサブネット リージョナル</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">IPアドレスの指定（任意）</code></strong> - サブネット内のIPアドレスを明示的に指定する場合、「IPアドレスをサブネットからファイアウォールに手動で割り当てます」にチェックを付けます。本チュートリアルではIPアドレスを「10.0.2.100」に指定しています。</li>
 </ul>
 
-<p><img src="nfw23.png" alt="画面ショット23" /></p>
+<hr />
 
-<p>Network Firewallインスタンスは約40分程で作成が完了し、アクティブになります。</p>
+<p><img src="nfw12.png" alt="NFWの作成" /></p>
 
-<p>Network Firewallの作成中に、Network Firewallインスタンスの詳細画面にIPv4アドレスが表示されるので、IPv4アドレスが割り当てられたら次の手順にてVCNのSecurity Listとルート表を編集します。</p>
+<p>Network Firewallインスタンスの作成には約40分かかります。作成中に詳細画面でIPv4アドレスを確認できるので、以降のルーティング設定で使用するために控えておいてください。</p>
 
-<p><img src="nfw56.png" alt="画面ショット56" /></p>
+<p>Network Firewallを作成している間、続く手順３，４を進めます。</p>
 
-<p><br /></p>
+<p><img src="nfw12.png" alt="NFWの作成中画面" /></p>
 
-<h1 id="4-ルート表の編集">4. ルート表の編集</h1>
+<p><br /><br /></p>
 
-<p>Network FirewallのプライベートIPアドレスを元に、Internet Gatewayと各サブネットのルート表を編集します。</p>
+<h1 id="3-テストwebページ用のコンピュートインスタンスの作成と設定">3. テストWebページ用のコンピュートインスタンスの作成と設定</h1>
+<h2 id="3-1-コンピュートインスタンスの作成">3-1. コンピュートインスタンスの作成</h2>
+
+<p>この手順では、パブリックサブネット内にWebサーバーを構築し、Webページへのアクセスを確認します。</p>
+
+<p><img src="nfw13.png" alt="構成途中2" /></p>
+
+<p>OCIコンソール画面左上のメニューボタンより、<strong>[コンピュート] → [インスタンス]</strong> と移動、<strong>[インスタンスの作成]</strong> をクリックし、作成画面にて以下の設定で作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - websvr4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">可用性ドメイン</code></strong></span> - AD1</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">イメージ</code></strong></span> - Oracle Linux 8</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">Shape</code></strong></span> - (任意)VM.Standard.E5.Flex</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong></span> - パブリック・サブネット-VCN4tutorial (リージョナル)</li>
+  <li>
+    <p><strong><code class="language-plaintext highlighter-rouge">IPアドレスの指定（任意）</code></strong> - サブネット内のIPアドレスを明示的に指定する場合、「プライベートIPv4アドレスの手動割当て」を選択します。本チュートリアルではIPアドレスを「10.0.0.10」に指定しています。</p>
+  </li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong></span> - 「キー・ペアを自動で生成」を選択し、秘密キーと公開キーをそれぞれ保存します。手元に既存のSSHキーがある場合は、「公開キー・ファイルのアップロード」または「公開キーの貼りつけ」を選択し、公開キーを登録してください。</p>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[拡張オプションの表示]</code></strong>をクリックし展開
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">初期化スクリプト</code></strong></span> - 「cloud-initスクリプトの貼付け」を選択し、以下のスクリプトを張り付ける</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#cloud-config
+packages:
+  - httpd
+
+runcmd:
+  - systemctl enable httpd
+  - systemctl start httpd
+  - firewall-offline-cmd --add-service=http
+  - systemctl restart firewalld
+  - curl https://secure.eicar.org/eicar.com.txt &gt; /var/www/html/eicar.html
+</code></pre></div></div>
+
+<p class="notice--info"><strong>cloud-initで実行する内容について</strong><br />
+apache HTTPS serverをインストールし、起動しています。また、ウイルス対策ソフトの応答をテストするためeicarファイルをeicarのHPより取得し、<code class="language-plaintext highlighter-rouge">/var/www/html/eicar.html</code>へ新規に配置しています。この動作はインスタンスの作成と同時に行われます。</p>
+
+<p>以上の項目を入力し、<strong>[作成]</strong>をクリックします。</p>
+
+<p><img src="nfw15.png" alt="コンピュートの作成画面1" />
+<img src="nfw16.png" alt="コンピュートの作成画面2" />
+<img src="nfw17.png" alt="コンピュートの作成画面3" />
+<img src="nfw18.png" alt="コンピュートの作成画面4" /></p>
+
+<p>後に作成されたテスト用のWebページにアクセスしますので、割り当てられたパブリックIPアドレスを控えておきます。</p>
+
+<p>初期化スクリプトの実行に数分かかりますので、その間にWebページにアクセスできるように次の手順にて通信の許可設定を行います。</p>
+
+<h2 id="3-2-httpアクセスのためのセキュリティリストの編集">3-2. HTTPアクセスのためのセキュリティ・リストの編集</h2>
+
+<p>OCIコンソール画面にアクセスし、左上のメニューボタンより、<strong>[ネットワーキング] → [仮想クラウド・ネットワーク] → [VCN4tutorial]</strong> と移動します。<br />
+VCN詳細画面の「セキュリティ・リスト」セクションから <strong>[Default Security List for VCN4tutorial]</strong>を選択し、<strong>[イングレス・ルールの追加]</strong>ボタンより以下のイングレス・ルールを追加します。</p>
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 80</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) HTTP通信を許可</li>
+</ul>
+
+<p><img src="nfw19.png" alt="イングレスルールの追加" /></p>
+
+<h2 id="3-3-webページへのアクセスを確認">3-3. Webページへのアクセスを確認</h2>
+
+<p>ブラウザで <strong><code class="language-plaintext highlighter-rouge">http://&lt;コンピュートのパブリックIP&gt;/</code></strong> にアクセスし、テストページが正しく表示されることを確認します。</p>
+
+<p>アクセスできない場合、初期化スクリプトの実行がまだ完了していない可能性があります。数分待ってから再試行してください。（参考：筆者の環境では約2分半で完了しました）</p>
+
+<p><img src="nfw20.png" alt="testページの確認" /></p>
+
+<p>次に <strong><code class="language-plaintext highlighter-rouge">http://&lt;コンピュートのパブリックIP&gt;/eicar.html</code></strong> にアクセスし、eicarファイルが正しく表示されることを確認します。
+eicarファイルはウイルス対策ソフトの応答をテストするためのテキストファイルです。</p>
+
+<p><img src="nfw21.png" alt="eicarページの確認" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="4-firewallを経由するためのルーティング設定">4. Firewallを経由するためのルーティング設定</h1>
+
+<p>Network FirewallインスタンスのプライベートIPアドレスを元に、通信がFirewallインスタンスを経由するようにルーティングの設定を行います。</p>
 
 <h2 id="4-1-internet-gatewayのルート表の編集">4-1. Internet Gatewayのルート表の編集</h2>
-<p>OCIコンソール画面左上のメニューボタン → ネットワーキング → 仮想クラウド・ネットワーク → 手順1で作成したVCN名をクリックし、VCNの詳細画面に遷移します。
-VCN詳細画面左下のリソースから「ルート表」をクリックし、手順1-3で作成したInternet Gateway用のルート表をクリックします。</p>
 
-<p><img src="nfw24.png" alt="画面ショット24" /></p>
+<p>OCIコンソール画面にアクセスし、左上の <strong>[メニューボタン] → [ネットワーキング] → [仮想クラウド・ネットワーク] → [VCN4tutorial]</strong> と移動します。<br />
+作成したVCN詳細画面の「ルート表」セクションより<strong>[ルート表の作成]</strong>ボタンをクリックします。
+ルート表作成画面にて以下項目を入力し、<strong>[作成]</strong>をクリックします。</p>
 
-<p>ルート表の詳細画面にて、「ルート・ルールの追加」ボタンをクリックします。
-表示された「ルート・ルールの追加」画面にて、以下項目を入力し、画面左下の「ルート・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - プライベートIP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先タイプ</code></strong> - CIDRブロック</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - コンピュートインスタンスを配置するサブネットのCIDRを入力 例）10.0.1.0/24</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong> - Network FirewallインスタンスのプライベートIPアドレスを入力</li>
-</ul>
-
-<p><img src="nfw25.png" alt="画面ショット25" /></p>
-
-<p><br /></p>
-
-<h2 id="4-2-network-firewallインスタンスを作成したサブネットのルート表の編集">4-2. Network Firewallインスタンスを作成したサブネットのルート表の編集</h2>
-<p>続いて、VCN詳細画面左下のリソースの「ルート表」から、手順1-3で作成したNetwork Firewallインスタンスを配置するサブネット用のルート表をクリックします。</p>
-
-<p><img src="nfw26.png" alt="画面ショット26" /></p>
-
-<p>ルート表の詳細画面にて、「ルート・ルールの追加」ボタンをクリックします。
-表示された「ルート・ルールの追加」画面にて、以下のルート・ルールを作成し、画面左下の「ルート・ルールの追加」ボタンをクリックします。</p>
+<hr />
 
 <ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - インターネット・ゲートウェイ</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - 0.0.0.0/0</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・インターネット・ゲートウェイ</code></strong> - 手順1-2で作成したInternet Gatewayを選択</li>
-</ul>
-
-<p><img src="nfw27.png" alt="画面ショット27" /></p>
-
-<p><br /></p>
-
-<h2 id="4-3-コンピュートインスタンスを作成するサブネットのルート表の編集">4-3. コンピュートインスタンスを作成するサブネットのルート表の編集</h2>
-<p>続いて、VCN詳細画面左下のリソースの「ルート表」から、手順1-3で作成したコンピュートインスタンスを配置するサブネット用のルート表をクリックします。</p>
-
-<p><img src="nfw28.png" alt="画面ショット28" />
-ルート表の詳細画面にて、「ルート・ルールの追加」ボタンをクリックします。
-表示された「ルート・ルールの追加」画面にて、以下項目を入力し、画面左下の「ルート・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong> - プライベートIP</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先タイプ</code></strong> - CIDRブロック</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong> - 0.0.0.0/0</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong> - Network FirewallインスタンスのプライベートIPアドレスを入力</li>
-</ul>
-
-<p><img src="nfw29.png" alt="画面ショット29" /></p>
-
-<p><br /></p>
-
-<h2 id="4-4-internet-gateway用のルート表をinternet-gatewayに紐づけ">4-4. Internet Gateway用のルート表をInternet Gatewayに紐づけ</h2>
-<p>VCN詳細画面左下のリソースの「インターネット・ゲートウェイ」から、手順1-2で作成したInternet Gatewayの左の3つの点をクリックし、「別のルート表の関連付け」を選択します。</p>
-
-<p><img src="nfw32.png" alt="画面ショット30" /></p>
-
-<p>表示された「別のルート表の関連付け」画面にて、手順1-3で作成したInternet Gateway用のルート表を選択し、「別のルート表の関連付け」ボタンをクリックします。</p>
-
-<p><img src="nfw33.png" alt="画面ショット31" /></p>
-
-<p><br /></p>
-
-<h1 id="5-security-listの編集">5. Security Listの編集</h1>
-
-<p>本チュートリアルでは便意的に全CIDRから各IPプロトコルの全ポート宛の通信を許可するよう設定します。実際に本番環境などで設定する際は必要最低限のポートのみ許可するように設定してください。</p>
-
-<h2 id="5-1-コンピュートインスタンスを立ち上げる用のサブネットのsecurity-listの編集">5-1. コンピュートインスタンスを立ち上げる用のサブネットのSecurity Listの編集</h2>
-<p>OCIコンソール画面左上のメニューボタン → ネットワーキング → 仮想クラウド・ネットワーク → 手順1で作成したVCN名をクリックし、VCNの詳細画面に遷移します。
-VCN詳細画面左下のリソースから「セキュリティ・リスト」を選択し、手順1-4で作成したコンピュートインスタンスを立ち上げるサブネット用のSecurity List名をクリックします。</p>
-
-<p><img src="nfw34.png" alt="画面ショット34" /></p>
-
-<p>セキュリティ・リストの詳細画面で「イングレス・ルールの追加」ボタンをクリックします。
-表示された「イングレス・ルールの追加」画面にて3つのイングレスルールを作成します。</p>
-<ul>
-  <li><strong>イングレス・ルール1</strong>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - Route Table for IGW</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[＋別のルート・ルール]</code></strong> を選択
     <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - プライベートIP</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネットまたはVLANコンパートメント</code></strong></span> - &lt;サブネットが所属するコンパートメントを選択&gt;</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRタイプ</code></strong></span> - CIDRブロック</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 10.0.0.0/16</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong></span> - 10.0.2.100（Network FirewallインスタンスのプライベートIPアドレス）</li>
     </ul>
   </li>
 </ul>
 
-<p>その他は記入せずに、「+別のイングレス・ルール」ボタンをクリックします。</p>
+<hr />
 
-<p><img src="nfw35.png" alt="画面ショット35" /></p>
+<p><img src="nfw22.png" alt="IGWルート表作成" /></p>
+
+<p>作成したルート表をインターネット・ゲートウェイに関連付けます。<br />
+VCN詳細画面の「インターネット・ゲートウェイ」セクションを選択し、作成されているインターネット・ゲートウェイのケバブメニューから<strong>[ルート表の関連付け]</strong>をクリックします。<br />
+ルート表<strong>[Route Table for IGW]</strong>を選択し、<strong>[ルート表の関連付け]</strong>をクリックします。</p>
+
+<p><img src="nfw23.png" alt="IGWルート表関連付け" /></p>
+
+<h2 id="4-2-パブリックサブネットのルート表の編集">4-2. パブリック・サブネットのルート表の編集</h2>
+
+<p>パブリック・サブネット内からの通信がNetwork Firewallインスタンスを経由するようにルート表を編集します。<br />
+作成したVCN詳細画面の「ルート表」セクションより<strong>[default route table for VCN4tutorial]</strong>を選択し、既存のルート・ルールを編集し以下の新しいルート・ルールに変更します。</p>
+
+<hr />
 
 <ul>
-  <li><strong>イングレス・ルール2</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - ICMP
-その他は記入せずに、「+別のイングレス・ルール」ボタンをクリックします。</li>
-    </ul>
-  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット・タイプ</code></strong></span> - プライベートIP</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネットまたはVLANコンパートメント</code></strong></span> - &lt;サブネットが所属するコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRタイプ</code></strong></span> - CIDRブロック</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先CIDRブロック</code></strong></span> - 0.0.0.0/0</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ターゲット選択</code></strong></span> - 10.0.2.100（Network FirewallインスタンスのプライベートIPアドレス）</li>
 </ul>
 
-<p><img src="nfw36.png" alt="画面ショット36" /></p>
+<hr />
 
-<p>以下のように、イングレス・ルール3を記入したら画面左下の「イングレス・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong>イングレス・ルール2</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - UDP</li>
-    </ul>
-  </li>
-</ul>
-
-<p><img src="nfw37.png" alt="画面ショット37" /></p>
-
-<p>続いて、セキュリティ・リストの詳細画面左下の「リソース」から「エグレス・ルール」を選択し、「エグレス・ルールの追加」ボタンをクリックします。
-表示された「エグレス・ルールの追加」画面にて、以下のようにエグレス・ルールを記入したら画面左下の「エグレス・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先タイプ</code></strong> - CIDR</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - すべてのプロトコル</li>
-</ul>
-
-<p><img src="nfw38.png" alt="画面ショット38" /></p>
+<p><img src="nfw25.png" alt="パブリック・サブネットルート表設定" /></p>
 
 <p><br /></p>
 
-<h2 id="5-2-network-firewallインスタンスを配置するサブネット用のsecurity-listの編集">5-2. Network Firewallインスタンスを配置するサブネット用のSecurity Listの編集</h2>
-<p>VCN詳細画面左下のリソースから「セキュリティ・リスト」を選択し、手順1-4で作成したNetwork Firewallインスタンスを立ち上げるサブネット用のSecurity List名をクリックします。</p>
+<p>ここまでの設定により、現時点での環境は以下のようになっています。</p>
 
-<p><img src="nfw39.png" alt="画面ショット39" /></p>
+<p><img src="nfw31.png" alt="構築途中3" /></p>
 
-<p>セキュリティ・リストの詳細画面で「イングレス・ルールの追加」ボタンをクリックします。
-表示された「イングレス・ルールの追加」画面にて3つのイングレスルールを作成します。</p>
-<ul>
-  <li><strong>イングレス・ルール1</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - TCP</li>
-    </ul>
-  </li>
-</ul>
+<p><br /><br /></p>
 
-<p>その他は記入せずに、「+別のイングレス・ルール」ボタンをクリックします。</p>
+<h1 id="5-network-firewallのidp機能を確認する">5. Network FirewallのIDP機能を確認する</h1>
+<h2 id="5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</h2>
 
-<p><img src="nfw35.png" alt="画面ショット35" /></p>
+<p>Firewallインスタンスの作成が完了した後、webサーバーに配置したeicarファイルへのアクセスがFirewallによって防止されるかを確認します。<br />
+この手順で、IDP（侵入防止機能）が正しく動作していることを検証します。</p>
+
+<p>手順3-3と同様、ブラウザで以下の2つのURLにアクセスします。</p>
 
 <ul>
-  <li><strong>イングレス・ルール2</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - ICMP
-その他は記入せずに、「+別のイングレス・ルール」ボタンをクリックします。</li>
-    </ul>
-  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">http://&lt;コンピュートのパブリックIP&gt;/</code></strong> にアクセスし、正しくテストページが表示されることを確認します。</li>
 </ul>
 
-<p><img src="nfw36.png" alt="画面ショット36" /></p>
-
-<p>以下のように、イングレス・ルール3を記入したら画面左下の「イングレス・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong>イングレス・ルール2</strong>
-    <ul>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong> - CIDR</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-      <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - UDP</li>
-    </ul>
-  </li>
-</ul>
-
-<p><img src="nfw37.png" alt="画面ショット37" /></p>
-
-<p>続いて、セキュリティ・リストの詳細画面左下の「リソース」から「エグレス・ルール」を選択し、「エグレス・ルールの追加」ボタンをクリックします。
-表示された「エグレス・ルールの追加」画面にて、以下のようにエグレス・ルールを記入したら画面左下の「エグレス・ルールの追加」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">宛先タイプ</code></strong> - CIDR</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong> - 0.0.0.0/0</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong> - すべてのプロトコル</li>
-</ul>
-
-<p><img src="nfw38.png" alt="画面ショット38" /></p>
-
-<p><br /></p>
-
-<h1 id="6-コンピュートインスタンスの作成">6. コンピュートインスタンスの作成</h1>
-
-<p>つづくOCIチュートリアル「<a href="/security/networkfirewall-policycheck">OCI Network Firewallの動作を検証する</a>」にて動作を確認するため、Network Firewallに保護されたPublic Subnetにコンピュート・インスタンスを作成します。<br />
-作成するコンピュート・インスタンスはLinux/Windowsどちらでも構いません。
-手順6-1ではLinuxインスタンスの作成方法、手順6-2ではWindowsインスタンスの作成方法を紹介しています。</p>
-
-<h2 id="6-1-linuxのコンピュートインスタンスの作成">6-1. Linuxのコンピュート・インスタンスの作成</h2>
-<p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → インスタンスの作成をクリックします。
-「コンピュート・インスタンスの作成」画面にて、以下項目を入力し、画面左下の「作成」ボタンをクリックします。</p>
-<ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）Instance1</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">配置（可用性ドメイン）</code></strong> - 任意</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">イメージ</code></strong> - Oracle Linux 8</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">シェイプ</code></strong> - 任意</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング（仮想クラウド・ネットワーク）</code></strong> - 手順1-1で作成したVCNを選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング（サブネット）</code></strong> - 手順1-6で作成したサブネットを選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレス</code></strong> - 「パブリックIPv4アドレスの割当て」を選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">SSHキーの追加</code></strong> - 「キー・ペアを自動で生成」を選択し、秘密キーと公開キーをそれぞれ保存します。（手元に既存のSSHキーがある場合は、「公開キー・ファイルのアップロード」または「公開キーの貼りつけ」を選択し、公開キーを登録してください。）</li>
-</ul>
-
-<p><img src="nfw30.png" alt="画面ショット30" />
- <img src="nfw31.png" alt="画面ショット31" /></p>
-
-<p><br /></p>
-
-<h2 id="6-2-windowsのインスタンスの作成">6-2. Windowsのインスタンスの作成</h2>
-<p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → インスタンスの作成をクリックします。
-「コンピュート・インスタンスの作成」画面にて、以下項目を入力し、画面左下の「作成」ボタンをクリックします。</p>
+<p><img src="nfw27.png" alt="testページの確認_after" /></p>
 
 <ul>
-  <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - 任意 例）WS1</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">配置（可用性ドメイン）</code></strong> - 任意</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">イメージ</code></strong> - 「イメージの変更」ボタンをクリックし、「Windows」を選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">シェイプ</code></strong> - 任意</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング（仮想クラウド・ネットワーク）</code></strong> - 手順1-1で作成したVCNを選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">ネットワーキング（サブネット）</code></strong> - 手順1-6で作成したサブネットを選択</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">パブリックIPアドレス</code></strong> - 「パブリックIPv4アドレスの割当て」を選択</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">http://&lt;コンピュートのパブリックIP&gt;/eicar.html</code></strong> にアクセスするとFirewallによって拒否されることを確認します。</li>
 </ul>
 
-<p><img src="nfw46.png" alt="画面ショット46" />
- <img src="nfw47.png" alt="画面ショット47" /></p>
+<p><img src="nfw28.png" alt="eicarページの確認_after" /></p>
 
-<p>最後に手順3にて作成したNetwork Firewallインスタンスの作成が完了したことを確かめて、Network Firewallの構築は完了です。</p>
+<h2 id="5-2-ログを確認する">5-2. ログを確認する</h2>
+<p>Firewallがeicarファイルへのアクセスを検知した場合、その記録をログとして確認できます。</p>
+
+<p>ログを確認するためには、Network Firewallインスタンスの詳細画面の「ログ」セクションより検知した脅威のログ（Threat Log）を有効化します。</p>
+
+<p><img src="nfw29.png" alt="NFWのログの有効化" /></p>
+
+<p>検知されたeicarファイルはこの脅威ログより、以下のように確認できます。</p>
+
+<p><img src="nfw30.png" alt="NFW脅威ログ" /></p>
 
 <p><br /></p>
 
 <hr />
 
-<p>手順2で作成したネットワーク・ファイアウォール・ポリシーにて、IDS/IPSやURLフィルタリング、SSLインスペクション等の機能が設定できます。<br />
-作成したFirewallの動作を検証するステップとして、サービス・リストとURLリストの動作検証を行うチュートリアル「<a href="/ocitutorials/security/networkfirewall-policycheck">OCI Network Firewallの動作検証を行う</a>」もご用意していますので、是非行ってみてください。</p>
+<p>手順2-1で作成したネットワーク・ファイアウォール・ポリシーでは、IDS/IPS、URLフィルタリング、SSLインスペクションなどの機能を設定できます。
+さらにFirewallの動作を検証するステップとして、サービスリストやURLリストの動作検証を行うチュートリアル「<a href="/ocitutorials/security/networkfirewall-policycheck">OCI Network Firewallの動作検証を行う</a>」もご用意しています。ぜひお試しください。</p>
 
         
       </section>
@@ -735,7 +729,7 @@ VCN詳細画面左下のリソースから「セキュリティ・リスト」�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-17T18:35:53+09:00">December 17, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-24T15:53:00+09:00">December 24, 2024</time></p>
 
       </footer>
 
