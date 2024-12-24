@@ -17,9 +17,10 @@ header:
 2. スケーラビリティーを考慮した最適なノード間並列実行方法
 3. NVMe SSDローカルディスクをストレージ領域に活用する方法
 
-本パフォーマンス関連Tipsの性能計測は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** を使用し、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **[Slurm](https://slurm.schedmd.com/)** 環境でバッチジョブとして計測しています。
+本パフォーマンス関連Tipsの性能計測は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** を使用し、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **[Slurm](https://slurm.schedmd.com/)** 環境でバッチジョブとして計測しています。  
+また、 **NUMA nodes per socket** （以降 **NPS** と呼称）に **NPS1** と **NPS2** を指定して実行する計測は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム運用Tips](/ocitutorials/hpc/tech-knowhow/slurm-tips/)** の **[3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御](/ocitutorials/hpc/tech-knowhow/slurm-tips/#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御)** に従って構築した **Slurm** 環境で行っています。
 
-また、計算ノードに使用する **BM.Optimized3.36** は、 **OpenFOAM** がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い **SMT** を無効化しています。
+計算ノードに使用する **BM.Optimized3.36** は、 **OpenFOAM** がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化しています。
 
 ***
 # 1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法
@@ -28,7 +29,7 @@ header:
 
 本Tipsは、 **OpenFOAM** の実行性能がプロセッサ演算処理あたり利用可能なメモリ帯域に大きく依存することを念頭に、以下のパラメータを変更することでノード内並列実行時の性能がどのように変化するか、また最も性能の良いパラメータの組み合わせは何かという観点で、性能計測とその考察を行います。
 
-- **NPS** （Numa node Per Socket）（ **NPS1** / **NPS2** ）
+- **NPS** （ **NPS1** / **NPS2** ）
 - MPIプロセス数（8・16・32・36）
 
 また、MPIプロセスのバインディングは、 **NPS1** はソケット単位 **NPS2** はNUMAノード単位でサイクリックにCPUコアにMPIプロセスランクを順次割り当てる（ **Slurm** のオプションで言うところの **--distribution=block:cyclic** ）ことで、各ソケット・NUMAノード当たりの割当てコア数が一定となり、結果各プロセスにメモリ帯域幅が均等に割り当てられるよう配慮します。
@@ -45,7 +46,7 @@ header:
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※1）NPSの設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※1）**NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。
@@ -59,24 +60,18 @@ header:
 
 この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
 
-この際 **NPS2** の場合は、 **Slurm** の設定ファイル **slurm.conf** の **NodeName=DEFAULT** で始まる行を以下のように修正します。
+ジョブスクリプトに指定する **Slurm** のオプションは、以下のように指定します。
 
-```sh
-NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
-```
-
-また、ジョブスクリプトに指定する **Slurm** のオプションを以下のように指定します。
-
-| NPS | MPIプロセス数 | \-n | \-N | --ntasks-per-node | --cpu-bind        |
-| :-: | :------: | :-: | :-: | :---------------: | :---------------: |
-| 1   | 8        | 8   | 1   | 8                 | verbose,cores     |
-|     | 16       | 16  | 1   | 16                | verbose,cores     |
-|     | 32       | 32  | 1   | 32                | verbose,cores     |
-|     | 36       | 36  | 1   | 36                | verbose,cores     |
-| 2   | 8        | 8   | 1   | 8                 | verbose,rank_ldom |
-|     | 16       | 16  | 1   | 16                | verbose,rank_ldom |
-|     | 32       | 32  | 1   | 32                | verbose,rank_ldom |
-|     | 36       | 36  | 1   | 36                | verbose,rank_ldom |
+| NPS | MPIプロセス数 | -n  | -N  | --cpu-bind |
+| :-: | :------: | :-: | :-: | :--------: |
+| 1   | 8        | 8   | 1   | cores      |
+|     | 16       | 16  | 1   | cores      |
+|     | 32       | 32  | 1   | cores      |
+|     | 36       | 36  | 1   | cores      |
+| 2   | 8        | 8   | 1   | rank_ldom  |
+|     | 16       | 16  | 1   | rank_ldom  |
+|     | 32       | 32  | 1   | rank_ldom  |
+|     | 36       | 36  | 1   | rank_ldom  |
 
 また、本テクニカルTipsの **[3. NVMe SSDローカルディスクをストレージ領域に活用する方法](#3-nvme-ssdローカルディスクをストレージ領域に活用する方法)** の結果から、NVMe SSDローカルディスクを解析フローのストレージ領域に使用することが有効であると判明しているため本Tipsもこの方法を採用することとし、 **[3.0. 概要](#3-0-概要)** に記載の7ステップにかかる時間を個別に取得出来るようにした上で、結果の妥当性を確認するために各テストケースをそれぞれ5回計測します。  
 なお、ここでは計算結果の出力頻度（ **writeInterval** ）にデフォルトの1,000タイムステップを使用している（計算結果を出力しない）ため、NVMe SSDローカルディスクを使用する効果は限定されます。
@@ -131,7 +126,7 @@ NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerC
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※3）NPSの設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※3）**NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※4） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、ソルバー部分に着目すると、以下のことが判明しています。
@@ -144,24 +139,18 @@ NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerC
 
 この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
 
-この際、 **Slurm** の設定ファイル **slurm.conf** の **NodeName=DEFAULT** で始まる行を以下のように修正します。
+ジョブスクリプトに指定する **Slurm** のオプションは、以下のように指定します。
 
-```sh
-NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
-```
-
-また、ジョブスクリプトに指定する **Slurm** のオプションを以下のように指定します。
-
-| ノード数 | ノード当たりの<br>MPIプロセス数 | \-n | \-N | --ntasks-per-node | --cpu-bind        |
-| :--: | :-------------: | :-: | :-: | :---------------: | :---------------: |
-| 1    | 32              | 32  | 1   | 32                | verbose,rank_ldom |
-|      | 36              | 36  | 1   | 36                | verbose,rank_ldom |
-| 2    | 32              | 64  | 2   | 32                | verbose,rank_ldom |
-|      | 36              | 72  | 2   | 36                | verbose,rank_ldom |
-| 4    | 32              | 128 | 4   | 32                | verbose,rank_ldom |
-|      | 36              | 144 | 4   | 36                | verbose,rank_ldom |
-| 8    | 32              | 256 | 8   | 32                | verbose,rank_ldom |
-|      | 36              | 288 | 8   | 36                | verbose,rank_ldom |
+| ノード数 | ノード当たりの<br>MPIプロセス数 | -n  | -N  | --cpu-bind |
+| :--: | :-----------------: | :-: | :-: | :--------: |
+| 1    | 32                  | 32  | 1   | rank_ldom  |
+|      | 36                  | 36  | 1   | rank_ldom  |
+| 2    | 32                  | 64  | 2   | rank_ldom  |
+|      | 36                  | 72  | 2   | rank_ldom  |
+| 4    | 32                  | 128 | 4   | rank_ldom  |
+|      | 36                  | 144 | 4   | rank_ldom  |
+| 8    | 32                  | 256 | 8   | rank_ldom  |
+|      | 36                  | 288 | 8   | rank_ldom  |
 
 また、本テクニカルTipsの **[3. NVMe SSDローカルディスクをストレージ領域に活用する方法](#3-nvme-ssdローカルディスクをストレージ領域に活用する方法)** の結果から、NVMe SSDローカルディスクを解析フローのストレージ領域に使用することが有効であると判明しているため本Tipsもこの方法を採用することとし、 **[3.0. 概要](#3-0-概要)** に記載の7ステップにかかる時間を個別に取得出来るようにした上で、結果の妥当性を確認するために各テストケースをそれぞれ5回計測します。  
 なお、ここでは計算結果の出力頻度（ **writeInterval** ）にデフォルトの1,000タイムステップを使用している（計算結果を出力しない）ため、NVMe SSDローカルディスクを使用する効果は限定されます。
@@ -246,7 +235,7 @@ NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerC
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 10タイムステップ（デフォルト値：1,000タイムステップ）
 
-※5）NPSの設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※5）**NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※6） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。
@@ -262,17 +251,11 @@ NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerC
 この際、 **OpenFOAM** の設定ファイル **system/controlDict** の **writeInterval** を **10** に変更します。  
 この値がデフォルト値 **1,000** のままの場合、計算結果を出力しないため、NVMe SSDローカルディスクの効果を得ることが出来ません。
 
-また、 **Slurm** の設定ファイル **slurm.conf** の **NodeName=DEFAULT** で始まる行を以下のように修正します。
+ジョブスクリプトに指定する **Slurm** のオプションは、以下のように指定します。
 
-```sh
-NodeName=DEFAULT CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
-```
-
-また、ジョブスクリプトに指定する **Slurm** のオプションを以下のように指定します。
-
-| \-n | \-N | --ntasks-per-node | --cpu-bind        |
-| :-: | :-: | :---------------: | :---------------: |
-| 288  | 8   | 36                | verbose,rank_ldom |
+| -n | -N | --cpu-bind        |
+| :-: | :-: |  :---------------: |
+| 288  | 8   | rank_ldom |
 
 また、 **[3.0. 概要](#3-0-概要)** に記載の7ステップにかかる時間を個別に取得出来るようにした上で、結果の妥当性を確認するために各テストケースをそれぞれ5回計測します。
 
