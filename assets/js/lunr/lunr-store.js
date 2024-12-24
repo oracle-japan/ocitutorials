@@ -1182,7 +1182,7 @@ var store = [{
         "teaser": null
       },{
         "title": "パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法",
-        "excerpt":"0. 概要 ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。 NPS（NUMA nodes per socket） NPS は、CPUソケット当たりの NUMA（Non-Umiform Memory Access）ノード数を指定するBIOS設定です。 現在のサーバ用途CPUでメモリ性能を向上させるために採用されているメモリインタリーブは、インターリーブするメモリチャネルを同一NUMAノードに接続されるものに限定します。このため、NPSを適切に調整することで、あるCPUコアから見て距離的に同じメモリチャネルのみをインターリーブし、 STREAM ベンチマークのようなメモリアクセスパターンを持つアプリケーションの性能を向上させることが可能でです。 例えば、AMD EPYC 9654プロセッサと同じアーキテクチャの BM.Standard.E5.192 のプロセッサは、12個の CCD（Core Complex Die）と、 I/O Die 内の UMC（Unified Memory Controller）が下図 （出典： AMD EPYC 9004 Series Architecture Overview）のように構成されており、12個の UMC が最も距離が近い関係（ローカル）にある3個の UMC 4グループに分かれています。 そこで NPS を4に設定することで、最も距離の近い3個の UMC のグループ内にメモリインターリーブを限定します。 指定可能な NPS 値は、対象のシェイプ毎に異なり、HPCワークロード向けベアメタルシェイプでは下表のようになっています。 シェイプ サポートする...","categories": [],
+        "excerpt":"0. 概要 ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。 NUMA nodes per socket （以降 NPS と呼称） NPS は、CPUソケット当たりの NUMA（Non-Umiform Memory Access）ノード数を指定するBIOS設定です。 現在のサーバ用途CPUでメモリ性能を向上させるために採用されているメモリインタリーブは、インターリーブするメモリチャネルを同一NUMAノードに接続されるものに限定します。このため、NPSを適切に調整することで、あるCPUコアから見て距離的に同じメモリチャネルのみをインターリーブし、 STREAM ベンチマークのようなメモリアクセスパターンを持つアプリケーションの性能を向上させることが可能でです。 例えば、AMD EPYC 9654プロセッサと同じアーキテクチャの BM.Standard.E5.192 のプロセッサは、12個の CCD（Core Complex Die）と、 I/O Die 内の UMC（Unified Memory Controller）が下図 （出典： AMD EPYC 9004 Series Architecture Overview）のように構成されており、12個の UMC が最も距離が近い関係（ローカル）にある3個の UMC 4グループに分かれています。 そこで NPS を4に設定することで、最も距離の近い3個の UMC のグループ内にメモリインターリーブを限定します。 指定可能な NPS...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/bios-setting/",
         "teaser": null
@@ -1200,7 +1200,7 @@ var store = [{
         "teaser": null
       },{
         "title": "CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips",
-        "excerpt":"0. 概要 本パフォーマンス関連Tipsは、 BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタで OpenFOAM を使用する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。 メモリ帯域の有効利用を考慮した最適なノード内並列実行方法 スケーラビリティーを考慮した最適なノード間並列実行方法 NVMe SSDローカルディスクをストレージ領域に活用する方法 本パフォーマンス関連Tipsの性能計測は、 OCI HPCテクニカルTips集 の OpenFOAMインストール・利用方法 に従って構築された OpenFOAM を使用し、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境でバッチジョブとして計測しています。 また、計算ノードに使用する BM.Optimized3.36 は、 OpenFOAM がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 OCI HPCパフォーマンス関連情報 の パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法 の手順に従い SMT を無効化しています。 1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法 1-0. 概要 本Tipsは、 OpenFOAM の実行性能がプロセッサ演算処理あたり利用可能なメモリ帯域に大きく依存することを念頭に、以下のパラメータを変更することでノード内並列実行時の性能がどのように変化するか、また最も性能の良いパラメータの組み合わせは何かという観点で、性能計測とその考察を行います。 NPS （Numa node...","categories": [],
+        "excerpt":"0. 概要 本パフォーマンス関連Tipsは、 BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタで OpenFOAM を使用する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。 メモリ帯域の有効利用を考慮した最適なノード内並列実行方法 スケーラビリティーを考慮した最適なノード間並列実行方法 NVMe SSDローカルディスクをストレージ領域に活用する方法 本パフォーマンス関連Tipsの性能計測は、 OCI HPCテクニカルTips集 の OpenFOAMインストール・利用方法 に従って構築された OpenFOAM を使用し、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境でバッチジョブとして計測しています。 また、 NUMA nodes per socket （以降 NPS と呼称）に NPS1 と NPS2 を指定して実行する計測は、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム運用Tips の 3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 に従って構築した Slurm 環境で行っています。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/openfoam-tuning/",
         "teaser": null
@@ -1368,7 +1368,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/tech-knowhow/install-openfoam/architecture_diagram.png"
       },{
         "title": "Slurmによるリソース管理・ジョブ管理システム運用Tips",
-        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 メンテナンスを考慮した計算/GPUノードの ステータス 変更方法 ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 これらのTipsは、全て OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境を前提に記載します。 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 [Prolog] 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt; $log_file...","categories": [],
+        "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 メンテナンスを考慮した計算/GPUノードの ステータス 変更方法 ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 複数ジョブによる計算/GPUノード共有方法 これらのTipsは、全て OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境を前提に記載します。 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 [Prolog] 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt;...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/slurm-tips/",
         "teaser": null

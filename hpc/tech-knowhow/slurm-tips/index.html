@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-24T15:53:00+09:00">
+  <meta property="article:published_time" content="2024-12-24T22:22:54+09:00">
 
 
 
@@ -386,7 +386,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
     <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
-    <meta itemprop="datePublished" content="2024-12-24T15:53:00+09:00">
+    <meta itemprop="datePublished" content="2024-12-24T22:22:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -397,7 +397,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-prologepilogセットアップ方法">1. Prolog/Epilogセットアップ方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-セットアップ手順">1-1. セットアップ手順</a></li><li><a href="#1-2-稼働確認">1-2. 稼働確認</a></li></ul></li><li><a href="#2-メンテナンスを考慮した計算gpuノードのステータス変更方法">2. メンテナンスを考慮した計算/GPUノードのステータス変更方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-計算gpuノードのステータスをオフラインに変更">2-1. 計算/GPUノードのステータスをオフラインに変更</a></li><li><a href="#2-2-計算gpuノードのステータスをオンラインに変更">2-2. 計算/GPUノードのステータスをオンラインに変更</a></li></ul></li><li><a href="#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御">3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-slurmconf修正">3-1. slurm.conf修正</a></li><li><a href="#32-slurmconf修正の反映">3.2. slurm.conf修正の反映</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-prologepilogセットアップ方法">1. Prolog/Epilogセットアップ方法</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-セットアップ手順">1-1. セットアップ手順</a></li><li><a href="#1-2-稼働確認">1-2. 稼働確認</a></li></ul></li><li><a href="#2-メンテナンスを考慮した計算gpuノードのステータス変更方法">2. メンテナンスを考慮した計算/GPUノードのステータス変更方法</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-計算gpuノードのステータスをオフラインに変更">2-1. 計算/GPUノードのステータスをオフラインに変更</a></li><li><a href="#2-2-計算gpuノードのステータスをオンラインに変更">2-2. 計算/GPUノードのステータスをオンラインに変更</a></li></ul></li><li><a href="#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御">3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-slurmconf修正">3-1. slurm.conf修正</a></li><li><a href="#32-slurmconf修正の反映">3.2. slurm.conf修正の反映</a></li></ul></li><li><a href="#4-複数ジョブによる計算gpuノード共有方法">4. 複数ジョブによる計算/GPUノード共有方法</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-slurmconf修正">4-1. slurm.conf修正</a></li><li><a href="#42-slurmconf修正の反映">4.2. slurm.conf修正の反映</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -410,6 +410,7 @@
   <li><strong><a href="https://slurm.schedmd.com/prolog_epilog.html">Prolog/Epilog</a></strong> セットアップ方法</li>
   <li>メンテナンスを考慮した計算/GPUノードの <strong><a href="https://slurm.schedmd.com/scontrol.html#OPT_State_2">ステータス</a></strong> 変更方法</li>
   <li>ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</li>
+  <li>複数ジョブによる計算/GPUノード共有方法</li>
 </ol>
 
 <p>これらのTipsは、全て <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境を前提に記載します。</p>
@@ -452,7 +453,7 @@
 
 <h2 id="1-1-セットアップ手順">1-1. セットアップ手順</h2>
 
-<p>Slurmマネージャと全ての計算/GPUノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
+<p>Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PrologFlags</span><span class="o">=</span>Alloc
 <span class="nv">Prolog</span><span class="o">=</span>/opt/slurm/etc/scripts/prolog.d/<span class="k">*</span>
@@ -617,35 +618,65 @@ Swap:         7.6Gi          0B       7.6Gi
 <h2 id="3-0-概要">3-0. 概要</h2>
 
 <p>HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソースを有するヘテロジニアスな環境となることがあります。<br />
-この際、実行するジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 <strong>Slurm</strong> のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。</p>
+この際、ジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 <strong>Slurm</strong> のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。</p>
 
 <p>本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで想定する計算/GPUノードに適切にジョブが割当てられる <strong>Slurm</strong> 環境を構築する方法を解説します。</p>
 
-<p>構築する <strong>Slurm</strong> 環境は、以下とします。</p>
+<p>構築する <strong>Slurm</strong> 環境は、計算ノードに6ノードの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用し、これを <strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称）と <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称）の組合せが以下となるパーティション構成とします。（※1）</p>
 
 <table>
   <thead>
     <tr>
       <th style="text-align: center">パーティション名</th>
-      <th style="text-align: center">割当てられる計算/GPUノード名</th>
-      <th style="text-align: center">デフォルトパーティション（※1）</th>
+      <th style="text-align: center">割当てられるノード名</th>
+      <th style="text-align: center">NPS</th>
+      <th style="text-align: center">SMT</th>
+      <th style="text-align: center">デフォルトパーティション（※2）</th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <td style="text-align: center">all</td>
+      <td style="text-align: center">inst-aaaaa-x9 inst-bbbbb-x9<br />inst-ccccc-x9 inst-ddddd-x9<br />inst-eeeee-x9 inst-fffff-x9</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">Yes</td>
+    </tr>
+    <tr>
       <td style="text-align: center">nps1</td>
       <td style="text-align: center">inst-aaaaa-x9 inst-bbbbb-x9</td>
-      <td style="text-align: center">Yes</td>
+      <td style="text-align: center"><strong>NPS1</strong></td>
+      <td style="text-align: center">無効</td>
+      <td style="text-align: center">No</td>
     </tr>
     <tr>
       <td style="text-align: center">nps2</td>
       <td style="text-align: center">inst-ccccc-x9 inst-ddddd-x9</td>
+      <td style="text-align: center"><strong>NPS2</strong></td>
+      <td style="text-align: center">無効</td>
+      <td style="text-align: center">No</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">smte</td>
+      <td style="text-align: center">inst-eeeee-x9 inst-fffff-x9smt</td>
+      <td style="text-align: center"><strong>NPS1</strong></td>
+      <td style="text-align: center">有効</td>
       <td style="text-align: center">No</td>
     </tr>
   </tbody>
 </table>
 
-<p>※1）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。</p>
+<p>※1）<strong>NPS</strong> と <strong>SMT</strong> を指定したインスタンスの作成方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。<br />
+※2）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。</p>
+
+<p>これにより、以下の割り当て制御が可能になります。</p>
+
+<ul>
+  <li><strong>NPS</strong> にこだわらないジョブはパーティションを指定せずに投入（デフォルトの <strong>all</strong> に投入される）</li>
+  <li><strong>NPS1</strong> で <strong>SMT</strong> が無効の計算ノードで実行するジョブはパーティション <strong>nps1</strong> に投入</li>
+  <li><strong>NPS2</strong> の計算ノードで実行するジョブはパーティション <strong>nps2</strong> に投入</li>
+  <li><strong>SMT</strong> が有効の計算ノードで実行するジョブはパーティション <strong>smt</strong> に投入</li>
+</ul>
 
 <h2 id="3-1-slurmconf修正">3-1. slurm.conf修正</h2>
 
@@ -653,10 +684,18 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>作成する <strong>slurm.conf</strong> は、 <strong>NodeName</strong> 行と <strong>PartitionName</strong> 行を以下に修正します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
-<span class="nv">PartitionName</span><span class="o">=</span>nps1 <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>2 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>inst-ccccc-x9,inst-ddddd-x9 <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>4 <span class="nv">CoresPerSocket</span><span class="o">=</span>9 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>inst-eeeee-x9,inst-fffff-x9 <span class="nv">CPUs</span><span class="o">=</span>72 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>2 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 <span class="nv">ThreadsPerCore</span><span class="o">=</span>2 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">PartitionName</span><span class="o">=</span>all <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>nps1 <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 <span class="nv">PartitionName</span><span class="o">=</span>nps2 <span class="nv">Nodes</span><span class="o">=</span>inst-ccccc-x9,inst-ddddd-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>smte <span class="nv">Nodes</span><span class="o">=</span>inst-eeeee-x9,inst-fffff-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </code></pre></div></div>
+
+<p>この設定は、 <strong>BM.Optimized3.36</strong> がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 <strong>NPS1</strong> と <strong>NPS2</strong> と <strong>SMT</strong> 有効・無効の計算ノードを異なるリソース定義の <strong>NodeName</strong> フィールドで定義しています。（※3）</p>
+
+<p>※3）<strong>slurm.conf</strong> 中の <strong>Socket</strong> は、 <strong>NUMA</strong>（Non-Umiform Memory Access）ノードに相当するため、 <strong>NPS2</strong> の場合は <strong>Socket</strong> がノード当たり4個として定義します。</p>
 
 <h2 id="32-slurmconf修正の反映">3.2. slurm.conf修正の反映</h2>
 
@@ -669,12 +708,104 @@ Swap:         7.6Gi          0B       7.6Gi
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
 </code></pre></div></div>
 
-<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した内容が反映されていることを確認します。</p>
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-nps1<span class="k">*</span>        up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
+all<span class="k">*</span>         up   infinite      6   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9,inst-eeeee-x9,inst-fffff-x9
+nps1         up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
 nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
+smte         up   infinite      2   idle inst-eeeee-x9,inst-fffff-x9
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="4-複数ジョブによる計算gpuノード共有方法">4. 複数ジョブによる計算/GPUノード共有方法</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>計算/GPUノードのノード間を高帯域・低レイテンシで接続する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> は、対応するシェイプが <strong>ベア・メタル・インスタンス</strong> となるため、 <strong>クラスタ・ネットワーク</strong> の利用を前提とする <strong>ベア・メタル・インスタンス</strong> ベースのHPC/GPUクラスタで使用するリソース（コア・メモリ）が少ないジョブを実行する場合、リソース有効活用の観点から複数のジョブを1ノードに混在させる運用の必要性が生じます。<br />
+ただこの場合でも、複数ノードを使用するマルチノードジョブを実行する計算/GPUノードでは、これらのジョブの実行を妨げないようにノード占有で実行する必要があります。</p>
+
+<p>本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで、ノード占有ジョブとノード共有ジョブが混在する <strong>Slurm</strong> 環境を構築する方法を解説します。</p>
+
+<p>構築する <strong>Slurm</strong> 環境は、計算ノードに3ノードの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> （搭載コア数： 36、 搭載メモリ量： 512GB（<strong>Slurm</strong> 設定上の利用可能メモリ量を500GBに設定））を使用し、以下のパーティション構成とします。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">パーティション名</th>
+      <th style="text-align: center">割当てられるノード名</th>
+      <th style="text-align: center">ノードの占有/共有</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">large</td>
+      <td style="text-align: center">inst-aaaaa-x9 inst-bbbbb-x9</td>
+      <td style="text-align: center">占有</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">small</td>
+      <td style="text-align: center">inst-ccccc-x9</td>
+      <td style="text-align: center">共有</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これにより、以下の運用が可能になります。</p>
+
+<ul>
+  <li>ノード占有ジョブはパーティション <strong>large</strong> に投入</li>
+  <li>ノード共有ジョブはパーティション <strong>small</strong> に投入</li>
+  <li>パーティション <strong>large</strong> に投入されたジョブは実行中ジョブの総使用ノード数が2ノードを超えない範囲で先着順にノード占有実行</li>
+  <li>パーティション <strong>small</strong> に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500GBを超えない範囲で先着順にノード共有実行（※4）</li>
+</ul>
+
+<p>※4）ジョブ投入時は、使用するメモリ量を <strong>–mem=xxxxM</strong> オプションで指定する必要があります。<br />
+以下は、使用するメモリ量を100,000 MBに指定してジョブを <strong>small</strong> パーティションに投入しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>srun <span class="nt">-p</span> small <span class="nt">-n</span> 4 <span class="nt">--mem</span><span class="o">=</span>100000M ./a.out
+</code></pre></div></div>
+
+<h2 id="4-1-slurmconf修正">4-1. slurm.conf修正</h2>
+
+<p>本章は、本Tipsの想定する運用要件を実現するよう <strong>slurm.conf</strong> を修正します。</p>
+
+<p>作成する <strong>slurm.conf</strong> は、 <strong>SelectType</strong> 行、 <strong>NodeName</strong> 行、及び <strong>PartitionName</strong> 行を以下に修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>:
+<span class="nv">SelectType</span><span class="o">=</span><span class="k">select</span>/cons_tres
+:
+<span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9 <span class="nv">CPUs</span><span class="o">=</span>36 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>2 <span class="nv">CoresPerSocket</span><span class="o">=</span>18 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>500000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">PartitionName</span><span class="o">=</span>large <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP <span class="nv">OverSubscribe</span><span class="o">=</span>Exclusive
+<span class="nv">PartitionName</span><span class="o">=</span>small <span class="nv">Nodes</span><span class="o">=</span>inst-ccccc-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+:
+</code></pre></div></div>
+
+<p>この設定は、リソース選択アルゴリズムを指定する <strong>SelectType</strong> 行にノード共有ジョブを可能にする <strong>select/cons_tres</strong> を指定し、パーティション <strong>large</strong> に <strong>OverSubscribe=Exclusive</strong> を指定することでノード占有パーティションを宣言しています。</p>
+
+<h2 id="42-slurmconf修正の反映">4.2. slurm.conf修正の反映</h2>
+
+<p>本章は、先に修正した <strong>slurm.conf</strong> を反映します。</p>
+
+<p>Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した <strong>slurm.conf</strong> を <strong>/opt/slurm/etc</strong> ディレクトリにコピーします。</p>
+
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 <strong>slurm.conf</strong> ファイルの変更を反映、その結果を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
+<span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol show config"</span> | <span class="nb">grep</span> <span class="s2">"SelectType "</span>
+SelectType              <span class="o">=</span> <span class="k">select</span>/cons_tres
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sinfo <span class="nt">-l</span>
+Tue Dec 24 18:00:11 2024
+PARTITION AVAIL  TIMELIMIT   JOB_SIZE ROOT OVERSUBS     GROUPS  NODES       STATE RESERVATION NODELIST
+small        up   infinite 1-infinite   no       NO        all      1        idle             inst-ccccc-x9
+large        up   infinite 1-infinite   no EXCLUSIV        all      2        idle             inst-aaaaa-x9,inst-bbbbb-x9
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -688,7 +819,7 @@ nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-24T15:53:00+09:00">December 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-24T22:22:54+09:00">December 24, 2024</time></p>
 
       </footer>
 

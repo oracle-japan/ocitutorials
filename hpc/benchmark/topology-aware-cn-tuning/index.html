@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2024-12-24T15:53:00+09:00">
+  <meta property="article:published_time" content="2024-12-24T22:22:54+09:00">
 
 
 
@@ -386,7 +386,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法">
     <meta itemprop="description" content="クラスタ・ネットワークは、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。本パフォーマンス関連Tipsは、このクラスタ・ネットワークのレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性能を最適化する方法を解説します。">
-    <meta itemprop="datePublished" content="2024-12-24T15:53:00+09:00">
+    <meta itemprop="datePublished" content="2024-12-24T22:22:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -523,17 +523,27 @@
   <li>リーフスイッチ定義行の <strong>Nodes=</strong> に実際のインスタンスの名前解決可能なホスト名を記載</li>
 </ul>
 
-<p>次に、Slurmマネージャと全ての計算ノードで <strong>slurm.conf</strong> を以下のように修正します。</p>
+<p>次に、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードで <strong>slurm.conf</strong> を以下のように修正します。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diff slurm.conf_org slurm.conf 
 6c6
 &lt; SelectType=select/linear
 ---
 &gt; SelectType=select/cons_tres
-28a29
+22c22
+&lt; NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+---
+&gt; NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+23c23
+&lt; PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+---
+&gt; PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP OverSubscribe=Exclusive
+24a25
 &gt; TopologyPlugin=topology/tree
 $ 
 </code></pre></div></div>
+
+<p>この設定は、リソース選択アルゴリズムを指定する <strong>SelectType</strong> 行に <strong>Topology-aware resource allocation</strong> を可能にする <strong>select/cons_tres</strong> を指定し、これに伴い計算ノードのジョブ共有が有効となってしまうパーティション <strong>sltest</strong> に <strong>OverSubscribe=Exclusive</strong> を指定することで再度ノード占有パーティションであることを宣言し、スパイン・リーフトポロジーのためのプラグイン <strong>topology/tree</strong> を <strong>TopologyPlugin</strong> 行に定義しています。</p>
 
 <p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先の <strong>slurm.conf</strong> の修正を反映します。</p>
 
@@ -708,7 +718,7 @@ Dispatched hosts are inst-ccccc-x9,inst-ddddd-x9
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-24T15:53:00+09:00">December 24, 2024</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2024-12-24T22:22:54+09:00">December 24, 2024</time></p>
 
       </footer>
 
