@@ -3,14 +3,8 @@ title: "OCI セキュリティ チュートリアル"
 excerpt: "OCIにおける各種セキュリティ関連サービスについて学習できるチュートリアルです。"
 permalink: /security/
 layout: single
-# layout: collection
-# entries_layout: grid
-# tags: "security"
 show_excerpts: true
-# classes: wide
 toc: true
-# date: "2022-10-11"
-# lastmod: "2022-10-11"
 ---
 
 <!-- このページのpath:
@@ -20,7 +14,7 @@ toc: true
 -->
 
 
-Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮して開発されたクラウドサービスになります。
+Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮して開発されたクラウドサービスです。  
 セキュリティに非常に力を入れて取り組んでおり、無償でご利用いただけるクラウドサービスも多数提供しています。
 
 このページではセキュリティ編として、Oracle Cloud Infrastructureで提供しているセキュリティ関連サービスのチュートリアルをまとめています。
@@ -62,7 +56,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <span style="color: olivedrab; ">**環境準備編**</span>
 
 + **[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)**  
-   本チュートリアルでは、OCI Network Firewallの環境を構築します。
+   本チュートリアルでは、OCI Network Firewallの環境を構築し、動作を確認します。動作確認にはeicarファイルを使用します。
 
 + **[ハブアンドスポーク構成でOCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup-hubspoke/)**  
    本チュートリアルではOCI Network Firewallをハブアンドスポーク構成で構築します。
@@ -74,10 +68,6 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 + **[OCI Network Firewallの動作を検証する](/ocitutorials/security/networkfirewall-policycheck/)**  
    本チュートリアルでは、サービス・リストとURLリストを設定し、OCI Network Firewallの動作を確認します。
-
-+ **[OCI Network FirewallのIDS/IPS機能を検証する](/ocitutorials/security/networkfirewall-idps/)**  
-   本チュートリアルでは、「OCI Network Firewallを構築する」の続編として、IDS/IPSの設定および動作を確認します。IDS/IPSの動作検証には、Kali LinuxのツールおよびEicarファイルを使用します。
-
 
 + **[OCI Network Firewallのログを分析する](/ocitutorials/security/networkfirewall-loganalytics/)**  
    本チュートリアルでは「OCI Network Firewallを構築する」の続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。
