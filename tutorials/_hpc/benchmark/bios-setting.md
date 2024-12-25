@@ -13,7 +13,7 @@ header:
 
 ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。
 
-- **NPS**（NUMA nodes per socket）  
+- **NUMA nodes per socket** （以降 **NPS** と呼称）  
   **NPS** は、CPUソケット当たりの **NUMA**（Non-Umiform Memory Access）ノード数を指定するBIOS設定です。  
   現在のサーバ用途CPUでメモリ性能を向上させるために採用されているメモリインタリーブは、インターリーブするメモリチャネルを同一NUMAノードに接続されるものに限定します。このため、NPSを適切に調整することで、あるCPUコアから見て距離的に同じメモリチャネルのみをインターリーブし、 **[STREAM](https://www.cs.virginia.edu/stream/)** ベンチマークのようなメモリアクセスパターンを持つアプリケーションの性能を向上させることが可能でです。
 
@@ -34,7 +34,7 @@ header:
 
     ※1）2CPUソケットを1 **NUMA** ノードとして構成
 
-- **SMT** （Simultanious Multi Threading）  
+- **Simultanious Multi Threading** （以降 **SMT** と呼称）  
   **SMT** は、CPUコア当たりに2個の論理スレッドを割当てるかどうかのBIOS設定です。  
   HPCワークロードにみられるCPUインテンシブなアプリケーションは、この **SMT** を無効化する（CPUコア当たりに1個の論理スレッドを割当てる）ことで、性能が向上することがあります。
 

@@ -83,7 +83,7 @@ SwitchName=ss0 Switches=ls[0-1]
 - それ以外のリーフスイッチ定義行を実際のリーフスイッチ数分作成
 - リーフスイッチ定義行の **Nodes=** に実際のインスタンスの名前解決可能なホスト名を記載
 
-次に、Slurmマネージャと全ての計算ノードで **slurm.conf** を以下のように修正します。
+次に、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードで **slurm.conf** を以下のように修正します。
 
 ```
 $ diff slurm.conf_org slurm.conf 
@@ -91,10 +91,20 @@ $ diff slurm.conf_org slurm.conf
 < SelectType=select/linear
 ---
 > SelectType=select/cons_tres
-28a29
+22c22
+< NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+---
+> NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+23c23
+< PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+---
+> PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP OverSubscribe=Exclusive
+24a25
 > TopologyPlugin=topology/tree
 $ 
 ```
+
+この設定は、リソース選択アルゴリズムを指定する **SelectType** 行に **Topology-aware resource allocation** を可能にする **select/cons_tres** を指定し、これに伴い計算ノードのジョブ共有が有効となってしまうパーティション **sltest** に **OverSubscribe=Exclusive** を指定することで再度ノード占有パーティションであることを宣言し、スパイン・リーフトポロジーのためのプラグイン **topology/tree** を **TopologyPlugin** 行に定義しています。
 
 次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先の **slurm.conf** の修正を反映します。
 

@@ -16,6 +16,7 @@ header:
 1. **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** セットアップ方法
 2. メンテナンスを考慮した計算/GPUノードの **[ステータス](https://slurm.schedmd.com/scontrol.html#OPT_State_2)** 変更方法
 3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御
+4. 複数ジョブによる計算/GPUノード共有方法
 
 これらのTipsは、全て **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境を前提に記載します。
 
@@ -59,7 +60,7 @@ log_file=/var/log/slurm/clean_memory.log
 
 ## 1-1. セットアップ手順
 
-Slurmマネージャと全ての計算/GPUノードの **/opt/slurm/etc/slurm.conf** に以下の記述を追加します。
+Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **/opt/slurm/etc/slurm.conf** に以下の記述を追加します。
 
 ```sh
 PrologFlags=Alloc
@@ -237,18 +238,28 @@ $
 ## 3-0. 概要
 
 HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソースを有するヘテロジニアスな環境となることがあります。  
-この際、実行するジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 **Slurm** のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。
+この際、ジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 **Slurm** のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。
 
 本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで想定する計算/GPUノードに適切にジョブが割当てられる **Slurm** 環境を構築する方法を解説します。
 
-構築する **Slurm** 環境は、以下とします。
+構築する **Slurm** 環境は、計算ノードに6ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、これを **NUMA nodes per socket** （以降 **NPS** と呼称）と **Simultanious Multi Threading** （以降 **SMT** と呼称）の組合せが以下となるパーティション構成とします。（※1）
 
-| パーティション名 | 割当てられる計算/GPUノード名            | デフォルトパーティション（※1） |
-| :------: | :-------------------------: | :--------------: |
-| nps1     | inst-aaaaa-x9 inst-bbbbb-x9 | Yes              |
-| nps2     | inst-ccccc-x9 inst-ddddd-x9 | No               |
+| パーティション名 | 割当てられるノード名                                                                                | NPS      | SMT | デフォルトパーティション（※2） |
+| :------: | :---------------------------------------------------------------------------------------: | :------: | :-: | :--------------: |
+| all      | inst-aaaaa-x9 inst-bbbbb-x9<br>inst-ccccc-x9 inst-ddddd-x9<br>inst-eeeee-x9 inst-fffff-x9 | -        | -   | Yes              |
+| nps1     | inst-aaaaa-x9 inst-bbbbb-x9                                                               | **NPS1** | 無効  | No               |
+| nps2     | inst-ccccc-x9 inst-ddddd-x9                                                               | **NPS2** | 無効  | No               |
+| smte     | inst-eeeee-x9 inst-fffff-x9smt                                                            | **NPS1** | 有効  | No               |
 
-※1）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。
+※1）**NPS** と **SMT** を指定したインスタンスの作成方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※2）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。
+  
+これにより、以下の割り当て制御が可能になります。
+
+- **NPS** にこだわらないジョブはパーティションを指定せずに投入（デフォルトの **all** に投入される）
+- **NPS1** で **SMT** が無効の計算ノードで実行するジョブはパーティション **nps1** に投入
+- **NPS2** の計算ノードで実行するジョブはパーティション **nps2** に投入
+- **SMT** が有効の計算ノードで実行するジョブはパーティション **smt** に投入
 
 ## 3-1. slurm.conf修正
 
@@ -257,10 +268,18 @@ HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソース
 作成する **slurm.conf** は、 **NodeName** 行と **PartitionName** 行を以下に修正します。
 
 ```sh
-NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
-PartitionName=nps1 Nodes=inst-aaaaa-x9,inst-bbbbb-x9 Default=YES MaxTime=INFINITE State=UP
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-eeeee-x9,inst-fffff-x9 CPUs=72 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=2 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+PartitionName=all Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+PartitionName=nps1 Nodes=inst-aaaaa-x9,inst-bbbbb-x9 MaxTime=INFINITE State=UP
 PartitionName=nps2 Nodes=inst-ccccc-x9,inst-ddddd-x9 MaxTime=INFINITE State=UP
+PartitionName=smte Nodes=inst-eeeee-x9,inst-fffff-x9 MaxTime=INFINITE State=UP
 ```
+
+この設定は、 **BM.Optimized3.36** がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 **NPS1** と **NPS2** と **SMT** 有効・無効の計算ノードを異なるリソース定義の **NodeName** フィールドで定義しています。（※3）
+
+※3）**slurm.conf** 中の **Socket** は、 **NUMA**（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
 
 ## 3.2. slurm.conf修正の反映
 
@@ -274,12 +293,89 @@ Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、
 $ sudo su - slurm -c "scontrol reconfigure"
 ```
 
-次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した内容が反映されていることを確認します。
+次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
 
 ```sh
 $ sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-nps1*        up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
+all*         up   infinite      6   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9,inst-eeeee-x9,inst-fffff-x9
+nps1         up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
 nps2         up   infinite      2   idle inst-ccccc-x9,inst-ddddd-x9
+smte         up   infinite      2   idle inst-eeeee-x9,inst-fffff-x9
+$
+```
+
+***
+# 4. 複数ジョブによる計算/GPUノード共有方法
+
+## 4-0. 概要
+
+計算/GPUノードのノード間を高帯域・低レイテンシで接続する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、対応するシェイプが **ベア・メタル・インスタンス** となるため、 **クラスタ・ネットワーク** の利用を前提とする **ベア・メタル・インスタンス** ベースのHPC/GPUクラスタで使用するリソース（コア・メモリ）が少ないジョブを実行する場合、リソース有効活用の観点から複数のジョブを1ノードに混在させる運用の必要性が生じます。  
+ただこの場合でも、複数ノードを使用するマルチノードジョブを実行する計算/GPUノードでは、これらのジョブの実行を妨げないようにノード占有で実行する必要があります。
+
+本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで、ノード占有ジョブとノード共有ジョブが混在する **Slurm** 環境を構築する方法を解説します。
+
+構築する **Slurm** 環境は、計算ノードに3ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** （搭載コア数： 36、 搭載メモリ量： 512GB（**Slurm** 設定上の利用可能メモリ量を500GBに設定））を使用し、以下のパーティション構成とします。
+
+| パーティション名 | 割当てられるノード名                  | ノードの占有/共有 |
+| :------: | :-------------------------: | :---: |
+| large    | inst-aaaaa-x9 inst-bbbbb-x9 | 占有   |
+| small    | inst-ccccc-x9               | 共有    |
+
+これにより、以下の運用が可能になります。
+
+- ノード占有ジョブはパーティション **large** に投入
+- ノード共有ジョブはパーティション **small** に投入
+- パーティション **large** に投入されたジョブは実行中ジョブの総使用ノード数が2ノードを超えない範囲で先着順にノード占有実行
+- パーティション **small** に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500GBを超えない範囲で先着順にノード共有実行（※4）
+
+※4）ジョブ投入時は、使用するメモリ量を **--mem=xxxxM** オプションで指定する必要があります。  
+以下は、使用するメモリ量を100,000 MBに指定してジョブを **small** パーティションに投入しています。
+
+```sh
+$ srun -p small -n 4 --mem=100000M ./a.out
+```
+
+## 4-1. slurm.conf修正
+
+本章は、本Tipsの想定する運用要件を実現するよう **slurm.conf** を修正します。
+
+作成する **slurm.conf** は、 **SelectType** 行、 **NodeName** 行、及び **PartitionName** 行を以下に修正します。
+
+```sh
+:
+SelectType=select/cons_tres
+:
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+PartitionName=large Nodes=inst-aaaaa-x9,inst-bbbbb-x9 MaxTime=INFINITE State=UP OverSubscribe=Exclusive
+PartitionName=small Nodes=inst-ccccc-x9 MaxTime=INFINITE State=UP
+:
+```
+
+この設定は、リソース選択アルゴリズムを指定する **SelectType** 行にノード共有ジョブを可能にする **select/cons_tres** を指定し、パーティション **large** に **OverSubscribe=Exclusive** を指定することでノード占有パーティションを宣言しています。
+
+## 4.2. slurm.conf修正の反映
+
+本章は、先に修正した **slurm.conf** を反映します。
+
+Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した **slurm.conf** を **/opt/slurm/etc** ディレクトリにコピーします。
+
+次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映、その結果を確認します。
+
+```sh
+$ sudo su - slurm -c "scontrol reconfigure"
+$ sudo su - slurm -c "scontrol show config" | grep "SelectType "
+SelectType              = select/cons_tres
+$
+```
+
+次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
+
+```sh
+$ sinfo -l
+Tue Dec 24 18:00:11 2024
+PARTITION AVAIL  TIMELIMIT   JOB_SIZE ROOT OVERSUBS     GROUPS  NODES       STATE RESERVATION NODELIST
+small        up   infinite 1-infinite   no       NO        all      1        idle             inst-ccccc-x9
+large        up   infinite 1-infinite   no EXCLUSIV        all      2        idle             inst-aaaaa-x9,inst-bbbbb-x9
 $
 ```
