@@ -62,7 +62,7 @@ WordPress のデータベースを構成する MySQL イメージを設定しま
 
 - 「Registry hostname」：docker.io
 - 「Repository」：mysql
-- 「Tag オプション」：8.0.30
+- 「Tag オプション」：8.0.23
 
 タブですが、`OCI Container Registry`は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。`External registry`は、パブリックサービスなどのコンテナレジストリを設定できます。
 ここでは、 Docker Hub にある MySQL の公式コンテナイメージを使用します。
@@ -90,7 +90,7 @@ WordPress のデータベースを構成する MySQL イメージを設定しま
 
 MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。
 
-- 「Command arguments」：--default-authentication-plugin=mysql_native_password
+- 「Command arguments」： \-\-default-authentication-plugin=mysql_native_password
 
 ※defaultの前はハイフン2個です。
 
