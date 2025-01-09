@@ -19,9 +19,20 @@ header:
 
 構成に利用するサービスは以下の通りです。
 
-- テキスト生成モデル：OCI Generative AI(Command R Plus)
-- ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)
+- テキスト生成モデル：OCI Generative AI(cohere.command-r-plus-08-2024)
+  
+  ※2025/01時点で、利用可能なリージョンは以下です。
+  - サンパウロ(GRU)
+  - フランクフルト(FRA)
+  - 大阪(KIX)
+  - ロンドン(LHR)
+  - シカゴ(ORD)
+  
+  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。
+- ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(cohere.embed-multilingual-v3.0)
 - ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service、Autonomous Database(Always Free)
+
+本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm){:target="_blank"}から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。
 
 ※LangChainって何？という方は[こちらの記事](https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain) をご参照ください。
 
@@ -385,10 +396,12 @@ from langchain_community.embeddings import OCIGenAIEmbeddings
 
 利用する埋め込みモデルを定義します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。
 
+※service_endpointには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによって適宜修正してください。最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。例えばロンドンの場合は、service_endpointには*https://inference.generativeai.uk-london-1.oci.oraclecloud.com*と指定します。
+
 ```python
 embeddings = OCIGenAIEmbeddings(
     model_id="cohere.embed-multilingual-v3.0",
-    service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    service_endpoint="https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com",
     # compartment_idはご自身が利用されているコンパートメントのOCIDを指定してください
     compartment_id="ocid1.compartment.oc1..aaaaaaaxxxxxxx",
 )
@@ -664,15 +677,15 @@ template = """contextに従って回答してください:
 prompt = ChatPromptTemplate.from_template(template)
 ```
 
-次にテキスト生成モデルを指定します。まずはGenerative AI Serviceの command-r-plusです。
+次にテキスト生成モデルを指定します。まずはGenerative AI Serviceのcommand-r-plus-08-2024です。
 
 ```python
 from langchain_community.chat_models.oci_generative_ai import ChatOCIGenAI
 
 llm = ChatOCIGenAI(
-    # model_id="cohere.command-r-16k",
-    model_id="cohere.command-r-plus",
-    service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    # model_id="cohere.command-r-08-2024",
+    model_id="cohere.command-r-plus-08-2024",
+    service_endpoint="https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com",
     compartment_id="ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx",
     model_kwargs={"temperature": 0.7, "max_tokens": 500},
 )
@@ -744,7 +757,7 @@ OraBooster の製品は、オンラインや一部の小売店で購入するこ
 
 ## 番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン) 
 
-その他のモデルとしてCohere社のCommand-R-Plusを使ったパターンです。llm定義の部分をcohereに挿げ替えるだけで、その他のコードは全く同じです。LangChainを使うメリットですね。
+その他のモデルとしてCohere社のCommand-R-Plus-08-2024を使ったパターンです。llm定義の部分をcohereに挿げ替えるだけで、その他のコードは全く同じです。LangChainを使うメリットですね。
 
 ```python
 from langchain.schema.output_parser import StrOutputParser
@@ -765,7 +778,7 @@ os.environ["COHERE_API_KEY"] = getpass.getpass("Cochere API Key:")
 
 from langchain_cohere import ChatCohere
 
-llm_cohere = ChatCohere(model="command-r-plus")
+llm_cohere = ChatCohere(model="command-r-plus-08-2024")
 
 ベクトル検索を実行するベクトルデータベースを定義します。もちろんここでは事前に定義したvector_store_dotを指定します。
 
