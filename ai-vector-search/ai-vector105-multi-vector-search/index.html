@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-08T18:10:19+09:00">
+  <meta property="article:published_time" content="2025-01-09T17:05:16+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="105: マルチベクトル検索で複数のドキュメントを検索してみよう">
     <meta itemprop="description" content="AI Vector Searchのマルチベクトル検索では、複数のドキュメントをグルーピングすることで、最も一致する上位Ｋ個のベクトルを同時に取得することができます。">
-    <meta itemprop="datePublished" content="2025-01-08T18:10:19+09:00">
+    <meta itemprop="datePublished" content="2025-01-09T17:05:16+09:00">
     
 
     <div class="page__inner-wrap">
@@ -301,30 +301,46 @@
 <p><strong>前提条件 :</strong></p>
 
 <ul>
-  <li>
-    <p>Oracle Database 23ai Freeをインストールする済みであること
- <br />※インストール方法については、<a href="/ocitutorials/ai-vector-search/ai-vector102-23aifree-install" target="_blank">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</p>
+  <li>使用するOracle Databaseの環境があること
+    <ul>
+      <li>
+        <p>23ai freeで実行する場合、Oracle Database 23ai Freeをインストールする済みであること</p>
+
+        <p>※インストール方法については、<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/">102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう</a> を参照ください。</p>
+      </li>
+      <li>
+        <p>ADB23aiで実行する場合、Autonomous Database 23aiのインスタンスを構築済みであること。本記事では無償で使えるAlways Freeを使います。</p>
+
+        <p>※インスタンス作成方法については。<a href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/">101 : Always Freeで23aiのADBインスタンスを作成してみよう</a>をご参照ください。</p>
+      </li>
+    </ul>
   </li>
   <li>
     <p>AI Vector Searchの基本的な操作を学習済みであること
- <br /><a href="/ocitutorials/ai-vector-search/ai-vector103-basics/" target="_blank">103 ~</a>を参照ください。</p>
+ <br /><a href="/ocitutorials/ai-vector-search/ai-vector103-basics/">103 : Oracle AI Vector Searchの基本操作を試してみよう</a>を参照ください。</p>
   </li>
   <li>
-    <p>OCI Generative AI Serviceを使用できること</p>
+    <p>OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。</p>
+
+    <p>※2025/01時点で、利用可能なリージョンは以下です。</p>
     <ul>
-      <li>
-        <p>OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。</p>
-      </li>
-      <li>OCI アカウントのAPI署名キーの生成は完了であること
+      <li>サンパウロ(GRU)</li>
+      <li>フランクフルト(FRA)</li>
+      <li>大阪(KIX)</li>
+      <li>ロンドン(LHR)</li>
+      <li>シカゴ(ORD)</li>
+    </ul>
+
+    <p>最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm" target="_blank">こちら</a>から確認のうえ、最新のモデルを使用することを推奨します。以降のチュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。また大阪リージョンの利用が前提となっているため、それ以外のリージョンの場合は適宜サービス・エンドポイントを修正してください。</p>
+  </li>
+  <li>OCI アカウントのAPI署名キーの生成は完了であること
 <br />以下の情報を取得してください。必要があれば、<a href="https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two" target="_blank">API署名キーの生成方法</a>をご参照ください。
-        <ul>
-          <li><code class="language-plaintext highlighter-rouge">user</code> - キー・ペアが追加されるユーザーのOCID。</li>
-          <li><code class="language-plaintext highlighter-rouge">fingerprint</code> - 追加されたキーのフィンガープリント。</li>
-          <li><code class="language-plaintext highlighter-rouge">tenancy</code> - テナンシのOCID。</li>
-          <li><code class="language-plaintext highlighter-rouge">region</code> - コンソールで現在選択されているリージョン。</li>
-          <li><code class="language-plaintext highlighter-rouge">key_file</code> - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。</li>
-        </ul>
-      </li>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">user</code> - キー・ペアが追加されるユーザーのOCID。</li>
+      <li><code class="language-plaintext highlighter-rouge">fingerprint</code> - 追加されたキーのフィンガープリント。</li>
+      <li><code class="language-plaintext highlighter-rouge">tenancy</code> - テナンシのOCID。</li>
+      <li><code class="language-plaintext highlighter-rouge">region</code> - コンソールで現在選択されているリージョン。</li>
+      <li><code class="language-plaintext highlighter-rouge">key_file</code> - ダウンロードした秘密キー・ファイルへのパス。この値は、秘密キー・ファイルを保存したファイル・システム上のパスに更新する必要があります。</li>
       <li><code class="language-plaintext highlighter-rouge">compartment_ocid</code> - 利用するコンパートメントのOCIDを取得してください。</li>
     </ul>
   </li>
@@ -529,7 +545,7 @@ SET TIMING ON
     <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "35", "overlap": "0", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">chunk_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.chunk_id'</span><span class="p">,</span> <span class="n">chunk_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.chunk_data'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 
 <span class="k">UPDATE</span> <span class="n">doc_chunks</span>
-<span class="k">SET</span> <span class="n">embed_vector</span> <span class="o">=</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embedding</span><span class="p">(</span><span class="n">embed_data</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+<span class="k">SET</span> <span class="n">embed_vector</span> <span class="o">=</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embedding</span><span class="p">(</span><span class="n">embed_data</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
 <span class="p">);</span>
 
 <span class="k">COMMIT</span><span class="p">;</span>
@@ -539,7 +555,7 @@ SET TIMING ON
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">doc_queries</span> <span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">embedding</span><span class="p">)</span>
 <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="n">embed_data</span> <span class="n">query</span><span class="p">,</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embedding</span>
-<span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'彼は新しいプロジェクトの提案で成功を収めました。'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span> <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+<span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'彼は新しいプロジェクトの提案で成功を収めました。'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span> <span class="n">JSON_TABLE</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span> <span class="n">COLUMNS</span> <span class="p">(</span><span class="n">embed_data</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span> <span class="n">PATH</span> <span class="s1">'$.embed_data'</span><span class="p">,</span> <span class="n">embed_vector</span> <span class="k">CLOB</span> <span class="n">PATH</span> <span class="s1">'$.embed_vector'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 
 <span class="k">COMMIT</span><span class="p">;</span>
 </code></pre></div></div>
@@ -664,7 +680,7 @@ FETCH FIRST 2 PARTITIONS BY doc_id, 10 ROWS ONLY;
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-08T18:10:19+09:00">January 8, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-09T17:05:16+09:00">January 9, 2025</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-08T18:10:19+09:00">
+  <meta property="article:published_time" content="2025-01-09T17:05:16+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2025-01-08T18:10:19+09:00">
+    <meta itemprop="datePublished" content="2025-01-09T17:05:16+09:00">
     
 
     <div class="page__inner-wrap">
@@ -302,10 +302,25 @@
 <p>構成に利用するサービスは以下の通りです。</p>
 
 <ul>
-  <li>テキスト生成モデル：OCI Generative AI(Command R Plus)</li>
-  <li>ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(embed-multilingual-v3.0)</li>
+  <li>
+    <p>テキスト生成モデル：OCI Generative AI(cohere.command-r-plus-08-2024)</p>
+
+    <p>※2025/01時点で、利用可能なリージョンは以下です。</p>
+    <ul>
+      <li>サンパウロ(GRU)</li>
+      <li>フランクフルト(FRA)</li>
+      <li>大阪(KIX)</li>
+      <li>ロンドン(LHR)</li>
+      <li>シカゴ(ORD)</li>
+    </ul>
+
+    <p>最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。</p>
+  </li>
+  <li>ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(cohere.embed-multilingual-v3.0)</li>
   <li>ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service、Autonomous Database(Always Free)</li>
 </ul>
+
+<p>本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm" target="_blank">こちら</a>から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。</p>
 
 <p>※LangChainって何？という方は<a href="https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain">こちらの記事</a> をご参照ください。</p>
 
@@ -647,9 +662,11 @@ ipython
 
 <p>利用する埋め込みモデルを定義します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。</p>
 
+<p>※service_endpointには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによって適宜修正してください。最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。例えばロンドンの場合は、service_endpointには<em>https://inference.generativeai.uk-london-1.oci.oraclecloud.com</em>と指定します。</p>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">embeddings</span> <span class="o">=</span> <span class="nc">OCIGenAIEmbeddings</span><span class="p">(</span>
     <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.embed-multilingual-v3.0</span><span class="sh">"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
     <span class="c1"># compartment_idはご自身が利用されているコンパートメントのOCIDを指定してください
 </span>    <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">ocid1.compartment.oc1..aaaaaaaxxxxxxx</span><span class="sh">"</span><span class="p">,</span>
 <span class="p">)</span>
@@ -906,14 +923,14 @@ MIIExxxx
 <span class="n">prompt</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="p">.</span><span class="nf">from_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>次にテキスト生成モデルを指定します。まずはGenerative AI Serviceの command-r-plusです。</p>
+<p>次にテキスト生成モデルを指定します。まずはGenerative AI Serviceのcommand-r-plus-08-2024です。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
 
 <span class="n">llm</span> <span class="o">=</span> <span class="nc">ChatOCIGenAI</span><span class="p">(</span>
-    <span class="c1"># model_id="cohere.command-r-16k",
-</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus</span><span class="sh">"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="c1"># model_id="cohere.command-r-08-2024",
+</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus-08-2024</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">ocid1.compartment.oc1..xxxxxxxxxxxxxxxxxxx</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">temperature</span><span class="sh">"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="sh">"</span><span class="s">max_tokens</span><span class="sh">"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
 <span class="p">)</span>
@@ -978,7 +995,7 @@ MIIExxxx
 
 <h2 id="番外編ragを実装するcohere社-command-r-plusのパターン">番外編：RAGを実装する(Cohere社 Command-R-Plusのパターン)</h2>
 
-<p>その他のモデルとしてCohere社のCommand-R-Plusを使ったパターンです。llm定義の部分をcohereに挿げ替えるだけで、その他のコードは全く同じです。LangChainを使うメリットですね。</p>
+<p>その他のモデルとしてCohere社のCommand-R-Plus-08-2024を使ったパターンです。llm定義の部分をcohereに挿げ替えるだけで、その他のコードは全く同じです。LangChainを使うメリットですね。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain.schema.output_parser</span> <span class="kn">import</span> <span class="n">StrOutputParser</span>
 <span class="kn">from</span> <span class="n">langchain.schema.runnable</span> <span class="kn">import</span> <span class="n">RunnablePassthrough</span>
@@ -998,7 +1015,7 @@ MIIExxxx
 
 <span class="kn">from</span> <span class="n">langchain_cohere</span> <span class="kn">import</span> <span class="n">ChatCohere</span>
 
-<span class="n">llm_cohere</span> <span class="o">=</span> <span class="nc">ChatCohere</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="sh">"</span><span class="s">command-r-plus</span><span class="sh">"</span><span class="p">)</span>
+<span class="n">llm_cohere</span> <span class="o">=</span> <span class="nc">ChatCohere</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="sh">"</span><span class="s">command-r-plus-08-2024</span><span class="sh">"</span><span class="p">)</span>
 
 <span class="n">ベクトル検索を実行するベクトルデータベースを定義します</span><span class="err">。</span><span class="n">もちろんここでは事前に定義したvector_store_dotを指定します</span><span class="err">。</span>
 
@@ -1044,7 +1061,7 @@ MIIExxxx
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-08T18:10:19+09:00">January 8, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-09T17:05:16+09:00">January 9, 2025</time></p>
 
       </footer>
 

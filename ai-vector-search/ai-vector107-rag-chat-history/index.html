@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-08T18:10:19+09:00">
+  <meta property="article:published_time" content="2025-01-09T17:05:16+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう">
     <meta itemprop="description" content="シンプルな検索拡張生成(RAG)の実装に、チャット会話履歴を保持する仕組みを取り入れた構成をご紹介します。">
-    <meta itemprop="datePublished" content="2025-01-08T18:10:19+09:00">
+    <meta itemprop="datePublished" content="2025-01-09T17:05:16+09:00">
     
 
     <div class="page__inner-wrap">
@@ -413,13 +413,15 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 
 <p>区切ったチャンクテキストを埋め込みモデル(OCI Generative AI Serviceのembed-multilingual-v3.0)でベクトルに変換し、ベクトル・データベースにロードします。</p>
 
+<p>※service_endpointには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによって適宜修正してください。最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。例えばロンドンの場合は、service_endpointには<em>https://inference.generativeai.uk-london-1.oci.oraclecloud.com</em>と指定します。</p>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.vectorstores.oraclevs</span> <span class="kn">import</span> <span class="n">OracleVS</span>
 <span class="kn">from</span> <span class="n">langchain_community.vectorstores.utils</span> <span class="kn">import</span> <span class="n">DistanceStrategy</span>
 <span class="kn">from</span> <span class="n">langchain_community.embeddings</span> <span class="kn">import</span> <span class="n">OCIGenAIEmbeddings</span>
 
 <span class="n">embeddings</span> <span class="o">=</span> <span class="nc">OCIGenAIEmbeddings</span><span class="p">(</span>
     <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.embed-multilingual-v3.0</span><span class="sh">"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">&lt;compartmentのOCID&gt;</span><span class="sh">"</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -522,9 +524,9 @@ __root__
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">langchain_community.chat_models.oci_generative_ai</span> <span class="kn">import</span> <span class="n">ChatOCIGenAI</span>
 
 <span class="n">llm</span> <span class="o">=</span> <span class="nc">ChatOCIGenAI</span><span class="p">(</span>
-    <span class="c1">#model_id="cohere.command-r-16k",
-</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus</span><span class="sh">"</span><span class="p">,</span>
-    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.us-chicago-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
+    <span class="c1">#model_id="cohere.command-r-08-2024",
+</span>    <span class="n">model_id</span><span class="o">=</span><span class="sh">"</span><span class="s">cohere.command-r-plus-08-2024</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">service_endpoint</span><span class="o">=</span><span class="sh">"</span><span class="s">https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">compartment_id</span><span class="o">=</span><span class="sh">"</span><span class="s">&lt;compartmentのOCID&gt;</span><span class="sh">"</span><span class="p">,</span>
     <span class="n">model_kwargs</span><span class="o">=</span><span class="p">{</span><span class="sh">"</span><span class="s">temperature</span><span class="sh">"</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span> <span class="sh">"</span><span class="s">max_tokens</span><span class="sh">"</span><span class="p">:</span> <span class="mi">500</span><span class="p">},</span>
 <span class="p">)</span>
@@ -873,7 +875,7 @@ _metadata"</span><span class="p">:</span> <span class="k">null</span><span class
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-08T18:10:19+09:00">January 8, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-09T17:05:16+09:00">January 9, 2025</time></p>
 
       </footer>
 
