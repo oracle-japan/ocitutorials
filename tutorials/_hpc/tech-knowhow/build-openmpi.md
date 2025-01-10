@@ -11,26 +11,27 @@ header:
 ***
 # 0. 概要
 
-**[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、その動作モードは以下の選択肢があります。
+**[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。
 
-1. 計算リソースの確保、MPIプロセスの起動、及びMPIプロセス間通信の初期化処理を **Slurm** と **[PMIx](https://pmix.github.io/)** が行う。
-2. 計算リソースの確保を **Slurm** が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は **Slurm** と **[PRRTE](https://docs.prrte.org/en/latest/)** が行う。
-3. 計算リソースの確保を **Slurm** が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は **PRRTE** が行う。
+| No. | 計算リソース<br>確保  | MPIプロセス<br>起動                                                                   | MPIプロセス間<br>通信初期化                                                   | ノード間<br>リモート実行|起動コマンド     |
+| :-: | :-------: | :-------: | :-------------------------------------------------------------------------: | :---------------------------------------------------------------: | :--------: |
+| 1.  | **Slurm** | **Slurm**     |  **[PMIx](https://pmix.github.io/)**                                      | **Slurm** |**srun**   |
+| 2.  | **Slurm** | **Slurm**  |  **PMIx**  | **Slurm** |**mpirun**<br>（※1） |
+| 3.  | **Slurm** | **[PRRTE](https://docs.prrte.org/en/latest/)**  |  **PMIx**  | **SSH**<br>（※2） |**mpirun** |
 
-それぞれの動作モードは、MPIアプリケーションの起動に以下のコマンドを使用します。
-
-1. **Slurm** に付属する **srun**
-2. **Slurm** と連携するように構築された **OpenMPI** に付属する **mpirun**
-3. **Slurm** と連携するように構築されていない **OpenMPI** に付属する **mpirun** （パスフレーズ無しで計算ノード間をSSHアクセス出来る必要があります。）
+※1）本テクニカルTipsの手順に従い、 **Slurm** と連携するよう **OpenMPI** がビルドされている必要があります。  
+※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。
 
 ここで **1.** の動作モードは、その他の動作モードに対して以下の利点があります。
 
-- 高並列アプリケーションを高速に起動することが可能
+- 高並列アプリケーションを高速に起動することが可能（※3）
 - プロセスバインディングや終了処理等のプロセス管理を **Slurm** に統合することが可能
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のパスフレーズ無しSSHアクセス設定が不要
 
-また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、ノード内・ノード間を問わず以下の多様なトランスポートレベルの通信手段を **OpenMPI** から利用することが出来ます。
+※3）この詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の **[0. 概要](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#0-概要)** を参照してください。
+
+また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているトランスポートレベルのオープンソース通信フレームワークで、 **OpenMPI** から利用可能な以下のノード内・ノード間通信手段を提供します。
 
 [ノード内]
 - POSIX共有メモリ
@@ -194,7 +195,7 @@ $ make bt-mz CLASS=C
 次に、以下コマンドを **OpenMPI** を利用するユーザで何れか1ノードで実行し、 **NAS Parallel Benchmarks** を実行、その結果を確認します。
 
 ```sh
-$ mpirun -n 36 -N 18 -hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_2:1 --bind-to none ./bin/bt-mz.C.x
+$ mpirun -n 36 -N 18 --hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_2:1 --bind-to none ./bin/bt-mz.C.x
 
 
 NAS Parallel Benchmarks (NPB3.4-MZ MPI+OpenMP) - BT-MZ Benchmark
