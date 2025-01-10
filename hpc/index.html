@@ -761,6 +761,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   また <strong>OpenMPI</strong> は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークに <strong><a href="https://openucx.org/">UCX</a></strong> を採用し、MPI通信性能を最適化するためには <strong>UCX</strong> のパラメータを適切に設定することが求められます。<br />
   本テクニカルTipsは、 <strong>OpenMPI</strong> のMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。</p>
   </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></strong></p>
+
+    <p>NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。<br />
+  このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。<br />
+  本テクニカルTipsは、 <strong>MPI</strong> 実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、 <strong>OpenMP</strong> 実装にGNUコンパイラ、及びジョブスケジューラに <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> を取り上げ、これらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。</p>
+  </li>
 </ul>
 
 <h2 id="2-3-プロファイリング関連tips集">2-3. プロファイリング関連Tips集</h2>
@@ -993,7 +1000,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     <p><strong><a href="https://www.openfoam.com/">OpenFOAM</a></strong> は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。<br />
   <strong>OpenFOAM</strong> は、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。また <strong>OpenFOAM</strong> が提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。<br />
-  本テクニカルTipsは、 <strong>OpenFOAM</strong> とこれを中核とするCFD解析フローに有用なオープンソースのツール群を、HPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。</p>
+  本テクニカルTipsは、 <strong>OpenFOAM</strong> とこれを中核とするCFD解析フローに有用なオープンソースのツール群をHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。</p>
   </li>
   <li>
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></strong></p>

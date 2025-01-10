@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-09T17:05:16+09:00">
+  <meta property="article:published_time" content="2025-01-10T17:57:58+09:00">
 
 
 
@@ -315,6 +315,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -386,7 +388,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム運用Tips">
     <meta itemprop="description" content="オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。">
-    <meta itemprop="datePublished" content="2025-01-09T17:05:16+09:00">
+    <meta itemprop="datePublished" content="2025-01-10T17:57:58+09:00">
     
 
     <div class="page__inner-wrap">
@@ -620,7 +622,7 @@ Swap:         7.6Gi          0B       7.6Gi
 <p>HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソースを有するヘテロジニアスな環境となることがあります。<br />
 この際、ジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 <strong>Slurm</strong> のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。</p>
 
-<p>本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで想定する計算/GPUノードに適切にジョブが割当てられる <strong>Slurm</strong> 環境を構築する方法を解説します。</p>
+<p>前述の運用要件を念頭に本Tipsは、ジョブ投入パーティションを使い分けることで、想定するリソースを持つ計算/GPUノードに適切にジョブが割当てられる <strong>Slurm</strong> 環境を構築する方法を解説します。</p>
 
 <p>構築する <strong>Slurm</strong> 環境は、計算ノードに6ノードの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用し、これを <strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称）と <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称）の組合せが以下となるパーティション構成とします。（※1）</p>
 
@@ -631,7 +633,7 @@ Swap:         7.6Gi          0B       7.6Gi
       <th style="text-align: center">割当てられるノード名</th>
       <th style="text-align: center">NPS</th>
       <th style="text-align: center">SMT</th>
-      <th style="text-align: center">デフォルトパーティション（※2）</th>
+      <th style="text-align: center">デフォルトパーティション<br />（※2）</th>
     </tr>
   </thead>
   <tbody>
@@ -695,7 +697,7 @@ Swap:         7.6Gi          0B       7.6Gi
 
 <p>この設定は、 <strong>BM.Optimized3.36</strong> がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 <strong>NPS1</strong> と <strong>NPS2</strong> と <strong>SMT</strong> 有効・無効の計算ノードを異なるリソース定義の <strong>NodeName</strong> フィールドで定義しています。（※3）</p>
 
-<p>※3）<strong>slurm.conf</strong> 中の <strong>Socket</strong> は、 <strong>NUMA</strong>（Non-Umiform Memory Access）ノードに相当するため、 <strong>NPS2</strong> の場合は <strong>Socket</strong> がノード当たり4個として定義します。</p>
+<p>※3）<strong>slurm.conf</strong> 中の <strong>Socket</strong> は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 <strong>NPS2</strong> の場合は <strong>Socket</strong> がノード当たり4個として定義します。</p>
 
 <h2 id="32-slurmconf修正の反映">3.2. slurm.conf修正の反映</h2>
 
@@ -819,7 +821,7 @@ large        up   infinite 1-infinite   no EXCLUSIV        all      2        idl
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-09T17:05:16+09:00">January 9, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-10T17:57:58+09:00">January 10, 2025</time></p>
 
       </footer>
 

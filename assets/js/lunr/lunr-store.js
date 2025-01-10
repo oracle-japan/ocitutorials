@@ -1211,6 +1211,12 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/openmpi-perftips/",
         "teaser": null
       },{
+        "title": "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法",
+        "excerpt":"0. 概要 本パフォーマンス関連Tipsは、NUMA（Non-Umiform Memory Access）アーキテクチャを採用するインスタンスに於ける並列プログラムの実行時性能に大きく影響する、MPIが生成するプロセスとOpenMPが生成するスレッドのコア割当てについて、アプリケーション性能に有利となる典型的なパターンを例に挙げ、以下の観点でその実行方法を解説します。 PRRTE を使用するプロセス・スレッドのコア割当て この割当て方法は、 OpenMPI に同梱される PRRTE のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、ジョブスケジューラを使用せずに mpirun を使用してMPI並列アプリケーションをインタラクティブに実行する場合に使用します。 Slurm を使用するプロセス・スレッドのコア割当て この割当て方法は、 Slurm のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、 Slurm のジョブスケジューラ環境で srun を使用してMPI並列アプリケーションを実行する場合に使用します。 プロセス・スレッドのコア割当ては、使用するインスタンスのNUMAアーキテクチャやNUMAノードの構成方法に影響を受けますが、本パフォーマンス関連Tipsでは Intel Ice Lake プロセッサを搭載する BM.Optimized3.36 を使用し、NUMAノード構成に NUMA nodes per socket （以降 NPS と呼称）が 1 （デフォルト）（以降 NPS1 と呼称）と 2 （以降 NPS2...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/cpu-binding/",
+        "teaser": null
+      },{
         "title": "PAPIでHPCアプリケーションをプロファイリング",
         "excerpt":"HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを実行する場合、高価な計算資源を有効活用出来ているかを検証するため、アプリケーションのプロファイリングを実施することが一般的です。 PAPI は、HPCワークロード向け ベアメタル・シェイプ に採用されている Intel Ice Lake や AMD EPYC 9004シリーズ のCPUが持つハードウェアカウンタから浮動小数点演算数やキャッシュヒット数といったプロファイリングに有益な情報を取得するAPIを提供し、HPCアプリケーションのプロファイリングに欠かせないツールとなっています。 本プロファイリング関連Tipsは、 ベアメタル・インスタンス 上で実行するHPCアプリケーションを PAPI を使ってプロファイリングする方法を解説します。 0. 概要 PAPI (Performance Application Programming Interface) は、異なるプラットフォーム間を共通のインターフェースで利用できるように設計された性能解析ツールで、プロファイリング対象のアプリケーションからAPIをコールすることで、CPU/GPUをはじめとする様々なハードウェアからプロファイリングに有益な情報を収集します。 この PAPI の可搬性は、ハードウェア固有の部分を吸収する下層と、プロファイリングを行うアプリケーション開発者が利用する抽象化された上位層にソフトウェアスタックを分割することで、これを実現しています。これらの関係は、 ここ に記載のアーキテクチャ図が参考になります。 PAPI のAPIは、HPCアプリケーションをプロファイリングするユースケースの場合、 Low Level API と High Level API から選択して利用することが出来ます。 High Level API は、内部で Low Level API を使用することでより高機能のプロファイリングが可能なAPIを提供し、 Low...","categories": [],
         "tags": [],
@@ -1302,7 +1308,7 @@ var store = [{
         "teaser": null
       },{
         "title": "計算/GPUノードのホスト名リスト作成方法",
-        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在の OCI コンソール画面と異なっている場合があります。 0. 概要 HPCクラスタやGPUクラスタを構築・運用する際、全ての計算/GPUノードに対して同じコマンドを実行する、ジョブスケジューラに全てのノードを一括登録する、といったオペレーションを行う場面が頻繁に発生します。 このようなオペレーションは、全ての計算/GPUノードのホスト名を1行に1ノード記載した、以下のようなホスト名リストをテキストファイルで予め作成しておくことで、効率よく実施することが可能になります。 inst-hyqxm-comp inst-ihmnl-comp inst-hrsmf-comp inst-afnzx-comp 例えば、以下のようにこのホスト名リストを使用することで、全ての計算ノードのOSバージョンを確認することが可能です。 $ for hname in `cat ./hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname \"grep -i pretty /etc/os-release\"; done inst-0giw2-comp PRETTY_NAME=\"Oracle Linux Server 8.6\" inst-ael72-comp PRETTY_NAME=\"Oracle Linux Server 8.6\" $ このホスト名リストは、以下のような方法で効率的に作成することが可能です。 OCI コンソールを活用する方法 この方法は、 OCI コンソールの インスタンス メニューに表示される計算/GPUノードのインスタンス名を活用し、ホスト名リストを作成する方法です。...","categories": [],
+        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在の OCI コンソール画面と異なっている場合があります。 0. 概要 HPCクラスタやGPUクラスタを構築・運用する際、全ての計算/GPUノードに対して同じコマンドを実行する、ジョブスケジューラに全てのノードを一括登録する、といったオペレーションを行う場面が頻繁に発生します。 このようなオペレーションは、全ての計算/GPUノードのホスト名を1行に1ノード記載した、以下のようなホスト名リストをテキストファイルで予め作成しておくことで、効率よく実施することが可能になります。 inst-hyqxm-comp inst-ihmnl-comp inst-hrsmf-comp inst-afnzx-comp 例えば、以下のようにこのホスト名リストを使用することで、全ての計算ノードのOSバージョンを確認することが可能です。 $ for hname in `cat ./hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname \"grep -i pretty /etc/os-release\"; done inst-0giw2-comp PRETTY_NAME=\"Oracle Linux Server 8.6\" inst-ael72-comp PRETTY_NAME=\"Oracle Linux Server 8.6\" $ またMPIプログラムを実行する際も、起動コマンド（ mpirun 等）への実行ノード指示（ –hostfile オプション）に上記のホスト名リスト（いわゆるホストファイル）が必要になることがあります。 このホスト名リストは、以下のような方法で効率的に作成することが可能です。 OCI コンソールを活用する方法...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/compute-host-list/",
         "teaser": null
@@ -1344,7 +1350,7 @@ var store = [{
         "teaser": null
       },{
         "title": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法",
-        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、その動作モードは以下の選択肢があります。 計算リソースの確保、MPIプロセスの起動、及びMPIプロセス間通信の初期化処理を Slurm と PMIx が行う。 計算リソースの確保を Slurm が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は Slurm と PRRTE が行う。 計算リソースの確保を Slurm が行い、MPIプロセスの起動とMPIプロセス間通信の初期化処理は PRRTE が行う。 それぞれの動作モードは、MPIアプリケーションの起動に以下のコマンドを使用します。 Slurm に付属する srun Slurm と連携するように構築された OpenMPI に付属する mpirun Slurm と連携するように構築されていない OpenMPI に付属する mpirun （パスフレーズ無しで計算ノード間をSSHアクセス出来る必要があります。） ここで 1. の動作モードは、その他の動作モードに対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能 プロセスバインディングや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を Slurm に提供することが可能 Slurm クラスタ内のパスフレーズ無しSSHアクセス設定が不要...","categories": [],
+        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。 No. 計算リソース 確保 MPIプロセス 起動 MPIプロセス間 通信初期化 ノード間 リモート実行 起動コマンド 1. Slurm Slurm PMIx Slurm srun 2. Slurm Slurm PMIx Slurm mpirun （※1） 3. Slurm PRRTE PMIx SSH （※2） mpirun ※1）本テクニカルTipsの手順に従い、 Slurm と連携するよう OpenMPI がビルドされている必要があります。 ※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。 ここで 1. の動作モードは、その他の動作モードに対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能（※3） プロセスバインディングや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/build-openmpi/",
         "teaser": null
