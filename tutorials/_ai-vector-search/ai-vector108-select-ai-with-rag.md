@@ -23,8 +23,16 @@ SELECT AIについては[111: SELECT AIを試してみよう](https://oracle-jap
 **前提条件 :**
 + [101:Always Freeで23aiのADBインスタンスを作成してみよう](/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/){:target="_blank"}の記事を参考に、Oracle Database 23aiの準備が完了していること。
 
-+ OCI Generative AI Serviceを使用できること
-  - OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。
++ OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。
+  
+  ※2025/01時点で、利用可能なリージョンは以下です。
+  - サンパウロ(GRU)
+  - フランクフルト(FRA)
+  - 大阪(KIX)
+  - ロンドン(LHR)
+  - シカゴ(ORD)
+  
+  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm){:target="_blank"}から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。
 
   - OCI アカウントのAPI署名キーの生成は完了であること
   <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two){:target="_blank"}をご参照ください。
@@ -167,7 +175,7 @@ DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、プロファイ�
 - **temperature**：0（任意）
 - **comments**：true（任意）
 - **oci_apiformat**：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）
-- **model**：cohere.command-r-plus（プロバイダーをOCIとし、モデルを指定しない場合は、llama-3が使用されます）
+- **model**：cohere.command-r-plus-08-2024（プロバイダーをOCIとし、モデルを指定しない場合は、meta.llama-3.1-70b-instructが使用されます）
 
 ```sql
 BEGIN
@@ -180,7 +188,7 @@ BEGIN
           "temperature": 0,
           "comments": true,
           "oci_apiformat": "COHERE",
-          "model": "cohere.command-r-plus"
+          "model": "cohere.command-r-plus-08-2024"
         }');
 end;
 /

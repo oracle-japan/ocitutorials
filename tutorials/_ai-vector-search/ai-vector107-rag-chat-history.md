@@ -131,6 +131,8 @@ print(docs)
 
 区切ったチャンクテキストを埋め込みモデル(OCI Generative AI Serviceのembed-multilingual-v3.0)でベクトルに変換し、ベクトル・データベースにロードします。
 
+※service_endpointには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによって適宜修正してください。最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。例えばロンドンの場合は、service_endpointには*https://inference.generativeai.uk-london-1.oci.oraclecloud.com*と指定します。
+
 ```python
 from langchain_community.vectorstores.oraclevs import OracleVS
 from langchain_community.vectorstores.utils import DistanceStrategy
@@ -138,7 +140,7 @@ from langchain_community.embeddings import OCIGenAIEmbeddings
 
 embeddings = OCIGenAIEmbeddings(
     model_id="cohere.embed-multilingual-v3.0",
-    service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    service_endpoint="https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com",
     compartment_id="<compartmentのOCID>",
 )
 
@@ -249,9 +251,9 @@ postgres=> select * from message_store;
 from langchain_community.chat_models.oci_generative_ai import ChatOCIGenAI
 
 llm = ChatOCIGenAI(
-    #model_id="cohere.command-r-16k",
-    model_id="cohere.command-r-plus",
-    service_endpoint="https://inference.generativeai.us-chicago-1.oci.oraclecloud.com",
+    #model_id="cohere.command-r-08-2024",
+    model_id="cohere.command-r-plus-08-2024",
+    service_endpoint="https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com",
     compartment_id="<compartmentのOCID>",
     model_kwargs={"temperature": 0.7, "max_tokens": 500},
 )

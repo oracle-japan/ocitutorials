@@ -19,16 +19,30 @@ header:
 
 **前提条件 :**
 
-* Oracle Database 23ai Freeをインストールする済みであること
-   <br>※インストール方法については、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](/ocitutorials/ai-vector-search/ai-vector102-23aifree-install){:target="_blank"} を参照ください。
+- 使用するOracle Databaseの環境があること
+  - 23ai freeで実行する場合、Oracle Database 23ai Freeをインストールする済みであること
+  
+    ※インストール方法については、[102 : 仮想マシンへOracle Database 23ai Freeをインストールしてみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector102-23aifree-install/) を参照ください。
 
-* AI Vector Searchの基本的な操作を学習済みであること
-   <br>[103 ~](/ocitutorials/ai-vector-search/ai-vector103-basics/){:target="_blank"}を参照ください。
+  - ADB23aiで実行する場合、Autonomous Database 23aiのインスタンスを構築済みであること。本記事では無償で使えるAlways Freeを使います。
 
-* OCI Generative AI Serviceを使用できること
-  - OCI GenAI Serviceをご利用いただけるChicago Regionはサブスクリプション済みであること。
+    ※インスタンス作成方法については。[101 : Always Freeで23aiのADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/)をご参照ください。
 
-  - OCI アカウントのAPI署名キーの生成は完了であること
+- AI Vector Searchの基本的な操作を学習済みであること
+   <br>[103 : Oracle AI Vector Searchの基本操作を試してみよう](/ocitutorials/ai-vector-search/ai-vector103-basics/)を参照ください。
+
+- OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。
+  
+  ※2025/01時点で、利用可能なリージョンは以下です。
+  - サンパウロ(GRU)
+  - フランクフルト(FRA)
+  - 大阪(KIX)
+  - ロンドン(LHR)
+  - シカゴ(ORD)
+  
+  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm){:target="_blank"}から確認のうえ、最新のモデルを使用することを推奨します。以降のチュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。また大阪リージョンの利用が前提となっているため、それ以外のリージョンの場合は適宜サービス・エンドポイントを修正してください。
+
+- OCI アカウントのAPI署名キーの生成は完了であること
   <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two){:target="_blank"}をご参照ください。
     - `user` - キー・ペアが追加されるユーザーのOCID。
     - `fingerprint` - 追加されたキーのフィンガープリント。
@@ -255,7 +269,7 @@ from
     json('{"max": "35", "overlap": "0", "language": "JAPANESE", "normalize": "all"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (chunk_id NUMBER PATH '$.chunk_id', chunk_data VARCHAR2(4000) PATH '$.chunk_data')) et;
 
 UPDATE doc_chunks
-SET embed_vector = dbms_vector_chain.utl_to_embedding(embed_data, json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+SET embed_vector = dbms_vector_chain.utl_to_embedding(embed_data, json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
 );
 
 COMMIT;
@@ -266,7 +280,7 @@ COMMIT;
 ```sql
 INSERT INTO doc_queries (query, embedding)
 select et.embed_data query, to_vector(et.embed_vector) embedding
-from dbms_vector_chain.utl_to_embeddings('彼は新しいプロジェクトの提案で成功を収めました。', json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (embed_data VARCHAR2(4000) PATH '$.embed_data', embed_vector CLOB PATH '$.embed_vector')) et;
+from dbms_vector_chain.utl_to_embeddings('彼は新しいプロジェクトの提案で成功を収めました。', json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t, JSON_TABLE(t.column_value, '$[*]' COLUMNS (embed_data VARCHAR2(4000) PATH '$.embed_data', embed_vector CLOB PATH '$.embed_vector')) et;
 
 COMMIT;
 ```

@@ -39,13 +39,17 @@ Always FreeのADBでは、2024年5月にリリースとなった**Oracle Databas
 # 1. リージョンの確認
 
   Always Free Autonomous Database上でのOracle Database 23aiは、
-  <br>現時点では、以下の4リージョンのみでご利用いただけます：
-  - Tokyo
-  - Ashburn
-  - Phoenix
-  - Paris
-  - London
-
+  <br>2025/01時点では、以下のリージョンでご利用いただけます：
+  - フェニックス(PHX)
+  - アッシュバーン(IAD)
+  - ロンドン(LHR)
+  - パリ(CDG)
+  - シドニー(SYD)
+  - ムンバイ(BOM)
+  - シンガポール(SIN)
+  - 東京(NRT)
+  
+  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/autonomous-database-serverless/doc/autonomous-always-free.html#:~:text=Oracle%20Database%2023ai%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%9FAlways%20Free%20Autonomous%20Database%E3%81%AE%E3%83%8E%E3%83%BC%E3%83%88%3A){:target="_blank"}をご参照ください。
   お使いのテナンシーの**ホーム・リージョン**が上記のリージョンのいずれか、
   <br>かつ、**ホーム・リージョン**でADBのインスタンスを作成する必要があります。
 

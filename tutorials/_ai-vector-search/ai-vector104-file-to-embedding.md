@@ -33,7 +33,19 @@ header:
 
     ※インスタンス作成方法については。[101 : Always Freeで23aiのADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/)をご参照ください。
 
-- OCI GenAIのサービスをご利用いただけるChicagoのRegionはサブスクリプション済みであること。
+- AI Vector Searchの基本的な操作を学習済みであること
+   <br>[103 : Oracle AI Vector Searchの基本操作を試してみよう](/ocitutorials/ai-vector-search/ai-vector103-basics/)を参照ください。
+   
+- OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。
+  
+  ※2025/01時点で、利用可能なリージョンは以下です。
+  - サンパウロ(GRU)
+  - フランクフルト(FRA)
+  - 大阪(KIX)
+  - ロンドン(LHR)
+  - シカゴ(ORD)
+  
+  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm){:target="_blank"}から確認のうえ、最新のモデルを使用することを推奨します。以降のチュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。また大阪リージョンの利用が前提となっているため、それ以外のリージョンの場合は適宜サービス・エンドポイントを修正してください。
 
 <br>
 
@@ -362,11 +374,13 @@ SQL*Plusの出力をよりわかりやすいように、SQL*Plusの環境設定�
   PL/SQLプロシージャが正常に完了しました。
   ```
 
-OCI GenAIサービスを利用するためのパラメータを設定します。
+OCI GenAIサービスを利用するためのパラメータを設定します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。
+
+※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。例えばロンドンの場合は、urlには*https://inference.generativeai.uk-london-1.oci.oraclecloud.com*と指定します。
 
   ```sql
   var embed_genai_params clob;
-  exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
+  exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
   ```
 
 上記の設定を検証してみます。
@@ -425,7 +439,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')),
-      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
       ) t,
       JSON_TABLE(
       t.column_value, 
@@ -736,7 +750,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')),
-      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
       ) t,
       JSON_TABLE(
       t.column_value, 
@@ -768,7 +782,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
   FROM doc_chunks
   ORDER BY vector_distance(embed_vector , (SELECT to_vector(et.embed_vector) embed_vector
   FROM
-  dbms_vector_chain.utl_to_embeddings('コーポレート・ガバナンスに関する基本的な考え方', JSON('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t,
+  dbms_vector_chain.utl_to_embeddings('コーポレート・ガバナンスに関する基本的な考え方', JSON('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t,
   JSON_TABLE (t.column_value, '$[*]'
   COLUMNS (
   embed_id NUMBER PATH '$.embed_id',

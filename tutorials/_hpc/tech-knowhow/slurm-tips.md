@@ -240,11 +240,11 @@ $
 HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソースを有するヘテロジニアスな環境となることがあります。  
 この際、ジョブが想定するリソースを持つ計算/GPUノードで実行されることを保証する必要がありますが、 **Slurm** のパーティションに割り当てられる計算/GPUノードを適切に指定することで、この運用要件を実現することが可能です。
 
-本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで想定する計算/GPUノードに適切にジョブが割当てられる **Slurm** 環境を構築する方法を解説します。
+前述の運用要件を念頭に本Tipsは、ジョブ投入パーティションを使い分けることで、想定するリソースを持つ計算/GPUノードに適切にジョブが割当てられる **Slurm** 環境を構築する方法を解説します。
 
 構築する **Slurm** 環境は、計算ノードに6ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、これを **NUMA nodes per socket** （以降 **NPS** と呼称）と **Simultanious Multi Threading** （以降 **SMT** と呼称）の組合せが以下となるパーティション構成とします。（※1）
 
-| パーティション名 | 割当てられるノード名                                                                                | NPS      | SMT | デフォルトパーティション（※2） |
+| パーティション名 | 割当てられるノード名                                                                                | NPS      | SMT | デフォルトパーティション<br>（※2） |
 | :------: | :---------------------------------------------------------------------------------------: | :------: | :-: | :--------------: |
 | all      | inst-aaaaa-x9 inst-bbbbb-x9<br>inst-ccccc-x9 inst-ddddd-x9<br>inst-eeeee-x9 inst-fffff-x9 | -        | -   | Yes              |
 | nps1     | inst-aaaaa-x9 inst-bbbbb-x9                                                               | **NPS1** | 無効  | No               |
@@ -279,7 +279,7 @@ PartitionName=smte Nodes=inst-eeeee-x9,inst-fffff-x9 MaxTime=INFINITE State=UP
 
 この設定は、 **BM.Optimized3.36** がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 **NPS1** と **NPS2** と **SMT** 有効・無効の計算ノードを異なるリソース定義の **NodeName** フィールドで定義しています。（※3）
 
-※3）**slurm.conf** 中の **Socket** は、 **NUMA**（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
+※3）**slurm.conf** 中の **Socket** は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
 
 ## 3.2. slurm.conf修正の反映
 
