@@ -227,7 +227,7 @@ Autonomous Database(23ai)環境の場合は、先程作成したコンピュー�
 ```sh
 sudo su -
 dnf install python3.11
-ln -s /usr/bin/python3.11 /usr/bin/python
+ln -s -f /usr/bin/python3.11 /usr/bin/python
 ```
 
 バージョンを確認します。
@@ -239,11 +239,13 @@ python -V
 
 ```sh
 [oracle@basedb23ai ~]$ python -V
-Python 3.11.9
+Python 3.11.11
 ```
 
 本チュートリアルではvenvモジュールを使ってPython仮想環境を作成します。
 お好みに応じてAnacondaやMinicondaで仮想環境を作成していただいても構いません。
+
+**BaseDBの場合**
 
 `oracle`ユーザーにスイッチします。
 
@@ -256,6 +258,24 @@ cd $ORACLE_HOME/python
 python -m venv myenv
 source myenv/bin/activate
 ```
+
+**ADBの場合(OCI Compute上にPython環境構築)**
+
+`opc`ユーザーにスイッチします。
+
+```sh
+exit
+```
+
+`opc`のホームディレクトリでpython用ディレクトリを作成します。
+```sh
+mkdir python
+cd python/
+python -m venv myenv
+source myenv/bin/activate
+```
+
+以降はBaseDBでもADBでも共通の手順です。
 
 本チュートリアルで使用するPythonパッケージをインストールします。
 ```sh
@@ -292,7 +312,6 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 本チュートリアルではインタラクティブな作業が可能なIPythonを使用します。
 
 ```sh
-cd $ORACLE_HOME/python
 ipython
 ```
 
@@ -356,6 +375,8 @@ pd.DataFrame(contents)
 
 まずは、作成済のdocuserでデータベースに接続します。
 
+ADBでdocuserが作成されていない場合は、[こちら](https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/#2-1-adb23ai-always-free%E7%B7%A8-%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E6%A0%BC%E7%B4%8D){:target="_blank"}を参考にdocuserを作成してください。
+
 Autonomous Database(23ai)、もしくはBaseDBを使用している場合は、セットアップ手順で取得した接続文字列をdsnに貼り付けます。
 
 ```python
@@ -366,13 +387,13 @@ username = "docuser"
 password = "docuser"
 dsn = "localhost/freepdb1"
 
-# BaseDB版では以下をコメントアウトして実行します
+# BaseDB版では以下をコメントアウトを外して実行します
 # oracledb.init_oracle_client()
 # username = "docuser"
 # password = "WelCome123#123#"
 #dsn = "<PDBの接続文字列>" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
 
-# Autonomous Database 23ai Free版では以下をコメントアウトして実行します
+# Autonomous Database 23ai Free版では以下をコメントアウトを外して実行します
 # username = "docuser"
 # password = "Welcome12345#"
 # dsn = "<ADBの接続文字列>" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
