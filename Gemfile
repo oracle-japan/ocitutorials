@@ -12,6 +12,7 @@ group :jekyll_plugins do
   gem "jekyll-postfiles"
   gem 'jekyll-redirect-from'
   gem 'jekyll-tabs'
+  gem "sass-embedded", "1.62.1"
 end
 
 
