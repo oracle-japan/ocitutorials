@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-23T22:28:24+09:00">
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
 
 
 
@@ -317,6 +317,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -388,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="STREAM実行方法（BM.Optimized3.36編）">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36で、標準ベンチマークのSTREAMを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-01-23T22:28:24+09:00">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -399,24 +401,21 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bmoptimized336インスタンスのデプロイ">1. BM.Optimized3.36インスタンスのデプロイ</a></li><li><a href="#2-intel-oneapi-base-toolkitインストール">2. Intel oneAPI Base Toolkitインストール</a></li><li><a href="#3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</a></li><li><a href="#4-stream実行">4. STREAM実行</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bmoptimized336インスタンス作成">1. BM.Optimized3.36インスタンス作成</a></li><li><a href="#2-intel-oneapi-base-toolkitインストール">2. Intel oneAPI Base Toolkitインストール</a></li><li><a href="#3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</a></li><li><a href="#4-stream実行">4. STREAM実行</a></li></ul>
             </nav>
           </aside>
         
-        <p>本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> で、標準ベンチマークの <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> を実行する方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/index.html">Intel oneAPI Base Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの <strong><a href="https://www.xlsoft.com/jp/products/intel/compilers/dpcpp/index.html">Intel oneAPI DPC++/C++ Compiler</a></strong> （本ドキュメントで使用するバージョンは2023.2）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用します。</p>
+<p>本ドキュメントで解説する <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> の実行は、 <strong><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html">Intel oneAPI Base Toolkit</a></strong> に含まれるCコンパイラの <strong><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/dpc-compiler.html#gs.jwxqxq">Intel oneAPI DPC++/C++ Compiler</a></strong> で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用します。</p>
 
-<p><strong>STREAM</strong> を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ <strong>BM.Optimized3.36</strong> を <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> でデプロイします。<br />
-この際、 <strong>STREAM</strong> の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で <strong>NUMA setting</strong> を <strong>NPS2</strong> とします。</p>
+<p><strong>STREAM</strong> を実行するインスタンスは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用し、 <strong>STREAM</strong> の性能向上を目的に <strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称します。）が <strong>2</strong> （以降 <strong>NPS2</strong> と呼称します。）となるようBIOSで設定します。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>STREAM</strong> 実行は、以下の手順を経て行います。</p>
 
 <ul>
-  <li><strong>BM.Optimized3.36</strong> インスタンスのデプロイ</li>
+  <li><strong>BM.Optimized3.36</strong> インスタンス作成</li>
   <li><strong>Intel oneAPI Base Toolkit</strong> インストール</li>
   <li><strong>STREAM</strong> ダウンロード・コンパイル</li>
   <li><strong>STREAM</strong> 実行</li>
@@ -426,43 +425,47 @@
 
 <p>[実行環境]</p>
 <ul>
-  <li>シェイプ: <strong>BM.Optimized3.36</strong> （ <strong>NUMA setting</strong> を <strong>NPS2</strong> に指定）</li>
-  <li>OS: <strong>Oracle Linux</strong> 8.7 (HPC <strong>クラスタネットワーキングイメージ</strong> )</li>
-  <li><strong>STREAM</strong> : 5.10</li>
-  <li>Cコンパイラ: <strong>Intel oneAPI DPC++/C++ Compiler</strong> 2023.2</li>
-  <li>配列サイズ(STREAM_ARRAY_SIZE): 268,435,456</li>
+  <li>シェイプ： <strong>BM.Optimized3.36</strong> （ <strong>NPS2</strong> ）</li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong>クラスタネットワーキングイメージ</strong></li>
+  <li><strong>STREAM</strong> ： 5.10</li>
+  <li>Cコンパイラ ： <strong>Intel oneAPI DPC++/C++ Compiler</strong> 2025.0.1</li>
+  <li>配列サイズ(STREAM_ARRAY_SIZE) ： 268,435,456</li>
 </ul>
 
 <p>[実行結果]</p>
 <ul>
-  <li>Triad(MB/s): 320,935</li>
+  <li>Triad(MB/s) ： <strong>320,935</strong></li>
 </ul>
 
 <hr />
-<h1 id="1-bmoptimized336インスタンスのデプロイ">1. BM.Optimized3.36インスタンスのデプロイ</h1>
+<h1 id="1-bmoptimized336インスタンス作成">1. BM.Optimized3.36インスタンス作成</h1>
 
-<p>本章は、BIOS設定の <strong>NUMA setting</strong> を <strong>NPS2</strong> とし、 <strong>BM.Optimized3.36</strong> をデプロイします。</p>
+<p>本章は、 <strong>NPS</strong> を <strong>NPS2</strong> とするようBIOSを設定し（※1）、OSに <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※2）を使用して、 <strong>BM.Optimized3.36</strong> のインスタンスを作成します。</p>
 
-<p>インスタンスデプロイ時のBIOS設定は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+<p>※1）<strong>NPS</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<p>※2）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+
+<p>インスタンスの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> の手順を参考にしてください。</p>
 
 <hr />
 <h1 id="2-intel-oneapi-base-toolkitインストール">2. Intel oneAPI Base Toolkitインストール</h1>
 
-<p>本章は、 <strong>STREAM</strong> を実行するインスタンスに <strong>Intel oneAPI Base Toolkit</strong> をインストールします。</p>
+<p>本章は、先に作成した <strong>STREAM</strong> を実行するインスタンス上で、 <strong>Intel oneAPI Base Toolkit</strong> をインストールします。</p>
 
-<p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>Intel oneAPI Base Toolkit</strong> をインストールします。</p>
+<p>以下コマンドをopcユーザで実行し、 <strong>Intel oneAPI Base Toolkit</strong> をインストールします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--add-repo</span> https://yum.repos.intel.com/oneapi
 <span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">--import</span> https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> intel-basekit
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> intel-basekit
 </code></pre></div></div>
 
 <hr />
 <h1 id="3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</h1>
 
-<p>本章は、 <strong>STREAM</strong> のソースコードをダウンロードし、先にインストールした <strong>Intel oneAPI Base Toolkit</strong> に含まれる<strong>Intel oneAPI DPC++/C++ Compiler</strong> でコンパイルして実行バイナリを作成します。</p>
+<p>本章は、先に作成した <strong>STREAM</strong> を実行するインスタンス上で、先にインストールした <strong>Intel oneAPI Base Toolkit</strong> に含まれる<strong>Intel oneAPI DPC++/C++ Compiler</strong> で <strong>STREAM</strong> のソースコードをコンパイルし、実行バイナリを作成します。</p>
 
-<p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行します。</p>
+<p>以下コマンドを <strong>STREAM</strong> 実行ユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
@@ -472,79 +475,58 @@
 <hr />
 <h1 id="4-stream実行">4. STREAM実行</h1>
 
-<p>本章は、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、 <strong>STREAM</strong> を実行します。<br />
-具体的には、以下の作業を実施します。</p>
+<p>本章は、先に作成した <strong>STREAM</strong> を実行するインスタンス上で、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、 <strong>STREAM</strong> を実行します。</p>
 
-<ul>
-  <li>OS再起動</li>
-  <li>NUMA設定の確認</li>
-  <li>スレッドアフィニティ用環境変数指定</li>
-  <li><strong>STREAM</strong> 実行</li>
-</ul>
+<p>以下コマンドをopcユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としてメモリ領域初期化のためのOS再起動を行います。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、OSを再起動します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、その結果が <strong>4</strong> であることを以って、BIOSの <strong>NUMA setting</strong> が <strong>NPS2</strong> となっていることを確認します。<br />
-本ドキュメントの前提となる環境では、 <strong>NUMA setting</strong> が <strong>NPS2</strong> の場合デフォルトの <strong>NPS1</strong> の場合と比較して <strong>STREAM</strong> の性能が向上します。</p>
+<p>次に、以下コマンドを <strong>STREAM</strong> 実行ユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としたスレッドアフィニティの設定を適用します。<br />
+実行時スレッド数は、 <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）を活用するため <strong>72</strong> とします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>lscpu | <span class="nb">grep</span> <span class="s2">"NUMA node(s)"</span>
- NUMA node<span class="o">(</span>s<span class="o">)</span>:        4
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としたスレッドアフィニティの設定を適用します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>72
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="nv">granularity</span><span class="o">=</span>fine,compact
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>72
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="nv">granularity</span><span class="o">=</span>fine,compact
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> を実行します。</p>
+<p>次に、以下コマンドを <strong>STREAM</strong> 実行ユーザで実行し、 <strong>STREAM</strong> を実行します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
- <span class="nv">$ </span>./a.out
- <span class="nt">-------------------------------------------------------------</span>
- STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
- <span class="nt">-------------------------------------------------------------</span>
- This system uses 8 bytes per array element.
- <span class="nt">-------------------------------------------------------------</span>
- Array size <span class="o">=</span> 268435456 <span class="o">(</span>elements<span class="o">)</span>, Offset <span class="o">=</span> 0 <span class="o">(</span>elements<span class="o">)</span>
- Memory per array <span class="o">=</span> 2048.0 MiB <span class="o">(=</span> 2.0 GiB<span class="o">)</span><span class="nb">.</span>
- Total memory required <span class="o">=</span> 6144.0 MiB <span class="o">(=</span> 6.0 GiB<span class="o">)</span><span class="nb">.</span>
- Each kernel will be executed 10 times.
- The <span class="k">*</span>best<span class="k">*</span> <span class="nb">time </span><span class="k">for </span>each kernel <span class="o">(</span>excluding the first iteration<span class="o">)</span>
- will be used to compute the reported bandwidth.
- <span class="nt">-------------------------------------------------------------</span>
- Number of Threads requested <span class="o">=</span> 72
- Number of Threads counted <span class="o">=</span> 72
- <span class="nt">-------------------------------------------------------------</span>
- Your clock granularity/precision appears to be 1 microseconds.
- Each <span class="nb">test </span>below will take on the order of 14757 microseconds.
- <span class="o">(=</span> 14757 clock ticks<span class="o">)</span>
- Increase the size of the arrays <span class="k">if </span>this shows that
- you are not getting at least 20 clock ticks per test.
- <span class="nt">-------------------------------------------------------------</span>
- WARNING <span class="nt">--</span> The above is only a rough guideline.
- For best results, please be sure you know the
- precision of your system timer.
- <span class="nt">-------------------------------------------------------------</span>
- Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
- </span>Copy:          295796.6     0.014582     0.014520     0.014663
- Scale:         318925.3     0.013542     0.013467     0.013653
- Add:           319154.4     0.020275     0.020186     0.020363
- Triad:         320935.1     0.020131     0.020074     0.020209
- <span class="nt">-------------------------------------------------------------</span>
- Solution Validates: avg error less than 1.000000e-13 on all three arrays
- <span class="nt">-------------------------------------------------------------</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+<span class="nv">$ </span>./a.out
+<span class="nt">-------------------------------------------------------------</span>
+STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
+<span class="nt">-------------------------------------------------------------</span>
+This system uses 8 bytes per array element.
+<span class="nt">-------------------------------------------------------------</span>
+Array size <span class="o">=</span> 268435456 <span class="o">(</span>elements<span class="o">)</span>, Offset <span class="o">=</span> 0 <span class="o">(</span>elements<span class="o">)</span>
+Memory per array <span class="o">=</span> 2048.0 MiB <span class="o">(=</span> 2.0 GiB<span class="o">)</span><span class="nb">.</span>
+Total memory required <span class="o">=</span> 6144.0 MiB <span class="o">(=</span> 6.0 GiB<span class="o">)</span><span class="nb">.</span>
+Each kernel will be executed 10 times.
+The <span class="k">*</span>best<span class="k">*</span> <span class="nb">time </span><span class="k">for </span>each kernel <span class="o">(</span>excluding the first iteration<span class="o">)</span>
+will be used to compute the reported bandwidth.
+<span class="nt">-------------------------------------------------------------</span>
+Number of Threads requested <span class="o">=</span> 72
+Number of Threads counted <span class="o">=</span> 72
+<span class="nt">-------------------------------------------------------------</span>
+Your clock granularity/precision appears to be 1 microseconds.
+Each <span class="nb">test </span>below will take on the order of 14757 microseconds.
+<span class="o">(=</span> 14757 clock ticks<span class="o">)</span>
+Increase the size of the arrays <span class="k">if </span>this shows that
+you are not getting at least 20 clock ticks per test.
+<span class="nt">-------------------------------------------------------------</span>
+WARNING <span class="nt">--</span> The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+<span class="nt">-------------------------------------------------------------</span>
+Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
+</span>Copy:          295796.6     0.014582     0.014520     0.014663
+Scale:         318925.3     0.013542     0.013467     0.013653
+Add:           319154.4     0.020275     0.020186     0.020363
+Triad:         320935.1     0.020131     0.020074     0.020209
+<span class="nt">-------------------------------------------------------------</span>
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+<span class="nt">-------------------------------------------------------------</span>
+</code></pre></div></div>
 
         
       </section>
@@ -556,7 +538,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-23T22:28:24+09:00">January 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
 
       </footer>
 

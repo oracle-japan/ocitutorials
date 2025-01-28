@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-23T22:28:24+09:00">
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
 
 
 
@@ -317,6 +317,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -388,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク統計情報の取得方法">
     <meta itemprop="description" content="複数ノードに跨るHPC/機械学習ワークロードを実行するHPC/GPUクラスタは、ノード間通信に使用するクラスタ・ネットワークが想定通りに使用されて初めてその性能を発揮することが出来ます。ここで、インスタンスを クラスタ・ネットワーク に接続するNIC（NVIDIA Mellanox ConnectX）は、これを介して通信する際の様々な統計情報を記録するハードウェアカウンタを備えており、インスタンスのOS上でこれらを取得することが可能です。本テクニカルTipsは、クラスタ・ネットワークに接続するインスタンスでクラスタ・ネットワークの利用状況や問題判別に役立つ統計情報を取得する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-01-23T22:28:24+09:00">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -403,21 +405,17 @@
             </nav>
           </aside>
         
-        <p>複数ノードに跨るHPC/機械学習ワークロードを実行するHPC/GPUクラスタは、ノード間通信に使用する <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> が想定通りに使用されて初めてその性能を発揮することが出来ます。<br />
-ここで、インスタンスを <strong>クラスタ・ネットワーク</strong> に接続するNIC（ <strong>NVIDIA Mellanox ConnectX</strong> ）は、これを介して通信する際の様々な統計情報を記録するハードウェアカウンタを備えており、インスタンスのOS上でこれらを取得することが可能です。<br />
-本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続するインスタンスで <strong>クラスタ・ネットワーク</strong> の利用状況や問題判別に役立つ統計情報を取得する方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
 <p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプ（ <strong><a href="https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes">ここ</a></strong> を参照）は、 <strong>クラスタ・ネットワーク</strong> 接続用NICとして <strong>NVIDIA Mellanox ConnectX</strong> を搭載し、 <strong>クラスタ・ネットワーク</strong> とのデータ通信に関連する統計情報を保持するハードウェアカウンタから、性能評価や問題判別に資する情報を取得することが出来ます。</p>
 
 <p>これらの統計情報の中で送受信データ通信量は、アプリケーションのノード間通信性能を把握する上で重要なメトリックで、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> の <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/high-performance-compute.htm#high-performance-computing-plugins">Compute RDMA GPU Monitroing</a></strong> プラグインを介して <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Monitoring/home.htm">OCIモニタリング</a></strong> から送受信帯域幅として参照する仕組みがあります。（この詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></strong> を参照下さい。）</p>
 
-<p>また輻輳制御関連のエラーカウンタは、 <strong>クラスタ・ネットワーク</strong> が採用する <strong>RoCEv2</strong> の輻輳制御である <strong>ECN</strong> や <strong>DCQCN</strong> に関する制御情報を保持しており、ノード間通信で問題が発生した際の状況把握に有益な情報として利用することが出来ます。（ <strong>クラスタ・ネットワーク</strong> の輻輳制御詳細は、 <strong><a href="/ocitutorials/hpc/#4-oci-hpc関連情報リンク集">OCI HPC関連情報リンク集</a></strong> の  <strong>First Principles: Building a high-performance network in the public cloud</strong> と <strong>Congestion Control for Large-Scale RDMA Deployments</strong> を参照下さい。）</p>
+<p>また輻輳制御関連のエラーカウンタは、 <strong>クラスタ・ネットワーク</strong> が採用する <strong>RoCEv2</strong> の輻輳制御である <strong>ECN</strong> や <strong>DCQCN</strong> に関する制御情報を保持しており、ノード間通信で問題が発生した際の状況把握に有益な情報として利用することが出来ます。（ <strong>クラスタ・ネットワーク</strong> の輻輳制御詳細は、 <strong><a href="/ocitutorials/hpc/#4-oci-hpc関連情報リンク集">OCI HPC関連情報リンク集</a></strong> の  <strong>First Principles: Building a high-performance network in the public cloud</strong> と <strong>Congestion Control for Large-Scale RDMA Deployments</strong> を参照して下さい。）</p>
 
 <p>次章では、これら統計情報の取得方法を解説します。<br />
-なお本コンテンツの前提とするOSは、ユーティリティ提供方法が <strong>Oracle Cloud Agent</strong> プラグインの <strong>Oracle Linux</strong> 8ベース  <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> です。（この詳細は、<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> を参照下さい。）</p>
+なお本コンテンツの前提とするOSは、ユーティリティ提供方法が <strong>Oracle Cloud Agent</strong> プラグインの <strong>Oracle Linux</strong> 8ベース  <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> です。（この詳細は、<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> を参照して下さい。）</p>
 
 <hr />
 <h1 id="1-クラスタネットワーク関連統計情報取得">1. クラスタ・ネットワーク関連統計情報取得</h1>
@@ -548,7 +546,7 @@ rx_write_requests
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-23T22:28:24+09:00">January 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
 
       </footer>
 

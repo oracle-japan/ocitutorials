@@ -1140,7 +1140,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/cluster-with-bv-stack/architecture_diagram.png"
       },{
         "title": "HPL実行方法（BM.Optimized3.36編）",
-        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の クラスタ・ネットワーク でHPCワークロード向けベアメタルインスタンス BM.Optimized3.36 をノード間接続するHPCクラスタで、標準ベンチマークの HPL を実行する方法を解説します。 0. 概要 本ドキュメントで解説する HPL の実行は、 Intel oneAPI Math Kernel Library for Linux （本ドキュメントで使用するバージョンは2023.2）に含まれるIntelの HPL 実装である Intel Distribution for LINPACK Benchmark を Intel MPI Library （本ドキュメントで使用するバージョンは2021.10）と共に使用します。 なお、 Intel oneAPI Math Kernel Library for Linux と Intel MPI Library は、 Intel oneAPI HPC Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。...","categories": [],
+        "excerpt":"0. 概要 本ドキュメントで解説する HPL の実行は、 Intel oneAPI Math Kernel Library for Linux に含まれる HPL の実装である Intel Distribution for LINPACK Benchmark を、 Intel MPI Library と共に使用します。 なお、 Intel oneAPI Math Kernel Library for Linux と Intel MPI Library は、 Intel oneAPI HPC Toolkit に含まれているものを使用します。 HPL を実行するHPCクラスタは、計算ノードに BM.Optimized3.36 を使用し、 HPL の性能向上を目的に NUMA...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-hpl/",
         "teaser": null
@@ -1152,7 +1152,7 @@ var store = [{
         "teaser": null
       },{
         "title": "STREAM実行方法（BM.Optimized3.36編）",
-        "excerpt":"本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス BM.Optimized3.36 で、標準ベンチマークの STREAM を実行する方法を解説します。 0. 概要 本ドキュメントで解説する STREAM の実行は、 Intel oneAPI Base Toolkit （本ドキュメントで使用するバージョンは2023.2）に含まれるCコンパイラの Intel oneAPI DPC++/C++ Compiler （本ドキュメントで使用するバージョンは2023.2）で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 を Oracle Linux 8ベースの HPCクラスタネットワーキングイメージ でデプロイします。 この際、 STREAM の性能向上を目的とし、インスタンスをデプロイする際のBIOS設定で NUMA setting を NPS2 とします。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Optimized3.36 インスタンスのデプロイ Intel oneAPI Base Toolkit インストール STREAM...","categories": [],
+        "excerpt":"0. 概要 本ドキュメントで解説する STREAM の実行は、 Intel oneAPI Base Toolkit に含まれるCコンパイラの Intel oneAPI DPC++/C++ Compiler で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、 BM.Optimized3.36 を使用し、 STREAM の性能向上を目的に NUMA nodes per socket （以降 NPS と呼称します。）が 2 （以降 NPS2 と呼称します。）となるようBIOSで設定します。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Optimized3.36 インスタンス作成 Intel oneAPI Base Toolkit インストール STREAM ダウンロード・コンパイル STREAM 実行 本ドキュメントは、以下の環境で STREAM...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-stream/",
         "teaser": null
@@ -1217,6 +1217,12 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/cpu-binding/",
         "teaser": null
       },{
+        "title": "OpenMPIのMPI集合通信チューニング方法",
+        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、この MCA が用意するパラメータには、MPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現する通信フレームワークである UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが多数存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せた各ケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード当たりMPIプロセス数 ： 8 ・ 16 ・...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/openmpi-perftune/",
+        "teaser": null
+      },{
         "title": "PAPIでHPCアプリケーションをプロファイリング",
         "excerpt":"HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを実行する場合、高価な計算資源を有効活用出来ているかを検証するため、アプリケーションのプロファイリングを実施することが一般的です。 PAPI は、HPCワークロード向け ベアメタル・シェイプ に採用されている Intel Ice Lake や AMD EPYC 9004シリーズ のCPUが持つハードウェアカウンタから浮動小数点演算数やキャッシュヒット数といったプロファイリングに有益な情報を取得するAPIを提供し、HPCアプリケーションのプロファイリングに欠かせないツールとなっています。 本プロファイリング関連Tipsは、 ベアメタル・インスタンス 上で実行するHPCアプリケーションを PAPI を使ってプロファイリングする方法を解説します。 0. 概要 PAPI (Performance Application Programming Interface) は、異なるプラットフォーム間を共通のインターフェースで利用できるように設計された性能解析ツールで、プロファイリング対象のアプリケーションからAPIをコールすることで、CPU/GPUをはじめとする様々なハードウェアからプロファイリングに有益な情報を収集します。 この PAPI の可搬性は、ハードウェア固有の部分を吸収する下層と、プロファイリングを行うアプリケーション開発者が利用する抽象化された上位層にソフトウェアスタックを分割することで、これを実現しています。これらの関係は、 ここ に記載のアーキテクチャ図が参考になります。 PAPI のAPIは、HPCアプリケーションをプロファイリングするユースケースの場合、 Low Level API と High Level API から選択して利用することが出来ます。 High Level API は、内部で Low Level API を使用することでより高機能のプロファイリングが可能なAPIを提供し、 Low...","categories": [],
         "tags": [],
@@ -1260,7 +1266,7 @@ var store = [{
         "teaser": null
       },{
         "title": "クラスタ・ネットワーク統計情報の取得方法",
-        "excerpt":"複数ノードに跨るHPC/機械学習ワークロードを実行するHPC/GPUクラスタは、ノード間通信に使用する クラスタ・ネットワーク が想定通りに使用されて初めてその性能を発揮することが出来ます。 ここで、インスタンスを クラスタ・ネットワーク に接続するNIC（ NVIDIA Mellanox ConnectX ）は、これを介して通信する際の様々な統計情報を記録するハードウェアカウンタを備えており、インスタンスのOS上でこれらを取得することが可能です。 本テクニカルTipsは、 クラスタ・ネットワーク に接続するインスタンスで クラスタ・ネットワーク の利用状況や問題判別に役立つ統計情報を取得する方法を解説します。 0. 概要 クラスタ・ネットワーク 対応シェイプ（ ここ を参照）は、 クラスタ・ネットワーク 接続用NICとして NVIDIA Mellanox ConnectX を搭載し、 クラスタ・ネットワーク とのデータ通信に関連する統計情報を保持するハードウェアカウンタから、性能評価や問題判別に資する情報を取得することが出来ます。 これらの統計情報の中で送受信データ通信量は、アプリケーションのノード間通信性能を把握する上で重要なメトリックで、 Oracle Cloud Agent の Compute RDMA GPU Monitroing プラグインを介して OCIモニタリング から送受信帯域幅として参照する仕組みがあります。（この詳細は、 OCI HPCテクニカルTips集 の OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法 を参照下さい。） また輻輳制御関連のエラーカウンタは、 クラスタ・ネットワーク が採用する RoCEv2...","categories": [],
+        "excerpt":"0. 概要 クラスタ・ネットワーク 対応シェイプ（ ここ を参照）は、 クラスタ・ネットワーク 接続用NICとして NVIDIA Mellanox ConnectX を搭載し、 クラスタ・ネットワーク とのデータ通信に関連する統計情報を保持するハードウェアカウンタから、性能評価や問題判別に資する情報を取得することが出来ます。 これらの統計情報の中で送受信データ通信量は、アプリケーションのノード間通信性能を把握する上で重要なメトリックで、 Oracle Cloud Agent の Compute RDMA GPU Monitroing プラグインを介して OCIモニタリング から送受信帯域幅として参照する仕組みがあります。（この詳細は、 OCI HPCテクニカルTips集 の OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法 を参照下さい。） また輻輳制御関連のエラーカウンタは、 クラスタ・ネットワーク が採用する RoCEv2 の輻輳制御である ECN や DCQCN に関する制御情報を保持しており、ノード間通信で問題が発生した際の状況把握に有益な情報として利用することが出来ます。（ クラスタ・ネットワーク の輻輳制御詳細は、 OCI HPC関連情報リンク集 の First Principles: Building a high-performance...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/",
         "teaser": null
@@ -1350,7 +1356,7 @@ var store = [{
         "teaser": null
       },{
         "title": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法",
-        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。 No. 計算リソース 確保 MPIプロセス 起動 MPIプロセス間 通信初期化 ノード間 リモート実行 起動コマンド 1. Slurm Slurm PMIx Slurm srun 2. Slurm Slurm PMIx Slurm mpirun （※1） 3. Slurm PRRTE PMIx SSH （※2） mpirun ※1）本テクニカルTipsの手順に従い、 Slurm と連携するよう OpenMPI がビルドされている必要があります。 ※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。 ここで 1. の動作モードは、その他の動作モードに対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能（※3） プロセスバインディングや終了処理等のプロセス管理を Slurm に統合することが可能 精度の高いアカウンティング情報を...","categories": [],
+        "excerpt":"0. 概要 Slurm 環境で OpenMPI のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。 No. 計算リソース 確保 MPIプロセス 起動 MPIプロセス間 通信初期化 ノード間 リモート実行 起動コマンド 1. Slurm Slurm PMIx Slurm srun 2. Slurm Slurm PMIx Slurm mpirun （※1） 3. Slurm PRRTE PMIx SSH （※2） mpirun ※1）本テクニカルTipsの手順に従い、 Slurm と連携するよう OpenMPI がビルドされている必要があります。 ※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。 ここで No. 1. の動作モードは、その他の動作モードに対して以下の利点があります。 高並列アプリケーションを高速に起動することが可能（※3） プロセスバインディングや終了処理等のプロセス管理を Slurm に統合することが可能...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/build-openmpi/",
         "teaser": null

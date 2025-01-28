@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-23T22:28:24+09:00">
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
 
 
 
@@ -317,6 +317,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -388,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。">
-    <meta itemprop="datePublished" content="2025-01-23T22:28:24+09:00">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -450,7 +452,7 @@
 <p>※1）本テクニカルTipsの手順に従い、 <strong>Slurm</strong> と連携するよう <strong>OpenMPI</strong> がビルドされている必要があります。<br />
 ※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。</p>
 
-<p>ここで <strong>1.</strong> の動作モードは、その他の動作モードに対して以下の利点があります。</p>
+<p>ここで <strong>No. 1.</strong> の動作モードは、その他の動作モードに対して以下の利点があります。</p>
 
 <ul>
   <li>高並列アプリケーションを高速に起動することが可能（※3）</li>
@@ -486,7 +488,7 @@
 
 <p>特に <strong>UCX</strong> を使用するノード間通信は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。</p>
 
-<p>以上の利点を享受するべく本テクニカルTipsは、 <strong>Slurm</strong> 環境でMPIアプリケーションを <strong>1.</strong> の動作モードで実行すること、通信フレームワークに <strong>UCX</strong> を使用することを想定し、このための <strong>OpenMPI</strong> のインストール手順を解説、インストールした <strong>OpenMPI</strong> のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。</p>
+<p>以上の利点を享受するべく本テクニカルTipsは、 <strong>Slurm</strong> 環境でMPIアプリケーションを <strong>No. 1.</strong> の動作モードで実行すること、通信フレームワークに <strong>UCX</strong> を使用することを想定し、このための <strong>OpenMPI</strong> の構築方法を解説、構築した <strong>OpenMPI</strong> のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。</p>
 
 <ul>
   <li><strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong></li>
@@ -714,7 +716,7 @@ npb@nas.nasa.gov
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-23T22:28:24+09:00">January 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
 
       </footer>
 

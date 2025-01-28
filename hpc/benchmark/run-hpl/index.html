@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-23T22:28:24+09:00">
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
 
 
 
@@ -317,6 +317,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -388,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPL実行方法（BM.Optimized3.36編）">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスBM.Optimized3.36をノード間接続するHPCクラスタで、標準ベンチマークのHPLを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-01-23T22:28:24+09:00">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -399,25 +401,28 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタのデプロイ">1. HPCクラスタのデプロイ</a></li><li><a href="#2-intel-oneapi-hpc-toolkitインストール">2. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#3-intel-distribution-for-linpack-benchmarkセットアップ">3. Intel Distribution for LINPACK Benchmarkセットアップ</a></li><li><a href="#4-hpl実行">4. HPL実行</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-hpcクラスタ構築">1. HPCクラスタ構築</a></li><li><a href="#2-intel-oneapi-hpc-toolkitインストール">2. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#3-intel-distribution-for-linpack-benchmarkセットアップ">3. Intel Distribution for LINPACK Benchmarkセットアップ</a></li><li><a href="#4-hpl実行">4. HPL実行</a></li></ul>
             </nav>
           </aside>
         
-        <p>本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用の <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でHPCワークロード向けベアメタルインスタンス <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> をノード間接続するHPCクラスタで、標準ベンチマークの <strong><a href="https://www.netlib.org/benchmark/hpl/">HPL</a></strong> を実行する方法を解説します。</p>
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong>HPL</strong> の実行は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/perflib/mkl/index.html">Intel oneAPI Math Kernel Library for Linux</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれるIntelの <strong>HPL</strong> 実装である <strong><a href="https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-linux/2023-1/intel-distribution-for-linpack-benchmark.html">Intel Distribution for LINPACK Benchmark</a></strong> を <strong><a href="https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html">Intel MPI Library</a></strong> （本ドキュメントで使用するバージョンは2021.10）と共に使用します。<br />
-なお、 <strong>Intel oneAPI Math Kernel Library for Linux</strong> と <strong>Intel MPI Library</strong> は、 <strong><a href="https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html">Intel oneAPI HPC Toolkit</a></strong> （本ドキュメントで使用するバージョンは2023.2）に含まれているものを使用します。</p>
+<p>本ドキュメントで解説する <strong><a href="https://www.netlib.org/benchmark/hpl/">HPL</a></strong> の実行は、 <strong><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html#gs.jwmn3t">Intel oneAPI Math Kernel Library for Linux</a></strong> に含まれる <strong>HPL</strong> の実装である <strong><a href="https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-linux/2023-1/intel-distribution-for-linpack-benchmark.html">Intel Distribution for LINPACK Benchmark</a></strong> を、 <strong><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/mpi-library.html#gs.jwmodq">Intel MPI Library</a></strong> と共に使用します。<br />
+なお、 <strong>Intel oneAPI Math Kernel Library for Linux</strong> と <strong>Intel MPI Library</strong> は、 <strong><a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html#gs.jwmpak">Intel oneAPI HPC Toolkit</a></strong> に含まれているものを使用します。</p>
 
-<p><strong>HPL</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong>BM.Optimized3.36</strong> 2インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong>HPL</strong> の性能向上を目的にインスタンスをデプロイする際のBIOS設定 <strong>NUMA setting</strong> を <strong>NPS2</strong> とします。<br />
-計算ノードのOSは、 <strong>Oracle Linux</strong> 8ベースの <strong>HPC<a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用し、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、計算ノード間でMPIが実行できるよう予め構築しておきます。</p>
+<p><strong>HPL</strong> を実行するHPCクラスタは、計算ノードに <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を使用し、 <strong>HPL</strong> の性能向上を目的に <strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称します。）が <strong>2</strong> （以降 <strong>NPS2</strong> と呼称します。）で <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）が無効となるようBIOSで設定、2インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とします。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>HPL</strong> 実行は、以下の手順を経て行います。</p>
 
 <ul>
-  <li>HPCクラスタのデプロイ</li>
+  <li>HPCクラスタ構築</li>
   <li><strong>Intel oneAPI HPC Toolkit</strong> インストール</li>
   <li><strong>Intel Distribution for LINPACK Benchmark</strong> セットアップ</li>
   <li><strong>HPL</strong> 実行</li>
@@ -427,29 +432,32 @@
 
 <p>[実行環境]</p>
 <ul>
-  <li>シェイプ: <strong>BM.Optimized3.36</strong></li>
-  <li>OS: <strong>Oracle Linux</strong> 8.7 (HPC <strong>クラスタネットワーキングイメージ</strong> )</li>
-  <li><strong>HPL</strong> : <strong>Intel oneAPI Math Kernel Library for Linux</strong> （バージョン2023.2）の <strong>Intel Distribution for LINPACK Benchmark</strong></li>
-  <li>MPI: <strong>Intel MPI Library</strong> （バージョン2021.10）</li>
-  <li>ノード数: 2</li>
-  <li>ノード間接続: <strong>クラスタ・ネットワーク</strong></li>
-  <li>問題サイズ(N): 353,280</li>
-  <li>ブロックサイズ(NB): 384</li>
-  <li>プロセスグリッド(PxQ): 2x4</li>
+  <li>シェイプ： <strong>BM.Optimized3.36</strong> （ <strong>NPS2</strong> <strong>SMT</strong> 無効）</li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong>クラスタネットワーキングイメージ</strong></li>
+  <li><strong>HPL</strong> ： <strong>Intel oneAPI Math Kernel Library for Linux</strong> （バージョン2025.0.1）の <strong>Intel Distribution for LINPACK Benchmark</strong></li>
+  <li>MPI： <strong>Intel MPI Library</strong> （バージョン2021.14.1）</li>
+  <li>ノード数： 2</li>
+  <li>ノード間接続： <strong>クラスタ・ネットワーク</strong></li>
+  <li>問題サイズ(N)： 353,280</li>
+  <li>ブロックサイズ(NB)： 384</li>
+  <li>プロセスグリッド(PxQ)： 2x4</li>
 </ul>
 
 <p>[実行結果]</p>
 <ul>
-  <li>FLOPS: 4,925 GFLOPS</li>
-  <li>所要時間: 5,969秒</li>
+  <li>FLOPS： <strong>4,921 GFLOPS</strong></li>
+  <li>所要時間： 5,999 秒</li>
 </ul>
 
 <hr />
-<h1 id="1-hpcクラスタのデプロイ">1. HPCクラスタのデプロイ</h1>
+<h1 id="1-hpcクラスタ構築">1. HPCクラスタ構築</h1>
 
-<p>本章は、計算ノードに使用する <strong>BM.Optimized3.36</strong> のBIOS設定 <strong>NUMA setting</strong> を <strong>NPS2</strong> とし、2ノードのHPCクラスタをデプロイします。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、HPCクラスタを構築します。<br />
+この際、 <strong>NPS</strong> を <strong>NPS2</strong> とし <strong>SMT</strong> を無効化するようBIOSを設定した（※1）2ノードの <strong>BM.Optimized3.36</strong> を計算ノードに使用し、そのOSに <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※2）を使用します。</p>
 
-<p>HPCクラスタデプロイ時の計算ノードのBIOS設定は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照ください。</p>
+<p>※1）<strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<p>※2）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
 
 <hr />
 <h1 id="2-intel-oneapi-hpc-toolkitインストール">2. Intel oneAPI HPC Toolkitインストール</h1>
@@ -467,167 +475,121 @@
 <hr />
 <h1 id="3-intel-distribution-for-linpack-benchmarkセットアップ">3. Intel Distribution for LINPACK Benchmarkセットアップ</h1>
 
-<p>本章は、先にインストールした <strong>Intel oneAPI HPC Toolkit</strong> に含まれる <strong>Intel Distribution for LINPACK Benchmark</strong> を、2ノードの <strong>BM.Optimized3.36</strong> （AVX-512搭載プロセッサ・主記憶容量512GB）で実行する際に最大の性能を得るよう、事前準備を実施します。<br />
-具体的には、以下の作業を実施します。</p>
+<p>本章は、先にインストールした <strong>Intel oneAPI HPC Toolkit</strong> に含まれる <strong>Intel Distribution for LINPACK Benchmark</strong> を、2ノードの <strong>BM.Optimized3.36</strong> （AVX-512搭載プロセッサ・主記憶容量512GB）で実行する際に最大の性能を得るよう、事前準備を実施します。</p>
 
-<ul>
-  <li><strong>Intel Distribution for LINPACK Benchmark</strong> 実行用ディレクトリ作成</li>
-  <li><strong>HPL.dat</strong> <sup id="fnref:hpl_dat"><a href="#fn:hpl_dat" class="footnote" rel="footnote" role="doc-noteref">1</a></sup>修正</li>
-  <li><strong>runme_intel64_dynamic</strong> <sup id="fnref:runme_intel64_dynamic"><a href="#fn:runme_intel64_dynamic" class="footnote" rel="footnote" role="doc-noteref">2</a></sup>修正</li>
-</ul>
+<p>以下コマンドを全計算ノードの <strong>HPL</strong> 実行ユーザで実行し、 <strong>Intel Distribution for LINPACK Benchmark</strong> 実行用のディレクトリを作成します。<br />
+コマンド中の <strong>/dest_dir</strong> は、全計算ノードで共有されるディレクトリがあればその配下に、無ければ <strong>/tmp</strong> ディレクトリとします。このディレクトリを共有ディレクトリ配下にすることで、この実行用ディレクトリ作成と後のセットアップを実施する対象ノードを1ノードで済ますことが可能になります。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドを全計算ノードのopcユーザで実行し、 <strong>Intel Distribution for LINPACK Benchmark</strong> 実行用のディレクトリを作成します。<br />
-コマンド中の <strong>dest_dir</strong> は、全計算ノードで共有されるディレクトリがあればその配下に、無ければ <strong>/tmp</strong> ディレクトリとします。このディレクトリを共有ディレクトリ配下にすることで、この実行用ディレクトリ作成と後の <strong>HPL.dat</strong> の修正を実施する対象ノードを1ノードで済ますことが可能になります。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> /opt/intel/oneapi/mkl/latest/share/mkl/benchmarks/mp_linpack /dest_dir/
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-pR</span> /opt/intel/oneapi/mkl/latest/benchmarks/mp_linpack /dest_dir/
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p><strong>Intel Distribution for LINPACK Benchmark</strong> 実行用ディレクトリ（ <strong>/dest_dir/mp_linpack</strong> ）直下のファイル <strong>HPL.dat</strong> 中の <strong>HPL</strong> 関連パラメータを、以下のように設定します。</p>
+<p>次に、 <strong>Intel Distribution for LINPACK Benchmark</strong> 実行用ディレクトリ（ <strong>/dest_dir/mp_linpack</strong> ）直下のファイル <strong>HPL.dat</strong> （※3）中の <strong>HPL</strong> 関連パラメータを、以下のように設定します。</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ファイル中の行・カラム</th>
-          <th>パラメータ</th>
-          <th>設定値</th>
-          <th>備考</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>6行目・1カラム目</td>
-          <td>問題サイズN</td>
-          <td>353,280</td>
-          <td>デプロイ直後の計算ノード空きメモリサイズ490 GiBに10 GiB程度の余裕を持たせて算出</td>
-        </tr>
-        <tr>
-          <td>8行目・1カラム目</td>
-          <td>ブロックサイズNB</td>
-          <td>384</td>
-          <td><strong>Intel oneAPI Math Kernel Library for Linux</strong> ドキュメントに記載のAVX-512搭載プロセッサ用推奨値</td>
-        </tr>
-        <tr>
-          <td>11行目・1カラム目</td>
-          <td>プロセスグリッドのP値</td>
-          <td>2</td>
-          <td>使用するMPIプロセス数8からPxQを2x4に設定</td>
-        </tr>
-        <tr>
-          <td>12行目・1カラム目</td>
-          <td>プロセスグリッドのQ値</td>
-          <td>4</td>
-          <td>使用するMPIプロセス数8からPxQを2x4に設定</td>
-        </tr>
-        <tr>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-  <li>
-    <p><strong>Intel Distribution for LINPACK Benchmark</strong> 実行用ディレクトリ（ <strong>/dest_dir/mp_linpack</strong> ）直下のファイル <strong>runme_intel64_dynamic</strong> 中の <strong>MPI</strong> 関連パラメータを、以下のように設定します。</p>
+<p>※3）HPLを実行する際のパラメータ値を指定する設定ファイルです。</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ファイル中の行</th>
-          <th>パラメータ</th>
-          <th>設定値</th>
-          <th>備考</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>20行目</td>
-          <td>MPI_PROC_NUM</td>
-          <td>8</td>
-          <td>NUMAノード当たり1 MPIプロセス・2ノードトータルで8プロセス</td>
-        </tr>
-        <tr>
-          <td>25行目</td>
-          <td>MPI_PER_NODE</td>
-          <td>4</td>
-          <td>NUMAノード当たり1 MPIプロセス・ノード当たり4プロセス</td>
-        </tr>
-        <tr>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-          <td> </td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
-</ol>
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">ファイル中の<br />行・カラム</th>
+      <th style="text-align: center">パラメータ</th>
+      <th style="text-align: right">設定値</th>
+      <th>備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">6行目<br />1カラム目</td>
+      <td style="text-align: center">問題サイズN</td>
+      <td style="text-align: right">353,280</td>
+      <td>作成直後の計算ノード空きメモリサイズ490 GiBに10 GiB程度の余裕を<br />持たせて算出</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8行目<br />1カラム目</td>
+      <td style="text-align: center">ブロックサイズNB</td>
+      <td style="text-align: right">384</td>
+      <td><strong>Intel oneAPI Math Kernel Library for Linux</strong>ドキュメントに記載の<br />AVX-512搭載プロセッサ用推奨値</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">11行目<br />1カラム目</td>
+      <td style="text-align: center">プロセスグリッドのP値</td>
+      <td style="text-align: right">2</td>
+      <td>使用するMPIプロセス数8からPxQを2x4に設定</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">12行目<br />1カラム目</td>
+      <td style="text-align: center">プロセスグリッドのQ値</td>
+      <td style="text-align: right">4</td>
+      <td>使用するMPIプロセス数8からPxQを2x4に設定</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>次に、 <strong>Intel Distribution for LINPACK Benchmark</strong> 実行用ディレクトリ（ <strong>/dest_dir/mp_linpack</strong> ）直下のファイル <strong>runme_intel64_dynamic</strong> 中の <strong>MPI</strong> 関連パラメータを、以下のように設定します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">ファイル中の行</th>
+      <th style="text-align: center">パラメータ</th>
+      <th style="text-align: right">設定値</th>
+      <th style="text-align: center">備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">20行目</td>
+      <td style="text-align: center">MPI_PROC_NUM</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: center">NUMAノード当たり1 MPIプロセス・2ノードトータルで8プロセス</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">25行目</td>
+      <td style="text-align: center">MPI_PER_NODE</td>
+      <td style="text-align: right">4</td>
+      <td style="text-align: center">NUMAノード当たり1 MPIプロセス・ノード当たり4プロセス</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>次に、以下コマンドを <strong>HPL</strong> 実行ユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /dest_dir/mp_linpack
+<span class="nv">$ </span><span class="nb">cp </span>runme_intel64_prv.txt runme_intel64_prv
+</code></pre></div></div>
 
 <hr />
 <h1 id="4-hpl実行">4. HPL実行</h1>
 
-<p>本章は、先に設定した <strong>HPL</strong> と <strong>MPI</strong> の実行パラメータを使用し、 <strong>HPL</strong> を実行します。<br />
-具体的には、以下の作業を実施します。</p>
+<p>本章は、先に設定した <strong>HPL</strong> と <strong>MPI</strong> の実行パラメータを使用し、 <strong>HPL</strong> を実行します。</p>
 
-<ul>
-  <li>ホストリストファイル<sup id="fnref:hostlist"><a href="#fn:hostlist" class="footnote" rel="footnote" role="doc-noteref">3</a></sup>作成・配布</li>
-  <li>スワップ領域の無効化</li>
-  <li>OS再起動</li>
-  <li><strong>HPL</strong> 実行</li>
-</ul>
+<p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> の手順に従い、 <strong>HPL</strong> を実行する全ての計算ノードのホスト名を記載したホストリストファイルを、 <strong>HPL</strong> 実行ユーザのホームディレクトリ直下に <strong>hostlist.txt</strong> として作成します。</p>
 
-<ol>
-  <li>
-    <p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算ノードのホスト名リスト作成方法</a></strong> の手順を実施し、以下のように全ての計算ノードのホスト名を含むホスト名リストをファイル名 <strong>hostlist.txt</strong> で作成し、これを全計算ノードの <strong>/dest_dir/mp_linpack</strong> ディレクトリにコピーします。</p>
+<p>次に、 <strong>/etc/fstab</strong> ファイルのスワップ領域を指定する行を以下のようにコメントとし、以降のOS再起動でスワップ領域が無効化されるようにします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> inst-wyr6m-comp
- inst-9wead-comp
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>/etc/fstabのスワップ領域を指定する行を以下のように削除し、以降のOS再起動でスワップ領域が無効化されるようにします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
+32c32
+&lt; /.swapfile	none	swap	sw,comment<span class="o">=</span>cloudconfig	0	0
+<span class="nt">---</span>
+<span class="o">&gt;</span> <span class="c">#/.swapfile	none	swap	sw,comment=cloudconfig	0	0</span>
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>diff /etc/fstab_org /etc/fstab
- 30d29
- &lt; /.swapfile	none	swap	sw,comment<span class="o">=</span>cloudconfig	0	0
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを全計算ノードのopcユーザで実行し、OSを再起動します。</p>
+<p>次に、以下コマンドを全計算ノードのopcユーザで実行し、OSを再起動します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを計算ノードのうちの1ノードでopcユーザで実行します。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
+
+<p>次に、以下コマンドを計算ノードのうちの1ノードで <strong>HPL</strong> 実行ユーザで実行します。<br />
 この <strong>HPL</strong> 実行は、 <strong>ノード当たり4プロセス・プロセス当たり9スレッド</strong> で実行します。<br />
 この際、プロセス当たりのスレッド数は、 <strong>Intel oneAPI Math Kernel Library for Linux</strong> がノードのコア配置から自動的にに設定するため、改めて指定する必要はありません。<br />
 本ドキュメントの前提となる環境・設定で <strong>HPL</strong> 実行に要する時間は、2時間弱です。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">I_MPI_HYDRA_HOST_FILE</span><span class="o">=</span>/dest_dir/mp_linpack/hostlist.txt
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
- <span class="nv">$ </span><span class="nb">cd</span> /dest_dir/mp_linpack
- <span class="nv">$ </span>./runme_intel64_dynamic
-</code></pre></div>    </div>
-  </li>
-</ol>
-<div class="footnotes" role="doc-endnotes">
-  <ol>
-    <li id="fn:hpl_dat">
-      <p>HPLを実行する際のパラメータ値を指定する設定ファイル <a href="#fnref:hpl_dat" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-    <li id="fn:runme_intel64_dynamic">
-      <p>Intel_Distribution_for_LINPACK_Benchmarkが提供するHPL実行スクリプト <a href="#fnref:runme_intel64_dynamic" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-    <li id="fn:hostlist">
-      <p>MPIを使用して2ノードでHPLを実行するため、この際に必要となる。 <a href="#fnref:hostlist" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
-    </li>
-  </ol>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /opt/intel/oneapi/setvars.sh
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">I_MPI_HYDRA_HOST_FILE</span><span class="o">=</span>~/hostlist.txt
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+<span class="nv">$ </span><span class="nb">cd</span> /dest_dir/mp_linpack
+<span class="nv">$ </span>./runme_intel64_dynamic
+</code></pre></div></div>
 
         
       </section>
@@ -639,7 +601,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-23T22:28:24+09:00">January 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
 
       </footer>
 

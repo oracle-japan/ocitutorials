@@ -1,0 +1,1042 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OpenMPIのMPI集合通信チューニング方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本テクニカルTipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、MPI集合通信をチューニングする方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OpenMPIのMPI集合通信チューニング方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftune/">
+
+
+  <meta property="og:description" content="MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本テクニカルTipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、MPI集合通信をチューニングする方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftune/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OpenMPIのMPI集合通信チューニング方法
+
+        
+      </h1>
+      
+        <p class="page__lead">MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本テクニカルTipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、MPI集合通信をチューニングする方法を解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/benchmark" itemprop="item"><span itemprop="name">Benchmark</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OpenMPIのMPI集合通信チューニング方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/" class="active">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OpenMPIのMPI集合通信チューニング方法">
+    <meta itemprop="description" content="MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本テクニカルTipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、MPI集合通信をチューニングする方法を解説します。">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1--1ノード8-mpiプロセス">1.  1ノード8 MPIプロセス</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-alltoall">1-1. Alltoall</a></li><li><a href="#1-2-allgather">1-2. Allgather</a></li><li><a href="#1-3-allreduce">1-3. Allreduce</a></li></ul></li><li><a href="#2--1ノード16-mpiプロセス">2.  1ノード16 MPIプロセス</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-alltoall">2-1. Alltoall</a></li><li><a href="#2-2-allgather">2-2. Allgather</a></li><li><a href="#2-3-allreduce">2-3. Allreduce</a></li></ul></li><li><a href="#3--1ノード32-mpiプロセス">3.  1ノード32 MPIプロセス</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-alltoall">3-1. Alltoall</a></li><li><a href="#3-2-allgather">3-2. Allgather</a></li><li><a href="#3-3-allreduce">3-3. Allreduce</a></li></ul></li><li><a href="#4--1ノード36-mpiプロセス">4.  1ノード36 MPIプロセス</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-alltoall">4-1. Alltoall</a></li><li><a href="#4-2-allgather">4-2. Allgather</a></li><li><a href="#3-4-allreduce">3-4. Allreduce</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>オープンソースのMPI実装である <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、  <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> （以降 <strong>MCA</strong> と呼称します。）を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、この <strong>MCA</strong> が用意するパラメータには、MPI集合通信性能に影響するものがあります。</p>
+
+<p>また <strong>OpenMPI</strong> は、高帯域・低遅延のMPIプロセス間通信を実現する通信フレームワークである <strong><a href="https://openucx.org/">UCX</a></strong> を採用し、この <strong>UCX</strong> のパラメータにもMPI集合通信性能に影響するパラメータが多数存在します。</p>
+
+<p>またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや <strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称します。）もその性能に影響します。</p>
+
+<p>以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> に於ける <strong>OpenMPI</strong> のMPI集合通信性能にフォーカスし、以下の <strong>計測条件</strong> を組合せた各ケース毎に以下の <strong>実行時パラメータ</strong> を変えてその性能を <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong> で計測し、最適な <strong>実行時パラメータ</strong> の組み合わせを導きます。</p>
+
+<p>[<strong>計測条件</strong>]</p>
+
+<ul>
+  <li>ノード当たりMPIプロセス数 ： <strong>8</strong> ・ <strong>16</strong> ・ <strong>32</strong> ・ <strong>36</strong></li>
+  <li>ノード数 ： <strong>1</strong> ・ <strong>2</strong> （近日公開予定）・ <strong>4</strong> （近日公開予定）・ <strong>8</strong> （近日公開予定）・ <strong>16</strong> （近日公開予定）</li>
+  <li>MPI集合通信関数 ： <strong>Alltoall</strong> ・ <strong>Allgather</strong> ・ <strong>Allreduce</strong></li>
+</ul>
+
+<p>[<strong>実行時パラメータ</strong>]</p>
+
+<ul>
+  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※1）</li>
+  <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割（※2）</li>
+  <li><strong>NPS</strong> ：  <strong>1</strong> （以降 <strong>NPS1</strong> と呼称します。）・ <strong>2</strong> （以降 <strong>NPS2</strong> と呼称します。）（※3）</li>
+</ul>
+
+<p>※1） <strong>UCX</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</a></strong> を参照してください。<br />
+※2）NUMAノードに対するMPIプロセスの分割方法で、詳細は <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></strong> を参照してください。<br />
+※3）<strong>NPS</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<p>また本パフォーマンス関連Tipsの検証は、以下の実行環境で実施しています。</p>
+
+<p>[実行環境]</p>
+<ul>
+  <li>シェイプ： <strong>BM.Optimized3.36</strong> （  <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）無効（※4））</li>
+  <li>ノード間接続 ： <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong></li>
+  <li>OS： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※5）</li>
+  <li><strong>OpenMPI</strong> ： 5.0.6（※6）</li>
+  <li><strong>Intel MPI Benchmarks</strong> ： 2021.7</li>
+</ul>
+
+<p>※4）<strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。<br />
+※5）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
+※6） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
+
+<p>また <strong>Intel MPI Benchmarks</strong> は、 <strong>numactl</strong> コマンドを介して以下の実行時オプションを指定して起動し、</p>
+
+<p>[<strong>Alltoall</strong>]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>numactl <span class="nt">-l</span> IMB-MPI1 <span class="nt">-msglog</span> 0:25 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> num_of_procs alltoall
+</code></pre></div></div>
+
+<p>[<strong>Allgather</strong>]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>numactl <span class="nt">-l</span> IMB-MPI1 <span class="nt">-msglog</span> 0:25 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> num_of_procs allgather
+</code></pre></div></div>
+
+<p>[<strong>Allreduce</strong>]</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>numactl <span class="nt">-l</span> IMB-MPI1 <span class="nt">-msglog</span> 0:30 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> num_of_procs allreduce
+</code></pre></div></div>
+
+<p>1種類の計測につき5回計測してその最大値と最小値を除く3回の計測結果の算術平均をその結果としています。</p>
+
+<p>以降では、以下の <strong>計測条件</strong> の順に解説します。</p>
+
+<ol>
+  <li><strong><a href="#1--1ノード8-mpiプロセス">1ノード8 MPIプロセス</a></strong></li>
+  <li><strong><a href="#2--1ノード16-mpiプロセス">1ノード16 MPIプロセス</a></strong></li>
+  <li><strong><a href="#3--1ノード32-mpiプロセス">1ノード32 MPIプロセス</a></strong></li>
+  <li><strong><a href="#4--1ノード36-mpiプロセス">1ノード36 MPIプロセス</a></strong></li>
+</ol>
+
+<hr />
+<h1 id="1--1ノード8-mpiプロセス">1.  1ノード8 MPIプロセス</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、1ノードに8 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数ごとに検証します。</p>
+
+<p>下表は、MPI集合通信関数毎の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
+特に <strong>Alltoall</strong> は8KBから128KB、 <strong>Allreduce</strong> は32KBから16MBのメッセージサイズに於いて、大きく性能が向上します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">MPI集合通信関数</th>
+      <th style="text-align: right">UCX_RNDV_THRESH</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>Alltoall</strong></td>
+      <td style="text-align: right">32kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allgather</strong></td>
+      <td style="text-align: right">64kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allreduce</strong></td>
+      <td style="text-align: right">128kb</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>その他の <strong>実行時パラメータ</strong> である <strong>NPS</strong> とMPIプロセス分割方法は、その違いによる有意な差はみられません。</p>
+
+<h2 id="1-1-alltoall">1-1. Alltoall</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="ata_01_08_n1_bl.png" alt="Alltoall 1 node 8 processes NPS1 Block" /></p>
+
+<p><img src="ata_01_08_n1_cy.png" alt="Alltoall 1 node 8 processes NPS1 Cyclic" /></p>
+
+<p><img src="ata_01_08_n2_bl.png" alt="Alltoall 1 node 8 processes NPS2 Block" /></p>
+
+<p><img src="ata_01_08_n2_cy.png" alt="Alltoall 1 node 8 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_08_S.png" alt="Alltoall 1 node 8 processes Small message" /></p>
+
+<p><img src="ata_01_08_M.png" alt="Alltoall 1 node 8 processes Medium message" /></p>
+
+<p><img src="ata_01_08_ML.png" alt="Alltoall 1 node 8 processes Medium Large message" /></p>
+
+<p><img src="ata_01_08_L.png" alt="Alltoall 1 node 8 processes Large message" /></p>
+
+<h2 id="1-2-allgather">1-2. Allgather</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="aga_01_08_n1_bl.png" alt="Allgather 1 node 8 processes NPS1 Block" /></p>
+
+<p><img src="aga_01_08_n1_cy.png" alt="Allgather 1 node 8 processes NPS1 Cyclic" /></p>
+
+<p><img src="aga_01_08_n2_bl.png" alt="Allgather 1 node 8 processes NPS2 Block" /></p>
+
+<p><img src="aga_01_08_n2_cy.png" alt="Allgather 1 node 8 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>64kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_08_S.png" alt="Allgather 1 node 8 processes Small message" /></p>
+
+<p><img src="aga_01_08_M.png" alt="Allgather 1 node 8 processes Medium message" /></p>
+
+<p><img src="aga_01_08_ML.png" alt="Allgather 1 node 8 processes Medium Large message" /></p>
+
+<p><img src="aga_01_08_L.png" alt="Allgather 1 node 8 processes Large message" /></p>
+
+<h2 id="1-3-allreduce">1-3. Allreduce</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="are_01_08_n1_bl.png" alt="Allreduce 1 node 8 processes NPS1 Block" /></p>
+
+<p><img src="are_01_08_n1_cy.png" alt="Allreduce 1 node 8 processes NPS1 Cyclic" /></p>
+
+<p><img src="are_01_08_n2_bl.png" alt="Allreduce 1 node 8 processes NPS2 Block" /></p>
+
+<p><img src="are_01_08_n2_cy.png" alt="Allreduce 1 node 8 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_08_S.png" alt="Allreduce 1 node 8 processes Small message" /></p>
+
+<p><img src="are_01_08_M.png" alt="Allreduce 1 node 8 processes Medisum message" /></p>
+
+<p><img src="are_01_08_ML.png" alt="Allreduce 1 node 8 processes Medisum Large message" /></p>
+
+<p><img src="are_01_08_L.png" alt="Allreduce 1 node 8 processes Large message" /></p>
+
+<hr />
+<h1 id="2--1ノード16-mpiプロセス">2.  1ノード16 MPIプロセス</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、1ノードに16 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数ごとに検証します。</p>
+
+<p>下表は、MPI集合通信関数毎の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
+特に <strong>Alltoall</strong> は8KBから128KB、 <strong>Allreduce</strong> は64KBから16MBのメッセージサイズに於いて、大きく性能が向上します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">MPI集合通信関数</th>
+      <th style="text-align: right">UCX_RNDV_THRESH</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>Alltoall</strong></td>
+      <td style="text-align: right">32kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allgather</strong></td>
+      <td style="text-align: right">32kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allreduce</strong></td>
+      <td style="text-align: right">128kb</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>その他の <strong>実行時パラメータ</strong> である <strong>NPS</strong> とMPIプロセス分割方法は、 <strong>Alltoall</strong> のメッセージサイズが大きな領域で <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位となりますが、それ以外では有意な差はみられません。</p>
+
+<h2 id="2-1-alltoall">2-1. Alltoall</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="ata_01_16_n1_bl.png" alt="Alltoall 1 node 16 processes NPS1 Block" /></p>
+
+<p><img src="ata_01_16_n1_cy.png" alt="Alltoall 1 node 16 processes NPS1 Cyclic" /></p>
+
+<p><img src="ata_01_16_n2_bl.png" alt="Alltoall 1 node 16 processes NPS2 Block" /></p>
+
+<p><img src="ata_01_16_n2_cy.png" alt="Alltoall 1 node 16 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_16_S.png" alt="Alltoall 1 node 16 processes Small message" /></p>
+
+<p><img src="ata_01_16_M.png" alt="Alltoall 1 node 16 processes Medium message" /></p>
+
+<p><img src="ata_01_16_ML.png" alt="Alltoall 1 node 16 processes Medium Large message" /></p>
+
+<p><img src="ata_01_16_L.png" alt="Alltoall 1 node 16 processes Large message" /></p>
+
+<h2 id="2-2-allgather">2-2. Allgather</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="aga_01_16_n1_bl.png" alt="Allgather 1 node 16 processes NPS1 Block" /></p>
+
+<p><img src="aga_01_16_n1_cy.png" alt="Allgather 1 node 16 processes NPS1 Cyclic" /></p>
+
+<p><img src="aga_01_16_n2_bl.png" alt="Allgather 1 node 16 processes NPS2 Block" /></p>
+
+<p><img src="aga_01_16_n2_cy.png" alt="Allgather 1 node 16 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_16_S.png" alt="Allgather 1 node 16 processes Small message" /></p>
+
+<p><img src="aga_01_16_M.png" alt="Allgather 1 node 16 processes Medium message" /></p>
+
+<p><img src="aga_01_16_ML.png" alt="Allgather 1 node 16 processes Medium Large message" /></p>
+
+<p><img src="aga_01_16_L.png" alt="Allgather 1 node 16 processes Large message" /></p>
+
+<h2 id="2-3-allreduce">2-3. Allreduce</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="are_01_16_n1_bl.png" alt="Allreduce 1 node 16 processes NPS1 Block" /></p>
+
+<p><img src="are_01_16_n1_cy.png" alt="Allreduce 1 node 16 processes NPS1 Cyclic" /></p>
+
+<p><img src="are_01_16_n2_bl.png" alt="Allreduce 1 node 16 processes NPS2 Block" /></p>
+
+<p><img src="are_01_16_n2_cy.png" alt="Allreduce 1 node 16 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_16_S.png" alt="Allreduce 1 node 16 processes Small message" /></p>
+
+<p><img src="are_01_16_M.png" alt="Allreduce 1 node 16 processes Medisum message" /></p>
+
+<p><img src="are_01_16_ML.png" alt="Allreduce 1 node 16 processes Medisum Large message" /></p>
+
+<p><img src="are_01_16_L.png" alt="Allreduce 1 node 16 processes Large message" /></p>
+
+<hr />
+<h1 id="3--1ノード32-mpiプロセス">3.  1ノード32 MPIプロセス</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、1ノードに32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数ごとに検証します。</p>
+
+<p>下表は、MPI集合通信関数毎の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
+特に <strong>Alltoall</strong> は8KBから512KB、 <strong>Allreduce</strong> は128KBから16MBのメッセージサイズに於いて、大きく性能が向上します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">MPI集合通信関数</th>
+      <th style="text-align: right">UCX_RNDV_THRESH</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>Alltoall</strong></td>
+      <td style="text-align: right">16kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allgather</strong></td>
+      <td style="text-align: right">16kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allreduce</strong></td>
+      <td style="text-align: right">128kb</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>その他の <strong>実行時パラメータ</strong> である <strong>NPS</strong> とMPIプロセス分割方法は、以下の傾向がみられます。</p>
+
+<ul>
+  <li><strong>Alltoall</strong> の2MB以上のメッセージサイズで <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位</li>
+  <li><strong>Allgather</strong> の32MBメッセージサイズでブロック分割がサイクリック分割に対して優位</li>
+</ul>
+
+<h2 id="3-1-alltoall">3-1. Alltoall</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="ata_01_32_n1_bl.png" alt="Alltoall 1 node 32 processes NPS1 Block" /></p>
+
+<p><img src="ata_01_32_n1_cy.png" alt="Alltoall 1 node 32 processes NPS1 Cyclic" /></p>
+
+<p><img src="ata_01_32_n2_bl.png" alt="Alltoall 1 node 32 processes NPS2 Block" /></p>
+
+<p><img src="ata_01_32_n2_cy.png" alt="Alltoall 1 node 32 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_32_S.png" alt="Alltoall 1 node 32 processes Small message" /></p>
+
+<p><img src="ata_01_32_M.png" alt="Alltoall 1 node 32 processes Medium message" /></p>
+
+<p><img src="ata_01_32_ML.png" alt="Alltoall 1 node 32 processes Medium Large message" /></p>
+
+<p><img src="ata_01_32_L.png" alt="Alltoall 1 node 32 processes Large message" /></p>
+
+<h2 id="3-2-allgather">3-2. Allgather</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="aga_01_32_n1_bl.png" alt="Allgather 1 node 32 processes NPS1 Block" /></p>
+
+<p><img src="aga_01_32_n1_cy.png" alt="Allgather 1 node 32 processes NPS1 Cyclic" /></p>
+
+<p><img src="aga_01_32_n2_bl.png" alt="Allgather 1 node 32 processes NPS2 Block" /></p>
+
+<p><img src="aga_01_32_n2_cy.png" alt="Allgather 1 node 32 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_32_S.png" alt="Allgather 1 node 32 processes Small message" /></p>
+
+<p><img src="aga_01_32_M.png" alt="Allgather 1 node 32 processes Medium message" /></p>
+
+<p><img src="aga_01_32_ML.png" alt="Allgather 1 node 32 processes Medium Large message" /></p>
+
+<p><img src="aga_01_32_L.png" alt="Allgather 1 node 32 processes Large message" /></p>
+
+<h2 id="3-3-allreduce">3-3. Allreduce</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="are_01_32_n1_bl.png" alt="Allreduce 1 node 32 processes NPS1 Block" /></p>
+
+<p><img src="are_01_32_n1_cy.png" alt="Allreduce 1 node 32 processes NPS1 Cyclic" /></p>
+
+<p><img src="are_01_32_n2_bl.png" alt="Allreduce 1 node 32 processes NPS2 Block" /></p>
+
+<p><img src="are_01_32_n2_cy.png" alt="Allreduce 1 node 32 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_32_S.png" alt="Allreduce 1 node 32 processes Small message" /></p>
+
+<p><img src="are_01_32_M.png" alt="Allreduce 1 node 32 processes Medisum message" /></p>
+
+<p><img src="are_01_32_ML.png" alt="Allreduce 1 node 32 processes Medisum Large message" /></p>
+
+<p><img src="are_01_32_L.png" alt="Allreduce 1 node 32 processes Large message" /></p>
+
+<hr />
+<h1 id="4--1ノード36-mpiプロセス">4.  1ノード36 MPIプロセス</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>本章は、1ノードに36 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数ごとに検証します。</p>
+
+<p>下表は、MPI集合通信関数毎の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
+特に <strong>Alltoall</strong> は8KBから256KB、 <strong>Allreduce</strong> は64KBから16MBのメッセージサイズに於いて、大きく性能が向上します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">MPI集合通信関数</th>
+      <th style="text-align: right">UCX_RNDV_THRESH</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>Alltoall</strong></td>
+      <td style="text-align: right">16kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allgather</strong></td>
+      <td style="text-align: right">16kb</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>Allreduce</strong></td>
+      <td style="text-align: right">128kb</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>その他の <strong>実行時パラメータ</strong> である <strong>NPS</strong> とMPIプロセス分割方法は、以下の傾向がみられます。</p>
+
+<ul>
+  <li><strong>Allgather</strong> の32MBメッセージサイズでブロック分割がサイクリック分割に対して優位</li>
+  <li><strong>Allreduce</strong> の1MBから8MBのメッセージサイズで <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位</li>
+</ul>
+
+<h2 id="4-1-alltoall">4-1. Alltoall</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="ata_01_36_n1_bl.png" alt="Alltoall 1 node 36 processes NPS1 Block" /></p>
+
+<p><img src="ata_01_36_n1_cy.png" alt="Alltoall 1 node 36 processes NPS1 Cyclic" /></p>
+
+<p><img src="ata_01_36_n2_bl.png" alt="Alltoall 1 node 36 processes NPS2 Block" /></p>
+
+<p><img src="ata_01_36_n2_cy.png" alt="Alltoall 1 node 36 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_36_S.png" alt="Alltoall 1 node 36 processes Small message" /></p>
+
+<p><img src="ata_01_36_M.png" alt="Alltoall 1 node 36 processes Medium message" /></p>
+
+<p><img src="ata_01_36_ML.png" alt="Alltoall 1 node 36 processes Medium Large message" /></p>
+
+<p><img src="ata_01_36_L.png" alt="Alltoall 1 node 36 processes Large message" /></p>
+
+<h2 id="4-2-allgather">4-2. Allgather</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="aga_01_36_n1_bl.png" alt="Allgather 1 node 36 processes NPS1 Block" /></p>
+
+<p><img src="aga_01_36_n1_cy.png" alt="Allgather 1 node 36 processes NPS1 Cyclic" /></p>
+
+<p><img src="aga_01_36_n2_bl.png" alt="Allgather 1 node 36 processes NPS2 Block" /></p>
+
+<p><img src="aga_01_36_n2_cy.png" alt="Allgather 1 node 36 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_36_S.png" alt="Allgather 1 node 36 processes Small message" /></p>
+
+<p><img src="aga_01_36_M.png" alt="Allgather 1 node 36 processes Medium message" /></p>
+
+<p><img src="aga_01_36_ML.png" alt="Allgather 1 node 36 processes Medium Large message" /></p>
+
+<p><img src="aga_01_36_L.png" alt="Allgather 1 node 36 processes Large message" /></p>
+
+<h2 id="3-4-allreduce">3-4. Allreduce</h2>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を振ったときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の各組合せ毎に示しています。</p>
+
+<p><img src="are_01_36_n1_bl.png" alt="Allreduce 1 node 36 processes NPS1 Block" /></p>
+
+<p><img src="are_01_36_n1_cy.png" alt="Allreduce 1 node 36 processes NPS1 Cyclic" /></p>
+
+<p><img src="are_01_36_n2_bl.png" alt="Allreduce 1 node 36 processes NPS2 Block" /></p>
+
+<p><img src="are_01_36_n2_cy.png" alt="Allreduce 1 node 36 processes NPS2 Cyclic" /></p>
+
+<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて <strong>NPS</strong> とMPIプロセス分割方法を比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_36_S.png" alt="Allreduce 1 node 36 processes Small message" /></p>
+
+<p><img src="are_01_36_M.png" alt="Allreduce 1 node 36 processes Medisum message" /></p>
+
+<p><img src="are_01_36_ML.png" alt="Allreduce 1 node 36 processes Medisum Large message" /></p>
+
+<p><img src="are_01_36_L.png" alt="Allreduce 1 node 36 processes Large message" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OpenMPI%E3%81%AEMPI%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenmpi-perftune%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fbenchmark%2Fopenmpi-perftune%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftune/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/benchmark/cpu-binding/" class="pagination--pager" title="パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/benchmark/papi-profiling/" class="pagination--pager" title="PAPIでHPCアプリケーションをプロファイリング
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

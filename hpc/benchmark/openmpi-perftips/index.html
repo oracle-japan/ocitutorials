@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-23T22:28:24+09:00">
+  <meta property="article:published_time" content="2025-01-28T16:30:08+09:00">
 
 
 
@@ -317,6 +317,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
@@ -388,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
-    <meta itemprop="datePublished" content="2025-01-23T22:28:24+09:00">
+    <meta itemprop="datePublished" content="2025-01-28T16:30:08+09:00">
     
 
     <div class="page__inner-wrap">
@@ -582,13 +584,13 @@ or
 
 <h2 id="3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</h2>
 
-<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>hcoll</strong> コンポーネントを使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> を、使用しない場合は <strong>0</strong> を指定します。</p>
+<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>hcoll</strong> コンポーネントを使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> （デフォルト）を、使用しない場合は <strong>0</strong> を指定します。</p>
 
 <p><strong>hcoll</strong> コンポーネント使用の有無は、MPI集合通信の通信性能に大きく影響を及ぼします。</p>
 
 <h2 id="3-2-hook_comm_method_display">3-2. hook_comm_method_display</h2>
 
-<p>使用したMPI通信プロトコルを表示するかどうかを制御し、MPI_INITが呼ばれた時点で表示する場合はその値に <strong>1</strong> を、MPI_FINALIZEが呼ばれた時点で表示する場合は <strong>2</strong> を、表示しない場合は <strong>0</strong> を指定します。</p>
+<p>使用したMPI通信プロトコルを表示するかどうかを制御し、MPI_INITが呼ばれた時点で表示する場合はその値に <strong>1</strong> を、MPI_FINALIZEが呼ばれた時点で表示する場合は <strong>2</strong> を、表示しない場合は <strong>0</strong> （デフォルト）を指定します。</p>
 
 <p>以下は、MPI通信プロトコルの表示を指示した場合の実行例です。</p>
 
@@ -633,43 +635,43 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center">all</td>
-      <td style="text-align: center">利用可能な全ての通信トランスポートから <strong>UCX</strong> が選択</td>
+      <td style="text-align: center"><strong>all</strong></td>
+      <td style="text-align: center">利用可能な全ての通信トランスポートから <strong>UCX</strong> が選択（デフォルト）</td>
     </tr>
     <tr>
-      <td style="text-align: center">posix</td>
+      <td style="text-align: center"><strong>posix</strong></td>
       <td style="text-align: center">POSIX共有メモリ</td>
     </tr>
     <tr>
-      <td style="text-align: center">sysv</td>
+      <td style="text-align: center"><strong>sysv</strong></td>
       <td style="text-align: center">SYSTEM V共有メモリ</td>
     </tr>
     <tr>
-      <td style="text-align: center">cma</td>
+      <td style="text-align: center"><strong>cma</strong></td>
       <td style="text-align: center"><strong><a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1">Cross Memory Attach (CMA)</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">knem</td>
+      <td style="text-align: center"><strong>knem</strong></td>
       <td style="text-align: center"><strong><a href="https://knem.gitlabpages.inria.fr/">KNEM</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">xpmem</td>
+      <td style="text-align: center"><strong>xpmem</strong></td>
       <td style="text-align: center"><strong><a href="https://github.com/hpc/xpmem">XPMEM</a></strong></td>
     </tr>
     <tr>
-      <td style="text-align: center">rc</td>
+      <td style="text-align: center"><strong>rc</strong></td>
       <td style="text-align: center">InfiniBandトランスポートのReliable Connected</td>
     </tr>
     <tr>
-      <td style="text-align: center">dc</td>
+      <td style="text-align: center"><strong>dc</strong></td>
       <td style="text-align: center">InfiniBandトランスポートのDynamically Connected</td>
     </tr>
     <tr>
-      <td style="text-align: center">ud</td>
+      <td style="text-align: center"><strong>ud</strong></td>
       <td style="text-align: center">InfiniBandトランスポートのUnreliable Datagram</td>
     </tr>
     <tr>
-      <td style="text-align: center">tcp</td>
+      <td style="text-align: center"><strong>tcp</strong></td>
       <td style="text-align: center">TCP/IPのソケット通信</td>
     </tr>
   </tbody>
@@ -701,7 +703,7 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 <h2 id="3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</h2>
 
 <p><strong>UCX</strong> が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。<br />
-メッセージ長の指定は、そのユニットにB（ <strong>b</strong> ）、KB（ <strong>kb</strong> ）、MB（ <strong>mb</strong> ）、及びGB（ <strong>gb</strong> ）を使用します。また設定値 <strong>auto</strong> は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
+メッセージ長の指定は、そのユニットに <strong>b</strong> （B）、 <strong>kb</strong> （KB）、 <strong>mb</strong> （MB）、及び <strong>gb</strong> （GB）を使用します。また設定値 <strong>auto</strong> （デフォルト）は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
 
 <p>プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼします。</p>
 
@@ -712,7 +714,7 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 
 <h2 id="3-6-ucx_proto_info">3-6. UCX_PROTO_INFO</h2>
 
-<p>メッセージ長毎に <strong>UCX</strong> が使用したプロトコルを表示する機能を制御し、表示する場合は <strong>y</strong> を、表示しない場合 <strong>n</strong> を指定します。</p>
+<p>メッセージ長毎に <strong>UCX</strong> が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は <strong>y</strong> を、表示しない場合 <strong>n</strong> （デフォルト）を指定します。</p>
 
 <p>以下は、 <strong>UCX_TLS</strong> を <strong>sysv</strong> と <strong>xpmem</strong> に指定し、 <strong>UCX_RNDV_THRESH</strong> を512KBに指定して、メッセージ長毎に使用したプロトコルを表示するよう指示した場合の実行例です。</p>
 
@@ -740,7 +742,7 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-23T22:28:24+09:00">January 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-28T16:30:08+09:00">January 28, 2025</time></p>
 
       </footer>
 
