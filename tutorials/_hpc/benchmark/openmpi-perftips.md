@@ -143,13 +143,13 @@ $
 
 ## 3-1. coll_hcoll_enable
 
-MPI集合通信を効率的に実行する **MCA** コンポーネントの **hcoll** コンポーネントを使用するかどうかを制御し、使用する場合はその値に **1** を、使用しない場合は **0** を指定します。
+MPI集合通信を効率的に実行する **MCA** コンポーネントの **hcoll** コンポーネントを使用するかどうかを制御し、使用する場合はその値に **1** （デフォルト）を、使用しない場合は **0** を指定します。
 
 **hcoll** コンポーネント使用の有無は、MPI集合通信の通信性能に大きく影響を及ぼします。
 
 ## 3-2. hook_comm_method_display
 
-使用したMPI通信プロトコルを表示するかどうかを制御し、MPI_INITが呼ばれた時点で表示する場合はその値に **1** を、MPI_FINALIZEが呼ばれた時点で表示する場合は **2** を、表示しない場合は **0** を指定します。
+使用したMPI通信プロトコルを表示するかどうかを制御し、MPI_INITが呼ばれた時点で表示する場合はその値に **1** を、MPI_FINALIZEが呼ばれた時点で表示する場合は **2** を、表示しない場合は **0** （デフォルト）を指定します。
 
 以下は、MPI通信プロトコルの表示を指示した場合の実行例です。
 
@@ -188,16 +188,16 @@ $
 
 | 名称    | 概要                                                                                                                                                      |
 | :---: | :-----------------------------------------------------------------------------------------------------------------------------------------------------: |
-| all   | 利用可能な全ての通信トランスポートから **UCX** が選択                                                                                                                         |
-| posix | POSIX共有メモリ                                                                                                                                              |
-| sysv  | SYSTEM V共有メモリ                                                                                                                                           |
-| cma   | **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)** |
-| knem  | **[KNEM](https://knem.gitlabpages.inria.fr/)**                                                                                                          |
-| xpmem | **[XPMEM](https://github.com/hpc/xpmem)**                                                                                                               |
-| rc    | InfiniBandトランスポートのReliable Connected                                                                                                                    |
-| dc    | InfiniBandトランスポートのDynamically Connected                                                                                                                 |
-| ud    | InfiniBandトランスポートのUnreliable Datagram                                                                                                                   |
-| tcp   | TCP/IPのソケット通信                                                                                                                                                        |
+| **all**   | 利用可能な全ての通信トランスポートから **UCX** が選択（デフォルト）                                                                                                                         |
+| **posix** | POSIX共有メモリ                                                                                                                                              |
+| **sysv**  | SYSTEM V共有メモリ                                                                                                                                           |
+| **cma**   | **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)** |
+| **knem**  | **[KNEM](https://knem.gitlabpages.inria.fr/)**                                                                                                          |
+| **xpmem** | **[XPMEM](https://github.com/hpc/xpmem)**                                                                                                               |
+| **rc**    | InfiniBandトランスポートのReliable Connected                                                                                                                    |
+| **dc**    | InfiniBandトランスポートのDynamically Connected                                                                                                                 |
+| **ud**    | InfiniBandトランスポートのUnreliable Datagram                                                                                                                   |
+| **tcp**   | TCP/IPのソケット通信                                                                                                                                                        |
 
 以下は、 **UCX_TLS** に **posix** 、 **xpmem** 、及び **rc** を指定しています。
 
@@ -227,7 +227,7 @@ $
 ## 3-5. UCX_RNDV_THRESH
 
 **UCX** が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。  
-メッセージ長の指定は、そのユニットにB（ **b** ）、KB（ **kb** ）、MB（ **mb** ）、及びGB（ **gb** ）を使用します。また設定値 **auto** は、境界メッセージ長を **UCX** に選択させることを指定します。
+メッセージ長の指定は、そのユニットに **b** （B）、 **kb** （KB）、 **mb** （MB）、及び **gb** （GB）を使用します。また設定値 **auto** （デフォルト）は、境界メッセージ長を **UCX** に選択させることを指定します。
 
 プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼします。
 
@@ -239,7 +239,7 @@ $ mpirun -x UCX_RNDV_THRESH=512kb a.out
 
 ## 3-6. UCX_PROTO_INFO
 
-メッセージ長毎に **UCX** が使用したプロトコルを表示する機能を制御し、表示する場合は **y** を、表示しない場合 **n** を指定します。
+メッセージ長毎に **UCX** が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は **y** を、表示しない場合 **n** （デフォルト）を指定します。
 
 以下は、 **UCX_TLS** を **sysv** と **xpmem** に指定し、 **UCX_RNDV_THRESH** を512KBに指定して、メッセージ長毎に使用したプロトコルを表示するよう指示した場合の実行例です。
 

@@ -8,10 +8,6 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-複数ノードに跨るHPC/機械学習ワークロードを実行するHPC/GPUクラスタは、ノード間通信に使用する **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** が想定通りに使用されて初めてその性能を発揮することが出来ます。  
-ここで、インスタンスを **クラスタ・ネットワーク** に接続するNIC（ **NVIDIA Mellanox ConnectX** ）は、これを介して通信する際の様々な統計情報を記録するハードウェアカウンタを備えており、インスタンスのOS上でこれらを取得することが可能です。  
-本テクニカルTipsは、 **クラスタ・ネットワーク** に接続するインスタンスで **クラスタ・ネットワーク** の利用状況や問題判別に役立つ統計情報を取得する方法を解説します。
-
 ***
 # 0. 概要
 
@@ -19,10 +15,10 @@ header:
 
 これらの統計情報の中で送受信データ通信量は、アプリケーションのノード間通信性能を把握する上で重要なメトリックで、 **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** の **[Compute RDMA GPU Monitroing](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/high-performance-compute.htm#high-performance-computing-plugins)** プラグインを介して **[OCIモニタリング](https://docs.oracle.com/ja-jp/iaas/Content/Monitoring/home.htm)** から送受信帯域幅として参照する仕組みがあります。（この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法](/ocitutorials/hpc/tech-knowhow/metric-monitoring/)** を参照下さい。）
 
-また輻輳制御関連のエラーカウンタは、 **クラスタ・ネットワーク** が採用する **RoCEv2** の輻輳制御である **ECN** や **DCQCN** に関する制御情報を保持しており、ノード間通信で問題が発生した際の状況把握に有益な情報として利用することが出来ます。（ **クラスタ・ネットワーク** の輻輳制御詳細は、 **[OCI HPC関連情報リンク集](/ocitutorials/hpc/#4-oci-hpc関連情報リンク集)** の  **First Principles: Building a high-performance network in the public cloud** と **Congestion Control for Large-Scale RDMA Deployments** を参照下さい。）
+また輻輳制御関連のエラーカウンタは、 **クラスタ・ネットワーク** が採用する **RoCEv2** の輻輳制御である **ECN** や **DCQCN** に関する制御情報を保持しており、ノード間通信で問題が発生した際の状況把握に有益な情報として利用することが出来ます。（ **クラスタ・ネットワーク** の輻輳制御詳細は、 **[OCI HPC関連情報リンク集](/ocitutorials/hpc/#4-oci-hpc関連情報リンク集)** の  **First Principles: Building a high-performance network in the public cloud** と **Congestion Control for Large-Scale RDMA Deployments** を参照して下さい。）
 
 次章では、これら統計情報の取得方法を解説します。  
-なお本コンテンツの前提とするOSは、ユーティリティ提供方法が **Oracle Cloud Agent** プラグインの **Oracle Linux** 8ベース  **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** です。（この詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照下さい。）
+なお本コンテンツの前提とするOSは、ユーティリティ提供方法が **Oracle Cloud Agent** プラグインの **Oracle Linux** 8ベース  **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** です。（この詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照して下さい。）
 
 ***
 # 1. クラスタ・ネットワーク関連統計情報取得
