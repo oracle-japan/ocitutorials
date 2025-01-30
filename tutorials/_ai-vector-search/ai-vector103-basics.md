@@ -894,8 +894,7 @@ COSINE_DISTANCE
 ![](2024-05-20-15-56-06.png)
 
 INNER_PRODUCT
-![](2024-05-20-15-56-25.png)
-
+![](2024-05-20-15-21-52.png)
 
 **5-4 vector_distance関数の代替記法**
 
