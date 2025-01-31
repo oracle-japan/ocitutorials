@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-01-31T15:32:40+09:00">
+  <meta property="article:published_time" content="2025-01-31T17:12:20+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
     <meta itemprop="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
-    <meta itemprop="datePublished" content="2025-01-31T15:32:40+09:00">
+    <meta itemprop="datePublished" content="2025-01-31T17:12:20+09:00">
     
 
     <div class="page__inner-wrap">
@@ -1000,13 +1000,9 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
 <p>※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は<a href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm" target="_blank">こちら</a>をご参照ください。例えばロンドンの場合は、urlには<em>https://inference.generativeai.uk-london-1.oci.oraclecloud.com</em>と指定します。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">var</span> <span class="n">embed_genai_params</span> <span class="k">clob</span><span class="p">;</span>
-  <span class="k">exec</span> <span class="p">:</span><span class="n">embed_genai_params</span> <span class="p">:</span><span class="o">=</span> <span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">;</span>
-</code></pre></div></div>
-
 <p>上記の設定を検証してみます。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(:</span><span class="n">embed_genai_params</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText, "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -1112,7 +1108,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-31T15:32:40+09:00">January 31, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-01-31T17:12:20+09:00">January 31, 2025</time></p>
 
       </footer>
 
