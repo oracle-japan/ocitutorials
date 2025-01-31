@@ -413,7 +413,7 @@ OCI GenAIサービスを利用するためのパラメータを設定します�
   > 注意
   > Oracle Database 23aiのバージョンが23.04.xxxの場合、"overlap": "20%"と指定してください。
   >
-  > 23.05以降の場合は、上記のSQL同様"overlap": "20"と指定します。
+  > 23.05以降の場合は、上記のSQL同様"overlap": "20"のようにチャンク内で重複させる文字数を指定します。
 
 
   出力:
@@ -734,10 +734,39 @@ object_uriには前に手順でメモをしたURIパスを入力します。
   ```sh
   PL/SQLプロシージャが正常に完了しました。
   ```
+  OCI GenAIサービスを利用するためのパラメータを設定します。今回はOCI Generative AI Serviceのembed-multilingual-v3.0というモデルを利用します。
 
- `UTL_TO_EMBEDDINGS`を実行して、チャンクをベクトルデータに変換して、`doc_chunks`テーブルに保存します。
+  ※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。例えばロンドンの場合は、urlには*https://inference.generativeai.uk-london-1.oci.oraclecloud.com*と指定します。
 
-  >  注意：処理する件数によって時間がかかる場合があります。
+  ```sql
+  var embed_genai_params clob;
+  exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
+  ```
+
+  上記の設定を検証してみます。
+
+  ```sql
+  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json(:embed_genai_params)) et;
+  ```
+
+  出力:
+
+  ```
+  COLUMN_VALUE
+  --------------------------------------------------------------------------------
+  {"embed_id":"1","embed_data":"hello","embed_vector":"[0.0035
+  934448,0.028701782,0.031051636,-0.001415
+  ...
+  1行が選択されました。
+  ```
+
+  ここでエラーが出力される場合は、クレデンシャルのAPIキーが正しく作成されているか確認してください。
+
+  特にprivate_keyにはダウンロードした秘密鍵の中身を**改行を入れずに**指定する必要がありますので、ご注意ください。
+
+  `UTL_TO_EMBEDDINGS`を実行して、チャンクをベクトルデータに変換して、`doc_chunks`テーブルに保存します。
+
+  > 注意：処理する件数によって時間がかかる場合があります。
 
   ```sql
   create table doc_chunks as
