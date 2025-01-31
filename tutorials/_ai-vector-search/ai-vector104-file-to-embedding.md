@@ -738,15 +738,10 @@ object_uriには前に手順でメモをしたURIパスを入力します。
 
   ※urlには大阪リージョンのエンドポイントを指定していますが、サブスクライブしているリージョンによってここからの手順では適宜修正してください。最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm){:target="_blank"}をご参照ください。例えばロンドンの場合は、urlには*https://inference.generativeai.uk-london-1.oci.oraclecloud.com*と指定します。
 
-  ```sql
-  var embed_genai_params clob;
-  exec :embed_genai_params := '{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}';
-  ```
-
   上記の設定を検証してみます。
 
   ```sql
-  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json(:embed_genai_params)) et;
+  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText, "model": "cohere.embed-multilingual-v3.0"}')) et;
   ```
 
   出力:
