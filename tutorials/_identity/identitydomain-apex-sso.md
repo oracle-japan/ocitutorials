@@ -125,8 +125,6 @@ OAuthの構成画面のクライアント構成にて、「このアプリケー
 その他、以下情報を入力し、「次」ボタンをクリックします。
 + **リダイレクトURL** - 対象APEXアプリURLの「fp・・」を「apex_authentication.callback」に変更したURL 例）https://g884b・・・・1051.adb.ap-tokyo-1.oraclecloudapps.com/ords/apex_authentication.callback
 + **ログアウト後のリダイレクトURL** - 対象APEXアプリのURL 例）https://g884b・・・・1051.adb.ap-tokyo-1.oraclecloudapps.com/ords/f?p=100
-+ **ログアウトURL** - <先程の手順でメモしたアイデンティティ・ドメインのURL>/oauth2/v1/userlogout 例）https://idcs-d0e4・・・・8d9.identity.oraclecloud.com:443/oauth2/v1/userlogout
-
 
  ![画面ショット17](apex-17.png)
 
