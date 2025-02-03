@@ -270,6 +270,11 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
     本テクニカルTipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、これらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
 
+- **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)**
+
+    MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や **NUMA nodes per socket** 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。  
+    本テクニカルTipsは、MPIの実装に **[OpenMPI](https://www.open-mpi.org/)** を取り上げ、これが採用する **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** や **[UCX](https://openucx.org/)** の実行時パラメーター、MPIプロセス分割方法や **NUMA nodes per socket** を組合せて、MPI集合通信をチューニングする方法を解説します。
+
 ## 2-3. プロファイリング関連Tips集
 
 本章は、HPCアプリケーションのパフォーマンス解析やチューニングに必要な情報を収集する、プロファイリング関連Tips集を提供します。

@@ -18,9 +18,9 @@ header:
 
 ([製品別サポート窓口／ご利用ガイド](https://www.oracle.com/jp/support/support-services-list/ "製品別サポート窓口／ご利用ガイド"){:target="_blank"})
 
-([My Oracle Support サービス・リクエスト作成ガイド](https://www.oracle.com/jp/a/ocom/docs/mos-sr-guide.pdf "My Oracle Support サービス・リクエスト作成ガイド"){:target="_blank"})
+([新クラウドサポートポータル (My Oracle Cloud Support) のご案内（PDF)](https://www.oracle.com/jp/a/ocom/docs/customer-portal-experience-jp.pdf "新クラウドサポートポータル (My Oracle Cloud Support) のご案内（PDF)"){:target="_blank"})
 
-([Oracle Cloud Supportご利用ガイド](https://www.oracle.com/jp/a/ocom/docs/cloud-1stguide-sr-2765641-ja.pdf "Oracle Cloud Supportご利用ガイド"){:target="_blank"})
+([Oracle Cloud Supportご利用ガイド（PDF)](https://www.oracle.com/jp/a/ocom/docs/oracle-cloud-support-userguide-jp.pdf "Oracle Cloud Supportご利用ガイド（PDF)"){:target="_blank"})
 
 <br>
 
