@@ -94,10 +94,10 @@ SELECT AIについては[111: SELECT AIを試してみよう](https://oracle-jap
 以下のSQLを実行します。
 
 ```sql
--- vector_userというユーザーを作成、必要なロールを付与
-GRANT DWROLE, UNLIMITED TABLESPACE TO vector_user IDENTIFIED BY Welcome12345#;
+-- vectorというユーザーを作成、必要なロールを付与
+GRANT DWROLE, UNLIMITED TABLESPACE TO vector IDENTIFIED BY Welcome12345#;
 -- SELECT AI機能の利用に必要なDBMS_CLOUD_AIパッケージの実行権限を付与
-GRANT EXECUTE ON DBMS_CLOUD_AI TO vector_user;
+GRANT EXECUTE ON DBMS_CLOUD_AI TO vector;
 ```
 
 これでユーザーの作成と、権限の付与が終わりました。
