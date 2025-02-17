@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>OpenMPIのMPI通信性能に影響するパラメータとその関連Tips | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+<meta name="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/openmpi-perftips/">
 
 
-  <meta property="og:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+  <meta property="og:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-17T18:45:28+09:00">
+  <meta property="article:published_time" content="2025-02-17T20:09:54+09:00">
 
 
 
@@ -169,7 +169,7 @@
         
       </h1>
       
-        <p class="page__lead">OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。
+        <p class="page__lead">OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。
 </p>
       
       
@@ -389,8 +389,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
-    <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
-    <meta itemprop="datePublished" content="2025-02-17T18:45:28+09:00">
+    <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
+    <meta itemprop="datePublished" content="2025-02-17T20:09:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -401,7 +401,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></li><li><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></li><li><a href="#3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></li><li><a href="#3-2-hook_comm_method_display">3-2. hook_comm_method_display</a></li><li><a href="#3-3-ucx_tls">3-3. UCX_TLS</a></li><li><a href="#3-4-ucx_net_devices">3-4. UCX_NET_DEVICES</a></li><li><a href="#3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</a></li><li><a href="#3-6-ucx_proto_info">3-6. UCX_PROTO_INFO</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></li><li><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></li><li><a href="#3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></li><li><a href="#3-2-hook_comm_method_display">3-2. hook_comm_method_display</a></li><li><a href="#3-3-mpi_show_mca_params">3-3. mpi_show_mca_params</a></li><li><a href="#3-4-ucx_tls">3-4. UCX_TLS</a></li><li><a href="#3-5-ucx_net_devices">3-5. UCX_NET_DEVICES</a></li><li><a href="#3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</a></li><li><a href="#3-7-ucx_proto_info">3-7. UCX_PROTO_INFO</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -433,8 +433,14 @@
   <li><strong>mpirun</strong> コマンドのオプションで指定（※4）</li>
 </ol>
 
-<p>※1）本パフォーマンス関連Tipsでは、 <strong>/opt/openmpi-5.0.6/etc/openmpi-mca-params.conf</strong> になります。<br />
-※2）<strong>$HOME/.openmpi/mca-params.conf</strong> です。<br />
+<p>※1）本パフォーマンス関連Tipsでは、 <strong>/opt/openmpi-5.0.6/etc/openmpi-mca-params.conf</strong> になり、 <strong>2.</strong> のユーザ作成設定ファイルを含めて以下のフォーマットで記載します。<br />
+値にスペースが含まれる場合でも、ダブルクォートでこれを囲むことなくそのまま記載します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># This is a comment</span>
+coll_hcoll_enable <span class="o">=</span> 1
+</code></pre></div></div>
+
+<p>※2）<strong>$HOME/.openmpi/mca-params.conf</strong> です。<br />
 ※3）<strong>MCA</strong> パラメータ <strong>coll_hcoll_enable</strong> を値 <strong>1</strong> に設定する場合、パラメータ名に接頭辞 <strong>OMPI_MCA_</strong> を付与した環境変数 <strong>OMPI_MCA_coll_hcoll_enable</strong> を使用することが可能です。この方法は、 <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> 環境で <strong>OpenMPI</strong> アプリケーションの起動に <strong>srun</strong> を使用する場合、指定方法 <strong>4.</strong> を使用することが出来ないため、 <strong>MCA</strong> パラメータを指定する際に以下のように使用することが可能です。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>1 srun a.out
@@ -457,6 +463,8 @@ or
           MCA coll hcoll: parameter <span class="s2">"coll_hcoll_enable"</span> <span class="o">(</span>current value: <span class="s2">"1"</span>, data <span class="nb">source</span>: default, level: 9 dev/all, <span class="nb">type</span>: int<span class="o">)</span>
 <span class="err">$</span>
 </code></pre></div></div>
+
+<p>また、全ての指定方法を含めたMPIアプリケーション実行時に使用されたMCAパラメータは、MCAパラメータ <strong><a href="#3-3-mpi_show_mca_params">mpi_show_mca_params</a></strong> を使用することで取得することが可能です。</p>
 
 <hr />
 <h1 id="2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</h1>
@@ -539,7 +547,7 @@ or
       <td style="text-align: center"><strong>MCA</strong></td>
       <td style="text-align: center">パフォーマンス</td>
       <td style="text-align: center">1</td>
-      <td style="text-align: center"><strong>hcoll</strong> コンポーネント<br />使用の制御</td>
+      <td style="text-align: center"><strong>HCOLL</strong> コンポーネント<br />使用の制御</td>
     </tr>
     <tr>
       <td style="text-align: center"><strong><a href="#3-2-hook_comm_method_display">hook_comm_method_display</a></strong></td>
@@ -549,28 +557,35 @@ or
       <td style="text-align: center">通信プロトコルレポート<br />表示の制御</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong><a href="#3-3-ucx_tls">UCX_TLS</a></strong></td>
+      <td style="text-align: center"><strong><a href="#3-3-mpi_show_mca_params">mpi_show_mca_params</a></strong></td>
+      <td style="text-align: center"><strong>MCA</strong></td>
+      <td style="text-align: center">情報提供</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">実行時MCAパラメータ<br />表示の制御</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-4-ucx_tls">UCX_TLS</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">パフォーマンス</td>
       <td style="text-align: center">all</td>
       <td style="text-align: center">通信トランスポートの指定</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong><a href="#3-4-ucx_net_devices">UCX_NET_DEVICES</a></strong></td>
+      <td style="text-align: center"><strong><a href="#3-5-ucx_net_devices">UCX_NET_DEVICES</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">パフォーマンス</td>
       <td style="text-align: center">-</td>
-      <td style="text-align: center">ネットワークデバイスを指定</td>
+      <td style="text-align: center">ネットワークデバイスの指定</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong><a href="#3-5-ucx_rndv_thresh">UCX_RNDV_THRESH</a></strong></td>
+      <td style="text-align: center"><strong><a href="#3-6-ucx_rndv_thresh">UCX_RNDV_THRESH</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">パフォーマンス</td>
       <td style="text-align: center">auto</td>
       <td style="text-align: center">プロトコル切替<br />境界メッセージ長の指定</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong><a href="#3-6-ucx_proto_info">UCX_PROTO_INFO</a></strong></td>
+      <td style="text-align: center"><strong><a href="#3-7-ucx_proto_info">UCX_PROTO_INFO</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">情報提供</td>
       <td style="text-align: center">n</td>
@@ -584,9 +599,9 @@ or
 
 <h2 id="3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</h2>
 
-<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>hcoll</strong> コンポーネントを使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> （デフォルト）を、使用しない場合は <strong>0</strong> を指定します。</p>
+<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>HCOLL</strong> を使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> （デフォルト）を、使用しない場合は <strong>0</strong> を指定します。</p>
 
-<p><strong>hcoll</strong> コンポーネント使用の有無は、MPI集合通信の通信性能に大きく影響を及ぼします。</p>
+<p><strong>HCOLL</strong> 使用の有無は、MPI集合通信の通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
 
 <h2 id="3-2-hook_comm_method_display">3-2. hook_comm_method_display</h2>
 
@@ -617,7 +632,44 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 <span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="3-3-ucx_tls">3-3. UCX_TLS</h2>
+<h2 id="3-3-mpi_show_mca_params">3-3. mpi_show_mca_params</h2>
+
+<p>実行時に使用したMCAパラメータを表示するかどうかを制御し、代表的な設定値に以下があります。</p>
+
+<ul>
+  <li><strong>all</strong> ： 全てのMCAパラメータを出力</li>
+  <li><strong>enviro</strong> ： <strong>mpirun</strong> コマンドオプションと実行時環境変数で指定されたMCAパラメータを出力</li>
+</ul>
+
+<p>以下は、 <strong>enviro</strong> を設定値とする <strong>mpi_show_mca_params</strong> を指定した場合の実行例です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">--mca</span> coll_hcoll_enable 0 <span class="nt">--mca</span> mpi_show_mca_params enviro ./a.out
+<span class="o">[</span>inst-echgs-x9-ol81-hpc-nps1:13392] <span class="nv">mpi_show_mca_params</span><span class="o">=</span>enviro <span class="o">(</span>environment<span class="o">)</span>
+<span class="o">[</span>inst-echgs-x9-ol81-hpc-nps1:13392] <span class="nv">coll_hcoll_enable</span><span class="o">=</span>0 <span class="o">(</span>environment<span class="o">)</span>
+Hello World FORTRAN  0  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>また、実行時に使用したMCAパラメータをファイルに出力するためのMCAパラメータ <strong>mpi_show_mca_params_file</strong> も存在し、その設定値に出力先ファイルのパスを指定します。</p>
+
+<p>以下は、出力先ファイルを <strong>/tmp/mca.out</strong> とする <strong>mpi_show_mca_params_file</strong> を指定した場合の実行例です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">--mca</span> coll_hcoll_enable 0 <span class="nt">--mca</span> mpi_show_mca_params enviro <span class="nt">--mca</span> mpi_show_mca_params_file /tmp/mca.out ./a.out
+Hello World FORTRAN  0  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+<span class="nv">$ </span><span class="nb">cat</span> /tmp/mca.out 
+<span class="c">#</span>
+<span class="c"># This file was automatically generated on Fri Jan 31 12:18:28 2025</span>
+<span class="c"># by MPI_COMM_WORLD rank 0 (out of a total of 2) on inst-echgs-x9-ol81-hpc-nps1</span>
+<span class="c">#</span>
+<span class="nv">mpi_show_mca_params</span><span class="o">=</span>enviro <span class="o">(</span>environment<span class="o">)</span>
+<span class="nv">mpi_show_mca_params_file</span><span class="o">=</span>/tmp/mca.out <span class="o">(</span>environment<span class="o">)</span>
+<span class="nv">coll_hcoll_enable</span><span class="o">=</span>0 <span class="o">(</span>environment<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-4-ucx_tls">3-4. UCX_TLS</h2>
 
 <p><strong>UCX</strong> が使用する通信トランスポートを指定します。<br />
 複数のトランスポートを指定する場合は、カンマ区切りで列挙し、指定する順序は意味を持ちません。</p>
@@ -682,7 +734,7 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>posix,xpmem,rc a.out
 </code></pre></div></div>
 
-<h2 id="3-4-ucx_net_devices">3-4. UCX_NET_DEVICES</h2>
+<h2 id="3-5-ucx_net_devices">3-5. UCX_NET_DEVICES</h2>
 
 <p><strong>UCX</strong> が通信に使用するネットワークデバイスを指定します。<br />
 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用する場合は、 <strong>クラスタ・ネットワーク</strong> 接続に使用するNICのRDMAリンク名（ <strong>BM.Optimized3.36</strong> の場合は <strong>mlx5_2:1</strong> ）を指定します。</p>
@@ -700,19 +752,19 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 <span class="err">$</span>
 </code></pre></div></div>
 
-<h2 id="3-5-ucx_rndv_thresh">3-5. UCX_RNDV_THRESH</h2>
+<h2 id="3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</h2>
 
 <p><strong>UCX</strong> が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。<br />
 メッセージ長の指定は、そのユニットに <strong>b</strong> （B）、 <strong>kb</strong> （KB）、 <strong>mb</strong> （MB）、及び <strong>gb</strong> （GB）を使用します。また設定値 <strong>auto</strong> （デフォルト）は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
 
-<p>プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼします。</p>
+<p>プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
 
 <p>以下は、 <strong>UCX_RNDV_THRESH</strong> に512KBを指定しています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>512kb a.out
 </code></pre></div></div>
 
-<h2 id="3-6-ucx_proto_info">3-6. UCX_PROTO_INFO</h2>
+<h2 id="3-7-ucx_proto_info">3-7. UCX_PROTO_INFO</h2>
 
 <p>メッセージ長毎に <strong>UCX</strong> が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は <strong>y</strong> を、表示しない場合 <strong>n</strong> （デフォルト）を指定します。</p>
 
@@ -742,7 +794,7 @@ Connection summary: <span class="o">(</span>pml<span class="o">)</span>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T18:45:28+09:00">February 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T20:09:54+09:00">February 17, 2025</time></p>
 
       </footer>
 

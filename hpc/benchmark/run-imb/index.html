@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-17T18:45:28+09:00">
+  <meta property="article:published_time" content="2025-02-17T20:09:54+09:00">
 
 
 
@@ -390,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Intel MPI Benchmarks実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-02-17T18:45:28+09:00">
+    <meta itemprop="datePublished" content="2025-02-17T20:09:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -426,12 +426,13 @@
 <ul>
   <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
   <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
-  <li><strong>OpenMPI</strong> ： 5.0.6</li>
+  <li><strong>OpenMPI</strong> ： 5.0.6（※2）</li>
   <li><strong>Intel MPI Library</strong> ： 2021.3.0</li>
   <li><strong>Intel MPI Benchmarks</strong> ： 2021.7</li>
 </ul>
 
-<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
+※2） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
 
 <p>[実行結果（ <strong>OpenMPI</strong> ）]</p>
 <ul>
@@ -489,10 +490,10 @@
 
 <h2 id="1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</h2>
 
-<p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
+<p>以下コマンドを対象ノードで <strong>Intel MPI Benchmarks</strong> 実行ユーザで実行します。<br />
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ32 MiBで計測しています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 25:25 <span class="nt">-mem</span> 2.3G <span class="nt">-npmin</span> 36 alltoall
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 25:25 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> 36 alltoall
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
@@ -507,7 +508,7 @@
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -npmin 36 alltoall </span>
+<span class="c"># /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   33554432</span>
@@ -796,7 +797,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T18:45:28+09:00">February 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T20:09:54+09:00">February 17, 2025</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-17T18:45:28+09:00">
+  <meta property="article:published_time" content="2025-02-17T20:09:54+09:00">
 
 
 
@@ -390,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenFOAMインストール・利用方法">
     <meta itemprop="description" content="OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群をHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-02-17T18:45:28+09:00">
+    <meta itemprop="datePublished" content="2025-02-17T20:09:54+09:00">
     
 
     <div class="page__inner-wrap">
@@ -926,7 +926,7 @@ End
 
 <p>次に、以下コマンドを実行して <strong>BM.Optimized3.36</strong> に搭載する32コアを使用するノード内並列の解析処理を実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 32 <span class="nt">-mca</span> coll_hcoll_enable 0 simpleFoam <span class="nt">-parallel</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 32 simpleFoam <span class="nt">-parallel</span>
 </code></pre></div></div>
 
 <p>次に、以下コマンドを実行して各プロセスが作成した解析結果を統合します。</p>
@@ -972,7 +972,7 @@ End
 
 <p>次に、以下コマンドを実行して4ノードの <strong>BM.Optimized3.36</strong> に搭載する128コアを使用するノード間並列の解析処理を実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 128 <span class="nt">-N</span> 32 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-mca</span> coll_hcoll_enable 0 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 128 <span class="nt">-N</span> 32 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 simpleFoam <span class="nt">-parallel</span>
 </code></pre></div></div>
 
 <p>次に、以下コマンドを実行して計算結果を統合します。</p>
@@ -1067,7 +1067,6 @@ End
 
 <span class="c"># Set OCI specific environment variables</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-<span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
 
 <span class="c"># Get job infomation</span>
 <span class="nv">head_node</span><span class="o">=</span><span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
@@ -1168,7 +1167,6 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
 <span class="c"># Set OCI specific environment variables</span>
 <span class="nb">export </span><span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-<span class="nb">export </span><span class="nv">OMPI_MCA_coll_hcoll_enable</span><span class="o">=</span>0
  
 <span class="c"># Read tutorial run functions</span>
 <span class="nb">.</span> <span class="k">${</span><span class="nv">WM_PROJECT_DIR</span>:?<span class="k">}</span>/bin/tools/RunFunctions
@@ -1280,7 +1278,7 @@ rsync <span class="nt">-a</span> <span class="nt">--delete</span> <span class="n
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T18:45:28+09:00">February 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-17T20:09:54+09:00">February 17, 2025</time></p>
 
       </footer>
 
