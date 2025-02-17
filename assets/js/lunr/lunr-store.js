@@ -1835,6 +1835,12 @@ var store = [{
         "url": "/ocitutorials/management/logging_datadog/",
         "teaser": "/ocitutorials/management/logging_datadog/native.jpeg"
       },{
+        "title": "Stack Monitoring を使用してBaseDBのメトリックを可視化する",
+        "excerpt":"チュートリアル概要 : このチュートリアルでは、Stack Monitoring を使用して BaseDB のメトリック監視を有効化するまでのステップをご紹介します。 所要時間 : 約60分 前提条件1 : テナンシ上で以下のリソースが作成済であること コンパートメント ユーザー ユーザーグループ VCN BaseDB 前提条件2 : Stack Monitoringが有効化済みであること こちらを参考にStack Monitoringを有効化できます。 1. 管理エージェントのインストール Stack Monitoring でモニターするメトリック情報は管理エージェントにより取得されるので、OCIコンソールから管理エージェントをダウンロードし管理エージェントをBaseDBにインストールします。 1.1 管理エージェントのインストール OCIコンソールの画面左上ハンバーガーメニューから「監視および管理」を選択し、以下のように進んでください。 管理エージェント &gt; ダウンロードとキー LINUXのエージェント（X86_64）をダウンロードします。 インストールに必要なキーを作成します。 下記の情報を設定し、「作成」をクリックします。 キー名：任意の名前 コンパートメント：任意のコンパートメント 最大インストール：任意の値 有効期限：任意の期間 3点リーダーから「キーをファイルにダウンロード」をクリックして作成したキーをダウンロードします。 JDK8のインストール 管理エージェントのインストールにはJDK8が必要なのでインストールされていない場合はこちらからLinux版のJDKをダウンロードして、インストールします。 SSHでBase DBにログインします。 $ ssh –i...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/stack_monitoring_basedb/",
+        "teaser": null
+      },{
         "title": "Stack Monitoring を使用して OCI Compute のメトリックを可視化する",
         "excerpt":"チュートリアル概要 : このチュートリアルでは、Stack Monitoring を使用して OCI Compute のメトリック監視を有効化するまでのステップをご紹介します。 所要時間 : 約20分 前提条件 : テナンシ上で以下のリソースが作成済であること コンパートメント ユーザー ユーザーグループ VCN OCI Compute (Oracle Linux) 1. 管理エージェントの有効化 Stack Monitoring でモニターするメトリック情報は管理エージェントにより取得されます。OCI Compute のプラットフォーム・イメージに標準でインストールされているクラウド・エージェントのプラグインを使用して、管理エージェントを有効化します。 管理エージェント有効化したいインスタンスの管理画面で「Oracle Cloudエージェント」に移動し、管理エージェントが無効となっている場合は有効にします。 2. 動的グループの作成 OCIコンソールの画面左上ハンバーガーメニューから「アイデンティティとセキュリティ」を選択し、以下のように進んでください。 アイデンティティ &gt; ドメイン &gt; お使いのドメイン（通常はDefault） &gt; 動的グループ 「動的グループの作成」をクリックし、以下のように入力します。 動的グループ名：Management_Agent_Dynamic_Group 説明：管理エージェント有効化のための動的グループ 一致ルール：下に定義したいずれかのルールに一致 ルール1には以下のステートメントを記入します。 “ocid1.compartment.oc1.examplecompartmentid”は、監視対象の Compute が配置されているコンパートメントのOCIDに置き換えてください。 ALL...","categories": [],
         "tags": ["management"],
