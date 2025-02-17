@@ -1,6 +1,6 @@
 ---
 title: "OpenMPIのMPI通信性能に影響するパラメータとその関連Tips"
-excerpt: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本テクニカルTipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。"
+excerpt: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。"
 order: "225"
 layout: single
 header:
@@ -32,7 +32,14 @@ header:
 3. 実行時の環境変数で指定（※3）
 4. **mpirun** コマンドのオプションで指定（※4）
 
-※1）本パフォーマンス関連Tipsでは、 **/opt/openmpi-5.0.6/etc/openmpi-mca-params.conf** になります。  
+※1）本パフォーマンス関連Tipsでは、 **/opt/openmpi-5.0.6/etc/openmpi-mca-params.conf** になり、 **2.** のユーザ作成設定ファイルを含めて以下のフォーマットで記載します。  
+値にスペースが含まれる場合でも、ダブルクォートでこれを囲むことなくそのまま記載します。
+
+```sh
+# This is a comment
+coll_hcoll_enable = 1
+```
+
 ※2）**$HOME/.openmpi/mca-params.conf** です。  
 ※3）**MCA** パラメータ **coll_hcoll_enable** を値 **1** に設定する場合、パラメータ名に接頭辞 **OMPI_MCA_** を付与した環境変数 **OMPI_MCA_coll_hcoll_enable** を使用することが可能です。この方法は、 **[Slurm](https://slurm.schedmd.com/)** 環境で **OpenMPI** アプリケーションの起動に **srun** を使用する場合、指定方法 **4.** を使用することが出来ないため、 **MCA** パラメータを指定する際に以下のように使用することが可能です。
 
@@ -59,6 +66,8 @@ $ ompi_info --all | grep coll_hcoll_enable
           MCA coll hcoll: parameter "coll_hcoll_enable" (current value: "1", data source: default, level: 9 dev/all, type: int)
 $
 ```
+
+また、全ての指定方法を含めたMPIアプリケーション実行時に使用されたMCAパラメータは、MCAパラメータ **[mpi_show_mca_params](#3-3-mpi_show_mca_params)** を使用することで取得することが可能です。
 
 ***
 # 2. UCXパラメータ設定方法関連Tips
@@ -130,12 +139,13 @@ $
 
 | 名称                                                            | タイプ     | 分類<br>（※5） | デフォルト<br>（※6） | 概要                         |
 | :-----------------------------------------------------------: | :-----: | :--------: | :-----------: | :------------------------: |
-| **[coll_hcoll_enable](#3-1-coll_hcoll_enable)**               | **MCA** | パフォーマンス    | 1             | **hcoll** コンポーネント<br>使用の制御 |
+| **[coll_hcoll_enable](#3-1-coll_hcoll_enable)**               | **MCA** | パフォーマンス    | 1             | **HCOLL** コンポーネント<br>使用の制御 |
 | **[hook_comm_method_display](#3-2-hook_comm_method_display)** | **MCA** | 情報提供       | 0             | 通信プロトコルレポート<br>表示の制御       |
-| **[UCX_TLS](#3-3-ucx_tls)**                                   | **UCX** | パフォーマンス    | all           | 通信トランスポートの指定               |
-| **[UCX_NET_DEVICES](#3-4-ucx_net_devices)**                   | **UCX** | パフォーマンス    | -             | ネットワークデバイスを指定              |
-| **[UCX_RNDV_THRESH](#3-5-ucx_rndv_thresh)**                   | **UCX** | パフォーマンス    | auto          | プロトコル切替<br>境界メッセージ長の指定         |
-| **[UCX_PROTO_INFO](#3-6-ucx_proto_info)**                     | **UCX** | 情報提供    | n             | メッセージ長毎の<br>使用プロトコル表示の制御                           |
+| **[mpi_show_mca_params](#3-3-mpi_show_mca_params)** | **MCA** | 情報提供       | 0             | 実行時MCAパラメータ<br>表示の制御       |
+| **[UCX_TLS](#3-4-ucx_tls)**                                   | **UCX** | パフォーマンス    | all           | 通信トランスポートの指定               |
+| **[UCX_NET_DEVICES](#3-5-ucx_net_devices)**                   | **UCX** | パフォーマンス    | -             | ネットワークデバイスの指定              |
+| **[UCX_RNDV_THRESH](#3-6-ucx_rndv_thresh)**                   | **UCX** | パフォーマンス    | auto          | プロトコル切替<br>境界メッセージ長の指定         |
+| **[UCX_PROTO_INFO](#3-7-ucx_proto_info)**                     | **UCX** | 情報提供    | n             | メッセージ長毎の<br>使用プロトコル表示の制御                           |
 
 ※5）**パフォーマンス** に分類されるものはMPI通信性能に影響を及ぼすパラメータ、 **情報提供** に分類されるものはMPI通信性能を考察する際の有益な情報を提供するパラメータです。  
 ※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** でのデフォルト値です。
@@ -143,9 +153,9 @@ $
 
 ## 3-1. coll_hcoll_enable
 
-MPI集合通信を効率的に実行する **MCA** コンポーネントの **hcoll** コンポーネントを使用するかどうかを制御し、使用する場合はその値に **1** （デフォルト）を、使用しない場合は **0** を指定します。
+MPI集合通信を効率的に実行する **MCA** コンポーネントの **HCOLL** を使用するかどうかを制御し、使用する場合はその値に **1** （デフォルト）を、使用しない場合は **0** を指定します。
 
-**hcoll** コンポーネント使用の有無は、MPI集合通信の通信性能に大きく影響を及ぼします。
+**HCOLL** 使用の有無は、MPI集合通信の通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
 
 ## 3-2. hook_comm_method_display
 
@@ -177,7 +187,45 @@ Connection summary: (pml)
 $
 ```
 
-## 3-3. UCX_TLS
+## 3-3. mpi_show_mca_params
+
+実行時に使用したMCAパラメータを表示するかどうかを制御し、代表的な設定値に以下があります。
+
+- **all** ： 全てのMCAパラメータを出力
+- **enviro** ： **mpirun** コマンドオプションと実行時環境変数で指定されたMCAパラメータを出力 
+
+
+以下は、 **enviro** を設定値とする **mpi_show_mca_params** を指定した場合の実行例です。
+
+```sh
+$ mpirun -n 2 --mca coll_hcoll_enable 0 --mca mpi_show_mca_params enviro ./a.out
+[inst-echgs-x9-ol81-hpc-nps1:13392] mpi_show_mca_params=enviro (environment)
+[inst-echgs-x9-ol81-hpc-nps1:13392] coll_hcoll_enable=0 (environment)
+Hello World FORTRAN  0  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+$
+```
+
+また、実行時に使用したMCAパラメータをファイルに出力するためのMCAパラメータ **mpi_show_mca_params_file** も存在し、その設定値に出力先ファイルのパスを指定します。
+
+以下は、出力先ファイルを **/tmp/mca.out** とする **mpi_show_mca_params_file** を指定した場合の実行例です。
+
+```sh
+$ mpirun -n 2 --mca coll_hcoll_enable 0 --mca mpi_show_mca_params enviro --mca mpi_show_mca_params_file /tmp/mca.out ./a.out
+Hello World FORTRAN  0  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1   
+$ cat /tmp/mca.out 
+#
+# This file was automatically generated on Fri Jan 31 12:18:28 2025
+# by MPI_COMM_WORLD rank 0 (out of a total of 2) on inst-echgs-x9-ol81-hpc-nps1
+#
+mpi_show_mca_params=enviro (environment)
+mpi_show_mca_params_file=/tmp/mca.out (environment)
+coll_hcoll_enable=0 (environment)
+$
+```
+
+## 3-4. UCX_TLS
 
 **UCX** が使用する通信トランスポートを指定します。  
 複数のトランスポートを指定する場合は、カンマ区切りで列挙し、指定する順序は意味を持ちません。
@@ -205,7 +253,7 @@ $
 $ mpirun -x UCX_TLS=posix,xpmem,rc a.out
 ```
 
-## 3-4. UCX_NET_DEVICES
+## 3-5. UCX_NET_DEVICES
 
 **UCX** が通信に使用するネットワークデバイスを指定します。  
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 対応シェイプを使用する場合は、 **クラスタ・ネットワーク** 接続に使用するNICのRDMAリンク名（ **BM.Optimized3.36** の場合は **mlx5_2:1** ）を指定します。
@@ -224,12 +272,12 @@ link mlx5_3/1 state DOWN physical_state DISABLED netdev rdma1
 $
 ```
 
-## 3-5. UCX_RNDV_THRESH
+## 3-6. UCX_RNDV_THRESH
 
 **UCX** が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。  
 メッセージ長の指定は、そのユニットに **b** （B）、 **kb** （KB）、 **mb** （MB）、及び **gb** （GB）を使用します。また設定値 **auto** （デフォルト）は、境界メッセージ長を **UCX** に選択させることを指定します。
 
-プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼします。
+プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
 
 以下は、 **UCX_RNDV_THRESH** に512KBを指定しています。
 
@@ -237,7 +285,7 @@ $
 $ mpirun -x UCX_RNDV_THRESH=512kb a.out
 ```
 
-## 3-6. UCX_PROTO_INFO
+## 3-7. UCX_PROTO_INFO
 
 メッセージ長毎に **UCX** が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は **y** を、表示しない場合 **n** （デフォルト）を指定します。
 

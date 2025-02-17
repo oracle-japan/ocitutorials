@@ -131,9 +131,9 @@ header:
 
 本章は、本プロファイリングTipsで使用する **Score-P** の前提条件ソフトウェアとして、計算ノードに **OpenMPI** と **PAPI** をインストール・セットアップします。
 
-この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の以下コンテンツのインストール・セットアップの章を参考に、この順番で実行します。
+この方法は、以下コンテンツのインストール・セットアップの章を参考に、この順番で実行します。
 
-1. **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)**  
+1. **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)**  
 2. **[PAPIでHPCアプリケーションをプロファイリング](/ocitutorials/hpc/benchmark/papi-profiling/)**
 
 なお本章の作業は、全ての計算ノードで実施します。
