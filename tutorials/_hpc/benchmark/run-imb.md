@@ -26,11 +26,12 @@ header:
 [実行環境]
 - シェイプ : **BM.Optimized3.36** （搭載コア数36）
 - OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
-- **OpenMPI** ： 5.0.6
+- **OpenMPI** ： 5.0.6（※2）
 - **Intel MPI Library** ： 2021.3.0
 - **Intel MPI Benchmarks** ： 2021.7
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
+※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 [実行結果（ **OpenMPI** ）]
 - レイテンシ: 1.66 usec
@@ -81,11 +82,11 @@ $ sudo cp ./IMB* /opt/openmpi-5.0.6/tests/imb/
 
 ## 1-3-1. 1ノード内全コアを使用するAlltoall
 
-以下コマンドを **Intel MPI Benchmarks** を実行するユーザで何れか1ノードで実行します。  
+以下コマンドを対象ノードで **Intel MPI Benchmarks** 実行ユーザで実行します。  
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ32 MiBで計測しています。
 
 ```sh
-$ mpirun -n 36 -N 36 -hostfile ~/hostlist.txt /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -npmin 36 alltoall
+$ mpirun -n 36 /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
@@ -100,7 +101,7 @@ $ mpirun -n 36 -N 36 -hostfile ~/hostlist.txt /opt/openmpi-5.0.6/tests/imb/IMB-M
 
 # Calling sequence was: 
 
-# /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -npmin 36 alltoall 
+# /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall 
 
 # Minimum message length in bytes:   0
 # Maximum message length in bytes:   33554432

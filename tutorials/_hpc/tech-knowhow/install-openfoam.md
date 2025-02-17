@@ -539,7 +539,7 @@ $
 次に、以下コマンドを実行して **BM.Optimized3.36** に搭載する32コアを使用するノード内並列の解析処理を実行します。
 
 ```sh
-$ mpirun -n 32 -mca coll_hcoll_enable 0 simpleFoam -parallel
+$ mpirun -n 32 simpleFoam -parallel
 ```
 
 次に、以下コマンドを実行して各プロセスが作成した解析結果を統合します。
@@ -590,7 +590,7 @@ $
 次に、以下コマンドを実行して4ノードの **BM.Optimized3.36** に搭載する128コアを使用するノード間並列の解析処理を実行します。
 
 ```sh
-$ mpirun -n 128 -N 32 -hostfile ~/hostlist.txt -mca coll_hcoll_enable 0 -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
+$ mpirun -n 128 -N 32 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
 ```
 
 次に、以下コマンドを実行して計算結果を統合します。
@@ -687,7 +687,6 @@ rsync_script=$FOAM_RUN"/rsync_inneed.sh"
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
-export OMPI_MCA_coll_hcoll_enable=0
 
 # Get job infomation
 head_node=`hostname`
@@ -792,7 +791,6 @@ rsync_script=$FOAM_RUN"/rsync_inneed.sh"
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
-export OMPI_MCA_coll_hcoll_enable=0
  
 # Read tutorial run functions
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions
