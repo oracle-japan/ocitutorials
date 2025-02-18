@@ -1,0 +1,863 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、転送プロキシモードの設定および動作を確認します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-sslinspect-fwd/">
+
+
+  <meta property="og:description" content="本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、転送プロキシモードの設定および動作を確認します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-sslinspect-fwd/sslfwd00.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-02-18T17:34:30+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-sslinspect-fwd/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/security/networkfirewall-sslinspect-fwd/sslfwd00.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う
+
+        
+      </h1>
+      
+        <p class="page__lead">本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、転送プロキシモードの設定および動作を確認します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/security" itemprop="item"><span itemprop="name">Security</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う">
+    <meta itemprop="description" content="本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、転送プロキシモードの設定および動作を確認します。">
+    <meta itemprop="datePublished" content="2025-02-18T17:34:30+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-はじめに">0. はじめに</a><ul><li><a href="#実施内容">・実施内容</a></li><li><a href="#sslインスペクションのモードについて">・SSLインスペクションのモードについて</a></li></ul></li><li><a href="#1-証明書の作成">1. 証明書の作成</a></li><li><a href="#2-windowsインスタンスの準備">2. Windowsインスタンスの準備</a><ul><li><a href="#2-1-windowsインスタンスの作成">2-1. Windowsインスタンスの作成</a></li><li><a href="#2-2-セキュリティリストの設定">2-2. セキュリティ・リストの設定</a></li></ul></li><li><a href="#3-oci-vaultの準備">3. OCI Vaultの準備</a><ul><li><a href="#3-1-作成するシークレットの内容の準備">3-1. 作成するシークレットの内容の準備</a></li><li><a href="#3-2-vaultの設定">3-2. Vaultの設定</a><ul><li><a href="#vaultの作成">・Vaultの作成</a></li><li><a href="#マスター暗号鍵の作成">・マスター暗号鍵の作成</a></li><li><a href="#シークレットの作成">・シークレットの作成</a></li></ul></li></ul></li><li><a href="#4-network-firewallの設定">4. Network Firewallの設定</a><ul><li><a href="#4-1-ポリシーの作成">4-1. ポリシーの作成</a></li><li><a href="#4-2-ポリシーの設定">4-2. ポリシーの設定</a><ul><li><a href="#復号化プロファイル">・復号化プロファイル</a></li><li><a href="#マップされたシークレット">・マップされたシークレット</a></li><li><a href="#復号化ルール">・復号化ルール</a></li></ul></li><li><a href="#4-3-network-firewallへポリシーの適用">4-3. Network Firewallへポリシーの適用</a></li></ul></li><li><a href="#5-動作を確認する">5. 動作を確認する</a><ul><li><a href="#5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</a><ul><li><a href="#linuxインスタンスの場合">・Linuxインスタンスの場合</a></li></ul></li><li><a href="#5-2-ログを確認する">5-2. ログを確認する</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <!-- 
+リンク：
+    [OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う](/ocitutorials/security/networkfirewall-sslinspect-fwd/)
+-->
+
+<p>OCI Network Firewallは2022年7月にリリースされた、パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール・サービスです。
+主な機能として、URLフィルタリングやSSL/TLS検査などを提供します。<br />
+本チュートリアルではOCI Network Firewallの機能の一つであるSSLインスペクションを設定し、簡単なテストにて動作を確認します。</p>
+
+<p><strong>所要時間 :</strong></p>
+<ul>
+  <li>約60分</li>
+</ul>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/overview.htm#iam">ドキュメント</a>を参照ください。</li>
+  <li>OCIチュートリアル「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a> 」にて、以下のNetwork Firewallが動作する環境が構築されていること。
+    <ul>
+      <li>本チュートリアルでは、動作確認にWindowsインスタンスを使用します。ただし、Linuxインスタンスでもcurlコマンドを使用して確認が可能です。</li>
+    </ul>
+  </li>
+  <li>ネットワーク・ファイアーウォール・ポリシーからOCI Vaultサービスへのアクセスを許可するため、以下のIAMポリシーが作成されていること。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow any-user to read secret-family in compartment &lt;compartment_ID&gt; where ALL {request.principal.type='networkfirewallpolicy'} 
+</code></pre></div>    </div>
+    <p>アクセスできるネットワーク・ファイアーウォール・ポリシーを限定したい場合は以下のように作成します。</p>
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow any-user to read secret-family in compartment &lt;compartment_ID&gt; where ALL {request.principal.type='networkfirewallpolicy', request.principal.id='&lt;Network Firewall Policy OCID&gt;'}
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>本チュートリアル内の画面ショットは、OCIのコンソール画面と異なる場合があります。</li>
+</ul>
+
+<p><br /><br /></p>
+
+<h1 id="0-はじめに">0. はじめに</h1>
+<h2 id="実施内容">・実施内容</h2>
+<p>以下が本チュートリアルで使用する構成図です。
+OCI環境を出入りする通信はNetwork Firewallを経由し、Network Firewallによって監視および検査が行われます。</p>
+
+<p><img src="sslfwd00.png" alt="構成図" /></p>
+
+<p>OCI内部に作成するインスタンスとして、本チュートリアルではWindowsインスタンスを作成します。Linuxインスタンスでもcurlコマンドを使用すれば同様の操作が可能ですので、<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>で設定した環境を引き続き使用して実施することもできます。</p>
+
+<p>本チュートリアルで作成するリソースはOCI VaultとWindowsインスタンスの2つになります。そのほかのリソースについては、事前に「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a> 」を参考に環境をご準備ください。</p>
+
+<p>このチュートリアルでは、動作テストとして、OCI内から外部のウィルステストファイルへのHTTPSアクセスがNetwork Firewallによってブロックされることを確認します。</p>
+
+<p>設定にあたっては<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/setting-up-certificate-authentication.htm">こちらのドキュメント</a>も別にご参考にしてみてください。</p>
+
+<h2 id="sslインスペクションのモードについて">・SSLインスペクションのモードについて</h2>
+<p>OCI Network Firewallは次世代ファイアウォールとして、TLSトラフィックを復号して検査する「SSLインスペクション」機能を提供します。この機能は以下の2つのモードに分かれます。</p>
+
+<p><strong>■ SSLインバウンド検査モード</strong><br />
+外部クライアントからの通信を受信し、登録済みのサーバー証明書と秘密鍵を使用して復号。通信内容をセキュリティポリシーに基づき検査します。<br />
+このモードを利用するには、OCI内部サーバー証明書と秘密鍵をファイアウォールに登録する必要があり、主に外部からOCI内部サーバーへのSSL/TLS通信監視に使用されます。<br />
+詳細は<a href="https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-admin/decryption/decryption-concepts/ssl-inbound-inspection">こちら</a>をご確認ください。</p>
+
+<p><strong>■ SSL転送プロキシモード</strong><br />
+このモードではファイアウォールは、プロキシとして外部サーバーと新たなSSLセッションを確立して通信を仲介します。準備としてクライアントがファイアウォールのCA証明書を信頼するよう設定する必要があり、主に内部ユーザーの通信監視に使用されます。<br />
+詳細は<a href="https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-admin/decryption/decryption-concepts/ssl-forward-proxy">こちら</a>をご確認ください。</p>
+
+<hr />
+
+<p><br /><br /></p>
+
+<h1 id="1-証明書の作成">1. 証明書の作成</h1>
+
+<p>先述の証明書の生成スクリプトのため、任意の端末でGitHubリポジトリをコピーします。<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>にて作成した環境をお使いの場合、「websve4tutorial」インスタンス上で実行しても問題ありません。</p>
+
+<p>以下生成における実行例は Ubuntu 22.04 にて実行したものになります。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/oracle-quickstart/oci-network-firewall.git
+</code></pre></div></div>
+
+<p><strong><code class="language-plaintext highlighter-rouge">oci-network-firewall</code></strong>ディレクトリが作成されることを確認します。<br />
+<strong><code class="language-plaintext highlighter-rouge">/oci-network-firewall/scripts/create-certificate.sh</code></strong>に自己署名証明書を生成するスクリプトがありますので、証明書を発行する対象として適当なドメイン名を指定し、以下のコマンドで証明書を生成します。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 実行権を付与</span>
+<span class="nb">chmod</span> +x ./oci-network-firewall/scripts/create-certificate.sh
+
+<span class="c"># 証明書を生成</span>
+./oci-network-firewall/scripts/create-certificate.sh forward &lt;ドメイン名&gt;
+</code></pre></div></div>
+
+<p>本チュートリアルでは、ドメイン名として<code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com</code>を使用します。独自のドメイン名を指定する場合、この後に出てくるドメイン名は適宜読み替えてください。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例<span class="o">)</span>
+
+<span class="nv">$ </span>./oci-network-firewall/scripts/create-certificate.sh forward nfw.ocitutorial.com
+Creating a forward Certificate
+nfw.ocitutorial.com
+Using configuration from openssl.cnf
+Check that the request matches the signature
+Signature ok
+Certificate Details:
+        Serial Number: 4096 <span class="o">(</span>0x1000<span class="o">)</span>
+        Validity
+            Not Before: Dec 24 13:11:25 2024 GMT
+            Not After : Jan  3 13:11:25 2026 GMT
+        Subject:
+            countryName               <span class="o">=</span> US
+            stateOrProvinceName       <span class="o">=</span> Massachusetts
+            organizationName          <span class="o">=</span> Oracle
+            commonName                <span class="o">=</span> nfw.ocitutorial.com.fwd
+            
+...
+<span class="o">(</span>中略<span class="o">)</span>
+...
+
+Write out database with 1 new entries
+Data Base Updated
+nfw.ocitutorial.com-ssl/certs/nfw.ocitutorial.com.inb.cert.pem: OK
+nfw.ocitutorial.com-ssl/certs/nfw.ocitutorial.com.fwd.cert.pem: OK
+Forward proxy SSL Certificate: nfw.ocitutorial.com-ssl/nfw.ocitutorial.com.ssl-forward-proxy.json
+</code></pre></div></div>
+
+<p><strong><code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com-ssl</code></strong>ディレクトリが作成され、指定した「nfw.ocitutorial.com」ドメインに関連するSSL証明書が生成されます。</p>
+
+<p>また、<strong><code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com-ssl</code></strong>ディレクトリの構成は以下のようになっています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nfw.ocitutorial.com-ssl
+├── certs
+│   ├── ca.cert.pem
+│   ├── nfw.ocitutorial.com.bundle.pem
+│   ├── nfw.ocitutorial.com.fwd.cert.pem
+│   └── nfw.ocitutorial.com.inb.cert.pem
+├── csr
+│   ├── nfw.ocitutorial.com.fwd.csr.pem
+│   └── nfw.ocitutorial.com.inb.csr.pem
+├── index.txt
+├── index.txt.attr
+├── index.txt.attr.old
+├── index.txt.old
+├── newcerts
+│   ├── 1000.pem
+│   └── 1001.pem
+├── nfw.ocitutorial.com.ssl-forward-proxy.json
+├── nfw.ocitutorial.com.ssl-inbound-inspection.json
+├── private
+│   ├── ca.key.pem
+│   └── nfw.ocitutorial.com.key.pem
+├── serial
+└── serial.old
+</code></pre></div></div>
+
+<p>このうち、Network Firewallで使用する証明書は<strong><code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com-ssl/certs/nfw.ocitutorial.com.fwd.cert.pem</code></strong>に配置されます。本チュートリアルでは行いませんが、クライアントに信頼するよう設定を行う際に必要になります。
+また、<strong><code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com-ssl/nfw.ocitutorial.com.ssl-forward-proxy.json</code></strong>は、後にNetwork Firewallが参照するためにVaultに格納するファイルです。こちらは<code class="language-plaintext highlighter-rouge">cat</code>コマンド等で内容を控えておいてください。</p>
+
+<p><br /><br /></p>
+
+<h1 id="2-windowsインスタンスの準備">2. Windowsインスタンスの準備</h1>
+
+<h2 id="2-1-windowsインスタンスの作成">2-1. Windowsインスタンスの作成</h2>
+<p>外部にアクセスするクライアントとして、OCI内部にWindowsインスタンスを作成します。<br />
+OCIコンソール画面左上のメニューボタンより、<strong>[コンピュート] → [インスタンス]</strong> と移動、<strong>[インスタンスの作成]</strong> をクリックし、作成画面にて以下の設定で作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - WINinst4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメント</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">可用性ドメイン</code></strong></span> - AD1</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">イメージ</code></strong></span> - Windows Server 2022 Standard</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">Shape</code></strong></span> - (任意)VM.Standard.E5.Flex</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">VCN</code></strong></span> - VCN4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">サブネット</code></strong></span> - パブリック・サブネット-VCN4tutorial (リージョナル)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">IPアドレスの指定（任意）</code></strong> - サブネット内のIPアドレスを明示的に指定する場合、「プライベートIPv4アドレスの手動割当て」を選択します。本チュートリアルではIPアドレスを「10.0.0.20」に指定しています。</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd01.png" alt="instanceの作成1" />
+<img src="sslfwd02.png" alt="instanceの作成2" /></p>
+
+<h2 id="2-2-セキュリティリストの設定">2-2. セキュリティ・リストの設定</h2>
+
+<p>WindowsインスタンスにRDPで接続するためには、セキュリティ・リストでRDP通信を許可する必要があります。
+OCIコンソール画面にアクセスし、左上のメニューボタンより、<strong>[ネットワーキング] → [仮想クラウド・ネットワーク] → [VCN4tutorial]</strong> と移動します。<br />
+VCN詳細画面の「セキュリティ・リスト」セクションからセキュリティ・リスト<strong>「Security List for NFWサブネット」「Default Security List for VCN4tutorial」</strong>をそれぞれ選択し、<strong>[イングレス・ルールの追加]</strong> ボタンより以下のイングレス・ルールを追加します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・タイプ</code></strong></span> - CIDR</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソースCIDR</code></strong></span> - 0.0.0.0/0</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">IPプロトコル</code></strong></span> - TCP</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先ポート範囲</code></strong></span> - 3389</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">説明</code></strong></span> - (任意) RDP通信を許可</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd19.png" alt="SLの設定" /></p>
+
+<!-- 
+## 2-3. Network Firewall証明書の信頼設定
+SSL転送プロキシモードでは、Network Firewallがプロキシとして動作し、サーバー側から提示された証明書をNetwork Firewallが別途署名することで、SSLハンドシェイクをサーバー・クライアント間でそれぞれ結びます。
+
+そのため、クライアントはNetwork Firewallの証明書を信頼する必要があるため、ここでは
+
+ -->
+
+<p><br /><br /></p>
+
+<h1 id="3-oci-vaultの準備">3. OCI Vaultの準備</h1>
+<p>TLS通信を仲介するため、Network Firewallは受け渡されるサーバー証明書に署名を行う必要があります。その署名に使用する情報をシークレットとして登録します。このシークレットの保存先には、OCIの鍵管理サービス「OCI Vault」を利用します。</p>
+
+<h2 id="3-1-作成するシークレットの内容の準備">3-1. 作成するシークレットの内容の準備</h2>
+<p>Network Firewallが参照するシークレットは以下のようなJSON形式である必要があります。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"caCertOrderedList"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"ROOT_CERT01_PEM_CONTENT"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"INTERMEDIATE_CERT01_PEM_CONTENT"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"INTERMEDIATE_CERT02_PEM_CONTENT"</span><span class="p">,</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"certKeyPair"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"cert"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"LEAF_CERT_01_PEM_CONTENT"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"key"</span><span class="p">:</span><span class="w">   </span><span class="s2">"PRIVATE_KEY_01_PEM_CONTENT"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>手順では証明書を生成した際に<strong><code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com-ssl/nfw.ocitutorial.com.ssl-forward-proxy.json</code></strong>として準備されています。この後の手順でVaultにシークレットとして保存しますので、内容を手元のメモ帳やテキストエディタで控えておいてください。</p>
+
+<h2 id="3-2-vaultの設定">3-2. Vaultの設定</h2>
+<h3 id="vaultの作成">・Vaultの作成</h3>
+
+<p>Vaultを作成します。
+OCIコンソール画面左上のメニューボタンより、<strong>[アイデンティティとセキュリティ] → [キー管理とシークレット管理] → [ボールト]</strong> と移動、<strong>[ボールトの作成]</strong>をクリックします。</p>
+
+<p>作成画面にて以下の項目を入力し、<strong>[ボールトの作成]</strong>をクリックします。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - vault4tutorial</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd04.png" alt="vaultの作成" /></p>
+
+<h3 id="マスター暗号鍵の作成">・マスター暗号鍵の作成</h3>
+<p>暗号化のためのマスター鍵を作成します。</p>
+
+<p>作成したVaiult詳細画面の「マスター暗号化キー」セクションを選択し、<strong>[キーの作成]</strong> ボタンをクリックして以下の項目でキーを作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">保護モード</code></strong></span> - HSM</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - MEK</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">キーのシェイプ: アルゴリズム</code></strong></span> - AES</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">キーのシェイプ: 長さ</code></strong></span> - 256ビット</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd05.png" alt="mekの作成" /></p>
+
+<h3 id="シークレットの作成">・シークレットの作成</h3>
+
+<p>Vaiult詳細画面の「シークレット」セクションを選択し、<strong>[シークレットの作成]</strong> ボタンをクリックして以下の項目でシークレットを登録します。<br />
+シークレットとして、控えておいたJSONファイル「<code class="language-plaintext highlighter-rouge">nfw.ocitutorial.com.ssl-forward-proxy.json</code>」の中身を張り付けます。</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - secret_nfw4tut</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">暗号化キー</code></strong></span> - MEK (作成した暗号化キーを選択)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">[手動シークレット生成]</code></strong>を選択</li>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">シークレット・タイプ・テンプレート</code></strong></span> - プレーン・テキスト</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">シークレット・コンテンツ</code></strong></span> - &lt;JSONファイルの中身をペースト&gt;</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd06.png" alt="secretの作成" /></p>
+
+<p>これでOCI Vaultの設定は完了です。</p>
+
+<p><br /><br /></p>
+
+<h1 id="4-network-firewallの設定">4. Network Firewallの設定</h1>
+<h2 id="4-1-ポリシーの作成">4-1. ポリシーの作成</h2>
+
+<p><a href="/ocitutorials/security/networkfirewall-setup/">「OCI Network Firewallを構築する」チュートリアル</a>で適用した「nfw_pol_tutorial」ポリシーを基に、新しいポリシーをクローンして作成します。</p>
+
+<p>ネットワーク・ファイアウォール・ポリシー詳細画面より、<strong><code class="language-plaintext highlighter-rouge">[ポリシーのクローニング]</code></strong> をクリックし、以下の項目でポリシーを作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - nfw_pol_sslfwd_tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">コンパートメントに作成</code></strong></span> - &lt;任意のコンパートメントを選択&gt;</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd07.png" alt="nfw_polの作成" /></p>
+
+<h2 id="4-2-ポリシーの設定">4-2. ポリシーの設定</h2>
+<p>作成した「nfw_pol_sslfwd_tutorial」ポリシーの詳細画面に移ります。</p>
+
+<h3 id="復号化プロファイル">・復号化プロファイル</h3>
+<p>「復号化プロファイル」セクションより、<strong>[復号化プロファイルの作成]</strong> ボタンから以下を作成します。</p>
+
+<hr />
+
+<ul>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - ssl_fwd_profile</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">復号化プロファイルのタイプ</code></strong></span> - SSL転送プロキシ</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd08.png" alt="profileの作成" /></p>
+
+<h3 id="マップされたシークレット">・マップされたシークレット</h3>
+<p>「マップされたシークレット」セクションより、<strong>[マップされたシークレットの作成]</strong>ボタンから以下を作成します。</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">マップされたシークレット名</code></strong></span> - secret_sslfwd_nfw4tut</p>
+  </li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">マップされたシークレット・タイプ</code></strong></span> - SSLインバウンド検証</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ボールト</code></strong></span> - vault4tutorial</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">シークレット</code></strong></span> - secret_nfw4tut</li>
+  <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">バージョン番号</code></strong></span> - 1</li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd09.png" alt="シークレットの作成" /></p>
+
+<h3 id="復号化ルール">・復号化ルール</h3>
+<p>「復号化ルール」セクションより、<strong>[復号化ルールの作成]</strong>ボタンから以下を作成します。</p>
+
+<hr />
+
+<ul>
+  <li>
+    <p><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">名前</code></strong></span> - decryptrule_sslfwd_nfw4tut</p>
+  </li>
+  <li>一致条件
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">ソース・アドレス</code></strong></span> - 任意のアドレス</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">宛先・アドレス</code></strong></span> - 任意のアドレス</li>
+    </ul>
+  </li>
+  <li>ルール・アクション
+    <ul>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">アクション</code></strong></span> - SSL転送プロキシを含むトラフィックを復号化</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">復号化プロファイル</code></strong></span> - ssl_fwd_profile</li>
+      <li><span style="color: darkblue; "><strong><code class="language-plaintext highlighter-rouge">マップされたシークレット</code></strong></span> - secret_sslfwd_nfw4tut</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p><img src="sslfwd10.png" alt="復号化ルールの作成" /></p>
+
+<h2 id="4-3-network-firewallへポリシーの適用">4-3. Network Firewallへポリシーの適用</h2>
+<p>設定した「nfw_pol_sslfwd_tutorial」ポリシーをNetwork Firewallに適用します。<br />
+Network Firewall詳細画面の<strong><code class="language-plaintext highlighter-rouge">[編集]</code></strong> ボタンをクリック、「nfw_pol_sslfwd_tutorial」ポリシーを選択し、新しいポリシーを適用します。</p>
+
+<p><img src="sslfwd11.png" alt="NFWポリシーの適用" /></p>
+
+<p><br /><br /></p>
+
+<h1 id="5-動作を確認する">5. 動作を確認する</h1>
+<h2 id="5-1-テストサイトにアクセスする">5-1. テストサイトにアクセスする</h2>
+<p>作成したWindowsインスタンスにリモートデスクトップで接続し、外部へのHTTPS通信がNetwork Firewallを経由していることを確認します。 
+自己署名証明書のため警告がありますが、以下のURLにアクセスしGoogleに無事接続できることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://www.google.com
+</code></pre></div></div>
+
+<p><img src="sslfwd13.png" alt="googleアクセス警告" /></p>
+
+<p><br /></p>
+
+<p><img src="sslfwd14.png" alt="googleアクセス" /></p>
+
+<p>HTTPSで開いたサイトの証明書の詳細を確認すると、Network Firewallによって署名されていることを確認できます。</p>
+
+<p><img src="sslfwd15.png" alt="google証明書確認1" /></p>
+
+<p><br /></p>
+
+<p><img src="sslfwd16.png" alt="google証明書確認2" /></p>
+
+<p>次に、以下のURLにアクセスしてeicarファイルが含まれるページを開きます。このページはHTTPSで通信されていますが、Network Firewallにより復号され、eicarファイルが検知された結果、アクセスが遮断されていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://secure.eicar.org/eicar.com.txt
+</code></pre></div></div>
+
+<p><img src="sslfwd17.png" alt="eicarサイト確認" /></p>
+
+<h3 id="linuxインスタンスの場合">・Linuxインスタンスの場合</h3>
+<p>Linuxインスタンスでは、curlコマンドを使用して同様の動作を確認できます。</p>
+
+<p>Network Firewallの証明書を信頼する設定を行っていない場合、<code class="language-plaintext highlighter-rouge">-k</code>オプションを指定してアクセスを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -v -k https://google.com
+...
+* Server certificate:
+*  subject: CN=*.google.com
+*  start date: Dec  2 08:35:57 2024 GMT
+*  expire date: Feb 24 08:35:56 2025 GMT
+*  issuer: C=US; ST=Massachusetts; O=Oracle; CN=nfw.ocitutorial.com.fwd
+...
+</code></pre></div></div>
+
+<p>出力結果からサーバー証明書の発行者(issuer)が<code class="language-plaintext highlighter-rouge">C=US; ST=Massachusetts; O=Oracle; CN=nfw.ocitutorial.com.fwd</code>となっており、Network Firewallがプロキシとして動作していることが確認できます。</p>
+
+<p>また、eicarファイルが含まれるページにアクセスすると、アクセスが遮断されていることが確認できます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -v -k https://secure.eicar.org/eicar.com.txt
+...
+* OpenSSL SSL_read: SSL_ERROR_SYSCALL, errno 104
+* Closing connection 0
+curl: (56) OpenSSL SSL_read: SSL_ERROR_SYSCALL, errno 104
+</code></pre></div></div>
+
+<h2 id="5-2-ログを確認する">5-2. ログを確認する</h2>
+<p>Network Firewallがeicarファイルへのアクセスを検知したログを確認します。</p>
+
+<p>Network Firewallの脅威ログ（Threat Log）を有効化すると、検知されたeicarファイルはこの脅威ログより以下のように確認できます。</p>
+
+<p><img src="sslfwd18.png" alt="NFW脅威ログ" /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#security" class="page__taxonomy-item p-category" rel="tag">security</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-18T17:34:30+09:00">February 18, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=OCI+Network+Firewall%E3%81%AESSL%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%9A%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%EF%BC%88%E8%BB%A2%E9%80%81%E3%83%97%E3%83%AD%E3%82%AD%E3%82%B7%E3%83%A2%E3%83%BC%E3%83%89%EF%BC%89%E3%82%92%E8%A1%8C%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-sslinspect-fwd%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fsecurity%2Fnetworkfirewall-sslinspect-fwd%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/security/networkfirewall-sslinspect-fwd/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/security/waf-v1-setup/" class="pagination--pager" title="OCI Web Application Firewallのエッジポリシーを使ってWebサーバを保護する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/security/networkfirewall-sslinspect-inb/" class="pagination--pager" title="OCI Network FirewallのSSLインスペクション（インバウンド検証モード）を行う
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
