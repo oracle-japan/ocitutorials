@@ -69,6 +69,12 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[OCI Network Firewallの動作を検証する](/ocitutorials/security/networkfirewall-policycheck/)**  
    本チュートリアルでは、サービス・リストとURLリストを設定し、OCI Network Firewallの動作を確認します。
 
++ **[OCI Network FirewallのSSLインスペクション（インバウンドモード）を行う](/ocitutorials/security/networkfirewall-sslinspect-inb/)**  
+   本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、インバウンド検証モードの設定および動作を確認します
+
++ **[OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う](/ocitutorials/security/networkfirewall-sslinspect-fwd/)**  
+   本チュートリアルでは「OCI Network Firewallを構築する」の続編として、SSLインスペクションのうち、転送プロキシモードの設定および動作を確認します。
+
 + **[OCI Network Firewallのログを分析する](/ocitutorials/security/networkfirewall-loganalytics/)**  
    本チュートリアルでは「OCI Network Firewallを構築する」の続編として、Network Firewallのログを分析し、Network Firewallを通過するトラフィックの傾向、脅威の有無を確認します。
 
