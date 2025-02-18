@@ -132,7 +132,7 @@ OCIコンソールの画面左上ハンバーガーメニューから「アイ�
 ALL {resource.type='managementagent', resource.compartment.id='ocid1.compartment.oc1.examplecompartmentid'}
 ```
 
-![画面ショット](image10.PNG)
+![画面ショット](image10.png)
 
   
 # 4. IAMポリシーの作成
@@ -159,7 +159,7 @@ ALLOW SERVICE appmgmt TO {STACK_MONITORING_DISCOVERY_JOB_CREATE,STACK_MONITORING
 ALLOW SERVICE appmgmt TO {MGMT_AGENT_DEPLOY_PLUGIN_CREATE, MGMT_AGENT_INSPECT, MGMT_AGENT_READ} IN COMPARTMENT<Compartment Name>
 ```
 
-![画面ショット](image11.PNG)
+![画面ショット](image11.png)
 
 **ユーザーへのポリシー割り当てについて**  
 このチュートリアルでは、管理者ユーザーを前提としているため、必要最低限のポリシーのみ作成しています。  
@@ -173,10 +173,10 @@ OCIコンソールの画面左上ハンバーガーメニューから「監視�
 
 リソースの「リソースの検出」をクリックします。
 <br>
-![画面ショット](image12.PNG)
+![画面ショット](image12.png)
 
 新しいリソースの検出をクリックします。
-![画面ショット](image13.PNG)
+![画面ショット](image13.png)
 
 下記の情報を設定し、「新しいリソースの検出」をクリック
  - リソースタイプ：ホスト
@@ -185,7 +185,7 @@ OCIコンソールの画面左上ハンバーガーメニューから「監視�
  - 検出場所：スタック・モニタリングのみ
  - ライセンス：任意のライセンス
 
-![画面ショット](image14.PNG)
+![画面ショット](image14.png)
 
 **ライセンスについて**  
 ライセンスによる機能の違いについては[こちら](https://docs.oracle.com/ja-jp/iaas/stack-monitoring/doc/configure-licensing.html)をご確認ください。
@@ -198,24 +198,24 @@ OCIコンソールの画面左上ハンバーガーメニューから「監視�
 メトリックが収集されているか確認します。
 リソースの「すべてのリソース」をクリックします。
 <br>
-![画面ショット](image15.PNG)
+![画面ショット](image15.png)
 
 監視対象のリソース名をクリックします。
-![画面ショット](image16.PNG)
+![画面ショット](image16.png)
 
 設定が完了すると数分でメトリックが表示されます。
 表示されるメトリックについては[こちら](https://docs.oracle.com/ja-jp/iaas/stack-monitoring/doc/metric-reference.html#GUID-34CC43ED-7DD6-462D-B6F1-937685D712C8)をご確認ください。
-![画面ショット](image17.PNG)
+![画面ショット](image17.png)
 
 # 6. インスタンス（CDB）のメトリックを可視化
 Stack Monitoringでインスタンス（CDB）のメトリックを可視化します。
 
 リソースの「リソースの検出」をクリックします。
 <br>
-![画面ショット](image12.PNG)
+![画面ショット](image12.png)
 
 新しいリソースの検出をクリックします。
-![画面ショット](image13.PNG)
+![画面ショット](image13.png)
 
 以下の情報を設定し、「新しいリソースの検出」をクリックします。
 
@@ -241,8 +241,8 @@ Stack Monitoringでインスタンス（CDB）のメトリックを可視化し�
 ASM関連のメトリックを表示させる場合は、「有効」を選択し必要な情報を設定します。
 {: .notice--info}
 
-![画面ショット](image18.PNG)
-![画面ショット](image19.PNG)
+![画面ショット](image18.png)
+![画面ショット](image19.png)
 
 
 メトリックが収集されているか確認します。
@@ -255,7 +255,7 @@ ASM関連のメトリックを表示させる場合は、「有効」を選択�
 
 設定が完了すると数分でメトリックが表示されます。
 表示されるメトリックについては[こちら](https://docs.oracle.com/ja-jp/iaas/database-management/doc/oracle-cloud-database-metrics.html#DBMGM-GUID-70BD7533-CDCC-42DA-9C25-7B4BD24FE3E7)をご確認ください。
-![画面ショット](image24.PNG)
+![画面ショット](image24.png)
 
 
 
@@ -264,10 +264,10 @@ Stack Monitoringでインスタンス（PDB）のメトリックを可視化し�
 
 リソースの「リソースの検出」をクリックします。
 <br>
-![画面ショット](image12.PNG)
+![画面ショット](image12.png)
 
 新しいリソースの検出をクリックします。
-![画面ショット](image13.PNG)
+![画面ショット](image13.png)
 
 以下の情報を設定し、「新しいリソースの検出」をクリックします。
 
@@ -288,15 +288,15 @@ Stack Monitoringでインスタンス（PDB）のメトリックを可視化し�
 メトリックが収集されているか確認します。
 リソースの「すべてのリソース」をクリックします。
 <br>
-![画面ショット](image15.PNG)
+![画面ショット](image15.png)
 
 
 監視対象のリソース名をクリックします。
-![画面ショット](image23.PNG)
+![画面ショット](image23.png)
 
 設定が完了すると数分でメトリックが表示されます。
 表示されるメトリックについては[こちら](https://docs.oracle.com/ja-jp/iaas/database-management/doc/oracle-cloud-database-metrics.html#DBMGM-GUID-70BD7533-CDCC-42DA-9C25-7B4BD24FE3E7)をご確認ください。
-![画面ショット](image25.PNG)
+![画面ショット](image25.png)
 
 # 8.アラームの作成
 これらのメトリックは Monitoring に連携しているため、シンプルな手順でアラームの通知設定を作成できます。

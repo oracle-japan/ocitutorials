@@ -31,7 +31,7 @@ header:
 
 ※3）この詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の **[0. 概要](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#0-概要)** を参照してください。
 
-また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているトランスポートレベルのオープンソース通信フレームワークで、 **OpenMPI** から利用可能な以下のノード内・ノード間通信手段を提供します。
+また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、 **OpenMPI** から利用可能な以下のノード内・ノード間通信手段を提供します。
 
 [ノード内]
 - POSIX共有メモリ
