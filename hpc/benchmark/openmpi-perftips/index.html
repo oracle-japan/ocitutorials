@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-18T17:34:30+09:00">
+  <meta property="article:published_time" content="2025-02-26T17:07:07+09:00">
 
 
 
@@ -390,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
-    <meta itemprop="datePublished" content="2025-02-18T17:34:30+09:00">
+    <meta itemprop="datePublished" content="2025-02-26T17:07:07+09:00">
     
 
     <div class="page__inner-wrap">
@@ -401,7 +401,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></li><li><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></li><li><a href="#3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></li><li><a href="#3-2-hook_comm_method_display">3-2. hook_comm_method_display</a></li><li><a href="#3-3-mpi_show_mca_params">3-3. mpi_show_mca_params</a></li><li><a href="#3-4-ucx_tls">3-4. UCX_TLS</a></li><li><a href="#3-5-ucx_net_devices">3-5. UCX_NET_DEVICES</a></li><li><a href="#3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</a></li><li><a href="#3-7-ucx_proto_info">3-7. UCX_PROTO_INFO</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></li><li><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></li><li><a href="#3-mpi通信性能に影響するmcaucxパラメータ">3. MPI通信性能に影響するMCA・UCXパラメータ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></li><li><a href="#3-2-hook_comm_method_display">3-2. hook_comm_method_display</a></li><li><a href="#3-3-mpi_show_mca_params">3-3. mpi_show_mca_params</a></li><li><a href="#3-4-ucx_tls">3-4. UCX_TLS</a></li><li><a href="#3-5-ucx_net_devices">3-5. UCX_NET_DEVICES</a></li><li><a href="#3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</a></li><li><a href="#3-7-ucx_zcopy_thresh">3-7. UCX_ZCOPY_THRESH</a></li><li><a href="#3-8-ucx_proto_info">3-8. UCX_PROTO_INFO</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -585,7 +585,14 @@ or
       <td style="text-align: center">プロトコル切替<br />境界メッセージ長の指定</td>
     </tr>
     <tr>
-      <td style="text-align: center"><strong><a href="#3-7-ucx_proto_info">UCX_PROTO_INFO</a></strong></td>
+      <td style="text-align: center"><strong><a href="#3-7-ucx_zcopy_thresh">UCX_ZCOPY_THRESH</a></strong></td>
+      <td style="text-align: center"><strong>UCX</strong></td>
+      <td style="text-align: center">パフォーマンス</td>
+      <td style="text-align: center">auto</td>
+      <td style="text-align: center">プロトコル切替<br />境界メッセージ長の指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong><a href="#3-8-ucx_proto_info">UCX_PROTO_INFO</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">情報提供</td>
       <td style="text-align: center">n</td>
@@ -599,9 +606,12 @@ or
 
 <h2 id="3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</h2>
 
-<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>HCOLL</strong> を使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> （デフォルト）を、使用しない場合は <strong>0</strong> を指定します。</p>
+<p>MPI集合通信を効率的に実行する <strong>MCA</strong> コンポーネントの <strong>HCOLL</strong> （Hierarchical Collectives）を使用するかどうかを制御し、使用する場合はその値に <strong>1</strong> （デフォルト）を、使用しない場合は <strong>0</strong> を指定します。</p>
 
-<p><strong>HCOLL</strong> 使用の有無は、MPI集合通信の通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
+<p><strong>HCOLL</strong> は、NUMA・ソケット・UMA（ノード）の各グループを階層構造として定義し、上位の階層を跨ぐプロセス間通信（最上位層はノード間通信）を減らすことで集合通信の最適化を行います。<br />
+このため <strong>HCOLL</strong> 使用の有無は、特にノードを跨ぐケースで集合通信性能に影響を及ぼします。</p>
+
+<p><strong>HCOLL</strong> がMPI集合通信性能に及ぼす影響は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
 
 <h2 id="3-2-hook_comm_method_display">3-2. hook_comm_method_display</h2>
 
@@ -754,17 +764,36 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
 
 <h2 id="3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</h2>
 
-<p><strong>UCX</strong> が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。<br />
+<p><strong>UCX</strong> が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）を切り替えるメッセージ長の境界を指定します。<br />
 メッセージ長の指定は、そのユニットに <strong>b</strong> （B）、 <strong>kb</strong> （KB）、 <strong>mb</strong> （MB）、及び <strong>gb</strong> （GB）を使用します。また設定値 <strong>auto</strong> （デフォルト）は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
 
-<p>プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
+<p>ここで指定する境界メッセージは、ノード内通信のプロトコル用とノード間通信のプロトコル用を個別に指定することが可能です。</p>
 
-<p>以下は、 <strong>UCX_RNDV_THRESH</strong> に512KBを指定しています。</p>
+<p>この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>512kb a.out
+<p>以下は、ノード内通信とノード間通信の境界メッセージ長にそれぞれ32kbと128kbを指定しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>intra:32kb,inter:128kb a.out
 </code></pre></div></div>
 
-<h2 id="3-7-ucx_proto_info">3-7. UCX_PROTO_INFO</h2>
+<p>また以下は、ノード内・ノード間の何れの境界メッセージ長も128KBを指定しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_RNDV_THRESH</span><span class="o">=</span>128kb a.out
+</code></pre></div></div>
+
+<h2 id="3-7-ucx_zcopy_thresh">3-7. UCX_ZCOPY_THRESH</h2>
+
+<p><strong>UCX</strong> が使用するバッファーコピープロトコル（短いメッセージ長で有利）とゼロコピープロトコル（長いメッセージ長で有利）（ノード内通信の場合 <strong>cma</strong> ・ <strong>knem</strong> ・ <strong>xpmem</strong> ：ノード間通信の場合 <strong>RDMA put</strong> ・ <strong>RDMA get</strong> 等）を切り替えるメッセージ長の境界を指定します。<br />
+メッセージ長の指定は、そのユニットに <strong>b</strong> （B）、 <strong>kb</strong> （KB）、 <strong>mb</strong> （MB）、及び <strong>gb</strong> （GB）を使用します。また設定値 <strong>auto</strong> （デフォルト）は、境界メッセージ長を <strong>UCX</strong> に選択させることを指定します。</p>
+
+<p>この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong> を参照してください。</p>
+
+<p>以下は、境界メッセージ長に128KBを指定しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_ZCOPY_THRESH</span><span class="o">=</span>128kb a.out
+</code></pre></div></div>
+
+<h2 id="3-8-ucx_proto_info">3-8. UCX_PROTO_INFO</h2>
 
 <p>メッセージ長毎に <strong>UCX</strong> が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は <strong>y</strong> を、表示しない場合 <strong>n</strong> （デフォルト）を指定します。</p>
 
@@ -794,7 +823,7 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-18T17:34:30+09:00">February 18, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-26T17:07:07+09:00">February 26, 2025</time></p>
 
       </footer>
 
