@@ -145,7 +145,8 @@ $
 | **[UCX_TLS](#3-4-ucx_tls)**                                   | **UCX** | パフォーマンス    | all           | 通信トランスポートの指定               |
 | **[UCX_NET_DEVICES](#3-5-ucx_net_devices)**                   | **UCX** | パフォーマンス    | -             | ネットワークデバイスの指定              |
 | **[UCX_RNDV_THRESH](#3-6-ucx_rndv_thresh)**                   | **UCX** | パフォーマンス    | auto          | プロトコル切替<br>境界メッセージ長の指定         |
-| **[UCX_PROTO_INFO](#3-7-ucx_proto_info)**                     | **UCX** | 情報提供    | n             | メッセージ長毎の<br>使用プロトコル表示の制御                           |
+| **[UCX_ZCOPY_THRESH](#3-7-ucx_zcopy_thresh)**                   | **UCX** | パフォーマンス    | auto          | プロトコル切替<br>境界メッセージ長の指定         |
+| **[UCX_PROTO_INFO](#3-8-ucx_proto_info)**                     | **UCX** | 情報提供    | n             | メッセージ長毎の<br>使用プロトコル表示の制御                           |
 
 ※5）**パフォーマンス** に分類されるものはMPI通信性能に影響を及ぼすパラメータ、 **情報提供** に分類されるものはMPI通信性能を考察する際の有益な情報を提供するパラメータです。  
 ※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** でのデフォルト値です。
@@ -153,9 +154,12 @@ $
 
 ## 3-1. coll_hcoll_enable
 
-MPI集合通信を効率的に実行する **MCA** コンポーネントの **HCOLL** を使用するかどうかを制御し、使用する場合はその値に **1** （デフォルト）を、使用しない場合は **0** を指定します。
+MPI集合通信を効率的に実行する **MCA** コンポーネントの **HCOLL** （Hierarchical Collectives）を使用するかどうかを制御し、使用する場合はその値に **1** （デフォルト）を、使用しない場合は **0** を指定します。
 
-**HCOLL** 使用の有無は、MPI集合通信の通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+**HCOLL** は、NUMA・ソケット・UMA（ノード）の各グループを階層構造として定義し、上位の階層を跨ぐプロセス間通信（最上位層はノード間通信）を減らすことで集合通信の最適化を行います。  
+このため **HCOLL** 使用の有無は、特にノードを跨ぐケースで集合通信性能に影響を及ぼします。
+
+**HCOLL** がMPI集合通信性能に及ぼす影響は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
 
 ## 3-2. hook_comm_method_display
 
@@ -274,18 +278,39 @@ $
 
 ## 3-6. UCX_RNDV_THRESH
 
-**UCX** が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）の切り替え境界メッセージ長を指定します。  
+**UCX** が使用するEagerプロトコル（短いメッセージ長で有利）とRendezvousプロトコル（長いメッセージ長で有利）を切り替えるメッセージ長の境界を指定します。  
 メッセージ長の指定は、そのユニットに **b** （B）、 **kb** （KB）、 **mb** （MB）、及び **gb** （GB）を使用します。また設定値 **auto** （デフォルト）は、境界メッセージ長を **UCX** に選択させることを指定します。
 
-プロトコルの切り替え境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+ここで指定する境界メッセージは、ノード内通信のプロトコル用とノード間通信のプロトコル用を個別に指定することが可能です。
 
-以下は、 **UCX_RNDV_THRESH** に512KBを指定しています。
+この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+
+以下は、ノード内通信とノード間通信の境界メッセージ長にそれぞれ32kbと128kbを指定しています。
 
 ```sh
-$ mpirun -x UCX_RNDV_THRESH=512kb a.out
+$ mpirun -x UCX_RNDV_THRESH=intra:32kb,inter:128kb a.out
 ```
 
-## 3-7. UCX_PROTO_INFO
+また以下は、ノード内・ノード間の何れの境界メッセージ長も128KBを指定しています。
+
+```sh
+$ mpirun -x UCX_RNDV_THRESH=128kb a.out
+```
+
+## 3-7. UCX_ZCOPY_THRESH
+
+**UCX** が使用するバッファーコピープロトコル（短いメッセージ長で有利）とゼロコピープロトコル（長いメッセージ長で有利）（ノード内通信の場合 **cma** ・ **knem** ・ **xpmem** ：ノード間通信の場合 **RDMA put** ・ **RDMA get** 等）を切り替えるメッセージ長の境界を指定します。  
+メッセージ長の指定は、そのユニットに **b** （B）、 **kb** （KB）、 **mb** （MB）、及び **gb** （GB）を使用します。また設定値 **auto** （デフォルト）は、境界メッセージ長を **UCX** に選択させることを指定します。
+
+この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+
+以下は、境界メッセージ長に128KBを指定しています。
+
+```sh
+$ mpirun -x UCX_ZCOPY_THRESH=128kb a.out
+```
+
+## 3-8. UCX_PROTO_INFO
 
 メッセージ長毎に **UCX** が使用したプロトコルを標準出力に表示する機能を制御し、表示する場合は **y** を、表示しない場合 **n** （デフォルト）を指定します。
 
