@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-26T17:07:07+09:00">
+  <meta property="article:published_time" content="2025-03-03T11:57:19+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="106 : Oracle Database 23aiとLangChainでRAGを構成してみよう">
     <meta itemprop="description" content="LangChainを使ったRAG構成をステップバイステップでご紹介します。">
-    <meta itemprop="datePublished" content="2025-02-26T17:07:07+09:00">
+    <meta itemprop="datePublished" content="2025-03-03T11:57:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -510,7 +510,10 @@ TLS接続については<a href="/ocitutorials/adb/adb108-walletless" target="_b
 <p><code class="language-plaintext highlighter-rouge">root</code>にスイッチし、以下でPython3.11のインストールを行います。</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su -
 dnf <span class="nb">install </span>python3.11
-<span class="nb">ln</span> <span class="nt">-s</span> <span class="nt">-f</span> /usr/bin/python3.11 /usr/bin/python
+</code></pre></div></div>
+
+<p>インストールが完了したらデフォルトのPythonのバージョンが3.11になるようシンボリックリンクを作成します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ln</span> <span class="nt">-s</span> <span class="nt">-f</span> /usr/bin/python3.11 /usr/bin/python
 </code></pre></div></div>
 
 <p>バージョンを確認します。</p>
@@ -648,20 +651,21 @@ wget https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-2
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">oracledb</span>
 
 <span class="c1"># Oracle Database 23ai Free版
-</span><span class="n">username</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
-<span class="n">password</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
-<span class="n">dsn</span> <span class="o">=</span> <span class="sh">"</span><span class="s">localhost/freepdb1</span><span class="sh">"</span>
-
+#username = "docuser"
+#password = "docuser"
+#dsn = "localhost/freepdb1"
+</span>
 <span class="c1"># BaseDB版では以下をコメントアウトを外して実行します
 # oracledb.init_oracle_client()
 # username = "docuser"
 # password = "WelCome123#123#"
 #dsn = "&lt;PDBの接続文字列&gt;" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
 </span>
-<span class="c1"># Autonomous Database 23ai Free版では以下をコメントアウトを外して実行します
-# username = "docuser"
-# password = "Welcome12345#"
-# dsn = "&lt;ADBの接続文字列&gt;" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+<span class="n">Autonomous</span> <span class="n">Database</span> <span class="mi">23</span><span class="n">ai</span> <span class="n">Free版</span>
+<span class="n">username</span> <span class="o">=</span> <span class="sh">"</span><span class="s">docuser</span><span class="sh">"</span>
+<span class="n">password</span> <span class="o">=</span> <span class="sh">"</span><span class="s">Welcome12345#</span><span class="sh">"</span>
+<span class="n">dsn</span> <span class="o">=</span> <span class="sh">"</span><span class="s">&lt;ADBの接続文字列&gt;</span><span class="sh">"</span> 
+<span class="c1">#(例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 </span>
 <span class="k">try</span><span class="p">:</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">oracledb</span><span class="p">.</span><span class="nf">connect</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">dsn</span><span class="o">=</span><span class="n">dsn</span><span class="p">)</span>
@@ -1080,7 +1084,7 @@ MIIExxxx
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-26T17:07:07+09:00">February 26, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-03T11:57:19+09:00">March 3, 2025</time></p>
 
       </footer>
 

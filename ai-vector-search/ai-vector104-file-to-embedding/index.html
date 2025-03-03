@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-02-26T17:07:07+09:00">
+  <meta property="article:published_time" content="2025-03-03T11:57:19+09:00">
 
 
 
@@ -278,7 +278,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう">
     <meta itemprop="description" content="23ai free、ADB23ai(Always Free)を利用してファイルからテキストへ、テキストからチャンクへ、チャンクからベクトルデータへの変換、およびベクトルの検索について紹介します。">
-    <meta itemprop="datePublished" content="2025-02-26T17:07:07+09:00">
+    <meta itemprop="datePublished" content="2025-03-03T11:57:19+09:00">
     
 
     <div class="page__inner-wrap">
@@ -834,8 +834,7 @@ Database Actionsからのユーザー作成方法については、<a href="http
   <span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">documentation_tab</span> <span class="p">(</span><span class="n">id</span> <span class="n">number</span><span class="p">,</span> <span class="k">data</span> <span class="nb">blob</span><span class="p">);</span>
   <span class="k">BEGIN</span>  
     <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">CREATE_CREDENTIAL</span> <span class="p">(</span>
-        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'credential name'</span><span class="p">,</span>
-        <span class="c1">--例: ADMIN_CRED</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
         <span class="n">user_ocid</span> <span class="o">=&gt;</span> <span class="s1">'user ocid value'</span><span class="p">,</span>
         <span class="n">tenancy_ocid</span> <span class="o">=&gt;</span> <span class="s1">'tenancy ocid value'</span><span class="p">,</span>
         <span class="n">private_key</span> <span class="o">=&gt;</span> <span class="s1">'private key value'</span><span class="p">,</span>
@@ -857,7 +856,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
     <span class="n">l_blob</span> <span class="nb">BLOB</span> <span class="p">:</span><span class="o">=</span> <span class="k">NULL</span><span class="p">;</span>
     <span class="k">BEGIN</span>
     <span class="n">l_blob</span> <span class="p">:</span><span class="o">=</span> <span class="n">DBMS_CLOUD</span><span class="p">.</span><span class="n">GET_OBJECT</span><span class="p">(</span>
-        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'credential name'</span><span class="p">,</span> <span class="c1">--設定したクレデンシャル名をcredential nameに入力</span>
+        <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span> 
         <span class="n">object_uri</span> <span class="o">=&gt;</span> <span class="s1">'https://objectstorage.xxxxxxxxxxxx.oraclecloud.com/xxxxxxxxxxxxxxxxxx/corporate-governance-202209-jp.pdf'</span><span class="p">);</span>
     <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">documentation_tab</span> <span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">l_blob</span><span class="p">);</span>
     <span class="k">commit</span><span class="p">;</span>
@@ -920,9 +919,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
 <p><code class="language-plaintext highlighter-rouge">UTL_TO_CHUNKS</code>を実行して、テキストドキュメントをチャンクに分割します。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- （オプション）デフォルトのパラメータで実行する。</span>
-  <span class="c1">-- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;</span>
-  <span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">SELECT</span> <span class="n">ct</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">))</span> <span class="n">ct</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -972,22 +969,19 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 <p>チャンクをベクトルデータに変換します。まずは、OCI GenAIサービスにアクセスするためのクレデンシャルを作成します。
 冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c1">-- 初回の実行では必要なし</span>
-  <span class="c1">-- exec dbms_vector.drop_credential('OCI_CRED');</span>
-  <span class="k">declare</span>
-  <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">declare</span>
+    <span class="n">jo</span> <span class="n">json_object_t</span><span class="p">;</span>
   <span class="k">begin</span>
-  <span class="c1">-- create an OCI credential</span>
-  <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
-  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
-  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
-  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
-  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
-  <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
-  <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
-  <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
-    <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'OCI_CRED'</span><span class="p">,</span>
-    <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
+    <span class="n">jo</span> <span class="p">:</span><span class="o">=</span> <span class="n">json_object_t</span><span class="p">();</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'user_ocid'</span><span class="p">,</span> <span class="s1">'user ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'tenancy_ocid'</span><span class="p">,</span> <span class="s1">'tenancy ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'compartment_ocid'</span><span class="p">,</span> <span class="s1">'compartment ocid value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'private_key'</span><span class="p">,</span> <span class="s1">'private key value'</span><span class="p">);</span>
+    <span class="n">jo</span><span class="p">.</span><span class="n">put</span><span class="p">(</span><span class="s1">'fingerprint'</span><span class="p">,</span> <span class="s1">'fingerprint value'</span><span class="p">);</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">);</span>
+    <span class="n">dbms_vector</span><span class="p">.</span><span class="n">create_credential</span><span class="p">(</span>
+      <span class="n">credential_name</span> <span class="o">=&gt;</span> <span class="s1">'VECTOR_CRED'</span><span class="p">,</span>
+      <span class="n">params</span>          <span class="o">=&gt;</span> <span class="n">json</span><span class="p">(</span><span class="n">jo</span><span class="p">.</span><span class="n">to_string</span><span class="p">));</span>
   <span class="k">end</span><span class="p">;</span>
   <span class="o">/</span>
 </code></pre></div></div>
@@ -1002,7 +996,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
 <p>上記の設定を検証してみます。</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText, "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">select</span> <span class="n">et</span><span class="p">.</span><span class="o">*</span> <span class="k">from</span> <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">et</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>出力:</p>
@@ -1035,7 +1029,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
     <span class="n">documentation_tab</span> <span class="n">dt</span><span class="p">,</span>
     <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span>
       <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_chunks</span><span class="p">(</span><span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_text</span><span class="p">(</span><span class="n">dt</span><span class="p">.</span><span class="k">data</span><span class="p">),</span> <span class="n">json</span><span class="p">(</span><span class="s1">'{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}'</span><span class="p">)),</span>
-      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
+      <span class="n">json</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">)</span>
       <span class="p">)</span> <span class="n">t</span><span class="p">,</span>
       <span class="n">JSON_TABLE</span><span class="p">(</span>
       <span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> 
@@ -1065,7 +1059,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
   <span class="k">FROM</span> <span class="n">doc_chunks</span>
   <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">vector_distance</span><span class="p">(</span><span class="n">embed_vector</span> <span class="p">,</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">to_vector</span><span class="p">(</span><span class="n">et</span><span class="p">.</span><span class="n">embed_vector</span><span class="p">)</span> <span class="n">embed_vector</span>
   <span class="k">FROM</span>
-  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'コーポレート・ガバナンスに関する基本的な考え方'</span><span class="p">,</span> <span class="n">JSON</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span>
+  <span class="n">dbms_vector_chain</span><span class="p">.</span><span class="n">utl_to_embeddings</span><span class="p">(</span><span class="s1">'コーポレート・ガバナンスに関する基本的な考え方'</span><span class="p">,</span> <span class="n">JSON</span><span class="p">(</span><span class="s1">'{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}'</span><span class="p">))</span> <span class="n">t</span><span class="p">,</span>
   <span class="n">JSON_TABLE</span> <span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">column_value</span><span class="p">,</span> <span class="s1">'$[*]'</span>
   <span class="n">COLUMNS</span> <span class="p">(</span>
   <span class="n">embed_id</span> <span class="n">NUMBER</span> <span class="n">PATH</span> <span class="s1">'$.embed_id'</span><span class="p">,</span>
@@ -1108,7 +1102,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。</p>
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-02-26T17:07:07+09:00">February 26, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-03T11:57:19+09:00">March 3, 2025</time></p>
 
       </footer>
 
