@@ -560,8 +560,7 @@ Database ActionsにDOCUSERユーザーとして接続します。
   CREATE TABLE documentation_tab (id number, data blob);
   BEGIN  
     DBMS_CLOUD.CREATE_CREDENTIAL (
-        credential_name => 'credential name',
-        --例: ADMIN_CRED
+        credential_name => 'OCI_CRED',
         user_ocid => 'user ocid value',
         tenancy_ocid => 'tenancy ocid value',
         private_key => 'private key value',
@@ -585,7 +584,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
     l_blob BLOB := NULL;
     BEGIN
     l_blob := DBMS_CLOUD.GET_OBJECT(
-        credential_name => 'credential name', --設定したクレデンシャル名をcredential nameに入力
+        credential_name => 'OCI_CRED', 
         object_uri => 'https://objectstorage.xxxxxxxxxxxx.oraclecloud.com/xxxxxxxxxxxxxxxxxx/corporate-governance-202209-jp.pdf');
     INSERT INTO documentation_tab values(1, l_blob);
     commit;
@@ -655,8 +654,6 @@ object_uriには前に手順でメモをしたURIパスを入力します。
 `UTL_TO_CHUNKS`を実行して、テキストドキュメントをチャンクに分割します。
 
   ```sql
-  -- （オプション）デフォルトのパラメータで実行する。
-  -- SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data)) ct;
   SELECT ct.* from documentation_tab dt, dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": " 400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')) ct;
   ```
 
@@ -709,22 +706,19 @@ object_uriには前に手順でメモをしたURIパスを入力します。
 冒頭で取得した文字列をprivate_keyに記入して、API署名キーの生成で取得したuser_ocid、tenancy_ocid、fingerprintおよびcompartment_ocidを設定して実行してください。
 
   ```sql
-  -- 初回の実行では必要なし
-  -- exec dbms_vector.drop_credential('OCI_CRED');
   declare
-  jo json_object_t;
+    jo json_object_t;
   begin
-  -- create an OCI credential
-  jo := json_object_t();
-  jo.put('user_ocid', 'user ocid value');
-  jo.put('tenancy_ocid', 'tenancy ocid value');
-  jo.put('compartment_ocid', 'compartment ocid value');
-  jo.put('private_key', 'private key value');
-  jo.put('fingerprint', 'fingerprint value');
-  dbms_output.put_line(jo.to_string);
-  dbms_vector.create_credential(
-    credential_name => 'OCI_CRED',
-    params          => json(jo.to_string));
+    jo := json_object_t();
+    jo.put('user_ocid', 'user ocid value');
+    jo.put('tenancy_ocid', 'tenancy ocid value');
+    jo.put('compartment_ocid', 'compartment ocid value');
+    jo.put('private_key', 'private key value');
+    jo.put('fingerprint', 'fingerprint value');
+    dbms_output.put_line(jo.to_string);
+    dbms_vector.create_credential(
+      credential_name => 'VECTOR_CRED',
+      params          => json(jo.to_string));
   end;
   /
   ```
@@ -741,7 +735,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
   上記の設定を検証してみます。
 
   ```sql
-  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText, "model": "cohere.embed-multilingual-v3.0"}')) et;
+  select et.* from dbms_vector_chain.utl_to_embeddings('hello', json('{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) et;
   ```
 
   出力:
@@ -774,7 +768,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
     documentation_tab dt,
     dbms_vector_chain.utl_to_embeddings(
       dbms_vector_chain.utl_to_chunks(dbms_vector_chain.utl_to_text(dt.data), json('{"max": "400", "overlap": "20", "language": "JAPANESE", "normalize": "all"}')),
-      json('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
+      json('{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')
       ) t,
       JSON_TABLE(
       t.column_value, 
@@ -806,7 +800,7 @@ object_uriには前に手順でメモをしたURIパスを入力します。
   FROM doc_chunks
   ORDER BY vector_distance(embed_vector , (SELECT to_vector(et.embed_vector) embed_vector
   FROM
-  dbms_vector_chain.utl_to_embeddings('コーポレート・ガバナンスに関する基本的な考え方', JSON('{"provider": "ocigenai", "credential_name": "OCI_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t,
+  dbms_vector_chain.utl_to_embeddings('コーポレート・ガバナンスに関する基本的な考え方', JSON('{"provider": "ocigenai", "credential_name": "VECTOR_CRED", "url": "https://inference.generativeai.ap-osaka-1.oci.oraclecloud.com/20231130/actions/embedText", "model": "cohere.embed-multilingual-v3.0"}')) t,
   JSON_TABLE (t.column_value, '$[*]'
   COLUMNS (
   embed_id NUMBER PATH '$.embed_id',

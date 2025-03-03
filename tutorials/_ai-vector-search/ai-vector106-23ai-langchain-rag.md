@@ -227,6 +227,10 @@ Autonomous Database(23ai)環境の場合は、先程作成したコンピュー�
 ```sh
 sudo su -
 dnf install python3.11
+```
+
+インストールが完了したらデフォルトのPythonのバージョンが3.11になるようシンボリックリンクを作成します。
+```sh
 ln -s -f /usr/bin/python3.11 /usr/bin/python
 ```
 
@@ -383,9 +387,9 @@ Autonomous Database(23ai)、もしくはBaseDBを使用している場合は、�
 import oracledb
 
 # Oracle Database 23ai Free版
-username = "docuser"
-password = "docuser"
-dsn = "localhost/freepdb1"
+#username = "docuser"
+#password = "docuser"
+#dsn = "localhost/freepdb1"
 
 # BaseDB版では以下をコメントアウトを外して実行します
 # oracledb.init_oracle_client()
@@ -393,10 +397,11 @@ dsn = "localhost/freepdb1"
 # password = "WelCome123#123#"
 #dsn = "<PDBの接続文字列>" (例) basedb23ai.xxxx.vcn1.oraclevcn.com:1521/pdb1.xxxx.vcn1.oraclevcn.com
 
-# Autonomous Database 23ai Free版では以下をコメントアウトを外して実行します
-# username = "docuser"
-# password = "Welcome12345#"
-# dsn = "<ADBの接続文字列>" (例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+Autonomous Database 23ai Free版
+username = "docuser"
+password = "Welcome12345#"
+dsn = "<ADBの接続文字列>" 
+#(例) (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-tokyo-1.oraclecloud.com))(connect_data=(service_name=xxxxx_xxx_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
 
 try:
     connection = oracledb.connect(user=username, password=password, dsn=dsn)
