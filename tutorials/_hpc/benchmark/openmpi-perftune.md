@@ -22,7 +22,7 @@ header:
 [**計測条件**]
 
 - ノード当たりMPIプロセス数 ： **8** ・ **16** ・ **32** ・ **36**
-- ノード数 ： **1** ・ **2** ・ **4** （近日公開予定）・ **8** （近日公開予定）
+- ノード数 ： **1** ・ **2** ・ **4** ・ **8**
 - MPI集合通信関数 ： **Alltoall** ・ **Allgather** ・ **Allreduce**
 
 [**実行時パラメータ**]
@@ -45,15 +45,16 @@ header:
 
 [実行環境]
 - シェイプ： **BM.Optimized3.36** （  **Simultanious Multi Threading** （以降 **SMT** と呼称します。）無効（※7））
-- ノード間接続 ： **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**  
-- OS： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※8）
-- **OpenMPI** ： 5.0.6（※9）
-- **Intel MPI Benchmarks** ： 2021.7（※10）
+- ノード間接続 ： **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** （※8）
+- OS： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※9）
+- **OpenMPI** ： 5.0.6（※10）
+- **Intel MPI Benchmarks** ： 2021.7（※11）
 
 ※7）**SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※8）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-※9） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。  
-※10） **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** に従って構築された **Intel MPI Benchmarks** です。
+※8）本テクニカルTipsの2ノード以上の全ての計測は、 **クラスタ・ネットワーク** の同一リーフスイッチ配下のインスタンスを使用して行っています。同一リーフスイッチ配下に配置されたインスタンス間のノード間接続に於ける効果は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法](/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/)** を参照してください。  
+※9）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
+※10） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。  
+※11） **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** に従って構築された **Intel MPI Benchmarks** です。
 
 また **Intel MPI Benchmarks** は、 **numactl** コマンドを介して以下の実行時オプションを指定して起動します。
 
@@ -66,9 +67,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 |               | 1ノード | 2ノード | 4ノード | 8ノード |
 | :-----------: | :--: | :--: | :--: | ---- |
-| **Alltoall**  | 25   | 24   | -    | -    |
-| **Allgather** | 25   | 24   | -    | -    |
-| **Allreduce** | 30   | 30   | -    | -    |
+| **Alltoall**  | 25   | 24   | 23    | 22    |
+| **Allgather** | 25   | 24   | 23    | 22    |
+| **Allreduce** | 30   | 30   | 30    | 30    |
 
 ここで、1種類の計測につき5回計測し、その最大値と最小値を除く3回の計測結果の算術平均をその結果とします。
 
@@ -76,8 +77,8 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 1. **[1ノード](#1--1ノード)**
 2. **[2ノード](#2--2ノード)**
-3. **[4ノード](#3--4ノード)** （近日公開予定）
-4. **[8ノード](#4--8ノード)** （近日公開予定）
+3. **[4ノード](#3--4ノード)**
+4. **[8ノード](#4--8ノード)**
 
 ***
 # 1.  1ノード
@@ -109,7 +110,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 **HCOLL** 使用の有無は、以下の傾向がみられます。
 
 - **Alltoall**
-    - 128Bまでのメッセージサイズで使用した場合が使用しない場合に対しておおむね優位
+    - 4Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
 - **Allgather**
     - 32Bから512Bのメッセージサイズで使用した場合が使用しない場合に対して優位  
     - 8KBから32KBのメッセージサイズで使用しない場合が使用した場合に対して優位
@@ -132,16 +133,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 1 node 8 processes NPS2 Cyclic](ata_01_08_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 1 node 8 processes Small message](ata_01_08_S.png)
-
-![Alltoall 1 node 8 processes Medium message](ata_01_08_M.png)
-
-![Alltoall 1 node 8 processes Medium Large message](ata_01_08_ML.png)
-
-![Alltoall 1 node 8 processes Large message](ata_01_08_L.png)
+![Alltoall 1 node 8 processes](ata_01_08.png)
 
 ### 1-1-2. Allgather
 
@@ -155,16 +151,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 1 node 8 processes NPS2 Cyclic](aga_01_08_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **64kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **64kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 1 node 8 processes Small message](aga_01_08_S.png)
-
-![Allgather 1 node 8 processes Medium message](aga_01_08_M.png)
-
-![Allgather 1 node 8 processes Medium Large message](aga_01_08_ML.png)
-
-![Allgather 1 node 8 processes Large message](aga_01_08_L.png)
+![Allgather 1 node 8 processes](aga_01_08.png)
 
 ### 1-1-3. Allreduce
 
@@ -178,16 +169,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 1 node 8 processes NPS2 Cyclic](are_01_08_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 1 node 8 processes Small message](are_01_08_S.png)
-
-![Allreduce 1 node 8 processes Medisum message](are_01_08_M.png)
-
-![Allreduce 1 node 8 processes Medisum Large message](are_01_08_ML.png)
-
-![Allreduce 1 node 8 processes Large message](are_01_08_L.png)
+![Allreduce 1 node 8 processes](are_01_08.png)
 
 ## 1-2.  16 MPIプロセス
 
@@ -231,16 +217,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 1 node 16 processes NPS2 Cyclic](ata_01_16_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 1 node 16 processes Small message](ata_01_16_S.png)
-
-![Alltoall 1 node 16 processes Medium message](ata_01_16_M.png)
-
-![Alltoall 1 node 16 processes Medium Large message](ata_01_16_ML.png)
-
-![Alltoall 1 node 16 processes Large message](ata_01_16_L.png)
+![Alltoall 1 node 16 processes](ata_01_16.png)
 
 ### 1-2-2. Allgather
 
@@ -254,16 +235,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 1 node 16 processes NPS2 Cyclic](aga_01_16_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **32kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 1 node 16 processes Small message](aga_01_16_S.png)
-
-![Allgather 1 node 16 processes Medium message](aga_01_16_M.png)
-
-![Allgather 1 node 16 processes Medium Large message](aga_01_16_ML.png)
-
-![Allgather 1 node 16 processes Large message](aga_01_16_L.png)
+![Allgather 1 node 16 processes](aga_01_16.png)
 
 ### 1-2-3. Allreduce
 
@@ -277,16 +253,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 1 node 16 processes NPS2 Cyclic](are_01_16_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 1 node 16 processes Small message](are_01_16_S.png)
-
-![Allreduce 1 node 16 processes Medisum message](are_01_16_M.png)
-
-![Allreduce 1 node 16 processes Medisum Large message](are_01_16_ML.png)
-
-![Allreduce 1 node 16 processes Large message](are_01_16_L.png)
+![Allreduce 1 node 16 processes](are_01_16.png)
 
 ## 1-3.  32 MPIプロセス
 
@@ -332,10 +303,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 1 node 32 processes NPS2 Cyclic](ata_01_32_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 1 node 32 processes Small message](ata_01_32_S.png)
+![Alltoall 1 node 32 processes](ata_01_32.png)
 
 ![Alltoall 1 node 32 processes Medium message](ata_01_32_M.png)
 
@@ -355,16 +327,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 1 node 32 processes NPS2 Cyclic](aga_01_32_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 1 node 32 processes Small message](aga_01_32_S.png)
-
-![Allgather 1 node 32 processes Medium message](aga_01_32_M.png)
-
-![Allgather 1 node 32 processes Medium Large message](aga_01_32_ML.png)
-
-![Allgather 1 node 32 processes Large message](aga_01_32_L.png)
+![Allgather 1 node 32 processes](aga_01_32.png)
 
 ### 1-3-3. Allreduce
 
@@ -378,16 +345,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 1 node 32 processes NPS2 Cyclic](are_01_32_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 1 node 32 processes Small message](are_01_32_S.png)
-
-![Allreduce 1 node 32 processes Medisum message](are_01_32_M.png)
-
-![Allreduce 1 node 32 processes Medisum Large message](are_01_32_ML.png)
-
-![Allreduce 1 node 32 processes Large message](are_01_32_L.png)
+![Allreduce 1 node 32 processes](are_01_32.png)
 
 ## 1-4.  36 MPIプロセス
 
@@ -434,16 +396,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 1 node 36 processes NPS2 Cyclic](ata_01_36_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 1 node 36 processes Small message](ata_01_36_S.png)
-
-![Alltoall 1 node 36 processes Medium message](ata_01_36_M.png)
-
-![Alltoall 1 node 36 processes Medium Large message](ata_01_36_ML.png)
-
-![Alltoall 1 node 36 processes Large message](ata_01_36_L.png)
+![Alltoall 1 node 36 processes](ata_01_36.png)
 
 ### 1-4-2. Allgather
 
@@ -457,16 +414,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 1 node 36 processes NPS2 Cyclic](aga_01_36_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **16kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 1 node 36 processes Small message](aga_01_36_S.png)
-
-![Allgather 1 node 36 processes Medium message](aga_01_36_M.png)
-
-![Allgather 1 node 36 processes Medium Large message](aga_01_36_ML.png)
-
-![Allgather 1 node 36 processes Large message](aga_01_36_L.png)
+![Allgather 1 node 36 processes](aga_01_36.png)
 
 ### 1-4-3. Allreduce
 
@@ -480,16 +432,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 1 node 36 processes NPS2 Cyclic](are_01_36_n2_cy.png)
 
-以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。
+以上より、 **UCX_RNDV_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定、 **NPS** 、MPIプロセス分割方法、及び **HCOLL** 使用の有無を比較したものが以下のグラフです。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 1 node 36 processes Small message](are_01_36_S.png)
-
-![Allreduce 1 node 36 processes Medisum message](are_01_36_M.png)
-
-![Allreduce 1 node 36 processes Medisum Large message](are_01_36_ML.png)
-
-![Allreduce 1 node 36 processes Large message](are_01_36_L.png)
+![Allreduce 1 node 36 processes](are_01_36.png)
 
 ***
 # 2.  2ノード
@@ -499,13 +446,13 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 本章は、2ノードにノード当たり8・16・32・36の各MPIプロセス、トータルで16・32・64・72の各MPIプロセスを割当てる場合の各MPI集合通信関数の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
 
 - **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
-- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※11）
+- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※12）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
 - **coll_hcoll_enable** ： **0** ・ **1**
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
 - **NPS** ：  **1** ・ **2**
 
-※11） **UCX_RNDV_THRESH** は、ノード内通信とノード間通信でそれぞれ異なる閾値を指定することが出来るため、ノード内は **auto** と **[1ノード](#1--1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
+※12） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1--1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
 
 - **intra:auto,inter:auto**
 - **intra:optimal_value,inter:auto**
@@ -553,7 +500,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **Alltoall**
     - 4Bから256Bのメッセージサイズで使用した場合が使用しない場合に対して優位
 - **Allgather**
-    - ほぼ全域のメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 8Bから4KBと32KBから16MBのメッセージサイズで使用した場合が使用しない場合に対して優位
 - **Allreduce**
     - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
 
@@ -564,7 +511,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.1.1 alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
 
 ![Alltoall 2 node 8 ppn all step1](ata_02_08_all_step1.png)
 
@@ -574,15 +521,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 2 node 8 ppn dc step1](ata_02_08_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Alltoall 2 node 8 ppn small message step1](ata_02_08_S_step1.png)
-
-![Alltoall 2 node 8 ppn medium message step1](ata_02_08_M_step1.png)
-
-![Alltoall 2 node 8 ppn mid-large message step1](ata_02_08_ML_step1.png)
-
-![Alltoall 2 node 8 ppn large message step1](ata_02_08_L_step1.png)
+![Alltoall 2 node 8 ppn step1](ata_02_08_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -596,26 +537,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Alltoall** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 2 node 8 ppn all message](ata_02_08_A_step3.png)
-
-![Alltoall 2 node 8 ppn small message](ata_02_08_S_step3.png)
-
-![Alltoall 2 node 8 ppn medium message](ata_02_08_M_step3.png)
-
-![Alltoall 2 node 8 ppn mid-large message](ata_02_08_ML_step3.png)
-
-![Alltoall 2 node 8 ppn large message](ata_02_08_L_step3.png)
+![Alltoall 2 node 8 ppn step3](ata_02_08_step3.png)
 
 ### 2-1-2. Allgather
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.1.2 allgather](#1-1-2-allgather)** の結果から64kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 allgather](#1-1-2-allgather)** の結果から64kbとしています。
 
 ![Allgather 2 node 8 ppn all step1](aga_02_08_all_step1.png)
 
@@ -625,15 +558,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 2 node 8 ppn dc step1](aga_02_08_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allgather 2 node 8 ppn small message step1](aga_02_08_S_step1.png)
-
-![Allgather 2 node 8 ppn medium message step1](aga_02_08_M_step1.png)
-
-![Allgather 2 node 8 ppn mid-large message step1](aga_02_08_ML_step1.png)
-
-![Allgather 2 node 8 ppn large message step1](aga_02_08_L_step1.png)
+![Allgather 2 node 8 ppn step1](aga_02_08_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -647,26 +574,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allgather** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 2 node 8 ppn all message](aga_02_08_A_step3.png)
-
-![Allgather 2 node 8 ppn small message](aga_02_08_S_step3.png)
-
-![Allgather 2 node 8 ppn medium message](aga_02_08_M_step3.png)
-
-![Allgather 2 node 8 ppn mid-large message](aga_02_08_ML_step3.png)
-
-![Allgather 2 node 8 ppn large message](aga_02_08_L_step3.png)
+![Allgather 2 node 8 ppn step3](aga_02_08_step3.png)
 
 ### 2-1-3. Allreduce
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.1.3 allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
 
 ![Allreduce 2 node 8 ppn all step1](are_02_08_all_step1.png)
 
@@ -676,15 +595,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 2 node 8 ppn dc step1](are_02_08_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allreduce 2 node 8 ppn small message step1](are_02_08_S_step1.png)
-
-![Allreduce 2 node 8 ppn medium message step1](are_02_08_M_step1.png)
-
-![Allreduce 2 node 8 ppn mid-large message step1](are_02_08_ML_step1.png)
-
-![Allreduce 2 node 8 ppn large message step1](are_02_08_L_step1.png)
+![Allreduce 2 node 8 ppn step1](are_02_08_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -698,19 +611,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allreduce** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 2 node 8 ppn all message](are_02_08_A_step3.png)
-
-![Allreduce 2 node 8 ppn small message](are_02_08_S_step3.png)
-
-![Allreduce 2 node 8 ppn medium message](are_02_08_M_step3.png)
-
-![Allreduce 2 node 8 ppn mid-large message](are_02_08_ML_step3.png)
-
-![Allreduce 2 node 8 ppn large message](are_02_08_L_step3.png)
+![Allreduce 2 node 8 ppn step3](are_02_08_step3.png)
 
 ## 2-2. ノード当たり16 MPIプロセス
 
@@ -742,7 +647,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.2.1 alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
 
 ![Alltoall 2 node 16 ppn all step1](ata_02_16_all_step1.png)
 
@@ -752,15 +657,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 2 node 16 ppn dc step1](ata_02_16_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Alltoall 2 node 16 ppn small message step1](ata_02_16_S_step1.png)
-
-![Alltoall 2 node 16 ppn medium message step1](ata_02_16_M_step1.png)
-
-![Alltoall 2 node 16 ppn mid-large message step1](ata_02_16_ML_step1.png)
-
-![Alltoall 2 node 16 ppn large message step1](ata_02_16_L_step1.png)
+![Alltoall 2 node 16 ppn step1](ata_02_16_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -774,26 +673,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Alltoall** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 2 node 16 ppn all message](ata_02_16_A_step3.png)
-
-![Alltoall 2 node 16 ppn small message](ata_02_16_S_step3.png)
-
-![Alltoall 2 node 16 ppn medium message](ata_02_16_M_step3.png)
-
-![Alltoall 2 node 16 ppn mid-large message](ata_02_16_ML_step3.png)
-
-![Alltoall 2 node 16 ppn large message](ata_02_16_L_step3.png)
+![Alltoall 2 node 16 ppn step3](ata_02_16_step3.png)
 
 ### 2-2-2. Allgather
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.2.2 allgather](#1-2-2-allgather)** の結果から32kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 allgather](#1-2-2-allgather)** の結果から32kbとしています。
 
 ![Allgather 2 node 16 ppn all step1](aga_02_16_all_step1.png)
 
@@ -803,15 +694,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 2 node 16 ppn dc step1](aga_02_16_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allgather 2 node 16 ppn small message step1](aga_02_16_S_step1.png)
-
-![Allgather 2 node 16 ppn medium message step1](aga_02_16_M_step1.png)
-
-![Allgather 2 node 16 ppn mid-large message step1](aga_02_16_ML_step1.png)
-
-![Allgather 2 node 16 ppn large message step1](aga_02_16_L_step1.png)
+![Allgather 2 node 16 ppn step1](aga_02_16_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -825,26 +710,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allgather** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 2 node 16 ppn all message](aga_02_16_A_step3.png)
-
-![Allgather 2 node 16 ppn small message](aga_02_16_S_step3.png)
-
-![Allgather 2 node 16 ppn medium message](aga_02_16_M_step3.png)
-
-![Allgather 2 node 16 ppn mid-large message](aga_02_16_ML_step3.png)
-
-![Allgather 2 node 16 ppn large message](aga_02_16_L_step3.png)
+![Allgather 2 node 16 step3](aga_02_16_step3.png)
 
 ### 2-2-3. Allreduce
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.2.3 allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
 
 ![Allreduce 2 node 16 ppn all step1](are_02_16_all_step1.png)
 
@@ -854,15 +731,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 2 node 16 ppn dc step1](are_02_16_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allreduce 2 node 16 ppn small message step1](are_02_16_S_step1.png)
-
-![Allreduce 2 node 16 ppn medium message step1](are_02_16_M_step1.png)
-
-![Allreduce 2 node 16 ppn mid-large message step1](are_02_16_ML_step1.png)
-
-![Allreduce 2 node 16 ppn large message step1](are_02_16_L_step1.png)
+![Allreduce 2 node 16 ppn step1](are_02_16_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -876,19 +747,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allreduce** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 2 node 16 ppn all message](are_02_16_A_step3.png)
-
-![Allreduce 2 node 16 ppn small message](are_02_16_S_step3.png)
-
-![Allreduce 2 node 16 ppn medium message](are_02_16_M_step3.png)
-
-![Allreduce 2 node 16 ppn mid-large message](are_02_16_ML_step3.png)
-
-![Allreduce 2 node 16 ppn large message](are_02_16_L_step3.png)
+![Allreduce 2 node 16 ppn step3](are_02_16_step3.png)
 
 ## 2-3. ノード当たり32 MPIプロセス
 
@@ -920,7 +783,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.3.1 alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
 
 ![Alltoall 2 node 32 ppn all step1](ata_02_32_all_step1.png)
 
@@ -930,15 +793,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 2 node 32 ppn dc step1](ata_02_32_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Alltoall 2 node 32 ppn small message step1](ata_02_32_S_step1.png)
-
-![Alltoall 2 node 32 ppn medium message step1](ata_02_32_M_step1.png)
-
-![Alltoall 2 node 32 ppn mid-large message step1](ata_02_32_ML_step1.png)
-
-![Alltoall 2 node 32 ppn large message step1](ata_02_32_L_step1.png)
+![Alltoall 2 node 32 ppn step1](ata_02_32_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -952,26 +809,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Alltoall** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 2 node 32 ppn all message](ata_02_32_A_step3.png)
-
-![Alltoall 2 node 32 ppn small message](ata_02_32_S_step3.png)
-
-![Alltoall 2 node 32 ppn medium message](ata_02_32_M_step3.png)
-
-![Alltoall 2 node 32 ppn mid-large message](ata_02_32_ML_step3.png)
-
-![Alltoall 2 node 32 ppn large message](ata_02_32_L_step3.png)
+![Alltoall 2 node 32 ppn step3](ata_02_32_step3.png)
 
 ### 2-3-2. Allgather
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.3.2 allgather](#1-3-2-allgather)** の結果から16kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 allgather](#1-3-2-allgather)** の結果から16kbとしています。
 
 ![Allgather 2 node 32 ppn all step1](aga_02_32_all_step1.png)
 
@@ -981,15 +830,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 2 node 32 ppn dc step1](aga_02_32_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allgather 2 node 32 ppn small message step1](aga_02_32_S_step1.png)
-
-![Allgather 2 node 32 ppn medium message step1](aga_02_32_M_step1.png)
-
-![Allgather 2 node 32 ppn mid-large message step1](aga_02_32_ML_step1.png)
-
-![Allgather 2 node 32 ppn large message step1](aga_02_32_L_step1.png)
+![Allgather 2 node 32 ppn step1](aga_02_32_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -1003,26 +846,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allgather** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 2 node 32 ppn all message](aga_02_32_A_step3.png)
-
-![Allgather 2 node 32 ppn small message](aga_02_32_S_step3.png)
-
-![Allgather 2 node 32 ppn medium message](aga_02_32_M_step3.png)
-
-![Allgather 2 node 32 ppn mid-large message](aga_02_32_ML_step3.png)
-
-![Allgather 2 node 32 ppn large message](aga_02_32_L_step3.png)
+![Allgather 2 node 32 ppn step3](aga_02_32_step3.png)
 
 ### 2-3-3. Allreduce
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.3.3 allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
 
 ![Allreduce 2 node 32 ppn all step1](are_02_32_all_step1.png)
 
@@ -1032,15 +867,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 2 node 32 ppn dc step1](are_02_32_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allreduce 2 node 32 ppn small message step1](are_02_32_S_step1.png)
-
-![Allreduce 2 node 32 ppn medium message step1](are_02_32_M_step1.png)
-
-![Allreduce 2 node 32 ppn mid-large message step1](are_02_32_ML_step1.png)
-
-![Allreduce 2 node 32 ppn large message step1](are_02_32_L_step1.png)
+![Allreduce 2 node 32 ppn step1](are_02_32_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -1054,19 +883,11 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allreduce** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 2 node 32 ppn all message](are_02_32_A_step3.png)
-
-![Allreduce 2 node 32 ppn small message](are_02_32_S_step3.png)
-
-![Allreduce 2 node 32 ppn medium message](are_02_32_M_step3.png)
-
-![Allreduce 2 node 32 ppn mid-large message](are_02_32_ML_step3.png)
-
-![Allreduce 2 node 32 ppn large message](are_02_32_L_step3.png)
+![Allreduce 2 node 32 ppn step3](are_02_32_step3.png)
 
 ## 2-4. ノード当たり36 MPIプロセス
 
@@ -1105,7 +926,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.4.1 alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
 
 ![Alltoall 2 node 36 ppn all step1](ata_02_36_all_step1.png)
 
@@ -1115,15 +936,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Alltoall 2 node 36 ppn dc step1](ata_02_36_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Alltoall 2 node 36 ppn small message step1](ata_02_36_S_step1.png)
-
-![Alltoall 2 node 36 ppn medium message step1](ata_02_36_M_step1.png)
-
-![Alltoall 2 node 36 ppn mid-large message step1](ata_02_36_ML_step1.png)
-
-![Alltoall 2 node 36 ppn large message step1](ata_02_36_L_step1.png)
+![Alltoall 2 node 36 ppn step1](ata_02_36_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -1137,26 +952,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Alltoall** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Alltoall 2 node 36 ppn all message](ata_02_36_A_step3.png)
-
-![Alltoall 2 node 36 ppn small message](ata_02_36_S_step3.png)
-
-![Alltoall 2 node 36 ppn medium message](ata_02_36_M_step3.png)
-
-![Alltoall 2 node 36 ppn mid-large message](ata_02_36_ML_step3.png)
-
-![Alltoall 2 node 36 ppn large message](ata_02_36_L_step3.png)
+![Alltoall 2 node 36 ppn step3](ata_02_36_step3.png)
 
 ### 2-4-2. Allgather
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.4.2 allgather](#1-4-2-allgather)** の結果から16kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 allgather](#1-4-2-allgather)** の結果から16kbとしています。
 
 ![Allgather 2 node 36 ppn all step1](aga_02_36_all_step1.png)
 
@@ -1166,15 +973,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allgather 2 node 36 ppn dc step1](aga_02_36_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allgather 2 node 36 ppn small message step1](aga_02_36_S_step1.png)
-
-![Allgather 2 node 36 ppn medium message step1](aga_02_36_M_step1.png)
-
-![Allgather 2 node 36 ppn mid-large message step1](aga_02_36_ML_step1.png)
-
-![Allgather 2 node 36 ppn large message step1](aga_02_36_L_step1.png)
+![Allgather 2 node 36 ppn step1](aga_02_36_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -1188,26 +989,18 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allgather** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allgather 2 node 36 ppn all message](aga_02_36_A_step3.png)
-
-![Allgather 2 node 36 ppn small message](aga_02_36_S_step3.png)
-
-![Allgather 2 node 36 ppn medium message](aga_02_36_M_step3.png)
-
-![Allgather 2 node 36 ppn mid-large message](aga_02_36_ML_step3.png)
-
-![Allgather 2 node 36 ppn large message](aga_02_36_L_step3.png)
+![Allgather 2 node 36 ppn step3](aga_02_36_step3.png)
 
 ### 2-4-3. Allreduce
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1.4.3 allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
 
 ![Allreduce 2 node 36 ppn all step1](are_02_36_all_step1.png)
 
@@ -1217,15 +1010,9 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 ![Allreduce 2 node 36 ppn dc step1](are_02_36_dc_step1.png)
 
-以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、メッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けて **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
-![Allreduce 2 node 36 ppn small message step1](are_02_36_S_step1.png)
-
-![Allreduce 2 node 36 ppn medium message step1](are_02_36_M_step1.png)
-
-![Allreduce 2 node 36 ppn mid-large message step1](are_02_36_ML_step1.png)
-
-![Allreduce 2 node 36 ppn large message step1](are_02_36_L_step1.png)
+![Allreduce 2 node 36 ppn step1](are_02_36_step1.png)
 
 以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
 
@@ -1239,16 +1026,1201 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせを、縦軸を対数目盛として全てのメッセージサイズを1枚にプロットしたグラフとメッセージサイズをSmall・Medium・Medium Large・Largeの範囲に分けてプロットした計5枚のグラフで **Allreduce** の結果を示しています。
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
 なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
 また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
 
-![Allreduce 2 node 36 ppn all message](are_02_36_A_step3.png)
+![Allreduce 2 node 36 ppn step3](are_02_36_step3.png)
 
-![Allreduce 2 node 36 ppn small message](are_02_36_S_step3.png)
+***
+# 3.  4ノード
 
-![Allreduce 2 node 36 ppn medium message](are_02_36_M_step3.png)
+## 3-0. 概要
 
-![Allreduce 2 node 36 ppn mid-large message](are_02_36_ML_step3.png)
+本章は、4ノードにノード当たり8・16・32・36の各MPIプロセス、トータルで32・64・128・144の各MPIプロセスを割当てる場合の各MPI集合通信関数の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
 
-![Allreduce 2 node 36 ppn large message](are_02_36_L_step3.png)
+- **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
+- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※13）
+- **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
+- **coll_hcoll_enable** ： **0** ・ **1**
+- MPIプロセス分割方法 ： ブロック分割・サイクリック分割
+- **NPS** ：  **1** ・ **2**
+
+※13） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1--1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
+
+- **intra:auto,inter:auto**
+- **intra:optimal_value,inter:auto**
+- **intra:optimal_value,inter:4kb**
+- **intra:optimal_value,inter:8kb**
+- **intra:optimal_value,inter:16kb**
+- **intra:optimal_value,inter:32kb**
+- **intra:optimal_value,inter:64kb**
+- **intra:optimal_value,inter:128kb**
+
+ここで、全ての **実行時パラメータ** の組み合わせを検証することは非現実的なため、組み合わせを減らす目的で以下3ステップに分けて検証を行います。
+
+- ステップ1
+    - **UCX_TLS** と **UCX_RNDV_THRESH** を組合せた32個のパターンを検証してこれらの最適値を決定
+    - **coll_hcoll_enable** は **1** に固定
+    - MPIプロセス分割方法はブロック分割に固定
+    - **NPS** は **NPS1** に固定
+- ステップ2
+    - **UCX_ZCOPY_THRESH** の7パターンを検証してこの最適値を決定
+    - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
+    - **coll_hcoll_enable** は **1** に固定
+    - MPIプロセス分割方法はブロック分割に固定
+    - **NPS** は **NPS1** に固定
+- ステップ3
+    - **coll_hcoll_enable** とMPIプロセス分割方法と **NPS** を組合せた8パターンを検証してこれらの最適値を決定
+    - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
+    - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
+
+## 3-1. ノード当たり8 MPIプロセス
+
+### 3-1-0. 概要
+
+本章は、4ノードにノード当たり8 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:32kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 256Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allgather**
+    - 32KBから8MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 3-1-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+
+![Alltoall 4 node 8 ppn all step1](ata_04_08_all_step1.png)
+
+![Alltoall 4 node 8 ppn rc step1](ata_04_08_rc_step1.png)
+
+![Alltoall 4 node 8 ppn ud step1](ata_04_08_ud_step1.png)
+
+![Alltoall 4 node 8 ppn dc step1](ata_04_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 4 node 8 ppn step1](ata_04_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 4 node 8 ppn step2](ata_04_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 4 node 8 ppn step3](ata_04_08_step3.png)
+
+### 3-1-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 allgather](#1-1-2-allgather)** の結果から64kbとしています。
+
+![Allgather 4 node 8 ppn all step1](aga_04_08_all_step1.png)
+
+![Allgather 4 node 8 ppn rc step1](aga_04_08_rc_step1.png)
+
+![Allgather 4 node 8 ppn ud step1](aga_04_08_ud_step1.png)
+
+![Allgather 4 node 8 ppn dc step1](aga_04_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 4 node 8 ppn step1](aga_04_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 4 node 8 ppn step2](aga_04_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 4 node 8 ppn step3](aga_04_08_step3.png)
+
+### 3-1-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 4 node 8 ppn all step1](are_04_08_all_step1.png)
+
+![Allreduce 4 node 8 ppn rc step1](are_04_08_rc_step1.png)
+
+![Allreduce 4 node 8 ppn ud step1](are_04_08_ud_step1.png)
+
+![Allreduce 4 node 8 ppn dc step1](are_04_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 4 node 8 ppn step1](are_04_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 4 node 8 ppn step2](are_04_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 4 node 8 ppn step3](are_04_08_step3.png)
+
+## 3-2. ノード当たり16 MPIプロセス
+
+### 3-2-0. 概要
+
+本章は、4ノードにノード当たり16 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:32kb,inter:32kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 1KBまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allgather**
+    - 8KBから8MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 3-2-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+
+![Alltoall 4 node 16 ppn all step1](ata_04_16_all_step1.png)
+
+![Alltoall 4 node 16 ppn rc step1](ata_04_16_rc_step1.png)
+
+![Alltoall 4 node 16 ppn ud step1](ata_04_16_ud_step1.png)
+
+![Alltoall 4 node 16 ppn dc step1](ata_04_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:32kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 4 node 16 ppn step1](ata_04_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 4 node 16 ppn step2](ata_04_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 4 node 16 ppn step3](ata_04_16_step3.png)
+
+### 3-2-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 allgather](#1-2-2-allgather)** の結果から32kbとしています。
+
+![Allgather 4 node 16 ppn all step1](aga_04_16_all_step1.png)
+
+![Allgather 4 node 16 ppn rc step1](aga_04_16_rc_step1.png)
+
+![Allgather 4 node 16 ppn ud step1](aga_04_16_ud_step1.png)
+
+![Allgather 4 node 16 ppn dc step1](aga_04_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 4 node 16 ppn step1](aga_04_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 4 node 16 ppn step2](aga_04_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 4 node 16 ppn step3](aga_04_16_step3.png)
+
+### 3-2-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 4 node 16 ppn all step1](are_04_16_all_step1.png)
+
+![Allreduce 4 node 16 ppn rc step1](are_04_16_rc_step1.png)
+
+![Allreduce 4 node 16 ppn ud step1](are_04_16_ud_step1.png)
+
+![Allreduce 4 node 16 ppn dc step1](are_04_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 4 node 16 ppn step1](are_04_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 4 node 16 ppn step2](are_04_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 4 node 16 step3](are_04_16_step3.png)
+
+## 3-3. ノード当たり32 MPIプロセス
+
+### 3-3-0. 概要
+
+本章は、4ノードにノード当たり32 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 256Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allgather**
+    - 16KBから4MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - 1MBまでと16MBから1GBまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 3-3-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+
+![Alltoall 4 node 32 ppn all step1](ata_04_32_all_step1.png)
+
+![Alltoall 4 node 32 ppn rc step1](ata_04_32_rc_step1.png)
+
+![Alltoall 4 node 32 ppn ud step1](ata_04_32_ud_step1.png)
+
+![Alltoall 4 node 32 ppn dc step1](ata_04_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 4 node 32 ppn step1](ata_04_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 4 node 32 ppn step2](ata_04_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 4 node 32 step3](ata_04_32_step3.png)
+
+### 3-3-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 allgather](#1-3-2-allgather)** の結果から16kbとしています。
+
+![Allgather 4 node 32 ppn all step1](aga_04_32_all_step1.png)
+
+![Allgather 4 node 32 ppn rc step1](aga_04_32_rc_step1.png)
+
+![Allgather 4 node 32 ppn ud step1](aga_04_32_ud_step1.png)
+
+![Allgather 4 node 32 ppn dc step1](aga_04_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 4 node 32 ppn step1](aga_04_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 4 node 32 ppn step2](aga_04_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 4 node 32 ppn step3](aga_04_32_step3.png)
+
+### 3-3-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 4 node 32 ppn all step1](are_04_32_all_step1.png)
+
+![Allreduce 4 node 32 ppn rc step1](are_04_32_rc_step1.png)
+
+![Allreduce 4 node 32 ppn ud step1](are_04_32_ud_step1.png)
+
+![Allreduce 4 node 32 ppn dc step1](are_04_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 4 node 32 ppn step1](are_04_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 4 node 32 ppn step2](are_04_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 4 node 32 ppn step3](are_04_32_step3.png)
+
+## 3-4. ノード当たり36 MPIプロセス
+
+### 3-4-0. 概要
+
+本章は、4ノードにノード当たり36 MPIプロセスでトータル144 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 256Bまでのメッセージサイズで使用した場合が使用しない場合に対しておおむね優位
+- **Allgather**
+    - 8Bから1KBまでと8KBから4MBまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 3-4-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+
+![Alltoall 4 node 36 ppn all step1](ata_04_36_all_step1.png)
+
+![Alltoall 4 node 36 ppn rc step1](ata_04_36_rc_step1.png)
+
+![Alltoall 4 node 36 ppn ud step1](ata_04_36_ud_step1.png)
+
+![Alltoall 4 node 36 ppn dc step1](ata_04_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 4 node 36 ppn step1](ata_04_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 4 node 36 ppn step2](ata_04_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 4 node 36 ppn step3](ata_04_36_step3.png)
+
+### 3-4-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 allgather](#1-4-2-allgather)** の結果から16kbとしています。
+
+![Allgather 4 node 36 ppn all step1](aga_04_36_all_step1.png)
+
+![Allgather 4 node 36 ppn rc step1](aga_04_36_rc_step1.png)
+
+![Allgather 4 node 36 ppn ud step1](aga_04_36_ud_step1.png)
+
+![Allgather 4 node 36 ppn dc step1](aga_04_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 4 node 36 ppn step1](aga_04_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 4 node 36 ppn step2](aga_04_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 4 node 36 ppn step3](aga_04_36_step3.png)
+
+### 3-4-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 4 node 36 ppn all step1](are_04_36_all_step1.png)
+
+![Allreduce 4 node 36 ppn rc step1](are_04_36_rc_step1.png)
+
+![Allreduce 4 node 36 ppn ud step1](are_04_36_ud_step1.png)
+
+![Allreduce 4 node 36 ppn dc step1](are_04_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 4 node 36 ppn step1](are_04_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 4 node 36 ppn step2](are_04_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 4 node 36 ppn step3](are_04_36_step3.png)
+
+***
+# 4.  8ノード
+
+## 4-0. 概要
+
+本章は、8ノードにノード当たり8・16・32・36の各MPIプロセス、トータルで64・128・256・288の各MPIプロセスを割当てる場合の各MPI集合通信関数の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
+
+- **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
+- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※14）
+- **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
+- **coll_hcoll_enable** ： **0** ・ **1**
+- MPIプロセス分割方法 ： ブロック分割・サイクリック分割
+- **NPS** ：  **1** ・ **2**
+
+※14） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1--1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
+
+- **intra:auto,inter:auto**
+- **intra:optimal_value,inter:auto**
+- **intra:optimal_value,inter:4kb**
+- **intra:optimal_value,inter:8kb**
+- **intra:optimal_value,inter:16kb**
+- **intra:optimal_value,inter:32kb**
+- **intra:optimal_value,inter:64kb**
+- **intra:optimal_value,inter:128kb**
+
+ここで、全ての **実行時パラメータ** の組み合わせを検証することは非現実的なため、組み合わせを減らす目的で以下3ステップに分けて検証を行います。
+
+- ステップ1
+    - **UCX_TLS** と **UCX_RNDV_THRESH** を組合せた32個のパターンを検証してこれらの最適値を決定
+    - **coll_hcoll_enable** は **1** に固定
+    - MPIプロセス分割方法はブロック分割に固定
+    - **NPS** は **NPS1** に固定
+- ステップ2
+    - **UCX_ZCOPY_THRESH** の7パターンを検証してこの最適値を決定
+    - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
+    - **coll_hcoll_enable** は **1** に固定
+    - MPIプロセス分割方法はブロック分割に固定
+    - **NPS** は **NPS1** に固定
+- ステップ3
+    - **coll_hcoll_enable** とMPIプロセス分割方法と **NPS** を組合せた8パターンを検証してこれらの最適値を決定
+    - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
+    - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
+
+## 4-1. ノード当たり8 MPIプロセス
+
+### 4-1-0. 概要
+
+本章は、8ノードにノード当たり8 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 1KBまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 2MBから4MBまでのメッセージサイズで使用しない場合が使用した場合に対して優位
+- **Allgather**
+    - 32KBから4MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 有意な差は無し
+- **Allgather**
+    - 256KBから4MBのメッセージサイズでサイクリック分割がブロック分割に対して優位
+- **Allreduce**
+    - 有意な差は無し
+
+### 4-1-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+
+![Alltoall 8 node 8 ppn all step1](ata_08_08_all_step1.png)
+
+![Alltoall 8 node 8 ppn rc step1](ata_08_08_rc_step1.png)
+
+![Alltoall 8 node 8 ppn ud step1](ata_08_08_ud_step1.png)
+
+![Alltoall 8 node 8 ppn dc step1](ata_08_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 8 node 8 ppn step1](ata_08_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 8 node 8 ppn step2](ata_08_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 8 node 8 ppn step3](ata_08_08_step3.png)
+
+### 4-1-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 allgather](#1-1-2-allgather)** の結果から64kbとしています。
+
+![Allgather 8 node 8 ppn all step1](aga_08_08_all_step1.png)
+
+![Allgather 8 node 8 ppn rc step1](aga_08_08_rc_step1.png)
+
+![Allgather 8 node 8 ppn ud step1](aga_08_08_ud_step1.png)
+
+![Allgather 8 node 8 ppn dc step1](aga_08_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 8 node 8 ppn step1](aga_08_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 8 node 8 ppn step2](aga_08_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 8 node 8 ppn step3](aga_08_08_step3.png)
+
+### 4-1-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 8 node 8 ppn all step1](are_08_08_all_step1.png)
+
+![Allreduce 8 node 8 ppn rc step1](are_08_08_rc_step1.png)
+
+![Allreduce 8 node 8 ppn ud step1](are_08_08_ud_step1.png)
+
+![Allreduce 8 node 8 ppn dc step1](are_08_08_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 8 node 8 ppn step1](are_08_08_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 8 node 8 ppn step2](are_08_08_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 8 node 8 ppn step3](are_08_08_step3.png)
+
+## 4-2. ノード当たり16 MPIプロセス
+
+### 4-2-0. 概要
+
+本章は、8ノードにノード当たり16 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 128Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allgather**
+    - 32Bから512Bのメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 8KBから4MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 4-2-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+
+![Alltoall 8 node 16 ppn all step1](ata_08_16_all_step1.png)
+
+![Alltoall 8 node 16 ppn rc step1](ata_08_16_rc_step1.png)
+
+![Alltoall 8 node 16 ppn ud step1](ata_08_16_ud_step1.png)
+
+![Alltoall 8 node 16 ppn dc step1](ata_08_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 8 node 16 ppn step1](ata_08_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 8 node 16 ppn step2](ata_08_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 8 node 16 ppn step3](ata_08_16_step3.png)
+
+### 4-2-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 allgather](#1-2-2-allgather)** の結果から32kbとしています。
+
+![Allgather 8 node 16 ppn all step1](aga_08_16_all_step1.png)
+
+![Allgather 8 node 16 ppn rc step1](aga_08_16_rc_step1.png)
+
+![Allgather 8 node 16 ppn ud step1](aga_08_16_ud_step1.png)
+
+![Allgather 8 node 16 ppn dc step1](aga_08_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 8 node 16 ppn step1](aga_08_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 8 node 16 ppn step2](aga_08_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 8 node 16 ppn step3](aga_08_16_step3.png)
+
+### 4-2-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 8 node 16 ppn all step1](are_08_16_all_step1.png)
+
+![Allreduce 8 node 16 ppn rc step1](are_08_16_rc_step1.png)
+
+![Allreduce 8 node 16 ppn ud step1](are_08_16_ud_step1.png)
+
+![Allreduce 8 node 16 ppn dc step1](are_08_16_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 8 node 16 ppn step1](are_08_16_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 8 node 16 ppn step2](are_08_16_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 8 node 16 step3](are_08_16_step3.png)
+
+## 4-3. ノード当たり32 MPIプロセス
+
+### 4-3-0. 概要
+
+本章は、8ノードにノード当たり32 MPIプロセスでトータル256 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 512Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allgather**
+    - 32Bから256Bのメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 8KBから2MBのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 有意な差は無し
+- **Allgather**
+    - 有意な差は無し
+- **Allreduce**
+    - 512KBから2MBのメッセージサイズで **NPS1** が **NPS2** に対して優位
+
+### 4-3-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+
+![Alltoall 8 node 32 ppn all step1](ata_08_32_all_step1.png)
+
+![Alltoall 8 node 32 ppn rc step1](ata_08_32_rc_step1.png)
+
+![Alltoall 8 node 32 ppn ud step1](ata_08_32_ud_step1.png)
+
+![Alltoall 8 node 32 ppn dc step1](ata_08_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 8 node 32 ppn step1](ata_08_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 8 node 32 ppn step2](ata_08_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 8 node 32 step3](ata_08_32_step3.png)
+
+### 4-3-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 allgather](#1-3-2-allgather)** の結果から16kbとしています。
+
+![Allgather 8 node 32 ppn all step1](aga_08_32_all_step1.png)
+
+![Allgather 8 node 32 ppn rc step1](aga_08_32_rc_step1.png)
+
+![Allgather 8 node 32 ppn ud step1](aga_08_32_ud_step1.png)
+
+![Allgather 8 node 32 ppn dc step1](aga_08_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 8 node 32 ppn step1](aga_08_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 8 node 32 ppn step2](aga_08_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 8 node 32 ppn step3](aga_08_32_step3.png)
+
+### 4-3-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 8 node 32 ppn all step1](are_08_32_all_step1.png)
+
+![Allreduce 8 node 32 ppn rc step1](are_08_32_rc_step1.png)
+
+![Allreduce 8 node 32 ppn ud step1](are_08_32_ud_step1.png)
+
+![Allreduce 8 node 32 ppn dc step1](are_08_32_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 8 node 32 ppn step1](are_08_32_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 8 node 32 ppn step2](are_08_32_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 8 node 32 ppn step3](are_08_32_step3.png)
+
+## 4-4. ノード当たり36 MPIプロセス
+
+### 4-4-0. 概要
+
+本章は、8ノードにノード当たり36 MPIプロセスでトータル288 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証します。
+
+下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :---------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
+| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+
+**HCOLL** 使用の有無は、以下の傾向がみられます。
+
+- **Alltoall**
+    - 512Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 16KBから64KBまでのメッセージサイズで使用しない場合が使用した場合に対して優位
+- **Allgather**
+    - 4Bから512Bまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+    - 8KBから2MBまでのメッセージサイズで使用した場合が使用しない場合に対して優位
+- **Allreduce**
+    - メッセージサイズ全域で使用した場合が使用しない場合に対して優位
+
+**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+
+### 4-4-1. Alltoall
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+
+![Alltoall 8 node 36 ppn all step1](ata_08_36_all_step1.png)
+
+![Alltoall 8 node 36 ppn rc step1](ata_08_36_rc_step1.png)
+
+![Alltoall 8 node 36 ppn ud step1](ata_08_36_ud_step1.png)
+
+![Alltoall 8 node 36 ppn dc step1](ata_08_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Alltoall 8 node 36 ppn step1](ata_08_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,ud** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Alltoall 8 node 36 ppn step2](ata_08_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Alltoall 8 node 36 ppn step3](ata_08_36_step3.png)
+
+### 4-4-2. Allgather
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 allgather](#1-4-2-allgather)** の結果から16kbとしています。
+
+![Allgather 8 node 36 ppn all step1](aga_08_36_all_step1.png)
+
+![Allgather 8 node 36 ppn rc step1](aga_08_36_rc_step1.png)
+
+![Allgather 8 node 36 ppn ud step1](aga_08_36_ud_step1.png)
+
+![Allgather 8 node 36 ppn dc step1](aga_08_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allgather 8 node 36 ppn step1](aga_08_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allgather 8 node 36 ppn step2](aga_08_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allgather 8 node 36 ppn step3](aga_08_36_step3.png)
+
+### 4-4-3. Allreduce
+
+[ステップ1]
+
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
+なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+
+![Allreduce 8 node 36 ppn all step1](are_08_36_all_step1.png)
+
+![Allreduce 8 node 36 ppn rc step1](are_08_36_rc_step1.png)
+
+![Allreduce 8 node 36 ppn ud step1](are_08_36_ud_step1.png)
+
+![Allreduce 8 node 36 ppn dc step1](are_08_36_dc_step1.png)
+
+以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
+
+![Allreduce 8 node 36 ppn step1](are_08_36_step1.png)
+
+以上より、 **UCX_TLS** を **self,sm,rc** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ2]
+
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+
+![Allreduce 8 node 36 ppn step2](are_08_36_step2.png)
+
+以上より、 **UCX_ZCOPY_THRESH** を **128kb** とした場合が最も性能が良いと判断してこれを固定します。
+
+[ステップ3]
+
+以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
+なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
+また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+
+![Allreduce 8 node 36 ppn step3](are_08_36_step3.png)

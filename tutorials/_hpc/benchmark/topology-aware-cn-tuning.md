@@ -38,9 +38,9 @@ header:
 
 本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ  **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **クラスタ・ネットワーク** でノード間接続するHPCクラスタと、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境を前提に、ノード間通信性能に最適なノード配置を自動的に行う **Slurm** クラスタの構築方法を、以下のステップに従い解説します。
 
-- **クラスタ・ネットワーク** トポロジー特定
-- **Topology-aware resource allocation** セットアップ
-- **Topology-aware resource allocation** 稼働確認
+1. **クラスタ・ネットワーク** トポロジー特定
+2. **Topology-aware resource allocation** セットアップ
+3. **Topology-aware resource allocation** 稼働確認
 
 ***
 # 1. クラスタ・ネットワークトポロジー特定
