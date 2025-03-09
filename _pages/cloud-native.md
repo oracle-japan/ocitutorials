@@ -86,6 +86,9 @@ lastmod: "2022-04-06"
 + **[Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-apigateway-for-beginners/)**
     OCI API GatewayとOracle Functionsを組み合わせて、 簡単なアプリケーションを開発する手順をご紹介します。【所要時間:約1時間】
 
++ **[OCI API Gateway + OCI Functionsを利用したデータベースアクセス](/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/)**
+    OCI Functionsからpython-oracledbドライバを利用してOracle Autonomous Transaction Processing(ATP)に接続し、データをCRUD(Create、Read、Update、Delete)する方法について説明します。【所要時間:約1時間】
+
 ## 中級編
 
 + **[Oracle Functionsを利用したVMシェイプ変更](/ocitutorials/cloud-native/functions-vmshape-for-intermediates)**
