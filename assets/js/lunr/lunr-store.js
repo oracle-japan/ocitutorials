@@ -647,6 +647,12 @@ var store = [{
         "url": "/ocitutorials/cloud-native/functions-vmshape-for-intermediates/",
         "teaser": null
       },{
+        "title": "OCI API GatewayとOCI Functionsを利用したデータベースアクセス",
+        "excerpt":"このセッションでは、OCI Functionsからpython-oracledbドライバを利用してOracle Autonomous Transaction Processing(ATP)に接続し、データをCRUD(Create、Read、Update、Delete)する方法について説明します。 そして、OCI API GatewayからOCI Functionsにルーティングする方法について説明します。 このハンズオンが完了すると、以下のようなコンテンンツが出来上がります。 図：OCI API Gateway → OCI Functions → ATP のデータフロー 条件 クラウド環境 有効なOracle Cloudアカウントがあること 事前環境構築 OCI Functionsハンズオンが完了していること Oracle Cloud Infrasturcture API Gateway + OCI Functionsハンズオンが完了していること ローカル端末にSQL Developerがインストールされていること ダウンロードはこちらから 1.事前準備 1-1.ATPのプロビジョニング OCIコンソールのハンバーガーメニューから[Oracle Database]で、[Autonomous Database]をクリックします。 Autonomous Databaseの作成画面で、コンパートメント名をクリックして、コンパートメントの選択リストを表示します。使用するコンパートメントを選択して、「フィルタの適用」をクリックします。 使用するコンパートメントを確認して、「Autonomous Databaseの作成」をクリックします。 以下項目を入力して、「作成」をクリックします。 表示名：表示名を入力。今回は、Workshop-ATP。 データベース名：今回は、WORKSHOPATP。 コンパートメント：使用するコンパートメントを選択。...","categories": [],
+        "tags": ["OCI","API Gateway","OCI Functions","Autonomous Database","Oracle Autonomous Transaction Processing","Python"],
+        "url": "/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/",
+        "teaser": null
+      },{
         "title": "Oracle Functionsを利用したORDSでのデータベースアクセス",
         "excerpt":"このセッションでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。 ORDSはデフォルトでATPに組み込まれている仕組みです。 ORDSについて ATPはORDSを利用してRESTfulインターフェースでのアクセスを行うことができます。 ORDS(Oracle REST Data Services)の詳細についてはAutonomous Databaseを使用したOracle REST Data Servicesの開発をご確認ください。 このハンズオンが完了すると、以下のようなコンテンンツが出来上がります。 条件 クラウド環境 有効なOracle Cloudアカウントがあること 事前環境構築 Fn Projectハンズオンが完了していること Oracle Functionsハンズオンが完了していること ローカル端末にSQL Developerがインストールされていること ダウンロードはこちらから 1.事前準備 ここでは、ATPのプロビジョニングとORDSの設定を行います。 1-1.ATPのプロビジョニング OCIコンソールのハンバーガーメニューから[データベース]で、[Autonomous Transaction Processing]をクリックします。 Autonomous Databaseの作成画面で、使用するコンパートメントを選択して、「Autonomous Databaseの作成」をクリックします。 以下項目を入力して、「Autonomous Databaseの作成」をクリックします。 コンパートメント：使用するコンパートメントを選択。 表示名：表示名を入力。今回は、Workshop ATP。 データベース名：今回は、WORKSHOPATP。 ワークロード・タイプの選択：トランザクション処理 デプロイメント・タイプ：共有インフラストラクチャ データベース・バージョンの選択：19c OCPU数：1 ストレージ(TB)：1 自動スケーリング：チェックをオフ。...","categories": [],
         "tags": [],
