@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-11T16:30:36+09:00">
+  <meta property="article:published_time" content="2025-03-14T09:43:32+09:00">
 
 
 
@@ -231,7 +231,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Network Firewallの動作を検証する">
     <meta itemprop="description" content="本チュートリアルではサービス・リストとURLリストを設定し、OCI Network Firewallの動作を確認します。">
-    <meta itemprop="datePublished" content="2025-03-11T16:30:36+09:00">
+    <meta itemprop="datePublished" content="2025-03-14T09:43:32+09:00">
     
 
     <div class="page__inner-wrap">
@@ -242,25 +242,33 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-ファイアウォールポリシーの設定">1. ファイアウォール・ポリシーの設定</a><ul><li><a href="#1-1-サービスリストの作成">1-1. サービス・リストの作成</a></li><li><a href="#1-2-urlリストの作成">1-2. URLリストの作成</a></li><li><a href="#1-3-セキュリティルールの作成">1-3. セキュリティ・ルールの作成</a></li><li><a href="#補足sslについて">(補足)SSLについて</a></li></ul></li><li><a href="#2-oci-network-firewallの動作確認">2. OCI Network Firewallの動作確認</a><ul><li><a href="#2-1-wgetコマンドでの確認">2-1. wgetコマンドでの確認</a></li><li><a href="#2-2-windowsのブラウザから確認">2-2. Windowsのブラウザから確認</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#ファイアウォールポリシーについて">ファイアウォール・ポリシーについて</a><ul><li><a href="#ポリシーの各項目ルール">ポリシーの各項目ルール</a><ul><li><a href="#復号化ルール">・復号化ルール</a></li><li><a href="#セキュリティルール">・セキュリティ・ルール</a></li><li><a href="#トンネル検査ルール">・トンネル検査ルール</a></li></ul></li></ul></li><li><a href="#0-設定と検証内容">0. 設定と検証内容</a></li><li><a href="#1-ファイアウォールポリシーの設定">1. ファイアウォール・ポリシーの設定</a><ul><li><a href="#1-1-サービスリストの作成">1-1. サービス・リストの作成</a></li><li><a href="#1-2-urlリストの作成">1-2. URLリストの作成</a></li><li><a href="#1-3-セキュリティルールの作成">1-3. セキュリティ・ルールの作成</a></li><li><a href="#1-4-ファイアウォールポリシーの適用">1-4. ファイアウォール・ポリシーの適用</a></li><li><a href="#補足sslについて">（補足）SSLについて</a></li></ul></li><li><a href="#2-oci-network-firewall-urlフィルタリングの動作確認">2. OCI Network Firewall URLフィルタリングの動作確認</a><ul><li><a href="#2-1-wgetコマンドで確認する場合">2-1. wgetコマンドで確認する場合</a></li><li><a href="#2-2-windowsのブラウザから確認する場合">2-2. Windowsのブラウザから確認する場合</a></li></ul></li><li><a href="#3-oci-network-firewall-ipsの動作確認">3. OCI Network Firewall IPSの動作確認</a><ul><li><a href="#3-1-ポートスキャンを行う">3-1. ポートスキャンを行う</a></li><li><a href="#3-2-sqlインジェクションを行う">3-2. SQLインジェクションを行う</a></li><li><a href="#3-3-osコマンドインジェクションを行う">3-3. OSコマンドインジェクションを行う</a></li></ul></li></ul>
             </nav>
           </aside>
         
-        <p>パロアルトネットワークスの次世代ファイアウォール技術を基に構築されたOCIクラウドネイティブのマネージド・ファイアウォール「OCI Network Firewall」が2022年7月にリリースされました。<br />
-「OCI Network Firewall」はURLフィルタリングやTSL/SSL検査などの機能を提供します。</p>
+        <p>OCI Network FirewallはOracle Cloud Infrastructure (OCI) のクラウドネイティブなマネージド・ファイアウォールです。<br />
+パロアルトネットワークスの次世代ファイアウォール技術を基に、IDPSを始めURLフィルタリングやTLS/SSL検査などの高度なセキュリティ機能を提供しています。</p>
 
-<p>本チュートリアルではNetwork Firewallポリシーを設定し、動作の検証を行います。<br />
-具体的にはポート番号とURLによりアクセスを制御するルールを作成し、その後、コンピュートインスタンスからネットワーク・ファイアウォール・ポリシーで設定したURLへのアクセスが許可/拒否されることを確認します。</p>
+<p>本チュートリアルでは、Network Firewallポリシーの設定方法と動作検証を行います。具体的には、以下の機能の設定を実施します。</p>
+
+<ul>
+  <li>パケットフィルタリング</li>
+  <li>URLフィルタリング</li>
+  <li>IDPS（侵入検知・防御システム）</li>
+</ul>
+
+<p>また侵入検知のため、ポートスキャンや簡易的なインジェクション攻撃を行います。ご自身の管理下にないサーバーや、本番環境に対しては使用しないでください。ツールを使用したことによりトラブルや損失が発生した場合についても責任を負いかねます。</p>
 
 <p><strong>所要時間 :</strong></p>
 <ul>
-  <li>約30分</li>
+  <li>約40分</li>
 </ul>
 
 <p><strong>前提条件 :</strong></p>
 <ul>
   <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/overview.htm#iam">ドキュメント</a>を参照ください。</li>
-  <li>OCIチュートリアル「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>」にて、Network Firewallが動作できる環境が作成されていること。</li>
+  <li>OCIチュートリアル「<a href="/ocitutorials/security/networkfirewall-setup/">OCI Network Firewallを構築する</a>」にて、Network Firewallが動作できる環境が作成されていること。
+(インバウンドおよびアウトバウンドへの通信を行います。そのため、インターネットからNetwork Firewallを経由してOCI内のインスタンスにアクセスできること、OCI内のインスタンスからNetwork Firewallを経由してインターネットへ出ていけることができれば大丈夫です)</li>
 </ul>
 
 <p><strong>注意 :</strong></p>
@@ -270,46 +278,73 @@
 
 <p><br /></p>
 
-<h1 id="はじめに">はじめに</h1>
-<p>Network Firewallがネットワーク・トラフィックを検証し許可/拒否するルールをまとめた「ファイアーウォール・ポリシー」を作成する必要があります。<br />
+<h1 id="ファイアウォールポリシーについて">ファイアウォール・ポリシーについて</h1>
+<p>Network Firewallではトラフィックの許可/拒否、検査の設定を「ファイアウォール・ポリシー」にて行います。<br />
 各Network Firewallは必ず1つのファイアーウォール・ポリシーに紐づける必要がありますが、1つのファイアーウォール・ポリシーを複数のNetwork Firewallに紐づけることができます。</p>
 
-<p>ファイアーウォール・ポリシーは復号化ルールなどパケットを検査するルール「ファイアウォール・ポリシー・ルール」で構成されます。該当ルールがない場合、トラフィックは拒否されるため、通信を行うには最低1つのルールの設定を行う必要があります。</p>
+<p>ポリシー内に該当ルールがない場合、トラフィックは拒否されるため、通信を行うには最低1つのルールの設定を行う必要があります。</p>
 
-<p>以下、簡単に各項目について説明します。</p>
+<h2 id="ポリシーの各項目ルール">ポリシーの各項目ルール</h2>
+<p>以下、ポリシーにて設定することができるルールについてそれぞれ簡単に説明します。</p>
 
+<h3 id="復号化ルール">・復号化ルール</h3>
+<p>特定のソースや宛先に対するトラフィックを復号する設定を行います。<br />
+復号を行う場合は、適用するための「<strong>復号化プロファイル</strong>」と「<strong>マップされたシークレット</strong>」を事前に設定する必要があります。</p>
+
+<p>1つのポリシーに設定できる復号化ルールの最大数は1,000です。</p>
+
+<h3 id="セキュリティルール">・セキュリティ・ルール</h3>
+<p>セキュリティ・ルールは、トラフィックの許可・ブロック、または脅威検知・防御を行うための設定です。<br />
+ルールは、ソース・宛先アドレス、URLなどに基づいて適用され、以下のリストを利用して条件を定義します。</p>
 <ul>
-  <li>
-    <p><strong>サービス・リスト</strong> : <br />
-Network Firewallポリシーのルールの作成時に使用できるTCPまたはUDPのポート番号のリストを作成することができます。</p>
-  </li>
-  <li>
-    <p><strong>アプリケーション・リスト</strong> : <br />
-Network Firewallポリシーのルールの作成時に使用できるICMPまたはICMPv6コードのリストを作成することができます。</p>
-  </li>
-  <li>
-    <p><strong>URLリスト</strong> :<br />
-Network Firewallポリシーのルールの作成時に使用できるURLのリストを作成することができます。</p>
-  </li>
-  <li>
-    <p><strong>アドレス・リスト</strong> :<br />
-Network Firewallポリシーのルールの作成時に使用するIPv4, IPv6またはFQDNのリストを作成することができます。</p>
-  </li>
-  <li>
-    <p><strong>セキュリティ・ルール</strong> :<br />
-Network Firewallポリシーにて作成したアプリケーション・リスト、サービス・リスト、URLリスト、アドレス・リストを基にアクセスを許可/拒否、または脅威検知/脅威防御するよう設定することが可能です。<br />
-本チュートリアルではポート番号22, 3389, 443のアクセスと、URL「www.google.com」「www.google.com」のアクセスを許可します。一方「www.yahoo.co.jp」「www.facebook.com」のアクセスを拒否し、実際にコンピュートインスタンスから各URLへアクセスが許可/拒否されることを確認します。</p>
-  </li>
+  <li>「<strong>アプリケーション・リスト</strong>」：ICMPまたはICMPv6</li>
+  <li>「<strong>サービス・リスト</strong>」：TCP/UDPおよびポート番号</li>
+  <li>「<strong>URLリスト</strong>」：特定のURL</li>
+  <li>「<strong>アドレス・リスト</strong>」：IPアドレスまたはCIDRブロック</li>
 </ul>
+
+<p>1つのポリシーに設定できるセキュリティ・ルールの最大数は10,000です。</p>
+
+<h3 id="トンネル検査ルール">・トンネル検査ルール</h3>
+
+<p>トンネル検査ルールは、OCIの仮想テスト・アクセス・ポイント（VTAP）サービスを使用し、Oracleリソースにミラー化されたトラフィックを検査するための設定です。
+Network Firewallをトンネル検査構成という形で利用する際に利用します。
+こちらの構成については、OCIチュートリアル「<a href="https://oracle-japan.github.io/ocitutorials/security/networkfirewall-setup-tunnelinspection/">トンネル検査構成でOCI Network Firewallを構築する</a>」も用意していますので、ご覧ください。</p>
+
+<p>1つのポリシーに設定できるトンネル検査ルールの最大数は500です。</p>
 
 <p><br /></p>
 
 <hr />
 
-<h1 id="1-ファイアウォールポリシーの設定">1. ファイアウォール・ポリシーの設定</h1>
+<h1 id="0-設定と検証内容">0. 設定と検証内容</h1>
 
-<p>OCIコンソール画面左上のメニューボタン → アイデンティティとセキュリティ → ファイアウォール → ネットワーク・ファイアウォール・ポリシー をクリックし、作成したポリシーを選択します。
-表示されたポリシーの作成画面にて任意のポリシー名を入力し、「ポリシーの作成」ボタンをクリックします。</p>
+<p>本チュートリアルでは以下のアクセス制御を設定し、コンピュートインスタンスからのアクセスが適切に許可・拒否されることを確認します。</p>
+
+<p><strong>許可するアクセス</strong></p>
+<ul>
+  <li>ポート番号：22（SSH）、3389（RDP）、443（HTTPS）</li>
+  <li>URL：「www.google.com」</li>
+</ul>
+
+<p><strong>拒否するアクセス</strong></p>
+<ul>
+  <li>URL：「www.yahoo.co.jp」「www.facebook.com」</li>
+</ul>
+
+<p><strong>IDPSの動作検証</strong></p>
+<ul>
+  <li>ポートスキャン、SQLインジェクション、OSコマンドインジェクションを検知し、それぞれにて発生するログを確認します。</li>
+</ul>
+
+<p><br /></p>
+
+<h1 id="1-ファイアウォールポリシーの設定">1. ファイアウォール・ポリシーの設定</h1>
+<p>すでにファイアウォールにアタッチされたポリシーでは設定の変更ができないため、ポリシーを新しく作成した後に既存のポリシーと入れ替える形で適用します。</p>
+
+<p>OCIコンソール画面左上のメニューボタン → [アイデンティティとセキュリティ] → [ファイアウォール] → [ネットワーク・ファイアウォール・ポリシー] をクリックし、作成したポリシーを選択します。
+表示されたポリシーの作成画面にて任意のポリシー名を入力し、「ポリシーの作成」ボタンをクリックします。
+※例）「NFWPolicy1」</p>
 
 <p><img src="nfw14.png" alt="画面ショット14" /></p>
 
@@ -320,14 +355,15 @@ Network Firewallポリシーにて作成したアプリケーション・リス�
 <p><br /></p>
 
 <h2 id="1-1-サービスリストの作成">1-1. サービス・リストの作成</h2>
-<p>アクセスを許可するポート番号を「サービス」として作成し、「サービス・リスト」に追加します。
-手順2-1で作成したポリシー詳細画面左下のポリシー・リソースから「サービス・リスト」を選択し、「サービス・リストの作成」ボタンをクリックします。</p>
+<p>アクセスを許可するポート番号を「サービス」として作成し、「サービス・リスト」に追加します。<br />
+作成したポリシーの詳細画面左下のポリシー・リソースから「サービス・リスト」を選択し、「サービス・リストの作成」ボタンをクリックします。</p>
 
 <p><img src="nfw57.png" alt="画面ショット57" /></p>
 
 <p>「サービス・リストの作成」画面にて、任意のサービス・リスト名を入力します。<br />
-※例）「http-https-access」<br />
-サービス・リスト名を入力したら、「サービスの作成」ボタンをクリックします。</p>
+※例）「http-https-access」</p>
+
+<p>サービス・リスト名を入力したら、「サービスの作成」ボタンをクリックします。</p>
 
 <p><img src="nfw58.png" alt="画面ショット58" /></p>
 
@@ -387,9 +423,10 @@ Network Firewallポリシーにて作成したアプリケーション・リス�
 <p>本チュートリアルでは検証としてOracleとGoogleのドメインを許可リストに追加します。</p>
 <ul>
   <li><strong><code class="language-plaintext highlighter-rouge">名前</code></strong> - allow-urls</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - *.oracle.com, *.google.com
-URLを追加したら、画面下の「URLリストの作成」ボタンをクリックします。</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">プロトコル</code></strong> - *.oracle.com, *.google.com</li>
 </ul>
+
+<p>URLを追加したら、画面下の「URLリストの作成」ボタンをクリックします。</p>
 
 <p><img src="nfw65.png" alt="画面ショット65" /></p>
 
@@ -407,12 +444,13 @@ URLを追加したら、画面下の「URLリストの作成」ボタンをク�
 <p><br /></p>
 
 <h2 id="1-3-セキュリティルールの作成">1-3. セキュリティ・ルールの作成</h2>
-<p>セキュリティ・ルールでは、以下4種類のルールを作成します。</p>
+<p>セキュリティ・ルールでは、先ほど作成した「サービス・リスト」「URLリスト」を使用し、以下5つのルールを作成します。</p>
 <ul>
   <li>指定したURLリストへのインターネット経由のアクセスを許可するルール</li>
   <li>指定したURLリストへのインターネット経由のアクセスを拒否するルール</li>
   <li>SSHアクセスを許可するルール</li>
   <li>リモート・デスクトップ接続を許可するルール</li>
+  <li>IPS（不正侵入防止）を行うルール</li>
 </ul>
 
 <p>まずは指定したURLへのインターネットを経由したアクセスを許可ルールを作成します。<br />
@@ -455,8 +493,9 @@ URLsの項目にて、「URLリストの選択」をクリックし、再度「U
 
 <p><img src="nfw75.png" alt="画面ショット75" /></p>
 
-<p>以上で、指定したURLへのインターネットを経由したアクセスを許可するルールを作成する手順は完了です。<br />
-続いて、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成します。</p>
+<p>以上で、指定したURLへのインターネットを経由したアクセスを許可するルールを作成する手順は完了です。</p>
+
+<p>続いて、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成します。</p>
 
 <p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
 例）urls-deny-rule</p>
@@ -492,8 +531,9 @@ URLsの項目にて、「URLリストの選択」をクリックし、再度「U
 
 <p><img src="nfw79.png" alt="画面ショット79" /></p>
 
-<p>以上で、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成する手順は完了です。<br />
-続いて、SSHアクセスを許可するルールを作成します。</p>
+<p>以上で、指定したURLへのインターネットを経由したアクセスを拒否するルールを作成する手順は完了です。</p>
+
+<p>続いて、SSHアクセスを許可するルールを作成します。</p>
 
 <p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
 例）ssh-allow</p>
@@ -517,16 +557,16 @@ URLsの項目にて、「URLリストの選択」をクリックし、再度「U
 
 <p><img src="nfw83.png" alt="画面ショット83" /></p>
 
-<p>以上の手順で、SSHアクセスを許可するルールを作成する手順は完了です。<br />
-最後にリモート・デスクトップ接続を許可するルールを作成します。</p>
+<p>以上の手順で、SSHアクセスを許可するルールを作成する手順は完了です。</p>
+
+<p>次にリモート・デスクトップ接続を許可するルールを作成します。</p>
 
 <p>「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
 例）rdp-allow</p>
 
 <p><img src="nfw84.png" alt="画面ショット84" /></p>
 
-<p>一致条件の項目にて、「ソースアドレス」、「宛先アドレス」、「アプリケーション」、「URL」はすべて「任意」を選択します。<br />
-「サービス」にて「サービス・リストの選択」をクリックし、「サービス・リストの選択」ボタンをもう一度クリックします。</p>
+<p>一致条件の項目にて、「ソースアドレス」、「宛先アドレス」、「アプリケーション」、「URL」はすべて「任意」を選択します。</p>
 
 <p><img src="nfw69.png" alt="画面ショット69" /></p>
 
@@ -544,18 +584,34 @@ URLsの項目にて、「URLリストの選択」をクリックし、再度「U
 
 <p>以上で、リモート・デスクトップ接続を許可するルールの作成は終了です。</p>
 
-<h2 id="補足sslについて">(補足)SSLについて</h2>
-<p>本チュートリアルでは設定しませんが、ネットワーク・ファイアウォール・ポリシーの「マップされたシークレット」、「復号化プロファイル」にて証明書関連の設定を行うことが可能です。
-クライアントとサーバー間の通信がSSLによって暗号化されている場合、本機能を利用することでHTTPSトラフィックを復号化し、通信の内容を検査することが可能です。</p>
+<p>最後にIPS（不正侵入防止）を行うルールを作成します。
+「セキュリティ・ルールの作成」ボタンをクリックし、セキュリティ・ルールの作成画面にてセキュリティ・ルール名を入力します。<br />
+例）idp</p>
 
-<p>「マップされたシークレット」とは、OCI Vaultサービスで設定された証明書認証のことを指します。「マップされたシークレット」は「SSL転送プロキシ」または「SSLインバウンド検査」を使用してSSL/TLSトラフィックを復号化、検査するために使用されます。「マップされたシークレット」を作成するには、OCI Vaultサービスでシークレット情報が作成されている必要があります。
+<p>一致条件の項目はすべて「任意」、ルール・アクションに「侵入検知」を選択し、「セキュリティ・ルールの作成」ボタンをクリックします。</p>
+
+<p><img src="nfw91.png" alt="画面ショット91" />
+<img src="nfw92.png" alt="画面ショット92" /></p>
+
+<p>以上で、不正侵入を検知するルールの作成は終了です。</p>
+
+<h2 id="1-4-ファイアウォールポリシーの適用">1-4. ファイアウォール・ポリシーの適用</h2>
+<p>作成したファイアウォール・ポリシーをファイアウォールインスタンスに適用させます。<br />
+ファイアウォール詳細画面より「編集」ボタンをクリックし、設定した「ネットワーク・ファイアウォール・ポリシー」を選択し、「設定の保存」をクリックします。
+<img src="nfw95.png" alt="画面ショット95" /></p>
+
+<h2 id="補足sslについて">（補足）SSLについて</h2>
+<p>本チュートリアルでは設定しませんが、ネットワーク・ファイアウォール・ポリシーの「マップされたシークレット」、「復号化プロファイル」にて証明書関連の設定を行うことが可能です。<br />
+クライアントとサーバー間の通信がSSLによって暗号化されている場合、本機能を利用することでHTTPSトラフィックを復号し、通信の内容を検査することができます。</p>
+
+<p>「マップされたシークレット」とは、OCI Vaultサービスで設定された証明書認証のことを指します。「マップされたシークレット」は「SSL転送プロキシ」または「SSLインバウンド検査」を使用してSSL/TLSトラフィックを復号、検査するために使用されます。「マップされたシークレット」を作成するには、OCI Vaultサービスでシークレット情報が作成されている必要があります。
 証明書認証の設定については<a href="https://docs.oracle.com/ja-jp/iaas/Content/network-firewall/setting-up-certificate-authentication.htm#network-firewall-setting-up-certificate-authentication">ドキュメント</a>を参照ください。</p>
 
-<p>「復号化プロファイル」では、「SSL転送プロキシ」または「SSLインバウンド検証」の設定を行うことができます。
-「SSL転送プロキシ」では、Network Firewallが内部クライアントとサーバーの仲介サーバーとなり、内部クライアントと外部サーバーそれぞれと通信をします。
-「SSLインバウンド検査」では外からのインバウンド通信を復号化し、内容を検査します。</p>
+<p>一方「復号化プロファイル」では、「SSL転送プロキシモード」または「SSLインバウンド検証モード」の2つのモードに関する設定を行うことができます。
+「SSL転送プロキシモード」では、Network Firewallが内部クライアントとサーバーの仲介サーバーとなり、内部クライアントと外部サーバーそれぞれと通信をします。
+「SSLインバウンド検査モード」では外からのインバウンド通信を復号し、内容を検査します。</p>
 
-<p>「SSL転送プロキシ」は内部ユーザーからNetwork Firewallを経由してインターネットへ出るSSL/TLSトラフィックを復号化し、以下のような条件を検知しアクションを取ることが可能です。</p>
+<p>「SSL転送プロキシモード」は内部ユーザーからNetwork Firewallを経由してインターネットへ出るSSL/TLSトラフィックを復号し、以下のような条件を検知しアクションを取ることが可能です。</p>
 <ul>
   <li>期限切れ証明書をブロック</li>
   <li>信頼されていない発行者をブロック</li>
@@ -566,22 +622,29 @@ URLsの項目にて、「URLリストの選択」をクリックし、再度「U
   <li>処理リソースがない場合はブロック</li>
 </ul>
 
-<p>「SSLインバウンド検査」は登録されたサーバーの証明書、秘密鍵を使用して外部のクライアントからNetwork Firewallに保護されたサーバーへのインバウンドのSSL/TLS通信を復号化し、以下の条件を検知してアクションを取ることが可能です。</p>
+<p>「SSLインバウンド検査モード」は登録されたサーバーの証明書、秘密鍵を使用して外部のクライアントからNetwork Firewallに保護されたサーバーへのインバウンドのSSL/TLS通信を復号し、以下の条件を検知してアクションを取ることが可能です。</p>
 <ul>
   <li>サポートされていないSSLバージョンのセッションをブロック</li>
   <li>サポートされていないSSL暗号スイートのセッションをブロック</li>
   <li>処理リソースがない場合はブロック</li>
 </ul>
 
+<p>それぞれのモードを設定するチュートリアルもありますので、ぜひご覧ください。</p>
+
+<ul>
+  <li><a href="/ocitutorials/security/networkfirewall-sslinspect-fwd/">OCI Network FirewallのSSLインスペクション（転送プロキシモード）を行う</a></li>
+  <li><a href="/ocitutorials/security/networkfirewall-sslinspect-inb/">OCI Network FirewallのSSLインスペクション（インバウンドモード）を行う</a></li>
+</ul>
+
 <p><br /></p>
 
-<h1 id="2-oci-network-firewallの動作確認">2. OCI Network Firewallの動作確認</h1>
+<h1 id="2-oci-network-firewall-urlフィルタリングの動作確認">2. OCI Network Firewall URLフィルタリングの動作確認</h1>
 
 <p>Network Firewallの動作を確認します。<br />
 Linuxインスタンスの場合は手順2-1に従って動作を確認してください。Windowsインスタンスでも、Powershellを使用して同様に動作を確認することができます。<br />
 Windowsのインスタンスの場合は、手順2-2に従ってブラウザで動作を確認することも可能です。</p>
 
-<h2 id="2-1-wgetコマンドでの確認">2-1. wgetコマンドでの確認</h2>
+<h2 id="2-1-wgetコマンドで確認する場合">2-1. wgetコマンドで確認する場合</h2>
 <p>対象のインスタンスにSSHでアクセスし、OCI Network Firewallの動作を確認します。</p>
 
 <p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → 対象のLinuxのコンピュート・インスタンス名をクリックし、コンピュート・インスタンスのパブリックIPアドレスを確認します。
@@ -590,32 +653,32 @@ OCIのシリアルコンソールやPuttyなどのツールでコンピュート
 
 <p>OCI Network Firewallの設定で、「*.google.com」と「*.oracle.com」へのアクセスを許可しているので、ターミナルを開き以下コマンドで各ドメインにアクセスできることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$wget</span> https://www.oracle.com
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.oracle.com
 </code></pre></div></div>
 
 <p><img src="nfw40.png" alt="画面ショット40" /></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.google.com
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.google.com
 </code></pre></div></div>
 
 <p><img src="nfw41.png" alt="画面ショット41" /></p>
 
 <p>OCI Network Firewallの設定で、「www.facebook.com」と「www.yahoo.co.jp」へのアクセスを拒否しているので、以下コマンドで各ドメインへのアクセスに失敗することが確認できます。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.facebook.com
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.facebook.com
 </code></pre></div></div>
 
 <p><img src="nfw42.png" alt="画面ショット42" /></p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$wget https://www.yahoo.co.jp
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.yahoo.co.jp
 </code></pre></div></div>
 
 <p><img src="nfw43.png" alt="画面ショット43" /></p>
 
 <p><br /></p>
 
-<h2 id="2-2-windowsのブラウザから確認">2-2. Windowsのブラウザから確認</h2>
-<p>OCIコンソール画面左上のメニューボタン → コンピュート → インスタンス → 対象のWindowsのインスタンス名をクリックし、インスタンスの詳細画面を表示します。
+<h2 id="2-2-windowsのブラウザから確認する場合">2-2. Windowsのブラウザから確認する場合</h2>
+<p>OCIコンソール画面左上のメニューボタン → [コンピュート] → [インスタンス] → 対象のWindowsのインスタンス名をクリックし、インスタンスの詳細画面を表示します。
 インスタンス詳細画面右上の「インスタンス・アクセス」に記載のある「パブリックIPアドレス」、「ユーザー名」、「初期パスワード」を手元にメモします。</p>
 
 <p><img src="nfw48.png" alt="画面ショット48" /></p>
@@ -657,9 +720,125 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
 <p><br /></p>
 
-<p>以上でネットワーク・ファイアウォールの動作確認は終了です。</p>
+<h1 id="3-oci-network-firewall-ipsの動作確認">3. OCI Network Firewall IPSの動作確認</h1>
+<p>OCI内に作成したコンピュートインスタンスに対して攻撃を行い、通信がブロックされるかを確認します。<br />
+Network Firewallの詳細画面より、「Threat Log」を有効化することで検知した通信のログを見ることができますので、事前に有効化しておいてください。</p>
 
-<p>今回設定した内容の他にも、不正トラフィックの侵入を検知/防止したり、SSL/TLSトラフィックの検査など様々なファイアウォール機能を提供しているので、是非色々な設定を試してみてください。</p>
+<p><img src="nfw89.png" alt="画面ショット89" /></p>
+
+<h2 id="3-1-ポートスキャンを行う">3-1. ポートスキャンを行う</h2>
+<p>ポートスキャンには Nmap を使用します。本チュートリアルでは、攻撃環境としてKali Linuxを使用しますが、WindowsやMacでも問題なく実行できます。<br />
+Nmap のインストールについては、以下のリンクを参考にしてください。</p>
+<ul>
+  <li><a href="https://nmap.org/download">Download the Free Nmap Security Scanner for Linux/Mac/Windows</a></li>
+</ul>
+
+<p>以下のコマンドを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nmap <span class="nt">-sV</span> <span class="nt">-Pn</span> <span class="nt">-v</span> &lt;コンピュートのパブリックIPアドレス&gt;
+</code></pre></div></div>
+
+<p>以下は実行例です。結果より443、80、22、2000、5060番ポートが空いていることが分かります。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例）
+<span class="nv">$ </span>nmap <span class="nt">-sV</span> <span class="nt">-Pn</span> <span class="nt">-v</span> xxx.xxx.xxx
+Starting Nmap 7.95 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2025-03-13 18:26 JST
+NSE: Loaded 47 scripts <span class="k">for </span>scanning.
+Initiating Parallel DNS resolution of 1 host. at 18:26
+Completed Parallel DNS resolution of 1 host. at 18:26, 0.04s elapsed
+Initiating SYN Stealth Scan at 18:26
+Scanning xxx.xxx.xxx <span class="o">[</span>1000 ports]
+Discovered open port 443/tcp on xxx.xxx.xxx
+Discovered open port 80/tcp on xxx.xxx.xxx
+Discovered open port 22/tcp on xxx.xxx.xxx
+Discovered open port 2000/tcp on xxx.xxx.xxx
+Discovered open port 5060/tcp on xxx.xxx.xxx
+Completed SYN Stealth Scan at 18:26, 4.27s elapsed <span class="o">(</span>1000 total ports<span class="o">)</span>
+Initiating Service scan at 18:26
+Scanning 5 services on xxx.xxx.xxx
+WARNING: Service xxx.xxx.xxx:443 had already soft-matched http-proxy, but now soft-matched rtsp<span class="p">;</span> ignoring second value
+Service scan Timing: About 80.00% <span class="k">done</span><span class="p">;</span> ETC: 18:29 <span class="o">(</span>0:00:39 remaining<span class="o">)</span>
+Completed Service scan at 18:29, 161.28s elapsed <span class="o">(</span>5 services on 1 host<span class="o">)</span>
+NSE: Script scanning xxx.xxx.xxx.
+Initiating NSE at 18:29
+Completed NSE at 18:29, 0.28s elapsed
+Initiating NSE at 18:29
+Completed NSE at 18:29, 1.08s elapsed
+Nmap scan report <span class="k">for </span>xxx.xxx.xxx
+Host is up <span class="o">(</span>0.0050s latency<span class="o">)</span><span class="nb">.</span>
+Not shown: 994 filtered tcp ports <span class="o">(</span>no-response<span class="o">)</span>
+PORT     STATE  SERVICE        VERSION
+22/tcp   open   ssh            OpenSSH 8.0 <span class="o">(</span>protocol 2.0<span class="o">)</span>
+80/tcp   open   http           Apache httpd 2.4.37 <span class="o">((</span>Oracle Linux Server<span class="o">))</span>
+113/tcp  closed ident
+443/tcp  open   ssl/http-proxy <span class="o">(</span>bad gateway<span class="o">)</span>
+2000/tcp open   cisco-sccp?
+5060/tcp open   sip?
+
+Read data files from: /usr/share/nmap
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ <span class="nb">.</span>
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>167.20 seconds
+           Raw packets sent: 1994 <span class="o">(</span>87.736KB<span class="o">)</span> | Rcvd: 6 <span class="o">(</span>260B<span class="o">)</span>
+</code></pre></div></div>
+
+<p>ログを確認してみると、nmapツールによってスキャンが実行されたことを検知していることが確認できます。</p>
+
+<p><img src="nfw90.png" alt="画面ショット90" /></p>
+
+<h2 id="3-2-sqlインジェクションを行う">3-2. SQLインジェクションを行う</h2>
+<p>ここではcurlコマンドを使用します。ペイロードを検知させることが目的のため、ターゲットインスタンスにて入力フォームを準備する必要はありません。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> POST http://&lt;コンピュートのパブリックIPアドレス&gt;/login <span class="se">\</span>
+    <span class="nt">-d</span> <span class="s2">"username=admin' OR '1'='1"</span> <span class="se">\</span>
+    <span class="nt">-d</span> <span class="s2">"password=test"</span> <span class="nt">-v</span>
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例）
+<span class="nv">$ </span>curl <span class="nt">-X</span> POST http://xxx.xxx.xxx/login <span class="se">\</span>
+     <span class="nt">-d</span> <span class="s2">"username=admin' OR '1'='1"</span> <span class="se">\</span>
+     <span class="nt">-d</span> <span class="s2">"password=test"</span> <span class="nt">-v</span>
+Note: Unnecessary use of <span class="nt">-X</span> or <span class="nt">--request</span>, POST is already inferred.
+<span class="k">*</span>   Trying xxx.xxx.xxx:80...
+<span class="k">*</span> Connected to xxx.xxx.xxx <span class="o">(</span>xxx.xxx.xxx<span class="o">)</span> port 80
+<span class="k">*</span> using HTTP/1.x
+<span class="o">&gt;</span> POST /login HTTP/1.1
+<span class="o">&gt;</span> Host: xxx.xxx.xxx
+<span class="o">&gt;</span> User-Agent: curl/8.12.1
+<span class="o">&gt;</span> Accept: <span class="k">*</span>/<span class="k">*</span>
+<span class="o">&gt;</span> Content-Length: 39
+<span class="o">&gt;</span> Content-Type: application/x-www-form-urlencoded
+<span class="o">&gt;</span>
+<span class="k">*</span> upload completely sent off: 39 bytes
+<span class="k">*</span> Recv failure: Connection reset by peer
+<span class="k">*</span> closing connection <span class="c">#0</span>
+curl: <span class="o">(</span>56<span class="o">)</span> Recv failure: Connection reset by peer
+</code></pre></div></div>
+<p>ログを確認してみると、SQLインジェクションを検知していることが確認できます。</p>
+
+<p><img src="nfw93.png" alt="画面ショット93" /></p>
+
+<h2 id="3-3-osコマンドインジェクションを行う">3-3. OSコマンドインジェクションを行う</h2>
+<p>最後にcurlコマンドを使用して、OSコマンドインジェクションを実行してみます。SQLインジェクションと同様、ペイロードを検知させることが目的のため、ターゲットインスタンスにてなにか別途準備を行う必要はありません。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="s2">"http://&lt;コンピュートのパブリックIPアドレス&gt;/?cmd=cat%20/etc/passwd"</span> <span class="nt">-v</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>実行例）
+<span class="nv">$ </span>curl <span class="s2">"http://xxx.xxx.xxx/?cmd=cat%20/etc/passwd"</span> <span class="nt">-v</span>
+<span class="k">*</span>   Trying xxx.xxx.xxx:80...
+<span class="k">*</span> Connected to xxx.xxx.xxx <span class="o">(</span>xxx.xxx.xxx<span class="o">)</span> port 80
+<span class="k">*</span> using HTTP/1.x
+<span class="o">&gt;</span> GET /?cmd<span class="o">=</span><span class="nb">cat</span>%20/etc/passwd HTTP/1.1
+<span class="o">&gt;</span> Host: xxx.xxx.xxx
+<span class="o">&gt;</span> User-Agent: curl/8.12.1
+<span class="o">&gt;</span> Accept: <span class="k">*</span>/<span class="k">*</span>
+<span class="o">&gt;</span>
+<span class="k">*</span> Request completely sent off
+<span class="k">*</span> Recv failure: Connection reset by peer
+<span class="k">*</span> closing connection <span class="c">#0</span>
+curl: <span class="o">(</span>56<span class="o">)</span> Recv failure: Connection reset by peer
+</code></pre></div></div>
+<p>こちらも検知していることがログから確認できます。
+<img src="nfw94.png" alt="画面ショット93" /></p>
+
+<p>以上でネットワーク・ファイアウォールの動作確認は終了です。</p>
 
         
       </section>
@@ -686,7 +865,7 @@ Windowsのホーム画面左下のメニューから「Server Manager」を選�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-11T16:30:36+09:00">March 11, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-14T09:43:32+09:00">March 14, 2025</time></p>
 
       </footer>
 
