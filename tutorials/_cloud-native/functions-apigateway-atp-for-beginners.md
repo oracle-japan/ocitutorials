@@ -58,7 +58,6 @@ Autonomous Databaseの作成画面で、コンパートメント名をクリッ�
     + コンパートメント（２）：サブネットが属しているコンパートメント
     + サブネット：[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのパブリック・サブネットを指定。
 
-
 ![](create-atp-01.png)
 
 ![](create-atp-02.png)
@@ -192,13 +191,12 @@ fn config app fn-crud-atp DB_USER usersvc
 ```sh
 fn config app fn-crud-atp DB_PASSWORD [db_password]
 ```
-+ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-3.ユーザーテーブルおよびサンプル・データの準備](#1-3.ユーザーテーブルおよびサンプル・データの準備)で設定したパスワード「	PasswOrd__8080」を使用します。
++ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-3.ユーザーテーブルおよびサンプル・データの準備](#1-3.ユーザーテーブルおよびサンプル・データの準備)で設定したパスワード「PasswOrd__8080」を使用します。
 
 ```sh
 fn config app fn-crud-atp DSN [dsn]
 ```
 + `dsn`：ATPへの接続文字列。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します。
-
 
 **機密情報を含む環境変数について**  
 機密情報を含む構成変数は、常に暗号化する必要があります。今回はシンプルな手順にするために特に暗号化は実施しませんが、実際に使用する場合は、[キー管理を使用する方法](https://blogs.oracle.com/developers/oracle-functions-using-key-management-to-encrypt-and-decrypt-configuration-variables)を確認してください。
