@@ -68,7 +68,6 @@ VBCS の 「Visual Applications」 ページが表示されたら、「New Appli
 
 項目|<nobr>アイコン</nobr>|説明
 -|-
-Mobile Applications| ![](icon_1.png) |モバイルデバイスの機能を利用するネイティブモバイルアプリケーションを作成します。
 Web Applications| ![](icon_2.png) |デスクトップおよびモバイルデバイスのブラウザーで実行される最新のWebアプリケーションを作成します。
 Services| ![](icon_3.png) |サービス接続を作成して、サービスによって提供される既存のRESTエンドポイントを使用し、それらをアプリケーションで使用します。
 Business Objects| ![](icon_4.png) |ビジネスオブジェクトを作成して、アプリケーションのニーズに基づいてデータベースのカスタムRESTエンドポイントを定義します。
@@ -145,6 +144,7 @@ creationDate|レコードの作成日時
 Id|レコードを一意に識別する ID
 lastUpdateDate|レコードの最終更新日時
 lastUpdatedBy|レコードを更新したユーザー
+versionNumber|レコードのバージョン番号
 
 ![](014.png)
 
@@ -730,11 +730,12 @@ CreateEmployee(従業員レコードの作成)|ビジネス・オブジェクト
 
 ![](102.png)
 
-画面の左側には、アクション・パレットが表示されています。 アクション・パレットを下にスクロールし、 「Navigation」 カテゴリから 「Navigate」 を 「Start」 アクションの下に表示されている 「＋」 マークの上にドラッグ＆ドロップします。
+画面の左側には、アクション・パレットが表示されています。 アクション・パレットを下にスクロールし、 「Navigation」 カテゴリから **「Navigate to Page」** を**キャンバスに**ドラッグ＆ドロップします。
+
 
 ![](103.png)
 
-画面の右側に 「Navigate」 パネルが表示されたら、 「Page」 プルダウンから「Peer Pages」－「employees」を選択します。
+画面の右側に **「Navigate to Page」** パネルが表示されたら、 「Page」 プルダウンから「Peer Pages」－「employees」を選択します。
 
 ![](104.png)
 
