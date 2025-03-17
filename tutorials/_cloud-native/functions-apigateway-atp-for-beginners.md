@@ -455,19 +455,16 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 ```
 
 4. **更新後の情報確認**
-
     更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
-
     - **メソッド**：GET
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。
-
 ```sh
 curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
 
-    API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
-    
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
+
 ```sh
 {
     "ID": "id0001",
@@ -493,7 +490,6 @@ curl -X DELETE "コピーしたAPIデプロイメントのエンドポイント/
 
 3. **結果の確認**
 API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。
-
 ```sh
 {
   "message": "User deleted successfully"
@@ -501,22 +497,19 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 ```
 
 4. **削除後の情報確認**
-
     削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
-
     - **メソッド**：GET
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。
-
 ```sh
 curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
-
 ```sh
 {
     "message": "User not found"
 }
 ```
+
 以上の手順により、ユーザー管理に関するCRUD操作のAPIの動作確認が完了します。
 
 以上で、OCI Functions  を通じて python - oracledb ドライバを使って ATP に接続してデータを取得し、OCI API Gateway から OCI Functions  にルーティングする方法が身につきました！
