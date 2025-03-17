@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-17T23:29:48+09:00">
+  <meta property="article:published_time" content="2025-03-17T23:42:28+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI API GatewayとOCI Functions を利用したデータベースアクセス">
     <meta itemprop="description" content="OCI API Gateway は OCI 上で提供されるマネージドのAPI管理サービスです。OCI Functions は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、OCI Functions から python-oracledb ドライバを利用してATPに接続し、データを取得する方法について説明します。そして、OCI API Gateway から OCI Functions にルーティングする方法について説明します。">
-    <meta itemprop="datePublished" content="2025-03-17T23:29:48+09:00">
+    <meta itemprop="datePublished" content="2025-03-17T23:42:28+09:00">
     
 
     <div class="page__inner-wrap">
@@ -807,24 +807,20 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 <span class="o">}</span>
 </code></pre></div>    </div>
   </li>
-  <li>
-    <p><strong>更新後の情報確認</strong></p>
-
-    <p>更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。</p>
-
+  <li><strong>更新後の情報確認</strong>
+ 更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
     <ul>
       <li><strong>メソッド</strong>：GET</li>
-      <li><strong>エンドポイント</strong>：<code class="language-plaintext highlighter-rouge">コピーしたAPIデプロイメントのエンドポイント</code>/<code class="language-plaintext highlighter-rouge">v1</code>/<code class="language-plaintext highlighter-rouge">users</code>/<code class="language-plaintext highlighter-rouge">id0001</code> を入力します。</li>
+      <li><strong>エンドポイント</strong>：<code class="language-plaintext highlighter-rouge">コピーしたAPIデプロイメントのエンドポイント</code>/<code class="language-plaintext highlighter-rouge">v1</code>/<code class="language-plaintext highlighter-rouge">users</code>/<code class="language-plaintext highlighter-rouge">id0001</code> を入力します。
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> GET <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>        </div>
+      </li>
     </ul>
   </li>
 </ol>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> GET <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
-     <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
-</code></pre></div></div>
+<p>API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
     <span class="s2">"ID"</span>: <span class="s2">"id0001"</span>,
@@ -851,35 +847,29 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 </code></pre></div>    </div>
   </li>
   <li><strong>結果の確認</strong>
-API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。</li>
-</ol>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
   <span class="s2">"message"</span>: <span class="s2">"User deleted successfully"</span>
 <span class="o">}</span>
-</code></pre></div></div>
-
-<ol>
-  <li>
-    <p><strong>削除後の情報確認</strong></p>
-
-    <p>削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。</p>
-
+</code></pre></div>    </div>
+  </li>
+  <li><strong>削除後の情報確認</strong>
+ 削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
     <ul>
       <li><strong>メソッド</strong>：GET</li>
-      <li><strong>エンドポイント</strong>：<code class="language-plaintext highlighter-rouge">コピーしたAPIデプロイメントのエンドポイント</code>/<code class="language-plaintext highlighter-rouge">v1</code>/<code class="language-plaintext highlighter-rouge">users</code>/<code class="language-plaintext highlighter-rouge">id0001</code> を入力します。</li>
+      <li><strong>エンドポイント</strong>：<code class="language-plaintext highlighter-rouge">コピーしたAPIデプロイメントのエンドポイント</code>/<code class="language-plaintext highlighter-rouge">v1</code>/<code class="language-plaintext highlighter-rouge">users</code>/<code class="language-plaintext highlighter-rouge">id0001</code> を入力します。
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> GET <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
+</code></pre></div>        </div>
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+ <span class="s2">"message"</span>: <span class="s2">"User not found"</span>
+<span class="o">}</span>
+</code></pre></div>        </div>
+      </li>
     </ul>
   </li>
 </ol>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> GET <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
-     <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
-</code></pre></div></div>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
-    <span class="s2">"message"</span>: <span class="s2">"User not found"</span>
-<span class="o">}</span>
-</code></pre></div></div>
 <p>以上の手順により、ユーザー管理に関するCRUD操作のAPIの動作確認が完了します。</p>
 
 <p>以上で、OCI Functions  を通じて python - oracledb ドライバを使って ATP に接続してデータを取得し、OCI API Gateway から OCI Functions  にルーティングする方法が身につきました！
@@ -920,7 +910,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-17T23:29:48+09:00">March 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-17T23:42:28+09:00">March 17, 2025</time></p>
 
       </footer>
 
