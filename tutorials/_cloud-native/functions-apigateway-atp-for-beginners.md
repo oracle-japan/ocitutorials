@@ -1,17 +1,17 @@
 ---
-title: "OCI API GatewayとOCI Functionsを利用したデータベースアクセス"
-excerpt: "OCI API GatewayはOCI上で提供されるマネージドのAPI管理サービスです。OCI Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、OCI Functionsからpython-oracledbドライバを利用してOracle Autonomous Transaction Processingに接続し、データをCRUD(Create、Read、Update、Delete)する方法について説明します。そして、OCI API GatewayからOCI Functionsにルーティングする方法について説明します。"
+title: "OCI API GatewayとOCI Functions を利用したデータベースアクセス"
+excerpt: "OCI API Gateway は OCI 上で提供されるマネージドのAPI管理サービスです。OCI Functions は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、OCI Functions から python-oracledb ドライバを利用してATPに接続し、データを取得する方法について説明します。そして、OCI API Gateway から OCI Functions にルーティングする方法について説明します。"
 order: "080"
-tags: [OCI, API Gateway, OCI Functions, Autonomous Database, Oracle Autonomous Transaction Processing, Python]
+tags: [OCI, API Gateway, OCI Functions , Autonomous Database, ATP, Python]
 ---
 
-このセッションでは、OCI Functionsからpython-oracledbドライバを利用してOracle Autonomous Transaction Processing(ATP)に接続し、データをCRUD(Create、Read、Update、Delete)する方法について説明します。
-そして、OCI API GatewayからOCI Functionsにルーティングする方法について説明します。
+このセッションでは、OCI Functions から python-oracledb ドライバを利用してATPに接続し、データを取得する方法について説明します。
+そして、OCI API Gateway から OCI Functions にルーティングする方法について説明します。
 
 このハンズオンが完了すると、以下のようなコンテンンツが出来上がります。
 
-![](summary.jpg)
-*図：OCI API Gateway → OCI Functions → ATP のデータフロー*
+![image-20200409151057057](summary.jpg)
+*図：OCI API Gateway → OCI Functions  → ATP のデータフロー*
 
 条件
 ----------------------
@@ -20,10 +20,7 @@ tags: [OCI, API Gateway, OCI Functions, Autonomous Database, Oracle Autonomous T
   - 有効なOracle Cloudアカウントがあること
 
 - 事前環境構築
-  - [OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
-  - [Oracle Cloud Infrasturcture API Gateway + OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-apigateway-for-beginners/)が完了していること
-  - ローカル端末にSQL Developerがインストールされていること
-    - ダウンロードは[こちら](https://www.oracle.com/tools/downloads/sqldev-downloads.html)から
+  - [OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
 
 1.事前準備
 -------------------
@@ -35,11 +32,11 @@ OCIコンソールのハンバーガーメニューから[Oracle Database]で、
 
 Autonomous Databaseの作成画面で、コンパートメント名をクリックして、コンパートメントの選択リストを表示します。使用するコンパートメントを選択して、「フィルタの適用」をクリックします。
 
-![](create-atp-00.png)
+![image-create-atp-00](create-atp-00.png)
 
 使用するコンパートメントを確認して、「Autonomous Databaseの作成」をクリックします。
 
-![](create-atp-01.png)
+![image-20200409151057057](create-atp-01.png)
 
 以下項目を入力して、「作成」をクリックします。
 
@@ -55,8 +52,14 @@ Autonomous Databaseの作成画面で、コンパートメント名をクリッ�
 + ストレージの自動スケーリング：チェック・オフのまま。
 + パスワード：パスワードを入力。
 + パスワードの確認：再度パスワードを入力。
-+ ネットワーク・アクセスの選択：すべての場所からのセキュア・アクセス
++ ネットワーク・アクセスの選択：プライベート・エンドポイント・アクセスのみ
+    + コンパートメント（１）：仮想クラウド・ネットワークが属しているコンパートメント
+    + 仮想クラウド・ネットワーク：[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
+    + コンパートメント（２）：サブネットが属しているコンパートメント
+    + サブネット：[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのパブリック・サブネットを指定。
 
+
+![](create-atp-01.png)
 
 ![](create-atp-02.png)
 
@@ -64,21 +67,49 @@ Autonomous Databaseの作成画面で、コンパートメント名をクリッ�
 
 数分後に、ステータスが「利用可能」に変わります。 
 
-Autonomous Databaseの詳細の画面で、「データベースのOCID」をコピーし、ローカルPCのメモ帳などにメモします。次に、「データベース接続」をクリックします。
+Autonomous Databaseの詳細の画面から[More actions]で、[ネットワーク・アクセスの更新]をクリックします。
 
-![](download-wallet-01.png)
+![](create-atp-04.png)
 
-TNS名をローカルPCのメモ帳などにメモして、「ウォレットのダウンロード」をクリックします。
+「パブリック・アクセスを許可」スイッチをオンにし、許可 IP に自分の IP を追加した後、更新ボタンをクリックします。
 
-![](download-wallet-02.png)
+![](create-atp-05.png)
 
-（セキュリティルールに準拠する任意の）ウォレットのパスワードを入力して、「ダウンロード」をクリックします。後でローカルのOracle SQL Developerで接続するときに使用します。
+数分後に、ステータスが「利用可能」に変わります。 
+Autonomous Databaseの詳細の画面から[データベース接続]をクリックします。
 
-![](download-wallet-03.png)
+![](create-atp-06.png)
+
+TLS認証で「TLS」を選択して、接続文字列をローカルPCのメモ帳などにメモします。
+
+![](create-atp-07.png)
 
 これで、ATPのプロビジョニングは完了です。
 
-### 1-2.ユーザーテーブルおよびサンプル・データの準備
+### 1-2.イングレス・ルールの追加
+Autonomous Database の TLS 接続は、デフォルトで 1521 ポートを使用します。ポート1521のトラフィックを許可するには、サブネットに対してイングレス・ルールを追加する必要があります。
+
+Autonomous Databaseの詳細の画面で、ネットワークセクションでATPが属しているサブネットをクリックします。
+![](open-port-01.png)
+
+サブネットの詳細画面で、「セキュリティ」タブをクリックし、セキュリティリストをクリックします。
+![](open-port-02.png)
+
+セキュリティリストの詳細画面で、「セキュリティ・ルール」をクリックし、「イングレス・ルールの追加」をクリックします。
+![](open-port-03.png)
+
+以下項目を入力して、[イングレース・ルールの追加]をクリックします。
+
++ ステートレス：チェックをオフにする（デフォルト値）
++ ソースCIDR：0.0.0.0/0
++ IPプロトコル：TCP（デフォルト値）
++ 宛先ポート範囲：1521
+![](open-port-04.png)
+
+新しいイングレス・ルールが追加されます。
+![](open-port-05.png)
+
+### 1-3.ユーザーテーブルおよびサンプル・データの準備
 
 Autonomous Databaseの詳細の画面で、「データベース・アクション」→「SQL」をクリックします。
 
@@ -106,109 +137,61 @@ GRANT UNLIMITED TABLESPACE TO usersvc;
 ```
 ![](create-user.png)
 
-ローカルのOracle SQL Developerを開いて、ダウンロードしたWalletファイルを使用して、作成したユーザー`usersvc`で接続します。
-
-![](conn-atp.png)
-
 
 検証用のテーブル`users`を作成します。
 
 ```sql
-CREATE TABLE users ( 
-"ID"  VARCHAR2(32 BYTE) DEFAULT ON NULL sys_guid(), 
-"FIRST_NAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP"
-            NOT NULL ENABLE, 
-"LAST_NAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP"
-            NOT NULL ENABLE, 
-"USERNAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP"
-            NOT NULL ENABLE, 
-"CREATED_ON"  TIMESTAMP(6) DEFAULT ON NULL current_timestamp, 
-CONSTRAINT "USER_PK" PRIMARY KEY ( "ID" )
+CREATE TABLE usersvc.users ( 
+    "ID"  VARCHAR2(32 BYTE) DEFAULT ON NULL sys_guid(), 
+    "FIRST_NAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP" NOT NULL ENABLE, 
+    "LAST_NAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP" NOT NULL ENABLE, 
+    "USERNAME"  VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP" NOT NULL ENABLE, 
+    "CREATED_ON"  TIMESTAMP(6) DEFAULT ON NULL current_timestamp, 
+    CONSTRAINT "USER_PK" PRIMARY KEY ( "ID" )
 );
 ```
-
-サンプルデータを登録します。
-
-```sql
-INSERT INTO users VALUES (
-    '8C561D58E856DD25E0532010000AF462',
-    'todd',
-    'sharp',
-    'tsharp',
-    current_timestamp
-);
-
-INSERT INTO users VALUES (
-    '8C561D58E858DD25E0532010000AF462',
-    'jeff',
-    'smith',
-    'thatjeff',
-    current_timestamp
-);
-
-COMMIT;
-```
+![](create-table-and-insert-data.png)
 
 これで、ユーザーテーブルおよびサンプル・データの準備は完了です。
 
-### 1-3.動的グループの作成または更新
-他のOCI サービスを使用するには、ファンクションが動的グループの一部である必要があります。動的グループの作成方法については、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm#To)を参照してください。
-「一致ルール」を指定するとき、コンパートメント内のすべての関数を次のように一致させることをお勧めします。
-```
-ALL {resource.type = 'fnfunc', resource.compartment.id = [functions_compartment_id]}
-```
-+ `functions_compartment_id`：今回ファンクションをデプロイするコンパートメントのコンパートメントIDです。
-その他の「一致ルール」のオプションについては、[ファンクションの実行による他のOracle Cloud Infrastructureリソースへのアクセス](https://docs.oracle.com/ja-jp/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm)をご確認ください。
-
-### 1-4.ポリシーの作成または更新
-セキュリティ上の理由から、データベースウォレットは Docker イメージに含まれていません。」この関数は実行時にウォレットをダウンロードします。
-
-ファンクションの実行中にAutonomous Databaseからウォレットを直接取得するには、Autonomous DatabaseのOCIDを確認し、特定の権限 'AUTONOMOUS_DATABASE_CONTENT_READ' を持つ動的グループがAutonomous Databaseを使用できるようにするIAMポリシーを作成する必要があります.
-```
-Allow dynamic-group [functions_dynamic_group_name] to use autonomous-databases in compartment [atp_compartment_name] where request.permission='AUTONOMOUS_DATABASE_CONTENT_READ'
-```
-+ `functions_dynamic_group_name`：[1-3.動的グループの作成または更新](#1-3.動的グループの作成または更新)で作成した動的グループの名称。
-+ `atp_compartment_name`：ATPが属しているコンパートメントのコンパートメント名。
-ポリシーの作成手順については、[OCI IAMポリシーの作成ガイド](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policysyntax.htm) を参照してください。.
-
-2.OCI Functionsの作成
+2.OCI Functions の作成
 -------------------
-ここでは、OCI Functionsの作成とデプロイを行います。
+ここでは、OCI Functions の作成とデプロイを行います。
 
 ### 2-1.アプリケーションの作成
 
 OCIコンソールのハンバーガーメニューをクリックして、「開発者サービス」に移動して、「ファンクション」をクリックします。
 
-OCI Functionsに使用する予定のリージョンを選択します（Fn Project CLIコンテキストで指定されたDockerレジストリと同じリージョンを推奨します）。  
+OCI Functions に使用する予定のリージョンを選択します（Fn Project CLIコンテキストで指定されたDockerレジストリと同じリージョンを推奨します）。  
 
 Fn Project CLIコンテキストで指定されたコンパートメントを選択します。
 
 「アプリケーションの作成」をクリックして、次を指定して、「作成」をクリックします。
 
 + 名前：このアプリケーションに最初のFunctionをデプロイし、Functionを呼び出すときにこのアプリケーションを指定。今回は、`fn-crud-atp`
-+ VCN：Functionを実行するVCN。今回は、[OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
-+ サブネット：Functionを実行するサブネット。今回は、[OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのパブリック・サブネットを指定。
-+ Shape：OCI Functionsを実行するために使用される基盤となるコンピューティング環境。今回はGENERIC_X86を指定。
++ VCN：Functionを実行するVCN。今回は、[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
++ サブネット：Functionを実行するサブネット。今回は、[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのパブリック・サブネットを指定。
++ Shape：OCI Functions を実行するために使用される基盤となるコンピューティング環境。今回はGENERIC_X86を指定。
 
 ![](create-function.png) 
 
-[OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。  
+[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。  
 
 デプロイ前にFunctionsを実行するために環境変数をいくつか設定します。
 
+```sh
+fn config app fn-crud-atp DB_USER usersvc
 ```
-fn config app fn-crud-atp ADB_OCID [adb_ocid]
+```sh
+fn config app fn-crud-atp DB_PASSWORD [db_password]
 ```
-+ `adb_ocid`：データベースのOCID。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します
++ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-3.ユーザーテーブルおよびサンプル・データの準備](#1-3.ユーザーテーブルおよびサンプル・データの準備)で設定したパスワードを使用します
+
+```sh
+fn config app fn-crud-atp DSN [dsn]
 ```
-fn config app fn-crud-atp DBSVC [tns_name]
-```
-+ `tns_name`：TNS名。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します
-```
-fn config app fn-crud-atp DBUSER usersvc
-fn config app fn-crud-atp DBPWD_CYPHER [db_password]
-```
-+ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で設定したパスワードを使用します
++ `dsn`：ATPへの接続文字列。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します
+
 
 **機密情報を含む環境変数について**  
 機密情報を含む構成変数は、常に暗号化する必要があります。今回はシンプルな手順にするために特に暗号化は実施しませんが、実際に使用する場合は、[キー管理を使用する方法](https://blogs.oracle.com/developers/oracle-functions-using-key-management-to-encrypt-and-decrypt-configuration-variables)を確認してください。
@@ -218,37 +201,37 @@ fn config app fn-crud-atp DBPWD_CYPHER [db_password]
 ワークショップ用のコンテンツをクローンし、ディレクトリに移動します。
 
 ```sh
-git clone https://github.com/yan-linfeng/fn-crud-atp.git
+git clone https://github.com/oracle-japan/apigateway-functions-crud-atp.git
 ```
 
 ```sh
-cd fn-crud-atp
+cd apigateway-functions-crud-atp
 ```
 
 次に、以下のコマンドを実行して、各 Function を順番にデプロイします。
 
-create-func
+Create Function のデプロイ
 ```sh
 cd create-func
 ```
 ```sh
 fn -v deploy --app fn-crud-atp
 ```
-read-func
+Read Function のデプロイ
 ```sh
 cd ../read-func
 ```
 ```sh
 fn -v deploy --app fn-crud-atp
 ```
-update-func
+Update Function のデプロイ
 ```sh
 cd ../update-func
 ```
 ```sh
 fn -v deploy --app fn-crud-atp
 ```
-delete-func
+Delete Function のデプロイ
 ```sh
 cd ../delete-func
 ```
@@ -362,18 +345,24 @@ APIデプロイメントのリストで、作成したばかりの新しいAPI�
 ### 4-1. ユーザー作成APIのテスト
 ユーザー作成APIをテストするために、以下の手順を実行します。
 
-1. **Postmanでの設定**
-    - **メソッド**：POSTを選択します。これは、新しいユーザー情報をサーバーに送信して作成するためのHTTPメソッドです。
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
-    - **Bodyのタイプ**：`JSON` を選択します。JSON形式でユーザー情報を送信するためです。
-    - **Bodyの内容**：`{"first_name": "John","last_name": "Doe","username": "johndoe"}` を入力します。これは、新しく作成するユーザーの名前、姓、ユーザー名を表します。
+1. **curl コマンドの設定**
+    - **メソッド**：POST
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E`
+    - **Bodyのタイプ**：`JSON`
+    - **Bodyの内容**：`{"first_name": "John","last_name": "Doe","username": "johndoe"}`
 
-2. **リクエストの送信**<br>
-上記の設定が完了したら、[Send] ボタンをクリックしてリクエストを送信します。
-![](test-create-api-01.png)
-3. **結果の確認**<br>
-API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、新しいユーザーが正常に作成されたことを示しています。
+これは、新しく作成するユーザーの名前、姓、ユーザー名を表します。
+
+2. **コマンドの実行**<br>
+```sh
+curl -X POST "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
+     -d '{"first_name" : "John" , "last_name" : "Doe" , "username" : "johndoe"}'
 ```
+
+3. **コマンド結果の確認**<br>
+API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、新しいユーザーが正常に作成されたことを示しています。
+```sh
 {
   "message": "User created successfully"
 }
@@ -383,15 +372,20 @@ API コールが成功すると、OCI Functions がバックエンドとして�
 ユーザー読みAPIのテストは、全ユーザーの情報を取得する場合と、特定のユーザーの情報を取得する場合の2種類のテストを行います。
 
 #### 全ユーザー情報の取得
-1. **Postmanでの設定**
-    - **メソッド**：GETを選択します。これは、サーバーから情報を取得するためのHTTPメソッドです。
+
+1. **curl コマンドの設定**
+    - **メソッド**：GET
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users` のような形式になります。
-2. **リクエストの送信**<br>
-[Send] ボタンをクリックしてリクエストを送信します。
-![](test-read-api-01.png)
-3. **結果の確認**<br>
-API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、サーバー上に存在する全ユーザーの情報を示しています。
+
+2. **コマンドの実行**<br>
+```sh
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users" \
+     -H "Content-Type: application/json"
 ```
+
+3. **結果の確認**<br>
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、サーバー上に存在する全ユーザーの情報を示しています。
+```sh
 [
     {
         "ID": "8C561D58E856DD25E0532010000AF462",
@@ -418,16 +412,19 @@ API コールが成功すると、OCI Functions がバックエンドとして�
 ```
 
 #### 特定ユーザー情報の取得
-1. **Postmanでの設定**
-     - **メソッド**：GETを選択します。
+1. **curl コマンドの設定**
+     - **メソッド**：GET
      - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
 
 2. **リクエストの送信** <br>
-  [Send] ボタンをクリックしてリクエストを送信します。
-  ![](test-read-api-02.png)
-3. **結果の確認**<br>
-API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、指定されたIDのユーザーの詳細情報を示しています。
+```sh
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
 ```
+
+3. **結果の確認**<br>
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、指定されたIDのユーザーの詳細情報を示しています。
+```sh
 {
     "ID": "2F5D2B76AD068F35E0630516000A130E",
     "FIRST_NAME": "John",
@@ -437,36 +434,45 @@ API コールが成功すると、OCI Functions がバックエンドとして�
 }
 ```
 
-
 ### 4-3. ユーザー更新APIのテスト
 ユーザー更新APIをテストするために、以下の手順を実行します。
 
-1. **Postmanでの設定**
-    - **メソッド**：PUTを選択します。これは、既存のユーザー情報を更新するためのHTTPメソッドです。
+1. **curl コマンドの設定**
+    - **メソッド**：PUT
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
-    - **Bodyのタイプ**：`JSON` を選択します。
-    - **Bodyの内容**：`{"first_name": "Mike","last_name": "Smith","username": "mikesmith"}` を入力します。これは、更新後のユーザーの名前、姓、ユーザー名を表します。
+    - **Bodyのタイプ**：`JSON`
+    - **Bodyの内容**：`{"first_name": "Mike","last_name": "Smith","username": "mikesmith"}`
 
 2. **リクエストの送信**<br>
-[Send] ボタンをクリックしてリクエストを送信します。
-![](test-update-api-01.png)
+```sh
+curl -X PUT "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
+     -d '{"first_name": "Mike","last_name": "Smith","username": "mikesmith"}'
+```
 
 3. **結果の確認**<br>
-API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、指定されたユーザーの情報が正常に更新されたことを示しています。
-```
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、指定されたユーザーの情報が正常に更新されたことを示しています。
+```sh
 {
   "message": "User updated successfully"
 }
 ```
+
 4. **更新後の情報確認**
 
     更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
 
-    - **メソッド**：GETを選択します。
+    - **メソッド**：GET
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。
-  
-    API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
+
+```sh
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
 ```
+
+    API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
+    
+```sh
 {
     "ID": "2F5D2B76AD068F35E0630516000A130E",
     "FIRST_NAME": "Mike",
@@ -479,29 +485,38 @@ API コールが成功すると、OCI Functions がバックエンドとして�
 ### 4-4. ユーザー削除APIのテスト
 ユーザー削除APIをテストするために、以下の手順を実行します。
 
-1. **Postmanでの設定**
-    - **メソッド**：DELETEを選択します。これは、指定されたユーザー情報を削除するためのHTTPメソッドです。
+1. **curl コマンドの設定**
+    - **メソッド**：DELETE
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
 
 2. **リクエストの送信**
-[Send] ボタンをクリックしてリクエストを送信します。
-![](test-delete-api-01.png)
-3. **結果の確認**
-API コールが成功すると、OCI Functions がバックエンドとして実行され、以下のような JSON レスポンスが返されます。
+```sh
+curl -X DELETE "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
 ```
+
+3. **結果の確認**
+API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。
+
+```sh
 {
   "message": "User deleted successfully"
 }
 ```
+
 4. **削除後の情報確認**
 
     削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
 
-    - **メソッド**：GETを選択します。
+    - **メソッド**：GET
     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。
 
-    [Send] ボタンをクリックしてリクエストを送信すると、以下のような出力が得られます。これは、指定されたユーザーが正常に削除されたことを示しています。
+```sh
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+     -H "Content-Type: application/json" \
 ```
+
+```sh
 {
     "message": "User not found"
 }
@@ -509,5 +524,5 @@ API コールが成功すると、OCI Functions がバックエンドとして�
 以上の手順により、ユーザー管理に関するCRUD操作のAPIの動作確認が完了します。
 
 
-以上で、OCI Functions を通じて python - oracledb ドライバを使って ATP に接続してデータを取得し、OCI API Gateway から OCI Functions にルーティングする方法が身につきました！
+以上で、OCI Functions  を通じて python - oracledb ドライバを使って ATP に接続してデータを取得し、OCI API Gateway から OCI Functions  にルーティングする方法が身につきました！
 お疲れ様でした。
