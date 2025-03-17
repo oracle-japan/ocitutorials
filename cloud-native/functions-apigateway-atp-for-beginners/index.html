@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-17T23:42:28+09:00">
+  <meta property="article:published_time" content="2025-03-17T23:53:36+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI API GatewayとOCI Functions を利用したデータベースアクセス">
     <meta itemprop="description" content="OCI API Gateway は OCI 上で提供されるマネージドのAPI管理サービスです。OCI Functions は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、OCI Functions から python-oracledb ドライバを利用してATPに接続し、データを取得する方法について説明します。そして、OCI API Gateway から OCI Functions にルーティングする方法について説明します。">
-    <meta itemprop="datePublished" content="2025-03-17T23:42:28+09:00">
+    <meta itemprop="datePublished" content="2025-03-17T23:53:36+09:00">
     
 
     <div class="page__inner-wrap">
@@ -807,7 +807,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 <span class="o">}</span>
 </code></pre></div>    </div>
   </li>
-  <li><strong>更新後の情報確認</strong>
+  <li><strong>更新後の情報確認</strong><br />
  更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
     <ul>
       <li><strong>メソッド</strong>：GET</li>
@@ -815,21 +815,19 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
         <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> GET <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
 </code></pre></div>        </div>
+        <p>API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。</p>
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+ <span class="s2">"ID"</span>: <span class="s2">"id0001"</span>,
+ <span class="s2">"FIRST_NAME"</span>: <span class="s2">"Mike"</span>,
+ <span class="s2">"LAST_NAME"</span>: <span class="s2">"Smith"</span>,
+ <span class="s2">"USERNAME"</span>: <span class="s2">"mikesmith"</span>,
+ <span class="s2">"CREATED_ON"</span>: <span class="s2">"2025-03-06T01:47:25.474835"</span>
+<span class="o">}</span>
+</code></pre></div>        </div>
       </li>
     </ul>
   </li>
 </ol>
-
-<p>API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
-    <span class="s2">"ID"</span>: <span class="s2">"id0001"</span>,
-    <span class="s2">"FIRST_NAME"</span>: <span class="s2">"Mike"</span>,
-    <span class="s2">"LAST_NAME"</span>: <span class="s2">"Smith"</span>,
-    <span class="s2">"USERNAME"</span>: <span class="s2">"mikesmith"</span>,
-    <span class="s2">"CREATED_ON"</span>: <span class="s2">"2025-03-06T01:47:25.474835"</span>
-<span class="o">}</span>
-</code></pre></div></div>
 
 <h3 id="4-4-ユーザー削除apiのテスト">4-4. ユーザー削除APIのテスト</h3>
 <p>ユーザー削除APIをテストするために、以下の手順を実行します。</p>
@@ -841,19 +839,19 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
       <li><strong>エンドポイント</strong>：<code class="language-plaintext highlighter-rouge">コピーしたAPIデプロイメントのエンドポイント</code>/<code class="language-plaintext highlighter-rouge">v1</code>/<code class="language-plaintext highlighter-rouge">users</code>/<code class="language-plaintext highlighter-rouge">id0001</code> を入力します。例えば、<code class="language-plaintext highlighter-rouge">https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/id0001</code> のような形式になります。</li>
     </ul>
   </li>
-  <li><strong>リクエストの送信</strong>
+  <li><strong>リクエストの送信</strong><br />
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-X</span> DELETE <span class="s2">"コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001"</span> <span class="se">\</span>
   <span class="nt">-H</span> <span class="s2">"Content-Type: application/json"</span>
 </code></pre></div>    </div>
   </li>
-  <li><strong>結果の確認</strong>
+  <li><strong>結果の確認</strong><br />
 API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。
     <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
   <span class="s2">"message"</span>: <span class="s2">"User deleted successfully"</span>
 <span class="o">}</span>
 </code></pre></div>    </div>
   </li>
-  <li><strong>削除後の情報確認</strong>
+  <li><strong>削除後の情報確認</strong><br />
  削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
     <ul>
       <li><strong>メソッド</strong>：GET</li>
@@ -910,7 +908,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-17T23:42:28+09:00">March 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-17T23:53:36+09:00">March 17, 2025</time></p>
 
       </footer>
 
