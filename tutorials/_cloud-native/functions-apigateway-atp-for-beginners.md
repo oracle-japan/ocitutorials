@@ -50,8 +50,8 @@ Autonomous Databaseの作成画面で、コンパートメント名をクリッ�
 + ストレージ：`1024`
 + ストレージ単位サイズ：`GB`
 + ストレージの自動スケーリング：チェック・オフのまま。
-+ パスワード：パスワードを入力。
-+ パスワードの確認：再度パスワードを入力。
++ パスワード：パスワードを入力。（ここでは Or@cle!12345）
++ パスワードの確認：再度パスワードを入力。（ここでは Or@cle!12345）
 + ネットワーク・アクセスの選択：プライベート・エンドポイント・アクセスのみ
     + コンパートメント（１）：仮想クラウド・ネットワークが属しているコンパートメント
     + 仮想クラウド・ネットワーク：[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
@@ -390,20 +390,6 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 ```sh
 [
     {
-        "ID": "8C561D58E856DD25E0532010000AF462",
-        "FIRST_NAME": "todd",
-        "LAST_NAME": "sharp",
-        "USERNAME": "tsharp",
-        "CREATED_ON": "2025-03-03T16:19:41.572976"
-    },
-    {
-        "ID": "8C561D58E858DD25E0532010000AF462",
-        "FIRST_NAME": "jeff",
-        "LAST_NAME": "smith",
-        "USERNAME": "thatjeff",
-        "CREATED_ON": "2025-03-03T16:19:41.662402"
-    },
-    {
         "ID": "2F5D2B76AD068F35E0630516000A130E",
         "FIRST_NAME": "John",
         "LAST_NAME": "Doe",
@@ -421,7 +407,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 2. **リクエストの送信** <br>
 ```sh
 curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
-     -H "Content-Type: application/json" \
+     -H "Content-Type: application/json"
 ```
 
 3. **結果の確認**<br>
@@ -469,7 +455,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
 ```sh
 curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
-     -H "Content-Type: application/json" \
+     -H "Content-Type: application/json"
 ```
 
     API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これにより、ユーザー情報が正しく更新されたことが確認できます。
@@ -494,7 +480,7 @@ curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/
 2. **リクエストの送信**
 ```sh
 curl -X DELETE "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
-     -H "Content-Type: application/json" \
+     -H "Content-Type: application/json"
 ```
 
 3. **結果の確認**
@@ -515,7 +501,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
 ```sh
 curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
-     -H "Content-Type: application/json" \
+     -H "Content-Type: application/json"
 ```
 
 ```sh
