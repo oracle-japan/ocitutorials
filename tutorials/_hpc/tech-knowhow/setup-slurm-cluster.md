@@ -56,7 +56,7 @@ table, th, td {
 
 ※2）本テクニカルTipsは、 **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
 ※3）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
-※4）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照ください。  
+※4）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
 ※6）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
@@ -100,7 +100,7 @@ table, th, td {
 6. **Slurm** rpmパッケージ作成
 7. **Slurm** rpmパッケージインストール・セットアップ
 8. **Slurm** 設定ファイル作成
-9. **Slurm** サービス起動・確認
+9. **Slurm** サービス起動
 10. **Slurm** 利用に必要な環境変数設定
 
 なお、各ソフトウェアと **Slurm** サービスは、以下のサブシステムにインストールします。
@@ -446,7 +446,7 @@ PMIxDirectConnUCX=true
 PMIxNetDevicesUCX=mlx5_0:0
 ```
 
-## 2-9. Slurmサービス起動・確認
+## 2-9. Slurmサービス起動
 
 本章は、 **Slurm** の各systemdサービスを対象のサブシステムで起動します。
 
@@ -462,6 +462,7 @@ $ sudo systemctl enable --now slurmd
 $ sudo systemctl enable --now slurmdbd
 $ sudo systemctl start slurmctld
 ```
+
 **slurmctld** は、全ての計算ノードの **slurmd** 起動完了後に起動する必要があるため、手動起動を想定して自動起動設定は行いません。
 
 次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。

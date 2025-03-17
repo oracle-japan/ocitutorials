@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(スタティッククラスタ自動構築編)"
 excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、リソース・マネージャから1クリックで自動構築することが出来るようになります。"
-order: "1240"
+order: "1250"
 layout: single
 header:
   teaser: "/hpc/spinup-gpu-cluster-withstack/architecture_diagram.png"

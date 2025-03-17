@@ -1,6 +1,6 @@
 ---
-title: "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法"
-excerpt: "NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラが有するコア割当て制御機能に精通している必要があります。本パフォーマンス関連Tipsは、MPI実装にOpenMPI、OpenMP実装にGNUコンパイラ、及びジョブスケジューラにSlurmを取り上げ、これらのコア割当て機能を駆使してプロセス・スレッドのコア割当てを行う方法を解説します。"
+title: "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）"
+excerpt: "NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラが有するコア割当て制御機能に精通している必要があります。本パフォーマンス関連Tipsは、MPI実装にOpenMPI、OpenMP実装にGNUコンパイラ、及びジョブスケジューラにSlurmを取り上げ、HPCワークロード向けベア・メタル・シェイプBM.Optimized3.36でこれらのコア割当て機能を駆使してプロセス・スレッドのコア割当てを行う方法を解説します。"
 order: "226"
 layout: single
 header:
@@ -12,6 +12,7 @@ header:
 # 0. 概要
 
 ## 0-0. 概要
+
 本パフォーマンス関連Tipsは、NUMA（Non-Umiform Memory Access）アーキテクチャを採用するインスタンスに於ける並列プログラムの実行時性能に大きく影響する、MPIが生成するプロセスとOpenMPが生成するスレッドのコア割当てについて、アプリケーション性能に有利となる典型的なパターンを例に挙げ、以下の観点でその実行方法を解説します。
 
 1. **[PRRTEを使用するプロセス・スレッドのコア割当て](#1-prrteを使用するプロセススレッドのコア割当て)**  
@@ -138,33 +139,61 @@ $ mpirun -n 4 --hostfile ~/hostlist.txt --bind-to core --map-by ppr:1:numa:PE=9 
 |**13**|2|core|ppr:1:package:PE=18|-|18|TRUE|
 |**14**|4|core|ppr:1:numa|-|-|-|
 |**15**|8|core|ppr:2:numa|fill|-|-|
-|**16**|8|-|（※4）|-|-|-|
+|**16**|8|-|（※3）|-|-|-|
 |**17**|16|core|ppr:4:numa|fill|-|-|
-|**18**|16|-|（※4）|-|-|-|
+|**18**|16|-|（※3）|-|-|-|
 |**19**|32|core|ppr:8:numa|fill|-|-|
-|**20**|32|-|（※4）|-|-|-|
+|**20**|32|-|（※3）|-|-|-|
 |**21**|36|core|ppr:9:numa|fill|-|-|
-|**22**|36|-|（※4）|-|-|-|
+|**22**|36|-|（※3）|-|-|-|
 |**23**|4|core|ppr:1:numa:PE=9|-|9|TRUE|
 
 ※3）コア割当てパターンの番号に応じて、 **- -map-by** オプションの値に以下を指定します。
 
-|No.|- -map-by|
-|:-:|:-:|
-|**4**|pe-list=0,18,1,19:ordered|
-|**6**|pe-list=0,18,1,19,2,20,3,21:ordered|
-|**8**|pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25:ordered|
-|**10**|pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25,8,26,9,27,10,28,11,29,12,30,13,31,14,32,15,33:ordered|
-|**12**|pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25,8,26,9,27,10,28,11,29,12,30,13,31,14,32,15,33,16,34,17,35:ordered|
+[No. 4]
+```sh
+pe-list=`for i in \`seq 0 1\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
 
-※4）コア割当てパターンの番号に応じて、 **- -map-by** オプションの値に以下を指定します。
+[No. 6]
+```sh
+pe-list=`for i in \`seq 0 3\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
 
-|No.|- -map-by|
-|:-:|:-:|
-|**16**|pe-list=0,9,18,27,1,10,19,28:ordered|
-|**18**|pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30:ordered|
-|**20**|pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30,4,13,22,31,5,14,23,32,6,15,24,33,7,16,25,34:ordered|
-|**22**|pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30,4,13,22,31,5,14,23,32,6,15,24,33,7,16,25,34,8,17,26,35:ordered|
+[No. 8]
+```sh
+pe-list=`for i in \`seq 0 7\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 10]
+```sh
+pe-list=`for i in \`seq 0 15\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 12]
+```sh
+pe-list=`for i in \`seq 0 17\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 16]
+```sh
+pe-list=`for i in \`seq 0 1\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 18]
+```sh
+pe-list=`for i in \`seq 0 3\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 20]
+```sh
+pe-list=`for i in \`seq 0 7\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
+
+[No. 22]
+```sh
+pe-list=`for i in \`seq 0 8\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered
+```
 
 ***
 # 2. Slurmを使用するプロセス・スレッドのコア割当て
@@ -212,44 +241,64 @@ $ OMP_NUM_THREADS=9 OMP_PROC_BIND=TRUE srun -p nps2 -n 8 -N 2 -c 9 --cpu-bind=ra
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |**1**|nps1|1|-|map_cpu:18|-|-|-|
 |**2**|nps1|2|-|cores|-|-|-|
-|**3**|nps1|4|-|（※5）|-|-|-|
+|**3**|nps1|4|-|（※4）|-|-|-|
 |**4**|nps1|4|-|cores|-|-|-|
-|**5**|nps1|8|-|（※5）|-|-|-|
+|**5**|nps1|8|-|（※4）|-|-|-|
 |**6**|nps1|8|-|cores|-|-|-|
-|**7**|nps1|16|-|（※5）|-|-|-|
+|**7**|nps1|16|-|（※4）|-|-|-|
 |**8**|nps1|16|-|cores|-|-|-|
-|**9**|nps1|32|-|（※5）|-|-|-|
+|**9**|nps1|32|-|（※4）|-|-|-|
 |**10**|nps1|32|-|cores|-|-|-|
 |**11**|nps1|36|-|cores|block:block|-|-|
 |**12**|nps1|36|-|cores||-|-|
 |**13**|nps1|2|18|cores|-|18|TRUE|
 |**14**|nps2|4|-|rank_ldom|-|-|-|
-|**15**|nps2|8|-|（※6）|-|-|-|
+|**15**|nps2|8|-|（※4）|-|-|-|
 |**16**|nps2|8|-|rank_ldom|-|-|-|
-|**17**|nps2|16|-|（※6）|-|-|-|
+|**17**|nps2|16|-|（※4）|-|-|-|
 |**18**|nps2|16|-|rank_ldom|-|-|-|
-|**19**|nps2|32|-|（※6）|-|-|-|
+|**19**|nps2|32|-|（※4）|-|-|-|
 |**20**|nps2|32|-|rank_ldom|-|-|-|
 |**21**|nps2|36|-|ldoms|block:block|-|-|
 |**22**|nps2|36|-|rank_ldom||-|-|
 |**23**|nps2|4|9|rank_ldom|-|9|TRUE|
 
-※5）コア割当てパターンの番号に応じて、 **- -cpu-bind** オプションの値に以下を指定します。
+※4）コア割当てパターンの番号に応じて、 **- -cpu-bind** オプションの値に以下を指定します。
 
-|No.|- -cpu-bind|
-|:-:|:-:|
-|**3**|map_cpu:0,1,18,19|
-|**5**|map_cpu:0,1,2,3,18,19,20,21|
-|**7**|map_cpu:0,1,2,3,4,5,6,7,18,19,20,21,22,23,24,25|
-|**9**|map_cpu:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33|
+[No. 3]
+```sh
+map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+1)) | tr '\n' ','; done | sed 's/,$//g'`
+```
 
-※6）コア割当てパターンの番号に応じて、 **- -cpu-bind** オプションの値に以下を指定します。
+[No. 5]
+```sh
+map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+3)) | tr '\n' ','; done | sed 's/,$//g'`
+```
 
-|No.|- -cpu-bind|
-|:-:|:-:|
-|**15**|map_ldom:0,0,1,1,2,2,3,3|
-|**17**|map_ldom:0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3|
-|**19**|map_ldom:0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3|
+[No. 7]
+```sh
+map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+7)) | tr '\n' ','; done | sed 's/,$//g'`
+```
+
+[No. 9]
+```sh
+map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+15)) | tr '\n' ','; done | sed 's/,$//g'`
+```
+
+[No. 15]
+```sh
+map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 1\`; do echo -n $i","; done; done | sed 's/,$//g'`
+```
+
+[No. 17]
+```sh
+map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 3\`; do echo -n $i","; done; done | sed 's/,$//g'`
+```
+
+[No. 19]
+```sh
+map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 7\`; do echo -n $i","; done; done | sed 's/,$//g'`
+```
 
 ***
 # 3. プロセス・スレッドのコア割当て確認方法
@@ -389,7 +438,7 @@ $
 [No.4]
 
 ```sh
-$ mpirun -n 4 --hostfile ~/hostlist.txt --map-by pe-list=0,18,1,19:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 4 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 1\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-aaaaa-x9-nps1:17790] Rank 0 bound to package[0][core:0]
 [inst-aaaaa-x9-nps1:17790] Rank 1 bound to package[1][core:18]
 [inst-aaaaa-x9-nps1:17790] Rank 2 bound to package[0][core:1]
@@ -415,7 +464,7 @@ $
 [No.6]
 
 ```sh
-$ mpirun -n 8 --hostfile ~/hostlist.txt --map-by pe-list=0,18,1,19,2,20,3,21:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 8 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 3\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-aaaaa-x9-nps1:18111] Rank 0 bound to package[0][core:0]
 [inst-aaaaa-x9-nps1:18111] Rank 1 bound to package[1][core:18]
 [inst-aaaaa-x9-nps1:18111] Rank 2 bound to package[0][core:1]
@@ -453,7 +502,7 @@ $
 [No.8]
 
 ```sh
-$ mpirun -n 16 --hostfile ~/hostlist.txt --map-by pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 16 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 7\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-aaaaa-x9-nps1:18428] Rank 0 bound to package[0][core:0]
 [inst-aaaaa-x9-nps1:18428] Rank 1 bound to package[1][core:18]
 [inst-aaaaa-x9-nps1:18428] Rank 2 bound to package[0][core:1]
@@ -515,7 +564,7 @@ $
 [No.10]
 
 ```sh
-$ mpirun -n 32 --hostfile ~/hostlist.txt --map-by pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25,8,26,9,27,10,28,11,29,12,30,13,31,14,32,15,33:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 32 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 15\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-aaaaa-x9-nps1:18807] Rank 0 bound to package[0][core:0]
 [inst-aaaaa-x9-nps1:18807] Rank 1 bound to package[1][core:18]
 [inst-aaaaa-x9-nps1:18807] Rank 2 bound to package[0][core:1]
@@ -597,43 +646,43 @@ $
 [No.12]
 
 ```sh
-$ mpirun -n 36 --hostfile ~/hostlist.txt --map-by pe-list=0,18,1,19,2,20,3,21,4,22,5,23,6,24,7,25,8,26,9,27,10,28,11,29,12,30,13,31,14,32,15,33,16,34,17,35:ordered --report-bindings echo -n |& sort -k 3n,3
-[inst-aaaaa-x9-nps1:19213] Rank 0 bound to package[0][core:0]
-[inst-aaaaa-x9-nps1:19213] Rank 1 bound to package[1][core:18]
-[inst-aaaaa-x9-nps1:19213] Rank 2 bound to package[0][core:1]
-[inst-aaaaa-x9-nps1:19213] Rank 3 bound to package[1][core:19]
-[inst-aaaaa-x9-nps1:19213] Rank 4 bound to package[0][core:2]
-[inst-aaaaa-x9-nps1:19213] Rank 5 bound to package[1][core:20]
-[inst-aaaaa-x9-nps1:19213] Rank 6 bound to package[0][core:3]
-[inst-aaaaa-x9-nps1:19213] Rank 7 bound to package[1][core:21]
-[inst-aaaaa-x9-nps1:19213] Rank 8 bound to package[0][core:4]
-[inst-aaaaa-x9-nps1:19213] Rank 9 bound to package[1][core:22]
-[inst-aaaaa-x9-nps1:19213] Rank 10 bound to package[0][core:5]
-[inst-aaaaa-x9-nps1:19213] Rank 11 bound to package[1][core:23]
-[inst-aaaaa-x9-nps1:19213] Rank 12 bound to package[0][core:6]
-[inst-aaaaa-x9-nps1:19213] Rank 13 bound to package[1][core:24]
-[inst-aaaaa-x9-nps1:19213] Rank 14 bound to package[0][core:7]
-[inst-aaaaa-x9-nps1:19213] Rank 15 bound to package[1][core:25]
-[inst-aaaaa-x9-nps1:19213] Rank 16 bound to package[0][core:8]
-[inst-aaaaa-x9-nps1:19213] Rank 17 bound to package[1][core:26]
-[inst-aaaaa-x9-nps1:19213] Rank 18 bound to package[0][core:9]
-[inst-aaaaa-x9-nps1:19213] Rank 19 bound to package[1][core:27]
-[inst-aaaaa-x9-nps1:19213] Rank 20 bound to package[0][core:10]
-[inst-aaaaa-x9-nps1:19213] Rank 21 bound to package[1][core:28]
-[inst-aaaaa-x9-nps1:19213] Rank 22 bound to package[0][core:11]
-[inst-aaaaa-x9-nps1:19213] Rank 23 bound to package[1][core:29]
-[inst-aaaaa-x9-nps1:19213] Rank 24 bound to package[0][core:12]
-[inst-aaaaa-x9-nps1:19213] Rank 25 bound to package[1][core:30]
-[inst-aaaaa-x9-nps1:19213] Rank 26 bound to package[0][core:13]
-[inst-aaaaa-x9-nps1:19213] Rank 27 bound to package[1][core:31]
-[inst-aaaaa-x9-nps1:19213] Rank 28 bound to package[0][core:14]
-[inst-aaaaa-x9-nps1:19213] Rank 29 bound to package[1][core:32]
-[inst-aaaaa-x9-nps1:19213] Rank 30 bound to package[0][core:15]
-[inst-aaaaa-x9-nps1:19213] Rank 31 bound to package[1][core:33]
-[inst-aaaaa-x9-nps1:19213] Rank 32 bound to package[0][core:16]
-[inst-aaaaa-x9-nps1:19213] Rank 33 bound to package[1][core:34]
-[inst-aaaaa-x9-nps1:19213] Rank 34 bound to package[0][core:17]
-[inst-aaaaa-x9-nps1:19213] Rank 35 bound to package[1][core:35]
+$ mpirun -n 36 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 17\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 0 bound to package[0][core:0]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 1 bound to package[1][core:18]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 2 bound to package[0][core:1]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 3 bound to package[1][core:19]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 4 bound to package[0][core:2]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 5 bound to package[1][core:20]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 6 bound to package[0][core:3]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 7 bound to package[1][core:21]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 8 bound to package[0][core:4]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 9 bound to package[1][core:22]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 10 bound to package[0][core:5]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 11 bound to package[1][core:23]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 12 bound to package[0][core:6]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 13 bound to package[1][core:24]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 14 bound to package[0][core:7]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 15 bound to package[1][core:25]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 16 bound to package[0][core:8]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 17 bound to package[1][core:26]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 18 bound to package[0][core:9]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 19 bound to package[1][core:27]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 20 bound to package[0][core:10]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 21 bound to package[1][core:28]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 22 bound to package[0][core:11]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 23 bound to package[1][core:29]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 24 bound to package[0][core:12]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 25 bound to package[1][core:30]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 26 bound to package[0][core:13]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 27 bound to package[1][core:31]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 28 bound to package[0][core:14]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 29 bound to package[1][core:32]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 30 bound to package[0][core:15]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 31 bound to package[1][core:33]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 32 bound to package[0][core:16]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 33 bound to package[1][core:34]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 34 bound to package[0][core:17]
+[inst-tngt2-x9-ol81-hpc-nps2:12774] Rank 35 bound to package[1][core:35]
 $
 ```
 
@@ -711,7 +760,7 @@ $
 [No.16]
 
 ```sh
-$ mpirun -n 8 --hostfile ~/hostlist.txt --map-by pe-list=0,9,18,27,1,10,19,28:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 8 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 1\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-bbbbb-x9-nps2:18123] Rank 0 bound to package[0][core:0]
 [inst-bbbbb-x9-nps2:18123] Rank 1 bound to package[0][core:9]
 [inst-bbbbb-x9-nps2:18123] Rank 2 bound to package[1][core:18]
@@ -749,7 +798,7 @@ $
 [No.18]
 
 ```sh
-$ mpirun -n 16 --hostfile ~/hostlist.txt --map-by pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 16 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 3\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-bbbbb-x9-nps2:18456] Rank 0 bound to package[0][core:0]
 [inst-bbbbb-x9-nps2:18456] Rank 1 bound to package[0][core:9]
 [inst-bbbbb-x9-nps2:18456] Rank 2 bound to package[1][core:18]
@@ -811,7 +860,7 @@ $
 [No.20]
 
 ```sh
-$ mpirun -n 32 --hostfile ~/hostlist.txt --map-by pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30,4,13,22,31,5,14,23,32,6,15,24,33,7,16,25,34:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 32 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 7\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-bbbbb-x9-nps2:18842] Rank 0 bound to package[0][core:0]
 [inst-bbbbb-x9-nps2:18842] Rank 1 bound to package[0][core:9]
 [inst-bbbbb-x9-nps2:18842] Rank 2 bound to package[1][core:18]
@@ -893,7 +942,7 @@ $
 [No.22]
 
 ```sh
-$ mpirun -n 36 --hostfile ~/hostlist.txt --map-by pe-list=0,9,18,27,1,10,19,28,2,11,20,29,3,12,21,30,4,13,22,31,5,14,23,32,6,15,24,33,7,16,25,34,8,17,26,35:ordered --report-bindings echo -n |& sort -k 3n,3
+$ mpirun -n 36 --hostfile ~/hostlist.txt --map-by pe-list=`for i in \`seq 0 8\`; do seq -s, $i 9 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered --report-bindings echo -n |& sort -k 3n,3
 [inst-bbbbb-x9-nps2:19251] Rank 0 bound to package[0][core:0]
 [inst-bbbbb-x9-nps2:19251] Rank 1 bound to package[0][core:9]
 [inst-bbbbb-x9-nps2:19251] Rank 2 bound to package[1][core:18]
@@ -1002,7 +1051,7 @@ $
 [No.3]
 
 ```sh
-$ srun -p nps1 -n 4 --cpu-bind=map_cpu:0,1,18,19 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps1 -n 4 --cpu-bind=map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+1)) | tr '\n' ','; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0
 Rank 1 Node 0 Core 1
 Rank 2 Node 0 Core 18
@@ -1024,7 +1073,7 @@ $
 [No.5]
 
 ```sh
-$ srun -p nps1 -n 8 --cpu-bind=map_cpu:0,1,2,3,18,19,20,21 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps1 -n 8 --cpu-bind=map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+3)) | tr '\n' ','; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0
 Rank 1 Node 0 Core 1
 Rank 2 Node 0 Core 2
@@ -1054,7 +1103,7 @@ $
 [No.7]
 
 ```sh
-$ srun -p nps1 -n 16 --cpu-bind=map_cpu:0,1,2,3,4,5,6,7,18,19,20,21,22,23,24,25 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps1 -n 16 --cpu-bind=map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+7)) | tr '\n' ','; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0
 Rank 1 Node 0 Core 1
 Rank 2 Node 0 Core 2
@@ -1100,7 +1149,7 @@ $
 [No.9]
 
 ```sh
-$ srun -p nps1 -n 32 --cpu-bind=map_cpu:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps1 -n 32 --cpu-bind=map_cpu:`for i in \`echo 0 18\`; do seq -s, $i $((i+15)) | tr '\n' ','; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0
 Rank 1 Node 0 Core 1
 Rank 2 Node 0 Core 2
@@ -1320,7 +1369,7 @@ $
 [No.15]
 
 ```sh
-$ srun -p nps2 -n 8 --cpu-bind=map_ldom:0,0,1,1,2,2,3,3 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps2 -n 8 --cpu-bind=map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 1\`; do echo -n $i","; done; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0-8
 Rank 1 Node 0 Core 0-8
 Rank 2 Node 0 Core 9-17
@@ -1350,7 +1399,7 @@ $
 [No.17]
 
 ```sh
-$ srun -p nps2 -n 16 --cpu-bind=map_ldom:0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps2 -n 16 --cpu-bind=map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 3\`; do echo -n $i","; done; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0-8
 Rank 1 Node 0 Core 0-8
 Rank 2 Node 0 Core 0-8
@@ -1396,7 +1445,7 @@ $
 [No.19]
 
 ```sh
-$ srun -p nps2 -n 32 --cpu-bind=map_ldom:0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3 bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
+$ srun -p nps2 -n 32 --cpu-bind=map_ldom:`for i in \`seq 0 3\`; do for j in \`seq 0 7\`; do echo -n $i","; done; done | sed 's/,$//g'` bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 Rank 0 Node 0 Core 0-8
 Rank 1 Node 0 Core 0-8
 Rank 2 Node 0 Core 0-8

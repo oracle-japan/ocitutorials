@@ -8,6 +8,8 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
+
 ***
 # 0. 概要
 
