@@ -175,6 +175,11 @@ Fn Project CLIコンテキストで指定されたコンパートメントを選
 + サブネット：Functionを実行するサブネット。今回は、[OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのパブリック・サブネットを指定。
 + Shape：OCI Functions を実行するために使用される基盤となるコンピューティング環境。今回はGENERIC_X86を指定。
 
+**アプリケーション名について**  
+アプリケーション名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`fn-crud-atp-yi`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
+
 ![](create-function.png) 
 
 [OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。  
@@ -187,12 +192,12 @@ fn config app fn-crud-atp DB_USER usersvc
 ```sh
 fn config app fn-crud-atp DB_PASSWORD [db_password]
 ```
-+ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-3.ユーザーテーブルおよびサンプル・データの準備](#1-3.ユーザーテーブルおよびサンプル・データの準備)で設定したパスワードを使用します
++ `db_password`：今回DBへ接続用のユーザー「usersvc」のパスワード。[1-3.ユーザーテーブルおよびサンプル・データの準備](#1-3.ユーザーテーブルおよびサンプル・データの準備)で設定したパスワード「	PasswOrd__8080」を使用します。
 
 ```sh
 fn config app fn-crud-atp DSN [dsn]
 ```
-+ `dsn`：ATPへの接続文字列。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します
++ `dsn`：ATPへの接続文字列。[1-1.ATPのプロビジョニング](#1-1.ATPのプロビジョニング)で取得した値を使用します。
 
 
 **機密情報を含む環境変数について**  
@@ -210,7 +215,8 @@ git clone https://github.com/oracle-japan/apigateway-functions-crud-atp.git
 cd apigateway-functions-crud-atp
 ```
 
-次に、以下のコマンドを実行して、各 Function を順番にデプロイします。
+次に、以下のコマンドを実行して、各 Function を順番にデプロイします。  
+※アプリケーション名は設定した名称に適宜置き換えてください。
 
 Create Function のデプロイ
 ```sh
@@ -242,7 +248,6 @@ fn -v deploy --app fn-crud-atp
 ```
 これで、すべてのFunctionの作成とデプロイが完了しました。
 
-
 3.OCI API Gatewayの作成  
 -------------------
 OCIコンソールにログインし、[開発者サービス]に移動して、[API管理] => [ゲートウェイ]をクリックしてから、次の操作を行います。
@@ -250,7 +255,7 @@ OCIコンソールにログインし、[開発者サービス]に移動して、
 
 [ゲートウェイの作成]をクリックして、次を指定します。
 
-+ 名前：新しいゲートウェイの名前、たとえば、`workshop-api-gateway`
++ 名前：新しいゲートウェイの名前、ここでは、`workshop-api-gateway`
 
 + タイプ：パブリック
 
@@ -259,6 +264,11 @@ OCIコンソールにログインし、[開発者サービス]に移動して、
 + 仮想クラウド・ネットワーク：OCI API Gatewayで使用するVCN。(Oracle Functionと同じVCNを指定してください)
 
 + サブネット：VCNのサブネット。(Oracle Functionと同じVCNサブネットを指定してください)
+
+**ゲートウェイ名について**  
+ゲートウェイ名はテナンシで一意になります。  
+集合ハンズオンなど複数人で同一環境を共有されている皆様は、`workshop-api-gateway-yi`などの名前のイニシャルを付与し、名前が重複しないようにしてください。
+{: .notice--warning}
 
 ![](create-gateway-02.png)
 
@@ -349,7 +359,7 @@ APIデプロイメントのリストで、作成したばかりの新しいAPI�
 
 1. **curl コマンドの設定**
     - **メソッド**：POST
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E`
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/id0001` ※ ID名は任意値（ここでは、id0001 として進めます）
     - **Bodyのタイプ**：`JSON`
     - **Bodyの内容**：`{"first_name": "John","last_name": "Doe","username": "johndoe"}`
 
@@ -357,7 +367,7 @@ APIデプロイメントのリストで、作成したばかりの新しいAPI�
 
 2. **コマンドの実行**<br>
 ```sh
-curl -X POST "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X POST "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json" \
      -d '{"first_name" : "John" , "last_name" : "Doe" , "username" : "johndoe"}'
 ```
@@ -390,7 +400,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 ```sh
 [
     {
-        "ID": "2F5D2B76AD068F35E0630516000A130E",
+        "ID": "id0001",
         "FIRST_NAME": "John",
         "LAST_NAME": "Doe",
         "USERNAME": "johndoe",
@@ -402,11 +412,11 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 #### 特定ユーザー情報の取得
 1. **curl コマンドの設定**
      - **メソッド**：GET
-     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
+     - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/id0001` のような形式になります。
 
 2. **リクエストの送信** <br>
 ```sh
-curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
 
@@ -414,7 +424,7 @@ curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/
 API コールが成功すると、OCI Functions  がバックエンドとして実行され、以下のような JSON レスポンスが返されます。これは、指定されたIDのユーザーの詳細情報を示しています。
 ```sh
 {
-    "ID": "2F5D2B76AD068F35E0630516000A130E",
+    "ID": "id0001",
     "FIRST_NAME": "John",
     "LAST_NAME": "Doe",
     "USERNAME": "johndoe",
@@ -427,13 +437,13 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
 1. **curl コマンドの設定**
     - **メソッド**：PUT
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/id0001` のような形式になります。
     - **Bodyのタイプ**：`JSON`
     - **Bodyの内容**：`{"first_name": "Mike","last_name": "Smith","username": "mikesmith"}`
 
 2. **リクエストの送信**<br>
 ```sh
-curl -X PUT "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X PUT "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json" \
      -d '{"first_name": "Mike","last_name": "Smith","username": "mikesmith"}'
 ```
@@ -451,10 +461,10 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
     更新が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
 
     - **メソッド**：GET
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。
 
 ```sh
-curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
 
@@ -462,7 +472,7 @@ curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/
     
 ```sh
 {
-    "ID": "2F5D2B76AD068F35E0630516000A130E",
+    "ID": "id0001",
     "FIRST_NAME": "Mike",
     "LAST_NAME": "Smith",
     "USERNAME": "mikesmith",
@@ -475,11 +485,11 @@ curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/
 
 1. **curl コマンドの設定**
     - **メソッド**：DELETE
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/2F5D2B76AD068F35E0630516000A130E` のような形式になります。
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。例えば、`https://xxxxxxxxxxxxxx.ap-osaka-1.oci.customer-oci.com/v1/users/id0001` のような形式になります。
 
 2. **リクエストの送信**
 ```sh
-curl -X DELETE "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X DELETE "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
 
@@ -497,10 +507,10 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
     削除が成功したことを確認するために、再度特定ユーザー情報の取得APIを呼び出します。
 
     - **メソッド**：GET
-    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`2F5D2B76AD068F35E0630516000A130E` を入力します。
+    - **エンドポイント**：`コピーしたAPIデプロイメントのエンドポイント`/`v1`/`users`/`id0001` を入力します。
 
 ```sh
-curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/2F5D2B76AD068F35E0630516000A130E" \
+curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/users/id0001" \
      -H "Content-Type: application/json"
 ```
 
@@ -510,7 +520,6 @@ curl -X GET "コピーしたAPIデプロイメントのエンドポイント/v1/
 }
 ```
 以上の手順により、ユーザー管理に関するCRUD操作のAPIの動作確認が完了します。
-
 
 以上で、OCI Functions  を通じて python - oracledb ドライバを使って ATP に接続してデータを取得し、OCI API Gateway から OCI Functions  にルーティングする方法が身につきました！
 お疲れ様でした。
