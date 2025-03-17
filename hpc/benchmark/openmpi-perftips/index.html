@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-17T23:53:36+09:00">
+  <meta property="article:published_time" content="2025-03-18T02:50:34+09:00">
 
 
 
@@ -271,6 +271,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
@@ -315,9 +317,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/" class="active">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
@@ -390,7 +392,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI通信性能に影響するパラメータとその関連Tips">
     <meta itemprop="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIは、Modular Component Architecture (MCA)を採用し、ビルド時に組み込むコンポーネントを介して多彩な機能を提供する設計となっており、このMCAが用意する多数のパラメータを制御することで、MPI通信性能を最適化することが可能です。またOpenMPIは、クラスタ・ネットワークを介して高帯域・低遅延のMPIプロセス間通信を実現するための通信フレームワークにUCXを採用し、MPI通信性能を最適化するためにはUCXのパラメータを適切に設定することが求められます。本パフォーマンス関連Tipsは、OpenMPIのMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。">
-    <meta itemprop="datePublished" content="2025-03-17T23:53:36+09:00">
+    <meta itemprop="datePublished" content="2025-03-18T02:50:34+09:00">
     
 
     <div class="page__inner-wrap">
@@ -524,11 +526,11 @@ or
 
 <h2 id="3-0-概要">3-0. 概要</h2>
 
-<p>本Tipsは、その設定値がMPI通信性能に影響を与える代表的な <strong>MCA</strong> パラメータと <strong>UCX</strong> パラメータを解説します。</p>
+<p>本章は、その設定値がMPI通信性能に影響を与える代表的な <strong>MCA</strong> パラメータと <strong>UCX</strong> パラメータを解説します。</p>
 
 <p>これらパラメータの設定方法は、 <strong>MCA</strong> パラメータは <strong><a href="#1-mcaパラメータ設定方法関連tips">1. MCAパラメータ設定方法関連Tips</a></strong> を、 <strong>UCX</strong> パラメータは <strong><a href="#2-ucxパラメータ設定方法関連tips">2. UCXパラメータ設定方法関連Tips</a></strong> を参照してください。</p>
 
-<p>下表は、本Tipsで紹介する <strong>MCA</strong> ・ <strong>UCX</strong> パラメータの一覧です。<br />
+<p>下表は、本章で紹介する <strong>MCA</strong> ・ <strong>UCX</strong> パラメータの一覧です。<br />
 各パラメータの詳細は、 <strong>名称</strong> 列をクリックしてください。</p>
 
 <table>
@@ -574,7 +576,7 @@ or
       <td style="text-align: center"><strong><a href="#3-5-ucx_net_devices">UCX_NET_DEVICES</a></strong></td>
       <td style="text-align: center"><strong>UCX</strong></td>
       <td style="text-align: center">パフォーマンス</td>
-      <td style="text-align: center">-</td>
+      <td style="text-align: center">all</td>
       <td style="text-align: center">ネットワークデバイスの指定</td>
     </tr>
     <tr>
@@ -684,7 +686,7 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
 <p><strong>UCX</strong> が使用する通信トランスポートを指定します。<br />
 複数のトランスポートを指定する場合は、カンマ区切りで列挙し、指定する順序は意味を持ちません。</p>
 
-<p>使用する通信トランスポートは、MPI通信性能に大きく影響を及ぼします。</p>
+<p>使用する通信トランスポートは、MPI通信性能に影響を及ぼします。</p>
 
 <p>下表は、使用可能な代表的な通信トランスポートです。</p>
 
@@ -699,6 +701,14 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
     <tr>
       <td style="text-align: center"><strong>all</strong></td>
       <td style="text-align: center">利用可能な全ての通信トランスポートから <strong>UCX</strong> が選択（デフォルト）</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>self</strong></td>
+      <td style="text-align: center">同一プロセス内通信用ループバックトランスポート</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>sm</strong></td>
+      <td style="text-align: center">利用可能な共有メモリトランスポートから <strong>UCX</strong> が選択</td>
     </tr>
     <tr>
       <td style="text-align: center"><strong>posix</strong></td>
@@ -739,20 +749,20 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
   </tbody>
 </table>
 
-<p>以下は、 <strong>UCX_TLS</strong> に <strong>posix</strong> 、 <strong>xpmem</strong> 、及び <strong>rc</strong> を指定しています。</p>
+<p>以下は、 <strong>UCX_TLS</strong> に <strong>self</strong> 、 <strong>sm</strong> 、及び <strong>rc</strong> を指定しています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>posix,xpmem,rc a.out
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-x</span> <span class="nv">UCX_TLS</span><span class="o">=</span>self,sm,rc a.out
 </code></pre></div></div>
 
 <h2 id="3-5-ucx_net_devices">3-5. UCX_NET_DEVICES</h2>
 
 <p><strong>UCX</strong> が通信に使用するネットワークデバイスを指定します。<br />
-<strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用する場合は、 <strong>クラスタ・ネットワーク</strong> 接続に使用するNICのRDMAリンク名（ <strong>BM.Optimized3.36</strong> の場合は <strong>mlx5_2:1</strong> ）を指定します。</p>
+<strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 対応シェイプを使用する場合は、 <strong>クラスタ・ネットワーク</strong> 接続に使用するNICのRDMAリンク名（ <strong>BM.Optimized3.36</strong> の場合は <strong>mlx5_2:1</strong> ）を指定します。また設定値 <strong>all</strong> （デフォルト）は、 <strong>UCX</strong> に利用可能なネットワークデバイスから選択させることを指定します。</p>
 
-<p>使用するnetworkデバイスは、MPI通信性能に大きく影響を及ぼします。</p>
+<p>使用するネットワークデバイスは、MPI通信性能に影響を及ぼします。</p>
 
 <p>NICのRDMAリンク名は、以下のコマンドで調査することが可能です。<br />
-以下は、 <strong>BM.Optimized3.36</strong> での実行例で、表示される値の <strong>/</strong> を <strong>:</strong> に置き換えて <strong>UCX_NET_DEVICES</strong> 値とします。</p>
+以下は、 <strong>BM.Optimized3.36</strong> での実行例で、表示される値の <strong>/</strong> を <strong>:</strong> に置き換えて <strong>UCX_NET_DEVICES</strong> に設定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rdma <span class="nb">link </span>show
 <span class="nb">link </span>mlx5_0/1 state ACTIVE physical_state LINK_UP netdev eth0 
@@ -823,7 +833,7 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-17T23:53:36+09:00">March 17, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-18T02:50:34+09:00">March 18, 2025</time></p>
 
       </footer>
 
@@ -847,7 +857,7 @@ Hello World FORTRAN  1  2 Run on inst-echgs-x9-ol81-hpc-nps1
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/benchmark/cpu-binding/" class="pagination--pager" title="パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法
+      <a href="/ocitutorials/hpc/benchmark/cpu-binding/" class="pagination--pager" title="パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）
 ">次へ</a>
     
   </nav>

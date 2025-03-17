@@ -1085,6 +1085,12 @@ var store = [{
         "url": "/ocitutorials/hpc/spinup-gpu-cluster/",
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster/architecture_diagram.png"
       },{
+        "title": "GPUインスタンスで分散機械学習環境を構築する",
+        "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 containerd と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証後、分散機械学習の稼働確認として TensorFlow の MultiWorkerMirroredStrategy を使用するサンプルプログラムを実行、その性能を検証します。 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。 [GPUノード] シェイプ： BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8 OS： プラットフォーム・イメージ Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0 [Bastionノード] シェイプ ： VM.Standard.E4.Flex OS ： プラットフォーム・イメージ Oracle-Linux-8.10-2025.02.28-0 [ソフトウェア] コンテナランタイム ： containerd 2.0.3 NVIDIA Container Toolkit ：...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/spinup-ml-instance-cntnd/",
+        "teaser": "/ocitutorials/hpc/spinup-ml-instalce-cntnd/architecture_diagram.png"
+      },{
         "title": "GPUクラスタを構築する(基礎インフラ自動構築編)",
         "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード構築 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 構築したBastionノード・GPUノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。...","categories": [],
         "tags": [],
@@ -1188,7 +1194,7 @@ var store = [{
         "teaser": null
       },{
         "title": "パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法",
-        "excerpt":"0. 概要 ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。 NUMA nodes per socket （以降 NPS と呼称） NPS は、CPUソケット当たりの NUMA（Non-Umiform Memory Access）ノード数を指定するBIOS設定です。 現在のサーバ用途CPUでメモリ性能を向上させるために採用されているメモリインタリーブは、インターリーブするメモリチャネルを同一NUMAノードに接続されるものに限定します。このため、NPSを適切に調整することで、あるCPUコアから見て距離的に同じメモリチャネルのみをインターリーブし、 STREAM ベンチマークのようなメモリアクセスパターンを持つアプリケーションの性能を向上させることが可能でです。 例えば、AMD EPYC 9654プロセッサと同じアーキテクチャの BM.Standard.E5.192 のプロセッサは、12個の CCD（Core Complex Die）と、 I/O Die 内の UMC（Unified Memory Controller）が下図 （出典： AMD EPYC 9004 Series Architecture Overview）のように構成されており、12個の UMC が最も距離が近い関係（ローカル）にある3個の UMC 4グループに分かれています。 そこで NPS を4に設定することで、最も距離の近い3個の UMC のグループ内にメモリインターリーブを限定します。 指定可能な NPS...","categories": [],
+        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 ベアメタルインスタンスは、デプロイ時にBIOS設定を指定することが可能ですが、この中にはHPCワークロードの実行時パフォーマンスに影響する以下の項目が含まれます。 NUMA nodes per socket （以降 NPS と呼称） NPS は、CPUソケット当たりの NUMA（Non-Umiform Memory Access）ノード数を指定するBIOS設定です。 現在のサーバ用途CPUでメモリ性能を向上させるために採用されているメモリインタリーブは、インターリーブするメモリチャネルを同一NUMAノードに接続されるものに限定します。このため、NPSを適切に調整することで、あるCPUコアから見て距離的に同じメモリチャネルのみをインターリーブし、 STREAM ベンチマークのようなメモリアクセスパターンを持つアプリケーションの性能を向上させることが可能でです。 例えば、AMD EPYC 9654プロセッサと同じアーキテクチャの BM.Standard.E5.192 のプロセッサは、12個の CCD（Core Complex Die）と、 I/O Die 内の UMC（Unified Memory Controller）が下図 （出典： AMD EPYC 9004 Series Architecture Overview）のように構成されており、12個の UMC が最も距離が近い関係（ローカル）にある3個の UMC 4グループに分かれています。 そこで NPS を4に設定することで、最も距離の近い3個の UMC...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/bios-setting/",
         "teaser": null
@@ -1217,14 +1223,14 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/openmpi-perftips/",
         "teaser": null
       },{
-        "title": "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法",
+        "title": "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）",
         "excerpt":"0. 概要 0-0. 概要 本パフォーマンス関連Tipsは、NUMA（Non-Umiform Memory Access）アーキテクチャを採用するインスタンスに於ける並列プログラムの実行時性能に大きく影響する、MPIが生成するプロセスとOpenMPが生成するスレッドのコア割当てについて、アプリケーション性能に有利となる典型的なパターンを例に挙げ、以下の観点でその実行方法を解説します。 PRRTEを使用するプロセス・スレッドのコア割当て この割当て方法は、 OpenMPI に同梱される PRRTE のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、ジョブスケジューラを使用せずに mpirun を使用してMPI並列アプリケーションをインタラクティブに実行する場合に使用します。 Slurmを使用するプロセス・スレッドのコア割当て この割当て方法は、 Slurm のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、 Slurm のジョブスケジューラ環境で srun を使用してMPI並列アプリケーションを実行する場合に使用します。 また 最後の章 では、プロセス・スレッドのコア割当てが想定通りに行われているかどうかを確認する方法と、この方法を使用して本パフォーマンス関連Tipsで紹介したコア割当てを行った際の出力例を紹介します。 なお、プロセス・スレッドのコア割当て同様に並列プログラムの実行時性能に大きく影響するメモリ割り当ては、割当てられるコアと同一NUMAノード内のメモリを割り当てることにより多くのケースで性能が最大となることから、以下のように - -localalloc オプションを付与した numactl コマンドの使用を前提とし、本パフォーマンス関連Tipsの実行例を記載します。 $ numactl --localalloc a.out 0-1. 前提システム プロセス・スレッドのコア割当ては、使用するインスタンスのNUMAアーキテクチャやNUMAノードの構成方法に影響を受けますが、本パフォーマンス関連Tipsでは Intel Ice Lake プロセッサを搭載する BM.Optimized3.36...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/cpu-binding/",
         "teaser": null
       },{
-        "title": "OpenMPIのMPI集合通信チューニング方法",
-        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード当たりMPIプロセス数 ： 8 ・ 16 ・...","categories": [],
+        "title": "OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）",
+        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベア・メタル・シェイプ BM.Optimized3.36 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード数 ： 1 ・ 2 ・...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/openmpi-perftune/",
         "teaser": null
@@ -1356,7 +1362,7 @@ var store = [{
         "teaser": null
       },{
         "title": "UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法",
-        "excerpt":"機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。 本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。 注意 : テクニカルTips内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 インスタンスOSに利用可能なLinuxディストリビューションは、 Oracle Linux をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。 NVIDIA Driver : NVIDIA製GPUドライバソフトウェア NVIDIA CUDA : CUDAライブラリ NVIDIA Fabric Manager : NVSwitch （ BM.GPU4.8 / BM.GPU.A100-v2.8 に搭載）管理ソフトウェア（※1） ※1）NVSwitch を搭載するシェイプの場合のみインストールします。 本テクニカルTipsは、これらのソフトウェアをインストールし CUDA Samples でその動作確認を行う手順を、GPUシェイプ BM.GPU4.8 とUbuntu 20.04を例に解説します。 1. GPUインスタンスデプロイ 本章は、Ubuntu 20.04をOSとする BM.GPU4.8 をデプロイします。 OCIコンソールにログインし、GPUインスタンスをデプロイする リージョン を選択後、 コンピュート →...","categories": [],
+        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 インスタンスOSに利用可能なLinuxディストリビューションは、 Oracle Linux をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。 NVIDIA Driver : NVIDIA製GPUドライバソフトウェア NVIDIA CUDA : CUDAライブラリ NVIDIA Fabric Manager : NVSwitch （ BM.GPU4.8 / BM.GPU.A100-v2.8 に搭載）管理ソフトウェア（※1） ※1）NVSwitch を搭載するシェイプの場合のみインストールします。 本テクニカルTipsは、これらのソフトウェアをインストールし CUDA Samples でその動作確認を行う手順を、GPUシェイプ BM.GPU4.8 とUbuntu 20.04を例に解説します。 1. GPUインスタンスデプロイ 本章は、Ubuntu 20.04をOSとする BM.GPU4.8 をデプロイします。 OCIコンソールにログインし、GPUインスタンスをデプロイする リージョン を選択後、 コンピュート → インスタンス とメニューを辿ります。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/",
         "teaser": null

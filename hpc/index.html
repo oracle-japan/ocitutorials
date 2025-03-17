@@ -474,6 +474,15 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
       <td style="text-align: center"><strong>Oracle Linux</strong> 7.9/8</td>
     </tr>
     <tr>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで<br />分散機械学習環境を構築する</a></strong></td>
+      <td style="text-align: center">単一</td>
+      <td style="text-align: center">手動構築</td>
+      <td style="text-align: center">無し</td>
+      <td style="text-align: center">スタティック</td>
+      <td style="text-align: center"><strong>containerd</strong></td>
+      <td style="text-align: center"><strong>Oracle Linux</strong> 8</td>
+    </tr>
+    <tr>
       <td style="text-align: center"><strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する<br />(基礎インフラ手動構築編)</a></strong></td>
       <td style="text-align: center">複数</td>
       <td style="text-align: center">手動構築</td>
@@ -663,7 +672,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   <li>
     <p><strong><a href="#2-1-標準ベンチマーク実行方法">標準ベンチマーク実行方法</a></strong></p>
 
-    <p>このカテゴリは、 <strong>OCI</strong> 上に構築したHPC/GPUクラスタに対して、これらが想定通りの性能となっているかを確認する際に有効な標準ベンチマークの実行方法を解説しています。</p>
+    <p>このカテゴリは、構築したHPC/GPUクラスタが想定通りの性能となっているかを確認する際に有効な、標準ベンチマークの実行方法を解説しています。</p>
   </li>
   <li>
     <p><strong><a href="#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong></p>
@@ -679,7 +688,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 <h2 id="2-1-標準ベンチマーク実行方法">2-1. 標準ベンチマーク実行方法</h2>
 
-<p>本章は、HPC/機械学習ワークロードを実行する際に性能の指標となる、OCIの各種IaaSサービスの基礎性能を計測するデファクトスタンダードな以下の標準ベンチマークについて、HPC/機械学習ワークロード向けシェイプや <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用して実行する方法を解説します。</p>
+<p>本章は、HPC/GPUクラスタの基礎性能を計測するデファクトスタンダードな以下の標準ベンチマークを、HPC/機械学習ワークロード向けシェイプや <strong><a href="#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を使用して実行する方法を解説します。</p>
 
 <ul>
   <li><strong>HPL</strong></li>
@@ -762,17 +771,24 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   本パフォーマンス関連Tipsは、 <strong>OpenMPI</strong> のMPI通信性能に影響するパラメーターやその指定方法に関する有益なTipsを解説します。</p>
   </li>
   <li>
-    <p><strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></strong></p>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></strong></p>
 
     <p>NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。<br />
   このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。<br />
-  本パフォーマンス関連Tipsは、 <strong>MPI</strong> 実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、 <strong>OpenMP</strong> 実装にGNUコンパイラ、及びジョブスケジューラに <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> を取り上げ、これらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。</p>
+  本パフォーマンス関連Tipsは、 <strong>MPI</strong> 実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、 <strong>OpenMP</strong> 実装にGNUコンパイラ、及びジョブスケジューラに <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> を取り上げ、HPCワークロード向けベア・メタル・シェイプ <strong>BM.Optimized3.36</strong> でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。</p>
   </li>
   <li>
-    <p><strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法</a></strong></p>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></strong></p>
+
+    <p>NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。<br />
+  このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。<br />
+  本パフォーマンス関連Tipsは、 <strong>MPI</strong> 実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、 <strong>OpenMP</strong> 実装にGNUコンパイラ、及びジョブスケジューラに <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> を取り上げ、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプ <strong>BM.Standard.E5.192</strong> でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。</p>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></strong></p>
 
     <p>MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や <strong>NUMA nodes per socket</strong> 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。<br />
-  本パフォーマンス関連Tipsは、MPIの実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> を取り上げ、これが採用する <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> や <strong><a href="https://openucx.org/">UCX</a></strong> の実行時パラメーター、MPIプロセス分割方法や <strong>NUMA nodes per socket</strong> を組合せて、MPI集合通信をチューニングする方法を解説します。</p>
+  本パフォーマンス関連Tipsは、MPIの実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> を取り上げ、これが採用する <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> や <strong><a href="https://openucx.org/">UCX</a></strong> の実行時パラメーター、MPIプロセス分割方法や <strong>NUMA nodes per socket</strong> を組合せて、HPCワークロード向けベア・メタル・シェイプ <strong>BM.Optimized3.36</strong> でMPI集合通信をチューニングする方法を解説します。</p>
   </li>
 </ul>
 
@@ -947,21 +963,21 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></strong></p>
 
     <p>パブリッククラウドは、ワークロード発生時に必要な規模のHPC/GPUクラスタを構築し、ワークロード終了時にこれを削除する、オンデマンドクラスタ環境を構築するには最適なサービスです。<br />
-  オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要な <strong>OCI</strong> リソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証が用意されています。<br />
+  オンデマンドクラスタの管理は、ソフトウェアにより自動化することが一般的ですが、HPC/GPUクラスタに必要なリソースの作成・終了をこのアプリケーションに許可するための仕組みとして、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> 認証が用意されています。<br />
   本テクニカルTipsは、オンデマンドクラスタを念頭とした <strong>インスタンス・プリンシパル</strong> 認証の設定方法を解説します。</p>
   </li>
   <li>
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></strong></p>
 
     <p>ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。<br />
-   <strong>OCI</strong> 上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/home.htm">OCIロギング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したログ監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
+  このフレームワーク構築に活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/home.htm">OCIロギング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したログ監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
   本テクニカルTipsは、 <strong>OCIロギング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。</p>
   </li>
   <li>
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></strong></p>
 
     <p>HPCワークロードや機械学習ワークロードを実行するHPC/GPUクラスタは、ワークロード実行中のCPU/GPU使用率、メモリ使用率、ネットワーク使用帯域等のメトリックを定期的に監視し、高価な計算資源を有効活用することが求められますが、ノード数が多くなるHPC/GPUクラスタでは、これらメトリックの監視が一元的・効率的に行える必要があります。<br />
-   <strong>OCI</strong> 上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Monitoring/home.htm">OCIモニタリング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したメトリック監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
+  このフレームワーク構築に活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Monitoring/home.htm">OCIモニタリング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したメトリック監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
   本テクニカルTipsは、 <strong>OCIモニタリング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのメトリックを効率的に監視する方法を解説します。</p>
   </li>
 </ul>
@@ -1012,7 +1028,14 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p><strong><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></strong></p>
 
     <p>オープンソースの <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> は、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。<br />
-  本テクニカルTipsは、 <strong>OCI</strong> 上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を <strong>Slurm</strong> で効果的に運用するための様々なテクニカルTipsをご紹介します。</p>
+  本テクニカルTipsは、構築するHPC/GPUクラスタのリソース管理・ジョブ管理を <strong>Slurm</strong> で効果的に運用するための様々なテクニカルTipsをご紹介します。</p>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong></p>
+
+    <p>HPCワークロードは、複数の計算ノードを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタで実行することが主流ですが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E5.192</a></strong> のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。<br />
+  このように単一ノードでHPCワークロードを実行する場合は、ベースOSの <strong>Oracle Linux</strong> のバージョンに制約のある <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用する必要が無く、 <strong>プラットフォーム・イメージ</strong> から最新の <strong>Oracle Linux</strong> を選択することが可能になります。<br />
+  本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 <strong>プラットフォーム・イメージ</strong> から提供される最新の <strong>Oracle Linux</strong> 上に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> をインストールしてHPC環境を構築する方法を解説します。</p>
   </li>
 </ul>
 
@@ -1088,7 +1111,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p><strong><a href="https://github.com/oss-tsukuba/incus-auto/tree/main/example/gfarm-terraform-oci">Gfarm development environment on OCI managed by Terraform and Ansible</a></strong></p>
 
     <p><strong><a href="http://oss-tsukuba.org/software/gfarm">Gfarmファイルシステム</a></strong> は、 <strong><a href="http://oss-tsukuba.org/">NPO法人つくばOSS技術支援センター</a></strong> が技術支援を提供し、オープンソースとして利用可能な大容量、高信頼、高性能なストレージを低コストで提供する、分散ファイルシステムです。<br />
-  <strong>Gfarmファイルシステム</strong> は、ファイルサーバとして機能するファイルシステムノードを複数用意し、これらのノードにデータを複製として分散配置することで、高い帯域幅と可能性を実現します。<br />
+  <strong>Gfarmファイルシステム</strong> は、ファイルサーバとして機能するファイルシステムノードを複数用意し、これらのノードにデータを複成して分散配置することで、高い帯域幅と可用性を実現します。<br />
   本GitHubサイトは、 <strong>Gfarm</strong> 環境を <strong>OCI</strong> 上に <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> と <strong>Ansible</strong> で自動構築するスクリプト群を提供し、トップページの構築手順に従うことでその構築作業を大幅に簡素化します。</p>
   </li>
 </ul>
@@ -1136,7 +1159,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 <p>関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm">ここ</a></strong> を参照してください。</p>
 
-<p>OCIコンソールの <strong>クラスタ・ネットワーク</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/cluster-networks">ここ</a></strong> をクリックしてアクセスします。 <strong>OCI</strong> へのログインを要求された場合は、ログインを完了して下さい。</p>
+<p><strong>OCI</strong> コンソールの <strong>クラスタ・ネットワーク</strong> メニューは、 <strong><a href="https://cloud.oracle.com/compute/cluster-networks">ここ</a></strong> をクリックしてアクセスします。 <strong>OCI</strong> へのログインを要求された場合は、ログインを完了して下さい。</p>
 
 <h2 id="5-2-リソースマネージャ">5-2. リソース・マネージャ</h2>
 
@@ -1247,7 +1270,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   <li>ジョブスケジューラからのコンテナインポート・起動・停止（ <strong><a href="https://github.com/NVIDIA/pyxis">Pyxis</a></strong> ）</li>
 </ul>
 
-<p>またこのスタックは、構築を大きく2つのステップに分けて実行しており、前半は <strong><a href="#5-12-terraform">Terraform</a></strong> を使用した <strong>OCI</strong> レベルのリソース構築フェーズで、後半は <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> から起動される <strong>Ansible</strong> によるOSレベルのカスタマイズフェーズです。<br />
+<p>またこのスタックは、構築を大きく2つのステップに分けて実行しており、前半は <strong><a href="#5-12-terraform">Terraform</a></strong> を使用した <strong>OCI</strong> リソース構築フェーズで、後半は <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> から起動される <strong>Ansible</strong> によるOSカスタマイズフェーズです。<br />
 具体的には、使用する機能により以下のような処理が行われます。</p>
 
 <p>［ <strong>Terraform</strong> による <strong>OCI</strong> リソース構築フェーズ］</p>
@@ -1308,7 +1331,7 @@ runcmd:
 
 <p><strong>OCI</strong> における <strong>Terraform</strong> は、 <strong><a href="#5-2-リソースマネージャ">リソース・マネージャ</a></strong> から利用する方法と、ソフトウェアをインストールして <strong>OCI</strong> との認証関係を結んだ <strong>Terraform</strong> 実行環境から <strong>Terraform</strong> CLIで利用する方法があります。</p>
 
-<p>以下は、 <strong>Terraform</strong> 実行環境で <strong>Terraform</strong> CLIを利用して <strong>OCI</strong> 上にリソースを作成する様子を示しています。</p>
+<p>以下は、 <strong>Terraform</strong> 実行環境で <strong>Terraform</strong> CLIを利用して <strong>OCI</strong> リソースを作成する様子を示しています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span>
 total 24
@@ -1337,7 +1360,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 
 <p>関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm">ここ</a></strong> を参照してください。</p>
 
-<p><strong>Terraform</strong> CLIを使用して <strong>OCI</strong> 上にリソースを自動構築する方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCI チュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> を参照してください。</p>
+<p><strong>Terraform</strong> CLIを使用して <strong>OCI</strong> リソースを自動構築する方法は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCI HPCチュートリアル集</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/intermediates/terraform/">TerraformでOCIの構築を自動化する</a></strong> を参照してください。</p>
 
 <h2 id="5-13-クラスタネットワーキングイメージ">5-13. クラスタネットワーキングイメージ</h2>
 
@@ -1361,7 +1384,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 
 <p><strong>構成ソース・プロバイダ</strong> は、 <strong>GitHub</strong> 等のソースコード管理サービスで公開されているソースコードを <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> として取り込むための、ソースコード管理サービスへの接続情報を持つ <strong>OCI</strong> リソースです。</p>
 
-<p><strong>GitHub</strong> 等で公開されている <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを基に <strong>OCI</strong> 上にHPC/GPUクラスタ等を自動構築する場合、まずこの <strong>構成ソース・プロバイダ</strong> を作成し、これを介して  <strong>Terraform</strong> スクリプトを <strong>GitHub</strong> 等から取り込んで <strong>リソース・マネージャ</strong> に <strong>スタック</strong> を作成、この <strong>スタック</strong> を適用してリソースを作成します。</p>
+<p><strong>GitHub</strong> 等で公開されている <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを基にHPC/GPUクラスタ等を自動構築する場合、まずこの <strong>構成ソース・プロバイダ</strong> を作成し、これを介して  <strong>Terraform</strong> スクリプトを <strong>GitHub</strong> 等から取り込んで <strong>リソース・マネージャ</strong> に <strong>スタック</strong> を作成、この <strong>スタック</strong> を適用してリソースを作成します。</p>
 
 <p><strong><a href="#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> で紹介する <strong>Terraform</strong> スクリプトを使用する手法は、ソースコード管理サービスに <strong>GitHub</strong> を使用しますが、 <strong>GitHub</strong> にアクセスするための <strong>構成ソース・プロバイダ</strong> の作成は、 <strong>GitHub</strong> のアカウントを持っておりこのアカウントで <strong>Personal access token</strong> を発行しておく必要があります。<br />
 <strong>GitHub</strong> のアカウント作成は <strong><a href="https://github.com/signup?ref_cta=Sign+up&amp;ref_loc=header+logged+out&amp;ref_page=%2F&amp;source=header-home">ここ</a></strong> 、 <strong>Personal access token</strong> の発行は <strong><a href="https://docs.github.com/ja/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens">ここ</a></strong> を参照してください。</p>
@@ -1379,7 +1402,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 
 <h2 id="5-15-インスタンスプリンシパル">5-15. インスタンス・プリンシパル</h2>
 
-<p><strong>インスタンス・プリンシパル</strong> は、 <strong>IAM</strong> が認証・認可を管理する単位の一つで、<strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> と <strong>IAMポリシー</strong> を組合せて使用することで、特定のインスタンスから実行する <strong>OCI</strong> サービスへのAPIコール（ <strong>OCI</strong> リソースの作成等）に対する認証・認可を制御する際に使用します。<br />
+<p><strong>インスタンス・プリンシパル</strong> は、 <strong>IAM</strong> が認証・認可を管理する単位の一つで、<strong><a href="/ocitutorials/hpc/#5-16-動的グループ">動的グループ</a></strong> と <strong>IAMポリシー</strong> を組合せて使用することで、特定のインスタンスから実行するAPIコール（ <strong>OCI</strong> リソースの作成等）に対する認証・認可を制御する際に使用します。<br />
 この <strong>IAM</strong> の認証・認可を管理する単位は、 <strong>インスタンス・プリンシパル</strong> の他に、 <strong>OCI</strong> コンソールにログインする際に使用する <strong>ユーザ・プリンシパル</strong> が存在します。</p>
 
 <p><strong>インスタンス・プリンシパル</strong> を使用する <strong>IAM</strong> 認証・認可の仕組みは、 <strong>インスタンス・プリンシパル</strong> 認証と呼ばれ、動的にHPC/GPUクラスタのライフサイクルを管理するソリューションに適用することが可能です。<br />
@@ -1394,7 +1417,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 9 de
 
 <p><strong>動的グループ</strong> は、 <strong><a href="/ocitutorials/hpc/#5-15-インスタンスプリンシパル">インスタンス・プリンシパル</a></strong> をグループ化する仕組みで、 <strong>インスタンス・プリンシパル</strong> による <strong>IAM</strong> 認証・認可を実施するには欠かせません。</p>
 
-<p><strong>インスタンス・プリンシパル</strong> と <strong>動的グループ</strong> の関係は、ユーザとこれを含むグループの関係に似ており、インスタンス等を含む <strong>動的グループ</strong> を定義し、これに対する <strong>IAMポリシー</strong> を設定することで、 <strong>ユーザ・プリンシパル</strong> 認証を使用することなく、 <strong>動的グループ</strong> に含まれる <strong>OCI</strong> リソースによる各種 <strong>OCI</strong> サービスへのAPIコールを制御することが出来ます。</p>
+<p><strong>インスタンス・プリンシパル</strong> と <strong>動的グループ</strong> の関係は、ユーザとこれを含むグループの関係に似ており、インスタンス等を含む <strong>動的グループ</strong> を定義し、これに対する <strong>IAMポリシー</strong> を設定することで、 <strong>ユーザ・プリンシパル</strong> 認証を使用することなく、 <strong>動的グループ</strong> に含まれる <strong>OCI</strong> リソースからの各種APIコールを制御することが出来ます。</p>
 
 <p><strong>動的グループ</strong> に含める <strong>インスタンス・プリンシパル</strong> は、以下のように定義することが可能です。</p>
 
