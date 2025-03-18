@@ -185,6 +185,11 @@ Fn Project CLIコンテキストで指定されたコンパートメントを選
 
 デプロイ前にFunctionsを実行するために環境変数をいくつか設定します。
 
+ホームディレクトリに戻ります。
+
+```sh
+cd
+```
 ```sh
 fn config app fn-crud-atp DB_USER usersvc
 ```
@@ -245,6 +250,12 @@ cd ../delete-func
 fn -v deploy --app fn-crud-atp
 ```
 これで、すべてのFunctionの作成とデプロイが完了しました。
+
+ホームディレクトリに戻ります。
+
+```sh
+cd
+```
 
 3.OCI API Gatewayの作成  
 -------------------
