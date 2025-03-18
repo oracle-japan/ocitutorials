@@ -1,11 +1,11 @@
 ---
 title: "GPUインスタンスで分散機械学習環境を構築する"
-excerpt: "GPUを搭載するインスタンスで分散機械学習環境を構築してみましょう。このチュートリアルは、大規模な機械学習ワークロードを実行するための分散機械学習環境を、複数のNVIDIA GPUを搭載するGPUインスタンスを含む必要なリソースを順次OCIコンソールから作成しながら構築します。"
-order: "1230"
+excerpt: "GPUを搭載するインスタンスで分散機械学習環境を構築してみましょう。このチュートリアルは、大規模な機械学習ワークロードを実行するための分散機械学習環境を、複数のGPUを搭載するGPUインスタンスをはじめとする分散機械学習環境に必要なリソースを順次OCIコンソールから作成しながら構築します。"
+order: "1220"
 layout: single
 header:
-  teaser: "/hpc/spinup-ml-instalce-cntnd/architecture_diagram.png"
-  overlay_image: "/hpc/spinup-ml-instalce-cntnd/architecture_diagram.png"
+  teaser: "/hpc/spinup-ml-instance-cntnd/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-ml-instance-cntnd/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -18,7 +18,7 @@ table, th, td {
 ***
 # 0. 概要
 
-本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降"GPUノード"と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証後、分散機械学習の稼働確認として **TensorFlow** の **MultiWorkerMirroredStrategy** を使用するサンプルプログラムを実行、その性能を検証します。
+本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降"GPUノード"と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。
 
 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。
 
@@ -29,10 +29,10 @@ table, th, td {
 
 [Bastionノード]
 
-- シェイプ ： **[VM.Standard.E4.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
+- シェイプ ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
 - OS ： **プラットフォーム・イメージ** **[Oracle-Linux-8.10-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-02-28-0.htm)**
 
-[ソフトウェア]
+[機械学習環境ソフトウェア]
 
 - コンテナランタイム ： **containerd** 2.0.3
 - **NVIDIA Container Toolkit** ： 1.17.5
@@ -41,12 +41,12 @@ table, th, td {
 
 **所要時間 :** 約2時間
 
-**前提条件 :** GPUインスタンスを収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
+**前提条件 :** 分散機械学習環境を収容する **コンパートメント** ( **ルート・コンパートメント** でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 ***
-# 1. GPUインスタンス作成事前作業
+# 1. GPUノード作成事前作業
 
 ## 1-0. 概要
 
@@ -57,9 +57,13 @@ table, th, td {
 本章は、GPUノードをTCP接続する **仮想クラウド・ネットワーク** を作成します。  
 **仮想クラウド・ネットワーク** の作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その2 - クラウドに仮想ネットワーク(VCN)を作る](https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn)** の手順に従い、以下のリソースを作成します。
 
-- **仮想クラウド・ネットワーク** （10.0.0.0/16）
-- パブリックサブネット（10.0.1.0/24）
-- プライベートサブネット（10.0.2.0/24）
+- **仮想クラウド・ネットワーク**
+	- **VCN名** ： vcn
+	- **VCN IPv4 CIDRブロック** ： 10.0.0.0/16
+- パブリックサブネット
+	- **IPv4 CIDRブロック** ： 10.0.0.0/24
+- プライベートサブネット
+	- **IPv4 CIDRブロック** ： 10.0.1.0/24
 - **インターネット・ゲートウェイ** （パブリックサブネットにアタッチ）
 - **NATゲートウェイ** （プライベートサブネットにアタッチ）
 - **サービス・ゲートウェイ** （プライベートサブネットにアタッチ）
@@ -76,7 +80,7 @@ table, th, td {
 | プライベート | イングレス | いいえ    | 10.0.0.0/16 | 全てのプロトコル | -         | -       |
 |        | イグレス  | いいえ    | 0.0.0.0/0   | 全てのプロトコル | -         | -       |
 
-※2）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのIPアドレスに限定することで、不正アクセスを防ぐことが可能です。
+※2）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。
 
 ## 1-2. Bastionノード作成
 
@@ -85,15 +89,37 @@ table, th, td {
 Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で **仮想クラウド・ネットワーク** を作成した **コンパートメント** とパブリックサブネットを指定して作成します。  
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
+- **名前** ： bastion
 - **イメージ** ： **Oracle Linux** 8.10（Oracle-Linux-8.10-2025.02.28-0）
-- **シェイプ** ： **[VM.Standard.E4.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** （任意のコア数・メモリ容量）
+- **シェイプ** ： **VM.Standard.E5.Flex** （任意のコア数・メモリ容量）
+- **サブネット** ： 先に作成したパブリックサブネット
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
-次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行、SSH鍵ペアを作成してこの公開鍵を **authorized_keys** に登録します。  
+次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行してSSH鍵ペアを作成し、その公開鍵を控えます。  
 このSSH鍵は、BastionノードからGPUノードにログインする際に使用します。
 
 ```sh
 $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+Generating public/private rsa key pair.
+Your identification has been saved in /home/opc/.ssh/id_rsa.
+Your public key has been saved in /home/opc/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:gROjFmmm2yf3Frsg2P2T7cBzSCCEiml9BRGDnhi5qBs opc@bastion
+The key's randomart image is:
++---[RSA 3072]----+
+|  ..+**          |
+| o.o+o.=         |
+|oo*+= = .        |
+|=+.= o o .       |
+|o  o.   S        |
+|E .oo.oo..       |
+| o. o+o.==.      |
+|.    . o*+.      |
+|       .o+.      |
++----[SHA256]-----+
+$ cat .ssh/id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrLpD1kDQQzsc6Q8ndyOu6h7X3E0FGY2SDjDyhJRdntbOZKPkYkQrGHbhnBllFPMV4NlObkf/YX6a9bc4vrGgnayRgfj0vOZ0RKlJmkfjAR/7Cw48LzQnaDDq2HHZAo+c71WBSjLt1SsX7tXHqkzjGUv44qqEiC6qlEiZd9yevA7kR0IoN9dIWXaKnMbOVGr8DezyLsruoQxhj6bHNwXhEjlGPg8E6R35AdjGeGZOCYT2clfMu9iavuzR5dilysARq1Lxow2/MEija3/twxmzhxVbwoGTXE0sCz3SGMnHTwLGEE7Tok+i7zZMB2ySbCM42Icz3Ja2qxNxqdx9YUKZ48SgkNPrMMouZGm+lZrZf0dypQqDbUrA0uZkkTUR+RTY+V/0MmuH6eDgHQLjxzo07/+gw2BG9CMcor0fMYhEJiKUVRy2LXBIK2Zj2+Ow7zs552f7SRGWnAktU7sTU801frAjE= opc@bastion
+$
 ```
 
 ***
@@ -102,6 +128,8 @@ $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 ## 2-0. 概要
 
 本章は、GPUノードを作成します。
+
+本チュートリアルは、GPUノードに **BM.GPU3.8** を使用しますが、 **BM.GPU4.8 / BM.GPU.A100-v2.8** の場合で手順が異なる箇所は、その旨明記します。
 
 GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
 
@@ -115,10 +143,13 @@ GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減�
 本チュートリアルは、 **cloud-init** を以下の目的で使用します。
 
 - タイムゾーンをJSTに変更
+- NVMe SSDローカルディスク領域ファイルシステム作成（ **BM.GPU4.8 / BM.GPU.A100-v2.8** の場合のみ）
 - firewalld停止
 - ルートファイルシステム拡張
 
 以下は、本チュートリアルで使用する **cloud-config** で、OCIコンソールを実行している端末上にテキストファイルで保存します。
+
+[ **BM.GPU3.8** ]
 
 ```sh
 #cloud-config
@@ -127,6 +158,32 @@ GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減�
 timezone: Asia/Tokyo
 
 runcmd:
+#
+# Stop firewalld
+  - systemctl disable --now firewalld
+#
+# Expand root file system to those set by instance configuration
+  - /usr/libexec/oci-growfs -y
+```
+
+[ **BM.GPU4.8 / BM.GPU.A100-v2.8** ]
+
+```sh
+#cloud-config
+#
+# Change time zone to JST
+timezone: Asia/Tokyo
+
+runcmd:
+#
+# NVMe local storage setting
+  - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+  - lvcreate -l 100%FREE nvme
+  - mkfs.xfs -L localscratch /dev/nvme/lvol0
+  - mkdir -p /mnt/localdisk
+  - echo "LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0" >> /etc/fstab
+  - systemctl daemon-reload
+  - mount /mnt/localdisk
 #
 # Stop firewalld
   - systemctl disable --now firewalld
@@ -154,7 +211,7 @@ OCIコンソールにログインし、GPUノードをデプロイするリー�
 
 2. **配置** フィールド
 
-	- **可用性ドメイン** ：インスタンスをデプロイする可用性ドメイン
+	- **可用性ドメイン** ：インスタンスをデプロイする **可用性ドメイン**
 
 	![画面ショット](console_page03.png)
 
@@ -166,7 +223,7 @@ OCIコンソールにログインし、GPUノードをデプロイするリー�
 
     ![画面ショット](console_page05.png)
 
-	- **イメージ** ：Oracle-Linux-8.10-2025.02.28-0（ **イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **イメージ名**  **Oracle Linux 8** の右端のアイコンをクリックして表示される **イメージ・ビルド** フィールドで **Oracle-Linux-8.10-2025.02.28-0** を選択し **イメージの選択** ボタンをクリック）
+	- **イメージ** ：Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0（ **イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **イメージ名**  **Oracle Linux 8** の右端のアイコンをクリックして表示される **イメージ・ビルド** フィールドで **Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0** を選択し **イメージの選択** ボタンをクリック）
 
     ![画面ショット](console_page06.png)
 
@@ -220,16 +277,16 @@ GPUノードのIPアドレスは、OCIコンソールでGPUノードをデプロ
 GPUノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
 
 ```sh
-$ ssh -oStrictHostKeyChecking=accept-new inst-xxxxx-gpu4-ol89
+$ ssh -oStrictHostKeyChecking=accept-new 10.0.1.76
 ```
 
 ## 3.2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
+**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であってもその処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
 ```sh
-$ sudo cloud-init status
+$ cloud-init status
 status: done
 $
 ```
@@ -246,12 +303,24 @@ $
 
 ## 3-4. ファイルシステム確認
 
-以下コマンドをGPUノードのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていることを確認します。
+以下コマンドをGPUノードのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていること、 **BM.GPU4.8 / BM.GPU.A100-v2.8** の場合はNVMe SSDローカルディスク領域ファイルシステムがマウントされていることを確認します。
+
+[ **BM.GPU3.8** ]
 
 ```sh
 $ df -h /
 Filesystem                  Size  Used Avail Use% Mounted on
 /dev/mapper/ocivolume-root  189G   39G  151G  21% /
+$
+```
+
+[ **BM.GPU4.8 / BM.GPU.A100-v2.8** ]
+
+```sh
+$ df -h / /mnt/localdisk
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root  189G   39G  151G  21% /
+/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
 $
 ```
 
@@ -269,25 +338,11 @@ $
 ***
 # 4. コンテナ環境構築
 
-本章は、 **containerd** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
+本章は、 **containerd** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築・確認します。
 
-以下コマンドをGPUノードのopcユーザで実行し、 **containerd** と **NVIDIA Container Toolkit** をインストールしこれを起動します。
+以下コマンドをGPUノードのopcユーザで実行し、 **containerd** と **NVIDIA Container Toolkit** をインストールします。
 
 ```sh
-$ pdsh -g all 'sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo' | dshbak -c
-----------------
-inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
-----------------
-Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
-$ pdsh -g all 'sudo dnf install -y docker-ce nvidia-container-toolkit > /dev/null 2>&1; echo $?' | dshbak -c
-----------------
-inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
-----------------
-0
-$ pdsh -g all 'sudo systemctl enable --now docker 2> /dev/null' | dshbak -c
-$
-
-
 $ cd ~ && wget https://github.com/containerd/containerd/releases/download/v2.0.3/containerd-2.0.3-linux-amd64.tar.gz
 $ sudo tar -C /usr/local -xvf ./containerd-2.0.3-linux-amd64.tar.gz
 $ sudo wget -P /usr/lib/systemd/system/ https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
@@ -298,10 +353,19 @@ $ wget https://github.com/containernetworking/plugins/releases/download/v1.6.2/c
 $ sudo mkdir -p /opt/cni/bin && sudo tar -C /opt/cni/bin -xvf ./cni-plugins-linux-amd64-v1.6.2.tgz
 $ wget https://github.com/containerd/nerdctl/releases/download/v2.0.3/nerdctl-2.0.3-linux-amd64.tar.gz
 $ sudo tar -C /usr/local/bin/ -xvf ./nerdctl-2.0.3-linux-amd64.tar.gz 
-nerdctl
 $ sudo sed -i '/^Defaults    secure_path/s/$/:\/usr\/local\/bin/g' /etc/sudoers
 $ sudo dnf install -y nvidia-container-toolkit
+```
+
+次に、以下コマンドをGPUノードのopcユーザで実行し、 **containerd** を起動・確認します。
+
+```sh
 $ sudo systemctl enable --now containerd
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /usr/lib/systemd/system/containerd.service.
+$ sudo systemctl status containerd | grep -e Active -e enabled
+   Loaded: loaded (/usr/lib/systemd/system/containerd.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2025-03-18 12:15:11 JST; 1min 13s ago
+$
 ```
 
 次に、以下コマンドをGPUノードのopcユーザで実行し、コンテナ上でGPUノードが搭載するGPUにアクセスできることを確認します。
@@ -374,17 +438,27 @@ $
 ***
 # 5. NCCL Tests実行
 
-本章は、 **NGC Catalog** から提供される **TensorFlow NGC Container** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、コンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
+本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、コンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
 
+以下コマンドをGPUノードのopcユーザで実行し、 **TensorFlow NGC Container** を起動します。  
+本コンテナのサイズは、約14 GBです。
 
 ```sh
 $ sudo nerdctl run -it --privileged --rm --gpus all --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 nvcr.io/nvidia/tensorflow:24.06-tf2-py3
 ```
 
+次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 **NCCL Tests** を **GitHub** からダウンロードしてビルドします。
+
 ```sh
 $ apt update
 $ git clone https://github.com/NVIDIA/nccl-tests.git
 $ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu
+```
+
+次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 **NCCL Tests** を実行します。  
+以下では、 **BM.GPU3.8** の8枚の **NVIDIA Tesla V100 16 GB** を使用し、busbwで **135 GB/s** の性能が確認できます。
+
+```sh
 $ ./build/all_reduce_perf -b 1G -e 1G -f 2 -t 1 -g 8
 # nThread 1 nGpus 8 minBytes 1073741824 maxBytes 1073741824 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
@@ -410,13 +484,17 @@ $
 ```
 
 ***
-# 6. GPUノードの削除
+# 6. GPUノード削除
 
 本章は、GPUノードを削除します。
 
 OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で作成したGPUノードの **終了** メニューをクリックします。
 
 ![画面ショット](console_page13.png)
+
+次に、表示される以下 **インスタンスの終了** 画面で、 **アタッチされたブート・ボリュームを完全に削除** チェックボックスをチェックし、 **インスタンスの終了** ボタンをクリックします。
+
+![画面ショット](console_page14.png)
 
 GPUノードの **状態** が **終了済** となれば、削除が完了しています。
 
