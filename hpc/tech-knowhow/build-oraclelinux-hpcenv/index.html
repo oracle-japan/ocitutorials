@@ -1,0 +1,937 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">
+
+
+  <meta property="og:description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-03-18T13:02:51+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法
+
+        
+      </h1>
+      
+        <p class="page__lead">HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/tech-knowhow" itemprop="item"><span itemprop="name">Tech knowhow</span></a>
+          <meta itemprop="position" content="3" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/" class="active">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法">
+    <meta itemprop="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+    <meta itemprop="datePublished" content="2025-03-18T13:02:51+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-環境構築">1. 環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンス作成">1-1. インスタンス作成</a></li><li><a href="#1-2-aoccインストール">1-2. AOCCインストール</a></li><li><a href="#1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール</a></li><li><a href="#1-4-openpmixインストール">1-4. OpenPMIxインストール</a></li><li><a href="#1-5-openucxインストール">1-5. OpenUCXインストール</a></li><li><a href="#1-6-openmpiインストールセットアップ">1-6. OpenMPIインストール・セットアップ</a></li><li><a href="#1-7-intel-mpi-benchmarksインストール">1-7. Intel MPI Benchmarksインストール</a></li><li><a href="#1-8-munge-インストールセットアップ">1-8. munge インストール・セットアップ</a></li><li><a href="#1-9-slurm-rpmパッケージ作成">1-9. Slurm rpmパッケージ作成</a></li><li><a href="#1-10-slurm-rpmパッケージインストールセットアップ">1-10. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#1-11-slurm設定ファイル修正">1-11. Slurm設定ファイル修正</a></li><li><a href="#1-12-slurmサービス起動">1-12. Slurmサービス起動</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-aocc稼働確認">2-1. AOCC稼働確認</a></li><li><a href="#2-1-openmpislurm稼働確認">2-1. OpenMPI・Slurm稼働確認</a></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>複数の計算ノードを  <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタは、その計算ノードに <strong>クラスタ・ネットワーク</strong> 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> を使用することが一般的です（※1）が、このベースとなるOSの <strong>Oracle Linux</strong> のバージョンは、 <strong>プラットフォーム・イメージ</strong> として提供される <strong>Oracle Linux</strong> の最新バージョンより古くなります。（※2）</p>
+
+<p>※1）この詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> を参照してください。<br />
+※2）2025年3月時点の最新の <strong>クラスタネットワーキングイメージ</strong> がそのベースOSに <strong>Oracle Linux</strong> 8.10を使用しているのに対し、 <strong>プラットフォーム・イメージ</strong> の最新は <strong>Oracle Linux 9.5</strong> です。</p>
+
+<p>ここで実行するワークロードが単一ノードに収まる場合は、 <strong>クラスタ・ネットワーク</strong> に接続する必要がなくなり、 <strong>プラットフォーム・イメージ</strong> から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年3月時点）は、以下のスペックを持つ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E5.192</a></strong> で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。</p>
+
+<ul>
+  <li>CPU： <strong>AMD EPYC</strong> 9654ベース x 2（192コア）</li>
+  <li>メモリ： DDR5 2.3 TB</li>
+  <li>理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）</li>
+  <li>メモリ帯域： 921.6 GB/s</li>
+</ul>
+
+<p>以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 <strong>プラットフォーム・イメージ</strong> で提供される最新の <strong>Oracle Linux</strong>上に <strong><a href="https://www.amd.com/en/developer/aocc.html">AMD Optimizing C/C++ and Fortran Compilers</a></strong> （以降 <strong>AOCC</strong> と呼称します。）、 <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、及び <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> をインストールし、 <strong>BM.Standard.E5.192</strong> のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。</p>
+
+<p>なお本テクニカルTipsは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> の手順に従い予め <strong>Slurm</strong> 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降”計算ノード”と呼称します。）をこの <strong>Slurm</strong> 環境に組み込みます。</p>
+
+<p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
+
+<ul>
+  <li>計算ノードOS： <strong>プラットフォーム・イメージ</strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-02-28-0.htm">Oracle-Linux-9.5-2025.02.28-0</a></strong></li>
+  <li>コンパイラ： <strong>AOCC</strong> 5.0</li>
+  <li>MPI： <strong>OpenMPI</strong> 5.0.6</li>
+  <li>ジョブスケジューラ： <strong>Slurm</strong> 24.11.0</li>
+</ul>
+
+<hr />
+<h1 id="1-環境構築">1. 環境構築</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、計算ノードの環境を以下の手順に沿って構築します。</p>
+
+<ol>
+  <li>インスタンス作成</li>
+  <li><strong>AOCC</strong> インストール</li>
+  <li><strong>OpenMPI</strong> 前提ソフトウェア・rpmパッケージインストール</li>
+  <li><strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong> インストール（※3）</li>
+  <li><strong><a href="https://openucx.readthedocs.io/en/master/index.html#">OpenUCX</a></strong> インストール（※4）</li>
+  <li><strong>OpenMPI</strong> インストール・セットアップ</li>
+  <li><strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmarks</a></strong> インストール（※5）</li>
+  <li><strong><a href="https://dun.github.io/munge/">munge</a></strong> インストール・セットアップ（※6）</li>
+  <li><strong>Slurm</strong> rpmパッケージ作成</li>
+  <li><strong>Slurm</strong> rpmパッケージインストール・セットアップ</li>
+  <li><strong>Slurm</strong> 設定ファイル修正</li>
+  <li><strong>Slurm</strong> サービス起動</li>
+  <li><strong>Slurm</strong> 利用に必要な環境変数設定</li>
+</ol>
+
+<p>※3） <strong>Slurm</strong> がMPIアプリケーションを起動する際に使用します。<br />
+※4） <strong>OpenMPI</strong> がプロセス間通信に使用する通信フレームワークとして使用します。<br />
+※5）計算ノードのMPI通信性能の検証と構築した環境の稼働確認に使用します。<br />
+※6） <strong>Slurm</strong> のプロセス間通信の認証に使用します。</p>
+
+<h2 id="1-1-インスタンス作成">1-1. インスタンス作成</h2>
+
+<p>OCIチュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">インスタンスを作成する</a></strong> の手順に従い、以下属性の計算ノードを作成します。</p>
+
+<ul>
+  <li>イメージ： <strong>Oracle Linux</strong> 9.5（Oracle-Linux-9.5-2025.02.28-0）</li>
+  <li>シェイプ： <strong>BM.Standard.E5.192</strong></li>
+</ul>
+
+<h2 id="1-2-aoccインストール">1-2. AOCCインストール</h2>
+
+<p>以下のサイトから <strong>AOCC</strong> のtarアーカイブ <strong>aocc-compiler-5.0.0.tar</strong> をダウンロードし、これを計算ノードの <strong>/tmp</strong> ディレクトリにコピーします。</p>
+
+<p><strong><a href="https://www.amd.com/en/developer/aocc.html#downloads">https://www.amd.com/en/developer/aocc.html#downloads</a></strong></p>
+
+<p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>AOCC</strong> を <strong>/opt/aocc</strong> にインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /opt/aocc
+<span class="nv">$ </span><span class="nb">cd</span> /opt/aocc <span class="o">&amp;&amp;</span> <span class="nb">sudo tar</span> <span class="nt">--no-same-owner</span> <span class="nt">-xvf</span> /tmp/aocc-compiler-5.0.0.tar
+<span class="nv">$ </span><span class="nb">cd </span>aocc-compiler-5.0.0 <span class="o">&amp;&amp;</span> <span class="nb">sudo</span> ./install.sh
+</code></pre></div></div>
+
+<h2 id="1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、OpenMPIの前提rpmパッケージのインストールと前提ソフトウェアである <strong>libevent</strong> ・ <strong>hwloc</strong> ・ <strong>XPMEM</strong> ・ <strong>KNEM</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool
+<span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./libevent-2.1.12-stable.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/libevent
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./hwloc-2.11.2.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>hwloc-2.11.2 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/hwloc
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
+<span class="nv">$ </span><span class="nb">cd </span>xpmem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/xpmem
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone https://gitlab.inria.fr/knem/knem.git
+<span class="nv">$ </span><span class="nb">cd </span>knem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/knem
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="1-4-openpmixインストール">1-4. OpenPMIxインストール</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-5.0.4.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>pmix-5.0.4 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="1-5-openucxインストール">1-5. OpenUCXインストール</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./ucx-1.17.0.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>ucx-1.17.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release <span class="nt">--prefix</span><span class="o">=</span>/opt/ucx <span class="nt">--with-knem</span><span class="o">=</span>/opt/knem <span class="nt">--with-xpmem</span><span class="o">=</span>/opt/xpmem
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>ここでは、 <strong>KNEM</strong> と <strong>XPMEM</strong> を <strong>OpenUCX</strong> から利用出来るようにビルドしています。</p>
+
+<h2 id="1-6-openmpiインストールセットアップ">1-6. OpenMPIインストール・セットアップ</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.6.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>openmpi-5.0.6 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/openmpi <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-pmix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-ucx</span><span class="o">=</span>/opt/ucx <span class="nt">--with-slurm</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 192 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>ここでは、先にインストールした <strong>OpenUCX</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を使用して <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
+
+<p>次に、以下コマンドを <strong>OpenMPI</strong> を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/opt/openmpi/bin:/opt/ucx/bin:</span><span class="se">\$</span><span class="s2">PATH"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
+</code></pre></div></div>
+
+<h2 id="1-7-intel-mpi-benchmarksインストール">1-7. Intel MPI Benchmarksインストール</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> をインストールします。<br />
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.7.tar.gz
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi/bin/mpicxx
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi/bin/mpicc
+<span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks-IMB-v2021.7 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 192 all
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi/tests/imb
+<span class="nv">$ </span><span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi/tests/imb/
+</code></pre></div></div>
+
+<h2 id="1-8-munge-インストールセットアップ">1-8. munge インストール・セットアップ</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
+</code></pre></div></div>
+
+<p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol9_codeready_builder
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> munge munge-libs munge-devel
+</code></pre></div></div>
+
+<p>次に、Slurmマネージャの <strong>munge</strong> キーファイル（<strong>/etc/munge/munge.key</strong>）を同一パス・ファイル名でコピーします。<br />
+この際、ファイルのオーナーとパーミッションがSlurmマネージャのキーファイルと同じとなるよう配慮します。</p>
+
+<p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> サービスを起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> munge.service
+</code></pre></div></div>
+
+<p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> が正常に動作していることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>munge <span class="nt">-n</span> | unmunge | <span class="nb">grep </span>STATUS
+STATUS:           Success <span class="o">(</span>0<span class="o">)</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="1-9-slurm-rpmパッケージ作成">1-9. Slurm rpmパッケージ作成</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> の前提rpmパッケージをインストールします。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
+</code></pre></div></div>
+
+<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>Slurm</strong> rpmパッケージを作成します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~ &amp;&amp; wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
+$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.11.0.tar.bz2
+</code></pre></div></div>
+
+<p>作成されたパッケージは、以下のディレクトリに配置されます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -1 ~/rpmbuild/RPMS/x86_64/
+slurm-24.11.0-1.el9.x86_64.rpm
+slurm-contribs-24.11.0-1.el9.x86_64.rpm
+slurm-devel-24.11.0-1.el9.x86_64.rpm
+slurm-example-configs-24.11.0-1.el9.x86_64.rpm
+slurm-libpmi-24.11.0-1.el9.x86_64.rpm
+slurm-openlava-24.11.0-1.el9.x86_64.rpm
+slurm-pam_slurm-24.11.0-1.el9.x86_64.rpm
+slurm-perlapi-24.11.0-1.el9.x86_64.rpm
+slurm-sackd-24.11.0-1.el9.x86_64.rpm
+slurm-slurmctld-24.11.0-1.el9.x86_64.rpm
+slurm-slurmd-24.11.0-1.el9.x86_64.rpm
+slurm-slurmdbd-24.11.0-1.el9.x86_64.rpm
+slurm-torque-24.11.0-1.el9.x86_64.rpm
+$
+</code></pre></div></div>
+
+<h2 id="1-10-slurm-rpmパッケージインストールセットアップ">1-10. Slurm rpmパッケージインストール・セットアップ</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> rpmパッケージのインストール・セットアップを行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~/rpmbuild/RPMS/x86_64/ &amp;&amp; sudo rpm -ivh ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
+$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
+$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+</code></pre></div></div>
+
+<h2 id="1-11-slurm設定ファイル修正">1-11. Slurm設定ファイル修正</h2>
+
+<p>既存の <strong>Slurm</strong> 環境の <strong>slurm.conf</strong> に対して、計算ノードを追加するために以下のように修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-e5 <span class="nv">CPUs</span><span class="o">=</span>192 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>8 <span class="nv">CoresPerSocket</span><span class="o">=</span>24 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>2300000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">PartitionName</span><span class="o">=</span>e5 <span class="nv">Nodes</span><span class="o">=</span>inst-e5 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+</code></pre></div></div>
+
+<p>ここでは、 <strong>NPS</strong> が <strong>4</strong> で<strong>SMT</strong> を無効（※7）としたホスト名が <strong>inst-e5</strong> の <strong>BM.Standard.E5.192</strong> 1ノードを、パーティション名 <strong>e5</strong> に割り当てています。</p>
+
+<p>※7） <strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<p>次に、この <strong>slurm.conf</strong> を計算ノードの <strong>/opt/slurm/etc</strong> に配置します。</p>
+
+<h2 id="1-12-slurmサービス起動">1-12. Slurmサービス起動</h2>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>slurmd</strong> を起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> slurmd
+</code></pre></div></div>
+
+<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、計算ノードの追加を反映します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"scontrol reconfigure"</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、計算ノードの追加が反映されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su - slurm <span class="nt">-c</span> <span class="s2">"sinfo"</span>
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+sltest<span class="k">*</span>      up   infinite      3   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-e5
+e5           up   infinite      1   idle inst-e5
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-稼働確認">2. 稼働確認</h1>
+
+<h2 id="2-0-概要">2-0. 概要</h2>
+
+<p>本章は、インストールした <strong>AOCC</strong> 、 <strong>OpenMPI</strong> 、及び <strong>Slurm</strong> を稼働確認します。<br />
+なお <strong>OpenMPI</strong> と <strong>Slurm</strong> の稼働確認は、 <strong>Slurm</strong> に <strong>OpenMPI</strong> を利用する <strong>Intel MPI Benchmarks</strong> のMPI通信性能検証用ジョブを投入することで行います。</p>
+
+<h2 id="2-1-aocc稼働確認">2-1. AOCC稼働確認</h2>
+
+<p>以下コマンドを計算ノードの <strong>AOCC</strong> を利用するユーザで実行し、メモリ性能を計測するベンチマークプログラムの <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> をコンパイル・実行することで、 <strong>AOCC</strong> の稼働確認を行います。<br />
+なおこの <strong>STREAM</strong> の実行は、 <strong>BM.Standard.E5.192</strong> を想定した設定になっています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/stream
+<span class="nv">$ </span><span class="nb">cd</span> ~/stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+<span class="nv">$ </span><span class="nb">source</span> /opt/aocc/setenv_AOCC.sh
+<span class="nv">$ </span>clang <span class="nt">-DSTREAM_TYPE</span><span class="o">=</span>double <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>430080000 <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>large <span class="nt">-fopenmp</span> <span class="nt">-fnt-store</span> ./stream.c
+<span class="nv">$ OMP_NUM_THREADS</span><span class="o">=</span>96 <span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="s2">"explicit,proclist=[</span><span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 2 191<span class="sb">`</span><span class="s2">]"</span> ./a.out
+</code></pre></div></div>
+
+<p><strong>BM.Standard.E5.192</strong> 上で実行する <strong>STREAM</strong> については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></strong> も合わせて参照してください。</p>
+
+<h2 id="2-1-openmpislurm稼働確認">2-1. OpenMPI・Slurm稼働確認</h2>
+
+<p><strong>Slurm</strong> クライアントの <strong>OpenMPI</strong> と <strong>Slurm</strong> を利用するユーザで、以下のスクリプトをファイル名 <strong>imb_ata.sh</strong> で作成します。<br />
+なおこの <strong>Intel MPI Benchmarks</strong> の実行は、 <strong>BM.Standard.E5.192</strong> を想定した設定になっています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c">#SBATCH -p e5</span>
+<span class="c">#SBATCH -n 192</span>
+<span class="c">#SBATCH -N 1</span>
+<span class="c">#SBATCH -J alltoall</span>
+<span class="c">#SBATCH -o alltoall.%J</span>
+<span class="c">#SBATCH -e stderr.%J</span>
+srun IMB-MPI1 <span class="nt">-msglog</span> 0:23 <span class="nt">-mem</span> 4G <span class="nt">-off_cache</span> 384,64 <span class="nt">-npmin</span> <span class="nv">$SLURM_NTASKS</span> alltoall
+</code></pre></div></div>
+
+<p>このジョブスクリプトは、192プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから32 MiBまでで計測しています。<br />
+<strong>BM.Standard.E5.192</strong> 上で実行する <strong>Intel MPI Benchmarks</strong> のMPI集合通信性能については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></strong> も合わせて参照してください。</p>
+
+<p>次に、以下コマンドをSlurmクライアントの <strong>OpenMPI</strong> と <strong>Slurm</strong> を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sbatch imb_ata.sh 
+Submitted batch job 23808
+<span class="nv">$ </span><span class="nb">cat</span> ./alltoall.23808
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Date                  : Wed Mar 12 23:40:30 2025</span>
+<span class="c"># Machine               : x86_64</span>
+<span class="c"># System                : Linux</span>
+<span class="c"># Release               : 5.15.0-305.176.4.el9uek.x86_64</span>
+<span class="c"># Version               : #2 SMP Tue Jan 28 20:15:04 PST 2025</span>
+<span class="c"># MPI Version           : 3.1</span>
+<span class="c"># MPI Thread Environment: </span>
+
+
+<span class="c"># Calling sequence was: </span>
+
+<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin 192 alltoall </span>
+
+<span class="c"># Minimum message length in bytes:   0</span>
+<span class="c"># Maximum message length in bytes:   8388608</span>
+<span class="c">#</span>
+<span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
+<span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
+<span class="c"># MPI_Op                         :   MPI_SUM  </span>
+<span class="c"># </span>
+<span class="c"># </span>
+
+<span class="c"># List of Benchmarks to run:</span>
+
+<span class="c"># Alltoall</span>
+
+<span class="c">#----------------------------------------------------------------</span>
+<span class="c"># Benchmarking Alltoall </span>
+<span class="c"># #processes = 192 </span>
+<span class="c">#----------------------------------------------------------------</span>
+       <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+            0         1000         0.04         0.09         0.05
+            1         1000        14.94        15.95        15.48
+            2         1000        15.17        16.37        15.70
+            4         1000        17.09        19.61        18.21
+            8         1000        20.74        23.41        21.84
+           16         1000        28.71        32.03        30.04
+           32         1000        37.98        42.64        40.24
+           64         1000        72.73        80.65        76.27
+          128         1000       108.05       124.39       116.52
+          256         1000       202.50       236.85       220.65
+          512         1000       387.72       434.45       410.11
+         1024         1000       368.04       416.56       394.76
+         2048         1000      1211.46      1447.02      1397.23
+         4096         1000      1240.52      2854.89      1845.46
+         8192         1000      1665.85      1856.75      1791.55
+        16384         1000      3050.95      3240.93      3145.84
+        32768         1000      5523.64      5920.35      5767.86
+        65536          640     10935.51     12686.47     12025.69
+       131072          320     20632.47     22223.99     21683.88
+       262144          160     45287.95     45514.84     45430.74
+       524288           80    101029.68    101507.84    101329.73
+      1048576           40    178558.11    179596.61    179215.53
+      2097152           20    386123.34    391777.75    388960.96
+      4194304           10    708980.56    714099.31    712053.41
+      8388608            5   1419275.74   1430883.33   1426296.45
+
+
+<span class="c"># All processes entering MPI_Finalize</span>
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-18T13:02:51+09:00">March 18, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=Oracle+Linux%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%E3%83%BB%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AEHPC%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbuild-oraclelinux-hpcenv%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbuild-oraclelinux-hpcenv%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/" class="pagination--pager" title="Slurmによるリソース管理・ジョブ管理システム運用Tips
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/" class="pagination--pager" title="ベアメタル・インスタンスのカーネルダンプ取得方法
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

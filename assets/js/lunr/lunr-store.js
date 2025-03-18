@@ -1079,17 +1079,17 @@ var store = [{
         "url": "/ocitutorials/hpc/spinup-ml-instance/",
         "teaser": "/ocitutorials/hpc/spinup-ml-instance/architecture_diagram.png"
       },{
+        "title": "GPUインスタンスで分散機械学習環境を構築する",
+        "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 containerd と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証します。 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。 [GPUノード] シェイプ： BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8 OS： プラットフォーム・イメージ Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0 [Bastionノード] シェイプ ： VM.Standard.E5.Flex OS ： プラットフォーム・イメージ Oracle-Linux-8.10-2025.02.28-0 [機械学習環境ソフトウェア] コンテナランタイム ： containerd 2.0.3 NVIDIA Container Toolkit ： 1.17.5 所要時間 : 約2時間...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/spinup-ml-instance-cntnd/",
+        "teaser": "/ocitutorials/hpc/spinup-ml-instance-cntnd/architecture_diagram.png"
+      },{
         "title": "GPUクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 Docker Community Edition と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証後、分散機械学習の稼働確認として TensorFlow の MultiWorkerMirroredStrategy を使用するサンプルプログラムを実行、その性能を検証します。 本チュートリアルで構築するGPUクラスタの構成を以下に示します。 [GPUノード] シェイプ ： BM.GPU4.8/BM.GPU.A100-v2.8 インターコネクト ： クラスタ・ネットワーク OS ： Oracle Linux 8.9ベースのGPU クラスタネットワーキングイメージ （※1） [Bastionノード] シェイプ ： VM.Standard.E4.Flex OS ： Oracle Linux 8.9 [ソフトウェア] コンテナランタイム ：...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster/",
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster/architecture_diagram.png"
-      },{
-        "title": "GPUインスタンスで分散機械学習環境を構築する",
-        "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 containerd と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証後、分散機械学習の稼働確認として TensorFlow の MultiWorkerMirroredStrategy を使用するサンプルプログラムを実行、その性能を検証します。 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。 [GPUノード] シェイプ： BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8 OS： プラットフォーム・イメージ Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0 [Bastionノード] シェイプ ： VM.Standard.E4.Flex OS ： プラットフォーム・イメージ Oracle-Linux-8.10-2025.02.28-0 [ソフトウェア] コンテナランタイム ： containerd 2.0.3 NVIDIA Container Toolkit ：...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/hpc/spinup-ml-instance-cntnd/",
-        "teaser": "/ocitutorials/hpc/spinup-ml-instalce-cntnd/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(基礎インフラ自動構築編)",
         "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード構築 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 構築したBastionノード・GPUノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。...","categories": [],
@@ -1395,6 +1395,12 @@ var store = [{
         "excerpt":"0. 概要 本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を Slurm で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。 Prolog/Epilog セットアップ方法 メンテナンスを考慮した計算/GPUノードの ステータス 変更方法 ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 複数ジョブによる計算/GPUノード共有方法 これらのTipsは、全て OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境を前提に記載します。 1. Prolog/Epilogセットアップ方法 1-0. 概要 本Tipsは、ジョブ実行の前後で Slurm が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。 [Prolog] 以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。 #!/bin/bash log_file=/var/log/slurm/clean_memory.log /bin/date &gt;&gt; $log_file /bin/echo \"Before\" &gt;&gt; $log_file /bin/free -h &gt;&gt; $log_file /bin/sync; /bin/echo 3 &gt; /proc/sys/vm/drop_caches /bin/echo &gt;&gt;...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/slurm-tips/",
+        "teaser": null
+      },{
+        "title": "Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法",
+        "excerpt":"0. 概要 複数の計算ノードを クラスタ・ネットワーク でノード間接続するHPCクラスタは、その計算ノードに クラスタ・ネットワーク 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている クラスタネットワーキングイメージ を使用することが一般的です（※1）が、このベースとなるOSの Oracle Linux のバージョンは、 プラットフォーム・イメージ として提供される Oracle Linux の最新バージョンより古くなります。（※2） ※1）この詳細は、 OCI HPCテクニカルTips集 の クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法 を参照してください。 ※2）2025年3月時点の最新の クラスタネットワーキングイメージ がそのベースOSに Oracle Linux 8.10を使用しているのに対し、 プラットフォーム・イメージ の最新は Oracle Linux 9.5 です。 ここで実行するワークロードが単一ノードに収まる場合は、 クラスタ・ネットワーク に接続する必要がなくなり、 プラットフォーム・イメージ から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年3月時点）は、以下のスペックを持つ BM.Standard.E5.192 で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。 CPU： AMD EPYC 9654ベース x 2（192コア） メモリ： DDR5...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/",
         "teaser": null
       },{
         "title": "ベアメタル・インスタンスのカーネルダンプ取得方法",
