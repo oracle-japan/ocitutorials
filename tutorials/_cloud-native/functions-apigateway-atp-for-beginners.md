@@ -20,7 +20,8 @@ tags: [OCI, API Gateway, OCI Functions , Autonomous Database, ATP, Python]
   - 有効なOracle Cloudアカウントがあること
 
 - 事前環境構築
-  - [OCI Functions ハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
+  - [Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
+  - [Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-apigateway-for-beginners/)が完了していること
 
 1.事前準備
 -------------------
