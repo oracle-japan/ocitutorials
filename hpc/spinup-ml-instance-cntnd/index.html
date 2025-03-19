@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-19T15:57:55+09:00">
+  <meta property="article:published_time" content="2025-03-19T17:14:36+09:00">
 
 
 
@@ -384,7 +384,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUインスタンスで分散機械学習環境を構築する">
     <meta itemprop="description" content="GPUを搭載するインスタンスで分散機械学習環境を構築してみましょう。このチュートリアルは、大規模な機械学習ワークロードを実行するための分散機械学習環境を、複数のGPUを搭載するGPUインスタンスをはじめとする分散機械学習環境に必要なリソースを順次OCIコンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2025-03-19T15:57:55+09:00">
+    <meta itemprop="datePublished" content="2025-03-19T17:14:36+09:00">
     
 
     <div class="page__inner-wrap">
@@ -408,7 +408,7 @@ table, th, td {
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 <strong><a href="https://github.com/containerd/containerd/tree/main">containerd</a></strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証します。</p>
+<p>本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしてソフトウェア環境を手動で構築する方法で、 <strong><a href="https://github.com/containerd/containerd/tree/main">containerd</a></strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> で検証します。</p>
 
 <p>本チュートリアルで構築する分散機械学習環境の構成を以下に示します。</p>
 
@@ -566,22 +566,22 @@ Your identification has been saved <span class="k">in</span> /home/opc/.ssh/id_r
 Your public key has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.pub.
 The key fingerprint is:
 SHA256:gROjFmmm2yf3Frsg2P2T7cBzSCCEiml9BRGDnhi5qBs opc@bastion
-The key<span class="s1">'s randomart image is:
+The keys randomart image is:
 +---[RSA 3072]----+
-|  ..+**          |
-| o.o+o.=         |
-|oo*+= = .        |
-|=+.= o o .       |
+|  ..+<span class="k">**</span>          |
+| o.o+o.<span class="o">=</span>         |
+|oo<span class="k">*</span>+<span class="o">=</span> <span class="o">=</span> <span class="nb">.</span>        |
+|<span class="o">=</span>+.<span class="o">=</span> o o <span class="nb">.</span>       |
 |o  o.   S        |
 |E .oo.oo..       |
-| o. o+o.==.      |
-|.    . o*+.      |
+| o. o+o.<span class="o">==</span><span class="nb">.</span>      |
+|.    <span class="nb">.</span> o<span class="k">*</span>+.      |
 |       .o+.      |
 +----[SHA256]-----+
-$ cat .ssh/id_rsa.pub 
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrLpD1kDQQzsc6Q8ndyOu6h7X3E0FGY2SDjDyhJRdntbOZKPkYkQrGHbhnBllFPMV4NlObkf/YX6a9bc4vrGgnayRgfj0vOZ0RKlJmkfjAR/7Cw48LzQnaDDq2HHZAo+c71WBSjLt1SsX7tXHqkzjGUv44qqEiC6qlEiZd9yevA7kR0IoN9dIWXaKnMbOVGr8DezyLsruoQxhj6bHNwXhEjlGPg8E6R35AdjGeGZOCYT2clfMu9iavuzR5dilysARq1Lxow2/MEija3/twxmzhxVbwoGTXE0sCz3SGMnHTwLGEE7Tok+i7zZMB2ySbCM42Icz3Ja2qxNxqdx9YUKZ48SgkNPrMMouZGm+lZrZf0dypQqDbUrA0uZkkTUR+RTY+V/0MmuH6eDgHQLjxzo07/+gw2BG9CMcor0fMYhEJiKUVRy2LXBIK2Zj2+Ow7zs552f7SRGWnAktU7sTU801frAjE= opc@bastion
-$
-</span></code></pre></div></div>
+<span class="nv">$ </span><span class="nb">cat</span> .ssh/id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrLpD1kDQQzsc6Q8ndyOu6h7X3E0FGY2SDjDyhJRdntbOZKPkYkQrGHbhnBllFPMV4NlObkf/YX6a9bc4vrGgnayRgfj0vOZ0RKlJmkfjAR/7Cw48LzQnaDDq2HHZAo+c71WBSjLt1SsX7tXHqkzjGUv44qqEiC6qlEiZd9yevA7kR0IoN9dIWXaKnMbOVGr8DezyLsruoQxhj6bHNwXhEjlGPg8E6R35AdjGeGZOCYT2clfMu9iavuzR5dilysARq1Lxow2/MEija3/twxmzhxVbwoGTXE0sCz3SGMnHTwLGEE7Tok+i7zZMB2ySbCM42Icz3Ja2qxNxqdx9YUKZ48SgkNPrMMouZGm+lZrZf0dypQqDbUrA0uZkkTUR+RTY+V/0MmuH6eDgHQLjxzo07/+gw2BG9CMcor0fMYhEJiKUVRy2LXBIK2Zj2+Ow7zs552f7SRGWnAktU7sTU801frAjE<span class="o">=</span> opc@bastion
+<span class="err">$</span>
+</code></pre></div></div>
 
 <hr />
 <h1 id="2-gpuノード作成">2. GPUノード作成</h1>
@@ -590,7 +590,7 @@ $
 
 <p>本章は、GPUノードを作成します。</p>
 
-<p>本チュートリアルは、GPUノードに <strong>BM.GPU3.8</strong> を使用しますが、 <strong>BM.GPU4.8 / BM.GPU.A100-v2.8</strong> の場合で手順が異なる箇所は、その旨明記します。</p>
+<p>本チュートリアルは、GPUノードに <strong>BM.GPU4.8</strong> を使用しますが、 <strong>BM.GPU3.8 / BM.GPU.A100-v2.8</strong> の場合で手順が異なる箇所は、その旨明記します。</p>
 
 <p>GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減する目的で <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> を使用するため、以下の手順を経て行います。</p>
 
@@ -839,32 +839,71 @@ Filesystem                  Size  Used Avail Use% Mounted on
 <span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> nvidia-container-toolkit
 </code></pre></div></div>
 
-<p>次に、以下コマンドをGPUノードのopcユーザで実行し、 <strong>containerd</strong> を起動・確認します。</p>
+<p>次に、以下コマンドをGPUノードのopcユーザで実行し、一般ユーザ権限で <strong>containerd</strong> 上にコンテナを起動するために必要なソフトウェアをインストールします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> containerd
-Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /usr/lib/systemd/system/containerd.service.
-<span class="nv">$ </span><span class="nb">sudo </span>systemctl status containerd | <span class="nb">grep</span> <span class="nt">-e</span> Active <span class="nt">-e</span> enabled
-   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/containerd.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: disabled<span class="o">)</span>
-   Active: active <span class="o">(</span>running<span class="o">)</span> since Tue 2025-03-18 12:15:11 JST<span class="p">;</span> 1min 13s ago
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://go.dev/dl/go1.24.1.linux-amd64.tar.gz
+<span class="nv">$ </span><span class="nb">sudo tar</span> <span class="nt">-C</span> /usr/local/ <span class="nt">-xvf</span> ./go1.24.1.linux-amd64.tar.gz
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/usr/local/go/bin
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git slirp4netns libseccomp libseccomp-devel
+<span class="nv">$ </span>git clone https://github.com/rootless-containers/rootlesskit
+<span class="nv">$ </span><span class="nb">cd </span>rootlesskit <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone https://github.com/rootless-containers/bypass4netns
+<span class="nv">$ </span><span class="nb">cd </span>bypass4netns <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUノードのopcユーザで実行し、コンテナを起動するユーザ <strong>usera</strong> を作成、BastionノードのopcユーザからSSHログインするための公開鍵の登録を行います。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>useradd <span class="nt">-d</span> /home/usera <span class="nt">-s</span> /bin/bash <span class="nt">-u</span> 10000 usera
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> ~usera/.ssh <span class="o">&amp;&amp;</span> <span class="nb">sudo chmod </span>700 ~usera/.ssh <span class="o">&amp;&amp;</span> <span class="nb">sudo chown </span>usera:usera ~usera/.ssh
+<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> ~/.ssh/authorized_keys ~usera/.ssh/ <span class="o">&amp;&amp;</span> <span class="nb">sudo chown </span>usera:usera ~usera/.ssh/authorized_keys
+</code></pre></div></div>
+
+<p>次に、BastionノードのopcユーザからGPUノードの <strong>usera</strong> ユーザにSSHでログインして以下コマンドを実行し、 <strong>containerd</strong> を起動・確認します。<br />
+なお、GPUノードのopcユーザから <strong>usera</strong> ユーザにスイッチした場合は、以下のコマンドがエラーする点に注意します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>containerd-rootless-setuptool.sh <span class="nb">install</span>
+<span class="o">[</span>INFO] Checking RootlessKit functionality
+:
+:
+:
+<span class="o">[</span>INFO] You <span class="k">do </span>NOT need to specify <span class="nv">$CONTAINERD_ADDRESS</span> explicitly.
+<span class="nv">$ </span>systemctl <span class="nt">--user</span> status containerd | <span class="nb">grep</span> <span class="nt">-e</span> Active <span class="nt">-e</span> enabled
+   Loaded: loaded <span class="o">(</span>/home/usera/.config/systemd/user/containerd.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Wed 2025-03-19 10:38:54 JST<span class="p">;</span> 1min 39s ago
+<span class="nv">$ </span>containerd-rootless-setuptool.sh install-bypass4netnsd
+<span class="o">[</span>INFO] Creating <span class="s2">"/home/usera/.config/systemd/user/bypass4netnsd.service"</span>
+:
+:
+:
+<span class="o">[</span>INFO] To use bypass4netnsd, <span class="nb">set </span>the <span class="s2">"nerdctl/bypass4netns=true"</span> annotation on containers, e.g., <span class="sb">`</span>nerdctl run <span class="nt">--annotation</span> nerdctl/bypass4netns<span class="o">=</span><span class="nb">true</span><span class="sb">`</span>
+<span class="nv">$ </span>systemctl <span class="nt">--user</span> status bypass4netnsd | <span class="nb">grep</span> <span class="nt">-e</span> Active <span class="nt">-e</span> enabled
+   Loaded: loaded <span class="o">(</span>/home/usera/.config/systemd/user/bypass4netnsd.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Wed 2025-03-19 11:11:25 JST<span class="p">;</span> 1min 2s ago
 <span class="err">$</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドをGPUノードのopcユーザで実行し、コンテナ上でGPUノードが搭載するGPUにアクセスできることを確認します。</p>
+<p>次に、以下コマンドをGPUノードの <strong>usera</strong> ユーザで実行し、コンテナ上でGPUノードが搭載するGPUにアクセスできることを確認します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nerdctl run <span class="nt">--rm</span> <span class="nt">--gpus</span> all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nerdctl run <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--annotation</span> nerdctl/bypass4netns<span class="o">=</span><span class="nb">true </span>nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
+nvcr.io/nvidia/base/ubuntu:22.04_20240212:                                        resolved       |++++++++++++++++++++++++++++++++++++++| 
+
+We trust you have received the usual lecture from the <span class="nb">local </span>System
+Administrator. It usually boils down to these three things:
+
+    <span class="c">#1) Respect the privacy of others.</span>
 nvcr.io/nvidia/base/ubuntu:22.04_20240212:                                        resolved       |++++++++++++++++++++++++++++++++++++++| 
 index-sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
 manifest-sha256:9bb542ce92bf6f772be19cb12acaeb7477869a05aa099b23506e8d2d264c7d30: <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
 config-sha256:a42a5aed2c5c677cd56f364aa16b4575ad99e88daf9130dd7bfa348c63d0c6b6:   <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
 layer-sha256:d66d6a6a368713979f9d00fad193991ae1af18b8efd3abf4d70ade192807c1bd:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:24c2d4f7ea407e096d657abd42bbeeb9d009bb6a80061ed3da05a5b97aa1cc60:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:feb1277c15aaf19e9f1f1f9c5d7589e8500a4d09ea00828c24d88bf20d980a97:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:a8f7f8dfd4e2e72ec795a2ff2b30820324a9ba17d1da0f60231109bc233b5229:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
+layer-sha256:3cf0dbeda93aa8b1ca78ab293ce1157996edf2334c73319cb847a52daff4078d:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
 layer-sha256:9d30336abbd75810bebd155677f0c1839efc7b3aba3d01f6317cf180c348294b:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
 layer-sha256:99fc1e9ef2061bdda5435d1aff0b2bd59eaa648c010ac561745f45f0bab44a0b:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
-layer-sha256:3cf0dbeda93aa8b1ca78ab293ce1157996edf2334c73319cb847a52daff4078d:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
-layer-sha256:24c2d4f7ea407e096d657abd42bbeeb9d009bb6a80061ed3da05a5b97aa1cc60:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
-layer-sha256:a8f7f8dfd4e2e72ec795a2ff2b30820324a9ba17d1da0f60231109bc233b5229:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
-layer-sha256:feb1277c15aaf19e9f1f1f9c5d7589e8500a4d09ea00828c24d88bf20d980a97:    <span class="k">done</span>           |++++++++++++++++++++++++++++++++++++++| 
-elapsed: 7.6 s                                                                    total:  293.2  <span class="o">(</span>38.6 MiB/s<span class="o">)</span>                                      
-Mon Mar 17 13:34:11 2025       
+elapsed: 15.5s                                                                    total:  29.0 M <span class="o">(</span>1.9 MiB/s<span class="o">)</span>                                       
+Wed Mar 19 01:42:33 2025       
 +-----------------------------------------------------------------------------------------+
 | NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
 |-----------------------------------------+------------------------+----------------------+
@@ -872,37 +911,37 @@ Mon Mar 17 13:34:11 2025
 | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
 |                                         |                        |               MIG M. |
 |<span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span>|
-|   0  Tesla V100-SXM2-16GB           Off |   00000000:61:00.0 Off |                    0 |
-| N/A   46C    P0             42W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:0F:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   1  Tesla V100-SXM2-16GB           Off |   00000000:62:00.0 Off |                    0 |
-| N/A   47C    P0             41W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   1  NVIDIA A100-SXM4-40GB          Off |   00000000:15:00.0 Off |                    0 |
+| N/A   30C    P0             55W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   2  Tesla V100-SXM2-16GB           Off |   00000000:67:00.0 Off |                    0 |
-| N/A   45C    P0             42W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   2  NVIDIA A100-SXM4-40GB          Off |   00000000:51:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   3  Tesla V100-SXM2-16GB           Off |   00000000:69:00.0 Off |                    0 |
-| N/A   44C    P0             42W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   3  NVIDIA A100-SXM4-40GB          Off |   00000000:54:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   4  Tesla V100-SXM2-16GB           Off |   00000000:89:00.0 Off |                    0 |
-| N/A   48C    P0             44W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   4  NVIDIA A100-SXM4-40GB          Off |   00000000:8D:00.0 Off |                    0 |
+| N/A   30C    P0             53W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   5  Tesla V100-SXM2-16GB           Off |   00000000:8A:00.0 Off |                    0 |
-| N/A   49C    P0             44W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   5  NVIDIA A100-SXM4-40GB          Off |   00000000:92:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   6  Tesla V100-SXM2-16GB           Off |   00000000:8F:00.0 Off |                    0 |
-| N/A   46C    P0             41W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   6  NVIDIA A100-SXM4-40GB          Off |   00000000:D6:00.0 Off |                    0 |
+| N/A   32C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
-|   7  Tesla V100-SXM2-16GB           Off |   00000000:91:00.0 Off |                    0 |
-| N/A   48C    P0             42W /  300W |       1MiB /  16384MiB |      0%      Default |
-|                                         |                        |                  N/A |
+|   7  NVIDIA A100-SXM4-40GB          Off |   00000000:DA:00.0 Off |                    0 |
+| N/A   32C    P0             54W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
 +-----------------------------------------+------------------------+----------------------+
                                                                                          
 +-----------------------------------------------------------------------------------------+
@@ -912,6 +951,7 @@ Mon Mar 17 13:34:11 2025
 |<span class="o">=========================================================================================</span>|
 |  No running processes found                                                             |
 +-----------------------------------------------------------------------------------------+
+
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -920,10 +960,10 @@ Mon Mar 17 13:34:11 2025
 
 <p>本章は、 <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong> から提供される <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、コンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
 
-<p>以下コマンドをGPUノードのopcユーザで実行し、 <strong>TensorFlow NGC Container</strong> を起動します。<br />
+<p>以下コマンドをGPUノードの <strong>usera</strong> ユーザで実行し、 <strong>TensorFlow NGC Container</strong> を起動します。<br />
 本コンテナのサイズは、約14 GBです。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nerdctl run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--ipc</span><span class="o">=</span>host <span class="nt">--ulimit</span> <span class="nv">memlock</span><span class="o">=</span><span class="nt">-1</span> <span class="nt">--ulimit</span> <span class="nv">stack</span><span class="o">=</span>67108864 nvcr.io/nvidia/tensorflow:24.06-tf2-py3
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nerdctl run <span class="nt">-it</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--ipc</span><span class="o">=</span>host <span class="nt">--ulimit</span> <span class="nv">stack</span><span class="o">=</span>67108864 <span class="nt">--annotation</span> nerdctl/bypass4netns<span class="o">=</span><span class="nb">true </span>nvcr.io/nvidia/tensorflow:24.06-tf2-py3
 </code></pre></div></div>
 
 <p>次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロードしてビルドします。</p>
@@ -934,7 +974,9 @@ Mon Mar 17 13:34:11 2025
 </code></pre></div></div>
 
 <p>次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を実行します。<br />
-以下では、 <strong>BM.GPU3.8</strong> の8枚の <strong>NVIDIA Tesla V100 16 GB</strong> を使用し、busbwで <strong>135 GB/s</strong> の性能が確認できます。</p>
+以下では、 <strong>BM.GPU4.8</strong> の8枚の <strong>NVIDIA A100 40 GB</strong> を使用し、busbwで <strong>232 GB/s</strong> の性能が確認できます。</p>
+
+<p>[ <strong>BM.GPU3.8</strong> ]</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./build/all_reduce_perf <span class="nt">-b</span> 1G <span class="nt">-e</span> 1G <span class="nt">-f</span> 2 <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
 <span class="c"># nThread 1 nGpus 8 minBytes 1073741824 maxBytes 1073741824 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
@@ -955,6 +997,32 @@ Mon Mar 17 13:34:11 2025
   1073741824     268435456     float     <span class="nb">sum</span>      <span class="nt">-1</span>    13867   77.43  135.50      0    13877   77.38  135.41      0
 <span class="c"># Out of bounds values : 0 OK</span>
 <span class="c"># Avg bus bandwidth    : 135.455 </span>
+<span class="c">#</span>
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>[ <strong>BM.GPU4.8 / BM.GPU.A100-v2.8</strong> ]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-f</span> 2 <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
+<span class="c"># nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
+<span class="c">#</span>
+<span class="c"># Using devices</span>
+<span class="c">#  Rank  0 Group  0 Pid   1728 on a4bae1424041 device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  1 Group  0 Pid   1728 on a4bae1424041 device  1 [0000:15:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  2 Group  0 Pid   1728 on a4bae1424041 device  2 [0000:51:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  3 Group  0 Pid   1728 on a4bae1424041 device  3 [0000:54:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  4 Group  0 Pid   1728 on a4bae1424041 device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  5 Group  0 Pid   1728 on a4bae1424041 device  5 [0000:92:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  6 Group  0 Pid   1728 on a4bae1424041 device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  7 Group  0 Pid   1728 on a4bae1424041 device  7 [0000:da:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#</span>
+<span class="c">#                                                              out-of-place                       in-place          </span>
+<span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
+<span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
+ 10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>    80978  132.60  232.04      0    81154  132.31  231.54      0
+<span class="c"># Out of bounds values : 0 OK</span>
+<span class="c"># Avg bus bandwidth    : 231.793 </span>
 <span class="c">#</span>
 
 <span class="err">$</span>
@@ -987,7 +1055,7 @@ Mon Mar 17 13:34:11 2025
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-19T15:57:55+09:00">March 19, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-19T17:14:36+09:00">March 19, 2025</time></p>
 
       </footer>
 

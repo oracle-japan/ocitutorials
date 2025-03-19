@@ -1080,7 +1080,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-ml-instance/architecture_diagram.png"
       },{
         "title": "GPUインスタンスで分散機械学習環境を構築する",
-        "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしソフトウェア環境を手動で構築する方法で、 containerd と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証します。 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。 [GPUノード] シェイプ： BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8 OS： プラットフォーム・イメージ Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0 [Bastionノード] シェイプ ： VM.Standard.E5.Flex OS ： プラットフォーム・イメージ Oracle-Linux-8.10-2025.02.28-0 [機械学習環境ソフトウェア] コンテナランタイム ： containerd 2.0.3 NVIDIA Container Toolkit ： 1.17.5 所要時間 : 約2時間...","categories": [],
+        "excerpt":"0. 概要 本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしてソフトウェア環境を手動で構築する方法で、 containerd と NVIDIA Container Toolkit を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降”GPUノード”と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） の通信性能計測プログラム NCCL Tests で検証します。 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。 [GPUノード] シェイプ： BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8 OS： プラットフォーム・イメージ Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0 [Bastionノード] シェイプ ： VM.Standard.E5.Flex OS ： プラットフォーム・イメージ Oracle-Linux-8.10-2025.02.28-0 [機械学習環境ソフトウェア] コンテナランタイム ： containerd 2.0.3 NVIDIA Container Toolkit ： 1.17.5 所要時間 : 約2時間...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-ml-instance-cntnd/",
         "teaser": "/ocitutorials/hpc/spinup-ml-instance-cntnd/architecture_diagram.png"
