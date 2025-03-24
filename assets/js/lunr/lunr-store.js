@@ -353,6 +353,12 @@ var store = [{
         "url": "/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/",
         "teaser": "/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/adb-diagram-third-party-vector-db-select-ai-rag.png"
       },{
+        "title": "109 : Oracle Database で全文検索してみよう",
+        "excerpt":"はじめに チュートリアル103~108では、RAGを構成するためのベクトル検索機能について確認しました。ベクトル検索は、テキスト・画像・音声などの非構造データを数値の集合であるベクトルに変換し、ベクトル間の距離の大小を以て、意味的な類似度を計算する検索手法です。 一方全文検索は、特定のキーワードやフレーズをテキスト内で検索するための技術です。通常、インデックス(索引)を利用して、指定した単語が含まれる文書を高速に抽出するため、検索対象としては単語ベースになります。 RAGでは「意味の近いコンテンツを取ってくる」という点から主にベクトル検索(セマンティック検索)が使われてきました。しかしベクトル検索も万能ではなく、質問と意味は近いが内容のズレた情報を取得してしまうことや、厳密なキーワード一致を保証しないため、誤った関連情報を拾いハルシネーションを起こしてしまうことがあります。そういった中で、厳密なキーワード一致検索ができる全文検索が評価されてきています。またベクトル検索と全文検索を組み合わせたハイブリッド検索も注目されています。 本チュートリアルではその全文検索をOracle Databaseで実装する方法をご紹介します。 0. 前提条件 101:Always Freeで23aiのADBインスタンスを作成してみよう、または101: ADBインスタンスを作成してみようの記事を参考に、Autonomous Database(23ai)を作成済みであること。 本チュートリアルで使用する以下のサンプルデータをダウンロード済みであること。 TextSample1.csv TextSample2.csv 目次： はじめに 0. 前提条件 1. Oracle Textとは 2. Oracle Textで全文検索してみる 3. 参考資料 所要時間 : 約40分 1. Oracle Textとは Oracle Text は、Oracleカーネルに組み込まれた全文検索およびドキュメント分類のためのエンジンです。Oracle Database のすべてのエディションで無償でご利用いただける機能です。 Oracle Text では、PDFやテキスト形式など各種フォーマットのデータに対して索引付けを行うことができます。全文検索専用のテキスト索引を作成することで、検索対象ドキュメントを一つ一つ検索するよりも高速に検索が行えます。またテキスト索引を作成すると、索引付けしたデータを「トークン」という単位に分割して、トークン表の形でデータベース内で保持します。 検索するときも検索ワードを同様にトークンに分割し、DB内で分割したトークンが連続して存在している場合に結果として返します。 Oracle Text で全文検索を行うには、CONTAINSというSQL関数を利用します。 SELECT id FROM testtab WHERE...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/ai-vector-search/ai-vector109-oracletext/",
+        "teaser": "/ocitutorials/ai-vector-search/ai-vector109-oracletext/image1.png"
+      },{
         "title": "101: Oracle Cloud で Oracle Database を使おう(BaseDB)",
         "excerpt":"はじめに Oracle Base Database Service(BaseDB)は、Oracle Cloud Infrastructure の上で稼働する Oracle Database のPaaSサービスです。 ユーザーはオンプレミスと全く同じOracle Databaseのソフトウェアをクラウド上で利用することができ、引き続きすべてのデータベース・サーバーの管理権限(OSのroot権限含む)およびデータベースの管理者権限を保持することができます。 この章では、作成済みの仮想クラウド・ネットワーク(VCN)にデータベース・サービスを1つ作成していきます。 前提条件 : Oracle Cloud Infrastructure チュートリアル を参考に、仮想クラウド・ネットワーク(VCN)の作成が完了していること 注意 チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります 目次 1. DBシステムの作成 2. DBシステムへのアクセス 3. データベース（PDB）にアクセス 4. PDB上のスキーマにアクセスしましょう 所要時間 : 約30分 1. DBシステムの作成 コンソールメニューから Oracle Database → Oracleベース・データベース・サービス を選択し、有効な管理権限を持つコンパートメントを選択します DBシステムの作成 ボタンを押します 立ち上がった...","categories": [],
         "tags": [],
