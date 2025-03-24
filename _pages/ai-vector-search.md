@@ -51,6 +51,8 @@ Oracle AI Vector Searchを使用すると、ビジネス・データにベクト
 
 + **[108 : SELECT AI with RAGを試してみよう](/ocitutorials/ai-vector-search/ai-vector108-select-ai-with-rag/){:target="_blank"}**
 
++ **[109 : Oracle Database で全文検索してみよう](/ocitutorials/ai-vector-search/ai-vector109-oracletext/){:target="_blank"}**
+
 <br/>
 
 **Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
