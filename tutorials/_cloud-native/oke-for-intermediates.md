@@ -746,6 +746,14 @@ kubectl apply -f https://raw.githubusercontent.com/oracle/oracle-database-operat
 kubectl apply -f https://raw.githubusercontent.com/oracle/oracle-database-operator/main/oracle-database-operator.yaml
 ```
 
+{% capture notice %}**Oracle Database Operatorインストール時のkubectl apply時のエラーについて**  
+`kubectl apply`時に`Error from server xxxxxx`などのエラーが発生する場合があります。  
+これは前のコンポーネントが起動する前に後続のコンポーネントをインストールしてしまった可能性が高いので、再度同じコマンド(`kubectl apply`)を実行頂けると成功する場合があります。
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
+
 ### 3-2. ATPのプロビジョニング
 
 次にATPをプロビジョニングするためのManifestを作成します。  
