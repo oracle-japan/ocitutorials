@@ -237,11 +237,11 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
 
 | ポリシー                                                                                                                   | 説明                                                                                                                 |
 | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'              | OCI DevOpsが自身が持つ各機能を利用可能にするポリシー                                                                 |
-| Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'              | OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー                                               |
-| Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'                    | OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー                                  |
-| Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'             | OCI DevOpsがOKEを管理するためのポリシー                                                                              |
-| Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id 'コンパートメントOCID' | 後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'              | OCI DevOpsが自身が持つ各機能を利用可能にするポリシー                                                                 |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'              | OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー                                               |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'                    | OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー                                  |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'             | OCI DevOpsがOKEを管理するためのポリシー                                                                              |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id 'コンパートメントOCID' | 後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー |
 
 **DevOpsのポリシーについて**  
 DevOpsでは、利用する機能やデプロイ先に応じて、今回設定しているポリシーの他にもいくつか設定可能なポリシーがあります。  
@@ -278,53 +278,53 @@ chmod +x prepare.sh
 以下のように出力されれば問題ありません。
 
 ```sh
-ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq
 {
   "data": {
-    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "compartment-id": "ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq",
     "defined-tags": {
       "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com",
-        "CreatedOn": "2022-01-31T01:35:54.465Z"
+        "CreatedBy": "default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com",
+        "CreatedOn": "2025-03-26T05:45:58.492Z"
       }
     },
     "description": "OCI_DevOps_Dynamic_Group",
     "freeform-tags": {},
-    "id": "ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "id": "ocid1.dynamicgroup.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxvltzj7vldgslaz5hua",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
-    "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}",
+    "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4gczc3p5xxxxxxxxxxxxxxxxxxxxxxxxxxumqcsrmoq',instance.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4xxxxxxxxxxxxxxxxxxxxxxxxxxw5f6regxxumqcsrmoq'}",
     "name": "OCI_DevOps_Dynamic_Group",
-    "time-created": "2022-01-31T01:35:54.528000+00:00"
+    "time-created": "2025-03-26T05:45:58.531000+00:00"
   },
-  "etag": "66c9058cf8f1145ce9047130c4a266d816e9dfbf"
+  "etag": "b28e8bb753174a839b28e9ec3120cbc9"
 }
 {
   "data": {
-    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "compartment-id": "ocid1.tenancy.oc1..aaaaaaaaf7srpxxxxxxxxxxxxxxxxxxxxxxxxxxregxxumqcsrmoq",
     "defined-tags": {
       "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/xxxx.xxxx@gmail.com",
-        "CreatedOn": "2022-01-31T01:35:57.108Z"
+        "CreatedBy": "default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com",
+        "CreatedOn": "2025-03-26T05:45:59.352Z"
       }
     },
     "description": "OCI_DevOps_Policy",
     "freeform-tags": {},
-    "id": "ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "id": "ocid1.policy.oc1..aaaaaaaavb4nczi5asxxxxxxxxxxxxxxxxxxxxxxxxxxg3at6fsq",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
     "name": "OCI_DevOps_Policy",
     "statements": [
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id oocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"
     ],
-    "time-created": "2022-01-31T01:35:57.220000+00:00",
+    "time-created": "2025-03-26T05:45:59.374000+00:00",
     "version-date": null
   },
-  "etag": "e0fb30d026d2a4f091058c2f686d51996ea59f8c"
+  "etag": "bd8cde78b30dc54245a050768536dd05b02da6d1"
 }
 ```
 
@@ -511,7 +511,7 @@ cloneする際にユーザ名をパスワードを聞かれます。
 
 | key        | value                                                            | 説明                                                                                                                                                                                                                            |
 | ---------- | ---------------------------------------------------------------- |
-| ユーザ名   | <テナンシ名>/<ユーザ名>                                          | `テナンシ名`は[0-4. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認](#0-4-テナンシ名とオブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの |
+| ユーザ名   | <テナンシ名>/default/<ユーザ名>                                          | `テナンシ名`は[0-4. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認](#0-4-テナンシ名とオブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの |
 | パスワード | [0-3. 認証トークンの作成](#0-3-認証トークンの作成)で作成したもの |
 
 cloneが成功すると"oke-handson"というディレクトリが作成されています。  
@@ -811,21 +811,23 @@ kind: AutonomousDatabase
 metadata:
   name: oke-atp-handson-db
 spec:
+  action: Create
   details:
-    compartmentOCID: <ご自身のコンパートメントOCID>
+    compartmentId: <自身のコンパートメントOCID>
     dbName: okeatp
     displayName: oke-atp-handson-db
-    cpuCoreCount: 1
+    computeModel: ECPU
+    computeCount: 2.0
     licenseModel: LICENSE_INCLUDED
-    wallet:
-      name: okeatp
-      password:
-        k8sSecret:
-          name: wallet-passwd
     adminPassword:
       k8sSecret:
         name: admin-passwd
     dataStorageSizeInTBs: 1
+  wallet:
+    name: okeatp
+    password:
+      k8sSecret:
+        name: wallet-passwd
 ```
 
 OKEに対してManifestを適用します。  
