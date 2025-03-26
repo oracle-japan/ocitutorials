@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-03-24T17:56:26+09:00">
+  <meta property="article:published_time" content="2025-03-26T16:19:47+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう">
     <meta itemprop="description" content="OKEを使ってサンプルアプリケーションのデプロイおよびCI/CDを体験していただけるコンテンツです。OKEだけではなく、マネージドなCI/CDサービスであるOCI DevOpsや運用が全て自動化された自律型データベースであるAutonomous Databaseも利用する豊富なコンテンツになっています。">
-    <meta itemprop="datePublished" content="2025-03-24T17:56:26+09:00">
+    <meta itemprop="datePublished" content="2025-03-26T16:19:47+09:00">
     
 
     <div class="page__inner-wrap">
@@ -670,23 +670,23 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
   </thead>
   <tbody>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ‘コンパートメントOCID’</td>
+      <td>Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ‘コンパートメントOCID’</td>
       <td>OCI DevOpsが自身が持つ各機能を利用可能にするポリシー</td>
     </tr>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ‘コンパートメントOCID’</td>
+      <td>Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ‘コンパートメントOCID’</td>
       <td>OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー</td>
     </tr>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ‘コンパートメントOCID’</td>
+      <td>Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ‘コンパートメントOCID’</td>
       <td>OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー</td>
     </tr>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ‘コンパートメントOCID’</td>
+      <td>Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ‘コンパートメントOCID’</td>
       <td>OCI DevOpsがOKEを管理するためのポリシー</td>
     </tr>
     <tr>
-      <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ‘コンパートメントOCID’</td>
+      <td>Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ‘コンパートメントOCID’</td>
       <td>後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー</td>
     </tr>
   </tbody>
@@ -720,53 +720,53 @@ DevOpsでは、利用する機能やデプロイ先に応じて、今回設定�
 
 <p>以下のように出力されれば問題ありません。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq
 <span class="o">{</span>
   <span class="s2">"data"</span>: <span class="o">{</span>
-    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq"</span>,
     <span class="s2">"defined-tags"</span>: <span class="o">{</span>
       <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
-        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com"</span>,
-        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:54.465Z"</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2025-03-26T05:45:58.492Z"</span>
       <span class="o">}</span>
     <span class="o">}</span>,
     <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
     <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
-    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.dynamicgroup.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxvltzj7vldgslaz5hua"</span>,
     <span class="s2">"inactive-status"</span>: null,
     <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
-    <span class="s2">"matching-rule"</span>: <span class="s2">"any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}"</span>,
+    <span class="s2">"matching-rule"</span>: <span class="s2">"any {resource.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4gczc3p5xxxxxxxxxxxxxxxxxxxxxxxxxxumqcsrmoq',instance.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4xxxxxxxxxxxxxxxxxxxxxxxxxxw5f6regxxumqcsrmoq'}"</span>,
     <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Dynamic_Group"</span>,
-    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:54.528000+00:00"</span>
+    <span class="s2">"time-created"</span>: <span class="s2">"2025-03-26T05:45:58.531000+00:00"</span>
   <span class="o">}</span>,
-  <span class="s2">"etag"</span>: <span class="s2">"66c9058cf8f1145ce9047130c4a266d816e9dfbf"</span>
+  <span class="s2">"etag"</span>: <span class="s2">"b28e8bb753174a839b28e9ec3120cbc9"</span>
 <span class="o">}</span>
 <span class="o">{</span>
   <span class="s2">"data"</span>: <span class="o">{</span>
-    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"compartment-id"</span>: <span class="s2">"ocid1.tenancy.oc1..aaaaaaaaf7srpxxxxxxxxxxxxxxxxxxxxxxxxxxregxxumqcsrmoq"</span>,
     <span class="s2">"defined-tags"</span>: <span class="o">{</span>
       <span class="s2">"Oracle-Tags"</span>: <span class="o">{</span>
-        <span class="s2">"CreatedBy"</span>: <span class="s2">"oracleidentitycloudservice/xxxx.xxxx@gmail.com"</span>,
-        <span class="s2">"CreatedOn"</span>: <span class="s2">"2022-01-31T01:35:57.108Z"</span>
+        <span class="s2">"CreatedBy"</span>: <span class="s2">"default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com"</span>,
+        <span class="s2">"CreatedOn"</span>: <span class="s2">"2025-03-26T05:45:59.352Z"</span>
       <span class="o">}</span>
     <span class="o">}</span>,
     <span class="s2">"description"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
     <span class="s2">"freeform-tags"</span>: <span class="o">{}</span>,
-    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
+    <span class="s2">"id"</span>: <span class="s2">"ocid1.policy.oc1..aaaaaaaavb4nczi5asxxxxxxxxxxxxxxxxxxxxxxxxxxg3at6fsq"</span>,
     <span class="s2">"inactive-status"</span>: null,
     <span class="s2">"lifecycle-state"</span>: <span class="s2">"ACTIVE"</span>,
     <span class="s2">"name"</span>: <span class="s2">"OCI_DevOps_Policy"</span>,
     <span class="s2">"statements"</span>: <span class="o">[</span>
-      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
-      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
-      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
-      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>,
-      <span class="s2">"Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"</span>
+      <span class="s2">"Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"</span>,
+      <span class="s2">"Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"</span>,
+      <span class="s2">"Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"</span>,
+      <span class="s2">"Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"</span>,
+      <span class="s2">"Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id oocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"</span>
     <span class="o">]</span>,
-    <span class="s2">"time-created"</span>: <span class="s2">"2022-01-31T01:35:57.220000+00:00"</span>,
+    <span class="s2">"time-created"</span>: <span class="s2">"2025-03-26T05:45:59.374000+00:00"</span>,
     <span class="s2">"version-date"</span>: null
   <span class="o">}</span>,
-  <span class="s2">"etag"</span>: <span class="s2">"e0fb30d026d2a4f091058c2f686d51996ea59f8c"</span>
+  <span class="s2">"etag"</span>: <span class="s2">"bd8cde78b30dc54245a050768536dd05b02da6d1"</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
@@ -999,7 +999,7 @@ OCI DevOpsインスタンス名はテナンシで一意になります。<br />
   <tbody>
     <tr>
       <td>ユーザ名</td>
-      <td><テナンシ名>/<ユーザ名></ユーザ名></テナンシ名></td>
+      <td><テナンシ名>/default/<ユーザ名></ユーザ名></テナンシ名></td>
       <td><code class="language-plaintext highlighter-rouge">テナンシ名</code>は<a href="#0-4-テナンシ名とオブジェクトストレージネームスペースの確認">0-4. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認</a>で確認したもの、<code class="language-plaintext highlighter-rouge">ユーザ名は</code><a href="#0-2-ユーザ名の確認">0-2.ユーザ名の確認</a>で確認したもの</td>
     </tr>
     <tr>
@@ -1352,21 +1352,23 @@ Manifestファイルの<code class="language-plaintext highlighter-rouge">dbName
 <span class="na">metadata</span><span class="pi">:</span>
   <span class="na">name</span><span class="pi">:</span> <span class="s">oke-atp-handson-db</span>
 <span class="na">spec</span><span class="pi">:</span>
+  <span class="na">action</span><span class="pi">:</span> <span class="s">Create</span>
   <span class="na">details</span><span class="pi">:</span>
-    <span class="na">compartmentOCID</span><span class="pi">:</span> <span class="s">&lt;ご自身のコンパートメントOCID&gt;</span>
+    <span class="na">compartmentId</span><span class="pi">:</span> <span class="s">&lt;自身のコンパートメントOCID&gt;</span>
     <span class="na">dbName</span><span class="pi">:</span> <span class="s">okeatp</span>
     <span class="na">displayName</span><span class="pi">:</span> <span class="s">oke-atp-handson-db</span>
-    <span class="na">cpuCoreCount</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">computeModel</span><span class="pi">:</span> <span class="s">ECPU</span>
+    <span class="na">computeCount</span><span class="pi">:</span> <span class="m">2.0</span>
     <span class="na">licenseModel</span><span class="pi">:</span> <span class="s">LICENSE_INCLUDED</span>
-    <span class="na">wallet</span><span class="pi">:</span>
-      <span class="na">name</span><span class="pi">:</span> <span class="s">okeatp</span>
-      <span class="na">password</span><span class="pi">:</span>
-        <span class="na">k8sSecret</span><span class="pi">:</span>
-          <span class="na">name</span><span class="pi">:</span> <span class="s">wallet-passwd</span>
     <span class="na">adminPassword</span><span class="pi">:</span>
       <span class="na">k8sSecret</span><span class="pi">:</span>
         <span class="na">name</span><span class="pi">:</span> <span class="s">admin-passwd</span>
     <span class="na">dataStorageSizeInTBs</span><span class="pi">:</span> <span class="m">1</span>
+  <span class="na">wallet</span><span class="pi">:</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s">okeatp</span>
+    <span class="na">password</span><span class="pi">:</span>
+      <span class="na">k8sSecret</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">wallet-passwd</span>
 </code></pre></div></div>
 
 <p>OKEに対してManifestを適用します。</p>
@@ -3112,7 +3114,7 @@ oke-atp-handson-db   OLTP      Active   71s
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-24T17:56:26+09:00">March 24, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-26T16:19:47+09:00">March 26, 2025</time></p>
 
       </footer>
 
