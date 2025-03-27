@@ -1499,10 +1499,10 @@ var store = [{
         "url": "/ocitutorials/integration/app-integration-for-beginners-3-sfdc/",
         "teaser": null
       },{
-        "title": "RESAS-API のデータを Oracle ADW に保存する(OIC3)",
-        "excerpt":"このチュートリアルは、 Oracle Integration Cloud を使用して RESAS-API が提供する市区町村データ を、Oracle ADW 上の CITIES という名前の表に保存してみます。 前提 このチュートリアルに沿って作業を進めるためには、次の設定が完了している必要があります。 Oracle Integration Cloud と Oracle Autononmous Database (ADW) のインスタンス作成 市区町村データを格納する Oracle ADW の表の作成 RESAS-API の API キーの取得 インスタンスの作成 このチュートリアルは、Oracle Integration Cloud と Oracle ADW のインスタンスの作成が完了し、コンソールにログインていることを前提としています。 まだインスタンスを作成していない場合は、次のページを参照してインスタンスを作成してください。 Oracle Integration Cloud インスタンスの作成 または OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編 Oracle ADW インスタンスの作成...","categories": [],
+        "title": "REST API で取得したデータを Oracle ADW に保存する(OIC3)",
+        "excerpt":"このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。 REST API はREST Countries を利用します。 前提 このチュートリアルに沿って作業を進めるためには、次の設定が完了している必要があります。 Oracle Integration Cloud と Oracle Autononmous Database (ADW) のインスタンス作成 データを格納する Oracle ADW の表の作成 インスタンスの作成 このチュートリアルは、Oracle Integration Cloud と Oracle ADW のインスタンスの作成が完了し、コンソールにログインていることを前提としています。 まだインスタンスを作成していない場合は、次のページを参照してインスタンスを作成してください。 Oracle Integration Cloud インスタンスの作成 または OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編 Oracle ADW インスタンスの作成 表の作成...","categories": [],
         "tags": [],
-        "url": "/ocitutorials/integration/app-integration3-for-beginners-4-resas2adw/",
+        "url": "/ocitutorials/integration/app-integration3-for-beginners-3-rest2adw/",
         "teaser": null
       },{
         "title": "Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)",
@@ -1539,12 +1539,6 @@ var store = [{
         "excerpt":"Visual Builder Studio(VBS)はプロジェクトのアジャイル開発、コラボレーション開発、ソースコード管理、CICDをサポートする機能を提供するPaaSサービスです。VBSはVisual Biulder Cloud Service(VBCS)アプリケーションのプロジェクト管理する機能があり、VBSで管理することによってビジュアル・アプリケーションのバージョン管理、issue管理、チーム開発をサポートすることができます。 このチュートリアルでは、VBSを使ってVBCSプロジェクトを作成し、簡単なアプリケーションを作成してマージリクエストの承認をトリガーに更新する手順を学習します。 Visual Builder Studioについて VBSはOracle Cloud Infrastructure(OCI)契約者様は無償でご利用可能です。VBSにはデフォルトでGit Repository、Wikiのメタデータ用に20 GBのストレージが含まれています。尚、ビルドジョブの機能を利用する際は処理を実行するビルド用インスタンスに対して別途課金が発生します。詳細はこちらをご確認ください。 前提条件 Oracle Integration Cloud インスタンスの作成 が完了している、またはVBCSのインスタンスが作成出来ていること。 (OICのVBCSを利用する場合) ServiceAdministrator ロールが付与されたユーザーが準備されていること (参考) Oracle Integration Roles and Privileges https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34 0.事前準備 まずはじめにVBSで利用するコンパートメントの作成をします。 Visual Builder Studio用コンパートメントの作成 コンパートメントについて Oracle Cloudにはコンパートメントという考え方があります。 コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。 まず初めに、後ほど実施するVisual Builder Studioのセットアップで利用するコンパートメントを作成します。 OCIコンソールにログインします。 ハンバーガーメニューの”アイデンティティとセキュリティ”⇒”コンパートメント”をクリックします。 “コンパートメントの作成”をクリックします。 以下の情報を入力します。 key value 名前...","categories": [],
         "tags": [],
         "url": "/ocitutorials/integration/vbcs-for-beginners-2-vbs/",
-        "teaser": null
-      },{
-        "title": "REST APIで取得したデータを一覧表示する",
-        "excerpt":"Visual Builder Cloud Service　(VBCS) は、ユーザー・インタフェース(UI)・コンポーネントをページにドラッグ＆ドロップするだけで、Webアプリケーションやモバイル・アプリケーションを作成するためのビジュアル開発ツールです。 このチュートリアルは、REST APIで取得したデータをVBCSアプリケーションで表形式で一覧表示する手順について説明します。 前提条件 Oracle Integration Cloud インスタンスの作成 Oracle Integration(OIC) を使い始めるための準備作業として、OIC インスタンスの作成が必要になります。この文書は OIC インスタンスの作成方法をステップ・バイ・ステップで紹介するチュートリアルです。 OIC インスタンスの ServiceAdministrator ロールが付与されたユーザーが準備されていること (参考) Oracle Integration Roles and Privileges https://docs.oracle.com/en/cloud/paas/integration-cloud/integration-cloud-auton/oracle-integration-cloud-roles-and-privileges.html#GUID-44661068-C31A-4AB5-BC24-B4B90F951A34 RESAS APIの利用登録が完了し、API KEYを取得していること 登録はこちら Webアプリケーションの作成 このパートでは、VBCSで Web アプリケーションを作成する際に、最初に定義する ビジュアル・アプリケーション と Web アプリケーション を作成する手順を説明します。 ビジュアル・アプリケーションの作成 VBCSでは、最初に ビジュアル・アプリケーション を作成します。 ビジュアル・アプリケーションは、Web アプリケーションやモバイル・アプリケーションを開発するために使用するリソースの集まりです。 アプリケーションのソース・ファイルや、メタデータが記述された JSON...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/integration/vbcs-for-beginners-3-rest/",
         "teaser": null
       },{
         "title": "ビジネス・オブジェクトのデータを折れ線グラフで表示する",

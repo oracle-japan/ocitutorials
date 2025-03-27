@@ -1,0 +1,1457 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>REST API で取得したデータを Oracle ADW に保存する(OIC3) | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="REST API で取得したデータを Oracle ADW に保存する(OIC3)">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-3-rest2adw/">
+
+
+  <meta property="og:description" content="このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-03-27T18:13:19+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-3-rest2adw/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          REST API で取得したデータを Oracle ADW に保存する(OIC3)
+
+        
+      </h1>
+      
+        <p class="page__lead">このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/integration" itemprop="item"><span itemprop="name">Integration</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">REST API で取得したデータを Oracle ADW に保存する(OIC3)</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">インテグレーション編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance/">OIC インスタンスを作成する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-2-addusr/">OIC インスタンスにユーザーを追加する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/integration-for-commons-1-instance-id/">OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-1-filesv/">ファイル・サーバーの有効化</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-1-filesv/">ファイル・サーバーの有効化(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-2-csvjson/">CSV ファイルから JSON ファイルへの変換(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/">SFDCからアウトバンドメッセージを受信する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/app-integration3-for-beginners-3-rest2adw/" class="active">REST API で取得したデータを Oracle ADW に保存する(OIC3)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-designer/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/opa-for-beginners-1-workspace/">Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(実行編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-1-wf/">Oracle Integration - Process で簡単なワークフローを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/process-for-beginners-2-dmodel/">Oracle Integration - Process でデシジョン・モデルを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-1/">Oracle Integration - Visual Builder で簡単なWebアプリケーションを作成してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-2-vbs/">Oracle Integration - Visual Builder Studio でVBCSアプリケーションを管理してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-4-linechart/">ビジネス・オブジェクトのデータを折れ線グラフで表示する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/integration/vbcs-for-beginners-5-gmap/">住所の値を基に地図上にピンマークを設置する</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="REST API で取得したデータを Oracle ADW に保存する(OIC3)">
+    <meta itemprop="description" content="このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。">
+    <meta itemprop="datePublished" content="2025-03-27T18:13:19+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提">前提</a><ul><li><a href="#インスタンスの作成">インスタンスの作成</a></li><li><a href="#表の作成">表の作成</a></li><li><a href="#このチュートリアルの表記方法">このチュートリアルの表記方法</a></li></ul></li><li><a href="#接続の作成">接続の作成</a><ul><li><a href="#rest-api-を呼び出すための-rest-アダプタを使用した接続">REST-API を呼び出すための REST アダプタを使用した接続</a></li><li><a href="#oracle-adw-アダプタを使用した接続">Oracle ADW アダプタを使用した接続</a><ul><li><a href="#oracle-adw-のウォレットファイルのダウンロード">Oracle ADW のウォレット・ファイルのダウンロード</a></li><li><a href="#oracle-integration-cloud-で接続を作成">Oracle Integration Cloud で接続を作成</a></li></ul></li></ul></li><li><a href="#統合の作成">統合の作成</a><ul><li><a href="#統合の新規作成">統合の新規作成</a></li><li><a href="#rest-api-呼び出しの設定">REST-API 呼び出しの設定</a></li><li><a href="#oracle-adw-へのデータの書き込み">Oracle ADW へのデータの書き込み</a></li><li><a href="#データマッピングの設定">データ・マッピングの設定</a></li><li><a href="#トラッキングの設定">トラッキングの設定</a></li></ul></li><li><a href="#統合の実行">統合の実行</a></li><li><a href="#実行結果の確認">実行結果の確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。
+REST API は<a href="https://restcountries.com/">REST Countries</a> を利用します。</p>
+
+<h2 id="前提">前提</h2>
+
+<p>このチュートリアルに沿って作業を進めるためには、次の設定が完了している必要があります。</p>
+
+<ul>
+  <li>Oracle Integration Cloud と Oracle Autononmous Database (ADW) のインスタンス作成</li>
+  <li>データを格納する Oracle ADW の表の作成</li>
+</ul>
+
+<h3 id="インスタンスの作成">インスタンスの作成</h3>
+
+<p>このチュートリアルは、Oracle Integration Cloud と Oracle ADW のインスタンスの作成が完了し、コンソールにログインていることを前提としています。
+まだインスタンスを作成していない場合は、次のページを参照してインスタンスを作成してください。</p>
+
+<ul>
+  <li><a href="../integration-for-commons-1-instance/">Oracle Integration Cloud インスタンスの作成</a> または <a href="../integration-for-commons-1-instance-id/">OIC インスタンスを作成する・ユーザーを追加する－アイデンティティ・ドメイン編</a></li>
+  <li><a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/serverless/adbsb/autonomous-provision.html#GUID-0B230036-0A05-4CA3-AF9D-97A255AE0C08">Oracle ADW インスタンスの作成</a></li>
+</ul>
+
+<h3 id="表の作成">表の作成</h3>
+
+<p>このチュートリアルでは、<code class="language-plaintext highlighter-rouge">COUNTRIES</code> 表を使用します。<br />
+<code class="language-plaintext highlighter-rouge">COUNTRIES</code> 表には、<code class="language-plaintext highlighter-rouge">restcountries</code> の REST API から取得した国のデータを格納します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>列名</th>
+      <th>データ型</th>
+      <th>Null値の指定</th>
+      <th>備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ID</code></td>
+      <td><code class="language-plaintext highlighter-rouge">VARCHAR2(3)</code></td>
+      <td>不可</td>
+      <td>主キー</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">NAME</code></td>
+      <td><code class="language-plaintext highlighter-rouge">VARCHAR2(100)</code></td>
+      <td>不可</td>
+      <td>国名</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">CAPITAL</code></td>
+      <td><code class="language-plaintext highlighter-rouge">VARCHAR2(200)</code></td>
+      <td>可</td>
+      <td>首都</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">POPULATION</code></td>
+      <td><code class="language-plaintext highlighter-rouge">NUMBER</code></td>
+      <td>可</td>
+      <td>人口</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">AREA</code></td>
+      <td><code class="language-plaintext highlighter-rouge">NUMBER</code></td>
+      <td>可</td>
+      <td>面積</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>以下のSQLを使ってテーブルを作成してください。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE TABLE COUNTRIES (
+    ID VARCHAR2(3) PRIMARY KEY,    -- プライマリキー
+    NAME VARCHAR2(100) NOT NULL,   -- 国名
+    CAPITAL VARCHAR2(100),         -- 首都
+    POPULATION NUMBER,             -- 人口
+    AREA NUMBER                    -- 面積
+);
+</code></pre></div></div>
+
+<h3 id="このチュートリアルの表記方法">このチュートリアルの表記方法</h3>
+
+<p>このチュートリアルで使用している表記方法は次のとおりです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">表記方法</th>
+      <th style="text-align: left">説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>「太字」</strong></td>
+      <td style="text-align: left">ボタン、各種フィールドのラベルなどの GUI 要素</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><プレースホルダ></プレースホルダ></td>
+      <td style="text-align: left">使用する環境などによって置き換える部分を表すプレースホルダー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">固定幅フォント</code></td>
+      <td style="text-align: left">実行するコマンド、URL、サンプルコード、入力するテキスト</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="接続の作成">接続の作成</h2>
+
+<p>Oracle Integration Cloud では、使用する API やデータベースなどへのアクセス情報を “接続” として定義します。
+Oracle Integration Cloud は、多数のアダプタを提供しており、アクセスに必要な情報を入力するだけです。</p>
+
+<p>このチュートリアルでは、２つの接続を作成します。</p>
+
+<ul>
+  <li>REST-API を呼び出すための REST アダプタを使用した接続</li>
+  <li>Oracle ADW アダプタを使用した接続</li>
+</ul>
+
+<h3 id="rest-api-を呼び出すための-rest-アダプタを使用した接続">REST-API を呼び出すための REST アダプタを使用した接続</h3>
+
+<p>最初に作成するのは、 REST-API を呼び出すための REST アダプタ接続です。
+REST アダプタ接続を作成する手順は次のとおりです。</p>
+
+<ol>
+  <li>
+    <p>Oracle Integration Cloud の <strong>「ホーム」</strong> ページを開いている場合は、ナビゲーション・ペインで <strong>「設計」</strong> をクリックします。</p>
+
+    <p><img src="001.png" alt="" /></p>
+
+    <p>ナビゲーション・ペインに <strong>「設計」</strong> に関連するメニューが表示されます。
+<strong>「接続」</strong> をクリックします。</p>
+
+    <p><img src="002.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Oracle Integration Cloud の <strong>「接続」</strong> ページが表示されたら、ページの右上にある <strong>「作成」</strong> ボタンをクリックします。</p>
+
+    <p><img src="003.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「接続の作成」</strong> ボックスが表示されます。</p>
+
+    <p><img src="004.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「検索」</strong> フィールドに <code class="language-plaintext highlighter-rouge">REST</code> と入力して、表示を絞り込みます。
+表示された <strong>「REST」</strong> アイコンをクリックします。</p>
+
+    <p><img src="005.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「接続の作成」</strong> ボックスが表示されます。 <br />
+作成する接続の基本情報を入力します。 <br />
+入力したら右下の <strong>「作成」</strong> ボタンをクリックします。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「名前」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">REST-COUNTRIES</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「識別子」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">REST-COUNTRIES</code> （「名前」を入力すると自動的に設定されます）</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「ロール」</strong></td>
+          <td style="text-align: left"><strong>「呼び出し」</strong> を選択</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="006.png" alt="" /></p>
+  </li>
+  <li>
+    <p>接続の詳細を入力するページが表示されます。
+<strong>「接続プロパティ」</strong> セクションでは、次のように値を入力します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「Connection Type」</strong></td>
+          <td style="text-align: left"><strong>「REST API Base URL」</strong> を選択</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「Connection URL」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">https://restcountries.com/v3.1/region/</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p><strong>「セキュリティ」</strong> セクションでは、次のように値を入力します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「セキュリティ・ポリシー」</strong></td>
+          <td style="text-align: left"><strong>「No Security Policy」</strong> を選択</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="007.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「接続プロパティ」</strong> と <strong>「セキュリティ」</strong> セクションの値を入力したら、ページの右上に表示されている <strong>「テスト」</strong> ボタンをクリックします。</p>
+
+    <p><img src="009.png" alt="" /></p>
+
+    <p><strong>「接続プロパティ」</strong> で指定した値が正しければ、ページの右上に成功したことを表すメッセージ <strong>「接続 XXX が正常にテストされました。」</strong> が表示されます。</p>
+  </li>
+  <li>
+    <p>テストに成功したら、ページの右上に表示されている <strong>「保存」</strong> ボタンをクリックします。</p>
+
+    <p><img src="010.png" alt="" /></p>
+  </li>
+  <li>
+    <p>保存できたら、ページの左上に表示されている <strong>「&lt;」</strong> （戻る）アイコンをクリックして、 <strong>「接続」</strong> ページに戻ります。</p>
+
+    <p><img src="011.png" alt="" /></p>
+  </li>
+</ol>
+
+<h3 id="oracle-adw-アダプタを使用した接続">Oracle ADW アダプタを使用した接続</h3>
+
+<h4 id="oracle-adw-のウォレットファイルのダウンロード">Oracle ADW のウォレット・ファイルのダウンロード</h4>
+
+<p>Oracle ADW のデータベースにアクセスするには、ウォレット・ファイルが必要になります。
+ウォレット・ファイルをダウンロードする手順は次のとおりです。</p>
+
+<ol>
+  <li>
+    <p>OCI コンソールにログインします。
+ページの左側にあるナビゲーション・メニューから <strong>「Oracle Database」</strong> セクションの <strong>「Autonomous Database」</strong> を選択します。</p>
+
+    <p><img src="012.png" alt="" /></p>
+  </li>
+  <li>
+    <p>使用する ADW インスタンスが作成された <strong>「リージョン」</strong> と <strong>「コンパートメント」</strong> を選択します。
+使用する ADW インスタンスの表示名をクリックして詳細ページを開きます。
+<strong>「データベース接続」</strong> ボタンをクリックします。</p>
+
+    <p><img src="013.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「データベース接続」</strong> ボックスが表示されます。
+<strong>「ウォレット・タイプ」</strong> では <strong>「インスタンス・ウォレット」</strong> を選択して、 <strong>「ウォレットのダウンロード」</strong> ボタンをクリックします。</p>
+
+    <p><img src="014.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「ウォレットのダウンロード」</strong> ボックスが表示されます。
+ウォレットのパスワードを指定する必要があります。
+<strong>「パスワード」</strong> と <strong>「パスワードの確認」</strong> にパスワードを指定します。
+ここで指定したパスワードは、 Oracle Integration Cloud で接続を作成する際に必要なので、忘れないようにしてください。</p>
+
+    <p><strong>「ダウンロード」</strong> ボタンをクリックすると、ウォレット・ファイル <code class="language-plaintext highlighter-rouge">Wallet_&lt;DB名&gt;.zip</code> がダウンロードされます。</p>
+
+    <p><img src="015.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ダウンロードしたウォレット・ファイル <code class="language-plaintext highlighter-rouge">Wallet_&lt;DB名&gt;.zip</code> に含まれているファイル <code class="language-plaintext highlighter-rouge">tnsnames.ora</code> を任意のテキスト・エディタで開き、接続に必要なホスト名とサービス名を確認します。
+<code class="language-plaintext highlighter-rouge">tnsnames.ora</code> には次のような3つのエントリが記述されています（改行を追加しています）。</p>
+
+    <pre><code class="language-txt">&lt;DB名&gt;_high = (description=
+    (retry_count=20)
+    (retry_delay=3)
+    (address=(protocol=tcps)(port=1522)(host=xxx.yyy.oraclecloud.com))
+    (connect_data=(service_name=zzzzz_&lt;DB名&gt;_high.adwc.oraclecloud.com))
+    (security=(ssl_server_cert_dn="CN=adwc.uscom-east-1.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US")))
+
+&lt;DB名&gt;_low = (description=
+    (retry_count=20)
+    (retry_delay=3)
+    (address=(protocol=tcps)(port=1522)(host=xxx.yyy.oraclecloud.com))
+    (connect_data=(service_name=zzzzz_&lt;DB名&gt;_low.adwc.oraclecloud.com))
+    (security=(ssl_server_cert_dn="CN=adwc.uscom-east-1.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US")))
+
+&lt;DB名&gt;_medium = (description=
+    (retry_count=20)
+    (retry_delay=3)
+    (address=(protocol=tcps)(port=1522)(host=xxx.yyy.oraclecloud.com))
+    (connect_data=(service_name=zzzzz_&lt;DB名&gt;_medium.adwc.oraclecloud.com))
+    (security=(ssl_server_cert_dn="CN=adwc.uscom-east-1.oraclecloud.com,OU=Oracle BMCS US,O=Oracle Corporation,L=Redwood City,ST=California,C=US")))
+</code></pre>
+
+    <p><strong>ホスト名</strong>は、 各エントリ内の <code class="language-plaintext highlighter-rouge">(address=(protocol=tcps)(port=1522)(host=xxx.yyy.oraclecloud.com))</code> で指定されている <code class="language-plaintext highlighter-rouge">host</code> の値です。
+この例では、 <code class="language-plaintext highlighter-rouge">xxx.yyy.oraclecloud.com</code> です
+（<code class="language-plaintext highlighter-rouge">xxx.yyy</code> の部分は、使用するウォレット・ファイル内の <code class="language-plaintext highlighter-rouge">tnsnames.ora</code> に記述されているものと置き換えてください）。</p>
+
+    <p>サービス名は、次の3つのうちのどれか1つを選択できます:</p>
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">&lt;DB名&gt;_high</code></li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;DB名&gt;_low</code></li>
+      <li><code class="language-plaintext highlighter-rouge">&lt;DB名&gt;_medium</code></li>
+    </ul>
+
+    <p>今回は、 <code class="language-plaintext highlighter-rouge">&lt;DB名&gt;_medium</code> を使用することにします。
+（<code class="language-plaintext highlighter-rouge">&lt;DB名&gt;</code> は、使用するウォレット・ファイル内の <code class="language-plaintext highlighter-rouge">tnsnames.ora</code> に記述されているものと置き換えてください）</p>
+  </li>
+</ol>
+
+<h4 id="oracle-integration-cloud-で接続を作成">Oracle Integration Cloud で接続を作成</h4>
+
+<p>ウォレット・ファイルをダウンロードし、接続情報を確認できたら、 Oracle Integration Cloud で ADW アダプタを使用した接続を作成します。
+接続を作成する手順は次のとおりです。</p>
+
+<ol>
+  <li>
+    <p>Oralce Integration Cloud にログインし、 <strong>「接続」</strong> ページを開きます。
+<strong>「接続」</strong> ページの右上にある <strong>「作成」</strong> ボタンをクリックします。</p>
+
+    <p><img src="016.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「接続の作成 - アダプタの選択」</strong> ボックスが表示されたら、 <strong>「検索」</strong> フィールドに <code class="language-plaintext highlighter-rouge">ADW</code> と入力して、表示を絞り込みます。
+表示された <strong>「Oracle ADW」</strong> アイコンをクリックします。</p>
+
+    <p><img src="017.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「接続の作成」</strong> ボックスが表示されます。
+作成する接続の基本情報を入力します。
+入力したら右下の <strong>「作成」</strong> ボタンをクリックします。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「名前」</strong></td>
+          <td style="text-align: left">My ADW</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「識別子」</strong></td>
+          <td style="text-align: left">MY_ADW</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「ロール」</strong></td>
+          <td style="text-align: left"><strong>「呼び出し」</strong> を選択</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="018.png" alt="" /></p>
+  </li>
+  <li>
+    <p>接続の詳細を入力するページが表示されます。
+<strong>「接続プロパティ」</strong> セクションでは、次のように値を入力します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「Host」</strong></td>
+          <td style="text-align: left">ウォレット・ファイル内の <code class="language-plaintext highlighter-rouge">tnsnames.ora</code> から取得したホスト名</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「Port」</strong></td>
+          <td style="text-align: left">1522</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「SID」</strong></td>
+          <td style="text-align: left">入力しない</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「Service Name」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">&lt;DB名&gt;_medium</code> （<code class="language-plaintext highlighter-rouge">&lt;DB名&gt;</code> は、使用する環境のものと置き換えてください）</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="019.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「セキュリティ」</strong> セクションでは、次のように値を入力します。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「セキュリティ・ポリシー」</strong></td>
+          <td style="text-align: left"><strong>「JDBC Over SSL」</strong> を選択</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「ウォレット」</strong></td>
+          <td style="text-align: left">アップロードボタンをクリックして、ウォレット・ファイル <code class="language-plaintext highlighter-rouge">Wallet_&lt;DB名&gt;.zip</code> をアップロード</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「ウォレット・パスワード」</strong></td>
+          <td style="text-align: left">ウォレット・ファイルをダウンロードする際に指定したパスワードを入力</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「データベース・サービス・ユーザー名」</strong></td>
+          <td style="text-align: left">ADW インスタンスのユーザー名を入力</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「パスワード」</strong></td>
+          <td style="text-align: left">ADW インスタンスのユーザーのパスワードを入力</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="020.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「プロパティ」</strong> と <strong>「セキュリティ」</strong> の値を入力したら、ページの右上に表示されている <strong>「テスト」</strong> ボタンをクリックします。</p>
+
+    <p><img src="021.png" alt="" /></p>
+
+    <p>接続のテストに成功すると、 <strong>「接続 XXX が正常にテストされました。」</strong> というメッセージがページの右上に表示されます。</p>
+  </li>
+  <li>
+    <p>テストに成功したら、ページの右上に表示されている <strong>「保存」</strong> ボタンをクリックします。</p>
+
+    <p><img src="022.png" alt="" /></p>
+
+    <p>保存できたら、ページの左上にある <strong>「&lt;」</strong> （戻る） アイコンをクリックして、<strong>「接続」</strong> ページに戻ります。</p>
+  </li>
+</ol>
+
+<h2 id="統合の作成">統合の作成</h2>
+
+<p>Oracle Integration Cloud の “統合” は、システム間の連携の流れを定義したものです。
+このチュートリアルで作成する統合は、次の処理を実行します。</p>
+
+<ol>
+  <li>RESTCOUNTRIES の API を呼び出し、データを取得</li>
+  <li>取得したデータを Oracle ADW のテーブルに保存</li>
+</ol>
+
+<h3 id="統合の新規作成">統合の新規作成</h3>
+
+<ol>
+  <li>
+    <p>Oralce Integration Cloud にログインします。
+<strong>「設計」</strong> ページを開いている場合は、ナビゲーション・ペインで <strong>「統合」</strong> をクリックします。</p>
+
+    <p><strong>「ホーム」</strong> ページを開いている場合は、ナビゲーション・ペインで <strong>「設計」</strong> をクリックして、 <strong>「統合」</strong> を選択します。</p>
+  </li>
+  <li>
+    <p><strong>「統合」</strong> ページが表示されたら、ページの右上にある <strong>「作成」</strong> ボタンをクリックします。</p>
+
+    <p><img src="023.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「統合の作成」</strong> ボックスが表示されます。
+<strong>「開始方法の選択」</strong> では <strong>「スケジュール」</strong> をクリックします。</p>
+
+    <p><img src="024.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「統合の作成」</strong> ボックスが表示されます。
+次の情報を入力する必要があります。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「名前」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">Load Countries</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「識別子」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">LOAD_COUNTRIES</code> (Load Countries と名前をつけると自動的に設定される)</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「バージョン」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">01.00.0000</code> （初期状態で入力されている値をそのまま使用）</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「ドキュメントURL」</strong></td>
+          <td style="text-align: left">入力しない</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「キーワード」</strong></td>
+          <td style="text-align: left">入力しない</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「パッケージ」</strong></td>
+          <td style="text-align: left">入力しない</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「説明」</strong></td>
+          <td style="text-align: left">入力しない</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="025.png" alt="" /></p>
+
+    <p>入力したら右下の <strong>「作成」</strong> ボタンをクリックします。</p>
+  </li>
+  <li>
+    <p>統合が作成されると、キャンバス・ビューで表示されます。
+<strong>「レイアウト」</strong> を初期状態の <strong>「垂直」</strong> から <strong>「水平」</strong> に変更します。</p>
+
+    <p><img src="026.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「スケジュール」</strong> アイコンの「…」から <strong>「編集」</strong> をクリックします。</p>
+
+    <p><img src="027.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「スケジュール・パラメータの構成」</strong> ブロックが表示されます。ここでは統合処理を実行する際に渡す変数を定義します。今回はREST COUNTRIESのAPIに渡すリージョン名(region)を作成します。
+<strong>「＋」</strong> アイコンをクリックします。</p>
+
+    <p><img src="028.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「パラメータ名」</strong> に <code class="language-plaintext highlighter-rouge">region</code>、 <strong>「値」</strong> に <code class="language-plaintext highlighter-rouge">asia</code> と入力します。
+入力し終わったらキャンバスの余白をクリックするとページが閉じられます。</p>
+
+    <p><img src="029.png" alt="" /></p>
+  </li>
+</ol>
+
+<h3 id="rest-api-呼び出しの設定">REST-API 呼び出しの設定</h3>
+
+<ol>
+  <li>
+    <p>スケジュールから右に延びている矢印の中央あたりにカーソルを当てると「＋」アイコンが表示されるのでクリックします。 <br />
+クリックするとロールが呼び出しに設定されている接続のリストが表示されるので、『<a href="#rest-api-を呼び出すための-rest-アダプタを使用した接続">REST-API を呼び出すための REST アダプタを使用した接続</a>』で作成した接続 <strong>「REST-COUNTRIES」</strong> をクリックします。</p>
+
+    <p><img src="030.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ボックスが表示されます。
+<strong>「基本情報の構成」</strong> では、次のように入力します。
+入力したら、<strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「エンドポイントにどのような名前をつけますか。」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">GetCountries</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「エンドポイントの相対リソースURIは何ですか。」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">/{region}</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「エンドポイントでどのアクションを実行しますか。」</strong></td>
+          <td style="text-align: left"><strong>「GET」</strong> を選択</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「このエンドポイントのパラメータを追加して確認」</strong></td>
+          <td style="text-align: left">チェックする</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「このエンドポイントを構成してレスポンスを受信」</strong></td>
+          <td style="text-align: left">チェックする</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="031.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「リクエスト・パラメータの構成」</strong> では、REST COUNTRIES を呼び出す際に指定する問合せパラメータを指定します。そのままだとデータ項目が多すぎるのでfieldという問い合わせパラメータを追加して取得する項目を制限します。
+<strong>「問合せパラメータの指定」</strong> セクションにあるテーブルの <strong>「追加」</strong> ボタンをクリックし、次のように入力します。 <br />
+入力し終わったら、<strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「名前」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">fields</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「データ型」</strong></td>
+          <td style="text-align: left"><strong>「string」</strong> を選択</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="032.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「レスポンスの構成」</strong> では、 REST-API から返ってくるレスポンスの形式を指定します。
+<strong>「レスポンス・ペイロード」</strong> で <strong>「JSONサンプル」</strong> を選択してから、 <strong>「&lt;&lt;&lt; inline &gt;&gt;&gt;」</strong> リンクをクリックします。</p>
+
+    <p><img src="033.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「Enter Sample JSON」</strong> に、REST COUNTRIESが返すレスポンスのサンプルを入力します。
+次のコードブロックをコピーして、<strong>「Enter Sample JSON」</strong> のテキストエリアに、ペーストします。
+<strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"common"</span><span class="p">:</span><span class="w"> </span><span class="s2">"South Korea"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"official"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Republic of Korea"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"nativeName"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="nl">"kor"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"official"</span><span class="p">:</span><span class="w"> </span><span class="s2">"대한민국"</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"common"</span><span class="p">:</span><span class="w"> </span><span class="s2">"한국"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nl">"ccn3"</span><span class="p">:</span><span class="w"> </span><span class="s2">"410"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"capital"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Seoul"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"population"</span><span class="p">:</span><span class="w"> </span><span class="mi">51780579</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"area"</span><span class="p">:</span><span class="w"> </span><span class="mi">100210</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <p><img src="034.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「レスポンスの構成」</strong> ボックスの右上にある <strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <p><img src="035.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「サマリー」</strong> が表示されます。
+<strong>「終了」</strong> ボタンをクリックします。</p>
+
+    <p><img src="036.png" alt="" /></p>
+  </li>
+  <li>
+    <p>キャンバス・ビューは次の図のような表示になっています。</p>
+
+    <p><img src="037.png" alt="" /></p>
+
+    <ul>
+      <li><strong>「マップ先 GetCountries」</strong> は、REST API のリクエストにパラメータを指定する必要がある場合に使用するマッピングです。
+このチュートリアルでは、スケジュール・パラメータ <code class="language-plaintext highlighter-rouge">region</code> で指定した値を REST SOUNTRIES を呼び出す際に指定する値のマッピングとパラメータ <code class="language-plaintext highlighter-rouge">fields</code> に結果として取得する項目をマップする設定を行います。</li>
+      <li><strong>「GetCountries」</strong> は、これまでに設定した REST API の呼び出しの設定です。</li>
+    </ul>
+  </li>
+  <li>
+    <p>キャンバス・ビューで <strong>「マップ GetCountries」</strong> を選択し、「…」から <strong>「編集」</strong> をクリックします。</p>
+
+    <p><img src="038.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「マップ先 GetCountries」</strong> ページが表示されます。</p>
+
+    <p>ページの左側に表示される <strong>「Sources」</strong> ツリーに <strong>「region」</strong> が表示されていることを確認します。
+この <strong>「region」</strong> は、先ほど設定したスケジュール・パラメータです。</p>
+
+    <p><img src="039_0_1.png" alt="" /></p>
+
+    <p>次に、ページの右側に表示されている <strong>「Targets」</strong> ツリーに <strong>「GetCountries Request (REST)」</strong> → <strong>「Template Parameters」</strong> → <strong>「Region」</strong> が表示されていることを確認します。
+この <strong>「Region」</strong> は、REST-COUNTRIES の API を呼び出す際に指定する region のパスパラメータです。</p>
+
+    <p><img src="039_0_2.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「Sources」</strong> ツリーの <strong>「region」</strong> を、 <strong>「Targets」</strong> ツリーの <strong>「region」</strong> の上にドラッグ＆ドロップします。
+<strong>「Sources」</strong> ツリーの <strong>「region」</strong> を、 <strong>「Targets」</strong> ツリーの <strong>「region」</strong> が直線で結ばれます。</p>
+
+    <p><img src="039.png" alt="" /></p>
+  </li>
+</ol>
+
+<p>次に <strong>「Fields」</strong> のパラメタを設定します。こちらはマッピングでなく直接入力します。 ページの右側に表示されている <strong>「Targets」</strong> ツリーに <strong>「GetCountries Request (REST)」</strong> → <strong>「Query Parameters」</strong> → <strong>「Fields」</strong> を右クリックして「ターゲット・ノードの作成」をクリックします。</p>
+
+<p><img src="039_1.png" alt="" /></p>
+
+<p>画面下に式の入力用のテキストボックスが表示されるので、右側にある <strong>「開発者ビューに切り替え」</strong> のボタンをクリックします。</p>
+
+<p><img src="039_2.png" alt="" /></p>
+
+<p>テキストボックスが編集可能になるので以下の内容を入力し、 <strong>「✓」</strong> をクリックして保存した後、 <strong>「✖」</strong> をクリックしてダイアログを閉じます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"ccn3,name,capital,population,area"
+</code></pre></div></div>
+
+<p><img src="039_3.png" alt="" /></p>
+
+<ol>
+  <li>
+    <p>ページの右上にある <strong>「検証」</strong> ボタンをクリックします。</p>
+
+    <p><img src="040.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「マップ先 GetCountriesは正常に検証されました。」</strong> というメッセージが表示されたら、 <strong>「&lt;」</strong> ボタンをクリックします。</p>
+
+    <p><img src="041.png" alt="" /></p>
+
+    <p><img src="042.png" alt="" /></p>
+  </li>
+  <li>
+    <p>これで、REST-COUNTRIES のデータを取得するための設定が終わりました。
+ここまでの設定を保存するために、ページの右上に表示される <strong>「保存」</strong> ボタンをクリックします。</p>
+
+    <p><img src="043.png" alt="" /></p>
+  </li>
+</ol>
+
+<h3 id="oracle-adw-へのデータの書き込み">Oracle ADW へのデータの書き込み</h3>
+
+<ol>
+  <li>
+    <p>「呼び出し GetCountries」から右に延びている矢印の中央あたりにカーソルを当てると「＋」アイコンが表示されるのでクリックします。 <br />
+クリックするとロールが呼び出しに設定されている接続のリストが表示されるので、その中から『<a href="#oracle-adw-アダプタを使用した接続">Oracle ADW アダプタを使用した接続</a>』で作成した接続 <strong>「My ADW」</strong> をクリックします。</p>
+
+    <p><img src="044.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ボックスが表示されます。
+次のように <strong>「基本情報の構成」</strong> を入力します。 <br />
+入力し終わったら、 <strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: left">入力項目</th>
+          <th style="text-align: left">入力する値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align: left"><strong>「エンドポイントにどのような名前をつけますか。」</strong></td>
+          <td style="text-align: left"><code class="language-plaintext highlighter-rouge">MergeCountries</code></td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「どの操作を実行しますか。」</strong></td>
+          <td style="text-align: left"><strong>「Perform an Operation on a Table」</strong> を選択</td>
+        </tr>
+        <tr>
+          <td style="text-align: left"><strong>「どの操作を表で実行しますか。」</strong></td>
+          <td style="text-align: left"><strong>「Insert or Update (Merge)」</strong> を選択</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><img src="045.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「表での操作の構成」</strong> が表示されます。
+<strong>「スキーマ」</strong> では、データを保存する <code class="language-plaintext highlighter-rouge">COUNTRIES</code> 表のスキーマを選択し、 <strong>「表タイプ」</strong> では <strong>「TABLE」</strong> が選択されていることを確認したら、 <strong>「表タイプ」</strong> フィールドの下にある <strong>「検索」</strong> ボタンをクリックします。</p>
+
+    <p><strong>「使用可能」</strong> リストに <strong>「COUNTRIES」</strong> が表示されています。
+<strong>「COUNTRIES」</strong> を選択した状態で、 <strong>「&gt;」</strong> ボタンをクリックします。
+<strong>「COUNTRIES」</strong> が、 <strong>「選択済み」</strong> リストに移動したことを確認したら、 <strong>「表のインポート」</strong> ボタンをクリックします。</p>
+
+    <p><img src="046.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「親データベース表の選択」</strong> が表示されます。
+今回はデータを保存するテーブルは <code class="language-plaintext highlighter-rouge">COUNTRIES</code> だけなので、初期状態のままでウィザードの右上にある <strong>「続行」</strong> ボタンをクリックします。</p>
+
+    <p><img src="047.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「サマリー」</strong> が表示されます。
+ウィザードの右上にある <strong>「終了」</strong> ボタンをクリックします。</p>
+
+    <p><img src="048.png" alt="" /></p>
+  </li>
+  <li>
+    <p>キャンバス・ビューは次の図のような表示になっています。</p>
+
+    <p><img src="049.png" alt="" /></p>
+
+    <ul>
+      <li><strong>「マップ MergeCountries」</strong> は、 Oracle ADW に保存するデータのマッピングの設定を行います。
+次のセクションで設定します。</li>
+      <li><strong>「呼出し MergeCountries」</strong> は、これまでに設定した Oracle ADW の呼び出しの設定です。</li>
+    </ul>
+  </li>
+  <li>
+    <p>これで、REST-COUNTRIES の国のデータを Oracle ADW に保存するための設定が終わりました。
+ここまでの設定を保存するために、ページの右上に表示される <strong>「保存」</strong> ボタンをクリックします。</p>
+  </li>
+</ol>
+
+<h3 id="データマッピングの設定">データ・マッピングの設定</h3>
+
+<p>ここでは、REST-COUNTRIES により取得した国のデータと、Oracle ADW に保存するデータのマッピングの設定を行います。</p>
+
+<ol>
+  <li>
+    <p>キャンバス・ビューで、 <strong>「マップ MergeCountries」</strong> を選択します。
+メニューの <strong>「編集」</strong> をクリックします。</p>
+
+    <p><img src="050.png" alt="" /></p>
+  </li>
+  <li>
+    <p>データのマッピングの設定を行うためのマッパーが表示されます。
+マッパーの画面左側に表示されている <strong>「Sources」</strong> ペインの <strong>「GetCountries Response (REST)」</strong> → <strong>「Execute Response」</strong> → <strong>「Response Wrapper」</strong> → <strong>「Top Level Array」</strong> を、画面右側に表示されている <strong>「Target」</strong> ペインの <strong>「MergeCountries Request (Oracle ADW)」</strong> → <strong>「Countries」</strong> にドラッグ＆ドロップします。</p>
+
+    <p><img src="051.png" alt="" /></p>
+  </li>
+  <li>
+    <p>同様の手順で以下の項目をマッピングします。</p>
+
+    <ul>
+      <li>
+        <p><strong>「Sources」</strong> ペインの <strong>「Name」-「Common」</strong> を、 <strong>「Target」</strong> ペインの <strong>「name」</strong> にドラッグ＆ドロップします。</p>
+      </li>
+      <li>
+        <p><strong>「Sources」</strong> ペインの <strong>「Ccn3」</strong> を、 <strong>「Target」</strong> ペインの <strong>「id」</strong> にドラッグ＆ドロップします。</p>
+      </li>
+      <li>
+        <p><strong>「Sources」</strong> ペインの <strong>「Capital」</strong> を、 <strong>「Target」</strong> ペインの <strong>「capital」</strong> にドラッグ＆ドロップします。</p>
+      </li>
+      <li>
+        <p><strong>「Sources」</strong> ペインの <strong>「Population」</strong> を、 <strong>「Target」</strong> ペインの <strong>「population」</strong> にドラッグ＆ドロップします。</p>
+      </li>
+      <li>
+        <p><strong>「Sources」</strong> ペインの <strong>「Are」</strong> を、 <strong>「Target」</strong> ペインの <strong>「are」</strong> にドラッグ＆ドロップします。</p>
+      </li>
+    </ul>
+
+    <p><img src="052.png" alt="" /></p>
+  </li>
+  <li>
+    <p>画面右上にある <strong>「検証」</strong> ボタンをクリックして、マッピングが有効かどうかを確認します。</p>
+
+    <p><img src="053.png" alt="" /></p>
+  </li>
+  <li>
+    <p>画面の上部に <strong>「マップ先 XXXは正常に検証されました。」</strong> というメッセージが表示されたら、 <strong>「&lt;」</strong> ボタンをクリックします。</p>
+
+    <p><img src="054.png" alt="" /></p>
+  </li>
+</ol>
+
+<h3 id="トラッキングの設定">トラッキングの設定</h3>
+
+<p>Oracle Integration Cloud では、作成した統合が実行状況をトラッキングするための設定を行う必要があります。
+トラッキングの設定は次の手順で行います。</p>
+
+<ol>
+  <li>
+    <p>統合キャンバスの右上にある <strong>ビジネス識別子(I) アイコン</strong> をクリックします。</p>
+
+    <p><img src="055.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「ビジネス識別子」</strong> ボックスが表示されます。
+ボックス左側のツリーから <strong>「schedule」</strong> の下の <strong>「startTime」</strong> を、ボックスの右側に表示されているテーブルの <strong>「プライマリ・ビジネス識別子」</strong> の1行目にドラッグ＆ドロップします。</p>
+
+    <p><img src="056.png" alt="" /></p>
+  </li>
+  <li>
+    <p>ボックス左側のツリーから <strong>「$region」</strong> を、ボックスの右側に表示されているテーブルの <strong>「プライマリ・ビジネス識別子」</strong> 列の2行目にドラッグ＆ドロップします。</p>
+
+    <p><img src="057.png" alt="" /></p>
+
+    <p>キャンバスの余白部分をクリックして <strong>「ビジネス識別子」</strong> ボックスを閉じます。</p>
+  </li>
+  <li>
+    <p>ページの右上にある <strong>「保存」</strong> ボタンをクリックしてから <strong>「&lt;」</strong> ボタンをクリックします。
+<strong>「統合」</strong> の一覧が表示されるページに戻ります。</p>
+
+    <p><img src="058.png" alt="" /></p>
+  </li>
+</ol>
+
+<h2 id="統合の実行">統合の実行</h2>
+
+<p>作成した統合を実行してみましょう。</p>
+
+<ol>
+  <li>
+    <p>Oracle Integration Cloud で作成した統合を実行するには、まずアクティブ化します。
+実行する統合にマウスポインタを合わせ、表示された <strong>「アクティブ化」</strong> アイコンをクリックします。</p>
+
+    <p><img src="059.png" alt="" /></p>
+  </li>
+  <li>
+    <p><strong>「統合のアクティブ化」</strong> ボックスが表示されます。
+「トレース・レベルの選択」を <strong>「デバッグ」</strong> にチェックして、ボックスの右下に表示されている <strong>「アクティブ化」</strong> ボタンをクリックします。</p>
+
+    <p><img src="060.png" alt="" /></p>
+
+    <p>統合のステータスが <strong>「アクティブ」</strong> に変更されていることを確認します。</p>
+
+    <p><img src="061.png" alt="" /></p>
+  </li>
+  <li>
+    <p>実行する統合にマウスポインタを合わせ、メニューから <strong>「実行」</strong> をクリックします。</p>
+
+    <p><img src="062.png" alt="" /></p>
+  </li>
+  <li>
+    <p>今回はデフォルト値をそのまま使用することにして、ページの右上にある <strong>「実行」</strong> ボタンをクリックします。</p>
+
+    <p><img src="063.png" alt="" /></p>
+
+    <p class="notice--info">デフォルト値とは異なる値を設定する場合は <strong>「現在の値」</strong> に入力します。</p>
+  </li>
+</ol>
+
+<h2 id="実行結果の確認">実行結果の確認</h2>
+
+<ol>
+  <li>
+    <p>実行結果を確認してみましょう。
+実行結果は、トラッキングの機能を使用して確認できます。 <br />
+「実行」をクリックするとすぐに右側に「アクティビティ・ストリーム」というブロックが表示され、ここでログレベルの処理状況を確認することができます。 <br />
+トラッキングの画面へは <strong>インスタンスID:XXX</strong> のリンクから遷移することができます。</p>
+
+    <p><img src="064.png" alt="" /></p>
+  </li>
+  <li>
+    <p>トラッキングの画面へ遷移します。こちらでは実行結果を視覚的に確認することができます。</p>
+
+    <p><img src="065_0.png" alt="" /></p>
+  </li>
+  <li>
+    <p>アクティビティ・ストリームにある砂時計のアイコンをクリックすると各処理にかかった時間を確認することもできます。</p>
+
+    <p><img src="065_1.png" alt="" /></p>
+  </li>
+  <li>
+    <p>アクティビティ・ストリームを下にスクロールします。 <br />
+ 「Process completed successfully」の表示を確認し、正常に終了していることを確認します。</p>
+
+    <p><img src="065_0.png" alt="" /></p>
+  </li>
+  <li>
+    <p>トラッキングの画面はメニューからも遷移することができます。 <br />
+ メニューから <strong>「可観測性」－「インスタンス」</strong> に遷移すると実行された統合アプリケーションの一覧が表示されるので、詳細を確認したいインスタンス(実行済みの統合)をクリックします。</p>
+
+    <p><img src="066.png" alt="" /></p>
+  </li>
+  <li>
+    <p>実行画面の <strong>インスタンスID:XXX</strong> のリンクと同じ画面に遷移することができます。</p>
+
+    <p><img src="067.png" alt="" /></p>
+  </li>
+  <li>
+    <p>最後にADWからデータが正しく登録されているかを確認します。</p>
+
+    <p><img src="068.png" alt="" /></p>
+  </li>
+</ol>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-03-27T18:13:19+09:00">March 27, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=REST+API+%E3%81%A7%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92+Oracle+ADW+%E3%81%AB%E4%BF%9D%E5%AD%98%E3%81%99%E3%82%8B%28OIC3%29%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration3-for-beginners-3-rest2adw%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fintegration%2Fapp-integration3-for-beginners-3-rest2adw%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/integration/app-integration3-for-beginners-3-rest2adw/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/integration/app-integration-for-beginners-3-sfdc/" class="pagination--pager" title="SFDCからアウトバンドメッセージを受信する
+">前へ</a>
+    
+    
+      <a href="/ocitutorials/integration/opa-for-beginners-1-designer/" class="pagination--pager" title="Oracle Cloud Infrastructure Process Automation で簡単なワークフローを作成してみよう(作成編)
+">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
