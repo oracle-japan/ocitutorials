@@ -4,6 +4,7 @@ excerpt: "このチュートリアルは、REST APIで取得したデータをVB
 layout: single
 order: "011"
 tags:
+published: false
 ---
 Visual Builder Cloud Service　(VBCS) は、ユーザー・インタフェース(UI)・コンポーネントをページにドラッグ＆ドロップするだけで、Webアプリケーションやモバイル・アプリケーションを作成するためのビジュアル開発ツールです。
 
