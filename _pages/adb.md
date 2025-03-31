@@ -67,9 +67,6 @@ toc: true
 + **[110: Oracle Analytics Desktopを使ってデータを見える化してみよう](/ocitutorials/adb/adb110-analyze-using-oad/){:target="_blank"}**  
     * Oracle Analytics Desktopを使ってADBのデータを見える化します。
 
-+ **[111: SELECT AIを試してみよう](/ocitutorials/adb/adb111-select-ai/){:target="_blank"}**  
-    * Select AIを使って自然言語でデータベース内のデータを問合せる方法をご紹介します
-
 ## 実践編
 
 + **[201: 接続サービスの理解](/ocitutorials/adb/adb201-service-names/){:target="_blank"}**  
@@ -79,13 +76,13 @@ toc: true
     * 大規模なCSVデータを想定し、オブジェクト・ストレージからDBMS_CLOUDパッケージを利用してロードします
     
 + **[203: 分析系クエリの実行(Star Schema Benchmark)](/ocitutorials/adb/adb203-bulk-query/){:target="_blank"}**
-    * SSBスキーマに対して重いクエリ処理を実行し、ECPU数をスケールすることで高速化できること確認します
+    * SSBスキーマに対して重いクエリ処理を実行し、OCPU数をスケールすることで高速化できること確認します
 
 + **[204: 開発者向け仮想マシンのセットアップ方法](/ocitutorials/adb/adb204-setup-VM/){:target="_blank"}**  
     * 開発用の仮想マシンイメージを利用して、開発環境を作成しましょう。後続のチュートリアルにて利用します
 
 + **[205: オンライン・トランザクション系のアプリを実行してみよう（Swingbench)](/ocitutorials/adb/adb205-swingbench/){:target="_blank"}**
-    * ECPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験します
+    * OCPU数と自動スケーリング設定に応じてADBのTPS(Transaction per second)が向上していく流れをSwingbenchを通して体験します
 
 + **[206: Node.jsによるADB上でのアプリ開発](/ocitutorials/adb/adb206-appdev-nodejs/){:target="_blank"}**  
     * Node.jsにてADBに接続し、簡易アプリを実行してみます
@@ -105,7 +102,7 @@ toc: true
 + **[211: クローン機能を使ってみよう](/ocitutorials/adb/adb211-clone/){:target="_blank"}**  
     * ADBを簡単に複製することができる、クローニング機能についてご紹介します
 
-+ **[212: Autonomous Database を災害対策構成にしてみよう](/ocitutorials/adb/adb212-audg/){:target="_blank"}**  
++ **[212: Autonomous Data Guardを構成してみよう](/ocitutorials/adb/adb212-audg/){:target="_blank"}**  
     * たった数クリックでスタンバイ・データベースをプロビジョニングしDR構成を実現します
 
 + **[213 : Application Continuityを設定しよう](/ocitutorials/adb/adb213-tac/){:target="_blank"}**  
@@ -118,7 +115,7 @@ toc: true
     * Autonomous Databaseの標準機能であるGraph Studioの使い方をご紹介します。
 
 + **[216 : SQL Performance Analyzer(SPA)によるパッチ適用のテストソリューション](/ocitutorials/adb/adb216-patch-spa/){:target="_blank"}**  
-    * Autonomous Databaseの特徴の一つである自動パッチ適用のSQLの性能影響を事前にテストします。
+    * Autonomous Databaseの特徴の一つである自動パッチ適用のアプリケーションに対する影響を事前にテストします。
 
 + **[217: Database Actions を使ってみよう](/ocitutorials/adb/adb217-use-database-actions/){:target="_blank"}**  
     * Database Actions の内、データ分析、データ・インサイト、カタログの機能を確認します。
@@ -128,12 +125,6 @@ toc: true
 
 + **[219 : Automatic Indexingを体験してみよう](/ocitutorials/adb/adb219-autoindexing/){:target="_blank"}**  
     * Automatic Indexingの機能を用いて、人手を介することなく索引を管理することができます。
-  
-+ **[220 : 自動ワークロード・リプレイによるパッチ適用のテストソリューション](/ocitutorials/adb/adb220-autoworkload-replay/){:target="_blank"}**  
-    * 毎週の自動パッチ適用によるアプリケーションへの影響を、テスト環境で毎週自動でテストします。
-
-+ **[221 : 自動パーティション化（Automatic Partitioning）を使ってみよう](/ocitutorials/adb/adb221-autopartitioning/){:target="_blank"}**  
-    * 対象の表に最適なパーティション方法の分析とその実装までをAPIで簡単に行うことができます。
 
 ## データ移行編
 + **[301: 移行元となるデータベースを作成しよう](/ocitutorials/adb/adb301-create-source-db){:target="_blank"}**
@@ -166,6 +157,9 @@ toc: true
 
 + **[403: Data Transformsを使ってみよう](/ocitutorials/adb/adb403-data-transforms){:target="_blank"}**  
     * Data Transformsを用いて、簡単な操作でデータを変換できることが体験できます。
+
++ **[404: ラウド・リンクによるデータ共有をしてみよう](/ocitutorials/adb/adb404-cloud-link){:target="_blank"}**  
+    * クラウド・リンクを使用したデータの共有手順をご紹介します。
     
 ## 運用管理編
 
