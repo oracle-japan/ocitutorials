@@ -245,6 +245,12 @@ var store = [{
         "url": "/ocitutorials/adb/adb403-data-transforms/",
         "teaser": "/ocitutorials/adb/adb403-data-transforms/adb403_2_4.png"
       },{
+        "title": "404 : クラウド・リンクによるデータ共有をしてみよう",
+        "excerpt":"はじめに クラウド・リンクを活用すると、クラウドベースの方法でAutonomous Database間のデータ共有を行うことができます。 本機能は、Autonomous Database間のネットワーク的な接続を設定することなく、データを共有するスコープとしてリージョン、テナント、コンパートメント、特定のAutonomous Databaseを指定して、データの読み取り専用リモートアクセスを提供することができます。 本チュートリアルでは、同じテナント内にある2つのAutonomous Database間でのクラウド・リンクによるデータ共有を行います。 目次 : はじめに ユーザー作成と権限の付与 検証用の表の作成とクラウド・リンクへの表の登録 クラウド・リンクに登録されているデータセットの参照 異なるAutonomous Databaseからクラウド・リンクに登録されているデータセットを参照 注意点 おわりに 参考資料 前提条件 ADBインスタンスを2つ(例：atp01, atp02)構成済みであること ※ADBインタンスの作成方法については、 101:ADBインスタンスを作成してみよう を参照ください。 所要時間 : 約30分 1. ユーザー作成と権限の付与 SQL*Plusからadminユーザーとしてatp01に接続します。 sqlplus admin/Welcome12345#@atp01_low クラウド・リンクの登録ユーザーであるcloud_links_register_userを作成し、必要な権限を付与します。 CREATE USER cloud_links_register_user IDENTIFIED BY Welcome12345#; GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO cloud_links_register_user; GRANT EXECUTE ON...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/adb/adb404-cloud-link/",
+        "teaser": "/ocitutorials/adb/adb404-cloud-link/image1.png"
+      },{
         "title": "501: OCICLIを利用したインスタンス操作",
         "excerpt":"ここまでの章で、ADBインスタンスの作成やECPU数の変更等、様々な操作を実施いただきましたが、これら一連の操作を自動化するにはどうしたら良いでしょうか？ ADBはOracle Cloud Infrastructure(OCI)の他のサービスと同様、REST APIを介した各種操作が可能であり、それらを呼び出すコマンド・ライン・インタフェース（OCI CLI）を利用した操作も可能です。 この章ではOCI CLIを利用してADBインスタンスの作成や起動・停止、およびスケールアップ、ダウンといった構成変更の方法について確認します。 これらコマンドを利用しスクリプトを組めば、例えば夜間はあまり使わないからECPUをスケールダウンさせておき、朝になったらスケールアップしよう。といった自動化が可能となります。 尚、本ガイドではOCI CLIがインストールされたOCI Developer Image を利用することを前提に記載しています。 OCI CLIのインストール方法を含め、OCI CLIの詳細についてはを参照ください。 所要時間 : 約30分 前提条件 : ADBインスタンスが構成済みであること ※ADBインタンスを作成方法については、本ハンズオンガイドの 101:ADBインスタンスを作成してみよう を参照ください。 ADBインスタンスに接続可能な仮想マシンを構成済みであること ※仮想マシンの作成方法については、本ハンズオンガイドの 204:マーケットプレイスからの仮想マシンのセットアップ方法 を参照ください。 目次： 1. OCI CLIをセットアップしよう 2. OCI CLIを使ってみよう 3. OCI CLIでインスタンスを操作しよう 1. OCI CLIをセットアップしよう まずはOCI CLIにクラウド環境の情報を登録します。 Tera Termを起動し、仮想マシンにログインします。 oracleユーザに切り替えます。 sudo su...","categories": [],
         "tags": [],
