@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>STREAM実行方法（BM.Standard.E5.192編） | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのSTREAMを実行する方法を解説します。">
+<meta name="description" content="本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-stream-e5/">
 
 
-  <meta property="og:description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのSTREAMを実行する方法を解説します。">
+  <meta property="og:description" content="本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-03T11:40:30+09:00">
+  <meta property="article:published_time" content="2025-04-03T13:04:01+09:00">
 
 
 
@@ -169,7 +169,7 @@
         
       </h1>
       
-        <p class="page__lead">本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのSTREAMを実行する方法を解説します。
+        <p class="page__lead">本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。
 </p>
       
       
@@ -319,7 +319,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
@@ -393,8 +397,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="STREAM実行方法（BM.Standard.E5.192編）">
-    <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのSTREAMを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-03T11:40:30+09:00">
+    <meta itemprop="description" content="本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。">
+    <meta itemprop="datePublished" content="2025-04-03T13:04:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -405,148 +409,190 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bmstandarde5192のデプロイ">1. BM.Standard.E5.192のデプロイ</a></li><li><a href="#2-aoccインストール">2. AOCCインストール</a></li><li><a href="#3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</a></li><li><a href="#4-stream実行">4. STREAM実行</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-bmstandarde5192インスタンス作成">1. BM.Standard.E5.192インスタンス作成</a></li><li><a href="#2-streamダウンロードコンパイル">2. STREAMダウンロード・コンパイル</a></li><li><a href="#3-stream実行">3. STREAM実行</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-os再起動">3-1. OS再起動</a></li><li><a href="#3-2-stream実行">3-2. STREAM実行</a></li></ul></li></ul>
             </nav>
           </aside>
         
-        <p>本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E5.192</a></strong> で、標準ベンチマークの <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> を実行する方法を解説します。</p>
-
-<hr />
+        <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>本ドキュメントで解説する <strong>STREAM</strong> の実行は、 <strong><a href="https://www.amd.com/en/developer/aocc.html">AMD Optimizing C/C++ and Fortran Compilers (AOCC)</a></strong> （本ドキュメントで使用するバージョンは4.0.0）で <strong>STREAM</strong> のソースコードをコンパイルして作成したバイナリを使用します。</p>
-
-<p><strong>STREAM</strong> を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ <strong>BM.Standard.E5.192</strong> 1インスタンスとし、OSは <strong>Oracle Linux</strong> 8を使用します。</p>
+<p>本パフォーマンス関連Tipsで解説する <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> は、第4世代  <strong>AMD EPYC</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E5.192</a></strong> のインスタンス上で、 <strong><a href="https://www.amd.com/en/developer/aocc.html">AMD Optimizing C/C++ and Fortran Compilers</a></strong> （以降 <strong>AOCC</strong> と呼称します。）で <strong>STREAM</strong> のソースコードをコンパイルして実行します。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>STREAM</strong> 実行は、以下の手順を経て行います。</p>
 
 <ul>
-  <li><strong>BM.Standard.E5.192</strong> デプロイ</li>
-  <li><strong>AOCC</strong> インストール</li>
+  <li><strong>BM.Standard.E5.192</strong> インスタンス作成</li>
   <li><strong>STREAM</strong> ダウンロード・コンパイル</li>
   <li><strong>STREAM</strong> 実行</li>
 </ul>
 
-<p>本ドキュメントは、以下の環境で <strong>STREAM</strong> を実行しており、以下の性能が出ています。</p>
+<p>本パフォーマンス関連Tipsは、以下の環境で <strong>STREAM</strong> を実行しており、以下の性能が出ています。</p>
 
 <p>[実行環境]</p>
+
 <ul>
-  <li>シェイプ: <strong>BM.Standard.E5.192</strong></li>
-  <li>OS: <strong>Oracle Linux</strong> 8.8</li>
+  <li>シェイプ： <strong>BM.Standard.E5.192</strong>
+    <ul>
+      <li>CPU： <strong>AMD EPYC</strong> 9654ベース x 2（192コア）</li>
+      <li>メモリ： DDR5 2.3 TB</li>
+      <li>理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）</li>
+      <li>メモリ帯域： 921.6 GB/s</li>
+      <li><strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）： 無効</li>
+      <li><strong>NUMA nodes per socket</strong> （以降 <strong>NPS</strong> と呼称します。）： <strong>1</strong> / <strong>4</strong></li>
+    </ul>
+  </li>
+  <li>OS： <strong>Oracle Linux</strong> 9.5</li>
   <li><strong>STREAM</strong> : 5.10</li>
-  <li>Cコンパイラ: <strong>AOCC</strong> 4.0.0</li>
-  <li>配列サイズ(STREAM_ARRAY_SIZE): 430,080,000</li>
+  <li>コンパイラ： <strong>AOCC</strong> 5.0</li>
+  <li>配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000</li>
 </ul>
 
 <p>[実行結果]</p>
+
 <ul>
-  <li>Triad(MB/s): 718,954</li>
+  <li>Triad(MB/s)
+    <ul>
+      <li>718,799.1（ <strong>NPS1</strong> ）</li>
+      <li>753,594.8（ <strong>NPS4</strong> ）（ <strong>NPS1</strong> に対して<u> **4.8** パーセント</u>の性能向上）</li>
+    </ul>
+  </li>
 </ul>
 
 <hr />
-<h1 id="1-bmstandarde5192のデプロイ">1. BM.Standard.E5.192のデプロイ</h1>
+<h1 id="1-bmstandarde5192インスタンス作成">1. BM.Standard.E5.192インスタンス作成</h1>
 
-<p>本章は、 <strong>BM.Standard.E5.192</strong> を1インスタンスデプロイします。</p>
+<p>本章は、 <strong>STREAM</strong> を実行するインスタンスを作成します。</p>
 
-<p>インスタンスのデプロイは、OCIチュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">インスタンスを作成する</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
+<p>作成するインスタンスは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
 
 <ul>
-  <li>イメージ: Oracle Linux 8</li>
-  <li>Shape: BM.Standard.E5.192</li>
+  <li>イメージ： <strong>Oracle Linux</strong> 9.5（Oracle-Linux-9.5-2025.02.28-0）</li>
+  <li>シェイプ： <strong>BM.Standard.E5.192</strong>
+    <ul>
+      <li><strong>SMT</strong> ： 無効（※1）</li>
+      <li><strong>NPS</strong> ： <strong>1</strong> / <strong>4</strong> （※1）</li>
+    </ul>
+  </li>
 </ul>
 
+<p>※1）<strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
 <hr />
-<h1 id="2-aoccインストール">2. AOCCインストール</h1>
+<h1 id="2-streamダウンロードコンパイル">2. STREAMダウンロード・コンパイル</h1>
 
-<p>本章は、 <strong>AOCC</strong> をインストールします。</p>
+<p>本章は、 <strong>STREAM</strong> のソースコードをダウンロードし、 <strong>AOCC</strong> でコンパイルして実行バイナリを作成します。</p>
 
-<p>以下コマンドを先にデプロイしたインスタンスのopcユーザで実行し、 <strong>AOCC</strong> をインストールします。</p>
+<p>以下コマンドを <strong>STREAM</strong> を実行するノードの <strong>STREAM</strong> を実行するユーザで実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> patch gcc-c++ gcc-gfortran git
-<span class="nv">$ </span>git clone <span class="nt">--depth</span><span class="o">=</span>100 <span class="nt">--branch</span><span class="o">=</span>releases/v0.20 https://github.com/spack/spack.git ~/spack
-<span class="nv">$ </span><span class="nb">cd</span> ~/spack/
-<span class="nv">$ </span><span class="nb">.</span> share/spack/setup-env.sh
-<span class="nv">$ </span>spack <span class="nb">install </span>aocc +license-agreed
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/stream
+<span class="nv">$ </span><span class="nb">cd</span> ~/stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+<span class="nv">$ </span><span class="nb">source</span> /opt/aocc/setenv_AOCC.sh
+<span class="nv">$ </span>clang <span class="nt">-DSTREAM_TYPE</span><span class="o">=</span>double <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>430080000 <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>large <span class="nt">-fopenmp</span> <span class="nt">-fnt-store</span> ./stream.c
 </code></pre></div></div>
 
 <hr />
-<h1 id="3-streamダウンロードコンパイル">3. STREAMダウンロード・コンパイル</h1>
+<h1 id="3-stream実行">3. STREAM実行</h1>
 
-<p>本章は、 <strong>STREAM</strong> のソースコードをダウンロードし、先にインストールした <strong>AOCC</strong> でコンパイルして実行バイナリを作成します。</p>
+<h2 id="3-0-概要">3-0. 概要</h2>
 
-<p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
-<span class="nv">$ </span>spack load aocc
-<span class="nv">$ </span>clang <span class="nt">-DSTREAM_TYPE</span><span class="o">=</span>double <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>430080000 <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>large <span class="nt">-fopenmp</span> <span class="nt">-fnt-store</span> ./stream.c 
-</code></pre></div></div>
-
-<hr />
-<h1 id="4-stream実行">4. STREAM実行</h1>
-
-<p>本章は、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、 <strong>STREAM</strong> を実行します。<br />
-具体的には、以下の作業を実施します。</p>
-
-<ul>
-  <li>OS再起動</li>
-  <li>スレッドアフィニティ用環境変数指定</li>
-  <li><strong>STREAM</strong> 実行</li>
-</ul>
+<p>本章は、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、以下の手順で <strong>STREAM</strong> を実行します。</p>
 
 <ol>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、OSを再起動します。</p>
+  <li>OS再起動（※1）</li>
+  <li><strong>STREAM</strong> 実行</li>
+</ol>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> の性能向上を目的としたスレッドアフィニティの設定を適用します。</p>
+<p>※1）OS起動直後の状態でメモリ性能を計測する目的で実施します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>96
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="s2">"explicit,proclist=[</span><span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 2 191<span class="sb">`</span><span class="s2">]"</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドを <strong>STREAM</strong> を実行するインスタンスのopcユーザで実行し、 <strong>STREAM</strong> を実行します。</p>
+<h2 id="3-1-os再起動">3-1. OS再起動</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./a.out
- <span class="nt">-------------------------------------------------------------</span>
- STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
- <span class="nt">-------------------------------------------------------------</span>
- This system uses 8 bytes per array element.
- <span class="nt">-------------------------------------------------------------</span>
- Array size <span class="o">=</span> 430080000 <span class="o">(</span>elements<span class="o">)</span>, Offset <span class="o">=</span> 0 <span class="o">(</span>elements<span class="o">)</span>
- Memory per array <span class="o">=</span> 3281.2 MiB <span class="o">(=</span> 3.2 GiB<span class="o">)</span><span class="nb">.</span>
- Total memory required <span class="o">=</span> 9843.8 MiB <span class="o">(=</span> 9.6 GiB<span class="o">)</span><span class="nb">.</span>
- Each kernel will be executed 10 times.
+<p>以下コマンドを <strong>STREAM</strong> を実行するノードのopcユーザで実行し、OSを再起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
+
+<h2 id="3-2-stream実行">3-2. STREAM実行</h2>
+
+<p>以下コマンドを <strong>STREAM</strong> を実行するノードの <strong>STREAM</strong> を実行するユーザで実行します。<br />
+ここでは、 <strong>BM.Standard.E5.192</strong> で <strong>STREAM</strong> の性能を最大化させるため、OpenMPのスレッド数とスレッド配置をそれぞれ環境変数 <strong>OMP_NUM_THREADS</strong> と <strong>OMP_PLACES</strong> ・ <strong>OMP_PROC_BIND</strong> で指定し、 <strong>STREAM</strong> を実行しています。</p>
+
+<p>[ <strong>NPS1</strong> の場合]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/stream <span class="o">&amp;&amp;</span> <span class="nv">OMP_PLACES</span><span class="o">=</span>0:96:2 <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>96 <span class="nv">OMP_PROC_BIND</span><span class="o">=</span>spread ./a.out
+<span class="nt">-------------------------------------------------------------</span>
+STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
+<span class="nt">-------------------------------------------------------------</span>
+This system uses 8 bytes per array element.
+<span class="nt">-------------------------------------------------------------</span>
+Array size <span class="o">=</span> 430080000 <span class="o">(</span>elements<span class="o">)</span>, Offset <span class="o">=</span> 0 <span class="o">(</span>elements<span class="o">)</span>
+Memory per array <span class="o">=</span> 3281.2 MiB <span class="o">(=</span> 3.2 GiB<span class="o">)</span><span class="nb">.</span>
+Total memory required <span class="o">=</span> 9843.8 MiB <span class="o">(=</span> 9.6 GiB<span class="o">)</span><span class="nb">.</span>
+Each kernel will be executed 10 times.
  The <span class="k">*</span>best<span class="k">*</span> <span class="nb">time </span><span class="k">for </span>each kernel <span class="o">(</span>excluding the first iteration<span class="o">)</span>
  will be used to compute the reported bandwidth.
- <span class="nt">-------------------------------------------------------------</span>
- Number of Threads requested <span class="o">=</span> 96
- Number of Threads counted <span class="o">=</span> 96
- <span class="nt">-------------------------------------------------------------</span>
- Your clock granularity/precision appears to be 1 microseconds.
- Each <span class="nb">test </span>below will take on the order of 10868 microseconds.
- <span class="o">(=</span> 10868 clock ticks<span class="o">)</span>
- Increase the size of the arrays <span class="k">if </span>this shows that
- you are not getting at least 20 clock ticks per test.
- <span class="nt">-------------------------------------------------------------</span>
- WARNING <span class="nt">--</span> The above is only a rough guideline.
- For best results, please be sure you know the
- precision of your system timer.
- <span class="nt">-------------------------------------------------------------</span>
- Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
- </span>Copy:          686067.7     0.010067     0.010030     0.010102
- Scale:         688128.7     0.010041     0.010000     0.010080
- Add:           723375.0     0.014301     0.014269     0.014346
- Triad:         718954.3     0.014377     0.014357     0.014406
- <span class="nt">-------------------------------------------------------------</span>
- Solution Validates: avg error less than 1.000000e-13 on all three arrays
- <span class="nt">-------------------------------------------------------------</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="nt">-------------------------------------------------------------</span>
+Number of Threads requested <span class="o">=</span> 96
+Number of Threads counted <span class="o">=</span> 96
+<span class="nt">-------------------------------------------------------------</span>
+Your clock granularity/precision appears to be 1 microseconds.
+Each <span class="nb">test </span>below will take on the order of 10811 microseconds.
+   <span class="o">(=</span> 10811 clock ticks<span class="o">)</span>
+Increase the size of the arrays <span class="k">if </span>this shows that
+you are not getting at least 20 clock ticks per test.
+<span class="nt">-------------------------------------------------------------</span>
+WARNING <span class="nt">--</span> The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+<span class="nt">-------------------------------------------------------------</span>
+Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
+</span>Copy:          685041.8     0.010067     0.010045     0.010089
+Scale:         690053.6     0.010014     0.009972     0.010071
+Add:           723580.5     0.014304     0.014265     0.014328
+Triad:         718799.1     0.014390     0.014360     0.014484
+<span class="nt">-------------------------------------------------------------</span>
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+<span class="nt">-------------------------------------------------------------</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>[ <strong>NPS4</strong> の場合]</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/stream <span class="o">&amp;&amp;</span> <span class="nv">OMP_PLACES</span><span class="o">=</span>0:96:2 <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>96 <span class="nv">OMP_PROC_BIND</span><span class="o">=</span>spread ./a.out
+<span class="nt">-------------------------------------------------------------</span>
+STREAM version <span class="nv">$Revision</span>: 5.10 <span class="err">$</span>
+<span class="nt">-------------------------------------------------------------</span>
+This system uses 8 bytes per array element.
+<span class="nt">-------------------------------------------------------------</span>
+Array size <span class="o">=</span> 430080000 <span class="o">(</span>elements<span class="o">)</span>, Offset <span class="o">=</span> 0 <span class="o">(</span>elements<span class="o">)</span>
+Memory per array <span class="o">=</span> 3281.2 MiB <span class="o">(=</span> 3.2 GiB<span class="o">)</span><span class="nb">.</span>
+Total memory required <span class="o">=</span> 9843.8 MiB <span class="o">(=</span> 9.6 GiB<span class="o">)</span><span class="nb">.</span>
+Each kernel will be executed 10 times.
+ The <span class="k">*</span>best<span class="k">*</span> <span class="nb">time </span><span class="k">for </span>each kernel <span class="o">(</span>excluding the first iteration<span class="o">)</span>
+ will be used to compute the reported bandwidth.
+<span class="nt">-------------------------------------------------------------</span>
+Number of Threads requested <span class="o">=</span> 96
+Number of Threads counted <span class="o">=</span> 96
+<span class="nt">-------------------------------------------------------------</span>
+Your clock granularity/precision appears to be 1 microseconds.
+Each <span class="nb">test </span>below will take on the order of 9644 microseconds.
+   <span class="o">(=</span> 9644 clock ticks<span class="o">)</span>
+Increase the size of the arrays <span class="k">if </span>this shows that
+you are not getting at least 20 clock ticks per test.
+<span class="nt">-------------------------------------------------------------</span>
+WARNING <span class="nt">--</span> The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+<span class="nt">-------------------------------------------------------------</span>
+Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
+</span>Copy:          720545.7     0.009615     0.009550     0.009653
+Scale:         713615.5     0.009695     0.009643     0.009736
+Add:           751671.5     0.013765     0.013732     0.013795
+Triad:         753594.8     0.013738     0.013697     0.013761
+<span class="nt">-------------------------------------------------------------</span>
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+<span class="nt">-------------------------------------------------------------</span>
+<span class="err">$</span>
+</code></pre></div></div>
 
         
       </section>
@@ -558,7 +604,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T11:40:30+09:00">April 3, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T13:04:01+09:00">April 3, 2025</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-03T11:40:30+09:00">
+  <meta property="article:published_time" content="2025-04-03T13:04:01+09:00">
 
 
 
@@ -319,7 +319,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/" class="active">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
@@ -394,7 +398,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）">
     <meta itemprop="description" content="MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本パフォーマンス関連Tipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、HPCワークロード向けベア・メタル・シェイプBM.Optimized3.36でMPI集合通信をチューニングする方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-03T11:40:30+09:00">
+    <meta itemprop="datePublished" content="2025-04-03T13:04:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -443,7 +447,7 @@
 ※2） <strong>UCX</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</a></strong> を参照してください。<br />
 ※3） <strong>UCX</strong> のパラメータで、2ノード以上の <strong>計測条件</strong> で使用します。詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-7-ucx_zcopy_thresh">3-7. UCX_ZCOPY_THRESH</a></strong> を参照してください。<br />
 ※4） <strong>MCA</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></strong> を参照してください。<br />
-※5）NUMAノードに対するMPIプロセスの分割方法で、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法</a></strong> を参照してください。<br />
+※5）NUMAノードに対するMPIプロセスの分割方法で、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></strong> を参照してください。<br />
 ※6）<strong>NPS</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
 <p>また本パフォーマンス関連Tipsの検証は、以下の実行環境で実施しています。</p>
@@ -3310,7 +3314,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T11:40:30+09:00">April 3, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T13:04:01+09:00">April 3, 2025</time></p>
 
       </footer>
 
@@ -3330,11 +3334,11 @@
       
   <nav class="pagination">
     
-      <a href="/ocitutorials/hpc/benchmark/cpu-binding/" class="pagination--pager" title="パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）
+      <a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/" class="pagination--pager" title="パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）
 ">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/benchmark/papi-profiling/" class="pagination--pager" title="PAPIでHPCアプリケーションをプロファイリング
+      <a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/" class="pagination--pager" title="OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）
 ">次へ</a>
     
   </nav>

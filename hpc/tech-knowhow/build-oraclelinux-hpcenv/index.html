@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-03T11:40:30+09:00">
+  <meta property="article:published_time" content="2025-04-03T13:04:01+09:00">
 
 
 
@@ -319,7 +319,11 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
         
@@ -394,7 +398,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法">
     <meta itemprop="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-03T11:40:30+09:00">
+    <meta itemprop="datePublished" content="2025-04-03T13:04:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -405,7 +409,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-環境構築">1. 環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンス作成">1-1. インスタンス作成</a></li><li><a href="#1-2-aoccインストール">1-2. AOCCインストール</a></li><li><a href="#1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール</a></li><li><a href="#1-4-openpmixインストール">1-4. OpenPMIxインストール</a></li><li><a href="#1-5-openucxインストール">1-5. OpenUCXインストール</a></li><li><a href="#1-6-openmpiインストールセットアップ">1-6. OpenMPIインストール・セットアップ</a></li><li><a href="#1-7-intel-mpi-benchmarksインストール">1-7. Intel MPI Benchmarksインストール</a></li><li><a href="#1-8-munge-インストールセットアップ">1-8. munge インストール・セットアップ</a></li><li><a href="#1-9-slurm-rpmパッケージ作成">1-9. Slurm rpmパッケージ作成</a></li><li><a href="#1-10-slurm-rpmパッケージインストールセットアップ">1-10. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#1-11-slurm設定ファイル修正">1-11. Slurm設定ファイル修正</a></li><li><a href="#1-12-slurmサービス起動">1-12. Slurmサービス起動</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-aocc稼働確認">2-1. AOCC稼働確認</a></li><li><a href="#2-1-openmpislurm稼働確認">2-1. OpenMPI・Slurm稼働確認</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-環境構築">1. 環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-インスタンス作成">1-1. インスタンス作成</a></li><li><a href="#1-2-aoccインストール">1-2. AOCCインストール</a></li><li><a href="#1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール</a></li><li><a href="#1-4-openpmixインストール">1-4. OpenPMIxインストール</a></li><li><a href="#1-5-openucxインストール">1-5. OpenUCXインストール</a></li><li><a href="#1-6-openmpiインストールセットアップ">1-6. OpenMPIインストール・セットアップ</a></li><li><a href="#1-7-intel-mpi-benchmarksインストール">1-7. Intel MPI Benchmarksインストール</a></li><li><a href="#1-8-munge-インストールセットアップ">1-8. munge インストール・セットアップ</a></li><li><a href="#1-9-slurm-rpmパッケージ作成">1-9. Slurm rpmパッケージ作成</a></li><li><a href="#1-10-slurm-rpmパッケージインストールセットアップ">1-10. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#1-11-slurm設定ファイル修正">1-11. Slurm設定ファイル修正</a></li><li><a href="#1-12-slurmサービス起動">1-12. Slurmサービス起動</a></li></ul></li><li><a href="#2-稼働確認">2. 稼働確認</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-aocc稼働確認">2-1. AOCC稼働確認</a></li><li><a href="#2-2-openmpislurm稼働確認">2-2. OpenMPI・Slurm稼働確認</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -459,17 +463,17 @@
   <li><strong>Slurm</strong> rpmパッケージインストール・セットアップ</li>
   <li><strong>Slurm</strong> 設定ファイル修正</li>
   <li><strong>Slurm</strong> サービス起動</li>
-  <li><strong>Slurm</strong> 利用に必要な環境変数設定</li>
 </ol>
 
 <p>※3） <strong>Slurm</strong> がMPIアプリケーションを起動する際に使用します。<br />
-※4） <strong>OpenMPI</strong> がプロセス間通信に使用する通信フレームワークとして使用します。<br />
+※4） <strong>OpenMPI</strong> がプロセス間通信の通信フレームワークとして使用します。<br />
 ※5）計算ノードのMPI通信性能の検証と構築した環境の稼働確認に使用します。<br />
 ※6） <strong>Slurm</strong> のプロセス間通信の認証に使用します。</p>
 
 <h2 id="1-1-インスタンス作成">1-1. インスタンス作成</h2>
 
-<p>OCIチュートリアル <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">インスタンスを作成する</a></strong> の手順に従い、以下属性の計算ノードを作成します。</p>
+<p>計算ノード用のインスタンスの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">インスタンスを作成する</a></strong> の手順に従い実施します。<br />
+本テクニカルTipsでは、以下属性のインスタンスを作成します。</p>
 
 <ul>
   <li>イメージ： <strong>Oracle Linux</strong> 9.5（Oracle-Linux-9.5-2025.02.28-0）</li>
@@ -491,8 +495,8 @@
 
 <h2 id="1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール</h2>
 
-<p>以下コマンドを計算ノードのopcユーザで実行し、OpenMPIの前提rpmパッケージのインストールと前提ソフトウェアである <strong>libevent</strong> ・ <strong>hwloc</strong> ・ <strong>XPMEM</strong> ・ <strong>KNEM</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenMPI</strong> の前提rpmパッケージのインストールと前提ソフトウェアである <strong>libevent</strong> ・ <strong>hwloc</strong> ・ <strong>XPMEM</strong> ・ <strong>KNEM</strong> の <strong>/opt</strong> ディレクトリへのインストールを実施します。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool
 <span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
@@ -514,7 +518,7 @@
 <h2 id="1-4-openpmixインストール">1-4. OpenPMIxインストール</h2>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-5.0.4.tar.gz
@@ -525,7 +529,7 @@
 <h2 id="1-5-openucxインストール">1-5. OpenUCXインストール</h2>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./ucx-1.17.0.tar.gz
@@ -538,7 +542,7 @@
 <h2 id="1-6-openmpiインストールセットアップ">1-6. OpenMPIインストール・セットアップ</h2>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.6.tar.gz
@@ -548,16 +552,10 @@
 
 <p>ここでは、先にインストールした <strong>OpenUCX</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を使用して <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
 
-<p>次に、以下コマンドを <strong>OpenMPI</strong> を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/opt/openmpi/bin:/opt/ucx/bin:</span><span class="se">\$</span><span class="s2">PATH"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
-</code></pre></div></div>
-
 <h2 id="1-7-intel-mpi-benchmarksインストール">1-7. Intel MPI Benchmarksインストール</h2>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> をインストールします。<br />
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.7.tar.gz
@@ -572,7 +570,7 @@
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>useradd <span class="nt">-m</span> <span class="nt">-d</span> /var/lib/munge <span class="nt">-s</span> /sbin/nologin <span class="nt">-u</span> 5001 munge
 </code></pre></div></div>
 
 <p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
@@ -600,18 +598,18 @@ STATUS:           Success <span class="o">(</span>0<span class="o">)</span>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> の前提rpmパッケージをインストールします。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
 </code></pre></div></div>
 
-<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>Slurm</strong> rpmパッケージを作成します。</p>
+<p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>Oracle Linux</strong> 9.5用の <strong>Slurm</strong> rpmパッケージを作成します。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~ &amp;&amp; wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
-$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.11.0.tar.bz2
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
+<span class="nv">$ </span>rpmbuild <span class="nt">--define</span> <span class="s1">'_prefix /opt/slurm'</span> <span class="nt">--define</span> <span class="s1">'_slurm_sysconfdir /opt/slurm/etc'</span> <span class="nt">--define</span> <span class="s1">'_with_pmix --with-pmix=/opt/pmix'</span> <span class="nt">--define</span> <span class="s1">'_with_ucx --with-ucx=/opt/ucx'</span> <span class="nt">-ta</span> ./slurm-24.11.0.tar.bz2
 </code></pre></div></div>
 
 <p>作成されたパッケージは、以下のディレクトリに配置されます。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -1 ~/rpmbuild/RPMS/x86_64/
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-1</span> ~/rpmbuild/RPMS/x86_64/
 slurm-24.11.0-1.el9.x86_64.rpm
 slurm-contribs-24.11.0-1.el9.x86_64.rpm
 slurm-devel-24.11.0-1.el9.x86_64.rpm
@@ -625,33 +623,34 @@ slurm-slurmctld-24.11.0-1.el9.x86_64.rpm
 slurm-slurmd-24.11.0-1.el9.x86_64.rpm
 slurm-slurmdbd-24.11.0-1.el9.x86_64.rpm
 slurm-torque-24.11.0-1.el9.x86_64.rpm
-$
+<span class="err">$</span>
 </code></pre></div></div>
 
 <h2 id="1-10-slurm-rpmパッケージインストールセットアップ">1-10. Slurm rpmパッケージインストール・セットアップ</h2>
 
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> rpmパッケージのインストール・セットアップを行います。</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~/rpmbuild/RPMS/x86_64/ &amp;&amp; sudo rpm -ivh ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
-$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/ <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>rpm <span class="nt">-ivh</span> ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
+<span class="nv">$ </span><span class="nb">sudo </span>useradd <span class="nt">-m</span> <span class="nt">-d</span> /var/lib/slurm <span class="nt">-s</span> /bin/bash <span class="nt">-u</span> 5000 slurm
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> /var/spool/slurmd<span class="p">;</span> <span class="nb">sudo chown </span>slurm:slurm /var/spool/slurmd
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> /var/log/slurm<span class="p">;</span> <span class="nb">sudo chown </span>slurm:slurm /var/log/slurm
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> /opt/slurm/etc<span class="p">;</span> <span class="nb">sudo chown </span>slurm:slurm /opt/slurm/etc
 </code></pre></div></div>
 
 <h2 id="1-11-slurm設定ファイル修正">1-11. Slurm設定ファイル修正</h2>
 
-<p>既存の <strong>Slurm</strong> 環境の <strong>slurm.conf</strong> に対して、計算ノードを追加するために以下のように修正します。</p>
+<p>既存の <strong>Slurm</strong> 環境の <strong>slurm.conf</strong> に対して、計算ノードを追加するための以下3行を追加します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">NodeName</span><span class="o">=</span>inst-e5 <span class="nv">CPUs</span><span class="o">=</span>192 <span class="nv">Boards</span><span class="o">=</span>1 <span class="nv">SocketsPerBoard</span><span class="o">=</span>8 <span class="nv">CoresPerSocket</span><span class="o">=</span>24 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>2300000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">SlurmdParameters</span><span class="o">=</span>l3cache_as_socket
+<span class="nv">NodeName</span><span class="o">=</span>inst-e5 <span class="nv">Sockets</span><span class="o">=</span>24 <span class="nv">CoresPerSocket</span><span class="o">=</span>8 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>2300000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">PartitionName</span><span class="o">=</span>e5 <span class="nv">Nodes</span><span class="o">=</span>inst-e5 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </code></pre></div></div>
 
-<p>ここでは、 <strong>NPS</strong> が <strong>4</strong> で<strong>SMT</strong> を無効（※7）としたホスト名が <strong>inst-e5</strong> の <strong>BM.Standard.E5.192</strong> 1ノードを、パーティション名 <strong>e5</strong> に割り当てています。</p>
+<p>ここでは、本テクニカルTipsで使用する <strong>BM.Standard.E5.192</strong> に搭載する2個の第4世代 <strong>AMD EPYC</strong> プロセッサが12個の <strong>Core Complex Die</strong> （以降 <strong>CCD</strong> と呼称します。）毎にL3キャッシュを搭載することを考慮し、 <strong>CCD</strong> を <strong>Slurm</strong> 上 <strong>NUMA</strong> ノードとして扱い <strong>SMT</strong> を無効（※7）としたホスト名が <strong>inst-e5</strong> の <strong>BM.Standard.E5.192</strong> 1ノードを、パーティション名 <strong>e5</strong> に割り当てています。</p>
 
-<p>※7） <strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+<p>※7） <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
-<p>次に、この <strong>slurm.conf</strong> を計算ノードの <strong>/opt/slurm/etc</strong> に配置します。</p>
+<p>次に、この <strong>slurm.conf</strong> を計算ノード、Slurmマネージャ、及びSlurmクライアントの <strong>/opt/slurm/etc</strong> に配置します。</p>
 
 <h2 id="1-12-slurmサービス起動">1-12. Slurmサービス起動</h2>
 
@@ -696,7 +695,7 @@ e5           up   infinite      1   idle inst-e5
 
 <p><strong>BM.Standard.E5.192</strong> 上で実行する <strong>STREAM</strong> については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></strong> も合わせて参照してください。</p>
 
-<h2 id="2-1-openmpislurm稼働確認">2-1. OpenMPI・Slurm稼働確認</h2>
+<h2 id="2-2-openmpislurm稼働確認">2-2. OpenMPI・Slurm稼働確認</h2>
 
 <p><strong>Slurm</strong> クライアントの <strong>OpenMPI</strong> と <strong>Slurm</strong> を利用するユーザで、以下のスクリプトをファイル名 <strong>imb_ata.sh</strong> で作成します。<br />
 なおこの <strong>Intel MPI Benchmarks</strong> の実行は、 <strong>BM.Standard.E5.192</strong> を想定した設定になっています。</p>
@@ -708,7 +707,7 @@ e5           up   infinite      1   idle inst-e5
 <span class="c">#SBATCH -J alltoall</span>
 <span class="c">#SBATCH -o alltoall.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
-srun IMB-MPI1 <span class="nt">-msglog</span> 0:23 <span class="nt">-mem</span> 4G <span class="nt">-off_cache</span> 384,64 <span class="nt">-npmin</span> <span class="nv">$SLURM_NTASKS</span> alltoall
+srun /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:23 <span class="nt">-mem</span> 4G <span class="nt">-off_cache</span> 384,64 <span class="nt">-npmin</span> <span class="nv">$SLURM_NTASKS</span> alltoall
 </code></pre></div></div>
 
 <p>このジョブスクリプトは、192プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから32 MiBまでで計測しています。<br />
@@ -795,7 +794,7 @@ Submitted batch job 23808
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T11:40:30+09:00">April 3, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-03T13:04:01+09:00">April 3, 2025</time></p>
 
       </footer>
 
