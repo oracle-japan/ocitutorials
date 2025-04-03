@@ -167,6 +167,9 @@ toc: true
 + **[403: Data Transformsを使ってみよう](/ocitutorials/adb/adb403-data-transforms){:target="_blank"}**  
     * Data Transformsを用いて、簡単な操作でデータを変換できることが体験できます。
     
++ **[404:クラウド・リンクによるデータ共有をしてみよう](/ocitutorials/adb/adb404-cloud-link){:target="_blank"}**  
+    * クラウド・リンクを使用したデータの共有手順をご紹介します。
+    
 ## 運用管理編
 
 + **[501: OCICLIを利用したインスタンス操作](/ocitutorials/adb/adb501-ocicli){:target="_blank"}**
