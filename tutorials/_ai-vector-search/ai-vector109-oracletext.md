@@ -83,7 +83,7 @@ WHERE CONTAINS (text, '日本 | オラクル') > 0
 
 上記のようになります。
 
-これら以外にも指定されたキーワードの全てが含まれているものから高いスコアが割り当てられる`ACCUMulate`や、キーワードが含まれていなくても意味的に近いワードが含まれていればスコアが高くなる`ABOUT`などの演算子があります。
+これら以外にも指定されたキーワードの全てが含まれているものから高いスコアが割り当てられる`ACCUMulate`や、and や　or のように単語に区切り、検索単語を与えずに文章単位で（内部的に単語を抽出することで）検索結果を得ることができる`ABOUT`などの演算子があります。
 
 その他の演算子については、[こちら](https://docs.oracle.com/en/database/oracle/oracle-database/23/ccref/oracle-text-CONTAINS-query-operators.html#GUID-6410B783-FC9A-4C99-B3AF-9E0349AA43D1){:target="_blank"}をご参照ください。
 
@@ -200,6 +200,8 @@ select PRODUCT_ID, PRODUCT_NAME, DESCRIPTION, score(1) from TEXTSAMPLE1 where co
 ![alt text](013.png)
 
 文字列の中に**マネージド**と記載のある製品が表示されました。DESCRIPTIONを確認すると、全ての製品に**マネージド**という文字列が入っています。全ての製品に**マネージド**という文字列が1回ずつ入っているので、スコアは全ての製品で5になっています。
+
+SELECT文でSCORE演算子がコールされた場合、CONTAINS演算子は、前述の例に示すように、3番目のパラメータでスコア・ラベルの値を参照する必要があります。その場合、SCORE演算子内の数値とCONTAINS関数のスコア・ラベル値は同じにする必要があります。
 
 17．他の文字列で検索してみます。
 
