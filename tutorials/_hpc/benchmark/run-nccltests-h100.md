@@ -32,7 +32,7 @@ header:
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7a1（※2）
 - ノード数 ： 2
 - GPU数 ： **NVIDIA H100 80GB** x 16
-- ノード間接続 ： **クラスタ・ネットワーク**
+- ノード間接続 ： **クラスタ・ネットワーク** （200Gbps x 16 /ノード）
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
 ※2）使用するコンテナに含まれるものを使用します。
@@ -42,7 +42,7 @@ header:
 
 ## 1-0. 概要
 
-本章は、後の章で **NCCL Tests** を実行するコンテナに必要な環境構築作業を行います。
+本章は、後の章でコンテナ上から **NCCL Tests** を実行するために必要な環境構築作業を行います。
 
 本ドキュメントは、 **NCCL Tests** がコンテナを跨るプログラム実行のコントローラとして **OpenMPI** を使用しますが、このためにはMPIプログラムをmpirun等で起動するコンテナ（いわゆるヘッドノード）からMPIプログラム実行に参加する他の全てのコンテナに対して、パスフレーズ無しでSSH接続できる必要があります。
 
