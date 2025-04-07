@@ -10,7 +10,7 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう | Oracle Cloud Infrastructure チュートリアル</title>
+<!-- begin _includes/seo.html --><title>107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう | Oracle Cloud Infrastructure チュートリアル</title>
 <meta name="description" content="自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。">
 
 
@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
+<meta property="og:title" content="107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs107-zrcv/">
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-04T09:18:15+09:00">
+  <meta property="article:published_time" content="2025-04-07T20:27:34+09:00">
 
 
 
@@ -164,7 +164,7 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう
+          107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう
 
         
       </h1>
@@ -215,7 +215,7 @@
     
       
       
-        <li class="current">107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう</li>
+        <li class="current">107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう</li>
       
     
   </ol>
@@ -261,7 +261,7 @@
         
           <p></p><li><a href="/ocitutorials/basedb/dbcs106-dataguard/">106: Data Guardを構成しよう</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/basedb/dbcs107-zrcv/" class="active">107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう</a></li></p>
+          <p></p><li><a href="/ocitutorials/basedb/dbcs107-zrcv/" class="active">107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう</a></li></p>
         
           <p></p><li><a href="/ocitutorials/basedb/dbcs201-pdb-plug/">201: オンプレミスのPDBをBaseDBに移動しよう</a></li></p>
         
@@ -278,9 +278,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
+    <meta itemprop="headline" content="107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう">
     <meta itemprop="description" content="自動バックアップの取得先としてAutonomous Recovery Service (RCV/ZRCV) をBase Database Service (BaseDB) に設定する方法を紹介します。">
-    <meta itemprop="datePublished" content="2025-04-04T09:18:15+09:00">
+    <meta itemprop="datePublished" content="2025-04-07T20:27:34+09:00">
     
 
     <div class="page__inner-wrap">
@@ -346,7 +346,7 @@
 
 <p class="notice--info"><strong>サービス制限について</strong><br />
 Autonomous Recovery Service (RCV/ZRCV) は全リージョンにデフォルトで以下のサービス制限が付与されています。
-これらの容量以上にリソースが必要な場合は<a href="#1-サービス制限設定">1. サービス制限設定</a>を実行してください。デフォルト付与される以上のリソースが必要でない場合、次のセクションは飛ばしてください。</p>
+これらの容量以上にリソースが必要な場合は<a href="#1-サービス制限の引き上げリクエスト">1. サービス制限設定</a>を実行してください。デフォルト付与される以上のリソースが必要でない場合、次のセクションは飛ばしてください。</p>
 
 <p><strong>デフォルト付与されるサービス制限</strong></p>
 
@@ -380,16 +380,16 @@ Autonomous Recovery Service (RCV/ZRCV) は全リージョンにデフォルト�
 <p><strong>サービス制限設定</strong><br />
 リカバリ・サービスのサービス制限の引き上げリクエストを申請します。</p>
 
-<p>まず、OCIコンソールのナビゲーション・メニューで、ガバンスと管理をクリックし、[制限、割当ておよび使用状況]をクリックします。</p>
+<p>まず、OCIコンソールのナビゲーション・メニューから[ガバンスと管理]をクリックし、[制限、割当ておよび使用状況]をクリックします。</p>
 
 <p><img src="zrcv02.png" alt="img" /></p>
 
-<p>次に、タイトルの下の文章に埋め込まれている「サービス制限の引き上げ」をクリックします。
-<img src="zrcv26.png" alt="img" />
+<p>次に、「制限、割当ておよび使用状況」の「サービス制限の引き上げリクエスト」をクリックします。
+<img src="zrcv03.png" alt="img" />
 <br /></p>
 
 <p>クリックすると、サービス制限の更新リクエストを申請するフォームに遷移します。
-以下の項目を選択し、必要な数の制限を申請します。</p>
+以下の項目を選択し、必要な数の制限を入力します。</p>
 
 <ul>
   <li>Service Category：Autonomous Recovery Service</li>
@@ -397,7 +397,9 @@ Autonomous Recovery Service (RCV/ZRCV) は全リージョンにデフォルト�
   <li>Resource：Space Used for Recovery Window (GB)</li>
 </ul>
 
-<p><img src="zrcv27.png" alt="img" /></p>
+<p>入力が完了したら「サポート・リクエストの作成」からサービス制限の引き上げリクエストを申請しましょう。</p>
+
+<p><img src="zrcv04.png" alt="img" /></p>
 
 <p><br /></p>
 
@@ -463,16 +465,16 @@ Autonomous Recovery Service (RCV/ZRCV) は全リージョンにデフォルト�
 
 <p><strong>ポリシー画面</strong></p>
 
-<p>「ナビゲーション・メニュー」の「アイデンティティとセキュリティ」を選択し、「アイデンティティ」の「ポリシー」をクリックします。</p>
+<p>「ナビゲーション・メニュー」の[アイデンティティとセキュリティ]を選択し、[アイデンティティ]の[ポリシー]をクリックします。</p>
 
-<p><img src="zrcv28.png" alt="img" /></p>
+<p><img src="zrcv05.png" alt="img" /></p>
 
 <p>「ポリシーの作成」ボタンをクリックし、ポリシーの作成をします。</p>
 
 <ul>
-  <li>名前：任意（スペースは使用できません。英字、数字、ハイフン、ピリオドまたはアンダースコアのみです。）</li>
-  <li>説明：任意</li>
-  <li>ポリシー・ビルダー：「手動エディタの表示」を有効化し、以下のポリシーを入力します。</li>
+  <li><strong>名前</strong>：任意（スペースは使用できません。英字、数字、ハイフン、ピリオドまたはアンダースコアのみです。）</li>
+  <li><strong>説明</strong>：任意</li>
+  <li><strong>ポリシー・ビルダー</strong>：「手動エディタの表示」を有効化し、以下のポリシーを入力します。</li>
 </ul>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow group &lt;グループ名&gt; to manage all-resources <span class="k">in </span>compartment &lt;コンパートメント&gt;
@@ -484,13 +486,13 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
 </code></pre></div></div>
 <p class="notice--warning">リカバリ・サービスの使用に必要なポリシー・ステートメントは<strong>Root Compartment</strong>へ作成する必要があることに注意してください。</p>
 
-<p><img src="zrcv04.png" alt="img" /></p>
+<p><img src="zrcv06.png" alt="img" /></p>
 
 <p><br /></p>
 
 <h1 id="3-サブネットおよびセキュリティルールを設定しよう">3. サブネットおよびセキュリティ・ルールを設定しよう</h1>
 
-<p>リカバリ・サービスはリカバリ・サービス・サブネットという専用のサブネットを使用します。新規、既存、どちらのサブネットでもリカバリ・サービス・サブネットとして利用できます。</p>
+<p>リカバリ・サービスはリカバリ・サービス・サブネットという専用のサブネットを使用します。新規、既存、どちらのサブネットでもリカバリ・サービス・サブネットとして利用できます。プライベート・サブネットをリカバリ・サービス・サブネットとして利用することを推奨としています。</p>
 
 <p>まず、データベースとリカバリ・サービス間のバックアップ・トラフィックを許可するために、データベースのVCNに以下のイングレス・ルールを追加します。
 <br /></p>
@@ -528,7 +530,7 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
 <p><br /></p>
 
 <p><strong>セキュリティ・リスト画面</strong>
-<img src="zrcv05.png" alt="img" /></p>
+<img src="zrcv07.png" alt="img" /></p>
 
 <p><br /></p>
 
@@ -540,12 +542,12 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
 
 <p>まず、ナビゲーション・メニューで、[Oracle Database]をクリックし、[データベース・バックアップ]を選択します。</p>
 
-<p><img src="zrcv06.png" alt="img" /></p>
+<p><img src="zrcv08.png" alt="img" /></p>
 
 <p>[データベース・バックアップ]ページが表示されたら、左のメニュー・バーにある[リカバリ・サービス・サブネット]をクリックします。
 そして、「リカバリ・サービス・サブネットの登録」をクリックします。</p>
 
-<p><img src="zrcv07.png" alt="img" /></p>
+<p><img src="zrcv09.png" alt="img" /></p>
 
 <p>次の内容を入力し、[登録]をクリックします。</p>
 
@@ -553,14 +555,16 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
   <li>名前：任意　リカバリ・サービス・サブネットの名前を入力します</li>
   <li>コンパートメント：リカバリ・サービス・サブネットを作成するコンパートメントを選択します</li>
   <li>仮想クラウド・ネットワーク：使用したいサブネットが存在するデータベースVCNを選択します</li>
-  <li>サブネット：データベースVCNのリカバリ・サービス操作に対して構成したプライベート・サブネットを選択します</li>
+  <li>サブネット：リカバリ・サービス用にセキュリティリストを操作したプライベート・サブネットを選択します。ここで指定したサブネットにリカバリ・サービスのエンドポイントが設定されます。</li>
 </ul>
 
-<p><img src="zrcv08.png" alt="img" /></p>
-
-<p>リカバリ・サービス・サブネットの登録が完了すると、このような画面に遷移します。</p>
+<p>入力が完了したら「登録」からリカバリ・サービス・サブネットを登録しましょう。</p>
 
 <p><img src="zrcv10.png" alt="img" /></p>
+
+<p>リカバリ・サービス・サブネットの登録が完了すると、リカバリ・サービス・サブネットの詳細画面に遷移します。</p>
+
+<p><img src="zrcv11.png" alt="img" /></p>
 
 <p><br /></p>
 
@@ -572,25 +576,25 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
 
 <p>[データベース・バックアップ]画面の [保護ポリシー]を開き、[保護ポリシーの作成]をクリックします</p>
 
-<p><img src="zrcv11.png" alt="img" /></p>
+<p><img src="zrcv12.png" alt="img" /></p>
 
 <p>次の項目を入力し、[作成]をクリックします。</p>
 
 <ul>
-  <li>名前：任意　ポリシーの名前を指定します</li>
-  <li>コンパートメントに作成：保護ポリシーを作成するコンパートメントを選択します</li>
-  <li>バックアップ保持期間(日)：このポリシーを使用してバックアップを保持する最大日数を指定します。最小14日間～最大95日間を指定できます。</li>
+  <li><strong>名前</strong>：任意　ポリシーの名前を指定します</li>
+  <li><strong>コンパートメントに作成</strong>：保護ポリシーを作成するコンパートメントを選択します</li>
+  <li><strong>バックアップ保持期間(日)</strong>：このポリシーを使用してバックアップを保持する最大日数を指定します。最小14日間～最大95日間を指定できます。</li>
+  <li><strong>ロックの有効化</strong>：保護ポリシーに対して保持ロックの有効化をします。有効化する場合は、ロックする期間を指定します。ロック期間中は保護ポリシーの延長操作のみができるようになります。イミュータブル・バックアップをご利用になりたい場合、こちらの機能をお使いください。</li>
+  <li><strong>データベースと同じクラウド・プロバイダにバックアップを格納します</strong>：バックアップの保管場所を選択します。マルチクラウドでデータベース・サービスを利用する場合に、この項目を有効化すると、データベース・サービスが配置されているクラウドにバックアップも取得・保管されます。無効化（デフォルト）もしくはOCIのデータベース・サービスの場合は、バックアップの保管場所はOCIのみです。</li>
 </ul>
-
-<p><img src="zrcv12.png" alt="img" /></p>
-
-<p>作成が終わると、保護ポリシーが表示されます。</p>
 
 <p><img src="zrcv13.png" alt="img" /></p>
 
-<p>保護ポリシーの一覧を確認することもできます。</p>
+<p>作成が終わると、保護ポリシーが表示されます。</p>
 
 <p><img src="zrcv14.png" alt="img" /></p>
+
+<p>左の「保護ポリシー」からコンパートメント内に存在する保護ポリシーの一覧を確認することもできます。</p>
 
 <p><br /></p>
 
@@ -647,10 +651,10 @@ Allow group &lt;グループ名&gt; to manage recovery-service-family <span clas
 
 <p><strong>入力項目と入力内容</strong></p>
 <ul>
-  <li>自動バックアップの有効化: 有効化するためにチェック</li>
-  <li>バックアップの保存先：「自律型リカバリ・サービス(推奨)」（デフォルト）を選択します</li>
-  <li>保護ポリシー：事前設定された保持期間のポリシー、または、事前定義したカスタム・ポリシーを選択します</li>
-  <li>リアルタイム・データ保護：<img src="coin.png" alt="coin" width="30" /> REDO転送オプションの有無を選択します。</li>
+  <li><strong>自動バックアップの有効化</strong>: 有効化するためにチェック</li>
+  <li><strong>バックアップの保存先</strong>：「自律型リカバリ・サービス(推奨)」（デフォルト）を選択します</li>
+  <li><strong>保護ポリシー</strong>：事前設定された保持期間のポリシー、または、事前定義したカスタム・ポリシーを選択します。保護ポリシーの設定に従って、バックアップの保管場所と保持ロックの有無の情報も表示されます。</li>
+  <li><strong>リアルタイム・データ保護</strong>：<img src="coin.png" alt="coin" width="30" /> REDO転送オプションの有無を選択します。</li>
 </ul>
 
 <p class="notice--info"><strong>REDO転送オプションについて</strong><br />
@@ -668,16 +672,13 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 </blockquote>
 
 <ul>
-  <li>データベース終了後の削除オプション：データベースの終了後に保護されたデータベース・バックアップを保持するために使用できるオプション。データベースに偶発的または悪意のある障害が発生した場合にバックアップからデータベースをリストアする場合にも役立ちます。</li>
-  <li>日次バックアップのスケジュール時間(UTC)：増分バックアップが開始される時間ウィンドウを指定します。</li>
-  <li>最初のバックアップをすぐに作成します：最初の完全バックアップを延期することを選択した場合、データベース障害が発生してもデータベースがリカバリできない可能性があります。</li>
+  <li><strong>データベース終了後の削除オプション</strong>：データベースの終了後に保護されたデータベース・バックアップを保持するために使用できるオプション。データベースに偶発的または悪意のある障害が発生した場合にバックアップからデータベースをリストアする場合にも役立ちます。</li>
+  <li><strong>日次バックアップのスケジュール時間(UTC)</strong>：増分バックアップが開始される時間ウィンドウを指定します。</li>
+  <li><strong>最初のバックアップをすぐに作成します</strong>：最初の完全バックアップを延期することを選択した場合、データベース障害が発生してもデータベースがリカバリできない可能性があります。</li>
 </ul>
 
-<p>[変更の保存]をクリック後、データベースの詳細画面に入力した内容が表示されます。</p>
-
-<p><img src="zrcv21.png" alt="img" /></p>
-
-<p>「最初のバックアップをすぐに作成します」のチェックボックスにチェックを入れた場合、すぐにバックアップが開始されます。</p>
+<p>[変更の保存]をクリック後、データベースの詳細画面に入力した内容が表示されます。
+「最初のバックアップをすぐに作成します」のチェックボックスにチェックを入れた場合、すぐにバックアップが開始されます。</p>
 
 <p>また、「リアルタイム・データ保護: 有効」になっていると データ損失の危険性の項目は0秒になります。</p>
 
@@ -703,63 +704,74 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 保護されたデータベースの詳細画面には以下の項目が表示されます。
 <br /></p>
 
+<p><img src="zrcv23.png" alt="img" /></p>
+
 <p><strong>保護サマリー</strong></p>
 <ul>
-  <li>ヘルス：保護されたデータベースのステータス</li>
-  <li>リアルタイム保護：REDO転送オプションの有無</li>
-  <li>データ損失の可能性：最後の有効なバックアップ以降の時間（データ損失の可能性がある期間）</li>
-  <li>保護ポリシー：適用されている保護ポリシー</li>
-  <li>現在のリカバリ・ウィンドウ：現在の時刻から開始して、遡ってデータベースをリカバリできる期間
-<br /></li>
-</ul>
-
-<p><strong>データベース・バックアップのサマリー</strong></p>
-<ul>
-  <li>最後に失敗したバックアップ：最後にバックアップに失敗した時刻</li>
-  <li>最後に完了したバックアップ：最後に完了したバックアップを取得した時刻</li>
-  <li>最終バックアップ期間：バックアップにかかった時間
-<br /></li>
-</ul>
-
-<p><strong>保護されたデータベース</strong></p>
-<ul>
-  <li>データベース詳細：保護されたデータベースの名前</li>
-  <li>一意のデータベース名：保護されたデータベースの一意のデータベース名</li>
-  <li>データベースのバージョン：保護されたデータベースのバージョン</li>
-  <li>コンパートメント：保護されたデータベースが存在するコンパートメント
+  <li><strong>ヘルス</strong>：保護されたデータベースのステータス</li>
+  <li><strong>リアルタイム保護</strong>：REDO転送オプションの有無</li>
+  <li><strong>データ損失の可能性</strong>：最後の有効なバックアップ以降の時間（データ損失の可能性がある期間）</li>
+  <li><strong>保護ポリシー</strong>：適用されている保護ポリシー</li>
+  <li><strong>現在のリカバリ・ウィンドウ</strong>：現在の時刻から開始して、遡ってデータベースをリカバリできる期間
 <br /></li>
 </ul>
 
 <p><strong>領域使用量</strong></p>
 <ul>
-  <li>リカバリ・ウィンドウに使用された領域：現在から遡ってデータベースをリカバリできる期間を満たすために、使用された領域
+  <li><strong>リカバリ・ウィンドウの現在の使用済領域</strong>：現在から遡ってデータベースをリカバリできる期間を満たすために、使用された領域</li>
+  <li><strong>リカバリ・ウィンドウのポリシーに対して予測される使用済領域</strong>：保護ポリシーに基づいた予測使用領域</li>
+  <li><strong>保護されたデータベースのサイズ</strong>：保護されたデータベースのサイズ</li>
+</ul>
+
+<p>※「リカバリ・ウィンドウに使用された領域」は現在と保護ポリシーに基づいた予測の2種類表示されます。
+<br /></p>
+
+<p><strong>データベース・バックアップのサマリー</strong></p>
+<ul>
+  <li><strong>最後に失敗したバックアップ</strong>：最後にバックアップに失敗した時刻</li>
+  <li><strong>最後に完了したバックアップ</strong>：最後に完了したバックアップを取得した時刻</li>
+  <li><strong>最終バックアップ期間</strong>：バックアップにかかった時間
 <br /></li>
 </ul>
 
-<p>※「リカバリ・ウィンドウに使用された領域」は現在と保護ポリシーに基づいた予測の2種類表示されます。</p>
+<p><strong>保護されたデータベース</strong></p>
+<ul>
+  <li><strong>データベース詳細</strong>：保護されたデータベースの名前</li>
+  <li><strong>一意のデータベース名</strong>：保護されたデータベースの一意のデータベース名</li>
+  <li><strong>データベースのバージョン</strong>：保護されたデータベースのバージョン</li>
+  <li><strong>コンパートメント</strong>：保護されたデータベースが存在するコンパートメント
+<br /></li>
+</ul>
+
+<p><strong>一般情報</strong></p>
+<ul>
+  <li>リカバリ・サービスが有効化されている保護DBの情報
+<br /></li>
+</ul>
 
 <p class="notice--info"><strong>リカバリ・サービスの領域使用量に必要な要素な次のようなものがあります。</strong><br />
-1) データベースのサイズ: 保護されたデータベースのサイズ<br />
-2) 週次仮想フルバックアップ: ZRCVのデータ保持期間の週数分のフルバックアップのサイズ<br />
-3) Redoログサイズ: 随時出力される Redoサイズ<br />
-4) 日次増分バックアップ: 日次増分バックアップの日数分のサイズ</p>
+1) <strong>データベースのサイズ</strong>: 保護されたデータベースのサイズ<br />
+2) <strong>週次仮想フルバックアップ</strong>: ZRCVのデータ保持期間の週数分のフルバックアップのサイズ<br />
+3) <strong>Redoログサイズ</strong>: 随時出力される Redoサイズ<br />
+4) <strong>日次増分バックアップ</strong>: 日次増分バックアップの日数分のサイズ</p>
 
-<p><img src="zrcv23.png" alt="img" /></p>
-
-<p>保護されたデータベースの詳細画面を下にスクロールすると、「メトリック」が確認できます。
+<p>「モニタリング」のタブから、リカバリ・サービスのメトリックを確認できます。
 <br /></p>
 
 <p><strong>メトリック</strong></p>
 <ul>
-  <li>リカバリ・ウィンドウに使用された領域：保護されたデータベースのリカバリ・ウィンドウの目標を満たすために現在使用されているストレージ領域の量</li>
-  <li>保護されたデータベースのサイズ：保護されたデータベースによって消費されたストレージ領域の合計</li>
-  <li>保護されたデータベース・ヘルス：データベースの現在の保護ステータス</li>
-  <li>データ損失の危険性：最後の有効なバックアップ以降の時間(データ損失の可能性がある期間)</li>
+  <li><strong>リカバリ・ウィンドウに使用された領域</strong>：保護されたデータベースのリカバリ・ウィンドウの目標を満たすために現在使用されているストレージ領域の量</li>
+  <li><strong>保護されたデータベースのサイズ</strong>：保護されたデータベースによって消費されたストレージ領域の合計</li>
+  <li><strong>保護されたデータベース・ヘルス</strong>：データベースの現在の保護ステータス</li>
+  <li><strong>データ損失の危険性</strong>：最後の有効なバックアップ以降の時間(データ損失の可能性がある期間)</li>
 </ul>
 
 <p><img src="zrcv24.png" alt="img" /></p>
 
 <p><br /></p>
+
+<p>「ネットワークの詳細」のタブから、リカバリ・サービス。サブネットとして登録されているサブネットの情報を確認できます。
+<br /></p>
 
 <h1 id="8-保護されたデータベースの一覧を確認しよう">8. 保護されたデータベースの一覧を確認しよう</h1>
 
@@ -772,7 +784,7 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 <p>すると、コンパートメント内で保護されているデータベースの一覧表示されます。
 複数の保護されたデータベースの保護状態を1つの画面で確認できます。</p>
 
-<p><img src="zrcv30.png" alt="img" />
+<p><img src="zrcv31.png" alt="img" />
 <br /></p>
 
 <p><br />
@@ -793,7 +805,7 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
     <p>[ブログ] <a href="https://qiita.com/shirok/items/c257d52984442a7977f8" target="_blank">Zero Data Loss Autonomous Recovery Service (ZRCV) を Exadata Cloud Service へ設定してみてみた</a></p>
   </li>
   <li>
-    <p>[ブログ] <a href="https://blogs.oracle.com/oracle4engineer/post/autonomous-recovery-servicercvzrcv" target="_blank">Autonomous Recovery Service セットアップ・チェックリスト</a> 
+    <p>[ブログ] <a href="https://blogs.oracle.com/oracle4engineer/post/ja-autonomous-recovery-service-checklist" target="_blank">Autonomous Recovery Service セットアップ・チェックリスト</a> 
 <br /></p>
   </li>
 </ul>
@@ -811,7 +823,7 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-04T09:18:15+09:00">April 4, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-07T20:27:34+09:00">April 7, 2025</time></p>
 
       </footer>
 
@@ -820,7 +832,7 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
     <h4 class="page__share-title">共有</h4>
   
 
-  <a href="https://twitter.com/intent/tweet?text=107%3A+Autonomous+Recovery+Service+%28RCV%2FZRCV%29+%E3%82%92%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+  <a href="https://twitter.com/intent/tweet?text=107%3A+BaseDB%E3%81%ABAutonomous+Recovery+Service+%28RCV%2FZRCV%29+%E3%82%92%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fbasedb%2Fdbcs107-zrcv%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
 

@@ -401,7 +401,7 @@ var store = [{
         "url": "/ocitutorials/basedb/dbcs106-dataguard/",
         "teaser": "/ocitutorials/basedb/dbcs106-dataguard/dataguard08.png"
       },{
-        "title": "107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう",
+        "title": "107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう",
         "excerpt":"はじめに Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。 オンプレミス製品のZero Data Loss Recovery Appliance (RA) のデータ保護技術をベースとしながら、クラウドならではの自動化機能も兼ね備えています。リカバリ・サービスはOracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。 このチュートリアルでは、BaseDBにリカバリ・サービスを設定する手順についてご紹介します。 このチュートリアルを完了すると、以下のような構成図となります。 前提条件 : Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること Autonomous Recovery Service(RCV)を利用する場合、Oracle Database 19.16 以上 Zero Data Loss Autonomous Recovery Service (ZRCV) を利用する場合、Oracle Database 19.18 以上 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次...","categories": [],
         "tags": [],
         "url": "/ocitutorials/basedb/dbcs107-zrcv/",
@@ -1060,6 +1060,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d108-dataguard/",
         "teaser": "/ocitutorials/exadbd/exadb-d108-dataguard/teaser.png"
+      },{
+        "title": "109 : ExaDB-DでAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう",
+        "excerpt":"はじめに Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。 オンプレミス製品のZero Data Loss Recovery Appliance (RA) のデータ保護技術をベースとしながら、クラウドならではの自動化機能も兼ね備えています。リカバリ・サービスはOracle Databaseの変更をリアルタイムで保護し、本番データベースのオーバーヘッドなしでバックアップを検証するほか、任意の時点への高速で予測可能なリカバリを実現します。 このチュートリアルでは、ExaDB-Dにリカバリ・サービスを設定する手順についてご紹介します。 このチュートリアルを完了すると、以下のような構成図となります。 前提条件 : 101：ExaDB-Dを使おう を通じて Oracle Database の作成が完了していること Autonomous Recovery Service(RCV)を利用する場合、Oracle Database 19.16 以上 Zero Data Loss Autonomous Recovery Service (ZRCV) を利用する場合、Oracle Database 19.18 以上 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. サービス制限の引き上げリクエスト...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/exadbd/exadb-d109-zrcv/",
+        "teaser": "/ocitutorials/exadbd/exadb-d109-zrcv/ExaDB-D_zrcv01.png"
       },{
         "title": "HPCクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"0. 概要 このチュートリアルは、HPCワークロードの実行に最適な、 Intel Ice Lake プロセッサを搭載する BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を Intel MPI Benchmarks で検証します。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照ください。 またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の クラスタ・ネットワーク に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。 所要時間 : 約2時間 前提条件 : クラスタ・ネットワーク を収容する コンパートメント ( ルート・コンパートメント でもOKです)の作成と、この コンパートメント に対する必要なリソース管理権限がユーザーに付与されていること。 注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 1. HPCクラスタ作成事前作業 1-0. 概要 本章は、計算ノードをTCP接続する 仮想クラウド・ネットワーク と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。...","categories": [],
