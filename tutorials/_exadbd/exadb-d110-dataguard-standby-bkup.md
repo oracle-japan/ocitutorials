@@ -1,7 +1,7 @@
 ---
 title: "110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう"
 excerpt: "Exadata Database Service on Dedicated Infrastructure(ExaDB-D)のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。"
-order: "1_110"
+order: "2_110"
 header:
   teaser: "/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png"
   overlay_image: "/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png"
@@ -135,6 +135,8 @@ REDO転送オプションを有効化すると、リアルタイムREDO転送が
 DBシステムの作成が開始されます。
 
 作業が完了するとステータスが**PROVISIONING...** から **AVAILABLE** に変わります。
+
+![img](exadb-d-stbk13.png)
 
 選択したリージョンおよび可用性ドメインに新しいデータベースが作成されます。
 
