@@ -45,6 +45,8 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}**
 
++ **[108:BaseDBのスタンバイ・データベースからバックアップを取得およびリストアしてみよう](/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/){:target="_blank"}**
+
 ## データ移行編
 
 + **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/basedb/dbcs201-pdb-plug/){:target="_blank"}**
