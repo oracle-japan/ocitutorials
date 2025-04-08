@@ -4,8 +4,8 @@ excerpt: "ExaDB-D上でOCPU数またはインフラストラクチャ(データ�
 order: "2_105"
 layout: single
 header:
-  teaser: "/exadbd/exadb-d105-backup-restore/teaser.png"
-  overlay_image: "/exadbd/exadb-d105-backup-restore/teaser.png"
+  teaser: "/exadbd/exadb-d_dataguard-standby-bkup-teaser.png"
+  overlay_image: "/exadbd/exadb-d_dataguard-standby-bkup-teaser.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/view-workshop?wid=797
 ---
