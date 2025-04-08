@@ -1,0 +1,615 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.26.2 by Michael Rose
+  Copyright 2013-2024 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Exadata Database Service on Dedicated Infrastructure(ExaDB-D)のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/">
+
+
+  <meta property="og:description" content="Exadata Database Service on Dedicated Infrastructure(ExaDB-D)のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-04-09T00:12:16+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script type="text/javascript">
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">Exadata Database Service on Dedicated Infrastructure(ExaDB-D)のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/exadbd" itemprop="item"><span itemprop="name">Exadbd</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Oracle Database編 - Exadata Database Service -Dedicated Infrastructure</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d101-create-exadb-d/">101 : ExaDB-Dを使おう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d102-manage-pdb/">102 : ExaDB-D上のPDBを管理しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d103-automatic-backup/">103 : 自動バックアップを設定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d104-backup-restore/">104 : バックアップからリストアしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d105-scaling/">105 : スケーリングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d106-dbversion/">106 : データベースのバージョンを指定しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d107-patch/">107 : パッチを適用しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d108-dataguard/">108 : Data Guardを構成しよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d109-zrcv/">109 : ExaDB-DでAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/" class="active">110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう">
+    <meta itemprop="description" content="Exadata Database Service on Dedicated Infrastructure(ExaDB-D)のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。">
+    <meta itemprop="datePublished" content="2025-04-09T00:12:16+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-スタンバイデータベースで自動バックアップを有効化しよう">1. スタンバイ・データベースで自動バックアップを有効化しよう</a></li><li><a href="#2-スタンバイデータベースバックアップからのデータベースを作成しよう">2. スタンバイ・データベース・バックアップからのデータベースを作成しよう</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><a id="anchor0"></a></p>
+
+<h1 id="はじめに">はじめに</h1>
+<p>Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。
+Data Guard GroupもしくはData Guard Associationを使用している場合、Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageをバックアップの保存先として、プライマリ・データベースだけでなくスタンバイ・データベースにも自動バックアップの設定をすることができます。</p>
+
+<p>このチュートリアルではExadata Database Service on Dedicated Infrastructure (ExaDB-D) のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。</p>
+
+<p class="notice--info"><strong>バックアップの取得先について</strong><br />
+今回はOracle Database Autonomous Recovery Serviceを例として取り上げていますが、OCI Object Storageでも同様の手順で設定可能です。</p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>
+    <p><a href="../exadb-d108-dataguard/" target="_blank">108 : Data Guardを構成しよう </a>を通じてData Guard構成が完了していること</p>
+  </li>
+  <li>
+    <p>Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageを利用する上での事前準備が完了していること</p>
+  </li>
+  <li>
+    <p>プライマリとスタンバイのバックアップの取得先は統一すること
+<br /></p>
+  </li>
+</ul>
+
+<p><strong>注意</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
+<br /></p>
+
+<p><strong>目次</strong></p>
+<ul>
+  <li><a href="#1-スタンバイデータベースで自動バックアップを有効化しよう">1. スタンバイ・データベースで自動バックアップを有効化しよう</a></li>
+  <li><a href="#2-スタンバイデータベースバックアップからのデータベースを作成しよう">2. スタンバイ・データベース・バックアップからのデータベースを作成しよう</a></li>
+</ul>
+
+<p><br />
+<strong>所要時間 :</strong> 約90分
+<br /></p>
+
+<h1 id="1-スタンバイデータベースで自動バックアップを有効化しよう">1. スタンバイ・データベースで自動バックアップを有効化しよう</h1>
+<p>ExaDB-Dの場合、Oracle Data Guardを有効にすると、スタンバイ・データベース用に新しいDBシステムが作成され、Data Guardアソシエーションが構成されます。
+Data Guardアソシエーションの構築が完了したら、スタンバイ・データベースの詳細画面に移動して自動バックアップを有効にします。</p>
+
+<p class="notice--info"><strong>自動バックアップの設定タイミングについて</strong><br />
+プライマリ・データベースの自動バックアップを設定する際は、プライマリ・データベース作成時に自動バックアップの構成をすることができますが、スタンバイ・データベースへの自動バックアップの設定は、スタンバイ・データベース作成後に実施します。スタンバイ・データベース作成時に自動バックアップの設定をすることはできません。</p>
+
+<p>まず、ナビケーションメニューから、「Oracle Database」&gt;「Exadata Database Service on Dedicated Infrastructure」をクリックします。</p>
+
+<p><img src="exadb-d-stbk01.png" alt="img" /></p>
+
+<p>自動バックアップを構成するスタンバイ・データベースのプライマリ・データベースを含むVMクラスタの名前をクリックします。</p>
+
+<p><img src="exadb-d-stbk02.png" alt="img" /></p>
+
+<p>次に自動バックアップを構成するスタンバイ・データベースのプライマリ・データベースを含むデータベースの名前をクリックします。</p>
+
+<p><img src="exadb-d-stbk03.png" alt="img" /></p>
+
+<p>「プライマリ・データベースの詳細」ページを下の方にスクロールし、「Data Guardグループ」をクリックします。メンバーから自動バックアップを構成するスタンバイ・データベースの名前をクリックします。</p>
+
+<p><img src="exadb-d-stbk04.png" alt="img" /></p>
+
+<p>「スタンバイ・データベース詳細」ページで「自動バックアップの有効化」をクリックしてバックアップを構成します。
+ここでは、詳細画面に「スタンバイ」と表示されていることを確認してから操作しましょう。</p>
+
+<p><img src="exadb-d-stbk05.png" alt="img" /></p>
+
+<p>「データベース・バックアップの構成」で「自動バックアップの有効化」を選択し、今回は「バックアップの保存先」として「Autonomous Recovery Service (推奨)」を選択します。</p>
+
+<p><strong>入力項目と入力内容</strong></p>
+<ul>
+  <li><strong>自動バックアップの有効化</strong>: 有効化するためにチェック</li>
+  <li><strong>バックアップの保存先</strong>：「自律型リカバリ・サービス(推奨)」（デフォルト）を選択します</li>
+  <li><strong>保護ポリシー</strong>：事前設定された保持期間のポリシー、または、事前定義したカスタム・ポリシーを選択します。保護ポリシーの設定に従って、バックアップの保管場所と保持ロックの有無の情報も表示されます。</li>
+  <li><strong>リアルタイム・データ保護</strong>：<img src="coin.png" alt="coin" width="30" /> REDO転送オプションの有無を選択します。</li>
+</ul>
+
+<p class="notice--info"><strong>REDO転送オプションについて</strong><br />
+リカバリ・サービスには2種類のタイプがあります。Autonomous Recovery Service (RCV) とZero Data Loss Autonomous Recovery Service (ZRCV) です。
+この2種類の違いは、REDO転送オプションの有無です。RCVはREDO転送オプション無し、ZRCVがREDO転送オプションありのタイプです。
+REDO転送オプションを有効化すると、リアルタイムREDO転送が実施されるため、DBストレージ上のREDOログを損失する障害においても、0に近いリカバリ・ポイント目標(RPO)が提供されます。</p>
+
+<blockquote>
+  <ul>
+    <li>チェックボックスにチェックあり ＝ Zero Data Loss Autonomous Recovery Service (ZRCV) を利用</li>
+    <li>チェックボックスにチェックなし ＝Autonomous Recovery Service (RCV) を利用
+<br /></li>
+  </ul>
+</blockquote>
+
+<ul>
+  <li><strong>データベース終了後の削除オプション</strong>：データベースの終了後に保護されたデータベース・バックアップを保持するために使用できるオプション。データベースに偶発的または悪意のある障害が発生した場合にバックアップからデータベースをリストアする場合にも役立ちます。</li>
+  <li><strong>日次バックアップのスケジュール時間(UTC)</strong>：増分バックアップが開始される時間ウィンドウを指定します。</li>
+  <li><strong>最初のバックアップをすぐに作成します</strong>：最初の完全バックアップを延期することを選択した場合、データベース障害が発生してもデータベースがリカバリできない可能性があります。</li>
+</ul>
+
+<p>すべての項目を入力し終わったら「変更の保存」をクリックします。</p>
+
+<p><img src="exadb-d-stbk06.png" alt="img" /></p>
+
+<p>「最初のバックアップをすぐに作成します」のチェックボックスを有効化した場合は、自動バックアップを有効化してすぐにバックアップ処理が開始され、データベースのステータスが「バックアップ進行中」に変更されます。</p>
+
+<p><img src="exadb-d-stbk07.png" alt="img" /></p>
+
+<p>「データベース詳細」ページには、「自動バックアップ」ステータスと詳細が「バックアップ」セクションに表示されます。</p>
+
+<p>下にスクロールし、「バックアップ」タブを開くと取得中のバックアップが表示されます。この状態で、初回バックアップが完了するまで待ちます。</p>
+
+<p><img src="exadb-d-stbk08.png" alt="img" /></p>
+
+<p><br /></p>
+
+<h1 id="2-スタンバイデータベースバックアップからのデータベースを作成しよう">2. スタンバイ・データベース・バックアップからのデータベースを作成しよう</h1>
+
+<p>今度は、スタンバイ・データベース・バックアップから取得したバックアップを使用して、新規データベースを作成してみましょう。</p>
+
+<p>「スタンバイ・データベースの詳細」ページで、「バックアップ」をクリックします。</p>
+
+<p><img src="exadb-d-stbk09.png" alt="img" /></p>
+
+<p>「バックアップ」セクションで、リストアするバックアップを選択します。<br />
+そしてバックアップの「アクション」メニューをクリックし、「データベースの作成」をクリックします。</p>
+
+<p><img src="exadb-d-stbk10.png" alt="img" /></p>
+
+<p>「バックアップからのデータベースの作成」ウィンドウで必要項目を入力します。　　</p>
+
+<p>※設定方法は新規作成時と同様です。入力項目は<a href="../exadb-d101-create-exadb-d/" target="_blank">101 : ExaDB-Dを使おう </a>をご参照下さい。</p>
+
+<p><img src="exadb-d-stbk11.png" alt="img" /></p>
+
+<p>情報を入力し終わったら「DBシステムの作成」をクリックします。
+「<strong>DBシステムの作成</strong> 」をクリックします。<br /></p>
+
+<p><img src="exadb-d-stbk12.png" alt="img" /></p>
+
+<p>DBシステムの作成が開始されます。</p>
+
+<p>作業が完了するとステータスが<strong>PROVISIONING…</strong> から <strong>AVAILABLE</strong> に変わります。</p>
+
+<p><img src="exadb-d-stbk13.png" alt="img" /></p>
+
+<p>選択したリージョンおよび可用性ドメインに新しいデータベースが作成されます。</p>
+
+<p>以上で、この章の作業は完了です。
+<br /></p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>
+    <p>[製品サイト] <a href="https://www.oracle.com/jp/database/zero-data-loss-autonomous-recovery-service/" target="_blank">Oracle Database Autonomous Recovery Service</a></p>
+  </li>
+  <li>
+    <p>[マニュアル] <a href="https://docs.oracle.com/cd/F56555_01/ecscm/ecs-using-data-guard.html#GUID-B7B7FA89-0994-454A-9EBE-0F20A1D1E11E" target="_blank">スタンバイ・データベースで自動バックアップを有効にするには</a></p>
+  </li>
+  <li>
+    <p>[マニュアル] <a href="https://docs.oracle.com/cd/E83857_01/paas/recovery-service/index.html" target="_blank">Oracle Database Autonomous Recovery Service</a></p>
+  </li>
+  <li>
+    <p>[チュートリアル] <a href="https://docs.oracle.com/en/learn/backup-and-restore-exadata/index.html" target="_blank">Backup and Restore from a Standby Database with Oracle Database Autonomous Recovery Service on Oracle Exadata Database Service on Dedicated Infrastructure</a> 
+<br /></p>
+  </li>
+</ul>
+
+<p><br />
+<a href="#anchor0">ページトップへ戻る</a></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-09T00:12:16+09:00">April 9, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  
+    <h4 class="page__share-title">共有</h4>
+  
+
+  <a href="https://twitter.com/intent/tweet?text=110%3AExaDB-D%E3%81%AE%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%90%E3%82%A4%E3%83%BB%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%8B%E3%82%89%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%82%92%E5%8F%96%E5%BE%97%E3%81%8A%E3%82%88%E3%81%B3%E3%83%AA%E3%82%B9%E3%83%88%E3%82%A2%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d110-dataguard-standby-bkup%2F" class="btn btn--twitter" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Twitter"><i class="fab fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fexadbd%2Fexadb-d110-dataguard-standby-bkup%2F" class="btn btn--facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook"><i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/" class="btn btn--linkedin" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span></a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/exadbd/exadb-d109-zrcv/" class="pagination--pager" title="109 : ExaDB-DでAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう
+">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

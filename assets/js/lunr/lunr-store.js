@@ -407,6 +407,12 @@ var store = [{
         "url": "/ocitutorials/basedb/dbcs107-zrcv/",
         "teaser": "/ocitutorials/basedb/dbcs107-zrcv/zrcv01.png"
       },{
+        "title": "108:BaseDBのスタンバイ・データベースからバックアップを取得およびリストアしてみよう",
+        "excerpt":"はじめに Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。 Data Guard GroupもしくはData Guard Associationを使用している場合、Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageをバックアップの保存先として、プライマリ・データベースだけでなくスタンバイ・データベースにも自動バックアップの設定をすることができます。 このチュートリアルではBase Database Service (BaseDB) のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。 バックアップの取得先について 今回はOracle Database Autonomous Recovery Serviceを例として取り上げていますが、OCI Object Storageでも同様の手順で設定可能です。 前提条件 : 106: Data Guardを構成しようを通じてData Guard構成が完了していること Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageを利用する上での事前準備が完了していること プライマリとスタンバイのバックアップの取得先は統一すること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. スタンバイ・データベースで自動バックアップを有効化しよう 2. スタンバイ・データベース・バックアップからのデータベースを作成しよう...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/",
+        "teaser": "/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/dbcs_dgsb13.png"
+      },{
         "title": "201: オンプレミスのPDBをBaseDBに移動しよう",
         "excerpt":"はじめに Base Database Service (BaseDB)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからBaseDBへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(19.12.0.0.0)からBaseDB(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 目次 1. 移行元のデータベースからPDBをアンプラグする 2. BaseDBにPDBをプラグする 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをBaseDBに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select tablespace_name, file_name from dba_data_files; （作業イメージ） 対象PDBをクローズします...","categories": [],
         "tags": [],
@@ -1041,7 +1047,7 @@ var store = [{
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) のスケーリングの対象は、2種類あります。１つは、割り当てられているH/Wリソース内で利用可能な、OCPU数のスケール・アップ/ダウン。データベースや仮想マシンを再起動することなく、処理を継続したままオンラインで変更可能です。また、VMクラスタ全体に対しての変更になります。そのため、例えばノード毎にCPUコア数を変えることはできないので、仮想マシン数の倍数が指定可能になります。もう１つは、インフラストラクチャー部分のデータベース・サーバーとストレージ・サーバーのスケール・アップ(ダウンは不可)。こちらは、X8M以降のモデルで可能で、CPU・メモリ・ストレージなどH/W的に割り当てられている専有リソースを増やしたい場合に、オンラインで追加が可能です。 目次 : 1. OCPUのスケーリング 2. CLIでのOCPUのスケーリング 3. インフラストラクチャのスケーリング データベース・サーバーの追加 ストレージ・サーバーの追加 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること Oracle Cloud Infrastructure Documentation &gt; コマンド・ライン・インターフェース &gt; クイックスタートを通じてOCI CLIのセットアップが完了していること 所要時間 : 約6時間（待ち時間を含む）※環境によって異なるため、参考値です 1. OCPUのスケーリング まずはコンソール上の操作でのOCPUスケーリングからです。 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d105-scaling/",
-        "teaser": "/ocitutorials/exadbd/exadb-d105-backup-restore/teaser.png"
+        "teaser": "/ocitutorials/exadbd/exadb-d_dataguard-standby-bkup-teaser.png"
       },{
         "title": "106 : データベースのバージョンを指定しよう",
         "excerpt":"はじめに Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D) では、VMクラスタ上で作成するデータベースのバージョンを指定したり、ユーザーの個別の用途や要求に合わせるようにカスタム・イメージを作成して指定することを簡単に行うことが可能です。この章ではデータベース・ホームおよびカスタム・イメージの作成方法について紹介します。 目次 : 1. データベース・ホームの作成 2. カスタム・イメージを使用したデータベース・ホームの作成 カスタム・イメージの作成 データベース・ホームの作成 3. 確認作業 前提条件 : 101 : ExaDB-Dを使おうを通じてExaDB-Dの作成が完了していること 所要時間 : 約30分　※環境によって異なるため、参考値です。 1. データベース・ホームの作成 OCIコンソール・メニューから Oracle Database → Oracle Public Cloud上のExadata に移動します。 利用したいコンパートメントをリスト範囲のコンパートメントから選択します。 利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、リージョンの一覧から選択します。 操作したいExadata VMクラスタの表示名をクリックします。 リソースの一覧からデータベース・ホームをクリックします。 データベース・ホームの作成をクリックします。 データベース・ホームの作成ダイアログで以下の操作を行います。 データベース・ホームの表示名に任意の名前を入力します。 データベース・イメージの変更をクリックします。 イメージ・タイプはOracle...","categories": [],
@@ -1066,6 +1072,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d109-zrcv/",
         "teaser": "/ocitutorials/exadbd/exadb-d109-zrcv/ExaDB-D_zrcv01.png"
+      },{
+        "title": "110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう",
+        "excerpt":"はじめに Data Guardは、Oracle Database自身が持つレプリケーション機能です。 プライマリDBの更新情報（REDOログ）をスタンバイDBに転送し、そのREDOログを使ってリカバリし続けることでプライマリDBと同じ状態を維持します。 Data Guard GroupもしくはData Guard Associationを使用している場合、Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageをバックアップの保存先として、プライマリ・データベースだけでなくスタンバイ・データベースにも自動バックアップの設定をすることができます。 このチュートリアルではExadata Database Service on Dedicated Infrastructure (ExaDB-D) のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。 バックアップの取得先について 今回はOracle Database Autonomous Recovery Serviceを例として取り上げていますが、OCI Object Storageでも同様の手順で設定可能です。 前提条件 : 108 : Data Guardを構成しよう を通じてData Guard構成が完了していること Oracle Database Autonomous Recovery Service（RCV/ZRCV）およびOCI Object Storageを利用する上での事前準備が完了していること プライマリとスタンバイのバックアップの取得先は統一すること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/",
+        "teaser": "/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png"
       },{
         "title": "HPCクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"0. 概要 このチュートリアルは、HPCワークロードの実行に最適な、 Intel Ice Lake プロセッサを搭載する BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を Intel MPI Benchmarks で検証します。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照ください。 またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の クラスタ・ネットワーク に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。 所要時間 : 約2時間 前提条件 : クラスタ・ネットワーク を収容する コンパートメント ( ルート・コンパートメント でもOKです)の作成と、この コンパートメント に対する必要なリソース管理権限がユーザーに付与されていること。 注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 1. HPCクラスタ作成事前作業 1-0. 概要 本章は、計算ノードをTCP接続する 仮想クラウド・ネットワーク と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。...","categories": [],
