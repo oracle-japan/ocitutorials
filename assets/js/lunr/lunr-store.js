@@ -413,6 +413,12 @@ var store = [{
         "url": "/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/",
         "teaser": "/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/dbcs_dgsb13.png"
       },{
+        "title": "109:BaseDBでZRCVの長期保管バックアップ（LTR）を作成してみよう",
+        "excerpt":"はじめに Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。 BaseDBでは長期保管バックアップ機能（LTR）を利用してリカバリ・サービスをバックアップ保存先として、最大10年間バックアップを保存できます。 法規制や社内のビジネス・ルールにより、多くの組織では、特定の、通常は毎月のバックアップを何年にもわたって保持することが義務付けられていますが、LTRを利用することでコンプライアンス・バックアップが利用できるようになります。 このチュートリアルではBase Database Service (BaseDB) でOracle Database Autonomous Recovery Service（RCV/ZRCV）の長期保管バックアップ（LTR）を作成する方法を紹介します。 前提条件 : 107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう を通じてリカバリ・サービスのセットアップが完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 長期保存バックアップ（LTR）を作成してみよう 2. 長期バックアップ保持期間を変更してみよう 3. LTRを使用して新規データベースを作成してみよう 所要時間 : 約90分 1. 長期保存バックアップ　（LTR）を作成してみよう ナビゲーション・メニューから、「Oracle Database」&gt;「Oracleベースデータベース・サービス」をクリックします。 次にLTRを作成したいDBシステムの名前をクリックします。 次にLTRを作成したいデータベースを選択します。 「データベースの詳細」ページを下にスクロールし、「リソース」&gt;「バックアップ」を選択し、「バックアップの作成」をクリックします。...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/basedb/dbcs109-ltr/",
+        "teaser": "/ocitutorials/basedb/dbcs109-ltr/dbcs-ltr-teaser.png"
+      },{
         "title": "201: オンプレミスのPDBをBaseDBに移動しよう",
         "excerpt":"はじめに Base Database Service (BaseDB)では、12c 以降のデータベースをプロビジョニングした場合、デフォルトでマルチテナント・コンテナ・データベース(CDB)で作成されます。 CDBで構成されているオンプレミスのデータベースからBaseDBへ移行する場合、PDBのアンプラグ・プラグを行う事で簡単に移行可能です。 その際、両データベースのバージョンに差異があった場合は autoupgrade等のツールを利用する事で、バージョンアップも行う事が可能です。 ここでは、オンプレミスのデータベース(19.12.0.0.0)からBaseDB(19.12.0.0.0)へPDBを移行する手順をご紹介します。 前提条件 : 移行元のデータベースがCDBで構成されていること Oracle CloudでOracle Databaseを使おう を通じて Oracle Database の作成が完了していること 目次 1. 移行元のデータベースからPDBをアンプラグする 2. BaseDBにPDBをプラグする 3. 表領域の暗号化を行う 所要時間 : 約1時間30分 1. 移行元のデータベースからPDBをアンプラグする まずは移行元のデータベースから、移行対象のPDBをアンプラグします。 アンプラグはDatabase Configuration Assistantツールを使って行う事も可能ですが、今回はコマンドでの実施手順を紹介します。 対象PDBの構成確認します PDBの移動にあたってデータファイルをBaseDBに持っていく必要があります。 まずは下記SELECT文にて対象PDBで使用しているデータファイルのディレクトリを確認します。 alter session set container=&lt;pdb_name&gt;; select tablespace_name, file_name from dba_data_files; （作業イメージ） 対象PDBをクローズします...","categories": [],
         "tags": [],
@@ -1078,6 +1084,12 @@ var store = [{
         "tags": [],
         "url": "/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/",
         "teaser": "/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/teaser.png"
+      },{
+        "title": "111:ExaDB-DでZRCVの長期保管バックアップ（LTR）を作成してみよう",
+        "excerpt":"はじめに Oracle Database Autonomous Recovery Service（以下、リカバリ・サービス）は、Oracle Cloud Infrastructure (OCI) で実行するOracle Database向けのフル・マネージド型データ保護サービスです。 ExaDB-Dでは長期保管バックアップ機能（LTR）を利用してリカバリ・サービスをバックアップ保存先として、最大10年間バックアップを保存できます。　 法規制や社内のビジネス・ルールにより、多くの組織では、特定の、通常は毎月のバックアップを何年にもわたって保持することが義務付けられていますが、LTRを利用することでコンプライアンス・バックアップが利用できるようになります。 このチュートリアルではExadata Database Service on Dedicated Infrastructure (ExaDB-D) でOracle Database Autonomous Recovery Service（RCV/ZRCV）の長期保管バックアップ（LTR）を作成する方法を紹介します。 前提条件 : 109 : ExaDB-DでAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう を通じてリカバリ・サービスのセットアップが完了していること 注意 チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。 目次 1. 長期保存バックアップ（LTR）を作成してみよう 2. 長期バックアップ保持期間を変更してみよう 3. LTRを使用して新規データベースを作成してみよう 所要時間 : 約90分 1. 長期保存バックアップ　（LTR）を作成してみよう まず、ナビケーションメニューから、「Oracle...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/exadbd/exadb-d111-ltr/",
+        "teaser": "/ocitutorials/exadbd/exadb-d111-ltr/exadb-d-ltr-teaser.png"
       },{
         "title": "HPCクラスタを構築する(基礎インフラ手動構築編)",
         "excerpt":"0. 概要 このチュートリアルは、HPCワークロードの実行に最適な、 Intel Ice Lake プロセッサを搭載する BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を Intel MPI Benchmarks で検証します。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照ください。 またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の クラスタ・ネットワーク に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。 所要時間 : 約2時間 前提条件 : クラスタ・ネットワーク を収容する コンパートメント ( ルート・コンパートメント でもOKです)の作成と、この コンパートメント に対する必要なリソース管理権限がユーザーに付与されていること。 注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 1. HPCクラスタ作成事前作業 1-0. 概要 本章は、計算ノードをTCP接続する 仮想クラウド・ネットワーク と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。...","categories": [],
