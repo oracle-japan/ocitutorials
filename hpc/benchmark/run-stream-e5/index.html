@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-09T00:12:16+09:00">
+  <meta property="article:published_time" content="2025-04-09T15:49:41+09:00">
 
 
 
@@ -398,7 +398,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="STREAM実行方法（BM.Standard.E5.192編）">
     <meta itemprop="description" content="本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-09T00:12:16+09:00">
+    <meta itemprop="datePublished" content="2025-04-09T15:49:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -442,9 +442,13 @@
     </ul>
   </li>
   <li>OS： <strong>Oracle Linux</strong> 9.5</li>
-  <li><strong>STREAM</strong> : 5.10</li>
   <li>コンパイラ： <strong>AOCC</strong> 5.0</li>
-  <li>配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000</li>
+  <li><strong>STREAM</strong>
+    <ul>
+      <li>バージョン： 5.10</li>
+      <li>配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000</li>
+    </ul>
+  </li>
 </ul>
 
 <p>[実行結果]</p>
@@ -452,30 +456,32 @@
 <ul>
   <li>Triad(MB/s)
     <ul>
-      <li>718,799.1（ <strong>NPS1</strong> ）</li>
-      <li>753,594.8（ <strong>NPS4</strong> ）（ <strong>NPS1</strong> に対して<u> **4.8** パーセント</u>の性能向上）</li>
+      <li>715,650.4（ <strong>NPS</strong> が <strong>1</strong> の場合）</li>
+      <li>753,699.8（ <strong>NPS</strong> が <strong>4</strong> の場合）</li>
     </ul>
   </li>
 </ul>
+
+<p>※1） <strong>NPS</strong> が <strong>4</strong> の場合は <strong>1</strong> に対して <strong>5.3 パーセント</strong> の性能向上が見られます。</p>
 
 <hr />
 <h1 id="1-bmstandarde5192インスタンス作成">1. BM.Standard.E5.192インスタンス作成</h1>
 
 <p>本章は、 <strong>STREAM</strong> を実行するインスタンスを作成します。</p>
 
-<p>作成するインスタンスは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
+<p>作成するインスタンスは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
 
 <ul>
   <li>イメージ： <strong>Oracle Linux</strong> 9.5（Oracle-Linux-9.5-2025.02.28-0）</li>
   <li>シェイプ： <strong>BM.Standard.E5.192</strong>
     <ul>
-      <li><strong>SMT</strong> ： 無効（※1）</li>
-      <li><strong>NPS</strong> ： <strong>1</strong> / <strong>4</strong> （※1）</li>
+      <li><strong>SMT</strong> ： 無効（※2）</li>
+      <li><strong>NPS</strong> ： <strong>1</strong> / <strong>4</strong> （※2）</li>
     </ul>
   </li>
 </ul>
 
-<p>※1）<strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+<p>※2）<strong>NPS</strong> と <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="2-streamダウンロードコンパイル">2. STREAMダウンロード・コンパイル</h1>
@@ -498,11 +504,11 @@
 <p>本章は、先に作成した <strong>STREAM</strong> の実行バイナリを使用し、以下の手順で <strong>STREAM</strong> を実行します。</p>
 
 <ol>
-  <li>OS再起動（※1）</li>
+  <li>OS再起動（※3）</li>
   <li><strong>STREAM</strong> 実行</li>
 </ol>
 
-<p>※1）OS起動直後の状態でメモリ性能を計測する目的で実施します。</p>
+<p>※3）OS起動直後の状態でメモリ性能を計測する目的で実施します。</p>
 
 <h2 id="3-1-os再起動">3-1. OS再起動</h2>
 
@@ -535,8 +541,8 @@ Number of Threads requested <span class="o">=</span> 96
 Number of Threads counted <span class="o">=</span> 96
 <span class="nt">-------------------------------------------------------------</span>
 Your clock granularity/precision appears to be 1 microseconds.
-Each <span class="nb">test </span>below will take on the order of 10811 microseconds.
-   <span class="o">(=</span> 10811 clock ticks<span class="o">)</span>
+Each <span class="nb">test </span>below will take on the order of 10875 microseconds.
+   <span class="o">(=</span> 10875 clock ticks<span class="o">)</span>
 Increase the size of the arrays <span class="k">if </span>this shows that
 you are not getting at least 20 clock ticks per test.
 <span class="nt">-------------------------------------------------------------</span>
@@ -545,10 +551,10 @@ For best results, please be sure you know the
 precision of your system timer.
 <span class="nt">-------------------------------------------------------------</span>
 Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
-</span>Copy:          685041.8     0.010067     0.010045     0.010089
-Scale:         690053.6     0.010014     0.009972     0.010071
-Add:           723580.5     0.014304     0.014265     0.014328
-Triad:         718799.1     0.014390     0.014360     0.014484
+</span>Copy:          681724.7     0.010136     0.010094     0.010191
+Scale:         685595.0     0.010068     0.010037     0.010095
+Add:           721807.1     0.014329     0.014300     0.014359
+Triad:         715650.4     0.014469     0.014423     0.014515
 <span class="nt">-------------------------------------------------------------</span>
 Solution Validates: avg error less than 1.000000e-13 on all three arrays
 <span class="nt">-------------------------------------------------------------</span>
@@ -574,8 +580,8 @@ Number of Threads requested <span class="o">=</span> 96
 Number of Threads counted <span class="o">=</span> 96
 <span class="nt">-------------------------------------------------------------</span>
 Your clock granularity/precision appears to be 1 microseconds.
-Each <span class="nb">test </span>below will take on the order of 9644 microseconds.
-   <span class="o">(=</span> 9644 clock ticks<span class="o">)</span>
+Each <span class="nb">test </span>below will take on the order of 9512 microseconds.
+   <span class="o">(=</span> 9512 clock ticks<span class="o">)</span>
 Increase the size of the arrays <span class="k">if </span>this shows that
 you are not getting at least 20 clock ticks per test.
 <span class="nt">-------------------------------------------------------------</span>
@@ -584,10 +590,10 @@ For best results, please be sure you know the
 precision of your system timer.
 <span class="nt">-------------------------------------------------------------</span>
 Function    Best Rate MB/s  Avg <span class="nb">time     </span>Min <span class="nb">time     </span>Max <span class="nb">time
-</span>Copy:          720545.7     0.009615     0.009550     0.009653
-Scale:         713615.5     0.009695     0.009643     0.009736
-Add:           751671.5     0.013765     0.013732     0.013795
-Triad:         753594.8     0.013738     0.013697     0.013761
+</span>Copy:          719952.6     0.009600     0.009558     0.009660
+Scale:         705125.1     0.009805     0.009759     0.009873
+Add:           752324.6     0.013776     0.013720     0.013820
+Triad:         753699.8     0.013741     0.013695     0.013785
 <span class="nt">-------------------------------------------------------------</span>
 Solution Validates: avg error less than 1.000000e-13 on all three arrays
 <span class="nt">-------------------------------------------------------------</span>
@@ -604,7 +610,7 @@ Solution Validates: avg error less than 1.000000e-13 on all three arrays
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-09T00:12:16+09:00">April 9, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-09T15:49:41+09:00">April 9, 2025</time></p>
 
       </footer>
 
