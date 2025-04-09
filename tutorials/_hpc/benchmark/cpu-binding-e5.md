@@ -4,6 +4,8 @@ excerpt: "NUMAアーキテクチャを採用するインスタンスに於ける
 order: "227"
 layout: single
 header:
+  teaser: "/hpc/benchmark/cpu-binding-e5/e5_architecture_nps4.png"
+  overlay_image: "/hpc/benchmark/cpu-binding-e5/e5_architecture_nps4.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -44,7 +46,7 @@ $ numactl --localalloc a.out
     - **AMD EPYC** 9654ベース x 2
     - コア数： 192（ソケット当たり96・ **Core Complex Die** （※2）あたり8）
     - **CCD** 数： 24
-    - L3キャッシュ： 768 GB（ **CCD** 当たり32 GB）
+    - L3キャッシュ： 768 MB（ **CCD** 当たり32 MB）
     - 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）
 - メモリ
     - テクノロジ： DDR5
@@ -111,7 +113,7 @@ $ numactl --localalloc a.out
 
 ![コアバインディング10](core_binding10.png)
 
-![コアバインディング11](core_bindin11.png)
+![コアバインディング11](core_binding11.png)
 
 ***
 # 1. PRRTEを使用するプロセス・スレッドのコア割当て

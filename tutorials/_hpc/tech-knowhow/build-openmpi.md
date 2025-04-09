@@ -74,73 +74,101 @@ header:
 
 ## 1-0. 概要
 
-本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンスに **OpenMPI** 、 **OpenPMIx** 、 **OpenUCX** 及びこれらの前提ソフトウェア・rpmパッケージをインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
+本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** 、 **OpenUCX** 、及びRPMパッケージ等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
 
 以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。
 
-## 1-1. 前提ソフトウェア・rpmパッケージインストール
+## 1-1.  OpenMPI前提ソフトウェア・RPMパッケージインストール
 
-以下コマンドをopcユーザで実行し、前提rpmパッケージのインストールと前提ソフトウェアである **libevent** ・ **hwloc** ・ **XPMEM** の **/opt** ディレクトリへのインストールを実施します。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+## 1-1-0. 概要
+
+本章は、 **OpenMPI** の前提となるソフトウェアやRPMパッケージをインストールします。
+
+## 1-1-1. 前提RPMパッケージインストール
+
+以下コマンドをopcユーザで実行し、前提RPMパッケージをインストールします。  
 
 ```sh
-$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git
-$ cd ~; wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
+```
+
+## 1-1-2. libeventインストール
+
+以下コマンドをopcユーザで実行し、 **libevent** を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable; ./configure --prefix=/opt/libevent
 $ make -j 36 && sudo make install
-$ cd ~; wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
+```
+
+## 1-1-3. hwlocインストール
+
+以下コマンドをopcユーザで実行し、 **hwloc** を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
 $ tar -xvf ./hwloc-2.11.2.tar.gz
-$ cd hwloc-2.11.2; ./configure --prefix=/opt/hwloc
+$ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
 $ make -j 36 && sudo make install
-$ cd ~; git clone https://github.com/hpc/xpmem.git
+```
+
+## 1-1-4. OpenPMIxインストール
+
+以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
+$ tar -xvf ./pmix-5.0.4.tar.gz
+$ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
+$ make -j 36 && sudo make install
+```
+
+## 1-1-5. XPMEMインストール
+
+以下コマンドをopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem; ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
-ここで **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用するため、ここでは改めてインストールしません。
-
-## 1-2. OpenPMIxインストール
-
-以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
-
-```sh
-$ cd ~; wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-$ tar -xvf ./pmix-5.0.4.tar.gz
-$ cd pmix-5.0.4; ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 36 && sudo make install
-```
-
-## 1-3. OpenUCXインストール
+## 1-1-6. OpenUCXインストール
 
 以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd ~; wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
+$ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
 $ tar -xvf ./ucx-1.17.0.tar.gz
 $ cd ucx-1.17.0; ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/knem-1.1.4.90mlnx3 --with-xpmem=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
-ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。
+ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。  
+なお **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用します。
 
-## 1-4. OpenMPIインストール
+## 1-2. OpenMPIインストール
 
 以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt** ディレクトリにインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd ~; wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+$ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 $ tar -xvf ./openmpi-5.0.6.tar.gz
-$ cd openmpi-5.0.6; ./configure --prefix=/opt/openmpi-5.0.6 --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-slurm
+$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-slurm
 $ make -j 36 all && sudo make install
 ```
 
 ここでは、先にインストールした **OpenUCX** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
-## 1-5. セットアップ
+## 1-3. セットアップ
 
 本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。  
 ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
@@ -149,7 +177,7 @@ $ make -j 36 all && sudo make install
 以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
 
 ```sh
-$ echo "export PATH=/opt/openmpi-5.0.6/bin:/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
+$ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 

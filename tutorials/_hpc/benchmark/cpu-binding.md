@@ -4,6 +4,8 @@ excerpt: "NUMAアーキテクチャを採用するインスタンスに於ける
 order: "226"
 layout: single
 header:
+  teaser: "/hpc/benchmark/cpu-binding/x9_architecture_nps2.png"
+  overlay_image: "/hpc/benchmark/cpu-binding/x9_architecture_nps2.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---

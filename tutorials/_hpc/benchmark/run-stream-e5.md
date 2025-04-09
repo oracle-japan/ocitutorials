@@ -24,36 +24,39 @@ header:
 [実行環境]
 
 - シェイプ： **BM.Standard.E5.192**
-  - CPU： **AMD EPYC** 9654ベース x 2（192コア）
-  - メモリ： DDR5 2.3 TB
-  - 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）
-  - メモリ帯域： 921.6 GB/s
-  - **Simultanious Multi Threading** （以降 **SMT** と呼称します。）： 無効
-  - **NUMA nodes per socket** （以降 **NPS** と呼称します。）： **1** / **4**
+    - CPU： **AMD EPYC** 9654ベース x 2（192コア）
+    - メモリ： DDR5 2.3 TB
+    - 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）
+    - メモリ帯域： 921.6 GB/s
+    - **Simultanious Multi Threading** （以降 **SMT** と呼称します。）： 無効
+    - **NUMA nodes per socket** （以降 **NPS** と呼称します。）： **1** / **4**
 - OS： **Oracle Linux** 9.5
-- **STREAM** : 5.10
 - コンパイラ： **AOCC** 5.0
-- 配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000
+- **STREAM**
+    - バージョン： 5.10
+    - 配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000
 
 [実行結果]
 
 - Triad(MB/s)
-    - 718,799.1（ **NPS1** ）
-    - 753,594.8（ **NPS4** ）（ **NPS1** に対して<u> **4.8** パーセント</u>の性能向上）
+    - 715,650.4（ **NPS** が **1** の場合）
+    - 753,699.8（ **NPS** が **4** の場合）
+
+※1） **NPS** が **4** の場合は **1** に対して **5.3 パーセント** の性能向上が見られます。
 
 ***
 # 1. BM.Standard.E5.192インスタンス作成
 
 本章は、 **STREAM** を実行するインスタンスを作成します。
 
-作成するインスタンスは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の手順に従い、以下属性のインスタンスを作成します。
+作成するインスタンスは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** の手順に従い、以下属性のインスタンスを作成します。
 
 - イメージ： **Oracle Linux** 9.5（Oracle-Linux-9.5-2025.02.28-0）
 - シェイプ： **BM.Standard.E5.192**
-  - **SMT** ： 無効（※1）
-  - **NPS** ： **1** / **4** （※1）
+  - **SMT** ： 無効（※2）
+  - **NPS** ： **1** / **4** （※2）
 
-※1）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※2）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
 ***
 # 2. STREAMダウンロード・コンパイル
@@ -76,10 +79,10 @@ $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -f
 
 本章は、先に作成した **STREAM** の実行バイナリを使用し、以下の手順で **STREAM** を実行します。
 
-1. OS再起動（※1）
+1. OS再起動（※3）
 2. **STREAM** 実行
 
-※1）OS起動直後の状態でメモリ性能を計測する目的で実施します。
+※3）OS起動直後の状態でメモリ性能を計測する目的で実施します。
 
 ## 3-1. OS再起動
 
@@ -114,8 +117,8 @@ Number of Threads requested = 96
 Number of Threads counted = 96
 -------------------------------------------------------------
 Your clock granularity/precision appears to be 1 microseconds.
-Each test below will take on the order of 10811 microseconds.
-   (= 10811 clock ticks)
+Each test below will take on the order of 10875 microseconds.
+   (= 10875 clock ticks)
 Increase the size of the arrays if this shows that
 you are not getting at least 20 clock ticks per test.
 -------------------------------------------------------------
@@ -124,10 +127,10 @@ For best results, please be sure you know the
 precision of your system timer.
 -------------------------------------------------------------
 Function    Best Rate MB/s  Avg time     Min time     Max time
-Copy:          685041.8     0.010067     0.010045     0.010089
-Scale:         690053.6     0.010014     0.009972     0.010071
-Add:           723580.5     0.014304     0.014265     0.014328
-Triad:         718799.1     0.014390     0.014360     0.014484
+Copy:          681724.7     0.010136     0.010094     0.010191
+Scale:         685595.0     0.010068     0.010037     0.010095
+Add:           721807.1     0.014329     0.014300     0.014359
+Triad:         715650.4     0.014469     0.014423     0.014515
 -------------------------------------------------------------
 Solution Validates: avg error less than 1.000000e-13 on all three arrays
 -------------------------------------------------------------
@@ -154,8 +157,8 @@ Number of Threads requested = 96
 Number of Threads counted = 96
 -------------------------------------------------------------
 Your clock granularity/precision appears to be 1 microseconds.
-Each test below will take on the order of 9644 microseconds.
-   (= 9644 clock ticks)
+Each test below will take on the order of 9512 microseconds.
+   (= 9512 clock ticks)
 Increase the size of the arrays if this shows that
 you are not getting at least 20 clock ticks per test.
 -------------------------------------------------------------
@@ -164,10 +167,10 @@ For best results, please be sure you know the
 precision of your system timer.
 -------------------------------------------------------------
 Function    Best Rate MB/s  Avg time     Min time     Max time
-Copy:          720545.7     0.009615     0.009550     0.009653
-Scale:         713615.5     0.009695     0.009643     0.009736
-Add:           751671.5     0.013765     0.013732     0.013795
-Triad:         753594.8     0.013738     0.013697     0.013761
+Copy:          719952.6     0.009600     0.009558     0.009660
+Scale:         705125.1     0.009805     0.009759     0.009873
+Add:           752324.6     0.013776     0.013720     0.013820
+Triad:         753699.8     0.013741     0.013695     0.013785
 -------------------------------------------------------------
 Solution Validates: avg error less than 1.000000e-13 on all three arrays
 -------------------------------------------------------------
