@@ -65,9 +65,8 @@ header:
 ```sh
 $ cd ~; wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 $ tar -xvf ./IMB-v2021.7.tar.gz
-$ cd mpi-benchmarks-IMB-v2021.7; export CXX=/opt/openmpi-5.0.6/bin/mpicxx; export CC=/opt/openmpi-5.0.6/bin/mpicc; make -j 36 all
-$ sudo mkdir -p /opt/openmpi-5.0.6/tests/imb
-$ sudo cp ./IMB* /opt/openmpi-5.0.6/tests/imb/
+$ export CC=/opt/openmpi/bin/mpicc; export CXX=/opt/openmpi/bin/mpicxx; cd mpi-benchmarks-IMB-v2021.7 && make -j 36 all
+$ sudo mkdir -p /opt/openmpi-5.0.6/tests/imb && sudo cp ./IMB* /opt/openmpi-5.0.6/tests/imb/
 ```
 
 ## 1-3. Intel MPI Benchmarks実行

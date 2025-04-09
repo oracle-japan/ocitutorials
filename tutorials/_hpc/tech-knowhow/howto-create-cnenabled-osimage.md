@@ -173,8 +173,8 @@ $ sudo shutdown -r now
 次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDをインストールします。
 
 ```sh
-$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-23.10-2.1.3.1-rhel8.9-x86_64.iso /mnt/iso
-$ cd /mnt/iso; sudo ./mlnxofedinstall --without-fw-update -q
+$ sudo mkdir /mnt/iso && sudo mount -o ro,loop ~/MLNX_OFED_LINUX-23.10-2.1.3.1-rhel8.9-x86_64.iso /mnt/iso
+$ cd /mnt/iso && sudo ./mlnxofedinstall --without-fw-update -q
 ```
 
 次に、以下コマンドを計算ノードのrockyユーザで実行し、OSを再起動します。
@@ -192,7 +192,7 @@ $ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil python3-pyOpe
 $ gem install dotenv -v 2.8.1
 $ gem install fpm
 $ git clone https://github.com/MarcinZablocki/oci-cn-auth
-$ cd oci-cn-auth; make
+$ cd oci-cn-auth && make
 $ sudo rpm -ivh ./oci-cn-auth-0.2.11-4.el8.noarch.rpm
 ```
 
@@ -238,8 +238,8 @@ Mellanox OFED ISOイメージファイルのダウンロードは、以下のサ
 
 ```sh
 $ sudo yum install -y python-devel kernel-devel-`uname -r` redhat-rpm-config createrepo rpm-build tcl gcc-gfortran tk automake libtool autoconf fuse-libs
-$ sudo mkdir /mnt/iso; sudo mount -o ro,loop ~/MLNX_OFED_LINUX-5.4-3.6.8.1-rhel7.9-x86_64.iso /mnt/iso
-$ cd /mnt/iso; sudo ./mlnxofedinstall --add-kernel-support --without-fw-update -q
+$ sudo mkdir /mnt/iso && sudo mount -o ro,loop ~/MLNX_OFED_LINUX-5.4-3.6.8.1-rhel7.9-x86_64.iso /mnt/iso
+$ cd /mnt/iso && sudo ./mlnxofedinstall --add-kernel-support --without-fw-update -q
 $ sudo dracut -f
 ```
 
@@ -255,7 +255,7 @@ $ sudo yum install -y git rh-ruby30 rpm-build python36-pyOpenSSL python36-psutil
 $ scl enable rh-ruby30 bash
 $ gem install fpm
 $ git clone https://github.com/MarcinZablocki/oci-cn-auth
-$ cd oci-cn-auth; make
+$ cd oci-cn-auth && make
 $ sudo rpm -ivh ./oci-cn-auth-0.2.11-4.el7.noarch.rpm
 ```
 

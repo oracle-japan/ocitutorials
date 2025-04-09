@@ -4,6 +4,8 @@ excerpt: "MPI並列アプリケーションは、MPI通信時間がボトルネ�
 order: "228"
 layout: single
 header:
+  teaser: "/hpc/benchmark/openmpi-perftune/are_08_36_step3.png"
+  overlay_image: "/hpc/benchmark/openmpi-perftune/are_08_36_step3.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
