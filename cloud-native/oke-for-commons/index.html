@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-10T16:15:46+09:00">
+  <meta property="article:published_time" content="2025-04-10T16:24:26+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう">
     <meta itemprop="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OKEクラスターを作成します。まずはここから始めましょう。">
-    <meta itemprop="datePublished" content="2025-04-10T16:15:46+09:00">
+    <meta itemprop="datePublished" content="2025-04-10T16:24:26+09:00">
     
 
     <div class="page__inner-wrap">
@@ -329,7 +329,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li><li><a href="#1okeクラスターのプロビジョニング">1.OKEクラスターのプロビジョニング</a></li><li><a href="#2cli実行環境cloud-shellの準備">2.CLI実行環境(Cloud Shell)の準備</a></li><li><a href="#3kubectlのセットアップ">3.kubectlのセットアップ</a></li><li><a href="#4オプションcli実行環境vmインスタンスの作成">4.【オプション】CLI実行環境(VMインスタンス)の作成</a><ul><li><a href="#4-1-ociコンソールにアクセスする">4-1. OCIコンソールにアクセスする</a></li><li><a href="#4-2-resource-managerを利用して環境を構築する">4-2. Resource Managerを利用して環境を構築する</a><ul><li><a href="#4-2-1-スタックの作成">4-2-1. スタックの作成</a></li><li><a href="#4-2-2-ジョブの実行">4-2-2. ジョブの実行</a></li></ul></li><li><a href="#4-3-cli実行環境にログインする">4-3. CLI実行環境にログインする</a></li><li><a href="#4-4-oci-cliのセットアップ">4-4. OCI CLIのセットアップ</a><ul><li><a href="#4-4-1-テナンシのocidの確認">4-4-1. テナンシのOCIDの確認</a></li><li><a href="#4-4-2-ユーザーのocidの確認">4-4-2. ユーザーのOCIDの確認</a></li><li><a href="#4-4-3-oci-cliのセットアップ">4-4-3. OCI CLIのセットアップ</a></li></ul></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li><li><a href="#1okeクラスターのプロビジョニング">1.OKEクラスターのプロビジョニング</a></li><li><a href="#2cli実行環境cloud-shellの準備">2.CLI実行環境(Cloud Shell)の準備</a></li><li><a href="#3kubectlのセットアップ">3.kubectlのセットアップ</a></li></ul>
             </nav>
           </aside>
         
@@ -362,36 +362,27 @@
 
 <p><img src="02-03.png" alt="" /></p>
 
-<p>次のダイアログで<code class="language-plaintext highlighter-rouge">クイック作成</code>を選択し、<code class="language-plaintext highlighter-rouge">ワークフローの起動</code>をクリックします。</p>
+<p>次のダイアログで<code class="language-plaintext highlighter-rouge">クイック作成</code>を選択し、<code class="language-plaintext highlighter-rouge">送信</code>をクリックします。</p>
 
-<p><img src="02-03-2.png" alt="" /></p>
+<p><img src="02-03-02.png" alt="" /></p>
 
-<p>次のダイアログで、任意の名前を入力し、バージョンを選択します。ここではデフォルトのまま進めていきます。</p>
+<p>次のダイアログで、<code class="language-plaintext highlighter-rouge">シェイプ</code>に<code class="language-plaintext highlighter-rouge">VM.Standard.E5.Flex</code>を選択、 <code class="language-plaintext highlighter-rouge">ノード数</code>に<code class="language-plaintext highlighter-rouge">1</code>を入力します。</p>
 
-<p><code class="language-plaintext highlighter-rouge">Kubernetes APIエンドポイント</code>には今回はデフォルトの<code class="language-plaintext highlighter-rouge">パブリック・エンドポイント</code>を選択します。</p>
+<p>他の値はデフォルトのままで問題ありません。</p>
 
 <p class="notice--info"><strong>Kubernetes APIエンドポイントについて</strong><br />
 管理者は、クラスタのKubernetes APIエンドポイントを、プライベート・サブネットまたはパブリック・サブネットに構成することができます。<br />
 VCNルーティングとファイアウォール・ルールを使うことで、Kubernetes APIエンドポイントへのアクセスを制御し、オンプレミスもしくは同一VCN上に構築した踏み台サーバからのみアクセス可能にすることができます。</p>
-
-<p><code class="language-plaintext highlighter-rouge">Kubernetesワーカー・ノード</code>には今回<code class="language-plaintext highlighter-rouge">プライベート</code>を選択します。これは、
-ワークロードに応じて、ワーカーノードにパブリックIPを付与する必要がある場合は、<code class="language-plaintext highlighter-rouge">パブリック</code>を選択してください。</p>
 
 <p class="notice--info"><strong>Kubernetesワーカー・ノードについて</strong><br />
 プライベートかパブリックによって、ワーカーノードに付与されるIPアドレスの種類が変わります。<br />
 プライベートは、ワーカーノードがプライベートIPのみを付与された状態でプロビジョニングを行います。<br />
 ワーカーノードにパブリックIPを付与する必要がある場合は、<code class="language-plaintext highlighter-rouge">パブリック</code>を選択してください。</p>
 
-<p><code class="language-plaintext highlighter-rouge">シェイプ</code>には、今回<code class="language-plaintext highlighter-rouge">VM.Standard.E3.Flex</code>を選択します。
-このシェイプは、OCPUとメモリ(RAM)を柔軟に変更することができるようになっています。<br />
-今回は、1oCPU/16GBで作成します。</p>
-
 <p class="notice--info"><strong>シェイプについて</strong><br />
 OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご利用頂くことができます。<br />
 また、プロセッサ・アーキテクチャとしても、Intel/AMD/ARMベースのインスタンスから選択頂くことができます。<br />
 ワークロードに応じて、適切なシェイプを選択してください。</p>
-
-<p>ノードの数はワーカーノードの数を指定します。デフォルトで「3」が指定されていますが、本ハンズオンでは最小構成である「1」に変更してください。</p>
 
 <p class="notice--info"><strong>ノード数について</strong><br />
 ノードはリージョン内の可用性ドメイン全体（または、東京リージョンなど単一可用性ドメインの場合、その可用性ドメイン内の障害ドメイン全体）に可能な限り均等に分散されます。<br />
@@ -399,7 +390,8 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 <p>そして、ダイアログの下まで移動し<code class="language-plaintext highlighter-rouge">次</code>をクリックします。</p>
 
-<p><img src="02-03-1.png" alt="" /></p>
+<p><img src="02-03-1.png" alt="" />
+<img src="02-03-2.png" alt="" /></p>
 
 <p>次のダイアログは入力内容を確認し、「基本的なクラスタの確認」では、<code class="language-plaintext highlighter-rouge">基本的なクラスタを作成</code>にチェックを入れて、<code class="language-plaintext highlighter-rouge">クラスタの作成</code>をクリックします。</p>
 
@@ -409,9 +401,7 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 <p><img src="02-03-3.png" alt="" /></p>
 
-<p><img src="02-04.png" alt="" /></p>
-
-<p>デフォルトの設定では、クラスタが必要とするネットワークリソース等の構成が自動的に行われます。途中経過がダイアログに表示されますので、「クラスタと関連ネットワーク・リソースが作成されました」というメッセージが表示されるまで待った後、<code class="language-plaintext highlighter-rouge">Close</code>ボタンをクリックします。</p>
+<p>デフォルトの設定では、クラスタが必要とするネットワークリソース等の構成が自動的に行われます。途中経過がダイアログに表示されますので、全て完了したら、<code class="language-plaintext highlighter-rouge">Close</code>ボタンをクリックします。</p>
 
 <p><img src="02-05.png" alt="" /></p>
 
@@ -427,7 +417,7 @@ OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご
 
 <p>本ハンズオンではOKEクラスターを操作するいくつかのCLIを実行するための環境としてCloud Shellと呼ばれるサービスを使用します。
 Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザベースのコンソールです。
-Cloud Shellには、OCI CLIをはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
+Cloud Shellには、OCI CLIをはじめとして、例えば、次のような便利なツールおよびユーティリティの現在のバージョンがインストールされています。他にもたくさんインストールされています。
 詳細は、<a href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/API/Concepts/cloudshellintro.htm">公式ドキュメントの記載</a>をご確認ください。</p>
 
 <table>
@@ -444,10 +434,16 @@ Cloud Shellには、OCI CLIをはじめとして、次のようないくつか�
       <td>Java</td>
     </tr>
     <tr>
-      <td>Python (2および3)</td>
+      <td>Python</td>
     </tr>
     <tr>
-      <td>SQL Plus</td>
+      <td>GraalVM JDK 17 および Native Image ツール</td>
+    </tr>
+    <tr>
+      <td>OCI SDK(Java/Python/Go/JavaScript/TypeScript)</td>
+    </tr>
+    <tr>
+      <td>SQLcl</td>
     </tr>
     <tr>
       <td>kubectl</td>
@@ -473,7 +469,7 @@ Cloud Shellには、OCI CLIをはじめとして、次のようないくつか�
 <p class="notice--warning"><strong>Cloud Shellついて</strong><br />
 Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行したい場合などライトなご利用を想定したサービスであるため、実運用時はCLI実行環境を別途ご用意ください。</p>
 
-<p>OCIコンソール上で右上にあるターミナルのアイコンをクリックします。</p>
+<p>OCIコンソール上で右上にあるターミナルのアイコンをクリックし、<code class="language-plaintext highlighter-rouge">Cloud Shell</code>をクリックします。</p>
 
 <p><img src="01-02-01.png" alt="" /></p>
 
@@ -567,7 +563,7 @@ kubectlコマンドはデフォルトで<code class="language-plaintext highligh
 <p>以下のような実行結果になれば、正常にクラスターにアクセスできています。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME        STATUS   ROLES   AGE   VERSION
-10.0.10.2   Ready    node    20s   v1.21.5
+10.0.10.2   Ready    node    20s   v1.32.1
 </code></pre></div></div>
 
 <p>以上で、OKEでKubernetesクラスターをプロビジョニングし、利用を開始するまでの手順は完了です。<br />
@@ -579,275 +575,6 @@ kubectlコマンドはデフォルトで<code class="language-plaintext highligh
 
 <p><a href="../oke-for-advances/">上級編 - OKEでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></p>
 
-<h2 id="4オプションcli実行環境vmインスタンスの作成">4.【オプション】CLI実行環境(VMインスタンス)の作成</h2>
-<p>手順5はオプションになっており、ハンズオン実施にあたっては基本的に不要な手順になります。<br />
-OKEを操作するためのクライアントを、Cloud ShellではなくVMインスタンスで作成したい方やOracle Cloud Infrastructure上のマネージドTerraformサービスである<code class="language-plaintext highlighter-rouge">Resource Manager</code>に興味がある方は是非参考にしてください。</p>
-
-<h3 id="4-1-ociコンソールにアクセスする">4-1. OCIコンソールにアクセスする</h3>
-<p>OCIコンソールにブラウザからアクセスします。お持ちのクラウドアカウントを使って<a href="https://cloud.oracle.com/ja_JP/home">サインイン</a>します。</p>
-
-<p><img src="01-01-1.png" alt="" /></p>
-
-<ul>
-  <li>1．Sign Inをクリックします</li>
-  <li>2．クラウドアカウント名（テナント名）を入力します</li>
-  <li>3．「Next」をクリックします</li>
-  <li>4．クラウドユーザー名とパスワードを入力して「サイン・イン」をクリックします</li>
-</ul>
-
-<h3 id="4-2-resource-managerを利用して環境を構築する">4-2. Resource Managerを利用して環境を構築する</h3>
-<p>本節での作業は、OCIのResource Managerと呼ばれるサービスを使って実施します。手作業でVMインスタンスの作成、CLIのインストール、ポリシーの設定などを行うこともできますが、Resource Managerを利用することでこれらの手順を自動化・省力化することが可能です。</p>
-
-<p class="notice--info"><strong>Resource Managerについて</strong><br />
-<a href="https://docs.oracle.com/cd/E97706_01/Content/ResourceManager/Concepts/resourcemanager.htm">Resource Manager</a>は、テキストで記述した構成情報に基づいて、Oracle Cloud上の複数のリソースをまとめて作成/変更/削除することができる、構成管理サービスです。<br />
-Resource ManagerではTerraformの形式で構成情報を記述します。</p>
-
-<p><img src="01-21.png" alt="" /></p>
-
-<h4 id="4-2-1-スタックの作成">4-2-1. スタックの作成</h4>
-<p>Resource Managerを利用するには、構成情報を記述したテキストファイルを作成し、それらをzipアーカイブにまとめておく必要があります。Resource Managerアーカイブは既に作成済みです。<br />
-<a href="https://github.com/oracle-japan/oke-handson-prerequisites/releases/tag/v1.4">こちら</a>からダウンロードしてください。</p>
-
-<p><img src="01-02.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">oke-handson-prerequisites.zip</code>というファイルをダウンロードしてください。</p>
-
-<p>次に、画面左上のハンバーガーメニューを展開し、<code class="language-plaintext highlighter-rouge">開発者サービス</code>⇒<code class="language-plaintext highlighter-rouge">リソース・マネージャ</code>を選択します。</p>
-
-<p><img src="01-05.png" alt="" /></p>
-
-<p>リソース・マネージャの画面で、<code class="language-plaintext highlighter-rouge">スタックの作成</code>をクリックします。</p>
-
-<p><img src="01-06.png" alt="" /></p>
-
-<p>スタックはリソース・マネージャ サービスによって管理されるTerraformコマンドの実行環境です。ここでResource Managerアーカイブをアップロードしてスタックを作成することで、アップロードされたTerraformテンプレートの実行環境がクラウド上に構成されます。</p>
-
-<p>スタックの作成画面で、<code class="language-plaintext highlighter-rouge">マイ構成</code>を選択し、<code class="language-plaintext highlighter-rouge">.zipファイルをここにドロップします または 参照</code>と表示された領域にダウンロードしたResource Managerアーカイブをドロップし、下部にある<code class="language-plaintext highlighter-rouge">TERRAFORMのバージョン</code>を<code class="language-plaintext highlighter-rouge">1.0.x</code>に変更します。<br />
-その後<code class="language-plaintext highlighter-rouge">次</code>をクリックします。</p>
-
-<p><img src="01-07.png" alt="" /></p>
-
-<p><img src="01-07-01.png" alt="" /></p>
-
-<p>Resource Managerが自動的に各環境毎の<code class="language-plaintext highlighter-rouge">TENANCY_OCID</code>と<code class="language-plaintext highlighter-rouge">COMPARTMENT_OCID</code>と<code class="language-plaintext highlighter-rouge">Region</code>の変数に適切な値を投入します。変数が投入されていることを確認し、<code class="language-plaintext highlighter-rouge">次</code>をクリックします。</p>
-
-<p><img src="01-08.png" alt="" /></p>
-
-<p class="notice--info"><strong>リージョンについて</strong><br />
-Oracle Cloud Infrastructureは、北米、東京を含む多数のデータセンターを利用可能です。ここではアカウント作成時に設定されたホームリージョンのまま、手順を進めていきます。<br />
-<a href="https://docs.oracle.com/cd/E97706_01/Content/General/Concepts/regions.htm">リージョンと可用性ドメイン</a></p>
-
-<p>入力内容の確認画面が表示されますので、<code class="language-plaintext highlighter-rouge">作成</code>をクリックしてスタックの作製を実行します。</p>
-
-<p><img src="01-09.png" alt="" /></p>
-
-<p>スタックの作製が完了すると、作成済みのスタックの詳細画面が表示されます。</p>
-
-<p><img src="01-10.png" alt="" /></p>
-
-<h4 id="4-2-2-ジョブの実行">4-2-2. ジョブの実行</h4>
-<p>それでは実際にスタックを実行して環境の構成を行っていきます。</p>
-
-<p>スタックの詳細画面で<code class="language-plaintext highlighter-rouge">Terraformアクション</code>メニューを展開し<code class="language-plaintext highlighter-rouge">適用</code>をクリックします。</p>
-
-<p><img src="01-11.png" alt="" /></p>
-
-<p>「適用」ダイアログで<code class="language-plaintext highlighter-rouge">適用</code>をクリックします。</p>
-
-<p><img src="01-12.png" alt="" /></p>
-
-<p>これで、クライアント環境の構成とOKEクラスターの作成に必要なジョブが開始されます。</p>
-
-<p>ジョブの完了には数分程度かかりますが、その間、ログに表示される内容を確認してみてください。Resource Managerはクラウドの環境内でTerraformを実行しており、その結果として標準出力に出力される内容がログに表示されます。</p>
-
-<p><img src="01-13.png" alt="" /></p>
-
-<p>ジョブの状態が「成功」になったら、正常にジョブが完了しています。</p>
-
-<p><img src="01-14.png" alt="" /></p>
-
-<h3 id="4-3-cli実行環境にログインする">4-3. CLI実行環境にログインする</h3>
-<p>ジョブの実行が完了したら、実際にCLIの実行環境に接続してみましょう。画面左下にある<code class="language-plaintext highlighter-rouge">出力</code>をクリックしてください。</p>
-
-<p><img src="01-15.png" alt="" /></p>
-
-<p>ここでは、ジョブを実行した結果作られたリソースに関連する情報を、確認することができます。ここまで正常に完了していれば、<code class="language-plaintext highlighter-rouge">oke-client</code>と<code class="language-plaintext highlighter-rouge">private_key_pem</code>という情報が表示されているはずです。これらは、それぞれCLI実行環境のIPアドレスとSSH秘密鍵です。</p>
-
-<p><img src="01-16.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">oke-client</code>は、値をテキストファイルにコピー＆ペーストするなどして控えておいてください。</p>
-
-<p><code class="language-plaintext highlighter-rouge">private_key_pem</code>の値は、<code class="language-plaintext highlighter-rouge">コピー</code>という部分をクリックするとクリップボードに値が保存されます。こちらは、新たにテキストエディタを起動してペーストし、「privatekey.pem」というファイル名で保存しておいてください。</p>
-
-<p><img src="01-17.png" alt="" /></p>
-
-<p>次に、デスクトップにあるTera Termのショートカットアイコンをダブルクリックし、Tera Termを起動します。「Tera Term: 新しい接続」というダイアログが表示されたら、<code class="language-plaintext highlighter-rouge">ホスト</code>に上の手順で控えたIPアドレスを入力し、<code class="language-plaintext highlighter-rouge">OK</code>をクリックします。</p>
-
-<p><img src="01-18.png" alt="" /></p>
-
-<p>「セキュリティ警告」というダイアログが表示されたら、何も変更せずに<code class="language-plaintext highlighter-rouge">続行</code>をクリックします。</p>
-
-<p><img src="01-19.png" alt="" /></p>
-
-<p>「SSH認証」というダイアログが表示されたら、以下のように値を設定して<code class="language-plaintext highlighter-rouge">OK</code>をクリックします。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>項目</th>
-      <th>入力値</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>ユーザー名</td>
-      <td>opc</td>
-    </tr>
-    <tr>
-      <td>ラジオボックスの選択</td>
-      <td><code class="language-plaintext highlighter-rouge">RSA/DSA/EDCSA/ED25519を使う</code>をオンにし、上の手順で保存した秘密鍵のファイルを(privatekey.pem)を選択する。</td>
-    </tr>
-    <tr>
-      <td>（上記以外）</td>
-      <td>（デフォルトのまま）</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><img src="01-20.png" alt="" /></p>
-
-<p>CLI実行環境への接続が成功すると、以下のようなコンソール出力が表示されます。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Last login: Fri Aug  2 04:21:15 2019 from 156.151.8.3
-[opc@oke-client ~]$
-</code></pre></div></div>
-
-<p>必要なCLIはこの時点でインストール済みですので、例えば以下のようなコマンドを実行することが可能です。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>kubectl version --client --short
-</code></pre></div></div>
-
-<p>以下のような結果となれば、kubectlは正常にインストールされています。</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Client Version: vX.XX.X
-</code></pre></div></div>
-
-<p>上記は、kubectl（Kubernetesの管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。</p>
-
-<p>以上で、CLI実行環境の作成は完了です。</p>
-
-<h3 id="4-4-oci-cliのセットアップ">4-4. OCI CLIのセットアップ</h3>
-<p>OKEクラスターを利用するためのOCI CLI環境をセットアップします。</p>
-
-<h4 id="4-4-1-テナンシのocidの確認">4-4-1. テナンシのOCIDの確認</h4>
-<p>OCI CLIのセットアップでは、CLIをどのテナンシのユーザーアカウントとして実行するかを設定するために、テナンシ、ユーザーのOCID（識別子）が必要になります。はじめに、このテナンシのOCIDを取得しておきます。</p>
-
-<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code class="language-plaintext highlighter-rouge">テナンシ:&lt;テナンシ名&gt;</code>をクリックします。</p>
-
-<p><img src="03-01-1.png" alt="" /></p>
-
-<p>テナンシ情報<code class="language-plaintext highlighter-rouge">OCID</code>の右側にある<code class="language-plaintext highlighter-rouge">コピー</code>をクリックすると、テナンシOCIDがクリップボードにコピーされます。</p>
-
-<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
-
-<p><img src="03-01-2.png" alt="" /></p>
-
-<h4 id="4-4-2-ユーザーのocidの確認">4-4-2. ユーザーのOCIDの確認</h4>
-<p>次にテナンシのOCIDを取得しておきます。
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code class="language-plaintext highlighter-rouge">ユーザ名</code>(oracleidentitycloudservice/<ユーザ名>)をクリックします。</ユーザ名></p>
-
-<p><img src="03-02.png" alt="" /></p>
-
-<p>ユーザ情報が表示されますので、<code class="language-plaintext highlighter-rouge">OCID</code>の右側にある<code class="language-plaintext highlighter-rouge">コピー</code>をクリックすると、ユーザOCIDがクリップボードにコピーされます。</p>
-
-<p><img src="03-03.png" alt="" /></p>
-
-<p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
-
-<h4 id="4-4-3-oci-cliのセットアップ">4-4-3. OCI CLIのセットアップ</h4>
-<p>それでは、OCI CLIのセットアップを行います。
-<a href="#3-1-cloud-shellを起動する">Cloud Shellを起動</a>し、以下
-のコマンドを実行してください。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>oci setup config
-</code></pre></div></div>
-
-<p class="notice--info"><strong>Cloud Shell以外をご利用の方</strong><br />
-別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(<code class="language-plaintext highlighter-rouge">/home/opc</code>)からコマンドを実行してください。</p>
-
-<p>セットアップをおこなうためのインタラクションが開始されますので、提示される質問に対して、下表のように入力してください。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>質問</th>
-      <th>応答操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Enter a location for your config [/home/opc/.oci/config]</td>
-      <td>なにも入力せず<code class="language-plaintext highlighter-rouge">[Return]</code></td>
-    </tr>
-    <tr>
-      <td>Enter a user OCID</td>
-      <td>先の手順で確認したユーザーのOCIDを入力</td>
-    </tr>
-    <tr>
-      <td>Enter a tenancy OCID</td>
-      <td>先の手順で確認したテナンシのOCIDを入力</td>
-    </tr>
-    <tr>
-      <td>Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, …)</td>
-      <td>CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力</td>
-    </tr>
-    <tr>
-      <td>Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]</td>
-      <td><code class="language-plaintext highlighter-rouge">Y + [Return]</code></td>
-    </tr>
-    <tr>
-      <td>Enter a directory for your keys to be created [/home/opc/.oci]</td>
-      <td>なにも入力せず<code class="language-plaintext highlighter-rouge">[Return]</code></td>
-    </tr>
-    <tr>
-      <td>Enter a name for your key [oci_api_key]</td>
-      <td>なにも入力せず<code class="language-plaintext highlighter-rouge">[Return]</code></td>
-    </tr>
-    <tr>
-      <td>Enter a passphrase for your private key (empty for no passphrase)</td>
-      <td>なにも入力せず<code class="language-plaintext highlighter-rouge">[Return]</code></td>
-    </tr>
-  </tbody>
-</table>
-
-<p>CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめOracle Cloud上のユーザーアカウントに設定しておく必要があります。</p>
-
-<p>上記のOCI CLIのセットアップの中で鍵ペアが作成されていますので、公開鍵をユーザーアカウントに設定していきます。</p>
-
-<p>まず、Tera Termで以下のコマンドを実行し、公開鍵を表示しておきます。</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat ~/.oci/oci_api_key_public.pem
-</code></pre></div></div>
-
-<p>続いてコンソールに移り、ユーザー詳細画面へ遷移します。</p>
-
-<p><img src="03-02.png" alt="" /></p>
-
-<p>ユーザーの詳細画面をスクロールして<code class="language-plaintext highlighter-rouge">APIキー</code>をクリックします。</p>
-
-<p><img src="03-05-01.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">公開キーの追加</code>をクリックします。</p>
-
-<p><img src="03-05.png" alt="" /></p>
-
-<p>「公開キーの追加」ダイアログの入力欄が表示されます。<br />
-今回は、<code class="language-plaintext highlighter-rouge">公開キーの貼付け</code>をクリックし、先ほとTera Termに表示した公開鍵をペーストし、<code class="language-plaintext highlighter-rouge">追加</code>ボタンをクリックします（<code class="language-plaintext highlighter-rouge">-----BEGIN PUBLIC KEY-----</code>と<code class="language-plaintext highlighter-rouge">-----END PUBLIC KEY-----</code>の行も含めてペーストします）。<br />
-公開キーをファイルで登録したい場合には、<code class="language-plaintext highlighter-rouge">公開キー・ファイルの選択</code>をクリックし、公開キーを登録します。</p>
-
-<p><img src="03-16.png" alt="" /></p>
-
-<p>以上でOCI CLIのセットアップは完了です。</p>
-
         
       </section>
 
@@ -858,7 +585,7 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-10T16:15:46+09:00">April 10, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-10T16:24:26+09:00">April 10, 2025</time></p>
 
       </footer>
 

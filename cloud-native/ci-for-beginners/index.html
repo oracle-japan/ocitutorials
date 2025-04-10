@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-10T16:15:46+09:00">
+  <meta property="article:published_time" content="2025-04-10T16:24:26+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI Container Instances をプロビジョニングしよう">
     <meta itemprop="description" content="Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、Container InstancesにWordPressをインストールします。まずはここから始めましょう。">
-    <meta itemprop="datePublished" content="2025-04-10T16:15:46+09:00">
+    <meta itemprop="datePublished" content="2025-04-10T16:24:26+09:00">
     
 
     <div class="page__inner-wrap">
@@ -352,138 +352,129 @@
 <h2 id="1oci-container-instancesのプロビジョニング">1.OCI Container Instancesのプロビジョニング</h2>
 <p>ここでは、OCI Container Instancesのプロビジョニングを行います。</p>
 
-<p>ハンバーガーメニューをクリックします。</p>
-
-<p><img src="002.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">開発者サービス</code>-<code class="language-plaintext highlighter-rouge">コンテナ・インスタンス</code>を選択します。</p>
+<p>ハンバーガーメニューをクリックしますし、<code class="language-plaintext highlighter-rouge">開発者サービス</code>-<code class="language-plaintext highlighter-rouge">コンテナ・インスタンス</code>を選択します。</p>
 
 <p><img src="003.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">Create container instance</code>ボタンをクリックします。</p>
+<p><code class="language-plaintext highlighter-rouge">コンテナ・インスタンスの作成</code>ボタンをクリックします。</p>
 
 <p><img src="004.png" alt="" /></p>
 
 <p>以下画像赤枠の箇所を変更します。それ以外はデフォルト値です。</p>
 
 <ul>
-  <li>「Name」：container-instance-wordpress</li>
+  <li>「Name」：<code class="language-plaintext highlighter-rouge">container-instance-wordpress</code></li>
 </ul>
 
 <p><img src="005.png" alt="" /></p>
 
-<p>Networkingの下にある<code class="language-plaintext highlighter-rouge">Show advanced options</code>をクリックします。
-「Container restart policy」を以下の設定にします。</p>
+<p><code class="language-plaintext highlighter-rouge">ネットワーキング</code>で<code class="language-plaintext highlighter-rouge">新規仮想クラウド・ネットワークの作成</code>を選択します。</p>
 
-<ul>
-  <li>「Container restart policy」：always</li>
-</ul>
+<p class="notice--info"><strong>ネットワーキングについて</strong><br />
+VCNを既に作成されている方は、既存VCNが選択されていることもあります。そちらをご利用頂いても構いません。</p>
 
 <p><img src="006.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
+<p>Networkingの下にある<code class="language-plaintext highlighter-rouge">拡張オプションの表示</code>をクリックします。
+「Container restart policy」を以下の設定し、<code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
+
+<ul>
+  <li>「コンテナ再起動ポリシー」：常時</li>
+</ul>
 
 <p><img src="007.png" alt="" /></p>
 
-<p>WordPress のデータベースを構成する MySQL イメージを設定します。最初に、<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">db</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+<p>WordPress のデータベースを構成する MySQL イメージを設定します。最初に、<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">db</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">イメージの選択</code>ボタンをクリックします。</p>
 
 <ul>
-  <li>「Name オプション」：db</li>
+  <li>「Name オプション」：<code class="language-plaintext highlighter-rouge">db</code></li>
 </ul>
 
 <p><img src="008.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">External registry</code>タブを選択して、以下の設定を行います。</p>
+<p><code class="language-plaintext highlighter-rouge">外部レジストリ</code>タブを選択して、以下の設定を行い、<code class="language-plaintext highlighter-rouge">イメージの選択</code>ボタンをクリックします。</p>
 
 <ul>
-  <li>「Registry hostname」：docker.io</li>
-  <li>「Repository」：mysql</li>
-  <li>「Tag オプション」：8.0.23</li>
+  <li>「Registry hostname」：<code class="language-plaintext highlighter-rouge">docker.io</code></li>
+  <li>「Repository」：<code class="language-plaintext highlighter-rouge">mysql</code></li>
+  <li>「Tag オプション」:<code class="language-plaintext highlighter-rouge">8.0.23</code></li>
 </ul>
 
-<p>タブですが、<code class="language-plaintext highlighter-rouge">OCI Container Registry</code>は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。<code class="language-plaintext highlighter-rouge">External registry</code>は、パブリックサービスなどのコンテナレジストリを設定できます。
+<p class="notice--info"><strong>タブについて</strong><br />
+<code class="language-plaintext highlighter-rouge">OCIコンテナ・レジストリ</code>は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。<code class="language-plaintext highlighter-rouge">外部レジストリ</code>は、パブリックサービスなどのコンテナレジストリを設定できます。
 ここでは、 Docker Hub にある MySQL の公式コンテナイメージを使用します。</p>
 
 <p><img src="009.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
-
-<p><img src="010.png" alt="" /></p>
+<p><code class="language-plaintext highlighter-rouge">イメージの選択</code>ボタンをクリックします。</p>
 
 <p>以下の環境変数を設定します。WordPress 用のデータベース設定です。最初に、「+ Another variable」ボタンを3回クリックして、その後設定値を入力します。</p>
 
 <ul>
-  <li>「MYSQL_ROOT_PASSWORD」：somewordpress</li>
-  <li>「MYSQL_DATABASE」：wordpress</li>
-  <li>「MYSQL_USER」：wordpress</li>
-  <li>「MYSQL_PASSWORD」：wordpress</li>
+  <li>「MYSQL_ROOT_PASSWORD」：<code class="language-plaintext highlighter-rouge">somewordpress</code></li>
+  <li>「MYSQL_DATABASE」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
+  <li>「MYSQL_USER」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
+  <li>「MYSQL_PASSWORD」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
 </ul>
 
-<p>次に<code class="language-plaintext highlighter-rouge">Show advanced options</code>テキストをクリックします。</p>
+<p>次に<code class="language-plaintext highlighter-rouge">拡張オプションの表示</code>テキストをクリックします。</p>
 
 <p><img src="011.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">Resources</code>タブでは、コンテナで消費されるリソース量を指定できます。ここでは、デフォルト値とします。次に<code class="language-plaintext highlighter-rouge">Startup options</code>タブを選択します。</p>
+<p><code class="language-plaintext highlighter-rouge">起動オプション</code>タブを選択します。</p>
+
+<p class="notice--info"><strong><code class="language-plaintext highlighter-rouge">リソース</code>タブについて</strong><br />
+ここでは、各コンテナで消費されるリソース量を指定できます。</p>
+
+<p>MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。
+※<code class="language-plaintext highlighter-rouge">default</code>の前はハイフン2個です。</p>
+
+<ul>
+  <li>「Command arguments」： <code class="language-plaintext highlighter-rouge">--default-authentication-plugin=mysql_native_password</code></li>
+</ul>
 
 <p><img src="012.png" alt="" /></p>
 
-<p>MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。</p>
-
-<ul>
-  <li>「Command arguments」： --default-authentication-plugin=mysql_native_password</li>
-</ul>
-
-<p>※defaultの前はハイフン2個です。</p>
-
-<p><img src="013.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">+ Another container</code> ボタンをクリックします。</p>
+<p><code class="language-plaintext highlighter-rouge">+ 別のコンテナ</code> ボタンをクリックします。</p>
 
 <p><img src="014.png" alt="" /></p>
 
-<p>次は、wordpress アプリケーションのコンテナイメージの設定を行います。<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">app</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
+<p>次は、wordpress アプリケーションのコンテナイメージの設定を行います。<code class="language-plaintext highlighter-rouge">Name オプション</code>を<code class="language-plaintext highlighter-rouge">app</code>と入力します。そして、<code class="language-plaintext highlighter-rouge">イメージの選択</code>ボタンをクリックします。</p>
 
 <ul>
-  <li>「Name オプション」：app</li>
+  <li>「Name オプション」：<code class="language-plaintext highlighter-rouge">app</code></li>
 </ul>
 
 <p><img src="015.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">External registry</code>タブを選択して、以下の設定を行います。WordPress は latest のコンテナイメージを利用するため、タグの指定はしません。</p>
+<p><code class="language-plaintext highlighter-rouge">外部レジストリ</code>タブを選択して、以下の設定を行います。WordPress は latest のコンテナイメージを利用するため、タグの指定はしません。</p>
 
 <ul>
-  <li>「Registry hostname」：docker.io</li>
-  <li>「Repository」：wordpress</li>
+  <li>「Registry hostname」：<code class="language-plaintext highlighter-rouge">docker.io</code></li>
+  <li>「Repository」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
 </ul>
 
 <p><code class="language-plaintext highlighter-rouge">Select image</code>ボタンをクリックします。</p>
 
 <p><img src="016.png" alt="" /></p>
 
-<p>以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、<code class="language-plaintext highlighter-rouge">+ Another variable</code>ボタンを3回クリックして、その後設定値を入力します。</p>
+<p>以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、<code class="language-plaintext highlighter-rouge">+ Another variable</code>ボタンを3回クリックして、その後設定値を入力します。<br />
+<code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
 
 <ul>
-  <li>「WORDPRESS_DB_HOST」：127.0.0.1</li>
-  <li>「WORDPRESS_DB_USER」：wordpress</li>
-  <li>「WORDPRESS_DB_PASSWORD」：wordpress</li>
-  <li>「WORDPRESS_DB_NAME」：wordpress</li>
+  <li>「WORDPRESS_DB_HOST」：<code class="language-plaintext highlighter-rouge">127.0.0.1</code></li>
+  <li>「WORDPRESS_DB_USER」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
+  <li>「WORDPRESS_DB_PASSWORD」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
+  <li>「WORDPRESS_DB_NAME」：<code class="language-plaintext highlighter-rouge">wordpress</code></li>
 </ul>
 
 <p><img src="017.png" alt="" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">次</code>ボタンをクリックします。</p>
-
-<p><img src="018.png" alt="" /></p>
-
-<p>設定内容を確認します。</p>
-
-<p><img src="019.png" alt="" /></p>
-
-<p><code class="language-plaintext highlighter-rouge">Create</code>ボタンをクリックします。</p>
+<p>設定内容を確認し、<code class="language-plaintext highlighter-rouge">作成</code>ボタンをクリックします。</p>
 
 <p><img src="020.png" alt="" /></p>
 
-<p>設定した app と db のコンテナが作成されます。</p>
+<p>設定した container-instance-wordpress インスタンスが作成されます。</p>
 
 <p><img src="021.png" alt="" /></p>
 
@@ -616,7 +607,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-10T16:15:46+09:00">April 10, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-10T16:24:26+09:00">April 10, 2025</time></p>
 
       </footer>
 
