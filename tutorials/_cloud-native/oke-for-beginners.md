@@ -172,17 +172,15 @@ OCIRはOracleが提供するコンテナレジストリのマネージドサー�
 
 OCIRにdockerコマンドからアクセスするため、OCIのユーザーアカウントに必要な設定をしていきます。
 
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(oracleidentitycloudservice/<ユーザ名>)をクリックします。
+OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(図の赤枠部分)をクリックします。
 
 ![](3.2-1.png)
 
 下にスクロールした左側にある`認証トークン`をクリックして、トークンの作成画面に遷移します。
 
-![](3.3.png)
-
 `トークンの生成`ボタンをクリックします。
     
-![](3.4.png)
+![](3.3.png)
 
 [Geterate Token]ダイアログで、トークンの用途を説明する情報（任意の文字列）を入力し、`トークンの生成`ボタンをクリックします。
 
@@ -229,34 +227,9 @@ OCIRのリポジトリ名はテナンシで一意になります。
 ### 2.3. OCIRにコンテナイメージをプッシュする
 それでは、コンテナイメージをOCIRにプッシュします。
 
-まず、`docker login`コマンドでOCIRにログインします。ログイン先のレジストリを指定するにあたり、ホストされているデータセンターリージョンに合わせて適切なリージョンコードを指定する必要があります。
+まず、`docker login`コマンドでOCIRにログインします。ログイン先のレジストリを指定するにあたり、ホストされているデータセンターリージョンに合わせて適切なリージョン識別子を指定する必要があります。
 
-ご自身の環境に合わせて、下表から適切なリージョンコードを見つけてください。
-
-リージョン|リージョンコード
--|-
-ap-tokyo-1|nrt
-ap-osaka-1|kix
-ap-melbourne-1|mel
-us-ashburn-1|iad
-us-phoenix-1|phx
-ap-mumbai-1|bom
-ap-seoul-1|icn
-ap-sydney-1|syd
-ca-toronto-1|yyz
-ca-montreal-1|yul
-eu-frankfurt-1|fra
-eu-zurich-1|zrh
-sa-saopaulo-1|gru
-uk-london-1|lhr
-sa-santiago-1|scl
-ap-hyderabad-1|hyd
-eu-amsterdam-1|ams
-me-jeddah-1|jed
-ap-chuncheon-1|yny
-me-dubai-1|dxb
-uk-cardiff-1|cwl
-us-sanjose-1|sjc
+リージョン識別子は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm)をご確認ください。
 
 次に、OCIRにログインするためにオブジェクト・ストレージ・ネームスペースを確認します。
 
@@ -275,15 +248,15 @@ us-sanjose-1|sjc
 
 次に、以下のコマンドでOCIRにログインします。
 
-    docker login [リージョンコード].ocir.io
+    docker login ocir.[リージョン識別子].oci.oraclecloud.com
 
 例えば、東京リージョン(nrt)をご利用の場合は、以下のコマンドでログインします。
 
-    docker login nrt.ocir.io
+    docker login ocir.ap-tokyo-1.oci.oraclecloud.com
 
 ユーザー名、パスワードの入力を求めるメッセージが表示されますので、以下のように入力してください。
 
-- ユーザー名: [オブジェクト・ストレージ・ネームスペース]/[ユーザー名] （例: nrzftilbveen/oracleidentitycloudservice/yoi.naka.0106@gmail.com）
+- ユーザー名: [オブジェクト・ストレージ・ネームスペース]/[ユーザー名] （例: nrzftilbveen/yoi.naka.0106@gmail.com）
 - パスワード: [2.1.で作成したトークン文字列]
 
 **パスワードについて**  
@@ -300,28 +273,28 @@ Login Succeeded
 
 続いて、OCIRの形式に合わせてコンテナイメージのタグを更新します。`docker tag`コマンドを実行してくさい。
 
-    docker image tag [リポジトリ名]/cowweb:v1.0 [リージョンコード].ocir.io/オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
+    docker image tag [リポジトリ名]/cowweb:v1.0 ocir.[リージョン識別子].oci.oraclecloud.com/オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
-[リージョンコード]と[オブジェクト・ストレージ・ネームスペース]は、これまでの手順で指定したものと同じものを指定します。リポジトリ名には`docker build`のときにしてしたものと同じ文字列を指定してください。
+[リージョン識別子]と[オブジェクト・ストレージ・ネームスペース]は、これまでの手順で指定したものと同じものを指定します。リポジトリ名には`docker build`のときにしてしたものと同じ文字列を指定してください。
 
 例えば、以下のように指定します。
 
-    docker image tag oke-handson/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
+    docker image tag oke-handson/cowweb:v1.0 ocir.ap-tokyo-1.oci.oraclecloud.com/nrzftilbveen/oke-handson/cowweb:v1.0
 
 この操作によって、コンテナイメージにプッシュ先のレジストリを指定する情報を追加しています。これを行わない場合、コンテナイメージはデフォルトのレジストリが指定されたものとみなされ、Docker社が提供するDocker Hubというレジストリが利用されてしまいます。
 
 これで準備が整いましたので、実際にOCIRにイメージをプッシュします。以下のコマンドを実行してください。
 
-    docker image push [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
+    docker image push ocir.[リージョン識別子].oci.oraclecloud.com/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
 例えば、以下のように指定します。
 
-    docker image push nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
+    docker image push ocir.ap-tokyo-1.oci.oraclecloud.com/nrzftilbveen/oke-handson/cowweb:v1.0
 
 以下のような実行結果となれば、プッシュが成功しています。
 
 ```
-The push refers to repository [nrt.ocir.io/nrzftilbveen/oke-handson/cowweb]
+The push refers to repository [ocir.ap-tokyo-1.oci.oraclecloud.com/nrzftilbveen/oke-handson/cowweb]
 d07a2053e8fb: Pushed
 93ed7a751af8: Pushed
 20dd87a4c2ab: Pushed
@@ -345,11 +318,9 @@ ea75a4331573: Layer already exists
 
 それでは、OCIRにコンテナが保存されていることを確認してみましょう。OCIコンソールの画面で左上のメニューを展開し、`開発者サービス`－`コンテナ・レジストリ`をクリックします。
 
-![](3.7.png)
+![](2.2-1.png)
 
 リポジトリの一覧が表示されます。この中に、指定した名前のコンテナがあることを確認してください。
-
-![](3.8-2.png)
 
 これでレジストリへのコンテナイメージの格納は完了しました。
 以上で、OCIRへのコンテナイメージの格納は完了です。
@@ -398,11 +369,11 @@ spec:
 
 22行目には、実際にクラスター上で動かすコンテナイメージが指定されています。現在の記述内容は、ご自身環境に合わせた記述にはなっていませんので、この部分を正しい値に修正してください。具体的には、2.2.で`docker image push`コマンドを実行する際に指定した文字列と同じ内容に修正してください。
 
-    [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
+    ocir.[リージョン識別子].oci.oraclecloud.com/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 
 例えば、以下のような文字列となります。
 
-    nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
+    ocir.ap-tokyo-1.oci.oraclecloud.com/nrzftilbveen/oke-handson/cowweb:v1.0
 
 次に、cowweb-service.yamlというmanifestファイルの内容を確認してみます。
 
