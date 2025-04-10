@@ -90,10 +90,10 @@ WordPress のデータベースを構成する MySQL イメージを設定しま
 ここでは、各コンテナで消費されるリソース量を指定できます。
 {: .notice--info}
 
-MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。
+MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証方式がデフォルトとなりました。ここでは、従来の認証方式のプラグイン mysql_native_password に変更します。  
 ※`default`の前はハイフン2個です。
 
-- 「Command arguments」： `--default-authentication-plugin=mysql_native_password`
+- 「コマンド引数」： `--default-authentication-plugin=mysql_native_password`
 
 ![](012.png)
 
