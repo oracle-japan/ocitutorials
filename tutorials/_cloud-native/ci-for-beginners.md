@@ -64,14 +64,29 @@ WordPress のデータベースを構成する MySQL イメージを設定しま
 - 「Repository」：`mysql`
 - 「Tag オプション」:`8.0.23`
 
+![](009.png)
+
+`イメージの選択`ボタンをクリックします。
+
 **タブについて**  
 `OCIコンテナ・レジストリ`は、OCI のコンテナレジストリ（OCIR）に格納されているイメージを設定できます。`外部レジストリ`は、パブリックサービスなどのコンテナレジストリを設定できます。
 ここでは、 Docker Hub にある MySQL の公式コンテナイメージを使用します。
 {: .notice--info}
 
-![](009.png)
+{% capture notice %}**集合ハンズオンについて**  
+Docker Hubにはレート制限があり、集合ハンズオンなどで一斉に利用するとPullできない方が発生する可能性があります。
+その場合は、OCIRに事前に格納しておいたイメージをご活用ください。
 
-`イメージの選択`ボタンをクリックします。
+- 「Registry hostname」：`ocir.ap-tokyo-1.oci.oraclecloud.com`
+- 「Repository」：`orasejapan/handson/mysql`
+- 「Tag オプション」:`8.0.23`
+
+![](045.png)
+
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 以下の環境変数を設定します。WordPress 用のデータベース設定です。最初に、「+ Another variable」ボタンを3回クリックして、その後設定値を入力します。
 
@@ -112,9 +127,23 @@ MySQL 8.04 以降、caching_sha2_password プラグインを利用した認証�
 - 「Registry hostname」：`docker.io`
 - 「Repository」：`wordpress`
 
-`Select image`ボタンをクリックします。
+`イメージの選択`ボタンをクリックします。
 
 ![](016.png)
+
+{% capture notice %}**集合ハンズオンについて**  
+Docker Hubにはレート制限があり、集合ハンズオンなどで一斉に利用するとPullできない方が発生する可能性があります。
+その場合は、OCIRに事前に格納しておいたイメージをご活用ください。
+
+- 「Registry hostname」：`ocir.ap-tokyo-1.oci.oraclecloud.com`
+- 「Repository」：`orasejapan/handson/wordpress`
+
+![](046.png)
+
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 以下の環境変数を設定します。WordPress アプリケーションが MySQL に接続するために必要な設定です。最初に、`+ Another variable`ボタンを3回クリックして、その後設定値を入力します。  
 `次`ボタンをクリックします。

@@ -100,6 +100,17 @@ Dockerfileの内容を見ると、FROMで始まる行が2つあることがわ�
 
 以下のように、`Successfully tagged`のメッセージで処理が終了していれば、イメージのビルドは完了です。
 
+{% capture notice %}**集合ハンズオンについて**  
+Docker Hubにはレート制限があり、集合ハンズオンなどで一斉に利用するとPullできない方が発生する可能性があります。
+その場合は、OCIRに事前に格納しておいたベースイメージを利用するDockerfileがありますので、こちらをご活用ください。
+```sh
+docker image build -t [リポジトリ名]/cowweb:v1.0 -f Dockerfile.ocir .
+```
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
+
 {% capture notice %}**docker image build時のベースイメージの選択について**  
 docker image build時のベースイメージについて選択を求められる場合があります。  
 その場合は以下の通り、docker.ioのレジストリを選択してください。
