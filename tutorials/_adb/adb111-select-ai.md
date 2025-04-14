@@ -29,7 +29,7 @@ Select AIで大規模言語モデル(LLM)を使用することで、ユーザー
 
 - [101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)を参考に、ADBインスタンスが作成済みであること
 - [104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/)を参考に、SQL Developerを使ってADBに接続出来ること
-- OCI生成AIサービスを使用可能な、Chicagoリージョン、Frankfurtリージョン、Londonリージョン、Sao Pauloリージョンのいずれかをホーム・リージョン、若しくはサブスクライブしてあること。詳しくは、[Pretrained Foundational Models in Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#)をご確認ください。
+- OCI生成AIサービスを使用可能なOsakaリージョン、Chicagoリージョン、Frankfurtリージョン、Londonリージョン、Sao Pauloリージョンのいずれかをホーム・リージョン、若しくはサブスクライブしてあること。詳しくは、[Pretrained Foundational Models in Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#)をご確認ください。
 
 
 <br>
@@ -217,6 +217,7 @@ DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、AIプロファ�
 - **credential_name**：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）
 - **model**：cohere.command-r-08-2024（プロバイダーをOCIとし、モデルを指定しない場合は、meta.llama-3-70b-instructが使用されます）
 - **oci_apiformat**：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）
+- **region**: ap-osaka-1（このregionパラメータを指定することで、指定したリージョンのOCI GenAIサービスを利用します。今回は大阪リージョンを使用します。指定しない場合、デフォルトではChicagoリージョンのエンドポイントが使用されます。）
 - **object_list**：このプロファイルで使用するスキーマ・オブジェクトの所有者（本チュートリアルではselect_ai_user）とオブジェクト名（本チュートリアルではhighschools_view）を指定
 
 ```sql
@@ -228,6 +229,7 @@ BEGIN
             "credential_name": "OCI_GENAI_CRED",
             "model":"cohere.command-r-08-2024",
             "oci_apiformat":"COHERE",
+            "region": "ap-osaka-1",
             "object_list": [
                     {"owner": "select_ai_user", "name": "highschools_view"}
             ]
@@ -333,6 +335,7 @@ BEGIN
             "credential_name": "OCI_GENAI_CRED",
             "model":"cohere.command-r-08-2024",
             "oci_apiformat":"COHERE",
+            "region": "ap-osaka-1",
             "comments":"true", 
             "object_list": [
                     {"owner": "select_ai_user", "name": "highschools_view"}
