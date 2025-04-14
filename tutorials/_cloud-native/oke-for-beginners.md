@@ -170,12 +170,12 @@ Successfully tagged oke-handson/cowweb:v1.0
 
     docker image ls
 
-```
-REPOSITORY           TAG                     IMAGE ID            CREATED             SIZE
-oke-handson/cowweb   v1.0                    a328bfaffb52        4 minutes ago       428MB
-<none>               <none>                  042346419526        5 minutes ago       505MB
-openjdk              17-jdk-slim             37cb44321d04        4 months ago        408MB
-maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago        425MB
+``` 
+REPOSITORY           TAG                             IMAGE ID            CREATED             SIZE
+oke-handson/cowweb   v1.0                           a328bfaffb52        4 minutes ago       428MB
+<none>               <none>                         042346419526        5 minutes ago       505MB
+openjdk              eclipse-temurin:17-jre         37cb44321d04        4 months ago        408MB
+maven                maven:3.9-eclipse-temurin-17   849a2a2d4242        5 months ago        425MB
 ```
 
 `oke-handson/cowweb`の名前のイメージが作成されていることがわかります。
