@@ -100,11 +100,31 @@ Dockerfileの内容を見ると、FROMで始まる行が2つあることがわ�
 
 以下のように、`Successfully tagged`のメッセージで処理が終了していれば、イメージのビルドは完了です。
 
+{% capture notice %}**docker image build時のベースイメージの選択について**  
+docker image build時のベースイメージについて選択を求められる場合があります。  
+その場合は以下の通り、docker.ioのレジストリを選択してください。
+```sh
+[1/2] STEP 1/7: FROM maven:3.9-eclipse-temurin-17 AS build
+? Please select an image: 
+    container-registry.oracle.com/maven:3.9-eclipse-temurin-17
+  ▸ docker.io/library/maven:3.9-eclipse-temurin-17
+```
+```sh
+[2/2] STEP 1/6: FROM eclipse-temurin:17-jre
+? Please select an image: 
+    container-registry.oracle.com/eclipse-temurin:17-jre
+  ▸ docker.io/library/eclipse-temurin:17-jre
+```
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
+
 ```
 Sending build context to Docker daemon  128.5kB
-Step 1/13 : FROM maven:3.8.4-openjdk-17-slim as build
+Step 1/13 : FROM maven:3.9-eclipse-temurin-17 as build
 Trying to pull repository docker.io/library/maven ... 
-3.8.4-openjdk-17-slim: Pulling from docker.io/library/maven
+maven:3.9-eclipse-temurin-17: Pulling from docker.io/library/maven
 f7a1c6dad281: Pull complete 
 ea8366d5a4a5: Pull complete 
 bff4abe573cd: Pull complete 
@@ -113,7 +133,7 @@ bff4abe573cd: Pull complete
 de879b0c951f: Pull complete 
 ac1236d673e3: Pull complete 
 Digest: sha256:150deb7b386bad685dcf0c781b9b9023a25896087b637c069a50c8019cab86f8
-Status: Downloaded newer image for maven:3.8.4-openjdk-17-slim
+Status: Downloaded newer image for maven:3.9-eclipse-temurin-17
  ---> 849a2a2d4242
 Step 2/13 : WORKDIR /helidon
  ---> Running in 503337c170c7
