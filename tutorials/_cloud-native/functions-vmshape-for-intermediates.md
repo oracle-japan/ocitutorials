@@ -1,11 +1,11 @@
 ---
-title: "Oracle Functionsを利用した仮想マシン (VM) のシェイプ変更"
-excerpt: "Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。"
+title: "OCI Functionsを利用した仮想マシン (VM) のシェイプ変更"
+excerpt: "OCI Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。こちらのハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOCI Functionsを利用して動的に変更する手順を記載します。"
 order: "070"
 tags:
 ---
 
-このハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOracle Functionsを利用して動的に変更する手順を記載します。
+このハンズオンでは、想定したメモリ使用率を超える仮想マシン (VM) のシェイプをOCI Functionsを利用して動的に変更する手順を記載します。
 
 **ハンズオン環境について**  
 このハンズオンでは、動作確認のために意図的にVMのメモリ使用率を上昇させるコマンドを使用します。そのため、商用環境などでは絶対に行わないでください。
@@ -20,7 +20,7 @@ tags:
 
 - 事前環境構築
   - [Fn Projectハンズオン](/ocitutorials/cloud-native/fn-for-beginners/)が完了していること
-  - [Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
+  - [OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-for-beginners/)が完了していること
 
 このハンズオンが完了すると、以下のようなコンテンツが作成されます。
 
@@ -29,7 +29,7 @@ tags:
 1.事前準備
 -------------------
 
-このステップでは、Oracle Functionsから仮想マシン (VM) を操作するための動的グループとポリシーの設定を行います。
+このステップでは、OCI Functionsから仮想マシン (VM) を操作するための動的グループとポリシーの設定を行います。
 
 **動的グループおよびポリシーについて**  
 動的グループを使用すると、Oracle Cloud Infrastructureコンピュータ・インスタンスを(ユーザー・グループと同様に)プリンシパルのアクターとしてグループ化し、ポリシーを作成できます。 
@@ -37,7 +37,21 @@ tags:
 詳細は[動的グループの管理](https://docs.cloud.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)をご確認ください。
 {: .notice--info}
 
-OCIコンソールのハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]⇒[動的グループ]に移動し、「動的グループの作成」をクリックします。
+OCIコンソールのハンバーガーメニューをクリックして、`アイデンティティとセキュリティ`⇒`ドメイン`に移動します。
+
+![](domain.png)
+
+`Default `をクリックします。
+
+![](default.png)
+
+画面左にある`アイデンティティ・ドメイン`の`動的グループ`をクリックします。
+
+![](dyn-group.png)
+
+`動的グループの作成`をクリックします。
+
+![](create-dyn-group-button.png)
 
 以下項目を入力して、「作成」をクリックします。
 
@@ -45,13 +59,15 @@ OCIコンソールのハンバーガーメニューをクリックして、[ア�
   - 説明：動的グループの説明。今回は、`Function Dynamic Group`
   - ルール1：`ALL {resource.type = 'fnfunc', resource.compartment.id = '<compartment-ocid>'}`(compartment.idは各自で使用するコンパートメントOCIDへ変更してください。)
 
-**コンパートメントOCIDについて**  
-[アイデンティティ]⇒[コンパートメント]に移動して、使用するコンパートメント(今回はルートコンパートメント)を開いて、該当OCIDを確認します。
-{: .notice--info}
-
 ![](create-dyn-grp.png)
 
-OCIコンソールのハンバーガーメニューをクリックして、[アイデンティティとセキュリティ]⇒[ポリシー]に移動し、「ポリシーの作成」をクリックします。
+OCIコンソールのハンバーガーメニューをクリックして、`アイデンティティとセキュリティ`⇒`ポリシー`に移動します。
+
+![](policy.png)
+
+`ポリシーの作成`をクリックします。
+
+![](create-policy-button.png)
 
 以下項目を入力して、「作成」をクリックします。
 
@@ -71,22 +87,23 @@ OCIコンソールのハンバーガーメニューをクリックして、[ア�
 
 これで、動的グループの作成とポリシーの作成は完了しました。
 
-2.Oracle Functionsの作成  
+2.OCI Functionsの作成  
 -------------------
 
-このステップでは、仮想マシン (VM) のシェイプを変更するOracle Functionsのデプロイを行います。
+このステップでは、仮想マシン (VM) のシェイプを変更するOCI Functionsのデプロイを行います。
 
-OCIコンソールのハンバーガーメニューをクリックして、[開発者サービス]の[ファンクション]をクリックします。
+OCIコンソールのハンバーガーメニューをクリックして、`開発者サービス`の`ファンクション`をクリックします。
 
-[アプリケーションの作成]をクリックして、次を指定して、「作成」をクリックします。
+`アプリケーションの作成`をクリックして、次を指定して、「作成」をクリックします。
 
 + 名前：アプリケーション名を指定。今回は、`fn-resize-vm`
-+ VCN：Functionを実行するVCNを指定。今回は、[Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
-+ サブネット：Functionを実行するサブネット。今回は、[Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのサブネットを指定。
++ VCN：Functionを実行するVCNを指定。今回は、[OCI Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNを指定。
++ サブネット：Functionを実行するサブネット。今回は、[OCI Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で作成したVCNのサブネットを指定。
++ Shape: FunctionsのCPUアーキテクチャを指定。今回は、`GENERIC_X86`
 
 ![](create-function.png)
 
-[Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。
+[OCI Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)で利用したCloud Shellにログインします。
 
 ワークショップ用のコンテンツをクローニングします。
 
@@ -112,13 +129,15 @@ fn -v deploy --app fn-resize-vm
 
 このステップでは、OCIコンソールを使用してアラームを作成していきます。
 
-OCIコンソールハンバーガーメニューを開きます。[監視および管理]で、[アラーム定義] をクリックします。
+OCIコンソールハンバーガーメニューを開きます。`監視および管理`で、`アラーム定義`をクリックします。
 
 ![](alarm.png)
 
-「アラームの作成」 をクリックします。
+`アラームの作成`をクリックします。
 
-「アラームの作成」 ページの 「アラームの定義」 で、しきい値を設定します。
+![](create-alarm-button.png)
+
+以下のパラメータを入力します。
 
 - アラーム名：アラーム名を指定。今回は`high-memory-utilization-alarm`
 
@@ -138,21 +157,21 @@ OCIコンソールハンバーガーメニューを開きます。[監視およ�
 
 - トリガールール:
 
-    - 演算子:次より大きい
+    - Operator:`greater than`
 
-    - 値:`90`
+    - Value:`90`
 
-    - トリガー遅延分数 :`1`
+    - Trigger delay minutes :`1`
 
 ![image-20200327155521852](create-alarm-02.png)
 
-「Notifications」の**宛先**にファンクションを選択します。
+「Notifications」の**Destination**にファンクションを選択します。
 
-   - 宛先サービス:「Notifications」
+   - Destination service:「Notifications」
 
    - コンパートメント: ご自身のコンパートメントを指定。今回はルートコンパートメントを指定。
 
-   - トピック: 「トピックの作成」 をクリック
+   - トピック: `Create Topic`をクリック
 
      ![](create-alarm-03.png)
      トピックとファンクションを既に作成している場合は、新しいトピックを作成する代わりに、ここでそのトピックを選択できます。
@@ -166,37 +185,18 @@ OCIコンソールハンバーガーメニューを開きます。[監視およ�
      - ファンクション・アプリケーション: `fn-resize-vm`
      
      - ファンクション: `fn-resize-vm`
-     
-       ![](create-alarm-04.png)
 
-「トピックとサブスクリプションの作成」をクリックします。
+`Create topic and subscription`をクリックします。
 
-**トピック**から作成されたトピックを選択して、「アラームの保存」をクリックします。
+![](create-alarm-04.png)
+
+**Define alarm notifications**から作成されたトピックを選択して、`Save alarm`をクリックします。
 
    ![](create-alarm-05.png)
-
-次に、OCIコンソールを使用して、アラームの設定時に作成したトピックにオプションの電子メールサブスクリプションを追加します。
-
-OCIコンソールのハンバーガーメニューを開きます。「開発者サービス」 で、「アプリケーション統合」に移動し、「通知」 をクリックします。
-
-サブスクリプションを追加するトピックの名前をクリックします。今回は先ほど作成した`high-memory-utilization-alarm-topic`を選択します。
-
-トピックの詳細ページで、「サブスクリプションの作成」 をクリックします。
-
-4「サブスクリプションの作成」 ダイアログ ボックスで、電子メール サブスクリプションを設定します。「作成」 をクリックします。
-
-- プロトコル: 「電子メール」 を選択します。
-- 電子メール: 電子メール アドレスを入力します。
-
-![image-20200327160656735](add-subscription.png)
 
 **Notificationについて**  
 Notificationサービスはファンクションや電子メールの他にもHTTPS(カスタムURL)/PagerDuty/Slackに対する通知を行うことができます。
 {: .notice--info}
-
-電子メール サブスクリプションが作成され、指定した電子メールアドレスにサブスクリプションの確認URLが送信されます。サブスクリプションは、確認されるまで 「保留中」になります。
-
-サブスクリプションをアクティブにするためには電子メールアドレスを承認する必要があるので、確認URLのリンクを開いてください。
 
 これで、アラームの作成は完了です。
 
@@ -205,7 +205,7 @@ Notificationサービスはファンクションや電子メールの他にもHT
 
 このステップでは、[Fn Projectハンズオン](/ocitutorials/cloud-native/fn-for-beginners/)で作成したコンピュートインスタンスを利用して動作確認を行います。
 
-現在VMのシェイプを確認します。シェイプは`VM.Standard2.1`になっています。
+現在VMのシェイプを確認します。例えば、以下の例では現状のスペックが`1 OCPU/12GB RAM`になっています。
 
 ![image-20200327161440948](instance-detail-01.png)
 
@@ -290,26 +290,10 @@ Mem:            14G        6.5G        7.6G         16M        288M        7.7G
 Swap:          8.0G          0B        8.0G
 ```
 
-5分～10分程度経つと、メモリ使用率が90%を超えて、アラームメールが送信されます。
+5分～10分程度経つと、メモリ使用率が90%を超えるとFunctionが呼び出され、VMを再起動します。
 
-![](alert-detail.png)
+その後、Functionにより`1 OCPU/1GB RAM`スケールアップされたVMが起動されます。(10程度かかります)
 
-こちらは受信したアラームメールのサンプルです。
-
-![](alart-mail.png)
-
-同時にFunctionが呼び出されて、VMを停止させます。
-
-![](instance-detail-02.png)
-
-VMが停止になりましたら、同じFunctionにより`VM.Standard2.2`のVMが起動されます。(10-15分程度かかります)
-
-![](instance-detail-03.png)
-
-Oracle Notificationサービスを確認しますと、Notificationが実行されたことを確認できます。
-
-![](notification-detail.png)
-
-これで、Oracle Functionsを使用して、VMシェイプの変更に成功しました！
+これで、OCI Functionsを使用して、VMシェイプの変更に成功しました！
 
 お疲れ様でした！
