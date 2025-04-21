@@ -30,8 +30,8 @@ lastmod: "2022-04-06"
 + **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-](/ocitutorials/cloud-native/devops-for-beginners-oke/)**  
     ここでは、Oracle Container Engine for Kubernetes(OKE)を利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
-+ **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-](/ocitutorials/cloud-native/devops-for-beginners-functions/)**  
-    ここでは、Oracle Functionsを利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
++ **[初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OCI Functions編-](/ocitutorials/cloud-native/devops-for-beginners-functions/)**  
+    ここでは、OCI Functionsを利用したCI/CDパイプラインの実装と実行までの手順を記します。【所要時間:約1時間】
 
 <br />
 
@@ -71,7 +71,7 @@ lastmod: "2022-04-06"
 
 <br />
 
-# 4. Oracle Functionsチュートリアル
+# 4. OCI Functionsチュートリアル
 
 ## 初級編
 
@@ -79,31 +79,31 @@ lastmod: "2022-04-06"
     Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。
     このエントリーでは、Fn Projectの環境構築から動作確認までの手順を記します。【所要時間:約30分】
 
-+ **[Oracle Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)**
-    Oracle Functionsは、Oracleが提供するFn Projectのマネージドサービスです。
-    このエントリーでは、Oracle Functions環境構築から動作確認までの手順を記します。【所要時間:約45分】
++ **[OCI Functionsことはじめ](/ocitutorials/cloud-native/functions-for-beginners/)**
+    OCI Functionsは、Oracleが提供するFn Projectのマネージドサービスです。
+    このエントリーでは、OCI Functions環境構築から動作確認までの手順を記します。【所要時間:約45分】
 
-+ **[Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン](/ocitutorials/cloud-native/functions-apigateway-for-beginners/)**
-    OCI API GatewayとOracle Functionsを組み合わせて、 簡単なアプリケーションを開発する手順をご紹介します。【所要時間:約1時間】
++ **[Oracle Cloud Infrasturcture API Gateway + OCI Functionsハンズオン](/ocitutorials/cloud-native/functions-apigateway-for-beginners/)**
+    OCI API GatewayとOCI Functionsを組み合わせて、 簡単なアプリケーションを開発する手順をご紹介します。【所要時間:約1時間】
 
 + **[OCI API Gateway + OCI Functionsを利用したデータベースアクセス](/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/)**
     OCI Functionsからpython-oracledbドライバを利用してOracle Autonomous Transaction Processing(ATP)に接続し、データをCRUD(Create、Read、Update、Delete)する方法について説明します。【所要時間:約1時間】
 
 ## 中級編
 
-+ **[Oracle Functionsを利用したVMシェイプ変更](/ocitutorials/cloud-native/functions-vmshape-for-intermediates)**
++ **[OCI Functionsを利用したVMシェイプ変更](/ocitutorials/cloud-native/functions-vmshape-for-intermediates)**
     Fn Projectは、開発者エクスペリエンス重視なFaaSを構築するためのプラットフォームです。
     このエントリーでは、Fn Projectの環境構築から動作確認までの手順を記します。【所要時間:約30分】
 
-+ **[Oracle Functionsを利用したATPとのREST連携](/ocitutorials/cloud-native/functions-ords-for-intermediates)**
-    Oracle Functionsは、Oracleが提供するFn Projectのマネージドサービスです。
-    このエントリーでは、Oracle Functions環境構築から動作確認までの手順を記します。【所要時間:約30分】
++ **[OCI Functionsを利用したATPとのREST連携](/ocitutorials/cloud-native/functions-ords-for-intermediates)**
+    OCI Functionsは、Oracleが提供するFn Projectのマネージドサービスです。
+    このエントリーでは、OCI Functions環境構築から動作確認までの手順を記します。【所要時間:約30分】
 
-+ **[Oracle Functionsを利用したOracle NoSQL Database Cloud Serviceとの連携](/ocitutorials/cloud-native/functions-nosql-for-intermediates)**
-    OCI API GatewayとOracle Functionsを組み合わせて、 簡単なサーバレスアプリケーションを開発する手順をご紹介します。【所要時間:約30分】
++ **[OCI Functionsを利用したOracle NoSQL Database Cloud Serviceとの連携](/ocitutorials/cloud-native/functions-nosql-for-intermediates)**
+    OCI API GatewayとOCI Functionsを組み合わせて、 簡単なサーバレスアプリケーションを開発する手順をご紹介します。【所要時間:約30分】
 
-+ **[Oracle Functionsを利用したOCI API Gatewayでの認証](/ocitutorials/cloud-native/functions-apigateway-for-intermediates)**
-    OCI API GatewayとOracle Functionsを組み合わせて、 簡単なサーバレスアプリケーションを開発する手順をご紹介します。【所要時間:約30分】
++ **[OCI Functionsを利用したOCI API Gatewayでの認証](/ocitutorials/cloud-native/functions-apigateway-for-intermediates)**
+    OCI API GatewayとOCI Functionsを組み合わせて、 簡単なサーバレスアプリケーションを開発する手順をご紹介します。【所要時間:約30分】
 
 <br />
 
