@@ -41,3 +41,5 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[OCI IAM Identity DomainでAPEXで作成したアプリに認証と認可をする](/ocitutorials/identity/identitydomain-apex-sso/)**  
    本チュートリアルでは、Oracle Application Express（APEX）で作成したアプリケーションとIdentity Domainsの認証連携、およびIdentity Domainsのグループに基づくアクセス制御（認可）の実装手順を紹介します。
 
++ **[OCI IAM Identity Domainsで複数Identity Domain間の認証連携環境を構築する](https://speakerdeck.com/oracle4engineer/sso-setup-between-multiple-identity-domains)**  
+   本チュートリアルは外部のページで、複数のOCI IAM Identity Domain間で認証連携およびユーザー同期を行うための実装手順を紹介しています。
