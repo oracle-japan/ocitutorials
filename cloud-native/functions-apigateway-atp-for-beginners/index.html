@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-21T17:15:59+09:00">
+  <meta property="article:published_time" content="2025-04-22T17:04:10+09:00">
 
 
 
@@ -318,7 +318,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCI API GatewayとOCI Functions を利用したデータベースアクセス">
     <meta itemprop="description" content="OCI API Gateway は OCI 上で提供されるマネージドのAPI管理サービスです。OCI Functions は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、OCI Functions から python-oracledb ドライバを利用してATPに接続し、データを取得する方法について説明します。そして、OCI API Gateway から OCI Functions にルーティングする方法について説明します。">
-    <meta itemprop="datePublished" content="2025-04-21T17:15:59+09:00">
+    <meta itemprop="datePublished" content="2025-04-22T17:04:10+09:00">
     
 
     <div class="page__inner-wrap">
@@ -569,6 +569,14 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
 </code></pre></div></div>
 <p>これで、すべてのFunctionの作成とデプロイが完了しました。</p>
 
+<p>【オプション】
+Create, Read, Update, Delete の処理を一つに統合したファンクションを利用する場合は以下の手順を実行してください。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>crud-func
+</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fn <span class="nt">-v</span> deploy <span class="nt">--app</span> fn-crud-atp
+</code></pre></div></div>
+
 <h2 id="3oci-api-gatewayの作成">3.OCI API Gatewayの作成</h2>
 <p>OCIコンソールにログインし、[開発者サービス]に移動して、[API管理] =&gt; [ゲートウェイ]をクリックしてから、次の操作を行います。
 <img src="create-gateway-01.png" alt="" /></p>
@@ -629,6 +637,11 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
   <li>関数名：ファンクションを指定します。今回は、<code class="language-plaintext highlighter-rouge">create-func</code></li>
 </ul>
 
+<p>【オプション】項目で説明した統合したファンクションを利用する場合</p>
+<ul>
+  <li>関数名：<code class="language-plaintext highlighter-rouge">crud-func</code> ファンクションを指定します。</li>
+</ul>
+
 <p><img src="create-gateway-07.png" alt="" /></p>
 
 <p>[2のルーティング]セクションで次を指定して、[別のルート]をクリックします。</p>
@@ -639,6 +652,11 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
   <li>バックエンド・タイプ：バックエンド・サービスのタイプを指定します。今回は、<code class="language-plaintext highlighter-rouge">Oracleファンクション</code></li>
   <li>アプリケーション：ファンクションのアプリケーションを指定します。今回は、<code class="language-plaintext highlighter-rouge">fn-crud-atp</code></li>
   <li>関数名：ファンクションを指定します。今回は、<code class="language-plaintext highlighter-rouge">read-func</code></li>
+</ul>
+
+<p>【オプション】項目で説明した統合したファンクションを利用する場合</p>
+<ul>
+  <li>関数名：<code class="language-plaintext highlighter-rouge">crud-func</code> ファンクションを指定します。</li>
 </ul>
 
 <p><img src="create-gateway-08.png" alt="" /></p>
@@ -653,6 +671,11 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
   <li>関数名：ファンクションを指定します。今回は、<code class="language-plaintext highlighter-rouge">read-func</code></li>
 </ul>
 
+<p>【オプション】項目で説明した統合したファンクションを利用する場合</p>
+<ul>
+  <li>関数名：<code class="language-plaintext highlighter-rouge">crud-func</code> ファンクションを指定します。</li>
+</ul>
+
 <p><img src="create-gateway-09.png" alt="" /></p>
 
 <p>[4のルーティング]セクションで次を指定して、[別のルート]をクリックします。</p>
@@ -665,6 +688,11 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
   <li>関数名：ファンクションを指定します。今回は、<code class="language-plaintext highlighter-rouge">update-func</code></li>
 </ul>
 
+<p>【オプション】項目で説明した統合したファンクションを利用する場合</p>
+<ul>
+  <li>関数名：<code class="language-plaintext highlighter-rouge">crud-func</code> ファンクションを指定します。</li>
+</ul>
+
 <p><img src="create-gateway-10.png" alt="" /></p>
 
 <p>[5のルーティング]セクションで次を指定して、[次]をクリックします。</p>
@@ -675,6 +703,11 @@ Autonomous Databaseの詳細の画面から[データベース接続]をクリ�
   <li>バックエンド・タイプ：バックエンド・サービスのタイプを指定します。今回は、<code class="language-plaintext highlighter-rouge">Oracleファンクション</code></li>
   <li>アプリケーション：ファンクションのアプリケーションを指定します。今回は、<code class="language-plaintext highlighter-rouge">fn-crud-atp</code></li>
   <li>関数名：ファンクションを指定します。今回は、<code class="language-plaintext highlighter-rouge">delete-func</code></li>
+</ul>
+
+<p>【オプション】項目で説明した統合したファンクションを利用する場合</p>
+<ul>
+  <li>関数名：<code class="language-plaintext highlighter-rouge">crud-func</code> ファンクションを指定します。</li>
 </ul>
 
 <p><img src="create-gateway-11.png" alt="" /></p>
@@ -908,7 +941,7 @@ API コールが成功すると、OCI Functions  がバックエンドとして�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-21T17:15:59+09:00">April 21, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-22T17:04:10+09:00">April 22, 2025</time></p>
 
       </footer>
 
