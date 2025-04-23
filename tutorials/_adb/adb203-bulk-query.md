@@ -49,7 +49,7 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
 + マニュアルには動作確認用のサンプルSQLも記載されている
 + ADW、ATPの双方で利用可能（2022/10時点）- 本ガイドでは前の章で作成したAutonomous Transaction Processing(ATP) インスタンスの利用を前提に記載していますが、SSBのような分析系・DWH系のアプリケーションの場合、Autonomous Data Warehouse(ADW) をご選択いただくことを推奨しています。
 
-※サンプルスキーマの詳細については[こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/autonomous-sample-data.html#GUID-4BB2B49B-0C20-4E38-BCC7-A61D3F45390B)を参照ください。
+※サンプルスキーマの詳細については[こちら](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/autonomous-sample-data.html)を参照ください。
 
 **作業の流れ**
 
@@ -203,7 +203,7 @@ ADBのインスタンスには、DWH系・分析系のサンプルスキーマ�
    > **補足**
    >
    > Autonomous Databaseのマニュアルでは、上に記載しているサンプルSQL以外にも動作確認用のサンプルSQLをご用意しております。
-   > [こちら](https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/sample-queries.html#GUID-431A16E8-4C4D-4786-BE5C-30029AC1EFD8)を参照ください。
+   > [こちら](https://docs.oracle.com/en/cloud/paas/autonomous-database/serverless/adbsb/sample-queries.html)を参照ください。
    >
 
 <br>

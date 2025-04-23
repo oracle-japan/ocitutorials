@@ -42,7 +42,7 @@ Logging Analyticsを利用するためにはOCIの他のサービスと同様に
 1-1. Loggingサービスを利用するためのポリシー
 ```
 allow group <IAMグループ名> to MANAGE logging-family in tenancy/compartment <コンパートメント名>
-allow group <IAMグループ名> to READ audit_events in tenancy/compartment<コンパートメント名>
+allow group <IAMグループ名> to READ audit-events in tenancy/compartment<コンパートメント名>
 ```
 
 1-2. Logging Analyticsサービスへのポリシー

@@ -30,11 +30,20 @@ OIC を利用するユーザーを追加する手順について説明します�
 **[ファイル・サーバーの有効化](./app-integration-for-beginners-1-filesv)**  
 このチュートリアルは、Oracle Integration が提供する SFTP に対応したファイル・サーバーを有効化する手順について説明します。
 
+**[ファイル・サーバーの有効化(OIC3)](./app-integration3-for-beginners-1-filesv)**  
+このチュートリアルは、Oracle Integration が提供する SFTP に対応したファイル・サーバーを有効化する手順について説明します。
+
 **[CSV ファイルから JSON ファイルへの変換](./app-integration-for-beginners-2-csvjson)**  
+このチュートリアルは、Oracle Integration の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。
+
+**[CSV ファイルから JSON ファイルへの変換(OIC3)](./app-integration3-for-beginners-2-csvjson)**  
 このチュートリアルは、Oracle Integration の FTP アダプタを使用して、ファイル・サーバーにアップロードされた CSV ファイルを読み取り、JSON ファイルに変換して、再びファイル・サーバーにアップロードする手順を説明します。
 
 **[SFDCからアウトバンドメッセージを受信する](./app-integration-for-beginners-3-sfdc)**  
 このチュートリアルは、Salesforce.com 側で新規商談(Opportunity)が登録されたら、SFDCのアウトバウンドメッセージが送信され、Oracle Integration の統合が起動される一連の動作を確認します。
+
+**[REST-API のデータを Oracle ADW に保存する(OIC3)](./app-integration3-for-beginners-3-rest2adw)**  
+このチュートリアルは、 Oracle Integration Cloud を使用して REST API で取得したデータを、Oracle ADW のテーブルに保存する手順を説明します。
 
 ## Process Automation チュートリアル
 
@@ -68,8 +77,10 @@ Visual Builder を使って簡単なWebアプリケーションを作成しま�
 **[Visual Builder Studio でVBCSアプリケーションを管理してみよう](./vbcs-for-beginners-2-vbs)**   
 Visual Builder Studioを使ってVBCSアプリケーション・プロジェクトを管理します。このチュートリアルでは、VBSからVBCSアプリケーションを作成し、チームによる開発手順を学習します。
 
+<!--
 **[Visual Builder でREST APIを使ったWebアプリケーションを作成してみよう](./vbcs-for-beginners-3-rest)**   
 Visual Builder でREST APIを使ったWebアプリケーションを作成します。このチュートリアルでは、REST APIでデータを取得し、画面上に一覧表示するアプリケーションを作成します。
+-->
 
 **[Visual Builder でグラフを使ったWebアプリケーションを作成してみよう](./vbcs-for-beginners-4-linechart)**   
 Visual Builder でグラフを使ったWebアプリケーションを作成します。このチュートリアルでは、ビジネス・オブジェクトのデータを取得し、画面上に折れ線グラフで表示するアプリケーションを作成します。

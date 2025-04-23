@@ -44,7 +44,7 @@ LoadBalancerや証明書サービスなどをはじめとした各OCIサービ�
 
 - **[Oracle Database編](/ocitutorials/database)**  
 Oracle Database関連サービスのチュートリアルです。  
-自律型データベースサービスであるAutonomous DatabaseやBase Database Service、Exadata Database Service on Dedicated InfrastructureなどOCIのデータベース・サービスを学習できます。
+自律型データベースサービスであるAutonomous DatabaseやBase Database Service、Exadata Database Service on Dedicated Infrastructure、Exadata Database Service on Exascale Infrastructure、AI Vector SearchなどOCIのデータベース・サービスを学習できます。
 
 - **[MySQL Database Service編](/ocitutorials/mysql/)**  
 Oracle MySQLチームが開発、管理およびサポートするOCI上で提供されるMySQL Database Serviceを学習できます。
@@ -66,8 +66,12 @@ OCIで提供するCloud Native関連サービスのチュートリアルです�
 Oracle Cloud Infrastructure(OCI)のデータサイエンス/ビッグデータ関連サービスのチュートリアルです。  
 Oracleが提供するマネージドの機械学習環境Data Science ServiceやマネージドのSpark環境であるOCI Data Flowを学習できます。 
 
-- **[アイデンティティとセキュリティ編](/ocitutorials/id-security/)**  
-OCIにおける各種ID管理、セキュリティ関連サービスについて学習できるチュートリアルです。
+- **[アイデンティティ編](/ocitutorials/identity/)**  
+OCIのユーザー認証・アクセス制御を統合的に管理するIAM・IDaaSを提供するOCI Identity Domainsについて学習できるチュートリアルです。
+
+- **[セキュリティ編](/ocitutorials/security/)**  
+OCIにおける各種セキュリティ関連サービスについて学習できるチュートリアルです。  
+基本的なセキュリティ機能からデータベースのセキュリティ対策までの幅広いサービスチュートリアルをご紹介しています。
 
 - **[監視・管理編](/ocitutorials/management/)**  
 OCIにおける各種運用・管理関連サービスについて学習できるチュートリアルです。

@@ -27,12 +27,12 @@ VPDはAutonomous Databaseでも利用できる機能です。基本的な設定�
 
 
 **目次 :**
-  + [1.テスト用の表を作成](#anchor1)
-  + [2.ユーザーを作成](#anchor2)
-  + [3.VPDファンクションの作成](#anchor3)
-  + [4.VPDファンクションをVPDポリシーとして適用](#anchor4)
-  + [5.動作確認](#anchor5)
-  + [6.VPDポリシーの削除](#anchor6)
+  + [1.テスト用の表を作成](#1-テスト用の表を作成)
+  + [2.ユーザーを作成](#2-ユーザを作成)
+  + [3.VPDファンクションの作成](#3-vpdファンクションの作成)
+  + [4.VPDファンクションをVPDポリシーとして適用](#4-vpdファンクションをvpdポリシーとして適用)
+  + [5.動作確認](#5-動作確認)
+  + [6.VPDポリシーの削除](#6-vpdポリシーの削除)
 
 
 **前提条件 :**
@@ -45,7 +45,6 @@ VPDはAutonomous Databaseでも利用できる機能です。基本的な設定�
 
 <BR>
 
-<a id="anchor1"></a>
 
 # 1. テスト用の表を作成
 サンプルスキーマのSSBスキーマのCUSTOMER表の一部を利用して、[「101:ADBインスタンスを作成してみよう」](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/) で作成したADBUSERスキーマにテスト用の表を作成します。  
@@ -53,7 +52,7 @@ SQL*Plusを起動して以下を実行してください。
 
 ```sql
 -- ADBUSERで接続する
-CONNECT adbuser/Welcome12345##@atp01_low
+CONNECT adbuser/Welcome12345#@atp01_low
 -- SSB.CUSTEOMER表から新しくVPD_CUSTOMER表を作成する
 CREATE TABLE adbuser.vpd_customer AS SELECT * FROM ssb.customer WHERE ROWNUM<10000;
 ```
@@ -78,16 +77,15 @@ SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 
 <BR>
 
-<a id="anchor2"></a>
 
 # 2. ユーザを作成
 ADMINユーザで接続し、ASIA担当のユーザをわかりやすくASIAという名前で作成します。  
 
 ```sql
 -- ADMINで接続する
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 -- ASIAユーザを作成する
-CREATE USER asia IDENTIFIED by "Welcome12345##";
+CREATE USER asia IDENTIFIED by "Welcome12345#";
 -- 接続するためのCONNECTロールとADBUSER.VPD_CUSTOMER表への参照権限を付与
 GRANT CONNECT TO asia;
 GRANT SELECT ON adbuser.vpd_customer TO asia;
@@ -97,7 +95,7 @@ ASIAユーザで接続してADBUSER.VPD_CUSTOMER表に対して、1と同じSQL�
 
 ```sql
 -- ASIAで接続する
-CONNECT asia/Welcome12345##@atp01_low
+CONNECT asia/Welcome12345#@atp01_low
 -- リージョンごとの数を確認する
 SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 ```
@@ -110,7 +108,6 @@ VPDの設定前はADBUSERと同じように全てのリージョンの情報が�
 
 <BR>
 
-<a id="anchor3"></a>
 
 # 3. VPDファンクションの作成
 SQLに付加する条件（Where句の内容）を戻すVPDファンクションを作成します。  
@@ -121,7 +118,7 @@ SQLに付加する条件（Where句の内容）を戻すVPDファンクション
 
 ```sql
 --ADMINで接続する
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 
 --ファンクションを作成する
 CREATE OR REPLACE FUNCTION vpdfunc
@@ -143,7 +140,6 @@ end;
 
 <BR>
 
-<a id="anchor4"></a>
 
 # 4. VPDファンクションをVPDポリシーとして適用
 作成したファンクションををVPDポリシーとして対象のオブジェクト（表、ビューなど）に関連付けます。  
@@ -154,7 +150,7 @@ ADMINユーザで接続し、以下を実行します。
 
 ```sql
 -- ADMINで接続する
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 
 -- VPDポリシーを対象のオブジェクトに追加する
 BEGIN
@@ -172,7 +168,6 @@ END;
 
 <BR>
 
-<a id="anchor5"></a>
 
 # 5. 動作確認
 それでは実際にユーザー別に同じSQLで異なるデータが返ってくるかどうかを確認してみましょう。
@@ -186,7 +181,7 @@ SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 
 ```sql
 --ADBUSERで接続する
-CONNECT adbuser/Welcome12345##@atp01_low
+CONNECT adbuser/Welcome12345#@atp01_low
 --確認
 SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 ```
@@ -202,7 +197,7 @@ SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 
 ```sql
 --ASIAで接続する
-CONNECT asia/Welcome12345##@atp01_low
+CONNECT asia/Welcome12345#@atp01_low
 --確認
 SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 ```
@@ -217,7 +212,7 @@ ASIAだけの値が返されました。VPDの設定どおりの動作をした�
 
 ```sql
 --ADMINユーザで接続
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 --確認
 SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 ```
@@ -230,7 +225,6 @@ SELECT c_region,COUNT(*) FROM adbuser.vpd_customer GROUP BY c_region;
 
 <BR>
 
-<a id="anchor6"></a>
 
 # 6. VPDポリシーの削除
 VPDポリシーの削除もDBMS_RLSパッケージを使用して行います。
@@ -238,7 +232,7 @@ ADMINユーザで以下を実行します。
 
 ```sql
 -- ADMINで接続
-CONNECT admin/Welcome12345##@atp01_low
+CONNECT admin/Welcome12345#@atp01_low
 -- ポリシーを削除する
 BEGIN
   DBMS_RLS.DROP_POLICY(
@@ -255,14 +249,14 @@ END;
 <BR>
 
 # おわりに
-このチュートリアルでは基本的な設定方法をお伝えするために簡単な例を用いましたが、VPDではファンクションでルールの記述を行うため、非常に柔軟で細やかなアクセス制御を実装させることが可能です。 
+このチュートリアルでは基本的な設定方法をお伝えするために簡単な例を用いましたが、VPDではファンクションでルールの記述を行うため、柔軟で細やかなアクセス制御を実装させることが可能です。 
 
 + 例
   + 人や時間、クライアント端末、アプリなどの様々なアクセス条件を設定
   + オブジェクトだけでなく特定のSQL文タイプの指定（SELECT、INSERT、UPDATE、INDEX、DELETE）
   + 列の指定や列に対するマスク(NULL値として表示)
 
-そのため、VPDを構成するときに最も重要な作業はアクセスのルールの設計、明確化となります。実環境でのご利用を検討されるときは、その点で抜け漏れがないか十二分にお気を付けください。
+そのため、VPDを構成するときに最も重要な作業はアクセスのルールの設計、明確化となります。実環境でのご利用を検討されるときは、その点で抜け漏れがないか十分ご注意ください。
 
 
 以上でこの章は終了です。次の章にお進みください。

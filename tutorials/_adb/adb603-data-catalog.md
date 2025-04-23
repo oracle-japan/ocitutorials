@@ -43,7 +43,7 @@ Oracle Cloud Infrastructure Data Catalogは、そのような企業データの�
     [101:ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning){:target="_blank"} を参照ください。
 
 + Data Catalogを使用するためのユーザーグループ、ポリシーが設定済みであること
-    <br>※本チュートリアルを進めるうえで必要なポリシーは[こちら](https://oracle.github.io/learning-library/data-management-library/data-catalog/workshops/freetier/?lab=prerequisites#:~:text=Create%20a%20Compartment-,Task%203%3A%20Create%20User%20Group%20and%20Policies,-To%20create%20a){:target="_blank"}を参照ください。
+    <br>※本チュートリアルを進めるうえで必要なポリシーは[こちら](https://docs.oracle.com/ja-jp/iaas/data-catalog/using/policies.htm#policy-examples){:target="_blank"}を参照ください。
 
 <br>
 
@@ -69,9 +69,9 @@ GRANT CREATE procedure to sales_history;
 GRANT CREATE trigger to sales_history;
 ```
 
-1. [こちら](https://objectstorage.us-ashburn-1.oraclecloud.com/p/Ei1_2QRw4M8tQpk59Qhao2JCvEivSAX8MGB9R6PfHZlqNkpkAcnVg4V3-GyTs1_t/n/c4u04/b/livelabsfiles/o/oci-library/DCAT%20Workshop%20files.zip){:target="_blank"}からzipファイルをダウンロードし、解凍します。
+1. [Data Catalogで使用するファイル](/ocitutorials/adb/adb603-data-catalog/DCAT_Workshopfiles.zip)からzipファイルをダウンロードし、解凍します。
 
-1. zipファイルの中の**DCAT_Livelabs.sql**というSQLスクリプトを実行します。実行すると、いくつかの表が作成されます。
+2. zipファイルの中の**DCAT_Livelabs.sql**というSQLスクリプトを実行します。実行すると、いくつかの表が作成されます。
 
 これでデータの準備は完了です。
 <br>
@@ -186,7 +186,7 @@ Data Catalogインスタンスの作成にあたり、1つのフォームを埋�
 ## 4-1. 動的グループとポリシーの作成
 OCI Object Storageに対してAPIコールを行うことを許可するポリシーを作成します。
 
-ここの手順については、[こちら](https://oracle.github.io/learning-library/data-management-library/data-catalog/workshops/freetier/?lab=harvest-object-store#:~:text=Expand%20All%20Tasks-,Task%201%3A%20Create%20Dynamic%20Groups%20and%20Policies,-Task%202%3A%20Create){:target="_blank"}をご参照ください。
+ここの手順については、[こちら](https://oracle-livelabs.github.io/oci-core/data-catalog/workshops/freetier/index.html?customTrackingParam=:ow:lp:cpo::::RC_WWMK211125P00013:llid=919&lab=harvest-object-store){:target="_blank"}をご参照ください。
 
 <br>
 

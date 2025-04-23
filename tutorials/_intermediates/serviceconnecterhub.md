@@ -207,10 +207,19 @@ search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcomp
 ・**問合せ構文**
 
 ```
-search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" | (type='com.oraclecloud.OraLB-API.CreateLoadBalancer') and (data.request.action!='GET') 
+## ロード・バランサの作成リクエストを検知したタイミングで通知したい場合
+search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" |
+(type='com.oraclecloud.OraLB-API.CreateLoadBalancer.begin') and (data.request.action!='GET') 
+
+## ロード・バランサの作成リクエストを検知したタイミングで通知したい場合
+search "＜検索対象コンパートメントのOCID＞/_Audit_Include_Subcompartment" |
+(type='com.oraclecloud.OraLB-API.CreateLoadBalancer.end') and (data.request.action!='GET') 
 ```
 
-- **(type='com.oraclecloud.OraLB-API.CreateLoadBalancer')**
+- ロード・バランサの作成リクエストを検知したタイミングで通知したい場合
+  - **(type='com.oraclecloud.OraLB-API.CreateLoadBalancer.begin')**
+- ロード・バランサの作成リクエストを検知したタイミングで通知したい場合
+  - **(type='com.oraclecloud.OraLB-API.CreateLoadBalancer.end')**
 
   イベント・タイプを「ロード・バランサの作成」で設定しています。
 

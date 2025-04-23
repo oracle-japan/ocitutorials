@@ -8,6 +8,10 @@ show_excerpts: true
 toc: true
 ---
   
+**Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
+<br/>
+
+----
 **前提条件**  
 + Oracle Cloud Infrastructure の環境と、ユーザーアカウントがあること(トライアル環境でも実施いただける内容となっています。)
 + 適切なコンパートメントと、そこに対する適切な権限がユーザーに付与されていること
@@ -16,10 +20,11 @@ toc: true
 + チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 + [OCIチュートリアル入門編](/ocitutorials/beginners/)の、準備からその1、その2、その3、その7を実施しておくと、理解がスムーズです。  
 + より詳しく知りたい方は、[OCI活用資料集](https://oracle-japan.github.io/ocidocs/services/database/)も併せてご確認ください。それぞれのサービスに関する技術詳細資料をまとめ紹介しています。
-
 <br/>
 
+----
 
+<br/>
 # <span style="color: brown; ">■ Base Database Service (BaseDB) を使ってみよう</span>
 Oracleのクラウドで使いたいものと言ったら、そう! Oracle Database!!  
 まずはベーシックなBase Database インスタンスを作ってみましょう！
@@ -38,17 +43,22 @@ Oracleのクラウドで使いたいものと言ったら、そう! Oracle Datab
 
 + **[106: Data Guardを構成しよう](/ocitutorials/basedb/dbcs106-dataguard/){:target="_blank"}**
 
-+ **[107: Autonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}**
++ **[107: BaseDBにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/basedb/dbcs107-zrcv/){:target="_blank"}**
+
++ **[108:BaseDBのスタンバイ・データベースからバックアップを取得およびリストアしてみよう](/ocitutorials/basedb/dbcs108-dataguard-standby-bkup/){:target="_blank"}**
+
++ **[109:BaseDBでZRCVの長期保管バックアップ（LTR）を作成してみよう](/ocitutorials/basedb/dbcs109-ltr/){:target="_blank"}**
 
 ## データ移行編
 
 + **[201: オンプレミスのPDBをBaseDBに移動しよう](/ocitutorials/basedb/dbcs201-pdb-plug/){:target="_blank"}**
 
-+ **[202: DBMS_CLOUDを使ってObject StorageからBaseDBにデータを移行しよう](/ocitutorials/basedb/dbcs202-dbms-cloud/){:target="_blank"}**
++ **[202: DBMS_CLOUDを使ってObject StorageのデータをBaseDBから参照しよう](/ocitutorials/basedb/dbcs202-dbms-cloud/){:target="_blank"}**
 
 <br/>
 
-
+**Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**
+<br/>
 
 <!-- 
 

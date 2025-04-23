@@ -180,7 +180,7 @@ istioctl version
 ***コマンド結果***
 ```sh
 no running Istio pods in "istio-system"
-1.11.0
+1.21.0
 ```
 
 Istioのコンポーネントをインストールします。

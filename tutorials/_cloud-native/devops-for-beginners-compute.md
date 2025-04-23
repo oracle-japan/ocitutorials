@@ -175,9 +175,27 @@ OCIコンソール画面のハンバーガメニューから`ネットワーキ�
 
 ### 2-1.サンプルアプリケーションと関連資材の取得
 
+ここからは、Cloud Shell を利用します。
+
+Cloud Shell は、ARM(aarch64)とX86_64のアーキテクチャを選択できます。こちらのチュートリアルは、X86_64をベースに構成されています。そのため、アーキテクチャのタイプを確認します。もし、ARM(aarch64)が選択されている場合は、X86_64に変更して、Cloud Shell を再起動します。
+
+最初に、「アクション」-「アーキテクチャ」選択します。
+
+![](01-02-03.png)
+
+「現在のアーキテクチャ」が ARM(aarch64) の場合は、X86_64 を選択して、「確認して再起動」ボタンをクリックします。  
+「現在のアーキテクチャ」が X86_64 の場合は、そのまま、「取消」を選択してください。
+
+![](01-02-04.png)
+
+Cloud Shell 再起動後、「アクション」-「アーキテクチャ」選択します。そして、X86_64 であることを確認して、「取消」を選択します。
+
+![](01-02-05.png)
+
+
 今回のハンズオンで利用するサンプルアプリケーションと関連資材を取得します。  
 
-Cloud Shellを起動し、以下のコマンドを実行します。  
+以下のコマンドを実行します。  
 
 ```sh
 wget https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejapan/b/oci-devops-handson/o/compute%2Foci-devops-compute.zip
@@ -186,7 +204,7 @@ wget https://orasejapan.objectstorage.ap-tokyo-1.oci.customer-oci.com/n/orasejap
 解凍します。
 
 ```sh
-unzip compute_oci-devops-compute.zip
+unzip compute%2Foci-devops-compute.zip
 ```
 
 これでサンプルアプリケーションと関連資材の取得は完了です。  
@@ -433,7 +451,7 @@ Unpacking objects: 100% (2/2), done.
 ls
 ```
 ```sh
-oci-devops-handson  oci-devops-compute  compute%2Foci-devops-compute.zip
+oci-devops-handson  oci-devops-compute  oci-devops-compute.zip
 ```
 
 ダウンロードしたサンプルコードを「oci-devops-handson」ディレクトリにコピーします。

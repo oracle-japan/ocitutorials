@@ -8,7 +8,7 @@ layout: single
 
 <a id="anchor0"></a>
 # はじめに
-この記事は["Graph Studio: Finding Circular Payment Chains using Graph Queries Workshop"](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/workshop-attendee-2?p210_workshop_id=770&p210_type=3&session=8859536952446)
+この記事は["Graph Studio: Find Circular Payment Chains with Graph Queries in Autonomous Database"](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=770&clear=RR,180&session=109952730335961)
 の記事と補足事項を日本語で解説した内容になります。
 
 # Graph Studioとは
@@ -28,8 +28,7 @@ Graph Studioでは下記のような機能を利用可能です。
 - CSVファイルのデータをAutonomous Databaseにアップロードする方法(SQL Developer Web (Database Actions SQL))
 - Graph Studioへの接続方法
 - PGQLクエリ(グラフクエリ言語)を用いたグラフ作成方法
-- Graph Studioの分析用ノートブックの作成方法
-- PGQLクエリを使ってノートブック上でグラフをクエリ&可視化方法
+- PGQLクエリを使ったノートブック上でグラフをクエリ&可視化方法
 
 具体的な題材として、今回は金融トランザクションから、循環的な資金の流れを見つける分析を行います。
 
@@ -40,8 +39,7 @@ Graph Studioでは下記のような機能を利用可能です。
   + [2.データの準備(取込み)](#anchor2)
   + [3.データの準備(整形)](#anchor3)
   + [4.Graph Studioにてリレーショナル表からグラフを作成](#anchor4)
-  + [5.Graph Studioにて作成したグラフのクエリ](#anchor5)
-  + [6.ノートブック上のクエリ](#anchor6)
+  + [5.ノートブック上のクエリ](#anchor5)
 
 **前提条件 :**
  +  Oracle Cloudのアカウント
@@ -62,33 +60,47 @@ Always Freeの範囲内でも十分に確認できる題材となっているの
 
 1. OCIコンソール上でAutonomous Databaseのインスタンス詳細画面を開く
 
-    ![adbtop.jpg](adbtop.jpg)
+    ![alt text](1.png)
 
 1. ツールタブに移動して、データベースアクションを開く
 
-    ![adbdbaction.jpg](adbdbaction.jpg)
+    ![alt text](2.png)
 
-1. ADMINユーザーでデータベースアクションにログイン
-
-    ![dbactionslogin](dbactionslogin.jpg)
 
 1. 管理より、データベースユーザー作成画面へ移動
 
-    ![dbuser.jpg](dbuser.jpg)
+    ![alt text](3.png)
 
 1. ユーザーの作成ボタンをクリック
 
-    ![mkuser.jpg](mkuser.jpg)
+    ![alt text](4.png)
 
 1. グラフ用のユーザを作成
 
-    ユーザー名とパスワードを任意の文字で設定して、グラフとWebアクセスのオプションを有効化します。表領域の割り当てはデフォルトよりも多く割り当てておくと、後々のグラフ作成時に便利ですが、デフォルトのままでも今回の内容では問題ありません。
-    ユーザーの作成を押して、操作を完了させます。
-    ![mkgraphuser.jpg](mkgraphuser.jpg)
+    以下の様に設定します。
+    - ユーザー設定
+        - ユーザー名 - GRAPHUSER
+        - パスワード - 任意（本チュートリアルでは、Welcome12345#とします）
+        - 表領域 -  UNLIMITED
+        - グラフ - 有効化
+        - Webアクセス - 有効化
 
-これでGraph Studioが利用可能になりました。
-後程Graph Studioにログインするので、設定したユーザー名とパスワードをメモしておきましょう。
+    - 権限
+        - DWROLE - 付与済み、デフォルト
 
+    ![alt text](5.png)
+
+    ![alt text](6.png)
+
+1. 一旦Data Actionsからサインアウトします。
+
+    ![alt text](7.png)
+
+1. 作成したGRAPHUSERとしてサインインします。
+
+    ![alt text](8.png)
+
+これで準備完了です。
 
 <BR>
 
@@ -110,29 +122,29 @@ Always Freeの範囲内でも十分に確認できる題材となっているの
     入手したcsvファイルをデータベースアクション画面からデータベースへとロードしていきます。
 
 1. データベースアクションのトップから、データロードの機能を選択
-    ![datatool.jpg](datatool.jpg)
 
+    ![alt text](9.png)
 
-1. データのロード、ローカルファイルからのアップロードを確認し、次へ
+1. データのロードを選択し、次へ
     
-    データ処理の方法はデフォルトで、データのロードが選択されており、データの場所もデフォルトでローカルファイルからのアップロードが選択されているので、そのまま次へを押します。
-    ![dataload.jpg](dataload.jpg)
+    ![alt text](10.png)
 
 1. ファイルのアップロード
     ファイルの選択画面になるので、今回使用する二つのcsvデータを選択します。
     
     今回は以下の二つのファイルを同時にアップロードします。
-    - account.csv 
-    - the banktxns.csv 
+    - bank_accounts.csv 
+    - bank_txns.csv 
 
-    ![ddfiles.png](ddfiles.png)
-    ![ddselect.png](ddselect.png)
+    ![alt text](11.png)
     
-1. 選択ができたら、緑色の開始ボタンを押して、データロードを実行
-    ![ddloading.png](ddloading.png)
+1. 開始ボタンを押して、データロードを実行
+
+    ![alt text](12.png)
 
 1. データが正常にロードされたことが確認後、右下の完了ボタンを押しデータのロードを終了
-    ![ddfine.png](ddfine.png)
+
+    ![alt text](13.png)
 
 
 <a id="anchor3"></a>
@@ -141,7 +153,8 @@ Always Freeの範囲内でも十分に確認できる題材となっているの
 csvのデータをデータベースにアップロードすることが完了したので、次はそのデータに対して主キーや外部参照制約などを追加していきます。この操作もデータベースアクション上で実行可能です。
 
 1. SQL問い合わせ画面を開く
-    ![dbasql.png](dbasql.png)
+
+    ![alt text](14.png)
 
 
 1. fixup.sqlファイルの内容を実行
@@ -167,16 +180,10 @@ csvのデータをデータベースにアップロードすることが完了�
 1. 実行結果の確認
 
     下記のような実行結果になっていればクエリは成功しています。
-    ![fixupsql.png](fixupsql.png)
 
-1. CSVから取り込んだデータを確認
-    
-    今回の記事で取り込んだ二つのテーブルの内容を確認します。
-    BANK_ACCOUNTSテーブルは アカウントIDと名前を持っています
-    もう一つのTXNSテーブルはカラムとして、fromとtoという送金者と受け取りの人の口座IDを示す列になっています。
-    ![importeddata.png](importeddata.png)
+    ![alt text](15.png)
 
-これらの二つのリレーショナル表から、次のステップではGraph Studioにてグラフを作成していきます。
+BANK_ACCOUNTSと、BANK_TXNSという二つのリレーショナル表から、次のステップではGraph Studioにてグラフを作成していきます。
 
 <BR>
 
@@ -184,261 +191,214 @@ csvのデータをデータベースにアップロードすることが完了�
 
 # 4. Graph Studioにてリレーショナル表からグラフを作成
 
-1. Graph Studioへログイン
-    
-    Autonomous Databaseの詳細から、ツールタブを開き、Graph Studioを開きます。
-    ![opgraphstudio.png](opgraphstudio.png)
+ロードした表を基に、グラフを作成していきます。
 
-1. Graph Studioへのサインイン
-    
-    ADMINではGraph Studioには入れないので、作成したGraph用のユーザーでサインインをしましょう。
-    ![signingraph.png](signingraph.png)
+1. Autonomous Databaseの詳細から、ツールタブを開き、Graph Studioを開きます。
 
-1. メニュー画面の表示
-    
-    メニューは左側のアイコンで、それぞれの機能へ移動ができます。上から順に説明すると、下記のようなアイコンの機能になっています。
-    - ホームアイコン:ログイン後に見れるトップページに移動
-    - モデルアイコン:グラフのモデリング用ページに移動
-    - グラフアイコン:すでに存在するグラフが確認できます。ここからモデリングやPGQLのクエリも可能です。
-    - ノートブックアイコン:グラフの分析機能を利用可能なノートブック作成ページに移動
-    - ジョブアイコン:バックグラウンドで動いているジョブの確認ページに移動
-    ![graphstudiotop.png](graphstudiotop.png)    
+    ![alt text](16.png)
 
-1. モデリングの機能でリレーショナル表からグラフを作成
-    
-    左メニューの、上から2つ目のModelsアイコンをクリックして、モデリングをスタートします。
-    ![modeling.png](modeling.png)
+1. ADMINではGraph Studioには入れないので、作成したGraph用のユーザーでサインインをしましょう。
+
+    ![alt text](17.png)
+
+1. 左メニューの、上から2つ目のグラフアイコンをクリックして、モデリングをスタートします。
+
+    ![alt text](18.png)   
+
+1. グラフの作成をクリックします。
+
+    ![alt text](19.png)
+
+1. グラフ名を入力し、次へをクリック
+    - グラフ名 - BANK_GRAPH
+
+    ![alt text](20.png)
 
 1. リレーショナル表一覧の確認
+モデリングのページに移動すると、参照可能なデータベース上のリレーショナル表一覧が確認できます。今回のデータでは、BANK_ACCOUNTS と BANK_TXNS の表を使用するので選択して、真ん中の→アイコンを押して、右側の選択画面にデータを移動します。
 
-    モデリングのページに移動すると、参照可能なデータベース上のリレーショナル表一覧が確認できます。 
+    ![alt text](21.png)
 
-    今回のデータでは、ANK_ACCOUNTS と BANK_TXNS の表を使用するので選択して、真ん中の→アイコンを押して、右側の選択画面にデータを移動します。準備ができたら、Nextボタンを押して、次へ進みます。
-    ![modelselections.png](modelselections.png)
+    準備ができたら、次ボタンを押して、次へ進みます。
+
+    ![alt text](22.png)
 
 
 1. 選択した表のグラフへのマッピングを確認
-    
     画面上半分の左側には元のリレーショナル表、右側にはマッピング予定のグラフが確認できます。Vertexはグラフの頂点で、Edgeはグラフの辺を表します。
-    ![modelingve.png](modelingve.png)
 
-1. マッピングプレビューの確認
-    
-    Previewボタンを押すと、表からグラフへのマッピング予定のデータ構造が確認できます。
-    今回のデータでは、ノードの種類もエッジの種類も1つのみなので、グラフのプレビューでは1つのノードとエッジのみが表示されます。あくまでも、これはマッピングのプレビューなので、実際のグラフは同じ種類同士のやり取りで口座同士が送金するため、完成形の見た目はマッピングのプレビューとは異なります。
-    ![modelpv.png](modelpv.png)
+    ![alt text](23.png)
 
-1. マッピングのソースの確認
-    
-    Sourceでは表形式をグラフ形式に変換するためのPGQL文を確認できます。このPGQLはDDLのようなものです。
-    bank_accounts表がノードとして変換され、bank transaction表がエッジとして変換されます。
-    マッピング自動で生成されているため、列の情報の中身までは見てくれません。ここではソースとしてto acount id,向かう先としてfrom account id がマッピングされておりますが、
-    実際の関係性はソースがform accountでデスティネーションは to account id なので入れ替えます。
-    ![modelsource.png](modelsource.png)
+1. BANK_ACCOUNTSをクリックし、頂点ラベルをACCOUNTSに変更します。変更したらチェックマークを押して保存します。
+    ![alt text](24.png)
 
-    下記のように入れ替えると、toとfromの関係性が正しくマッピングができます。
-    ![modelsourceswped.png](modelsourceswped.png)
+1. BANK_TXNSをクリックし、頂点ラベルをTRANSFERSに変更します。変更したらチェックマークを押して保存します。両方の頂点ラベルを変更したら、次ボタンを押します。
 
-1. モデルの保存
+    ![alt text](25.png)
 
-    プレビューやデザイナータブに移動しようとすると、この変更内容について保存するかどうか聞かれるので、Saveを押しましょう。(Nextを押してしまうと変更が保存されない場合があるので注意してください)
-    ![modelsourcesave.png](modelsourcesave.png)   
+1. グラフの作成をクリックし、グラフを作成します。
 
-1. グラフの確認
+    ![alt text](26.png)
 
-    PGQL文を確認後Nextボタンを押します。
-    ![modelenext.png](modelenext.png)
+1. メモリーにロードはオンにしたままグラフの作成をクリックします。
 
-1. 作成予定のグラフの確認
-
-    Summaryで作成予定のグラフを確認したら、Crreate Graphを押して、グラフを作成します。
-    ![modelcreategraph.png](modelcreategraph.png)
-
-1. グラフ情報の入力
-
-    createボタンを押すと、グラフの情報の入力を求められるので、名前を入力して、作成します。
-    ![modelgname.png](modelgname.png)
-
-1. グラフの作成
-
-    createボタンを押した後は、画面が変更され、作成中のjobがご確認いただけます。
-    数分程度でグラフの作成は完了します。
-    ![jobs.png](jobs.png)
-
-
-最初に作成されたグラフ自体は、オラクルデータベースのテーブル上に保存されており、メモリに読み込むというオプションは、作成したグラフをメモリに読み込むことで、分析用のアルゴリズム等を実行することが可能になります。
-<BR>
+    ![alt text](27.png)
 
 <a id="anchor5"></a>
+# 5. ノートブック上でのクエリ
 
-<BR>
+本チュートリアルでは、違法行為に使用された可能性のある銀行口座をグラフの技術を使用して特定してみたいと思います。
 
-# 5. Graph Studioにて作成したグラフのクエリ
-作成したデータの更新方法は、トランザクション、分析と2種類の方法があり、Graph Studioの場合、トランザクションはクエリメニューで行い、アルゴリズム実行等の分析用途ではノートブックでのクエリになります。
-
-1. クエリ画面の確認
-
-    クエリ画面でデータ操作を行うと、データベース内のグラフに対する変更操作であるため、データに対する変更は永続化されます。一部の分析用のグラフアルゴリズムはこの画面からは実行できません。
-    ノートブックへのクエリはクエリメニューからは使えない、グラフアルゴリズムが実行可能になっています。データ分析の用途がメインなため、データに対する変更は永続化されません。
-    ![query.png](query.png)
-
-
-
-1. データベースのクエリ
-
-    GraphツールのQueryというボタンから、下記のQuery Playgroundにて、データ更新のためのクエリが実行可能です。既存のグラフにデータを追加したり、新たなグラフを作成することが可能です。
-    ![クエリ画面](query.png)
-    ![クエリ画面2](query2.jpg)
-
-1. クエリの実行
-
-    今回はシンプルなセレクト文をすでに作成したグラフに対して行います
-
-    ```sql
-    select
-      a0.acct_id AS a0, t1.amount AS t1, a1.acct_id AS a1
-    from match (a0)-[t1]->(a1) on bank_graph
-    where a0.acct_id=934
-    ```
-    アカウントa0に対する直接的な口座取引がこれで確認できます。
+1. ノートブックの作成・インポート
     
-    今回はアカウントidが934のものを指定してクエリを実行しました。
-    ![query934one.png](query934one.png)
+    本チュートリアルでは、既に作成済みのノートブックを使用していきます。[こちら](/ocitutorials/adb/adb-data/BANK_GRAPH.dsnb)から**BANK_GRAPH.dsnb**というノートブックをダウンロードします。
 
-1. 次に口座取引が循環しているケースを探索
-    口座アカウントa0(934)を起点として、5ホップして、また起点であるa0に戻ってくるような経路を探索します。
+    ノートブック画面へは左側のメニューバーから入ることができます。画面右上のインポートをクリックします。
 
-    ```sql
-    select
-      a0.acct_id AS a0, t1.amount AS t1
-    , a1.acct_id AS a1, t2.amount AS t2
-    , a2.acct_id AS a2, t3.amount AS t3
-    , a3.acct_id AS a3, t4.amount AS t4
-    , a4.acct_id AS a4, t5.amount AS t5
-    from match (a0)-[t1]->(a1)-[t2]->(a2)-[t3]->(a3)-[t4]->(a4)-[t5]->(a0) on bank_graph
-    where a0.acct_id=934 and all_different(a0, a1, a2, a3, a4)
-    ```
-    結果が一覧で表示されました。
-    ![query934ad.png](query934ad.png)
+    ![alt text](28.png)
+
+    ダウンロードしたノートブックをドラッグアンドドロップし、インポートします。
+
+    ![alt text](29.png)
+
+    これで、ノートブックのインポートが出来ました。
     
-
-1. クエリから直接グラフを作成する
-
-    新たにグラフを作成したい場合、下記のようにグラフ構文であるPGQLを利用して、プロパティグラフを作成することができます。
-    一行目のクエリで空のグラフを作成し、その後にノードとエッジをINSERTしています。今回のグラフ名はmy_8th_graphとしていますが、お好みのグラフ名をご指定下さい。
-
-    この例では簡単に人物の情報をnodeとして、人物同士のつながりをエッジとして表しました。
-    この記事のデータとは無関係のデータなので、クエリ参考例としてご活用ください。
-
-
-    ```sql
-    CREATE PROPERTY GRAPH my_8th_graph;
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Aさん', v."AGE" = '15');
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Bさん');
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Cさん');
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Dさん');
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Eさん');
-    INSERT INTO my_8th_graph VERTEX v LABELS ("PERSON") PROPERTIES (v.id = 'Fさん');
-    INSERT INTO my_8th_graph EDGE e BETWEEN src AND dst LABELS ("親") PROPERTIES (e.direction = '->') FROM MATCH (src) ON my_8th_graph, MATCH (dst) ON my_8th_graph WHERE src.id = 'Aさん' AND dst.id = 'Bさん';
-    INSERT INTO my_8th_graph EDGE e BETWEEN src AND dst LABELS ("友人") PROPERTIES (e.direction = '->') FROM MATCH (src) ON my_8th_graph, MATCH (dst) ON my_8th_graph WHERE src.id = 'Bさん' AND dst.id = 'Cさん';
-    INSERT INTO my_8th_graph EDGE e BETWEEN src AND dst LABELS ("友人") PROPERTIES (e.direction = '->') FROM MATCH (src) ON my_8th_graph, MATCH (dst) ON my_8th_graph WHERE src.id = 'Cさん' AND dst.id = 'Bさん';
-    ```
-
-    ![newgraph](newgraphquery.jpg)
-
-<a id="anchor6"></a>
-
-
-# 6. ノートブック上でのクエリ
-先ほどはデータの選択や、作成、更新に使用できるQuery画面からのクエリを行いましたが、次は分析等に使えるノートブックを活用していきましょう。クエリ画面ではできなかったアルゴリズムが実行可能ですが、ノートブック上でのデータの変更は永続化されないため、ご留意ください。
-
-1. ノートブック画面の作成
-
-    ノートブック画面へは左側のメニューバーから入ることができます。新たなノートブックを作成する場合、右上の作成ボタンを押しましょう。
-    ![notebook](notebook.png)
-
-1. 必要項目の入力
-
-    作成ボタンクリック後には、ノートブックの作成に必要な名前の入力等が求められます。この画面で、フォルダを指定してノートブックを作成することも可能です。例えば、test1/testbookとノートブックの名前に入力すると、test1というフォルダの中にtestbookという名称のノートブックの作成が行われます。
-    ![createnotebook](notebookcreation.png)
-    
-
-1. コードの入力
-
-    新規ノートブックにコードを記入していきます。
-    言語はmarkdownやJShell,PGQLの利用が可能で、将来的にはPythonもサポート予定となっています。
-    ![creatednotebook](notebookcreated.png)
  
-1. コードの実行
+1. 最初に、グラフをインメモリ・グラフサーバにロードします。
+以下のクエリを実行し、組み込みのセッションオブジェクトを使ってデータベースからグラフをメモリに読み込み、読み込まれたグラフを扱うPgXGraphオブジェクトを生成します。
 
-    コードを記載後、三角形の実行ボタンを押すことでプログラムの結果が出力されます。
-    一旦全てのグラフをクエリしてみます。下記コードで指定したグラフ名のグラフ全てをクエリ可能です。
-
-    ```sql
-    %pgql-pgx
-    SELECT * 
-    FROM MATCH ()-[e]->() ON bank_graph
-    ```
-
-1. ノードとエッジの表示
-
-    実行した後は、特にラベル等もついていないので、ノードとエッジのみが表示されます。
-    ![notebooksa](notebooksa.png)
-
-1. ビジュアライゼーションの変更
-
-    グラフの見た目の変更は下記ボタン部分から設定画面を開くことが可能です。
-    ![notehl](notehl.png)
-    
-    ビジュアライゼーションの変更を行う場合、は設定のラベリングから、ノードとエッジのラベルを指定します。
-    ![noteviz](noteviz.png)
-    ![notel](notel.png)
-    
-    設定を完了すると、それぞれのノードとエッジに指定したラベルが表示されます。ビジュアライゼーションの設定はノートブックの段落ごとに行う必要があるため、段落のクローニングを行うと、設定が引き継がれたまま、別の段落でのクエリが可能になります。クローニングができたら、別のコードを上書きして実行をします。
-    ![notebookcl](notebookcl.png)
-
-1. クエリの実行
-
-    それではここでも、ID934の口座に対して、５ホップでまたa0に戻ってくるようなパターンのものをクエリしてみましょう。先ほどのデータベースへのクエリ画面で行った場合、結果は一覧で表示されましたが、ノートブックはクエリ結果としてグラフ状の表示が可能となっております。
+    三角形の実行ボタンをクリックし、クエリを実行します。
 
     ```sql
-    %pgql-pgx
-    select *
-    from match (a0)-[t1]->(a1)-[t2]->(a2)-[t3]->(a3)-[t4]->(a4)-[t5]->(a0) on bank_graph
-    where a0.acct_id=934 and all_different(a0, a1, a2, a3, a4)
+    %python-pgx
+    GRAPH_NAME="BANK_GRAPH"
+    # try getting the graph from the in-memory graph server
+    graph = session.get_graph(GRAPH_NAME)
+    # if it does not exist read it into memory
+    if (graph == None) :
+        session.read_graph_by_name(GRAPH_NAME, "pg_view")
+        print("Graph "+ GRAPH_NAME + " successfully loaded")
+        graph = session.get_graph(GRAPH_NAME)
+    else :
+        print("Graph '"+ GRAPH_NAME + "' already loaded")
     ```
 
+1. 先ずは、転送数が多い銀行口座の上位10口座を探してみます。
+    以下のクエリを実行します。
 
-    ![5hid934](5hid934.png)
+        %pgql-pgx
+        /* List 10 accounts with the most number of transactions (that is, incoming + outgoing edges) */
+        SELECT a.acct_id, (in_degree(a) + out_degree(a)) AS num_transactions
+        FROM MATCH (a) ON bank_graph
+        ORDER BY num_transactions DESC
+        LIMIT 10
+
+    口座934と387がリストの上位にあることが分かります。
+
+    ![alt text](30.png)
+
+1. それでは転送数の多い、口座934を起点とする循環転送があるかどうかを確認してみます。
+    以下のクエリを実行します。
+
+        ```sql
+        %pgql-pgx
+        /* Check if there are any circular payment chains of length 4 from acct 934 */
+        SELECT v,e,v2
+        FROM MATCH ALL (a)-[:TRANSFERS]->{4}(b) ON bank_graph ONE ROW PER STEP (v,e,v2)
+        WHERE a.acct_id=934 AND id(a) = id(b)
+        LIMIT 100
+        ```
+    934で始まり、934で終わる長さ3ホップのサークルがあることが分かりました。
     
-    ノートブック上では、グラフアルゴリズムを活用することが可能になっており、ノード間での最短経路を求めることも可能です。これを用いて、直接やりとりの無い口座間において、仲介をしている可能性のある口座を探すことができます。
+    ![alt text](31.png)
 
-    今回は口座番号934と66の間の取引の最短経路を求めました。この二つの口座間では直接の口座取引はありませんが、間接的な経路が存在する可能性を調査する目的でこのクエリを行っています。
+1. 上記のクエリを変更して、長さを5ホップにした場合の循環転送の数を確認してみます。
+    資金が循環して動くときは詐欺の可能性があるので、循環転送の数が多い場合は違法行為をしている口座である場合が高くなります。
+    以下のクエリを実行します。
 
+        %pgql-pgx
+        /* Check if there are any circular payment chains of length 5 from acct 934 */
+        SELECT v,e,v2
+        FROM MATCH ALL (a)-[:TRANSFERS]->{5}(b) ON bank_graph ONE ROW PER STEP (v,e,v2)
+        WHERE a.acct_id=934 AND id(a) = id(b)
+        LIMIT 100
+
+    934で始まり、934で終わる循環転送の数が多いので、この口座が疑わしいということになります。
+
+    ![alt text](32.png)
+
+1. ShortestPathHopDist() という分析アルゴリズムを使用し、アカウント934とアカウント387に近接しているアカウントを調べます。ShortestPathHopDist()は、934、387とグラフ内の他のすべてのアカウント間の最小ホップ数を計算します。ホップ数が少ないほど、アカウントが違法行為に関与している可能性が高くなります。
     ```sql
-    %pgql-pgx
-    SELECT ARRAY_AGG(a.acct_id) AS list_of_accounts
-        , ARRAY_AGG(ID(t))    AS list_of_transactions
-        , MIN(t.amount)       AS min_amount_on_path
-    FROM MATCH TOP 5 SHORTEST ((a1) (-[t]->(a))* (a2)) on bank_graph
-    WHERE a1.acct_id = 934 AND a2.acct_id = 66
-    ORDER BY MIN(t.amount) DESC
+    %python-pgx
+    #By default this is property refers to account #934
+    vertex = graph.get_vertex("BANK_ACCOUNTS(934)")
+    analyst.shortest_path_hop_distance(graph, vertex, "hop_dist_from_934")
+
+    %python-pgx
+    vertex = graph.get_vertex("BANK_ACCOUNTS(387)")
+    analyst.shortest_path_hop_distance(graph, vertex, "hop_dist_from_387")
     ```
 
-    ![t934-66.png](t934-66.png)
+1. 934と387から2ホップ以下で繋がっている口座のトランザクション数を見てみます。
+
+        %pgql-pgx
+        SELECT a.acct_id, a.hop_dist_from_934 AS hops, in_degree(a) + out_degree(a) AS num_transactions FROM MATCH (a) ON bank_graph
+        WHERE hops > 0 AND hops <=2 
+        ORDER BY num_transactions DESC
+
+        %pgql-pgx
+        SELECT a.acct_id, a.hop_dist_from_387 AS hops, in_degree(a) + out_degree(a) AS num_transactions FROM MATCH (a) ON bank_graph
+        WHERE hops > 0 AND hops <=2 
+        ORDER BY num_transactions DESC
+
+    934と近い口座として135、そして387と近い口座として534が挙げられます。これらも違法行為に関与している可能性があります。
+
+    ![alt text](33.png)
+
+
+1. 循環転送の数等を調べる以外にも、DeepWalkというグラフ機械学習アルゴリズムを使って違法行為に使用された可能性のある銀行口座を探すことが出来ます。
+以下のクエリを実行します。
+
+        %python-pgx
+
+        model = analyst.deepwalk_builder(
+        learning_rate=0.002,
+        num_epochs=30,
+        seed=1,
+        )
+
+2. 機械学習アルゴリズムなので、モデルをトレーニングする必要があります。以下のクエリを実行します。
+
+        %python-pgx
+        import time
+        start_ts = time.time()
+        model.fit(graph)
+        print("DeepWalk model training completed in {:.4f} seconds".format(time.time() - start_ts))
+
+1. 先ずは、口座934に類似した口座を探してみます。
+
+        %python-pgx
+        similars_934 = model.compute_similars("BANK_ACCOUNTS(934)", 10)
+        print("List of nodes most similar to node 934.")
+        similars_934.print()
     
-    結果を確認すると、直接指定した934と66にやり取りはありませんが、別の口座とのやり取りをたどることで、二つの口座にはつながりがあることが分かり、口座番号934と66の間の取引の最短経路が分かりました。
+    口座387の他に、怪しいと思われている口座135、534が上位に表示されています。
 
-    上記クエリの結果で表示された経路を下記のようにクエリいただくと、経路を確認することが可能です。
+    ![alt text](34.png)
 
-    ```sql
-    %pgql-pgx
-    SELECT *
-    FROM MATCH (a1)-[t]->(a2) on bank_graph
-    WHERE ID(t) IN (1762,845)
-    ```
+1. 次に、口座387に類似した口座を探してみます。
 
-    ![t934-66id1762-845.png](t934-66id1762-845.png)
+        %python-pgx
+        similars_387 = model.compute_similars("BANK_ACCOUNTS(387)", 10)
+        print("List of nodes most similar to node 387.")
+        similars_387.print()
+    
+    口座934の他に、口座135、534が今回も上位に表示されました。
+    この結果から、口座934、387、135、534が違法行為に関与している可能性が高いと言えます。
+
+    ![alt text](35.png)
+
+    グラフのアルゴリズムを活用し、違法行為に加担している可能性の高い口座を見つける事が出来ました。
 
 # まとめ
 今回の記事を実践いただき、Graph Studioの利用の始め方から簡単なクエリの方法までご理解いただけたかと思います。
@@ -450,7 +410,7 @@ csvのデータをデータベースにアップロードすることが完了�
 # 参考資料
 
 + Oracle LiveLabs
-["Graph Studio: Finding Circular Payment Chains using Graph Queries Workshop"](https://apexapps.oracle.com/pls/apex/dbpm/r/livelabs/workshop-attendee-2?p210_workshop_id=770&p210_type=3&session=8859536952446)
+["Graph Studio: Find Circular Payment Chains with Graph Queries in Autonomous Database"](https://apexapps.oracle.com/pls/apex/r/dbpm/livelabs/view-workshop?wid=770&clear=RR,180&session=109952730335961)
 
 
 <BR>

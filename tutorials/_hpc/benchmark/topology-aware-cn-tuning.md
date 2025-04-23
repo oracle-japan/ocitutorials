@@ -8,9 +8,6 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** は、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。  
-本パフォーマンス関連Tipsは、この **クラスタ・ネットワーク** のレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性能を最適化する方法を解説します。
-
 ***
 # 0. 概要
 
@@ -39,11 +36,11 @@ header:
 
 このようして取得した **クラスタ・ネットワーク** のトポロジー情報は、ジョブスケジューラ **[Slurm](https://slurm.schedmd.com/)** の持つ **[Topology-aware resource allocation](https://slurm.schedmd.com/topology.html)** に活用することが出来ます。
 
-本テクニカルTipsは、HPCワークロード向けベアメタルシェイプ  **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** と **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を **クラスタ・ネットワーク** と共にデプロイするHPCクラスタを想定し、ノード間通信性能に最適なノード配置を自動的に行う **Slurm** クラスタの構築を、以下のステップに従い解説します。
+本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ  **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **クラスタ・ネットワーク** でノード間接続するHPCクラスタと、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境を前提に、ノード間通信性能に最適なノード配置を自動的に行う **Slurm** クラスタの構築方法を、以下のステップに従い解説します。
 
-- **クラスタ・ネットワーク** トポロジー特定
-- **Topology-aware resource allocation** セットアップ
-- **Topology-aware resource allocation** 稼働確認
+1. **クラスタ・ネットワーク** トポロジー特定
+2. **Topology-aware resource allocation** セットアップ
+3. **Topology-aware resource allocation** 稼働確認
 
 ***
 # 1. クラスタ・ネットワークトポロジー特定
@@ -62,21 +59,21 @@ $
 
 | ラックID        | リーフスイッチ | インスタンス        |
 | :----------: | :-----: | :-----------: |
-| 3eec....f88e | ls0     | inst-0shbg-x9 |
-|              |         | inst-91oup-x9 |
-| 820b....ea28 | ls1     | inst-el428-x9 |
-|              |         | inst-nzy6b-x9 |
+| 3eec....f88e | ls0     | inst-aaaaa-x9 |
+|              |         | inst-bbbbb-x9 |
+| 820b....ea28 | ls1     | inst-ccccc-x9 |
+|              |         | inst-ddddd-x9 |
 
 ***
 # 2. Topology-aware resource allocationセットアップ
 
 本章は、先に取得した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** のトポロジー情報を元に、 **Slurm** の **Topology-aware resource allocation** をセットアップします。
 
-取得したトポロジー情報から、 **Topology-aware resource allocation** の設定ファイル **topology.conf** を以下のように作成し、これを **slurm.conf** と同じディレクトリに配置します。
+取得したトポロジー情報から、 **Topology-aware resource allocation** の設定ファイル **topology.conf** を以下のように作成し、これをSlurmマネージャと全ての計算ノードで **slurm.conf** と同じディレクトリに配置、ファイルのオーナーユーザ・グループをslurmとします。
 
 ```sh
-SwitchName=ls0 Nodes=inst-0shbg-x9,inst-91oup-x9
-SwitchName=ls1 Nodes=inst-el428-x9,inst-nzy6b-x9
+SwitchName=ls0 Nodes=inst-aaaaa-x9,inst-bbbbb-x9
+SwitchName=ls1 Nodes=inst-ccccc-x9,inst-ddddd-x9
 SwitchName=ss0 Switches=ls[0-1]
 ```
 
@@ -86,21 +83,36 @@ SwitchName=ss0 Switches=ls[0-1]
 - それ以外のリーフスイッチ定義行を実際のリーフスイッチ数分作成
 - リーフスイッチ定義行の **Nodes=** に実際のインスタンスの名前解決可能なホスト名を記載
 
-次に、 **slurm.conf** に以下の記述を追加します。
+次に、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードで **slurm.conf** を以下のように修正します。
 
 ```
-$ grep TopologyPlugin slurm.conf 
-TopologyPlugin=topology/tree
+$ diff slurm.conf_org slurm.conf 
+6c6
+< SelectType=select/linear
+---
+> SelectType=select/cons_tres
+22c22
+< NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+---
+> NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+23c23
+< PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+---
+> PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP OverSubscribe=Exclusive
+24a25
+> TopologyPlugin=topology/tree
 $ 
 ```
 
-次に、以下コマンドをslurmctldが動作するノードの **Slurm** 管理者権限を有するユーザで実行します。
+この設定は、リソース選択アルゴリズムを指定する **SelectType** 行に **Topology-aware resource allocation** を可能にする **select/cons_tres** を指定し、これに伴い計算ノードのジョブ共有が有効となってしまうパーティション **sltest** に **OverSubscribe=Exclusive** を指定することで再度ノード占有パーティションであることを宣言し、スパイン・リーフトポロジーのためのプラグイン **topology/tree** を **TopologyPlugin** 行に定義しています。
+
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先の **slurm.conf** の修正を反映します。
 
 ```
-$ scontrol reconfigure
+$ sudo su - slurm -c "scontrol reconfigure"
 ```
 
-この設定が正しく行われると、sbatch・srun・sallocコマンドで以下のオプションが使用可能になります。
+この設定が正しく行われると、 **sbatch** ・ **srun** ・ **salloc** コマンドで以下のオプションが使用可能になります。
 
 **- -switches=max_leaf[@max_wait]**
 
@@ -152,7 +164,7 @@ mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | gr
 $ sbatch no_block.sh
 Submitted batch job 172
 $ cat no_block.out 
-Dispatched hosts are inst-el428-x9,inst-nzy6b-x9
+Dispatched hosts are inst-ccccc-x9,inst-ddddd-x9
 
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.66         0.00
@@ -183,7 +195,7 @@ mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | gr
 #!/bin/bash
 #SBATCH -n 2
 #SBATCH -N 2
-#SBATCH --nodelist=inst-el428-x9,inst-0shbg-x9
+#SBATCH --nodelist=inst-ccccc-x9,inst-aaaaa-x9
 echo "Dispatched hosts are $SLURM_JOB_NODELIST"
 echo
 sleep 120
@@ -198,12 +210,12 @@ Submitted batch job 174
 $ squeue
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
                174    sltest block_ma    miyat PD       0:00      2 (Resources)
-               173    sltest block_su    miyat  R       1:39      2 inst-0shbg-x9,inst-el428-x9
+               173    sltest block_su    miyat  R       1:39      2 inst-aaaaa-x9,inst-ccccc-x9
 $ squeue
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
-               173    sltest block_su    miyat  R       1:40      2 inst-0shbg-x9,inst-el428-x9
+               173    sltest block_su    miyat  R       1:40      2 inst-aaaaa-x9,inst-ccccc-x9
 $ cat block_1min.out
-Dispatched hosts are inst-91oup-x9,inst-nzy6b-x9
+Dispatched hosts are inst-bbbbb-x9,inst-ddddd-x9
 
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         3.03         0.00
@@ -234,7 +246,7 @@ mpirun /usr/mpi/gcc/openmpi-4.1.2a1/tests/imb/IMB-MPI1 -msglog 0:1 PingPong | gr
 #!/bin/bash
 #SBATCH -n 2
 #SBATCH -N 2
-#SBATCH --nodelist=inst-el428-x9,inst-0shbg-x9
+#SBATCH --nodelist=inst-ccccc-x9,inst-aaaaa-x9
 echo "Dispatched hosts are $SLURM_JOB_NODELIST"
 echo
 sleep 120
@@ -249,11 +261,11 @@ Submitted batch job 179
 $ squeue 
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
                179    sltest block_ma    miyat PD       0:00      2 (Resources)
-               178    sltest block_su    miyat  R       0:06      2 inst-0shbg-x9,inst-el428-x9
+               178    sltest block_su    miyat  R       0:06      2 inst-aaaaa-x9,inst-ccccc-x9
 $ squeue 
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
 $ cat block_3min.out 
-Dispatched hosts are inst-el428-x9,inst-nzy6b-x9
+Dispatched hosts are inst-ccccc-x9,inst-ddddd-x9
 
        #bytes #repetitions      t[usec]   Mbytes/sec
             0         1000         1.65         0.00

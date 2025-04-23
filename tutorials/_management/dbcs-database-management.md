@@ -1,6 +1,6 @@
 ---
-title: "OCI Database Cloud ServiceでDatabase Managementを有効化する"
-excerpt: "OCIで利用しているDatabase Cloud Serviceを監視するツールをお探しではありませんか？Database ManagementはOracle DBのメトリック監視はもちろん、ASH分析、SQLモニタリング、ADDM、ブロッキングセッションまで確認することができます。無償でご利用を開始いただけるオプションも提供していますので、是非BaseDBをご利用の方はDatabase Managementを有効化してみてください。"
+title: "Base Database ServiceでDatabase Managementを有効化する"
+excerpt: "OCIで利用しているBase Database Service（以下BaseDB）を監視するツールをお探しではありませんか？Database ManagementはOracle DBのメトリック監視はもちろん、ASH分析、SQLモニタリング、ADDM、ブロッキングセッションまで確認することができます。無償でご利用を開始いただけるオプションも提供していますので、是非BaseDBをご利用の方はDatabase Managementを有効化してみてください。"
 order: "120"
 layout: single
 tags:
@@ -12,13 +12,13 @@ header:
 
 ---
 
-OCI Observability & Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Database Cloud ServiceでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。
+OCI Observability & Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Base DBでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。
 
 
 **所要時間 :** 約50分
 
 **前提条件 :**
-+ OCIのDatabase Cloud Serviceが1インスタンス作成されていること
++ OCIのBaseDBが1インスタンス作成されていること
 - BaseDBのインスタンスの作成方法は[その8-クラウドでOracle Databaseを使う](/ocitutorials/beginners/using-oracle-database)をご参照ください。
 
 **注意 :**
@@ -60,7 +60,7 @@ Allow group <IAMグループ名> to MANAGE cloud-shell in tenancy
 
 # 2. データベースユーザーの作成と権限付与
 
-SQL*PlusなどでBase DBにアクセスして以下コマンドを実行します。
+SQL*PlusなどでBaseDBにアクセスして以下コマンドを実行します。
 ```
 SQL> alter user dbsnmp account unlock;
 User altered.

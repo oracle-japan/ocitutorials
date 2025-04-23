@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)"
 excerpt:  "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCE v2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタをSlurmと連動してデプロイするオンデマンドGPUクラスタを、リソース・マネージャから1クリックで自動構築出来るようになります。"
-order: "1250"
+order: "1260"
 layout: single
 header:
   teaser: "/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
@@ -18,8 +18,8 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の **NVIDIA A100**
 - インターコネクト: **クラスタ・ネットワーク** （ノード当たり100 Gbps x 16）
 - インターネットからSSH接続可能なBastionノード
 - OS: **Oracle Linux** 7.9
-- コンテナランタイム: **Enroot**
-- ジョブスケジューラ: **Slurm** + **Pyxis**
+- コンテナランタイム: **[Enroot](https://github.com/NVIDIA/enroot/)**
+- ジョブスケジューラ: **[Slurm](https://slurm.schedmd.com/)** + **[Pyxis](https://github.com/NVIDIA/pyxis)**
 - オンデマンドクラスタ機能： **[クラスタオートスケーリング](/ocitutorials/hpc/#5-9-クラスタオートスケーリング)**
 - **ファイル・ストレージ** によるGPUクラスタ内ホームディレクトリ共有
 - LDAPによるクラスタ内ユーザ統合管理
@@ -28,7 +28,7 @@ Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の **NVIDIA A100**
 
 またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム（ **[NCCL Tests](https://github.com/nvidia/nccl-tests)** ）で検証後、分散機械学習のサンプルプログラムを実行します。
 
-GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードである **Dokcer** コンテナを利用し、コンテナランタイムに **[Enroot](https://github.com/NVIDIA/enroot/)** 、ジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示する **Slurm** のプラグイン **[Pyxis](https://github.com/NVIDIA/pyxis)** を使用します。
+GPUクラスタのワークロード実行環境は、機械学習環境のデファクトスタンダードである **Dokcer** コンテナを利用し、コンテナランタイムに **Enroot** 、ジョブスケジューラに **Slurm** を採用し、コンテナの操作（インポート・起動・終了等）をジョブスケジューラからコンテナランタイムに指示する **Slurm** のプラグイン **Pyxis** を使用します。
 
 また、コンテナ環境からGPUやNICをRDMAで利用可能とする **[NVIDIA Container Toolkit](https://github.com/NVIDIA/nvidia-container-toolkit)** を含むソフトウェア群もインストールされ、ノードを跨ぐGPU間通信を高帯域・低遅延でコンテナ上から実行することが可能です。この通信性能詳細は、 **[3-0. 概要](#3-0-概要)** を参照ください。
 
@@ -350,6 +350,7 @@ BastionノードのLDAPユーザで、以下のジョブスクリプトをファ
 #SBATCH --gpus-per-node=8
 export NCCL_IB_QPS_PER_CONNECTION=4
 export NCCL_IB_GID_INDEX=3
+export NCCL_IB_HCA="=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"
 srun --container-image=nvcr.io#nvidia/tensorflow:22.11-tf2-py3 --container-name=tensorflow --mpi pmi2 bash -c "cd /tmp; git clone https://github.com/NVIDIA/nccl-tests.git; cd ./nccl-tests; make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu; sleep 60; ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 8"
 ```
 

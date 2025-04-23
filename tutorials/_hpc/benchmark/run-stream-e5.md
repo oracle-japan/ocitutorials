@@ -1,6 +1,6 @@
 ---
 title: "STREAM実行方法（BM.Standard.E5.192編）"
-excerpt: "本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Standard.E5.192で、標準ベンチマークのSTREAMを実行する方法を解説します。"
+excerpt: "本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192でメモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。"
 order: "2121"
 layout: single
 header:
@@ -8,130 +8,171 @@ header:
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
 
-本ドキュメントは、HPCワークロードの実行に最適なベアメタルインスタンス **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、標準ベンチマークの **[STREAM](https://www.cs.virginia.edu/stream/)** を実行する方法を解説します。
-
 ***
 # 0. 概要
 
-本ドキュメントで解説する **STREAM** の実行は、 **[AMD Optimizing C/C++ and Fortran Compilers (AOCC)](https://www.amd.com/en/developer/aocc.html)** （本ドキュメントで使用するバージョンは4.0.0）で **STREAM** のソースコードをコンパイルして作成したバイナリを使用します。
-
-**STREAM** を実行するインスタンスは、HPCワークロード向けベアメタルシェイプ **BM.Standard.E5.192** 1インスタンスとし、OSは **Oracle Linux** 8を使用します。
+本パフォーマンス関連Tipsで解説する **[STREAM](https://www.cs.virginia.edu/stream/)** は、第4世代  **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** のインスタンス上で、 **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）で **STREAM** のソースコードをコンパイルして実行します。
 
 以上より、本ドキュメントで解説する **STREAM** 実行は、以下の手順を経て行います。
 
-- **BM.Standard.E5.192** デプロイ
-- **AOCC** インストール
+- **BM.Standard.E5.192** インスタンス作成
 - **STREAM** ダウンロード・コンパイル
 - **STREAM** 実行
 
-本ドキュメントは、以下の環境で **STREAM** を実行しており、以下の性能が出ています。
+本パフォーマンス関連Tipsは、以下の環境で **STREAM** を実行しており、以下の性能が出ています。
 
 [実行環境]
-- シェイプ: **BM.Standard.E5.192**
-- OS: **Oracle Linux** 8.8
-- **STREAM** : 5.10
-- Cコンパイラ: **AOCC** 4.0.0
-- 配列サイズ(STREAM_ARRAY_SIZE): 430,080,000
+
+- シェイプ： **BM.Standard.E5.192**
+    - CPU： **AMD EPYC** 9654ベース x 2（192コア）
+    - メモリ： DDR5 2.3 TB
+    - 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）
+    - メモリ帯域： 921.6 GB/s
+    - **Simultanious Multi Threading** （以降 **SMT** と呼称します。）： 無効
+    - **NUMA nodes per socket** （以降 **NPS** と呼称します。）： **1** / **4**
+- OS： **Oracle Linux** 9.5
+- コンパイラ： **AOCC** 5.0
+- **STREAM**
+    - バージョン： 5.10
+    - 配列サイズ(STREAM_ARRAY_SIZE)： 430,080,000
 
 [実行結果]
-- Triad(MB/s): 718,954
+
+- Triad(MB/s)
+    - 715,650.4（ **NPS** が **1** の場合）
+    - 753,699.8（ **NPS** が **4** の場合）
+
+※1） **NPS** が **4** の場合は **1** に対して **5.3 パーセント** の性能向上が見られます。
 
 ***
-# 1. BM.Standard.E5.192のデプロイ
+# 1. BM.Standard.E5.192インスタンス作成
 
-本章は、 **BM.Standard.E5.192** を1インスタンスデプロイします。
+本章は、 **STREAM** を実行するインスタンスを作成します。
 
-インスタンスのデプロイは、OCIチュートリアル **[インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い、以下属性のインスタンスを作成します。
+作成するインスタンスは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** の手順に従い、以下属性のインスタンスを作成します。
 
-- イメージ: Oracle Linux 8
-- Shape: BM.Standard.E5.192
+- イメージ： **Oracle Linux** 9.5（Oracle-Linux-9.5-2025.02.28-0）
+- シェイプ： **BM.Standard.E5.192**
+  - **SMT** ： 無効（※2）
+  - **NPS** ： **1** / **4** （※2）
+
+※2）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
 
 ***
-# 2. AOCCインストール
+# 2. STREAMダウンロード・コンパイル
 
-本章は、 **AOCC** をインストールします。
+本章は、 **STREAM** のソースコードをダウンロードし、 **AOCC** でコンパイルして実行バイナリを作成します。
 
-以下コマンドを先にデプロイしたインスタンスのopcユーザで実行し、 **AOCC** をインストールします。
+以下コマンドを **STREAM** を実行するノードの **STREAM** を実行するユーザで実行します。
 
 ```sh
-$ sudo dnf install -y patch gcc-c++ gcc-gfortran git
-$ git clone --depth=100 --branch=releases/v0.20 https://github.com/spack/spack.git ~/spack
-$ cd ~/spack/
-$ . share/spack/setup-env.sh
-$ spack install aocc +license-agreed
+$ mkdir ~/stream
+$ cd ~/stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+$ source /opt/aocc/setenv_AOCC.sh
+$ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c
 ```
 
 ***
-# 3. STREAMダウンロード・コンパイル
+# 3. STREAM実行
 
-本章は、 **STREAM** のソースコードをダウンロードし、先にインストールした **AOCC** でコンパイルして実行バイナリを作成します。
+## 3-0. 概要
 
-以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行します。
+本章は、先に作成した **STREAM** の実行バイナリを使用し、以下の手順で **STREAM** を実行します。
+
+1. OS再起動（※3）
+2. **STREAM** 実行
+
+※3）OS起動直後の状態でメモリ性能を計測する目的で実施します。
+
+## 3-1. OS再起動
+
+以下コマンドを **STREAM** を実行するノードのopcユーザで実行し、OSを再起動します。
 
 ```sh
-$ wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
-$ spack load aocc
-$ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c 
+$ sudo shutdown -r now
 ```
 
-***
-# 4. STREAM実行
+## 3-2. STREAM実行
 
-本章は、先に作成した **STREAM** の実行バイナリを使用し、 **STREAM** を実行します。  
-具体的には、以下の作業を実施します。
+以下コマンドを **STREAM** を実行するノードの **STREAM** を実行するユーザで実行します。  
+ここでは、 **BM.Standard.E5.192** で **STREAM** の性能を最大化させるため、OpenMPのスレッド数とスレッド配置をそれぞれ環境変数 **OMP_NUM_THREADS** と **OMP_PLACES** ・ **OMP_PROC_BIND** で指定し、 **STREAM** を実行しています。
 
-- OS再起動
-- スレッドアフィニティ用環境変数指定
-- **STREAM** 実行
+[ **NPS1** の場合]
 
-1. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、OSを再起動します。
+```sh
+$ cd ~/stream && OMP_PLACES=0:96:2 OMP_NUM_THREADS=96 OMP_PROC_BIND=spread ./a.out
+-------------------------------------------------------------
+STREAM version $Revision: 5.10 $
+-------------------------------------------------------------
+This system uses 8 bytes per array element.
+-------------------------------------------------------------
+Array size = 430080000 (elements), Offset = 0 (elements)
+Memory per array = 3281.2 MiB (= 3.2 GiB).
+Total memory required = 9843.8 MiB (= 9.6 GiB).
+Each kernel will be executed 10 times.
+ The *best* time for each kernel (excluding the first iteration)
+ will be used to compute the reported bandwidth.
+-------------------------------------------------------------
+Number of Threads requested = 96
+Number of Threads counted = 96
+-------------------------------------------------------------
+Your clock granularity/precision appears to be 1 microseconds.
+Each test below will take on the order of 10875 microseconds.
+   (= 10875 clock ticks)
+Increase the size of the arrays if this shows that
+you are not getting at least 20 clock ticks per test.
+-------------------------------------------------------------
+WARNING -- The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+-------------------------------------------------------------
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:          681724.7     0.010136     0.010094     0.010191
+Scale:         685595.0     0.010068     0.010037     0.010095
+Add:           721807.1     0.014329     0.014300     0.014359
+Triad:         715650.4     0.014469     0.014423     0.014515
+-------------------------------------------------------------
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+-------------------------------------------------------------
+$
+```
 
-    ```sh
-    $ sudo shutdown -r now
-    ```
+[ **NPS4** の場合]
 
-2. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** の性能向上を目的としたスレッドアフィニティの設定を適用します。
-
-    ```sh
-    $ export OMP_NUM_THREADS=96
-    $ export KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]"
-    ```
-
-3. 以下コマンドを **STREAM** を実行するインスタンスのopcユーザで実行し、 **STREAM** を実行します。
-
-    ```sh
-    $ ./a.out
-    -------------------------------------------------------------
-    STREAM version $Revision: 5.10 $
-    -------------------------------------------------------------
-    This system uses 8 bytes per array element.
-    -------------------------------------------------------------
-    Array size = 430080000 (elements), Offset = 0 (elements)
-    Memory per array = 3281.2 MiB (= 3.2 GiB).
-    Total memory required = 9843.8 MiB (= 9.6 GiB).
-    Each kernel will be executed 10 times.
-    The *best* time for each kernel (excluding the first iteration)
-    will be used to compute the reported bandwidth.
-    -------------------------------------------------------------
-    Number of Threads requested = 96
-    Number of Threads counted = 96
-    -------------------------------------------------------------
-    Your clock granularity/precision appears to be 1 microseconds.
-    Each test below will take on the order of 10868 microseconds.
-    (= 10868 clock ticks)
-    Increase the size of the arrays if this shows that
-    you are not getting at least 20 clock ticks per test.
-    -------------------------------------------------------------
-    WARNING -- The above is only a rough guideline.
-    For best results, please be sure you know the
-    precision of your system timer.
-    -------------------------------------------------------------
-    Function    Best Rate MB/s  Avg time     Min time     Max time
-    Copy:          686067.7     0.010067     0.010030     0.010102
-    Scale:         688128.7     0.010041     0.010000     0.010080
-    Add:           723375.0     0.014301     0.014269     0.014346
-    Triad:         718954.3     0.014377     0.014357     0.014406
-    -------------------------------------------------------------
-    Solution Validates: avg error less than 1.000000e-13 on all three arrays
-    -------------------------------------------------------------
-    ```
+```sh
+$ cd ~/stream && OMP_PLACES=0:96:2 OMP_NUM_THREADS=96 OMP_PROC_BIND=spread ./a.out
+-------------------------------------------------------------
+STREAM version $Revision: 5.10 $
+-------------------------------------------------------------
+This system uses 8 bytes per array element.
+-------------------------------------------------------------
+Array size = 430080000 (elements), Offset = 0 (elements)
+Memory per array = 3281.2 MiB (= 3.2 GiB).
+Total memory required = 9843.8 MiB (= 9.6 GiB).
+Each kernel will be executed 10 times.
+ The *best* time for each kernel (excluding the first iteration)
+ will be used to compute the reported bandwidth.
+-------------------------------------------------------------
+Number of Threads requested = 96
+Number of Threads counted = 96
+-------------------------------------------------------------
+Your clock granularity/precision appears to be 1 microseconds.
+Each test below will take on the order of 9512 microseconds.
+   (= 9512 clock ticks)
+Increase the size of the arrays if this shows that
+you are not getting at least 20 clock ticks per test.
+-------------------------------------------------------------
+WARNING -- The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+-------------------------------------------------------------
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:          719952.6     0.009600     0.009558     0.009660
+Scale:         705125.1     0.009805     0.009759     0.009873
+Add:           752324.6     0.013776     0.013720     0.013820
+Triad:         753699.8     0.013741     0.013695     0.013785
+-------------------------------------------------------------
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+-------------------------------------------------------------
+$
+```

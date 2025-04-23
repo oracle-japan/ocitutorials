@@ -48,7 +48,7 @@ Autonomous Database では、事前に定義済の接続サービスが用意さ
 選択可能な接続サービスの種類は、次の通りです。
 <br>Autonomous Data Warehouse(ADW) では３種類、Autonomous Transaction Processing(ATP)では5種類あり、ワークロード適したものを選択します。
 
-<div style="text-align: center"><img src="img_service.jpg"></div>
+![img_service.png](img_service.png)
 
 
 
@@ -101,7 +101,7 @@ Autonomous Database では、事前に定義済の接続サービスが用意さ
       <li><b>TP</b>を利用
         <ul>
             <li>単一のCPUコアで処理させるため</li>
-            <li>手動でパラレル度を制御したい場合、もしくは最優先したい特別な処理の場合は、<b>TPURGENT</b>を推奨</li>
+            <li>手動でパラレル度を制御したい場合、もしくは最優先したい特別な処理の場合は、<b>TPURGENT</b>を推奨</li>
         </ul>
     　</li>
     <br><div style="text-align: center"><img src="img_oltp.png"></div>
@@ -114,7 +114,7 @@ Autonomous Database では、事前に定義済の接続サービスが用意さ
       <li><b>MEDIUM</b>を利用
         <ul>
             <li>複数のCPUコアで処理させるため</li>
-            <li>動的にパラレル処理されるだけでなく、キューイングも実装されているため、効率よく処理できる</li>
+            <li>動的にパラレル処理されるだけでなく、キューイングも実装されているため、効率よく処理できる</li>
             <li>同時実行セッション数が3よりも少ない場合は<b>HIGH</b>を推奨</li>
         </ul>
       </li>
@@ -240,7 +240,7 @@ CPU/IOのシェアとは、各接続サービス（コンシューマ・グル�
 事前定義されたサービスの1つを選択すると、ほとんどのアプリケーションで適切に機能する同時実行セッション数が提供されます。<br>
 しかし、デフォルトのサービスの1つを選択してもアプリケーションのパフォーマンスのニーズが満たされない場合は、**`MEDIUM`** サービスのみ同時実行性の制限を変更することができます。<br>
 
-同時実行制限を変更すると、OCPUの数と選択した同時実行制限に基づいて、 **`並列度（DOP）`** が再計算されます。
+同時実行制限を変更すると、ECPUの数と選択した同時実行制限に基づいて、 **`並列度（DOP）`** が再計算されます。
 ※ 並列度は、単一の処理に対応付けられるパラレル実行サーバーの数で表される値です。
 
 <br>ATPにおける各接続サービスのデフォルトの同時ステートメント数は、次の法則に従って定義されます。
@@ -254,11 +254,11 @@ CPU/IOのシェアとは、各接続サービス（コンシューマ・グル�
     </tr>
     <tr>
       <td>tpurgent</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
     <tr>
       <td>tp</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
     <tr>
       <td>high</td>
@@ -266,33 +266,33 @@ CPU/IOのシェアとは、各接続サービス（コンシューマ・グル�
     </tr>
     <tr>
       <td><div style="color:#c74634"><b>medium</b></div></td>
-      <td><div style="color:#c74634"><b>1 ~ 3×OCPU数 の間で調整可能</b></div></td>
+      <td><div style="color:#c74634"><b>0.125~0.75×ECPU数の間で調整可能</b></div></td>
     </tr>
     <tr>
       <td>low</td>
-      <td>300×OCPU数</td>
+      <td>75×ECPU数</td>
     </tr>
   </table>
   </div>
 
 
-<br>ただし、MEDIUMサービスにおける同時実行制限の変更は、2つ以上のOCPUを持つインスタンスでのみ許可されます。
+<br>ただし、MEDIUMサービスにおける同時実行制限の変更は、4つ以上のECPUを持つインスタンスでのみ許可されます。
 
 サービスの同時実効性についての詳細は[こちら](https://docs.oracle.com/en/cloud/paas/autonomous-database/adbsa/manage-service-concurrency.html)を参照ください。
 
 
 1. **`同時実効性の制限`** タブをクリックします。
 
-    ![img5_1.png](img5_1.png)
+    ![img5_1.png](img5_1_new.png)
 
 2. MEDIUMの同時実効性の制限を変更します。
   デフォルト設定を確認し、数値を変更できることをご確認ください。
   変更の保存はせず、デフォルト値のままで結構です。
   
-    ![img5_2.png](img5_2.png)
+    ![img5_2.png](img5_2_new.png)
 
-    OCPU数を2に設定しているため、同時実効性の制限を 1 ~ 6の間で変更することができます。
-    なお、OCPU数はADBの実行中にも変更可能です。
+    ECPU数を8に設定しているため、同時実効性の制限を1~6の間で変更することができます。
+    なお、ECPU数はADBの実行中にも変更可能です。
 
 以上で、この章の作業は終了です。
 

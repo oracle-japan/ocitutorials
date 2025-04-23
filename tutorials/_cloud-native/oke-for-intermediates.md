@@ -38,12 +38,12 @@ Oracle Cloud Infrastructureの基本操作は[チュートリアル : OCIコン�
 
 ![0-000.jpg](0-000.jpg)
 
-構成要素|説明
--|-
-OKE |アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。
-OCI DevOps| OKE Clusterに対してアプリケーションのデプロイ(CI/CD)を実施するサービスです。
-Autonomous Transaction Processing|今回デプロイするサンプルアプリケーションが利用するデータベースです。
-OCIR/Artifact Registry|コンテナイメージなどのビルド成果物およびマニフェストなどを保存するレポジトリです。
+| 構成要素                          | 説明                                                                                                                                  |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| OKE                               | アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。 |
+| OCI DevOps                        | OKE Clusterに対してアプリケーションのデプロイ(CI/CD)を実施するサービスです。                                                          |
+| Autonomous Transaction Processing | 今回デプロイするサンプルアプリケーションが利用するデータベースです。                                                                  |
+| OCIR/Artifact Registry            | コンテナイメージなどのビルド成果物およびマニフェストなどを保存するレポジトリです。                                                    |
 
 この全体像のうち、OKEに関しては、すでに[OKEハンズオン事前準備](/ocitutorials/cloud-native/oke-for-commons/)で構築済みとなります。  
 
@@ -53,14 +53,14 @@ OCIR/Artifact Registry|コンテナイメージなどのビルド成果物およ
 ここでは、後続の手順で利用するトークンやリソースの準備を行います。  
 準備する項目は以下の6つです。  
 
-項目|説明
--|-
-ハンズオン資材 |本ハンズオンで利用するサンプルアプリケーションやスクリプトが含まれたプロジェクトです。Cloud Shell上にpullします。
-ユーザ名|OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-認証トークン| OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。
-オブジェクト・ストレージ・ネームスペース|OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。
-コンパートメントOCID|ATPをプロビジョニングする際に利用する情報です。  
-OCIRレポジトリ|今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。
+| 項目                                     | 説明                                                                                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ハンズオン資材                           | 本ハンズオンで利用するサンプルアプリケーションやスクリプトが含まれたプロジェクトです。Cloud Shell上にpullします。                                |
+| ユーザ名                                 | OCIのリソース操作に必要なユーザ名です。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。                                              |
+| 認証トークン                             | OCIのリソース操作に必要なトークンです。今回は、OCI DevOpsのGit Repositoryへのアクセスに利用します。                                              |
+| オブジェクト・ストレージ・ネームスペース | OCIRへのアクセスやOCI DevOpsのGit Repositoryへのアクセスに必要な情報です。                                                                       |
+| コンパートメントOCID                     | ATPをプロビジョニングする際に利用する情報です。                                                                                                  |
+| OCIRレポジトリ                           | 今回のサンプルアプリケーションのコンテナイメージを格納するためのOCIR上のレポジトリです。今回は事前準備としてパブリックなレポジトリを作成します。 |
 
 OCIRレポジトリについては、[ゴールを確認する](#ゴールを確認する)で示した図でいうと、赤点線枠(![2-032.jpg](2-032.jpg))の部分を作成していきます。  
 
@@ -108,9 +108,9 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 
 以下の項目を入力します。
 
-key|value|
--|-
-説明|oke handson
+| key  | value       |
+| ---- | ----------- |
+| 説明 | oke handson |
 
 ![0-004.jpg](0-004.jpg)
 
@@ -185,10 +185,10 @@ OCIRのコンソール画面はデフォルトでルートコンパートメン�
 
 以下の項目を入力します。  
 
-key|value|
--|-
-リポジトリ名|handson
-アクセス|`パブリック`を選択
+| key          | value              |
+| ------------ | ------------------ |
+| リポジトリ名 | handson            |
+| アクセス     | `パブリック`を選択 |
 
 **レポジトリ名について**  
 OCIRのレポジトリ名はテナンシで一意になります。  
@@ -214,9 +214,9 @@ Oracle Cloud Infrastrctureにはポリシーという考え方があります。
 
 今回は、ポリシーの作成(動的グループを含む)をシェルスクリプトで簡略化していますが、以下の動的グループとポリシーが設定されます。
 
-動的グループ|ルール|説明|
--|-
-OCI_DevOps_Dynamic_Group|instance.compartment.id = 'コンパートメントOCID',resource.compartment.id = 'コンパートメントOCID'|コンパートメント内の全てのリソースやインスタンスを含めた動的グループ
+| 動的グループ             | ルール                                                                                            | 説明                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| OCI_DevOps_Dynamic_Group | instance.compartment.id = 'コンパートメントOCID',resource.compartment.id = 'コンパートメントOCID' | コンパートメント内の全てのリソースやインスタンスを含めた動的グループ |
 
 **コンパートメントについて**  
 Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。  
@@ -235,13 +235,13 @@ Oracle Cloud Infrastrctureには動的グループという考え方がありま
 本来は、各サービスのタイプを指定して動的グループを作成することになります。
 {: .notice--warning}  
 
-ポリシー|説明
--|-
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'|OCI DevOpsが自身が持つ各機能を利用可能にするポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'|OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'|OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'|OCI DevOpsがOKEを管理するためのポリシー
-Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id 'コンパートメントOCID'|後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー
+| ポリシー                                                                                                                   | 説明                                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id 'コンパートメントOCID'              | OCI DevOpsが自身が持つ各機能を利用可能にするポリシー                                                                 |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id 'コンパートメントOCID'              | OCI DevOpsがOCIRやアーティファクト・レジストリを管理可能とするポリシー                                               |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id 'コンパートメントOCID'                    | OCI DevOpsがOCI Notificationsサービス(後続の手順で作成予定)を利用可能とするポリシー                                  |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id 'コンパートメントOCID'             | OCI DevOpsがOKEを管理するためのポリシー                                                                              |
+| Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id 'コンパートメントOCID' | 後続の手順で登場するOracle Database Operator(OraOperator)がAutonomous Transaction Processingを管理可能とするポリシー |
 
 **DevOpsのポリシーについて**  
 DevOpsでは、利用する機能やデプロイ先に応じて、今回設定しているポリシーの他にもいくつか設定可能なポリシーがあります。  
@@ -278,53 +278,53 @@ chmod +x prepare.sh
 以下のように出力されれば問題ありません。
 
 ```sh
-ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq
+ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq
 {
   "data": {
-    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "compartment-id": "ocid1.tenancy.oc1..aaaaaaaafxxxxxxxxxxxxxxxxxxxxxxxxxxxxxppw5f6regxxumqcsrmoq",
     "defined-tags": {
       "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/xxxxxx.xxxxxx@gmail.com",
-        "CreatedOn": "2022-01-31T01:35:54.465Z"
+        "CreatedBy": "default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com",
+        "CreatedOn": "2025-03-26T05:45:58.492Z"
       }
     },
     "description": "OCI_DevOps_Dynamic_Group",
     "freeform-tags": {},
-    "id": "ocid1.dynamicgroup.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "id": "ocid1.dynamicgroup.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxxxxxxxxvltzj7vldgslaz5hua",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
-    "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq',instance.compartment.id = 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq'}",
+    "matching-rule": "any {resource.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4gczc3p5xxxxxxxxxxxxxxxxxxxxxxxxxxumqcsrmoq',instance.compartment.id = 'ocid1.tenancy.oc1..aaaaaaaaf7srpqhw4xxxxxxxxxxxxxxxxxxxxxxxxxxw5f6regxxumqcsrmoq'}",
     "name": "OCI_DevOps_Dynamic_Group",
-    "time-created": "2022-01-31T01:35:54.528000+00:00"
+    "time-created": "2025-03-26T05:45:58.531000+00:00"
   },
-  "etag": "66c9058cf8f1145ce9047130c4a266d816e9dfbf"
+  "etag": "b28e8bb753174a839b28e9ec3120cbc9"
 }
 {
   "data": {
-    "compartment-id": "ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "compartment-id": "ocid1.tenancy.oc1..aaaaaaaaf7srpxxxxxxxxxxxxxxxxxxxxxxxxxxregxxumqcsrmoq",
     "defined-tags": {
       "Oracle-Tags": {
-        "CreatedBy": "oracleidentitycloudservice/xxxx.xxxx@gmail.com",
-        "CreatedOn": "2022-01-31T01:35:57.108Z"
+        "CreatedBy": "default/xxxxxxxxxxxxxxxxxxxxxxxxxx@oracle.com",
+        "CreatedOn": "2025-03-26T05:45:59.352Z"
       }
     },
     "description": "OCI_DevOps_Policy",
     "freeform-tags": {},
-    "id": "ocid1.policy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
+    "id": "ocid1.policy.oc1..aaaaaaaavb4nczi5asxxxxxxxxxxxxxxxxxxxxxxxxxxg3at6fsq",
     "inactive-status": null,
     "lifecycle-state": "ACTIVE",
     "name": "OCI_DevOps_Policy",
     "statements": [
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq",
-      "Allow dynamic-group OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id ocid1.tenancy.oc1..aaxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx55asqdzge45nq"
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage devops-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to use ons-topics in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage autonomous-database-family in compartment id ocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq",
+      "Allow dynamic-group Default/OCI_DevOps_Dynamic_Group to manage cluster-family in compartment id oocid1.tenancy.oc1..aaaaaxxxxxxxxxxxxxxxxxxx6regxxumqcsrmoq"
     ],
-    "time-created": "2022-01-31T01:35:57.220000+00:00",
+    "time-created": "2025-03-26T05:45:59.374000+00:00",
     "version-date": null
   },
-  "etag": "e0fb30d026d2a4f091058c2f686d51996ea59f8c"
+  "etag": "bd8cde78b30dc54245a050768536dd05b02da6d1"
 }
 ```
 
@@ -364,9 +364,9 @@ OCIコンソールのハンバーガメニューより、「開発者サービ�
 
 以下の項目を入力し、![2-004.jpg](2-004.jpg)をクリックします。  
 
-key|value|
--|-
-名前|oke-handson
+| key  | value       |
+| ---- | ----------- |
+| 名前 | oke-handson |
 
 **OCI Notifications名について**  
 OCI Notifications名はテナンシで一意になります。  
@@ -383,9 +383,9 @@ OCI Notifications名はテナンシで一意になります。
 
 以下の項目を入力し、![2-004.jpg](2-004.jpg)をクリックします。
 
-key|value|
--|-
-電子メールアドレス|ご自身のメールアドレス
+| key                | value                  |
+| ------------------ | ---------------------- |
+| 電子メールアドレス | ご自身のメールアドレス |
 
 ![2-007.jpg](2-007.jpg)
 
@@ -422,9 +422,9 @@ OCIコンソールのハンバーガメニューより、「開発者サービ�
 
 以下の項目を入力します。
 
-key|value|
--|-
-プロジェクト名|oke-handson
+| key            | value       |
+| -------------- | ----------- |
+| プロジェクト名 | oke-handson |
 
 **OCI DevOpsインスタンス名について**  
 OCI DevOpsインスタンス名はテナンシで一意になります。  
@@ -475,9 +475,9 @@ OCI DevOpsインスタンス名はテナンシで一意になります。
 
 以下の項目を入力します。
 
-key|value|
--|-
-リポジトリ名|oke-handson
+| key          | value       |
+| ------------ | ----------- |
+| リポジトリ名 | oke-handson |
 
 ![2-027.jpg](2-027.jpg)をクリックします。  
 
@@ -509,10 +509,10 @@ git clone <コピーしたURL>
 cloneする際にユーザ名をパスワードを聞かれます。  
 それぞれ以下の通りとなります。
 
-key|value|説明
--|-
-ユーザ名|<テナンシ名>/<ユーザ名>|`テナンシ名`は[0-4. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認](#0-4-テナンシ名とオブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの
-パスワード|[0-3. 認証トークンの作成](#0-3-認証トークンの作成)で作成したもの
+| key        | value                                                            | 説明                                                                                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------- |
+| ユーザ名   | <テナンシ名>/default/<ユーザ名>                                          | `テナンシ名`は[0-4. テナンシ名とオブジェクト・ストレージ・ネームスペースの確認](#0-4-テナンシ名とオブジェクトストレージネームスペースの確認)で確認したもの、`ユーザ名は`[0-2.ユーザ名の確認](#0-2-ユーザ名の確認)で確認したもの |
+| パスワード | [0-3. 認証トークンの作成](#0-3-認証トークンの作成)で作成したもの |
 
 cloneが成功すると"oke-handson"というディレクトリが作成されています。  
 
@@ -609,31 +609,31 @@ image: <ご自身が利用されているリージョンのリージョン・コ
 
 `<ご自身が利用されているリージョンのリージョン・コード>`はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。  
 
-リージョン|リージョンコード
--|-
-ap-tokyo-1|nrt
-ap-osaka-1|kix
-ap-melbourne-1|mel
-us-ashburn-1|iad
-us-phoenix-1|phx
-ap-mumbai-1|bom
-ap-seoul-1|icn
-ap-sydney-1|syd
-ca-toronto-1|yyz
-ca-montreal-1|yul
-eu-frankfurt-1|fra
-eu-zurich-1|zrh
-sa-saopaulo-1|gru
-sa-vinhedo-1| vcp
-uk-london-1|lhr
-sa-santiago-1|scl
-ap-hyderabad-1|hyd
-eu-amsterdam-1|ams
-me-jeddah-1|jed
-ap-chuncheon-1|yny
-me-dubai-1|dxb
-uk-cardiff-1|cwl
-us-sanjose-1|sjc
+| リージョン     | リージョンコード |
+| -------------- | ---------------- |
+| ap-tokyo-1     | nrt              |
+| ap-osaka-1     | kix              |
+| ap-melbourne-1 | mel              |
+| us-ashburn-1   | iad              |
+| us-phoenix-1   | phx              |
+| ap-mumbai-1    | bom              |
+| ap-seoul-1     | icn              |
+| ap-sydney-1    | syd              |
+| ca-toronto-1   | yyz              |
+| ca-montreal-1  | yul              |
+| eu-frankfurt-1 | fra              |
+| eu-zurich-1    | zrh              |
+| sa-saopaulo-1  | gru              |
+| sa-vinhedo-1   | vcp              |
+| uk-london-1    | lhr              |
+| sa-santiago-1  | scl              |
+| ap-hyderabad-1 | hyd              |
+| eu-amsterdam-1 | ams              |
+| me-jeddah-1    | jed              |
+| ap-chuncheon-1 | yny              |
+| me-dubai-1     | dxb              |
+| uk-cardiff-1   | cwl              |
+| us-sanjose-1   | sjc              |
 
 <オブジェクト・ストレージ・ネームスペース>は、[0-4-オブジェクトストレージネームスペースの確認](#0-4-オブジェクトストレージネームスペースの確認)で確認した値を利用します。　　
 
@@ -735,11 +735,24 @@ Oracle Database Operator(OraOperator)については[こちら](https://github.c
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/latest/download/cert-manager.yaml
 ```
 
-次にOraOperatorのインストールを行います。
+次にOraOperatorのインストールを行います。  
+以下のコマンドを実行します。  
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/oracle/oracle-database-operator/main/rbac/cluster-role-binding.yaml
+```
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/oracle/oracle-database-operator/main/oracle-database-operator.yaml
 ```
+
+{% capture notice %}**Oracle Database Operatorインストール時のkubectl apply時のエラーについて**  
+`kubectl apply`時に`Error from server xxxxxx`などのエラーが発生する場合があります。  
+これは前のコンポーネントが起動する前に後続のコンポーネントをインストールしてしまった可能性が高いので、再度同じコマンド(`kubectl apply`)を実行頂けると成功する場合があります。
+{% endcapture %}
+<div class="notice--warning">
+  {{ notice | markdownify }}
+</div>
 
 ### 3-2. ATPのプロビジョニング
 
@@ -806,21 +819,23 @@ kind: AutonomousDatabase
 metadata:
   name: oke-atp-handson-db
 spec:
+  action: Create
   details:
-    compartmentOCID: <ご自身のコンパートメントOCID>
+    compartmentId: <自身のコンパートメントOCID>
     dbName: okeatp
     displayName: oke-atp-handson-db
-    cpuCoreCount: 1
+    computeModel: ECPU
+    computeCount: 2.0
     licenseModel: LICENSE_INCLUDED
-    wallet:
-      name: okeatp
-      password:
-        k8sSecret:
-          name: wallet-passwd
     adminPassword:
       k8sSecret:
         name: admin-passwd
     dataStorageSizeInTBs: 1
+  wallet:
+    name: okeatp
+    password:
+      k8sSecret:
+        name: wallet-passwd
 ```
 
 OKEに対してManifestを適用します。  
@@ -861,10 +876,10 @@ oke-atp-handson-db   oke-atp-handson-db   okeatp    AVAILABLE      false       1
 
 下記項目を入力し、「サインイン」をクリックします。
 
-key|value|説明
--|-
-Username|ATPデータベースのユーザー名。今回は"admin"
-Password|ATPデータベースのパスワード。今回は"okehandson__Oracle1234"|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
+| key      | value                                                       | 説明                                                                                                                |
+| -------- | ----------------------------------------------------------- |
+| Username | ATPデータベースのユーザー名。今回は"admin"                  |
+| Password | ATPデータベースのパスワード。今回は"okehandson__Oracle1234" | [3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード |
 
 ![3-006.jpg](3-006.jpg)
 
@@ -1024,9 +1039,9 @@ macOSの方は、解凍して出力される実行ファイルを実行してく
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-パスワード|okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したWalletパスワード
+| key        | value                  | 説明                                                                                                                |
+| ---------- | ---------------------- |
+| パスワード | okehandson__Oracle1234 | [3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成したWalletパスワード |
 
 ![3-017.jpg](3-017.jpg)
 
@@ -1040,14 +1055,14 @@ key|value|説明
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-Name|oke-handson
-認証タイプ| デフォルト
-ユーザ名 | admin
-パスワード | okehandson__Oracle1234|[3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード
-接続タイプ | クラウド・ウォレット
-構成ファイル | ダウンロードしたWalletファイルを指定
+| key          | value                                | 説明                                                                                                                |
+| ------------ | ------------------------------------ |
+| Name         | oke-handson                          |
+| 認証タイプ   | デフォルト                           |
+| ユーザ名     | admin                                |
+| パスワード   | okehandson__Oracle1234               | [3-2. ATPのプロビジョニング](#3-2-atpのプロビジョニング)で`kuebctl create secret`コマンドで作成した管理者パスワード |
+| 接続タイプ   | クラウド・ウォレット                 |
+| 構成ファイル | ダウンロードしたWalletファイルを指定 |
 
 ![3-021.jpg](3-021.jpg)
 
@@ -1182,12 +1197,12 @@ outputArtifacts:
 
 以下の項目を入力します。  
 
-key|value|
--|-
-名前|handson-image
-タイプ|コンテナ・イメージ・リポジトリ
-コンテナ・レジストリのイメージへの完全修飾パスを入力してください|<ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージネーム・スペース>/handson:${BUILDRUN_HASH}
-このアーティファクトで使用するパラメータの置換え|はい、プレースホルダを置き換えます
+| key                                                              | value                                                                                                                              |
+| ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 名前                                                             | handson-image                                                                                                                      |
+| タイプ                                                           | コンテナ・イメージ・リポジトリ                                                                                                     |
+| コンテナ・レジストリのイメージへの完全修飾パスを入力してください | <ご自身が利用されているリージョンのリージョン・コード>.ocir.io/<オブジェクト・ストレージネーム・スペース>/handson:${BUILDRUN_HASH} |
+| このアーティファクトで使用するパラメータの置換え                 | はい、プレースホルダを置き換えます                                                                                                 |
 
 **トライアル環境以外、集合ハンズオンで参加されている皆様**  
 トライアル環境以外、集合ハンズオンで参加されている皆様は[0-6. OCIRのレポジトリ作成](#0-6-ocirのレポジトリ作成)において、レポジトリ名を「handson」から変更されていると思います。その場合は、`handson:${BUILDRUN_HASH}`の`handson`を作成したレポジトリ名に変更してください。  
@@ -1195,31 +1210,31 @@ key|value|
 
 `<ご自身が利用されているリージョンのリージョン・コード>`はご自身が利用されているリージョンに応じて変わりますので、以下の表を参考に設定してください。  
 
-リージョン|リージョンコード
--|-
-ap-tokyo-1|nrt
-ap-osaka-1|kix
-ap-melbourne-1|mel
-us-ashburn-1|iad
-us-phoenix-1|phx
-ap-mumbai-1|bom
-ap-seoul-1|icn
-ap-sydney-1|syd
-ca-toronto-1|yyz
-ca-montreal-1|yul
-eu-frankfurt-1|fra
-eu-zurich-1|zrh
-sa-saopaulo-1|gru
-sa-vinhedo-1| vcp
-uk-london-1|lhr
-sa-santiago-1|scl
-ap-hyderabad-1|hyd
-eu-amsterdam-1|ams
-me-jeddah-1|jed
-ap-chuncheon-1|yny
-me-dubai-1|dxb
-uk-cardiff-1|cwl
-us-sanjose-1|sjc
+| リージョン     | リージョンコード |
+| -------------- | ---------------- |
+| ap-tokyo-1     | nrt              |
+| ap-osaka-1     | kix              |
+| ap-melbourne-1 | mel              |
+| us-ashburn-1   | iad              |
+| us-phoenix-1   | phx              |
+| ap-mumbai-1    | bom              |
+| ap-seoul-1     | icn              |
+| ap-sydney-1    | syd              |
+| ca-toronto-1   | yyz              |
+| ca-montreal-1  | yul              |
+| eu-frankfurt-1 | fra              |
+| eu-zurich-1    | zrh              |
+| sa-saopaulo-1  | gru              |
+| sa-vinhedo-1   | vcp              |
+| uk-london-1    | lhr              |
+| sa-santiago-1  | scl              |
+| ap-hyderabad-1 | hyd              |
+| eu-amsterdam-1 | ams              |
+| me-jeddah-1    | jed              |
+| ap-chuncheon-1 | yny              |
+| me-dubai-1     | dxb              |
+| uk-cardiff-1   | cwl              |
+| us-sanjose-1   | sjc              |
 
 ![4-005.jpg](4-005.jpg)
 
@@ -1235,9 +1250,9 @@ us-sanjose-1|sjc
 
 以下の項目を入力します。  
 
-key|value|
--|-
-名前|handson_build
+| key  | value         |
+| ---- | ------------- |
+| 名前 | handson_build |
 
 ![4-009.jpg](4-009.jpg)
 
@@ -1253,10 +1268,10 @@ key|value|
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-ステージ名|image_build|
-ビルド指定ファイルパス|build_spec.yaml|後続で設定する「プライマリ・コード・リポジトリ」に配置しているビルド定義ファイルのパス。今回はプロジェクト直下に配置
+| key                    | value           | 説明                                                                                                                 |
+| ---------------------- | --------------- |
+| ステージ名             | image_build     |
+| ビルド指定ファイルパス | build_spec.yaml | 後続で設定する「プライマリ・コード・リポジトリ」に配置しているビルド定義ファイルのパス。今回はプロジェクト直下に配置 |
 
 ![4-016.jpg](4-016.jpg) 
 
@@ -1264,11 +1279,11 @@ key|value|説明
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-ソース・接続タイプ|OCIコード・レポジトリ|"oke-handson"にチェック
-ブランチ名の選択|main
-ソース名の作成|handson
+| key                | value                 | 説明                    |
+| ------------------ | --------------------- |
+| ソース・接続タイプ | OCIコード・レポジトリ | "oke-handson"にチェック |
+| ブランチ名の選択   | main                  |
+| ソース名の作成     | handson               |
 
 ![4-018.jpg](4-018.jpg)
 
@@ -1288,9 +1303,9 @@ key|value|説明
 
 以下の項目を入力します。  
 
-key|value
--|-
-名前|image_push
+| key  | value      |
+| ---- | ---------- |
+| 名前 | image_push |
 
 ![4-024jpg](4-024.jpg)
 
@@ -1302,9 +1317,9 @@ key|value
 
 「アーティファクトとビルド結果の関連付け」内の以下の項目を入力します。  
 
-key|value|説明
--|-
-ビルド構成/結果アーティファクト名|handson_image|`build_spec.yaml`の`outputArtifacts`で定義した名前([4-1-build_spec.yamlの確認](#4-1-build_specyamlの確認)を参照)。今回は`handson_image`
+| key                               | value         | 説明                                                                                                                                    |
+| --------------------------------- | ------------- |
+| ビルド構成/結果アーティファクト名 | handson_image | `build_spec.yaml`の`outputArtifacts`で定義した名前([4-1-build_spec.yamlの確認](#4-1-build_specyamlの確認)を参照)。今回は`handson_image` |
 
 ![4-029jpg](4-029.jpg)
 
@@ -1330,11 +1345,11 @@ key|value|説明
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-名前|handson-trigger
-ソース接続|OCIコード・レポジトリ
-コード・レポジトリの選択|oke-handson|![4-033.jpg](4-033.jpg)をクリックし、"oke-handson"をチェック
+| key                      | value                 | 説明                                                         |
+| ------------------------ | --------------------- |
+| 名前                     | handson-trigger       |
+| ソース接続               | OCIコード・レポジトリ |
+| コード・レポジトリの選択 | oke-handson           | ![4-033.jpg](4-033.jpg)をクリックし、"oke-handson"をチェック |
 
 ![4-032.jpg](4-032.jpg)
 
@@ -1342,10 +1357,10 @@ key|value|説明
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-ビルド・パイプラインの選択|handson_build|![4-033.jpg](4-033.jpg)をクリックし、"handson_build"をチェック
-イベント|"プッシュ"にチェック
+| key                        | value                | 説明                                                           |
+| -------------------------- | -------------------- |
+| ビルド・パイプラインの選択 | handson_build        | ![4-033.jpg](4-033.jpg)をクリックし、"handson_build"をチェック |
+| イベント                   | "プッシュ"にチェック |
 
 ![4-035.jpg](4-035.jpg)
 
@@ -1380,9 +1395,9 @@ key|value|説明
 
 以下の項目を入力し、![5-004.jpg](5-004.jpg)をクリックします。  
 
-key|value
--|-
-名前|oke-handson
+| key  | value       |
+| ---- | ----------- |
+| 名前 | oke-handson |
 
 ![5-003.jpg](5-003.jpg)
 
@@ -1390,11 +1405,11 @@ key|value
 
 以下の項目を入力します。  
 
-key|value
--|-
-アーティファクト・パス|deploy.yaml
-バージョン|v0.1
-Upload method|Cloud Shell
+| key                    | value       |
+| ---------------------- | ----------- |
+| アーティファクト・パス | deploy.yaml |
+| バージョン             | v0.1        |
+| Upload method          | Cloud Shell |
 
 ![5-006.jpg](5-006.jpg)
 
@@ -1472,10 +1487,10 @@ oci artifacts generic artifact upload-by-path
 
 以下の項目を入力します。  
 
-key|value
--|-
-環境タイプ|Oracle Kubernetesエンジン
-名前|handson-env
+| key        | value                     |
+| ---------- | ------------------------- |
+| 環境タイプ | Oracle Kubernetesエンジン |
+| 名前       | handson-env               |
 
 ![5-011.jpg](5-011.jpg)
 
@@ -1483,11 +1498,11 @@ key|value
 
 以下の項目を入力します。  
 
-key|value
--|-
-リージョン|ご自身がお使いのリージョン
-コンパートメント|ご自身がお使いのコンパートメント
-クラスタ|cluster1
+| key              | value                            |
+| ---------------- | -------------------------------- |
+| リージョン       | ご自身がお使いのリージョン       |
+| コンパートメント | ご自身がお使いのコンパートメント |
+| クラスタ         | cluster1                         |
 
 ![5-013.jpg](5-013.jpg)
 
@@ -1515,13 +1530,13 @@ key|value
 
 以下の項目を入力します。  
 
-key|value
--|-
-名前|handson_manifest
-タイプ|Kubernetesマニフェスト
-アーティファクト・ソース|アーティファクト・レジストリ・レポジトリ
-アーティファクト・レジストリ・リポジトリの選択|![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト・レジストリを選択
-アーティファクトの選択|![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト(deploy.yaml:v0.1)を選択
+| key                                            | value                                                                                                                                                                                                        |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 名前                                           | handson_manifest                                                                                                                                                                                             |
+| タイプ                                         | Kubernetesマニフェスト                                                                                                                                                                                       |
+| アーティファクト・ソース                       | アーティファクト・レジストリ・レポジトリ                                                                                                                                                                     |
+| アーティファクト・レジストリ・リポジトリの選択 | ![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト・レジストリを選択       |
+| アーティファクトの選択                         | ![5-016.jpg](5-016.jpg)をクリックし、[5-1-アーティファクトレジストリへのmanifestファイルの登録](#5-1-アーティファクトレジストリへのmanifestファイルの登録)で登録したアーティファクト(deploy.yaml:v0.1)を選択 |
 
 ![5-018.jpg](5-018.jpg)
 
@@ -1543,9 +1558,9 @@ key|value
 
 以下の項目を入力します。  
 
-key|value
--|-
-名前|handson_deploy
+| key  | value          |
+| ---- | -------------- |
+| 名前 | handson_deploy |
 
 ![5-020.jpg](5-020.jpg)
 
@@ -1559,11 +1574,11 @@ key|value
 
 ![5-023.jpg](5-023.jpg)をクリックします。  
 
-key|value
--|-
-ステージ名|handson_deploy
-環境|[5-2-oci-devopsへのoke環境の登録](#5-2-oci-devopsへのoke環境の登録)で登録した環境。今回は`handson-env`
-1つ以上のアーティファクトを選択します|![5-026.jpg](5-026.jpg)を選択し、先ほど作成したアーティファクト(`handson_manifest`)を選択
+| key                                   | value                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ステージ名                            | handson_deploy                                                                                         |
+| 環境                                  | [5-2-oci-devopsへのoke環境の登録](#5-2-oci-devopsへのoke環境の登録)で登録した環境。今回は`handson-env` |
+| 1つ以上のアーティファクトを選択します | ![5-026.jpg](5-026.jpg)を選択し、先ほど作成したアーティファクト(`handson_manifest`)を選択              |
 
 ![5-024.jpg](5-024.jpg)
 
@@ -1591,9 +1606,9 @@ key|value
 
 以下を選択します。  
 
-key|value
--|-
-オプション|デプロイメントのトリガー
+| key        | value                    |
+| ---------- | ------------------------ |
+| オプション | デプロイメントのトリガー |
 
 ![5-028.jpg](5-028.jpg)
 
@@ -1601,9 +1616,9 @@ key|value
 
 以下の項目を入力します。  
 
-key|value|説明
--|-
-ステージ名|handson_deploy_call|![5-032.jpg](5-032.jpg)をクリックし、[5-3-cdパイプラインの構築](#5-3-cdパイプラインの構築)で構築したCDパイプライン(`handson_deploy`)を選択
+| key        | value               | 説明                                                                                                                                       |
+| ---------- | ------------------- |
+| ステージ名 | handson_deploy_call | ![5-032.jpg](5-032.jpg)をクリックし、[5-3-cdパイプラインの構築](#5-3-cdパイプラインの構築)で構築したCDパイプライン(`handson_deploy`)を選択 |
 
 ![5-030.jpg](5-030.jpg)
 

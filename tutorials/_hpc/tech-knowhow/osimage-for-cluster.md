@@ -13,9 +13,6 @@ table, th, td {
 }
 </style>
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を使用するインスタンスは、接続に必要なソフトウェアがインストールされている必要がありますが、これらを含んだOSイメージが **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** として **[マーケットプレイス](/ocitutorials/hpc/#5-5-マーケットプレイス)** から提供されています。  
-本テクニカルTipsは、この **クラスタネットワーキングイメージ** の適切な選び方を解説します。
-
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 ***
@@ -37,7 +34,7 @@ table, th, td {
 また **クラスタネットワーキングイメージ** は、以下の観点で異なる用途のものが用意されています。
 
 - 802.1X認証関連ユーティリティソフトウェアと **クラスタ・ネットワーク** 設定ユーティリティソフトウェアの提供方法  
-**[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）プラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。  
+**[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）HPCプラグインとして提供するか、個別のRPMパッケージとして提供するかによる違いです。  
 - 対象のシェイプ  
 HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメージ** ）か、GPUシェイプ（※3）用（GPU **クラスタネットワーキングイメージ** ）かの違いで、GPU **クラスタネットワーキングイメージ** はNVIDIA GPUドライバがインストールされています。  
 - ベースOSの **Oracle Linux** バージョン  
@@ -56,19 +53,18 @@ HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメ�
 
 | No. | 対象シェイプ  | **Oracle Linux**<br>バージョン | ユーティリティ<br>提供方法 | OFED<br>バージョン | GPU/CUDA<br>バージョン | イメージ名の先頭                                                      | **マーケットプレイス**<br>URL（※4）                                                |
 | :-: | :-----: | :-----------------------: | :-------------: | :-----------: | :---------------: | :-----------------------------------------------------------: | :---------------------------------------------------------------------: |
-| 1   | HPCシェイプ | 8.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
-| 2   |         | 7.9                       | **OCA** プラグイン   | 23.10         | -                 | OracleLinux-7-OCA-RHCK-OFED-23.10                             | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
-| 3   |         | 8.8                       | **OCA** プラグイン   | 5.8           | -                 | OracleLinux-8-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
-| 4   |         | 7.9                       | **OCA** プラグイン   | 5.8           | -                 | OracleLinux-7-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 1   | HPCシェイプ | 8.9                       | **OCA** HPC<br>プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0        | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 2   |         | 7.9                       | **OCA** HPC<br>プラグイン   | 23.10         | -                 | OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-2024.03.15-0        | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 3   |         | 8.8                       | **OCA** HPC<br>プラグイン   | 5.8           | -                 | OracleLinux-8-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
+| 4   |         | 7.9                       | **OCA** HPC<br>プラグイン   | 5.8           | -                 | OracleLinux-7-OCA-RHCK-OFED-5.8-3.0.7.0-2024.02.27            | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 | 5   |         | 8.7                       | 個別RPM           | 5.4           | -                 | OracleLinux-8-RHCK-OFED-5.4-3.6.8.1-2023.05.18                | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 | 6   |         | 7.9                       | 個別RPM           | 5.4           | -                 | OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-2023.05.18         | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
-| 7   | GPUシェイプ | 8.9                       | **OCA** プラグイン   | 23.10         | 535/12.4          | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.4   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 8   |         | 7.9                       | **OCA** プラグイン   | 23.10         | 535/12.4          | OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.4   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 9   |         | 8.9                       | **OCA** プラグイン   | 23.10         | 535/12.2          | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.2   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 10  |         | 7.9                       | **OCA** プラグイン   | 23.10         | 535/12.2          | OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-535-CUDA-12.2   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 11  |         | 8.8                       | **OCA** プラグイン   | 5.8           | 535/12.2          | OracleLinux-8-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 12  |         | 7.9                       | **OCA** プラグイン   | 5.8           | 535/12.2          | OracleLinux-7-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
-| 13  |         | 7.9                       | 個別RPM           | 5.4           | 515/11.7          | OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.05.18 | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 7   | GPUシェイプ | 8.9                       | **OCA** HPC<br>プラグイン   | 23.10         | 550/12.4          | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 8   |         | 7.9                       | **OCA** HPC<br>プラグイン   | 23.10         | 550/12.4          | OracleLinux-7-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4   | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 9   |         | 8.8                       | **OCA** HPC<br>プラグイン   | 5.8           | 535/12.2          | OracleLinux-8-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 10  |         | 7.9                       | **OCA** HPC<br>プラグイン   | 5.8           | 535/12.2          | OracleLinux-7-OCA-RHCK-OFED-5.8                               | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 11  |         | 7.9                       | 個別RPM           | 5.4           | 515/11.7          | OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-GPU-515-2023.05.18 | **[Link](https://cloud.oracle.com/marketplace/application/134254210/)** |
+| 12  | HPCシェイプ | 8.10                      | **OCA** HPC<br>プラグイン   | 23.10         | -                 | OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.09.18-0        | **[Link](https://cloud.oracle.com/marketplace/application/63394796/)**  |
 
 ※4）OCIへのログインを要求された場合は、ログインを完了して下さい。
 
@@ -77,7 +73,7 @@ HPCシェイプ（※2）用（HPC **クラスタネットワーキングイメ�
 
 ## 2-0. 概要
 
-本章は、前章の一覧から選択した **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** をインスタンスデプロイ時にどのように指定するかを解説します。
+本章は、 **[1. クラスタネットワーキングイメージ一覧](#1-クラスタネットワーキングイメージ一覧)** で選択した **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** をインスタンスデプロイ時にどのように指定するかを解説します。
 
 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスのデプロイ方法は、主に以下3種類が存在します。
 
@@ -99,7 +95,8 @@ OCIコンソールを使用して **[クラスタ・ネットワーク](/ocituto
 
 ## 2-2. HPCクラスタスタックを使用する方法
 
-**[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** メニュー中の以下 **Compute node options** フィールドの **Image version** プルダウンメニューで適切な **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。
+**[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** を使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** メニュー中の以下 **Compute node options** フィールドの **Image version** プルダウンメニューで適切な **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を選択します。  
+なお、本テクニカルTipsが前提とする **HPCクラスタスタック** は、バージョン **2.10.4.1** です。
 
 ![画面ショット](console_page02.png)
 
@@ -120,7 +117,7 @@ OCIコンソールを使用して **[クラスタ・ネットワーク](/ocituto
 
  **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するインスタンスをデプロイする場合、通常イメージのOCIDをスクリプト内に指定します。
 
-前章一覧表中の各 **クラスタネットワーキングイメージ** は、以下のOCIDに対応しています。
+**[1. クラスタネットワーキングイメージ一覧](#1-クラスタネットワーキングイメージ一覧)** の各 **クラスタネットワーキングイメージ** は、以下のOCIDに対応しています。
 
 | 前章一覧表中のNo. | OCID                                                                          |
 | :--------: | :---------------------------------------------------------------------------: |
@@ -130,10 +127,9 @@ OCIコンソールを使用して **[クラスタ・ネットワーク](/ocituto
 | 4          | ocid1.image.oc1..aaaaaaaabjywapqbljm2hqmpcf6rl2xsc7miz4ilx2bb6o2iwcaf37smyxqa |
 | 5          | ocid1.image.oc1..aaaaaaaaceagnur6krcfous5gxp2iwkv2teiqijbntbpwc4b3alxkzyqi25a |
 | 6          | ocid1.image.oc1..aaaaaaaa2ukz3tuyn2st5p4pnxsqx4zzg6fi25d7ns2rvywqaalgcer2tepa |
-| 7          | ocid1.image.oc1..aaaaaaaa2uaq7zbntzrc5hwoyytmpifjmrjhcfgbotyb5gbfq4cnro46cn3q |
-| 8          | ocid1.image.oc1..aaaaaaaacvmchv5h7zp54vyntetzkia3hrtr5tyz7j6oiairdfjw3rutgb3q |
-| 9          | ocid1.image.oc1..aaaaaaaay27hzfz2iscv3mbhqk6ukccgz7zuir3jdmm2eomfomuu3wkcgg6q |
-| 10         | ocid1.image.oc1..aaaaaaaay67em3mfvgtzzbxxkgl73t4zxcbmx7njpinkdkxxb6fwcgfg5s5q |
-| 11         | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
-| 12         | ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia |
-| 13         | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra |
+| 7          | ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna |
+| 8          | ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq |
+| 9          | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
+| 10         | ocid1.image.oc1..aaaaaaaaliisi4m7wcz6nh7mdgezjvwxdozktccuxoawlgyephuqomotb3ia |
+| 11         | ocid1.image.oc1..aaaaaaaalro3vf5xh34zvg42i3j5c4kp6rx4ndoeq6c5v5zzotl5gwjrnxra |
+| 12         | ocid1.image.oc1..aaaaaaaa6nrrkywosaxdd4kur5uttrfgut5l5em73rcv4em5senqtm6fogjq |

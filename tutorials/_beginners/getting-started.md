@@ -81,7 +81,7 @@ Oracle Cloud Infrastructure を使い始めるにあたって、コンソール�
     ![画面ショット](img4.png)
 
 4. MFAがデフォルトで有効になっているため、画面の指示に応じてMFAを設定してください。
-MFA設定の手順の詳細については[OCI IAM Identity DomainでユーザーのMFAを有効化する - モバイルアプリケーションの構成（補足）](https://oracle-japan.github.io/ocitutorials/id-security/identitydomain-mfa/#4-%E3%83%A2%E3%83%90%E3%82%A4%E3%83%AB%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E6%A7%8B%E6%88%90%E8%A3%9C%E8%B6%B3)をご覧ください。
+MFA設定の手順の詳細については[OCI IAM Identity DomainでユーザーのMFAを有効化する - モバイルアプリケーションの構成（補足）](/ocitutorials/identity/identitydomain-mfa/)をご覧ください。
 
     ![画面ショット](img5.png)
 
