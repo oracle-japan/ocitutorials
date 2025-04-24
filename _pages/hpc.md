@@ -116,6 +116,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     - **Docker Community Edition**
     - **Enroot** with **Pyxis** integrated in **Slurm**
+    - **[containerd](https://github.com/containerd/containerd/tree/main)**
 
 ## 1-1. HPCクラスタ
 
@@ -135,7 +136,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | チュートリアル名                                                                                       | GPU<br>ノード数 | 構築手法                             | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム                                                        | GPUノードOS               |
 | :--------------------------------------------------------------------------------------------: | :---------: | :------------------------------: | :----------: | :---------------: | :------------------------------------------------------------------: | :--------------------: |
 | **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-| **[GPUインスタンスで<br>分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **[containerd](https://github.com/containerd/containerd/tree/main)** | **Oracle Linux** 8     |
+| **[GPUインスタンスで<br>分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 8     |
 | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（Terraform CLI<br>/スタック） | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
 | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（スタック）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
@@ -370,8 +371,8 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)**
 
-    HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれをサービスすることが一般的ですが、この際の選択肢は、NFSのマネージドサービスである **ファイル・ストレージ** を使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスで構築する方法があります。  
-    本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ等を考慮し、自身の要件に沿った最適なファイル共有ストレージ構築手法を選定する方法を解説します。
+    HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、その選択肢にマネージドサービスを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスで構築する方法があります。  
+    本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ、最大性能等を考慮し、自身の要件に沿った最適なファイル共有ストレージ構築手法を選定する方法を解説します。
 
 - **[ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法](/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/)**
 
