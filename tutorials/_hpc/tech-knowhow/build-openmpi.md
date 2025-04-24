@@ -57,7 +57,7 @@ header:
 本テクニカルTipsは、以下の環境を前提とします。
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
 - **OpenMPI** ： 5.0.6
 - **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.4
 - **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.17.0
@@ -135,7 +135,7 @@ $ make -j 36 && sudo make install
 
 ```sh
 $ cd .. && git clone https://github.com/hpc/xpmem.git
-$ cd xpmem; ./autogen.sh && ./configure --prefix=/opt/xpmem
+$ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
@@ -189,7 +189,7 @@ $ source ~/.bashrc
 このユーザのホームディレクトリが共有されていない場合は、1ノードで以下の手順を実行し、作成した **id_rsa** 、 **authorized_keys** 、 及び **known_hosts** の3個のファイルをパーミッションを維持して **OpenMPI** を実行する全てのノードの同じディレクトリに配置します。
 
 ```sh
-$ cd ~; mkdir .ssh; chmod 700 .ssh
+$ cd ~ && mkdir .ssh; chmod 700 .ssh
 $ ssh-keygen -t rsa -N "" -f .ssh/id_rsa
 $ cd .ssh; cat ./id_rsa.pub >> ./authorized_keys; chmod 600 ./authorized_keys
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
