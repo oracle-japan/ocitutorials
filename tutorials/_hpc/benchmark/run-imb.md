@@ -60,13 +60,13 @@ header:
 ## 1-2. Intel MPI Benchmarksインストール
 
 以下コマンドを **Intel MPI Benchmarks** を実行する全てのノードのopcユーザで実行し、 **Intel MPI Benchmarks** をインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd ~; wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
+$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 $ tar -xvf ./IMB-v2021.7.tar.gz
 $ export CC=/opt/openmpi/bin/mpicc; export CXX=/opt/openmpi/bin/mpicxx; cd mpi-benchmarks-IMB-v2021.7 && make -j 36 all
-$ sudo mkdir -p /opt/openmpi-5.0.6/tests/imb && sudo cp ./IMB* /opt/openmpi-5.0.6/tests/imb/
+$ sudo mkdir -p /opt/openmpi/tests/imb && sudo cp ./IMB* /opt/openmpi/tests/imb/
 ```
 
 ## 1-3. Intel MPI Benchmarks実行

@@ -43,12 +43,12 @@ header:
 
 1. インスタンス作成
 2. **AOCC** インストール
-3. **OpenMPI** 前提ソフトウェア・rpmパッケージインストール
+3. **OpenMPI** 前提ソフトウェア・RPMパッケージインストール
 4. **OpenMPI** インストール・セットアップ
 5. **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** インストール（※3）
 6. **[munge](https://dun.github.io/munge/)** インストール・セットアップ（※4）
-7. **Slurm** rpmパッケージ作成
-8. **Slurm** rpmパッケージインストール・セットアップ
+7. **Slurm** RPMパッケージ作成
+8. **Slurm** RPMパッケージインストール・セットアップ
 9. **Slurm** 設定ファイル修正
 10. **Slurm** サービス起動
 
@@ -57,7 +57,7 @@ header:
 
 ## 1-1. インスタンス作成
 
-計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
+計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
 - イメージ： **Oracle Linux** 9.5（Oracle-Linux-9.5-2025.02.28-0）
@@ -77,15 +77,15 @@ $ cd /opt/aocc && sudo tar --no-same-owner -xvf /tmp/aocc-compiler-5.0.0.tar
 $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 ```
 
-## 1-3. OpenMPI前提ソフトウェア・rpmパッケージインストール
+## 1-3. OpenMPI前提ソフトウェア・RPMパッケージインストール
 
 ## 1-3-0. 概要
 
-本章は、 **OpenMPI** の前提となるrpmパッケージ・ソフトウェアをインストールします。
+本章は、 **OpenMPI** の前提となるRPMパッケージ・ソフトウェアをインストールします。
 
-## 1-3-1. 前提rpmパッケージインストール
+## 1-3-1. 前提RPMパッケージインストール
 
-以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。  
+以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```sh
 $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool numactl
@@ -219,15 +219,15 @@ STATUS:           Success (0)
 $
 ```
 
-## 1-7. Slurm rpmパッケージ作成
+## 1-7. Slurm RPMパッケージ作成
 
-以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** の前提rpmパッケージをインストールします。
+以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** の前提RPMパッケージをインストールします。
 
 ```sh
 $ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
 ```
 
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **Oracle Linux** 9.5用の **Slurm** rpmパッケージを作成します。
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **Oracle Linux** 9.5用の **Slurm** RPMパッケージを作成します。
 
 ```sh
 $ cd .. && wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
@@ -254,16 +254,16 @@ slurm-torque-24.11.0-1.el9.x86_64.rpm
 $
 ```
 
-## 1-8. Slurm rpmパッケージインストール・セットアップ
+## 1-8. Slurm RPMパッケージインストール・セットアップ
 
-以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** rpmパッケージのインストール・セットアップを行います。
+以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```sh
 $ cd ~/rpmbuild/RPMS/x86_64/ && sudo rpm -ivh ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
 ## 1-9. Slurm設定ファイル修正
@@ -320,8 +320,8 @@ $
 なおこの **STREAM** の実行は、 **BM.Standard.E5.192** を想定した設定になっています。
 
 ```sh
-$ mkdir ~/stream
-$ cd ~/stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+$ cd ~/`hostname` && mkdir ./stream
+$ cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/aocc/setenv_AOCC.sh
 $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c
 $ OMP_NUM_THREADS=96 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]" ./a.out

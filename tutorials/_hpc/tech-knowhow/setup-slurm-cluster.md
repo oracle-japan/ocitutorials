@@ -79,7 +79,7 @@ table, th, td {
 ## 2-0. 概要
 本章は、既にデプロイされている **[1. 前提システム](#1-前提システム)** で解説したシステム上で、 **Slurm** 環境を構築する手順を解説します。
 
-**Slurm** のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するrpmパッケージによるインストール方法を採用します。
+**Slurm** のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。
 
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
@@ -97,8 +97,8 @@ table, th, td {
 3. **OpenMPI** インストール
 4. **OpenPMIx** インストール
 5. **OpenUCX** インストール
-6. **Slurm** rpmパッケージ作成
-7. **Slurm** rpmパッケージインストール・セットアップ
+6. **Slurm** RPMパッケージ作成
+7. **Slurm** RPMパッケージインストール・セットアップ
 8. **Slurm** 設定ファイル作成
 9. **Slurm** サービス起動
 10. **Slurm** 利用に必要な環境変数設定
@@ -289,17 +289,17 @@ $ cd ucx-1.17.0; ./contrib/configure-release --prefix=/opt/ucx
 $ make -j 36 && sudo make install
 ```
 
-## 2-6. Slurm rpmパッケージ作成
+## 2-6. Slurm RPMパッケージ作成
 
-本章は、Slurmマネージャでrpmパッケージを作成します。
+本章は、SlurmマネージャでRPMパッケージを作成します。
 
-以下コマンドをSlurmマネージャのopcユーザで実行し、前提rpmパッケージをインストールします。
+以下コマンドをSlurmマネージャのopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```
 $ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake
 ```
 
-次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **Slurm** rpmパッケージを作成します。
+次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **Slurm** RPMパッケージを作成します。
 
 ```
 $ cd ~; wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
@@ -326,37 +326,37 @@ slurm-torque-24.11.0-1.el8.x86_64.rpm
 $
 ```
 
-## 2-7. Slurm rpmパッケージインストール・セットアップ
+## 2-7. Slurm RPMパッケージインストール・セットアップ
 
-本章は、先に作成した **Slurm** rpmパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。
+本章は、先に作成した **Slurm** RPMパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。
 
-以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```
 $ cd ~/rpmbuild/RPMS/x86_64
 $ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.11.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmctld; sudo chown slurm:slurm /var/spool/slurmctld
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo mkdir /var/spool/slurmctld && sudo chown slurm:slurm /var/spool/slurmctld
+$ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 $ sudo su - slurm
 $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 
-次に、以下コマンドを全ての計算ノードのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+次に、以下コマンドを全ての計算ノードのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```
 $ sudo dnf install -y mariadb-devel
 $ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
-次に、以下コマンドをSlurmクライアントのopcユーザで **Slurm** rpmパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な **Slurm** rpmパッケージのインストール・セットアップを行います。
+次に、以下コマンドをSlurmクライアントのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```
 $ sudo dnf install -y mariadb-devel
