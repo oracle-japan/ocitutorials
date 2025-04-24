@@ -1,0 +1,1294 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.0 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>File Storage with Lustreでファイル共有ストレージを構築する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="File Storage with Lustreでファイル共有ストレージを構築する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-lustre-server-fswl/">
+
+
+  <meta property="og:description" content="File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-lustre-server-fswl/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-04-24T21:57:09+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-lustre-server-fswl/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-lustre-server-fswl/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          File Storage with Lustreでファイル共有ストレージを構築する
+
+        
+      </h1>
+      
+        <p class="page__lead">File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">File Storage with Lustreでファイル共有ストレージを構築する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-lustre-server-fswl/" class="active">File Storage with Lustreでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="File Storage with Lustreでファイル共有ストレージを構築する">
+    <meta itemprop="description" content="File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。">
+    <meta itemprop="datePublished" content="2025-04-24T21:57:09+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-事前作業">1. 事前作業</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</a></li><li><a href="#1-2-bastionノード作成">1-2. Bastionノード作成</a></li><li><a href="#1-3-iamポリシー作成">1-3. IAMポリシー作成</a></li></ul></li><li><a href="#2-file-storage-with-lustre作成">2. File Storage with Lustre作成</a></li><li><a href="#3-lustreクライアント構築">3. Lustreクライアント構築</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-クラスタネットワークに接続する計算ノード">3-1. クラスタ・ネットワークに接続する計算ノード</a><ul><li><a href="#3-1-0-概要">3-1-0. 概要</a></li><li><a href="#3-1-1-インスタンス作成">3-1-1. インスタンス作成</a></li><li><a href="#3-1-2-lustreクライアント用rpmパッケージビルド">3-1-2. Lustreクライアント用RPMパッケージビルド</a></li><li><a href="#3-1-3-lustreクライアント用rpmパッケージインストール">3-1-3. Lustreクライアント用RPMパッケージインストール</a></li><li><a href="#3-1-4-ファイル共有ストレージ領域マウント">3-1-4. ファイル共有ストレージ領域マウント</a></li></ul></li><li><a href="#3-2-コンテナを実行するgpuノード">3-2. コンテナを実行するGPUノード</a><ul><li><a href="#3-2-0-概要">3-2-0. 概要</a></li><li><a href="#3-2-1-インスタンス作成">3-2-1. インスタンス作成</a></li><li><a href="#3-2-2-nvidia-gpuドライバインストール">3-2-2. NVIDIA GPUドライバインストール</a></li><li><a href="#3-2-3-lustreクライアント用rpmパッケージビルドホストos上">3-2-3. Lustreクライアント用RPMパッケージビルド（ホストOS上）</a></li><li><a href="#3-2-4-lustreクライアント用rpmパッケージインストールホストos上">3-2-4. Lustreクライアント用RPMパッケージインストール（ホストOS上）</a></li><li><a href="#3-2-5-ファイル共有ストレージ領域マウントホストos上">3-2-5. ファイル共有ストレージ領域マウント（ホストOS上）</a></li><li><a href="#3-2-6-コンテナ環境構築">3-2-6. コンテナ環境構築</a></li><li><a href="#3-2-7-コンテナ起動">3-2-7. コンテナ起動</a></li><li><a href="#3-2-8-lustreクライアント用rpmパッケージビルドコンテナ上">3-2-8. Lustreクライアント用RPMパッケージビルド（コンテナ上）</a></li><li><a href="#3-2-9-lustreクライアント用rpmパッケージインストールコンテナ上">3-2-9. Lustreクライアント用RPMパッケージインストール（コンテナ上）</a></li><li><a href="#3-2-10-ファイル共有ストレージ領域マウントコンテナ上">3-2-10. ファイル共有ストレージ領域マウント（コンテナ上）</a></li></ul></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="0-概要">0. 概要</h1>
+
+<p>マネージドLustreサービスの <strong><a href="https://www.oracle.com/jp/cloud/storage/file-storage-with-lustre/">File Storage with Lustre</a></strong> は、以下の特徴から高性能・高可用性・低い運用コストが求められるHPC/GPUクラスタ向けのファイル共有ストレージに最適なサービスです。</p>
+
+<ul>
+  <li>並列ファイルシステムであるLustreファイルシステムの特性を生かした高スループット</li>
+  <li>ファイルサーバがHA構成となっていて高いサービス可用性を提供</li>
+  <li>ストレージ内のデータが複製されていて高いデータ可用性を提供</li>
+  <li><strong>パフォーマンス層</strong> のアップグレードや容量の増加による動的な性能向上が可能（※1）</li>
+  <li>ファイルサーバのソフトウェアメンテナンスが不要</li>
+  <li>OCIコンソールからGUIでデプロイできるため構築難易度が低い</li>
+</ul>
+
+<p>※1）<strong>パフォーマンス層</strong> に関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/overview.htm#concepts">ここ</a></strong> を参照してください。</p>
+
+<p>これに対しマネージドNFSサービスの <strong><a href="https://www.oracle.com/jp/cloud/storage/file-storage/">ファイル・ストレージ</a></strong> は、 <strong>File Storage with Lustre</strong> と同等の可用性・運用性を持つファイル共有ストレージをより低いコストで構築することが出来ますが、 <strong>File Storage with Lustre</strong> を採用することで、HPCワークロードのスクラッチ領域や機械学習ワークロードのチェックポイント領域等の高いスループットが要求されるファイル共有ストレージを構築することが可能です。<br />
+<strong>ファイル・ストレージ</strong> と <strong>File Storage with Lustre</strong> の比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
+
+<p>以上を踏まえて本チュートリアルは、 <strong>File Storage with Lustre</strong> でファイル共有ストレージを構築、HPCワークロードを実行するHPCクラスタからのアクセスを想定して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算ノードをLustreクライアントとして構築する手順と、機械学習ワークロードを実行する機械学習環境からのアクセスを想定してコンテナからファイル共有ストレージ領域にアクセスするGPUノードをLustreクライアントとして構築する手順を解説します。</p>
+
+<p>本チュートリアルで構築するファイル共有ストレージ環境の構成を以下に示します。</p>
+
+<p>[ <strong>File Storage with Lustre</strong> ]</p>
+
+<ul>
+  <li><strong>パフォーマンス層</strong> ： 125 MB/s/TB</li>
+  <li>容量： 31.2TB</li>
+  <li>総スループット： 3.9 GB/s</li>
+</ul>
+
+<p>[計算ノード]</p>
+
+<ul>
+  <li>シェイプ ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
+  <li>イメージ ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※2）</li>
+</ul>
+
+<p>※2）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+
+<p>[GPUノード]</p>
+
+<ul>
+  <li>シェイプ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong></li>
+  <li>イメージ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-02-28-0.htm">Oracle-Linux-8.10-2025.02.28-0</a></strong></li>
+  <li>NVIDIA GPUドライバ： 570.133.20</li>
+  <li><strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> ： 1.17.5</li>
+  <li>コンテナランタイム： <strong><a href="https://github.com/containerd/containerd/tree/main">containerd</a></strong> 2.0.3</li>
+  <li>コンテナ： <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> 24.06-tf2-py3</li>
+</ul>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<p><strong>所要時間 :</strong> 約3時間</p>
+
+<p><strong>前提条件 :</strong> ファイル共有ストレージ環境を収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="1-事前作業">1. 事前作業</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、 <strong>File Storage with Lustre</strong> の環境を構築するために事前に作成する必要のある、以下のリソースを作成します。</p>
+
+<ul>
+  <li><strong>仮想クラウド・ネットワーク</strong><br />
+  <strong>File Storage with Lustre</strong> 内のサーバー群やストレージ等のサービスに関連するリソースと、LustreクライアントをTCP接続するために使用します。</li>
+  <li>Bastionノード<br />
+  インターネットから直接アクセス出来ないプライベートサブネットに接続する計算/GPUノードにログインする際の踏み台として利用します。</li>
+  <li><strong>IAMポリシー</strong><br />
+  <strong>File Storage with Lustre</strong> が内部的に使用する <strong>仮想クラウド・ネットワーク</strong> 関連リソースの作成に必要です。</li>
+</ul>
+
+<h2 id="1-1-仮想クラウドネットワーク作成">1-1. 仮想クラウド・ネットワーク作成</h2>
+
+<p><strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順に従い、以下のリソースを作成します。</p>
+
+<ul>
+  <li><strong>仮想クラウド・ネットワーク</strong>
+    <ul>
+      <li><strong>VCN IPv4 CIDRブロック</strong> ： 10.0.0.0/16</li>
+    </ul>
+  </li>
+  <li>パブリックサブネット
+    <ul>
+      <li><strong>IPv4 CIDRブロック</strong> ： 10.0.0.0/24</li>
+    </ul>
+  </li>
+  <li><strong>File Storage with Lustre</strong> 関連リソース接続用プライベートサブネット（※3）
+    <ul>
+      <li><strong>IPv4 CIDRブロック</strong> ： 10.0.1.0/24</li>
+    </ul>
+  </li>
+  <li>Lustreクライアント接続用プライベートサブネット
+    <ul>
+      <li><strong>IPv4 CIDRブロック</strong> ： 10.0.2.0/24</li>
+    </ul>
+  </li>
+  <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
+  <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
+  <li><strong>ルート表</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+  <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
+</ul>
+
+<p>※3）このサブネットのCIDRレンジは、 <strong><a href="https://docs.oracle.com/ja/solutions/deploy-lustre-file-systems/configuring-lustre-connectivity.html">ここ</a></strong> のドキュメントを参考に、将来的な拡張性を考慮して決定します。</p>
+
+<p>作成後、 <strong>セキュリティリスト</strong> が以下となるように修正します。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">サブネット</th>
+      <th style="text-align: center">通信方向</th>
+      <th style="text-align: center">ステートレス</th>
+      <th style="text-align: center">ソース</th>
+      <th style="text-align: center">IPプロトコル</th>
+      <th style="text-align: center">ソース・ポート範囲</th>
+      <th style="text-align: center">宛先ポート範囲</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">パブリック</td>
+      <td style="text-align: center">イングレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0<br />（※4）</td>
+      <td style="text-align: center">TCP</td>
+      <td style="text-align: center">All</td>
+      <td style="text-align: center">22</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">イグレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベート<br />（※5）</td>
+      <td style="text-align: center">イングレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">10.0.0.0/16</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">イグレス</td>
+      <td style="text-align: center">いいえ</td>
+      <td style="text-align: center">0.0.0.0/0</td>
+      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。<br />
+※5）この設定により、作成した <strong>仮想クラウド・ネットワーク</strong> に割り当てられる全てのIPアドレスからの全てのポートへのアクセスを許可しますが、 <strong>File Storage with Lustre</strong> を使用する際の最低限必要な <strong>セキュリティリスト</strong> とするための関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/security-rules.htm#top__different-subnet">ここ</a></strong> を参照してください。</p>
+
+<h2 id="1-2-bastionノード作成">1-2. Bastionノード作成</h2>
+
+<p>Bastionノードの作成は、 <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを作成します。<br />
+本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
+
+<ul>
+  <li><strong>シェイプ</strong> ： <strong>VM.Standard.E5.Flex</strong></li>
+  <li><strong>イメージ</strong> ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> （Oracle-Linux-8.10-2025.02.28-0）</li>
+  <li><strong>サブネット</strong> ： 先に作成したパブリックサブネット</li>
+  <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
+</ul>
+
+<p>次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行してSSH鍵ペアを作成し、その公開鍵を控えます。<br />
+このSSH鍵は、BastionノードからLustreクライアントにログインする際に使用します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-N</span> <span class="s2">""</span> <span class="nt">-f</span> ~/.ssh/id_rsa
+Generating public/private rsa key pair.
+Your identification has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.
+Your public key has been saved <span class="k">in</span> /home/opc/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:gROjFmmm2yf3Frsg2P2T7cBzSCCEiml9BRGDnhi5qBs opc@bastion
+The keys randomart image is:
++---[RSA 3072]----+
+|  ..+<span class="k">**</span>          |
+| o.o+o.<span class="o">=</span>         |
+|oo<span class="k">*</span>+<span class="o">=</span> <span class="o">=</span> <span class="nb">.</span>        |
+|<span class="o">=</span>+.<span class="o">=</span> o o <span class="nb">.</span>       |
+|o  o.   S        |
+|E .oo.oo..       |
+| o. o+o.<span class="o">==</span><span class="nb">.</span>      |
+|.    <span class="nb">.</span> o<span class="k">*</span>+.      |
+|       .o+.      |
++----[SHA256]-----+
+<span class="nv">$ </span><span class="nb">cat</span> .ssh/id_rsa.pub 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrLpD1kDQQzsc6Q8ndyOu6h7X3E0FGY2SDjDyhJRdntbOZKPkYkQrGHbhnBllFPMV4NlObkf/YX6a9bc4vrGgnayRgfj0vOZ0RKlJmkfjAR/7Cw48LzQnaDDq2HHZAo+c71WBSjLt1SsX7tXHqkzjGUv44qqEiC6qlEiZd9yevA7kR0IoN9dIWXaKnMbOVGr8DezyLsruoQxhj6bHNwXhEjlGPg8E6R35AdjGeGZOCYT2clfMu9iavuzR5dilysARq1Lxow2/MEija3/twxmzhxVbwoGTXE0sCz3SGMnHTwLGEE7Tok+i7zZMB2ySbCM42Icz3Ja2qxNxqdx9YUKZ48SgkNPrMMouZGm+lZrZf0dypQqDbUrA0uZkkTUR+RTY+V/0MmuH6eDgHQLjxzo07/+gw2BG9CMcor0fMYhEJiKUVRy2LXBIK2Zj2+Ow7zs552f7SRGWnAktU7sTU801frAjE<span class="o">=</span> opc@bastion
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="1-3-iamポリシー作成">1-3. IAMポリシー作成</h2>
+
+<p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+この際、 <strong>コンパートメント</strong> プルダウンメニューでルート <strong>コンパートメント</strong> を指定します。</p>
+
+<p><img src="console_page08.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ul>
+  <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+  <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+  <li><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service lustrefs to use virtual-network-family <span class="k">in </span>tenancy
+</code></pre></div></div>
+
+<p><img src="console_page09.png" alt="画面ショット" /></p>
+
+<hr />
+<h1 id="2-file-storage-with-lustre作成">2. File Storage with Lustre作成</h1>
+
+<p>本章は、OCIコンソールから <strong>File Storage with Lustre</strong> を作成します。</p>
+
+<p>OCIコンソールにログインし、 <strong>File Storage with Lustre</strong> を作成するリージョンを選択後、 <strong>ストレージ</strong> → <strong>Lustreファイル・システム</strong> とメニューを辿り、表示される以下画面で <strong>作成</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>Lustreファイル・システムの作成</strong> 画面で以下の情報を入力し、 <strong>作成</strong> ボタンをクリックします。<br />
+なおここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ol>
+  <li>
+    <p><strong>一般情報</strong> フィールド　</p>
+
+    <ul>
+      <li><strong>ファイル・システム名</strong> ： <strong>Lustreファイル・システム</strong> に付与する名前</li>
+    </ul>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>配置</strong> フィールド</p>
+
+    <ul>
+      <li><strong>可用性ドメイン</strong> ： <strong>Lustreファイル・システム</strong> を作成する <strong>可用性ドメイン</strong></li>
+    </ul>
+
+    <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>パフォーマンスと容量</strong> フィールド</p>
+
+    <ul>
+      <li><strong>パフォーマンス層</strong> ： 125（MB/s/TB）</li>
+      <li><strong>容量</strong> ： 31.2（TB）</li>
+      <li><strong>確認</strong> ： チェック</li>
+    </ul>
+
+    <p><img src="console_page04.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>ネットワーキング</strong> フィールド</p>
+
+    <ul>
+      <li><strong>仮想クラウド・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong></li>
+      <li><strong>サブネット</strong> ： 先に作成した <strong>File Storage with Lustre</strong> 関連リソース接続用プライベートサブネット</li>
+    </ul>
+
+    <p><img src="console_page05.png" alt="画面ショット" /></p>
+  </li>
+</ol>
+
+<p>次に、表示される以下 <strong>Lustreファイル・システム詳細</strong> 画面で、ステータスが <strong>CREATING</strong> と表示されれば、 <strong>File Storage with Lustre</strong> の作成が実施されています。</p>
+
+<p><img src="console_page06.png" alt="画面ショット" /></p>
+
+<p>ステータスが <strong>ACTIVE</strong> となれば、 <strong>File Storage with Lustre</strong> の作成が完了しています。<br />
+作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分強です。</p>
+
+<p>次に、ステータスが <strong>ACTIVE</strong> となった以下 <strong>Lustreファイル・システム詳細</strong> 画面で、 <strong>Lustreプロパティ</strong> フィールドの <strong>マウント・コマンド</strong> の <strong>コピー</strong> コマンドをクリックし、Lustreクライアントからマウントする際のコマンドを保存します。</p>
+
+<p><img src="console_page07.png" alt="画面ショット" /></p>
+
+<hr />
+<h1 id="3-lustreクライアント構築">3. Lustreクライアント構築</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、Lustreクライアントの構築方法を以下2通りのケースに分けて解説します。</p>
+
+<ol>
+  <li><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算ノード</li>
+  <li>コンテナを実行するGPUノード</li>
+</ol>
+
+<h2 id="3-1-クラスタネットワークに接続する計算ノード">3-1. クラスタ・ネットワークに接続する計算ノード</h2>
+
+<h3 id="3-1-0-概要">3-1-0. 概要</h3>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続する計算ノードにLustreクライアントを構築する方法を、以下の順に解説します。</p>
+
+<ol>
+  <li>インスタンス作成</li>
+  <li>Lustreクライアント用RPMパッケージビルド</li>
+  <li>Lustreクライアント用RPMパッケージインストール</li>
+  <li>ファイル共有ストレージ領域マウント</li>
+</ol>
+
+<h3 id="3-1-1-インスタンス作成">3-1-1. インスタンス作成</h3>
+
+<p>Lustreクライアントとする計算ノードのインスタンスは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/#2-hpcクラスタ作成">2. HPCクラスタ作成</a></strong> と <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/#3-計算ノード確認">3. 計算ノード確認</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
+
+<ul>
+  <li><strong>シェイプ</strong> ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
+  <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※6）</li>
+  <li><strong>サブネット</strong> ： 先に作成したLustreクライアント接続用プライベートサブネット</li>
+  <li><strong>SSHキーの追加</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵</li>
+</ul>
+
+<p>※6）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+
+<p>サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
+
+<h3 id="3-1-2-lustreクライアント用rpmパッケージビルド">3-1-2. Lustreクライアント用RPMパッケージビルド</h3>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、Lustreクライアント用RPMパッケージをビルドします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer ol8_developer_EPEL
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git libtool patch pkgconfig libnl3-devel libblkid-devel libuuid-devel rpm-build kernel-rpm-macros kernel-devel kernel-abi-whitelists libmount libmount-devel libyaml-devel
+<span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone git://git.whamcloud.com/fs/lustre-release.git lustre-client
+<span class="nv">$ </span><span class="nb">cd </span>lustre-client <span class="o">&amp;&amp;</span> git checkout tags/2.15.5
+<span class="nv">$ </span>sh ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--enable-client</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 36
+<span class="nv">$ </span>make <span class="nt">-j</span> 36 rpms
+<span class="nv">$ </span>make <span class="nt">-j</span> 36 dkms-rpm
+</code></pre></div></div>
+
+<p>ここで作成するRPMパッケージは、使用するイメージが同じであれば他のLustreクライアントでも再利用できるため、2台目以降の同じイメージを使用するLustreクライアント構築時は、本ステップを省略します。</p>
+
+<p>先のLustreクライアント用RPMパッケージのビルドが成功すると、カレントディレクトリに以降で利用する以下のRPMパッケージが作成されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-1</span> lustre-client-2.15.5-1.el8.x86_64.rpm lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+lustre-client-2.15.5-1.el8.x86_64.rpm
+lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h3 id="3-1-3-lustreクライアント用rpmパッケージインストール">3-1-3. Lustreクライアント用RPMパッケージインストール</h3>
+
+<p>先に作成した2個のLustreクライアント用RPMパッケージをカレントディレクトリにコピー後、以下コマンドを計算ノードのopcユーザで実行し、Lustreクライアント用RPMパッケージのインストールとLustreカーネルモジュールのロードを行い、ロードされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> libnl3-devel libmount-devel libyaml-devel expect perl dkms
+<span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">-ivh</span> lustre-client-2.15.5-1.el8.x86_64.rpm lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+<span class="nv">$ </span><span class="nb">sudo </span>modprobe lustre
+<span class="nv">$ </span>lsmod | <span class="nb">grep</span> <span class="nt">-i</span> lustre
+lustre               1052672  0
+lmv                   208896  1 lustre
+mdc                   286720  1 lustre
+lov                   348160  2 mdc,lustre
+ptlrpc               1441792  7 fld,osc,fid,lov,mdc,lmv,lustre
+obdclass             3371008  8 fld,osc,fid,ptlrpc,lov,mdc,lmv,lustre
+lnet                  720896  6 osc,obdclass,ptlrpc,ksocklnd,lmv,lustre
+libcfs                266240  11 fld,lnet,osc,fid,obdclass,ptlrpc,ksocklnd,lov,mdc,lmv,lustre
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>なおこのカーネルモジュールは、OSを再起動した際には再度ロードする必要があります。</p>
+
+<h3 id="3-1-4-ファイル共有ストレージ領域マウント">3-1-4. ファイル共有ストレージ領域マウント</h3>
+
+<p>以下コマンドを計算ノードのopcユーザで実行し、ファイル共有ストレージ領域をマウントして <strong>File Storage with Lustre</strong> にアクセスできることを確認します。<br />
+なおmountコマンドは、先にOCIコンソールからコピーしたものに置き換えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/lustre
+<span class="nv">$ </span><span class="nb">sudo </span>mount <span class="nt">-t</span> lustre 10.0.1.xxx@tcp:/lustrefs /mnt/lustre
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/lustre
+Filesystem               Size  Used Avail Use% Mounted on
+10.0.1.xx@tcp:/lustrefs   30T  1.6G   28T   1% /mnt/lustre
+<span class="nv">$ </span><span class="nb">date</span> | <span class="nb">sudo tee</span> /mnt/lustre/date.txt
+Mon Apr 21 17:20:52 JST 2025
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /mnt/lustre/date.txt
+<span class="nt">-rw-r--r--</span> 1 root root 29 Apr 21 17:20 /mnt/lustre/date.txt
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-2-コンテナを実行するgpuノード">3-2. コンテナを実行するGPUノード</h2>
+
+<h3 id="3-2-0-概要">3-2-0. 概要</h3>
+
+<p>本章は、コンテナからファイル共有ストレージ領域にアクセスするGPUノードにLustreクライアントを構築する方法を、以下の順に解説します。</p>
+
+<ol>
+  <li>インスタンス作成</li>
+  <li>NVIDIA GPUドライバインストール</li>
+  <li>Lustreクライアント用RPMパッケージビルド（ホストOS上）</li>
+  <li>Lustreクライアント用RPMパッケージインストール（ホストOS上）</li>
+  <li>ファイル共有ストレージ領域マウント（ホストOS上）</li>
+  <li>コンテナ環境構築</li>
+  <li>コンテナ起動</li>
+  <li>Lustreクライアント用RPMパッケージビルド（コンテナ上）</li>
+  <li>Lustreクライアント用RPMパッケージインストール（コンテナ上）</li>
+  <li>ファイル共有ストレージ領域マウント（コンテナ上）</li>
+</ol>
+
+<h3 id="3-2-1-インスタンス作成">3-2-1. インスタンス作成</h3>
+
+<p>LustreクライアントとするGPUノードのインスタンスは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/#2-gpuノード作成">2. GPUノード作成</a></strong> と <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/#3-gpuノード確認">3. GPUノード確認</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
+
+<ul>
+  <li><strong>シェイプ</strong> ： <strong>BM.GPU4.8</strong></li>
+  <li><strong>イメージ</strong> ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> <strong>Oracle-Linux-8.10-2025.02.28-0</strong>（※7）</li>
+  <li><strong>サブネット</strong> ： 先に作成したLustreクライアント接続用プライベートサブネット</li>
+</ul>
+
+<p>※7） <strong>プラットフォーム・イメージ</strong> <strong>Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0</strong> は、インストールされているNVIDIA GPUドライバが  <strong>RedHat Compatible Kernel</strong> （以降 <strong>RHCK</strong> と呼称します。）用ではないため、このイメージで作成後に <strong>RHCK</strong> 用のNVIDIA GPUドライバをインストールします。</p>
+
+<p>サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
+
+<p>次に、 <strong><a href="https://blogs.oracle.com/linux/post/changing-the-default-kernel-in-oracle-linux-its-as-simple-as-1-2-3">ここ</a></strong> のブログの手順に従い、GPUノードのカーネルを <strong>RHCK</strong> に変更します。</p>
+
+<h3 id="3-2-2-nvidia-gpuドライバインストール">3-2-2. NVIDIA GPUドライバインストール</h3>
+
+<p>以下コマンドをGPUノードのopcユーザで実行し、NVIDIA GPUドライバをインストールしてOSを再起動することでこれを有効化します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nt">-y</span> <span class="nb">install </span>kernel-devel-<span class="si">$(</span><span class="nb">uname</span> <span class="nt">-r</span><span class="si">)</span> kernel-headers
+<span class="nv">$ </span><span class="nb">sudo </span>dnf config-manager <span class="nt">--set-enabled</span> ol8_codeready_builder
+<span class="nv">$ </span><span class="nb">sudo </span>dnf config-manager <span class="nt">--add-repo</span> https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/cuda-rhel8.repo
+<span class="nv">$ </span><span class="nb">sudo </span>dnf clean expire-cache
+<span class="nv">$ </span><span class="nb">sudo </span>dnf module <span class="nb">install</span> <span class="nt">-y</span> nvidia-driver:570
+<span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
+
+<p>OS起動後以下コマンドをGPUノードのopcユーザで実行し、NVIDIA GPUドライバが正常にインストールされたことを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lsmod | <span class="nb">grep </span>nvidia
+nvidia_uvm           1654784  0
+nvidia_drm            102400  0
+nvidia_modeset       1482752  1 nvidia_drm
+nvidia              89247744  2 nvidia_uvm,nvidia_modeset
+video                  57344  1 nvidia_modeset
+drm_kms_helper        184320  6 bochs,drm_vram_helper,nvidia_drm
+drm                   602112  8 drm_kms_helper,bochs,drm_vram_helper,nvidia,drm_ttm_helper,nvidia_drm,ttm
+<span class="nv">$ </span>nvidia-smi 
+Wed Apr 23 16:08:41 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|<span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span>|
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:0F:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-40GB          Off |   00000000:15:00.0 Off |                    0 |
+| N/A   30C    P0             55W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-40GB          Off |   00000000:51:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-40GB          Off |   00000000:54:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-SXM4-40GB          Off |   00000000:8D:00.0 Off |                    0 |
+| N/A   30C    P0             53W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-SXM4-40GB          Off |   00000000:92:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-SXM4-40GB          Off |   00000000:D6:00.0 Off |                    0 |
+| N/A   32C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-SXM4-40GB          Off |   00000000:DA:00.0 Off |                    0 |
+| N/A   32C    P0             54W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|<span class="o">=========================================================================================</span>|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h3 id="3-2-3-lustreクライアント用rpmパッケージビルドホストos上">3-2-3. Lustreクライアント用RPMパッケージビルド（ホストOS上）</h3>
+
+<p>以下コマンドをGPUノードのopcユーザで実行し、Lustreクライアント用RPMパッケージをビルドします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder ol8_developer ol8_developer_EPEL
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> git libtool patch pkgconfig libnl3-devel libblkid-devel libuuid-devel rpm-build kernel-rpm-macros kernel-devel kernel-abi-whitelists libmount libmount-devel libyaml-devel
+<span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone git://git.whamcloud.com/fs/lustre-release.git lustre-client
+<span class="nv">$ </span><span class="nb">cd </span>lustre-client <span class="o">&amp;&amp;</span> git checkout tags/2.15.5
+<span class="nv">$ </span>sh ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--enable-client</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 128
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 rpms
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 dkms-rpm
+</code></pre></div></div>
+
+<p>ここで作成するRPMパッケージは、使用するイメージが同じであれば他のLustreクライアントでも再利用できるため、2台目以降の同じイメージを使用するGPUノード構築時は、本ステップを省略します。</p>
+
+<p>先のLustreクライアント用RPMパッケージのビルドが成功すると、カレントディレクトリに以降で利用する以下のRPMパッケージが作成されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-1</span> lustre-client-2.15.5-1.el8.x86_64.rpm lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+lustre-client-2.15.5-1.el8.x86_64.rpm
+lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h3 id="3-2-4-lustreクライアント用rpmパッケージインストールホストos上">3-2-4. Lustreクライアント用RPMパッケージインストール（ホストOS上）</h3>
+
+<p>先に作成した2個のLustreクライアント用RPMパッケージがカレントディレクトリに存在する状態で、以下コマンドをGPUノードのopcユーザで実行し、Lustreクライアント用RPMパッケージのインストールとLustreカーネルモジュールのロードを行い、ロードされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder
+<span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> libnl3-devel libmount-devel libyaml-devel expect perl dkms
+<span class="nv">$ </span><span class="nb">sudo </span>rpm <span class="nt">-ivh</span> lustre-client-2.15.5-1.el8.x86_64.rpm lustre-client-dkms-2.15.5-1.el8.noarch.rpm
+<span class="nv">$ </span><span class="nb">sudo </span>modprobe lustre
+<span class="nv">$ </span>lsmod | <span class="nb">grep</span> <span class="nt">-i</span> lustre
+lustre               1052672  0
+lmv                   208896  1 lustre
+mdc                   286720  1 lustre
+lov                   348160  2 mdc,lustre
+ptlrpc               1441792  7 fld,osc,fid,lov,mdc,lmv,lustre
+obdclass             3371008  8 fld,osc,fid,ptlrpc,lov,mdc,lmv,lustre
+lnet                  720896  6 osc,obdclass,ptlrpc,ksocklnd,lmv,lustre
+libcfs                266240  11 fld,lnet,osc,fid,obdclass,ptlrpc,ksocklnd,lov,mdc,lmv,lustre
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>なおこのカーネルモジュールは、OSを再起動した際には再度ロードする必要があります。</p>
+
+<h3 id="3-2-5-ファイル共有ストレージ領域マウントホストos上">3-2-5. ファイル共有ストレージ領域マウント（ホストOS上）</h3>
+
+<p>以下コマンドをGPUノードのopcユーザで実行し、ファイル共有ストレージ領域をマウントして <strong>File Storage with Lustre</strong> にアクセスできることを確認後、アンマウントします。<br />
+なおmountコマンドは、先にOCIコンソールからコピーしたものに置き換えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/lustre
+<span class="nv">$ </span><span class="nb">sudo </span>mount <span class="nt">-t</span> lustre 10.0.1.xxx@tcp:/lustrefs /mnt/lustre
+<span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/lustre
+Filesystem               Size  Used Avail Use% Mounted on
+10.0.1.xx@tcp:/lustrefs   30T  1.6G   28T   1% /mnt/lustre
+<span class="nv">$ </span><span class="nb">date</span> | <span class="nb">sudo tee</span> /mnt/lustre/date.txt
+Mon Apr 21 17:20:52 JST 2025
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> /mnt/lustre/date.txt
+<span class="nt">-rw-r--r--</span> 1 root root 29 Apr 21 17:20 /mnt/lustre/date.txt
+<span class="nv">$ </span><span class="nb">sudo </span>umount /mnt/lustre
+</code></pre></div></div>
+
+<h3 id="3-2-6-コンテナ環境構築">3-2-6. コンテナ環境構築</h3>
+
+<p>コンテナ環境は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/#4-コンテナ環境構築">4. コンテナ環境構築</a></strong> の手順に従い構築します。<br />
+この際、ファイル共有領域にアクセスするコンテナはroot権限で実行する必要があるため、一般ユーザ権限で <strong>containerd</strong> 上にコンテナを実行するために必要な手順は実施する必要がありません。</p>
+
+<h3 id="3-2-7-コンテナ起動">3-2-7. コンテナ起動</h3>
+
+<p>以下コマンドをGPUノードのopcユーザで実行し、 <strong><a href="https://catalog.ngc.nvidia.com/">NGC Catalog</a></strong> から提供される <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> を起動し、コンテナ上でGPUにアクセスできることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl start containerd
+<span class="nv">$ </span><span class="nb">sudo </span>nerdctl run <span class="nt">-it</span> <span class="nt">--privileged</span> <span class="nt">--rm</span> <span class="nt">--gpus</span> all <span class="nt">--ipc</span><span class="o">=</span>host <span class="nt">--ulimit</span> <span class="nv">memlock</span><span class="o">=</span><span class="nt">-1</span> <span class="nt">--ulimit</span> <span class="nv">stack</span><span class="o">=</span>67108864 nvcr.io/nvidia/tensorflow:24.06-tf2-py3
+nvcr.io/nvidia/tensorflow:24.06-tf2-py3:                                          resolved       |++++++++++++++++++++++++++++++++++++++| 
+:
+<span class="o">================</span>
+<span class="o">==</span> TensorFlow <span class="o">==</span>
+<span class="o">================</span>
+:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+<span class="c"># nvidia-smi</span>
+Wed Apr 23 16:08:41 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|<span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span>|
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:0F:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-40GB          Off |   00000000:15:00.0 Off |                    0 |
+| N/A   30C    P0             55W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-40GB          Off |   00000000:51:00.0 Off |                    0 |
+| N/A   31C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-40GB          Off |   00000000:54:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-SXM4-40GB          Off |   00000000:8D:00.0 Off |                    0 |
+| N/A   30C    P0             53W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-SXM4-40GB          Off |   00000000:92:00.0 Off |                    0 |
+| N/A   30C    P0             52W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-SXM4-40GB          Off |   00000000:D6:00.0 Off |                    0 |
+| N/A   32C    P0             56W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-SXM4-40GB          Off |   00000000:DA:00.0 Off |                    0 |
+| N/A   32C    P0             54W /  400W |       1MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|<span class="o">=========================================================================================</span>|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+<span class="c">#</span>
+</code></pre></div></div>
+
+<h3 id="3-2-8-lustreクライアント用rpmパッケージビルドコンテナ上">3-2-8. Lustreクライアント用RPMパッケージビルド（コンテナ上）</h3>
+
+<p>以下コマンドを起動したコンテナ上のrootユーザで実行し、コンテナイメージ用のLustreクライアント用RPMパッケージをビルドする準備を行います。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># apt update</span>
+<span class="c"># apt install -y linux-image-5.15.0-1040-oracle linux-headers-5.15.0-1040-oracle linux-modules-5.15.0-1040-oracle libreadline-dev libpython3-dev libkrb5-dev libkeyutils-dev flex bison libmount-dev quilt swig libtool make libnl-3-dev libnl-genl-3-dev libnl-3-dev pkg-config libhwloc-dev libnl-genl-3-dev libyaml-dev libtool libyaml-dev ed libreadline-dev dpatch libsnmp-dev mpi-default-dev libncurses5-dev libncurses-dev bison flex gnupg libelf-dev gcc libssl-dev bc wget bzip2 build-essential udev kmod cpio module-assistant module-assistant debhelper dpatch libsnmp-dev mpi-default-dev libssl-dev</span>
+<span class="c"># mkdir ~/`hostname` &amp;&amp; cd ~/`hostname` &amp;&amp; git clone git://git.whamcloud.com/fs/lustre-release.git lustre-client</span>
+<span class="c"># cd lustre-client &amp;&amp; git checkout tags/2.15.5</span>
+<span class="c"># sh ./autogen.sh &amp;&amp; ./configure --enable-client</span>
+</code></pre></div></div>
+
+<p>次に、カレントディレクトリ下の <strong>debian</strong> ディレクトリ以下の3個のファイル <strong>control</strong> ・<strong>control.main</strong> ・<strong>control.modules.in</strong> からキーワード <strong>linux-headers-xxxx</strong> と <strong>linux-image-xxxx</strong> の記載を削除し、差分が以下となるよう修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># diff debian/control_sv debian/control</span>
+7c7
+&lt; Build-Depends: module-assistant, libreadline-dev, debhelper <span class="o">(&gt;=</span> 11<span class="o">)</span>, dpatch, automake <span class="o">(&gt;=</span>1.7<span class="o">)</span> | automake1.7 | automake1.8 | automake1.9, pkg-config, libtool, libyaml-dev, libnl-genl-3-dev, libselinux-dev, libsnmp-dev, mpi-default-dev, bzip2, quilt, linux-headers-generic | linux-headers-amd64 | linux-headers-arm64, rsync, libssl-dev, libpython3-dev, swig, libmount-dev, ed
+<span class="nt">---</span>
+<span class="o">&gt;</span> Build-Depends: module-assistant, libreadline-dev, debhelper <span class="o">(&gt;=</span> 11<span class="o">)</span>, dpatch, automake <span class="o">(&gt;=</span>1.7<span class="o">)</span> | automake1.7 | automake1.8 | automake1.9, pkg-config, libtool, libyaml-dev, libnl-genl-3-dev, libselinux-dev, libsnmp-dev, mpi-default-dev, bzip2, quilt, rsync, libssl-dev, libpython3-dev, swig, libmount-dev, ed
+111c111
+&lt; Depends: autoconf, automake, bison, build-essential, dkms, flex, libaio-dev, libkeyutils-dev, libkrb5-dev, libtool, libselinux-dev, libssl-dev, libyaml-dev, linux-base, linux-image | linux-image-amd64 | linux-image-arm64, linux-headers-generic | linux-headers-amd64, module-assistant, pkg-config, python3-distutils | python3-distutils-extra, python3-dev, libnl-genl-3-dev, zlib1g-dev, libmount1, libmount-dev, libkeyutils1, libkeyutils-dev
+<span class="nt">---</span>
+<span class="o">&gt;</span> Depends: autoconf, automake, bison, build-essential, dkms, flex, libaio-dev, libkeyutils-dev, libkrb5-dev, libtool, libselinux-dev, libssl-dev, libyaml-dev, linux-base, module-assistant, pkg-config, python3-distutils | python3-distutils-extra, python3-dev, libnl-genl-3-dev, zlib1g-dev, libmount1, libmount-dev, libkeyutils1, libkeyutils-dev
+<span class="c"># diff debian/control.main_sv debian/control.main</span>
+7c7
+&lt; Build-Depends: module-assistant, libreadline-dev, debhelper <span class="o">(&gt;=</span> 11<span class="o">)</span>, dpatch, automake <span class="o">(&gt;=</span>1.7<span class="o">)</span> | automake1.7 | automake1.8 | automake1.9, pkg-config, libtool, libyaml-dev, libnl-genl-3-dev, libselinux-dev, libsnmp-dev, mpi-default-dev, bzip2, quilt, linux-headers-generic | linux-headers-amd64 | linux-headers-arm64, rsync, libssl-dev, libpython3-dev, swig, libmount-dev, ed
+<span class="nt">---</span>
+<span class="o">&gt;</span> Build-Depends: module-assistant, libreadline-dev, debhelper <span class="o">(&gt;=</span> 11<span class="o">)</span>, dpatch, automake <span class="o">(&gt;=</span>1.7<span class="o">)</span> | automake1.7 | automake1.8 | automake1.9, pkg-config, libtool, libyaml-dev, libnl-genl-3-dev, libselinux-dev, libsnmp-dev, mpi-default-dev, bzip2, quilt, rsync, libssl-dev, libpython3-dev, swig, libmount-dev, ed
+111c111
+&lt; Depends: autoconf, automake, bison, build-essential, dkms, flex, libaio-dev, libkeyutils-dev, libkrb5-dev, libtool, libselinux-dev, libssl-dev, libyaml-dev, linux-base, linux-image | linux-image-amd64 | linux-image-arm64, linux-headers-generic | linux-headers-amd64, module-assistant, pkg-config, python3-distutils | python3-distutils-extra, python3-dev, libnl-genl-3-dev, zlib1g-dev, libmount1, libmount-dev, libkeyutils1, libkeyutils-dev
+<span class="nt">---</span>
+<span class="o">&gt;</span> Depends: autoconf, automake, bison, build-essential, dkms, flex, libaio-dev, libkeyutils-dev, libkrb5-dev, libtool, libselinux-dev, libssl-dev, libyaml-dev, linux-base, module-assistant, pkg-config, python3-distutils | python3-distutils-extra, python3-dev, libnl-genl-3-dev, zlib1g-dev, libmount1, libmount-dev, libkeyutils1, libkeyutils-dev
+<span class="c"># diff debian/control.modules.in_sv debian/control.modules.in</span>
+11c11
+&lt; Recommends: linux-image, lustre-client-utils
+<span class="nt">---</span>
+<span class="o">&gt;</span> Recommends: lustre-client-utils
+21c21
+&lt; Recommends: linux-image, lustre-server-utils
+<span class="nt">---</span>
+<span class="o">&gt;</span> Recommends: lustre-server-utils
+<span class="c">#</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、コンテナイメージ用のLustreクライアント用RPMパッケージをビルドします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># make -j 128 debs</span>
+</code></pre></div></div>
+
+<p>このビルドが成功すると、以降で利用する以下のRPMパッケージが作成されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ls -1 ./debs/lustre-client-utils_2.15.5-1_amd64.deb</span>
+./debs/lustre-client-utils_2.15.5-1_amd64.deb
+<span class="c">#</span>
+</code></pre></div></div>
+
+<h3 id="3-2-9-lustreクライアント用rpmパッケージインストールコンテナ上">3-2-9. Lustreクライアント用RPMパッケージインストール（コンテナ上）</h3>
+
+<p>以下コマンドを起動したコンテナ上のrootユーザで実行し、コンテナイメージ用のLustreクライアント用RPMパッケージをインストールします。<br />
+この際、以下のように出力の最後にエラーメッセージが表示されることがありますが、インストールは正常に完了しています。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># cd ./debs &amp;&amp; apt install -y --fix-broken ./lustre-client-utils_2.15.5-1_amd64.deb</span>
+:
+N: Download is performed unsandboxed as root as file <span class="s1">'/root/6e65dabf5a4c/lustre-client/debs/lustre-client-utils_2.15.5-1_amd64.deb'</span> couldn<span class="s1">'t be accessed by user '</span>_apt<span class="s1">'. - pkgAcquire::Run (13: Permission denied)
+</span></code></pre></div></div>
+
+<h3 id="3-2-10-ファイル共有ストレージ領域マウントコンテナ上">3-2-10. ファイル共有ストレージ領域マウント（コンテナ上）</h3>
+
+<p>以下コマンドを起動したコンテナ上のrootユーザで実行し、ファイル共有ストレージ領域をマウントして <strong>File Storage with Lustre</strong> にアクセスできることを確認します。<br />
+なおmountコマンドは、先にOCIコンソールからコピーしたものに置き換えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># mkdir /mnt/lustre</span>
+<span class="c"># mount -t lustre 10.0.1.xxx@tcp:/lustrefs /mnt/lustre</span>
+<span class="c"># df -h /mnt/lustre</span>
+10.0.2.66@tcp:/lustrefs      30T  1.6G   28T   1% /mnt/lustre
+<span class="c"># date &gt; /mnt/lustre/date2.txt</span>
+Mon Apr 21 17:20:52 JST 2025
+<span class="c"># ls -l /mnt/lustre/date2.txt</span>
+<span class="nt">-rw-r--r--</span> 1 root root 29 Apr 21 17:20 /mnt/lustre/date2.txt
+<span class="c">#</span>
+</code></pre></div></div>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-24T21:57:09+09:00">April 24, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=File+Storage+with+Lustre%E3%81%A7%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-lustre-server-fswl%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fas fa-fw fa-share-alt" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-lustre-server-fswl%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/spinup-lustre-server-fswl/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-nfs-server-fss/" class="pagination--pager" title="ファイル・ストレージでファイル共有ストレージを構築する">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-nfs-server/" class="pagination--pager" title="ブロック・ボリュームでファイル共有ストレージを構築する">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-23T23:08:42+09:00">
+  <meta property="article:published_time" content="2025-04-24T21:57:09+09:00">
 
 
 
@@ -283,6 +283,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/spinup-lustre-server-fswl/">File Storage with Lustreでファイル共有ストレージを構築する</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
@@ -398,7 +400,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム構築方法">
     <meta itemprop="description" content="HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-23T23:08:42+09:00">
+    <meta itemprop="datePublished" content="2025-04-24T21:57:09+09:00">
     
 
     <div class="page__inner-wrap">
@@ -409,7 +411,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-前提システム">1. 前提システム</a></li><li><a href="#2-環境構築">2. 環境構築</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li><li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li><li><a href="#2-3-openmpiインストール">2-3. OpenMPIインストール</a></li><li><a href="#2-4-openpmixインストール">2-4. OpenPMIxインストール</a></li><li><a href="#2-5-openucxインストール">2-5. OpenUCXインストール</a></li><li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm rpmパッケージ作成</a></li><li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm rpmパッケージインストール・セットアップ</a></li><li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li><li><a href="#2-9-slurmサービス起動">2-9. Slurmサービス起動</a></li><li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li></ul></li><li><a href="#3-稼働確認">3. 稼働確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-前提システム">1. 前提システム</a></li><li><a href="#2-環境構築">2. 環境構築</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li><li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li><li><a href="#2-3-openmpiインストール">2-3. OpenMPIインストール</a></li><li><a href="#2-4-openpmixインストール">2-4. OpenPMIxインストール</a></li><li><a href="#2-5-openucxインストール">2-5. OpenUCXインストール</a></li><li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm RPMパッケージ作成</a></li><li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm RPMパッケージインストール・セットアップ</a></li><li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li><li><a href="#2-9-slurmサービス起動">2-9. Slurmサービス起動</a></li><li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li></ul></li><li><a href="#3-稼働確認">3. 稼働確認</a></li></ul>
             </nav>
           </aside>
         
@@ -544,7 +546,7 @@ table, th, td {
 <h2 id="2-0-概要">2-0. 概要</h2>
 <p>本章は、既にデプロイされている <strong><a href="#1-前提システム">1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築する手順を解説します。</p>
 
-<p><strong>Slurm</strong> のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するrpmパッケージによるインストール方法を採用します。</p>
+<p><strong>Slurm</strong> のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。</p>
 
 <p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
 
@@ -565,8 +567,8 @@ table, th, td {
   <li><strong>OpenMPI</strong> インストール</li>
   <li><strong>OpenPMIx</strong> インストール</li>
   <li><strong>OpenUCX</strong> インストール</li>
-  <li><strong>Slurm</strong> rpmパッケージ作成</li>
-  <li><strong>Slurm</strong> rpmパッケージインストール・セットアップ</li>
+  <li><strong>Slurm</strong> RPMパッケージ作成</li>
+  <li><strong>Slurm</strong> RPMパッケージインストール・セットアップ</li>
   <li><strong>Slurm</strong> 設定ファイル作成</li>
   <li><strong>Slurm</strong> サービス起動</li>
   <li><strong>Slurm</strong> 利用に必要な環境変数設定</li>
@@ -803,16 +805,16 @@ Aborted
 <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
-<h2 id="2-6-slurm-rpmパッケージ作成">2-6. Slurm rpmパッケージ作成</h2>
+<h2 id="2-6-slurm-rpmパッケージ作成">2-6. Slurm RPMパッケージ作成</h2>
 
-<p>本章は、Slurmマネージャでrpmパッケージを作成します。</p>
+<p>本章は、SlurmマネージャでRPMパッケージを作成します。</p>
 
-<p>以下コマンドをSlurmマネージャのopcユーザで実行し、前提rpmパッケージをインストールします。</p>
+<p>以下コマンドをSlurmマネージャのopcユーザで実行し、前提RPMパッケージをインストールします。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake
 </code></pre></div></div>
 
-<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>Slurm</strong> rpmパッケージを作成します。</p>
+<p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>Slurm</strong> RPMパッケージを作成します。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~; wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
 $ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.11.0.tar.bz2
@@ -837,35 +839,35 @@ slurm-torque-24.11.0-1.el8.x86_64.rpm
 $
 </code></pre></div></div>
 
-<h2 id="2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm rpmパッケージインストール・セットアップ</h2>
+<h2 id="2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm RPMパッケージインストール・セットアップ</h2>
 
-<p>本章は、先に作成した <strong>Slurm</strong> rpmパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。</p>
+<p>本章は、先に作成した <strong>Slurm</strong> RPMパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。</p>
 
-<p>以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な <strong>Slurm</strong> rpmパッケージのインストール・セットアップを行います。</p>
+<p>以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ~/rpmbuild/RPMS/x86_64
 $ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.11.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmctld; sudo chown slurm:slurm /var/spool/slurmctld
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo mkdir /var/spool/slurmctld &amp;&amp; sudo chown slurm:slurm /var/spool/slurmctld
+$ sudo mkdir /var/spool/slurmd &amp;&amp; sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm &amp;&amp; sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc &amp;&amp; sudo chown slurm:slurm /opt/slurm/etc
 $ sudo su - slurm
 $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 </code></pre></div></div>
 
-<p>次に、以下コマンドを全ての計算ノードのopcユーザで <strong>Slurm</strong> rpmパッケージをコピーしたディレクトリで実行し、計算ノードに必要な <strong>Slurm</strong> rpmパッケージのインストール・セットアップを行います。</p>
+<p>次に、以下コマンドを全ての計算ノードのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install -y mariadb-devel
 $ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
-$ sudo mkdir /var/spool/slurmd; sudo chown slurm:slurm /var/spool/slurmd
-$ sudo mkdir /var/log/slurm; sudo chown slurm:slurm /var/log/slurm
-$ sudo mkdir /opt/slurm/etc; sudo chown slurm:slurm /opt/slurm/etc
+$ sudo mkdir /var/spool/slurmd &amp;&amp; sudo chown slurm:slurm /var/spool/slurmd
+$ sudo mkdir /var/log/slurm &amp;&amp; sudo chown slurm:slurm /var/log/slurm
+$ sudo mkdir /opt/slurm/etc &amp;&amp; sudo chown slurm:slurm /opt/slurm/etc
 </code></pre></div></div>
 
-<p>次に、以下コマンドをSlurmクライアントのopcユーザで <strong>Slurm</strong> rpmパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な <strong>Slurm</strong> rpmパッケージのインストール・セットアップを行います。</p>
+<p>次に、以下コマンドをSlurmクライアントのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dnf install -y mariadb-devel
 $ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
@@ -1072,7 +1074,7 @@ JobID             User  AllocCPUS               Start                 End
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-23T23:08:42+09:00">April 23, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-24T21:57:09+09:00">April 24, 2025</time></p>
 
       </footer>
 
