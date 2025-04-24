@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-24T21:57:09+09:00">
+  <meta property="article:published_time" content="2025-04-24T23:09:09+09:00">
 
 
 
@@ -390,7 +390,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="File Storage with Lustreでファイル共有ストレージを構築する">
     <meta itemprop="description" content="File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2025-04-24T21:57:09+09:00">
+    <meta itemprop="datePublished" content="2025-04-24T23:09:09+09:00">
     
 
     <div class="page__inner-wrap">
@@ -469,7 +469,7 @@
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、 <strong>File Storage with Lustre</strong> の環境を構築するために事前に作成する必要のある、以下のリソースを作成します。</p>
+<p>本章は、 <strong>File Storage with Lustre</strong> のファイル共有ストレージ環境を構築するために事前に作成する必要のある、以下のリソースを作成します。</p>
 
 <ul>
   <li><strong>仮想クラウド・ネットワーク</strong><br />
@@ -524,8 +524,8 @@
       <th style="text-align: center">ステートレス</th>
       <th style="text-align: center">ソース</th>
       <th style="text-align: center">IPプロトコル</th>
-      <th style="text-align: center">ソース・ポート範囲</th>
-      <th style="text-align: center">宛先ポート範囲</th>
+      <th style="text-align: center">ソース・ポート<br />範囲</th>
+      <th style="text-align: center">宛先ポート<br />範囲</th>
     </tr>
   </thead>
   <tbody>
@@ -543,7 +543,7 @@
       <td style="text-align: center"> </td>
       <td style="text-align: center">いいえ</td>
       <td style="text-align: center">10.0.0.0/16</td>
-      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">全プロトコル</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">-</td>
     </tr>
@@ -552,7 +552,7 @@
       <td style="text-align: center">イグレス</td>
       <td style="text-align: center">いいえ</td>
       <td style="text-align: center">0.0.0.0/0</td>
-      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">全プロトコル</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">-</td>
     </tr>
@@ -561,7 +561,7 @@
       <td style="text-align: center">イングレス</td>
       <td style="text-align: center">いいえ</td>
       <td style="text-align: center">10.0.0.0/16</td>
-      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">全プロトコル</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">-</td>
     </tr>
@@ -570,7 +570,7 @@
       <td style="text-align: center">イグレス</td>
       <td style="text-align: center">いいえ</td>
       <td style="text-align: center">0.0.0.0/0</td>
-      <td style="text-align: center">全てのプロトコル</td>
+      <td style="text-align: center">全プロトコル</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">-</td>
     </tr>
@@ -701,7 +701,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrL
 <p>ステータスが <strong>ACTIVE</strong> となれば、 <strong>File Storage with Lustre</strong> の作成が完了しています。<br />
 作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分強です。</p>
 
-<p>次に、ステータスが <strong>ACTIVE</strong> となった以下 <strong>Lustreファイル・システム詳細</strong> 画面で、 <strong>Lustreプロパティ</strong> フィールドの <strong>マウント・コマンド</strong> の <strong>コピー</strong> コマンドをクリックし、Lustreクライアントからマウントする際のコマンドを保存します。</p>
+<p>次に、ステータスが <strong>ACTIVE</strong> となった以下 <strong>Lustreファイル・システム詳細</strong> 画面で、 <strong>Lustreプロパティ</strong> フィールドの <strong>マウント・コマンド</strong> の <strong>コピー</strong> ボタンをクリックし、Lustreクライアントからマウントする際のコマンドを保存します。</p>
 
 <p><img src="console_page07.png" alt="画面ショット" /></p>
 
@@ -1149,7 +1149,7 @@ Mon Apr 21 17:20:52 JST 2025
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-24T21:57:09+09:00">April 24, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-24T23:09:09+09:00">April 24, 2025</time></p>
 
       </footer>
 
