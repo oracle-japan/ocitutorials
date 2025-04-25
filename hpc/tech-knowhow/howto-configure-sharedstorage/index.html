@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-04-24T23:09:09+09:00">
+  <meta property="article:published_time" content="2025-04-25T15:51:41+09:00">
 
 
 
@@ -400,7 +400,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法">
     <meta itemprop="description" content="HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、その選択肢にマネージドサービスを使用する方法と、高帯域のネットワークポートを持つベア・メタル・インスタンスとストレージサービスで構築する方法があります。本テクニカルTipsは、コストパフォーマンス、可用性、構築・運用のしやすさ、最大性能等を考慮し、自身の要件に沿った最適なファイル共有ストレージ構築手法を選定する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-04-24T23:09:09+09:00">
+    <meta itemprop="datePublished" content="2025-04-25T15:51:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -411,7 +411,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ベアメタルインスタンスnfsサーバ構成">1. ベア・メタル・インスタンスNFSサーバ構成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ブロックボリュームnfsサーバ構成">1-1. ブロック・ボリュームNFSサーバ構成</a></li><li><a href="#1-2-denceio-nfsサーバ構成">1-2. DenceIO NFSサーバ構成</a></li></ul></li><li><a href="#2-各構築手法の比較">2. 各構築手法の比較</a><ul><li><a href="#20-概要">2.0 概要</a></li><li><a href="#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></li><li><a href="#2-2-可用性による比較">2-2 可用性による比較</a></li><li><a href="#23-運用性による比較">2.3 運用性による比較</a></li><li><a href="#24-最大性能">2.4 最大性能</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-ベアメタルインスタンスnfsサーバ構成">1. ベア・メタル・インスタンスNFSサーバ構成</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-ブロックボリュームnfsサーバ構成">1-1. ブロック・ボリュームNFSサーバ構成</a></li><li><a href="#1-2-denceio-nfsサーバ構成">1-2. DenceIO NFSサーバ構成</a></li></ul></li><li><a href="#2-各構築手法の比較">2. 各構築手法の比較</a><ul><li><a href="#20-概要">2.0 概要</a></li><li><a href="#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></li><li><a href="#2-2-可用性による比較">2-2 可用性による比較</a></li><li><a href="#23-運用性による比較">2.3 運用性による比較</a></li><li><a href="#24-最大性能による比較">2.4 最大性能による比較</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -796,9 +796,9 @@ NFSを採用する場合は、マネージドNFSサービスの <strong><a href=
 
 <p>本章は、運用性としてシステム構築・運用のしやすさを評価指標に採用します。</p>
 
-<p>ここで <strong>ファイル・ストレージ</strong> を使用する標準FSSと高性能FSSは、運用性を評価指標とした場合同じ評価となるため、これらをまとめて3種類の構築手法を比較します。</p>
+<p>ここで <strong>ファイル・ストレージ</strong> を使用する標準FSSと高性能FSSは、運用性を評価指標とした場合同じ評価となるため、これらをまとめて4種類の構築手法を比較します。</p>
 
-<p>以下の表は、これら3種類の構築手法の運用性観点での利点・欠点を比較しています。</p>
+<p>以下の表は、これら4種類の構築手法の運用性観点での利点・欠点を比較しています。</p>
 
 <table>
   <thead>
@@ -827,16 +827,19 @@ NFSを採用する場合は、マネージドNFSサービスの <strong><a href=
     <tr>
       <td style="text-align: center"><strong>File Storage<br />with Lustre</strong></td>
       <td>・サービス開始までの構築手順が簡単<br />・ファイルシステムの容量拡張作業が簡単<br />・メンテナンスフリーのファイルサーバ群<br />・ <strong>パフォーマンス層</strong>のアップグレードによる<br />動的な性能向上が可能</td>
-      <td>-</td>
+      <td>・Lustreクライアントにソフトウェアを<br />インストールする必要有<br />・Lustreクライアントのイメージに制約有（※22）</td>
     </tr>
   </tbody>
 </table>
 
-<p>※21）この構築作業を自動化する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> が <strong>GitHub</strong> から無料で提供されています。この詳細は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></strong> を参照してください。</p>
+<p>※21）この構築作業を自動化する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> が <strong>GitHub</strong> から無料で提供されています。この詳細は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する</a></strong> を参照してください。<br />
+※22）サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
 
 <p>以上より、運用性を評価指標に各構築手法を比較すると、マネージドサービスである<u><strong>ファイル・ストレージ</strong>と<strong>File Storage with Lustre</strong>を使用する構築手法がベア・メタル・インスタンスNFSサーバを使用する構築手法より圧倒的にシステム構築やシステム運用が容易</u>であることがわかります。</p>
 
-<h2 id="24-最大性能">2.4 最大性能</h2>
+<p>またマネージドサービス同士を比較すると、<u>クライアントに手間がかからずOSの制約がない<strong>ファイル・ストレージ</strong>が<strong>File Storage with Lustre</strong>に対して有利</u>であることがわかります。</p>
+
+<h2 id="24-最大性能による比較">2.4 最大性能による比較</h2>
 
 <p>本章は、最大性能として各構築手法で構成することが可能な範囲に於ける最大スループットを評価指標に採用します。<br />
 この評価指標は、近年大規模化の一途を辿っている機械学習ワークロードを実行するGPUクラスタに於いて、特に計算途中のデータのチェックポイントを取得するケースで、バースト的なスループットがファイル共有ストレージに求められる際に有効です。</p>
@@ -869,12 +872,12 @@ NFSを採用する場合は、マネージドNFSサービスの <strong><a href=
     </tr>
     <tr>
       <td style="text-align: center"><strong>File Storage with Lustre</strong></td>
-      <td style="text-align: right">25 GB/s<br />（※22）</td>
+      <td style="text-align: right">25 GB/s<br />（※23）</td>
     </tr>
   </tbody>
 </table>
 
-<p>※22）<strong>テナンシ</strong> 当たり・ <strong>可用性ドメイン</strong> 当たりのサービス制限で決定されています。このサービス制限に関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/servicelimits.htm#File_Storage_w_Lustre_Limits">ここ</a></strong> を参照してください。</p>
+<p>※23）<strong>テナンシ</strong> 当たり・ <strong>可用性ドメイン</strong> 当たりのサービス制限で決定されています。このサービス制限に関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/servicelimits.htm#File_Storage_w_Lustre_Limits">ここ</a></strong> を参照してください。</p>
 
 <p>以上より、最大性能を評価指標に各構築手法を比較すると、<u><strong>File Storage with Lustre</strong>を使用する構築手法が他を圧倒している</u>ことがわかります。</p>
 
@@ -888,7 +891,7 @@ NFSを採用する場合は、マネージドNFSサービスの <strong><a href=
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-24T23:09:09+09:00">April 24, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-04-25T15:51:41+09:00">April 25, 2025</time></p>
 
       </footer>
 
