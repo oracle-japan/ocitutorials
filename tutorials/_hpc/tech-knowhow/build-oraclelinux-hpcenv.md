@@ -11,7 +11,7 @@ header:
 ***
 # 0. 概要
 
-複数の計算ノードを  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **プラットフォーム・イメージ** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
+複数の計算ノードを  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
 
 ※1）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
 ※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux 9.5** です。
@@ -60,7 +60,7 @@ header:
 計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
-- イメージ： **Oracle Linux** 9.5（Oracle-Linux-9.5-2025.02.28-0）
+- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** Oracle-Linux-9.5-2025.02.28-0
 - シェイプ： **BM.Standard.E5.192**
 
 ## 1-2. AOCCインストール
@@ -79,11 +79,11 @@ $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 
 ## 1-3. OpenMPI前提ソフトウェア・RPMパッケージインストール
 
-## 1-3-0. 概要
+### 1-3-0. 概要
 
 本章は、 **OpenMPI** の前提となるRPMパッケージ・ソフトウェアをインストールします。
 
-## 1-3-1. 前提RPMパッケージインストール
+### 1-3-1. 前提RPMパッケージインストール
 
 以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。
 
@@ -91,9 +91,9 @@ $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool numactl
 ```
 
-## 1-3-2. libeventインストール
+### 1-3-2. libeventインストール
 
-以下コマンドを計算ノードのopcユーザで実行し、 **libevent** を **/opt** ディレクトリにインストールします。  
+以下コマンドを計算ノードのopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -103,9 +103,9 @@ $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
 $ make -j 192 && sudo make install
 ```
 
-## 1-3-3. hwlocインストール
+### 1-3-3. hwlocインストール
 
-以下コマンドを計算ノードのopcユーザで実行し、 **hwloc** を **/opt** ディレクトリにインストールします。  
+以下コマンドを計算ノードのopcユーザで実行し、 **[hwloc](https://github.com/open-mpi/hwloc)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -115,7 +115,7 @@ $ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
 $ make -j 192 && sudo make install
 ```
 
-## 1-3-4. OpenPMIxインストール
+### 1-3-4. OpenPMIxインストール
 
 以下コマンドを計算ノードのopcユーザで実行し、 **[OpenPMIx](https://openpmix.github.io/)** （※5）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -129,7 +129,7 @@ $ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent 
 $ make -j 192 && sudo make install
 ```
 
-## 1-3-5. XPMEM・KNEMインストール
+### 1-3-5. XPMEM・KNEMインストール
 
 以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）と **[KNEM](https://knem.gitlabpages.inria.fr/)** （※6）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -161,6 +161,30 @@ knem                   65536  0
 $
 ```
 
+### 1-3-6. OpenUCXインストール
+
+以下コマンドを計算ノードのopcユーザで実行し、  **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)**  を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
+$ tar -xvf ./ucx-1.17.0.tar.gz
+$ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx
+$ make -j 192 && sudo make install
+```
+
+### 1-3-7. Unified Collective Communicationインストール
+
+以下コマンドを計算ノードのopcユーザで実行し、 **[Unified Collective Communication (UCC)](https://github.com/openucx/ucc)** を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
+$ tar -xvf ./v1.3.0.tar.gz
+$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
+$ make -j 192 && sudo make install
+```
+
 ## 1-4. OpenMPIインストール・セットアップ
 
 以下コマンドを計算ノードのopcユーザで実行し、 **OpenMPI** を **/opt** ディレクトリにインストールします。  
@@ -169,11 +193,18 @@ $
 ```sh
 $ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 $ tar -xvf ./openmpi-5.0.6.tar.gz
-$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-xpmem=/opt/xpmem --with-knem=/opt/knem --with-slurm
+$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-knem=/opt/knem --with-xpmem=/opt/xpmem --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
 $ make -j 192 all && sudo make install
 ```
 
-ここでは、 **XPMEM** と **KNEM** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+ここでは、 **KNEM** 、 **XPMEM** 、及び **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を利用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+
+次に、以下コマンドを計算ノードの **OpenMPI** を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
+
+```sh
+$ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
+$ source ~/.bashrc
+```
 
 ## 1-5. Intel MPI Benchmarksインストール
 
@@ -230,7 +261,7 @@ $ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus
 次に、以下コマンドを計算ノードのopcユーザで実行し、 **Oracle Linux** 9.5用の **Slurm** RPMパッケージを作成します。
 
 ```sh
-$ cd .. && wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
+$ cd ~/`hostname` && wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
 $ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' -ta ./slurm-24.11.0.tar.bz2
 ```
 
@@ -320,8 +351,7 @@ $
 なおこの **STREAM** の実行は、 **BM.Standard.E5.192** を想定した設定になっています。
 
 ```sh
-$ cd ~/`hostname` && mkdir ./stream
-$ cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+$ mkdir ~/`hostname` && cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/aocc/setenv_AOCC.sh
 $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c
 $ OMP_NUM_THREADS=96 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]" ./a.out
@@ -343,7 +373,7 @@ $ OMP_NUM_THREADS=96 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]" ./a.ou
 #SBATCH -J alltoall
 #SBATCH -o alltoall.%J
 #SBATCH -e stderr.%J
-srun /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin $SLURM_NTASKS alltoall
+srun --cpu-bind=map_cpu:`seq -s, 0 191 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin $SLURM_NTASKS alltoall
 ```
 
 このジョブスクリプトは、192プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから32 MiBまでで計測しています。  
