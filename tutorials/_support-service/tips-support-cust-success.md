@@ -130,8 +130,8 @@ header:
 1. **「今対応できることがあるかどうか」を確認：** 
     - 催促や事象の伝達、認識合わせを目的として、サポートエンジニアにZOOMや電話での相談を希望します
 1. **「マネジメント支援リクエスト」の依頼：** 
-    - 特特定の期限内に解決が必要で、重要な問題に関して、マネージャが対応に関与するように依頼できます。詳細は、以下資料内の「SRに対するマネジメント支援依頼」の項目をご覧ください
-     ([Oracle Cloud Supportご利用ガイド](https://www.oracle.com/jp/a/ocom/docs/cloud-1stguide-sr-2765641-ja.pdf "Oracle Cloud Supportご利用ガイド"){:target="_blank"})
+    - 特定の期限内に解決が必要で、重要な問題に関して、マネージャが対応に関与するように依頼できます。詳細は、以下資料内の「SRに対するマネジメント支援依頼」の項目をご覧ください
+     ([Oracle Cloud Supportご利用ガイド（PDF)](https://www.oracle.com/jp/a/ocom/docs/oracle-cloud-support-userguide-jp.pdf "Oracle Cloud Supportご利用ガイド（PDF)"){:target="_blank"})
 2. **ナレッジの検索：** 
     - ナレッジ（既存情報）がOracle Cloud Supportにて公開されています。既存の情報で解決できるかもしれませんので、ナレッジ検索もご利用ください
 　
