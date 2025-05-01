@@ -60,7 +60,7 @@ header:
 計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
-- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** Oracle-Linux-9.5-2025.02.28-0
+- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.02.28-0**
 - シェイプ： **BM.Standard.E5.192**
 
 ## 1-2. AOCCインストール
