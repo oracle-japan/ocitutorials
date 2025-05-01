@@ -52,9 +52,9 @@ header:
 
 本章は、 **HPL** を実行するインスタンスを作成します。
 
-作成するインスタンスは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の手順に従い、以下属性で作成します。
+作成するインスタンスは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** の手順に従い、以下属性で作成します。
 
-- イメージ： **Oracle Linux** 9.5（Oracle-Linux-9.5-2025.02.28-0）
+- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.5-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-02-28-0.htm)**
 - シェイプ： **BM.Standard.E5.192**
   - **SMT** ： 無効（※2）
   - **NPS** ： **1** / **4** （※2）

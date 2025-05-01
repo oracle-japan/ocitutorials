@@ -24,7 +24,7 @@ header:
 
 ※1）**パフォーマンス層** に関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/overview.htm#concepts)** を参照してください。
 
-これに対しマネージドNFSサービスの **[ファイル・ストレージ](https://www.oracle.com/jp/cloud/storage/file-storage/)** は、 **File Storage with Lustre** と同等の可用性・運用性を持つファイル共有ストレージをより低いコストで構築することが出来ますが、 **File Storage with Lustre** を採用することで、HPCワークロードのスクラッチ領域や機械学習ワークロードのチェックポイント領域等の高いスループットが要求されるファイル共有ストレージを構築することが可能です。  
+これに対しマネージドNFSサービスの **[ファイル・ストレージ](https://www.oracle.com/jp/cloud/storage/file-storage/)** は、 **File Storage with Lustre** と同等の可用性・運用性を持つファイル共有ストレージをより低い価格帯から構築することが出来ますが、 **File Storage with Lustre** を採用することで、HPCワークロードのスクラッチ領域や機械学習ワークロードのチェックポイント領域等の高いスループットが要求されるファイル共有ストレージを構築することが可能です。  
 **ファイル・ストレージ** と **File Storage with Lustre** の比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 以上を踏まえて本チュートリアルは、 **File Storage with Lustre** でファイル共有ストレージを構築、HPCワークロードを実行するHPCクラスタからのアクセスを想定して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードをLustreクライアントとして構築する手順と、機械学習ワークロードを実行する機械学習環境からのアクセスを想定してコンテナからファイル共有ストレージ領域にアクセスするGPUノードをLustreクライアントとして構築する手順を解説します。
@@ -57,7 +57,7 @@ header:
 
 **所要時間 :** 約3時間
 
-**前提条件 :** ファイル共有ストレージ環境を収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
+**前提条件 :** ファイル共有ストレージ環境を収容する **コンパートメント** (ルート・コンパートメントでもOKです)の作成と、この **コンパートメント** に対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
@@ -69,9 +69,9 @@ header:
 本章は、 **File Storage with Lustre** のファイル共有ストレージ環境を構築するために事前に作成する必要のある、以下のリソースを作成します。
 
 - **仮想クラウド・ネットワーク**  
-	**File Storage with Lustre** 内のサーバー群やストレージ等のサービスに関連するリソースと、LustreクライアントをTCP接続するために使用します。
+	**File Storage with Lustre** 内のサーバー群やストレージ等のサービスに関連するリソースの接続と、LustreクライアントをTCP接続するために使用します。
 - Bastionノード  
-	インターネットから直接アクセス出来ないプライベートサブネットに接続する計算/GPUノードにログインする際の踏み台として利用します。
+	インターネットから直接アクセス出来ないプライベートサブネットに接続するLustreクライアントにログインする際の踏み台として利用します。
 - **IAMポリシー**  
 	**File Storage with Lustre** が内部的に使用する **仮想クラウド・ネットワーク** 関連リソースの作成に必要です。
 
@@ -105,7 +105,7 @@ header:
 | プライベート<br>（※5） | イングレス | いいえ    | 10.0.0.0/16 | 全プロトコル | -         | -       |
 |        | イグレス  | いいえ    | 0.0.0.0/0   | 全プロトコル | -         | -       |
 
-※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。  
+※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可しますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。  
 ※5）この設定により、作成した **仮想クラウド・ネットワーク** に割り当てられる全てのIPアドレスからの全てのポートへのアクセスを許可しますが、 **File Storage with Lustre** を使用する際の最低限必要な **セキュリティリスト** とするための関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/security-rules.htm#top__different-subnet)** を参照してください。
 
 ## 1-2. Bastionノード作成
@@ -114,7 +114,7 @@ Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japa
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **シェイプ** ： **VM.Standard.E5.Flex**
-- **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** （Oracle-Linux-8.10-2025.02.28-0）
+- **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**
 - **サブネット** ： 先に作成したパブリックサブネット
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
@@ -150,11 +150,12 @@ $
 OCIコンソールにログインし、 **アイデンティティとセキュリティ** → **ポリシー** とメニューを辿ります。
 
 次に、表示される以下 **xxxxコンパートメント内のポリシー** 画面で、 **ポリシーの作成** ボタンをクリックします。  
-この際、 **コンパートメント** プルダウンメニューでルート **コンパートメント** を指定します。
+この際、 **コンパートメント** プルダウンメニューでルートコンパートメントを指定します。
 
 ![画面ショット](console_page08.png)
 
-次に、表示される以下 **ポリシーの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。
+次に、表示される以下 **ポリシーの作成** 画面で、各フィールドに以下の情報を入力し **作成** ボタンをクリックします。  
+なお、ここに記載のないフィールドは、デフォルトのままとします。
 
 - **名前** ： **IAMポリシー** に付与する名前
 - **説明** ： **IAMポリシー** に付与する説明（用途等）
@@ -192,8 +193,8 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 
 3. **パフォーマンスと容量** フィールド
 
-	- **パフォーマンス層** ： 125（MB/s/TB）
-	- **容量** ： 31.2（TB）
+	- **パフォーマンス層（MB/s/TB）** ： 125
+	- **容量（TB）** ： 31.2
 	- **確認** ： チェック
 
 	![画面ショット](console_page04.png)
@@ -240,7 +241,7 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 
 ### 3-1-1. インスタンス作成
 
-Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[2. HPCクラスタ作成](/ocitutorials/hpc/spinup-ml-instance-cntnd/#2-hpcクラスタ作成)** と **[3. 計算ノード確認](/ocitutorials/hpc/spinup-ml-instance-cntnd/#3-計算ノード確認)** の手順に従い、以下属性のインスタンスを作成します。
+Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[2. HPCクラスタ作成](/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90)** と **[3. 計算ノード確認](/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90)** の手順に従い、以下属性のインスタンスを作成します。
 
 - **シェイプ** ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
 - **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※6）
@@ -344,7 +345,7 @@ LustreクライアントとするGPUノードのインスタンスは、 **[OCI 
 - **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**（※7）
 - **サブネット** ： 先に作成したLustreクライアント接続用プライベートサブネット
 
-※7） **プラットフォーム・イメージ** **Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0** は、インストールされているNVIDIA GPUドライバが  **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）用ではないため、このイメージで作成後に **RHCK** 用のNVIDIA GPUドライバをインストールします。
+※7） **プラットフォーム・イメージ** **[Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm)** は、インストールされているNVIDIA GPUドライバが  **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）用ではないため、このイメージで作成後に **RHCK** 用のNVIDIA GPUドライバをインストールします。
 
 サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
 
@@ -637,6 +638,7 @@ Wed Apr 23 16:08:41 2025
 # cd ./debs && apt install -y --fix-broken ./lustre-client-utils_2.15.5-1_amd64.deb
 :
 N: Download is performed unsandboxed as root as file '/root/6e65dabf5a4c/lustre-client/debs/lustre-client-utils_2.15.5-1_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+#
 ```
 
 ### 3-2-10. ファイル共有ストレージ領域マウント（コンテナ上）
@@ -656,5 +658,6 @@ Mon Apr 21 17:20:52 JST 2025
 -rw-r--r-- 1 root root 29 Apr 21 17:20 /mnt/lustre/date2.txt
 #
 ```
+
 
 これで、このチュートリアルは終了です。
