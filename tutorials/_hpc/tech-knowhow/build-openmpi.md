@@ -178,7 +178,6 @@ $ make -j 36 all && sudo make install
 
 ```sh
 $ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
-$ source ~/.bashrc
 ```
 
 次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。（※2）

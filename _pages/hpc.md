@@ -1,6 +1,6 @@
 ---
 title: "OCI HPCポータル"
-excerpt: "OCIを活用してHPC/機械学習ワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、OCI HPCポータルです。ベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等のリソースをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築するチュートリアル集、パフォーマンス関連情報、テクニカルTips集、関連情報リンク集等をお届けします。チュートリアルで構築するHPCクラスタは、NFS、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、DockerやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。"
+excerpt: "OCIを活用してHPC/機械学習ワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、OCI HPCポータルです。ベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等のリソースをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築するチュートリアル集、パフォーマンス関連情報、テクニカルTips集、関連情報リンク集等をお届けします。チュートリアルで構築するHPCクラスタは、NFS、Lustre、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、Docker、containerdやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。"
 permalink: /hpc/
 layout: single
 tags: "hpc"
@@ -164,7 +164,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 ※7）対象の構築手法が提供するデータ可用性レベルに応じて分類しています。（データ可用性が低いほど短期保存データ用ファイル共有ストレージに分類）  
 ※8）**マウント・ターゲット** の最大スループット値を元に記載しています。  
-※9）使用する **パフォーマンス層** （MB/s/TB）と **容量** （TB）を掛け合わせて計算した値で、最大値は **テナンシ** 当たり・ **可用性ドメイン** 当たりのサービス制限で決定されています。このサービス制限に関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/servicelimits.htm#File_Storage_w_Lustre_Limits)** を参照してください。  
+※9）使用する **パフォーマンス層** （MB/s/TB）と **容量** （TB）を掛け合わせて計算した値で、最大値は **テナンシ** 当たり・ **可用性ドメイン** 当たりの **サービス制限** で決定されています。この **サービス制限** に関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/servicelimits.htm#File_Storage_w_Lustre_Limits)** を参照してください。  
 ※10）**IOR** の測定値を元に記載しています。詳細な測定値は、 **[OCI HPCテクニカルTips集](#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。  
 ※11）スナップショット、クローン、及びレプリケーションが用意されています。これらサービスの詳細は、 **OCI** 公式ドキュメントの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/File/home.htm)** を参照ください。  
 ※12）**オブジェクト・ストレージ** へのバックアップ機能が今後リリースされる予定です。（2025年4月現在）  
@@ -279,12 +279,18 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。  
     このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
-    本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
+    本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第4世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
 
 - **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)**
 
     MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や **NUMA nodes per socket** 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。  
     本パフォーマンス関連Tipsは、MPIの実装に **[OpenMPI](https://www.open-mpi.org/)** を取り上げ、これが採用する **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** や **[UCX](https://openucx.org/)** の実行時パラメーター、MPIプロセス分割方法や **NUMA nodes per socket** を組合せて、HPCワークロード向けベア・メタル・シェイプ **BM.Optimized3.36** でMPI集合通信をチューニングする方法を解説します。
+
+- **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/cpu-binding-e5/)**
+
+    NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。  
+    このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
+    本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第5世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
 
 ## 2-3. プロファイリング関連Tips集
 
@@ -475,7 +481,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 - **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)**
 
-    HPCワークロードは、複数の計算ノードを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで実行することが主流ですが、 **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。  
+    HPCワークロードは、複数の計算ノードを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで実行することが主流ですが、 **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。  
     このように単一ノードでHPCワークロードを実行する場合は、ベースOSの **Oracle Linux** のバージョンに制約のある **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** を使用する必要が無く、 **[プラットフォーム・イメージ](#5-17-プラットフォーム・イメージ)** から最新の **Oracle Linux** を選択することが可能になります。  
     本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** から提供される最新の **Oracle Linux** 上に **[OpenMPI](https://www.open-mpi.org/)** と **[Slurm](https://slurm.schedmd.com/)** をインストールしてHPC環境を構築する方法を解説します。
 

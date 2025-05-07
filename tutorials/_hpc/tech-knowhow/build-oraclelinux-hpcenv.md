@@ -1,6 +1,6 @@
 ---
 title: "Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法"
-excerpt: "HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。"
+excerpt: "HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。"
 order: "356"
 layout: single
 header:
@@ -16,20 +16,20 @@ header:
 ※1）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
 ※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux 9.5** です。
 
-ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年3月時点）は、以下のスペックを持つ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
+ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
 
-- CPU： **AMD EPYC** 9654ベース x 2（192コア）
-- メモリ： DDR5 2.3 TB
-- 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）
-- メモリ帯域： 921.6 GB/s
+- CPU： **AMD EPYC** 9755ベース x 2（256コア）
+- メモリ： DDR5 3.072 TB
+- 理論性能： 11.0592 TFLOPS（ベース動作周波数2.7 GHz時）
+- メモリ帯域： 1,228.8 GB/s
 
-以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** で提供される最新の **Oracle Linux**上に **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）、 **[OpenMPI](https://www.open-mpi.org/)** 、及び **[Slurm](https://slurm.schedmd.com/)** をインストールし、 **BM.Standard.E5.192** のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。
+以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** で提供される最新の **Oracle Linux**上に **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）、 **[OpenMPI](https://www.open-mpi.org/)** 、及び **[Slurm](https://slurm.schedmd.com/)** をインストールし、 **BM.Standard.E6.256** のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。
 
 なお本テクニカルTipsは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の手順に従い予め **Slurm** 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降"計算ノード"と呼称します。）をこの **Slurm** 環境に組み込みます。
 
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
-- 計算ノードOS： **プラットフォーム・イメージ** **[Oracle-Linux-9.5-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-02-28-0.htm)**
+- 計算ノードOS： **プラットフォーム・イメージ** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
 - コンパイラ： **AOCC** 5.0
 - MPI： **OpenMPI** 5.0.6
 - ジョブスケジューラ： **Slurm** 24.11.0
@@ -60,8 +60,8 @@ header:
 計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
-- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.02.28-0**
-- シェイプ： **BM.Standard.E5.192**
+- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.04.16-0**
+- シェイプ： **BM.Standard.E6.256**
 
 ## 1-2. AOCCインストール
 
@@ -100,7 +100,7 @@ $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git autom
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 ```
 
 ### 1-3-3. hwlocインストール
@@ -112,7 +112,7 @@ $ make -j 192 && sudo make install
 $ cd .. && wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
 $ tar -xvf ./hwloc-2.11.2.tar.gz
 $ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 ```
 
 ### 1-3-4. OpenPMIxインストール
@@ -126,7 +126,7 @@ $ make -j 192 && sudo make install
 $ cd .. && wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
 $ tar -xvf ./pmix-5.0.4.tar.gz
 $ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 ```
 
 ### 1-3-5. XPMEM・KNEMインストール
@@ -139,12 +139,12 @@ $ make -j 192 && sudo make install
 ```sh
 $ cd .. && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 $ sudo install -D -m 644 ./kernel/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
 $ echo "xpmem" | sudo tee /lib/modules-load.d/xpmem.conf
 $ cd .. && git clone https://gitlab.inria.fr/knem/knem.git
 $ cd knem && ./autogen.sh && ./configure --prefix=/opt/knem
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 $ sudo cp -p /opt/knem/etc/10-knem.rules /opt/knem/etc/10-knem.rules_org
 $ grep "^#KERNEL" /opt/knem/etc/10-knem.rules_org | sed 's/^#KERNEL/KERNEL/g' | sudo tee /opt/knem/etc/10-knem.rules
 $ echo "knem" | sudo tee /lib/modules-load.d/knem.conf
@@ -170,7 +170,7 @@ $
 $ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
 $ tar -xvf ./ucx-1.17.0.tar.gz
 $ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 ```
 
 ### 1-3-7. Unified Collective Communicationインストール
@@ -182,7 +182,7 @@ $ make -j 192 && sudo make install
 $ cd .. && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
 $ tar -xvf ./v1.3.0.tar.gz
 $ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
-$ make -j 192 && sudo make install
+$ make -j 256 && sudo make install
 ```
 
 ## 1-4. OpenMPIインストール・セットアップ
@@ -194,7 +194,7 @@ $ make -j 192 && sudo make install
 $ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 $ tar -xvf ./openmpi-5.0.6.tar.gz
 $ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-knem=/opt/knem --with-xpmem=/opt/xpmem --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
-$ make -j 192 all && sudo make install
+$ make -j 256 all && sudo make install
 ```
 
 ここでは、 **KNEM** 、 **XPMEM** 、及び **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を利用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
@@ -203,7 +203,6 @@ $ make -j 192 all && sudo make install
 
 ```sh
 $ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
-$ source ~/.bashrc
 ```
 
 ## 1-5. Intel MPI Benchmarksインストール
@@ -214,7 +213,7 @@ $ source ~/.bashrc
 ```sh
 $ cd .. && wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 $ tar -xvf ./IMB-v2021.7.tar.gz
-$ export CC=/opt/openmpi/bin/mpicc; export CXX=/opt/openmpi/bin/mpicxx; cd mpi-benchmarks-IMB-v2021.7 && make -j 192 all
+$ export CC=/opt/openmpi/bin/mpicc; export CXX=/opt/openmpi/bin/mpicxx; cd mpi-benchmarks-IMB-v2021.7 && make -j 256 all
 $ sudo mkdir -p /opt/openmpi/tests/imb && sudo cp ./IMB* /opt/openmpi/tests/imb/
 ```
 
@@ -303,11 +302,11 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 
 ```sh
 SlurmdParameters=l3cache_as_socket
-NodeName=inst-e5 Sockets=24 CoresPerSocket=8 ThreadsPerCore=1 RealMemory=2300000 TmpDisk=10000 State=UNKNOWN
-PartitionName=e5 Nodes=inst-e5 Default=YES MaxTime=INFINITE State=UP
+NodeName=inst-e6 Sockets=32 CoresPerSocket=8 ThreadsPerCore=1 RealMemory=3000000 TmpDisk=10000 State=UNKNOWN
+PartitionName=e6 Nodes=inst-e5 Default=YES MaxTime=INFINITE State=UP
 ```
 
-ここでは、本テクニカルTipsで使用する **BM.Standard.E5.192** に搭載する2個の第4世代 **AMD EPYC** プロセッサが12個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効（※6）としたホスト名が **inst-e5** の **BM.Standard.E5.192** 1ノードを、パーティション名 **e5** に割り当てています。
+ここでは、本テクニカルTipsで使用する **BM.Standard.E6.256** に搭載する2個の第5世代 **AMD EPYC** プロセッサが32個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効（※6）としたホスト名が **inst-e6** の **BM.Standard.E6.256** 1ノードを、パーティション名 **e6** に割り当てています。
 
 ※6） **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 
@@ -351,13 +350,13 @@ $
 なおこの **STREAM** の実行は、 **BM.Standard.E5.192** を想定した設定になっています。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+$ cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/aocc/setenv_AOCC.sh
 $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c
-$ OMP_NUM_THREADS=96 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]" ./a.out
+$ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.out
 ```
 
-**BM.Standard.E5.192** 上で実行する **STREAM** については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[STREAM実行方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/run-stream-e5/)** も合わせて参照してください。
+**BM.Standard.E6.256** 上で実行する **STREAM** については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[STREAM実行方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/run-stream-e6/)** も合わせて参照してください。
 
 ## 2-2. OpenMPI・Slurm稼働確認
 
@@ -367,17 +366,17 @@ $ OMP_NUM_THREADS=96 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 191`]" ./a.ou
 
 ```sh
 #!/bin/bash
-#SBATCH -p e5
-#SBATCH -n 192
+#SBATCH -p e6
+#SBATCH -n 256
 #SBATCH -N 1
 #SBATCH -J alltoall
 #SBATCH -o alltoall.%J
 #SBATCH -e stderr.%J
-srun --cpu-bind=map_cpu:`seq -s, 0 191 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin $SLURM_NTASKS alltoall
+srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:20 -mem 4G -off_cache 384,64 -npmin $SLURM_NTASKS alltoall
 ```
 
-このジョブスクリプトは、192プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから32 MiBまでで計測しています。  
-**BM.Standard.E5.192** 上で実行する **Intel MPI Benchmarks** のMPI集合通信性能については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** も合わせて参照してください。
+このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから1 MiBまでで計測しています。  
+**BM.Standard.E6.256** 上で実行する **Intel MPI Benchmarks** のMPI集合通信性能については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** も合わせて参照してください。
 
 次に、以下コマンドをSlurmクライアントの **OpenMPI** と **Slurm** を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。
 
@@ -388,21 +387,21 @@ $ cat ./alltoall.23808
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
-# Date                  : Wed Mar 12 23:40:30 2025
+# Date                  : Fri May  2 01:52:03 2025
 # Machine               : x86_64
 # System                : Linux
-# Release               : 5.15.0-305.176.4.el9uek.x86_64
-# Version               : #2 SMP Tue Jan 28 20:15:04 PST 2025
+# Release               : 5.15.0-307.178.5.el9uek.x86_64
+# Version               : #2 SMP Wed Mar 19 13:03:40 PDT 2025
 # MPI Version           : 3.1
 # MPI Thread Environment: 
 
 
 # Calling sequence was: 
 
-# /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin 192 alltoall 
+# /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:20 -mem 4G -off_cache 384,64 -npmin 256 alltoall 
 
 # Minimum message length in bytes:   0
-# Maximum message length in bytes:   8388608
+# Maximum message length in bytes:   1048576
 #
 # MPI_Datatype                   :   MPI_BYTE 
 # MPI_Datatype for reductions    :   MPI_FLOAT 
@@ -416,34 +415,31 @@ $ cat ./alltoall.23808
 
 #----------------------------------------------------------------
 # Benchmarking Alltoall 
-# #processes = 192 
+# #processes = 256 
 #----------------------------------------------------------------
        #bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]
-            0         1000         0.04         0.09         0.05
-            1         1000        14.94        15.95        15.48
-            2         1000        15.17        16.37        15.70
-            4         1000        17.09        19.61        18.21
-            8         1000        20.74        23.41        21.84
-           16         1000        28.71        32.03        30.04
-           32         1000        37.98        42.64        40.24
-           64         1000        72.73        80.65        76.27
-          128         1000       108.05       124.39       116.52
-          256         1000       202.50       236.85       220.65
-          512         1000       387.72       434.45       410.11
-         1024         1000       368.04       416.56       394.76
-         2048         1000      1211.46      1447.02      1397.23
-         4096         1000      1240.52      2854.89      1845.46
-         8192         1000      1665.85      1856.75      1791.55
-        16384         1000      3050.95      3240.93      3145.84
-        32768         1000      5523.64      5920.35      5767.86
-        65536          640     10935.51     12686.47     12025.69
-       131072          320     20632.47     22223.99     21683.88
-       262144          160     45287.95     45514.84     45430.74
-       524288           80    101029.68    101507.84    101329.73
-      1048576           40    178558.11    179596.61    179215.53
-      2097152           20    386123.34    391777.75    388960.96
-      4194304           10    708980.56    714099.31    712053.41
-      8388608            5   1419275.74   1430883.33   1426296.45
+            0         1000         0.03         0.04         0.04
+            1         1000        16.66      2207.34       285.88
+            2         1000        16.12        18.13        17.15
+            4         1000        20.11        25.80        22.51
+            8         1000        21.66        28.74        24.81
+           16         1000        27.95        36.66        32.27
+           32         1000        57.32        68.34        62.60
+           64         1000        77.43       101.58        92.33
+          128         1000       138.02       184.22       167.63
+          256         1000       268.97       382.26       337.74
+          512         1000       509.41       721.89       635.87
+         1024         1000       670.70       703.63       685.22
+         2048         1000      1167.30      1211.05      1189.51
+         4096         1000      1373.49      1491.54      1439.74
+         8192         1000      2235.34      2346.79      2290.37
+        16384         1000      6442.20      9157.06      8251.17
+        32768          933      9177.00      9221.44      9199.22
+        65536          552     23948.78     25861.85     25719.17
+       131072          242     32903.76     33008.57     32958.71
+       262144          146     97061.92     97470.83     97300.95
+       524288           72    129280.17    129802.43    129576.16
+      1048576           39    491764.64    492944.55    492384.98
 
 
 # All processes entering MPI_Finalize
