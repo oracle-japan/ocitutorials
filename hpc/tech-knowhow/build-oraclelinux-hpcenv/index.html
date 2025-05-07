@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Minimal Mistakes Jekyll Theme 4.27.0 by Michael Rose
+  Minimal Mistakes Jekyll Theme 4.27.1 by Michael Rose
   Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
   Free for personal and commercial use under the MIT license
   https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+<meta name="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">
 
 
-  <meta property="og:description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+  <meta property="og:description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-05-01T16:37:10+09:00">
+  <meta property="article:published_time" content="2025-05-07T16:04:43+09:00">
 
 
 
@@ -169,7 +169,7 @@
         
       </h1>
       
-        <p class="page__lead">HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。
+        <p class="page__lead">HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。
 </p>
       
       
@@ -325,6 +325,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e6/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
@@ -399,8 +401,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法">
-    <meta itemprop="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E5.192のような高性能のベアメタル・シェイプは、7 TFLOPSを超える理論性能と2.3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-05-01T16:37:10+09:00">
+    <meta itemprop="description" content="HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。">
+    <meta itemprop="datePublished" content="2025-05-07T16:04:43+09:00">
     
 
     <div class="page__inner-wrap">
@@ -423,23 +425,23 @@
 <p>※1）この詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> を参照してください。<br />
 ※2）2025年3月時点の最新の <strong>クラスタネットワーキングイメージ</strong> がそのベースOSに <strong>Oracle Linux</strong> 8.10を使用しているのに対し、 <strong>プラットフォーム・イメージ</strong> の最新は <strong>Oracle Linux 9.5</strong> です。</p>
 
-<p>ここで実行するワークロードが単一ノードに収まる場合は、 <strong>クラスタ・ネットワーク</strong> に接続する必要がなくなり、 <strong>プラットフォーム・イメージ</strong> から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年3月時点）は、以下のスペックを持つ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E5.192</a></strong> で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。</p>
+<p>ここで実行するワークロードが単一ノードに収まる場合は、 <strong>クラスタ・ネットワーク</strong> に接続する必要がなくなり、 <strong>プラットフォーム・イメージ</strong> から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E6.256</a></strong> で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。</p>
 
 <ul>
-  <li>CPU： <strong>AMD EPYC</strong> 9654ベース x 2（192コア）</li>
-  <li>メモリ： DDR5 2.3 TB</li>
-  <li>理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）</li>
-  <li>メモリ帯域： 921.6 GB/s</li>
+  <li>CPU： <strong>AMD EPYC</strong> 9755ベース x 2（256コア）</li>
+  <li>メモリ： DDR5 3.072 TB</li>
+  <li>理論性能： 11.0592 TFLOPS（ベース動作周波数2.7 GHz時）</li>
+  <li>メモリ帯域： 1,228.8 GB/s</li>
 </ul>
 
-<p>以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 <strong>プラットフォーム・イメージ</strong> で提供される最新の <strong>Oracle Linux</strong>上に <strong><a href="https://www.amd.com/en/developer/aocc.html">AMD Optimizing C/C++ and Fortran Compilers</a></strong> （以降 <strong>AOCC</strong> と呼称します。）、 <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、及び <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> をインストールし、 <strong>BM.Standard.E5.192</strong> のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。</p>
+<p>以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 <strong>プラットフォーム・イメージ</strong> で提供される最新の <strong>Oracle Linux</strong>上に <strong><a href="https://www.amd.com/en/developer/aocc.html">AMD Optimizing C/C++ and Fortran Compilers</a></strong> （以降 <strong>AOCC</strong> と呼称します。）、 <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 、及び <strong><a href="https://slurm.schedmd.com/">Slurm</a></strong> をインストールし、 <strong>BM.Standard.E6.256</strong> のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。</p>
 
 <p>なお本テクニカルTipsは、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> の手順に従い予め <strong>Slurm</strong> 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降”計算ノード”と呼称します。）をこの <strong>Slurm</strong> 環境に組み込みます。</p>
 
 <p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
 
 <ul>
-  <li>計算ノードOS： <strong>プラットフォーム・イメージ</strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-02-28-0.htm">Oracle-Linux-9.5-2025.02.28-0</a></strong></li>
+  <li>計算ノードOS： <strong>プラットフォーム・イメージ</strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm">Oracle-Linux-9.5-2025.04.16-0</a></strong></li>
   <li>コンパイラ： <strong>AOCC</strong> 5.0</li>
   <li>MPI： <strong>OpenMPI</strong> 5.0.6</li>
   <li>ジョブスケジューラ： <strong>Slurm</strong> 24.11.0</li>
@@ -474,8 +476,8 @@
 本テクニカルTipsでは、以下属性のインスタンスを使用します。</p>
 
 <ul>
-  <li>イメージ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> <strong>Oracle-Linux-9.5-2025.02.28-0</strong></li>
-  <li>シェイプ： <strong>BM.Standard.E5.192</strong></li>
+  <li>イメージ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> <strong>Oracle-Linux-9.5-2025.04.16-0</strong></li>
+  <li>シェイプ： <strong>BM.Standard.E6.256</strong></li>
 </ul>
 
 <h2 id="1-2-aoccインストール">1-2. AOCCインストール</h2>
@@ -512,7 +514,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./libevent-2.1.12-stable.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/libevent
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h3 id="1-3-3-hwlocインストール">1-3-3. hwlocインストール</h3>
@@ -523,7 +525,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./hwloc-2.11.2.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>hwloc-2.11.2 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/hwloc
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h3 id="1-3-4-openpmixインストール">1-3-4. OpenPMIxインストール</h3>
@@ -536,7 +538,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-5.0.4.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>pmix-5.0.4 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h3 id="1-3-5-xpmemknemインストール">1-3-5. XPMEM・KNEMインストール</h3>
@@ -548,12 +550,12 @@
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
 <span class="nv">$ </span><span class="nb">cd </span>xpmem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/xpmem
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 <span class="nv">$ </span><span class="nb">sudo install</span> <span class="nt">-D</span> <span class="nt">-m</span> 644 ./kernel/xpmem.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/xpmem/xpmem.ko
 <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"xpmem"</span> | <span class="nb">sudo tee</span> /lib/modules-load.d/xpmem.conf
 <span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> git clone https://gitlab.inria.fr/knem/knem.git
 <span class="nv">$ </span><span class="nb">cd </span>knem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/knem
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 <span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /opt/knem/etc/10-knem.rules /opt/knem/etc/10-knem.rules_org
 <span class="nv">$ </span><span class="nb">grep</span> <span class="s2">"^#KERNEL"</span> /opt/knem/etc/10-knem.rules_org | <span class="nb">sed</span> <span class="s1">'s/^#KERNEL/KERNEL/g'</span> | <span class="nb">sudo tee</span> /opt/knem/etc/10-knem.rules
 <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"knem"</span> | <span class="nb">sudo tee</span> /lib/modules-load.d/knem.conf
@@ -577,7 +579,7 @@ knem                   65536  0
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./ucx-1.17.0.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>ucx-1.17.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release <span class="nt">--prefix</span><span class="o">=</span>/opt/ucx
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h3 id="1-3-7-unified-collective-communicationインストール">1-3-7. Unified Collective Communicationインストール</h3>
@@ -588,7 +590,7 @@ knem                   65536  0
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./v1.3.0.tar.gz
 <span class="nv">$ </span><span class="nb">cd</span> ./ucc-1.3.0/ <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/ucc <span class="nt">--with-ucx</span><span class="o">=</span>/opt/ucx
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <h2 id="1-4-openmpiインストールセットアップ">1-4. OpenMPIインストール・セットアップ</h2>
@@ -599,7 +601,7 @@ knem                   65536  0
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.6.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>openmpi-5.0.6 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/openmpi <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-pmix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-knem</span><span class="o">=</span>/opt/knem <span class="nt">--with-xpmem</span><span class="o">=</span>/opt/xpmem <span class="nt">--with-ucx</span><span class="o">=</span>/opt/ucx <span class="nt">--with-ucc</span><span class="o">=</span>/opt/ucc <span class="nt">--with-slurm</span>
-<span class="nv">$ </span>make <span class="nt">-j</span> 192 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+<span class="nv">$ </span>make <span class="nt">-j</span> 256 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
 <p>ここでは、 <strong>KNEM</strong> 、 <strong>XPMEM</strong> 、及び <strong>UCC</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を利用して <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
@@ -607,7 +609,6 @@ knem                   65536  0
 <p>次に、以下コマンドを計算ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/opt/openmpi/bin:/opt/ucx/bin:</span><span class="se">\$</span><span class="s2">PATH"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
 </code></pre></div></div>
 
 <h2 id="1-5-intel-mpi-benchmarksインストール">1-5. Intel MPI Benchmarksインストール</h2>
@@ -617,7 +618,7 @@ knem                   65536  0
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.7.tar.gz
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi/bin/mpicc<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi/bin/mpicxx<span class="p">;</span> <span class="nb">cd </span>mpi-benchmarks-IMB-v2021.7 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 192 all
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi/bin/mpicc<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi/bin/mpicxx<span class="p">;</span> <span class="nb">cd </span>mpi-benchmarks-IMB-v2021.7 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 256 all
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi/tests/imb <span class="o">&amp;&amp;</span> <span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi/tests/imb/
 </code></pre></div></div>
 
@@ -697,11 +698,11 @@ slurm-torque-24.11.0-1.el9.x86_64.rpm
 <p>既存の <strong>Slurm</strong> 環境の <strong>slurm.conf</strong> に対して、計算ノードを追加するための以下3行を追加します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">SlurmdParameters</span><span class="o">=</span>l3cache_as_socket
-<span class="nv">NodeName</span><span class="o">=</span>inst-e5 <span class="nv">Sockets</span><span class="o">=</span>24 <span class="nv">CoresPerSocket</span><span class="o">=</span>8 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>2300000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">PartitionName</span><span class="o">=</span>e5 <span class="nv">Nodes</span><span class="o">=</span>inst-e5 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">NodeName</span><span class="o">=</span>inst-e6 <span class="nv">Sockets</span><span class="o">=</span>32 <span class="nv">CoresPerSocket</span><span class="o">=</span>8 <span class="nv">ThreadsPerCore</span><span class="o">=</span>1 <span class="nv">RealMemory</span><span class="o">=</span>3000000 <span class="nv">TmpDisk</span><span class="o">=</span>10000 <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">PartitionName</span><span class="o">=</span>e6 <span class="nv">Nodes</span><span class="o">=</span>inst-e5 <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </code></pre></div></div>
 
-<p>ここでは、本テクニカルTipsで使用する <strong>BM.Standard.E5.192</strong> に搭載する2個の第4世代 <strong>AMD EPYC</strong> プロセッサが12個の <strong>Core Complex Die</strong> （以降 <strong>CCD</strong> と呼称します。）毎にL3キャッシュを搭載することを考慮し、 <strong>CCD</strong> を <strong>Slurm</strong> 上 <strong>NUMA</strong> ノードとして扱い <strong>SMT</strong> を無効（※6）としたホスト名が <strong>inst-e5</strong> の <strong>BM.Standard.E5.192</strong> 1ノードを、パーティション名 <strong>e5</strong> に割り当てています。</p>
+<p>ここでは、本テクニカルTipsで使用する <strong>BM.Standard.E6.256</strong> に搭載する2個の第5世代 <strong>AMD EPYC</strong> プロセッサが32個の <strong>Core Complex Die</strong> （以降 <strong>CCD</strong> と呼称します。）毎にL3キャッシュを搭載することを考慮し、 <strong>CCD</strong> を <strong>Slurm</strong> 上 <strong>NUMA</strong> ノードとして扱い <strong>SMT</strong> を無効（※6）としたホスト名が <strong>inst-e6</strong> の <strong>BM.Standard.E6.256</strong> 1ノードを、パーティション名 <strong>e6</strong> に割り当てています。</p>
 
 <p>※6） <strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
@@ -741,13 +742,13 @@ e5           up   infinite      1   idle inst-e5
 <p>以下コマンドを計算ノードの <strong>AOCC</strong> を利用するユーザで実行し、メモリ性能を計測するベンチマークプログラムの <strong><a href="https://www.cs.virginia.edu/stream/">STREAM</a></strong> をコンパイル・実行することで、 <strong>AOCC</strong> の稼働確認を行います。<br />
 なおこの <strong>STREAM</strong> の実行は、 <strong>BM.Standard.E5.192</strong> を想定した設定になっています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">mkdir</span> ./stream <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ./stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">mkdir</span> ./stream <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ./stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 <span class="nv">$ </span><span class="nb">source</span> /opt/aocc/setenv_AOCC.sh
 <span class="nv">$ </span>clang <span class="nt">-DSTREAM_TYPE</span><span class="o">=</span>double <span class="nt">-DSTREAM_ARRAY_SIZE</span><span class="o">=</span>430080000 <span class="nt">-O3</span> <span class="nt">-mcmodel</span><span class="o">=</span>large <span class="nt">-fopenmp</span> <span class="nt">-fnt-store</span> ./stream.c
-<span class="nv">$ OMP_NUM_THREADS</span><span class="o">=</span>96 <span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="s2">"explicit,proclist=[</span><span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 2 191<span class="sb">`</span><span class="s2">]"</span> ./a.out
+<span class="nv">$ OMP_NUM_THREADS</span><span class="o">=</span>128 <span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="s2">"explicit,proclist=[</span><span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 2 255<span class="sb">`</span><span class="s2">]"</span> ./a.out
 </code></pre></div></div>
 
-<p><strong>BM.Standard.E5.192</strong> 上で実行する <strong>STREAM</strong> については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></strong> も合わせて参照してください。</p>
+<p><strong>BM.Standard.E6.256</strong> 上で実行する <strong>STREAM</strong> については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-stream-e6/">STREAM実行方法（BM.Standard.E6.256編）</a></strong> も合わせて参照してください。</p>
 
 <h2 id="2-2-openmpislurm稼働確認">2-2. OpenMPI・Slurm稼働確認</h2>
 
@@ -755,17 +756,17 @@ e5           up   infinite      1   idle inst-e5
 なおこの <strong>Intel MPI Benchmarks</strong> の実行は、 <strong>BM.Standard.E5.192</strong> を想定した設定になっています。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
-<span class="c">#SBATCH -p e5</span>
-<span class="c">#SBATCH -n 192</span>
+<span class="c">#SBATCH -p e6</span>
+<span class="c">#SBATCH -n 256</span>
 <span class="c">#SBATCH -N 1</span>
 <span class="c">#SBATCH -J alltoall</span>
 <span class="c">#SBATCH -o alltoall.%J</span>
 <span class="c">#SBATCH -e stderr.%J</span>
-srun <span class="nt">--cpu-bind</span><span class="o">=</span>map_cpu:<span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 191 | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\n'</span><span class="sb">`</span> /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:23 <span class="nt">-mem</span> 4G <span class="nt">-off_cache</span> 384,64 <span class="nt">-npmin</span> <span class="nv">$SLURM_NTASKS</span> alltoall
+srun <span class="nt">--cpu-bind</span><span class="o">=</span>map_cpu:<span class="sb">`</span><span class="nb">seq</span> <span class="nt">-s</span>, 0 255 | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\n'</span><span class="sb">`</span> /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 0:20 <span class="nt">-mem</span> 4G <span class="nt">-off_cache</span> 384,64 <span class="nt">-npmin</span> <span class="nv">$SLURM_NTASKS</span> alltoall
 </code></pre></div></div>
 
-<p>このジョブスクリプトは、192プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから32 MiBまでで計測しています。<br />
-<strong>BM.Standard.E5.192</strong> 上で実行する <strong>Intel MPI Benchmarks</strong> のMPI集合通信性能については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></strong> も合わせて参照してください。</p>
+<p>このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから1 MiBまでで計測しています。<br />
+<strong>BM.Standard.E6.256</strong> 上で実行する <strong>Intel MPI Benchmarks</strong> のMPI集合通信性能については、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e6/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）</a></strong> も合わせて参照してください。</p>
 
 <p>次に、以下コマンドをSlurmクライアントの <strong>OpenMPI</strong> と <strong>Slurm</strong> を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
 
@@ -775,21 +776,21 @@ Submitted batch job 23808
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Date                  : Wed Mar 12 23:40:30 2025</span>
+<span class="c"># Date                  : Fri May  2 01:52:03 2025</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 5.15.0-305.176.4.el9uek.x86_64</span>
-<span class="c"># Version               : #2 SMP Tue Jan 28 20:15:04 PST 2025</span>
+<span class="c"># Release               : 5.15.0-307.178.5.el9uek.x86_64</span>
+<span class="c"># Version               : #2 SMP Wed Mar 19 13:03:40 PDT 2025</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
 
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:23 -mem 4G -off_cache 384,64 -npmin 192 alltoall </span>
+<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:20 -mem 4G -off_cache 384,64 -npmin 256 alltoall </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
-<span class="c"># Maximum message length in bytes:   8388608</span>
+<span class="c"># Maximum message length in bytes:   1048576</span>
 <span class="c">#</span>
 <span class="c"># MPI_Datatype                   :   MPI_BYTE </span>
 <span class="c"># MPI_Datatype for reductions    :   MPI_FLOAT </span>
@@ -803,34 +804,31 @@ Submitted batch job 23808
 
 <span class="c">#----------------------------------------------------------------</span>
 <span class="c"># Benchmarking Alltoall </span>
-<span class="c"># #processes = 192 </span>
+<span class="c"># #processes = 256 </span>
 <span class="c">#----------------------------------------------------------------</span>
        <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
-            0         1000         0.04         0.09         0.05
-            1         1000        14.94        15.95        15.48
-            2         1000        15.17        16.37        15.70
-            4         1000        17.09        19.61        18.21
-            8         1000        20.74        23.41        21.84
-           16         1000        28.71        32.03        30.04
-           32         1000        37.98        42.64        40.24
-           64         1000        72.73        80.65        76.27
-          128         1000       108.05       124.39       116.52
-          256         1000       202.50       236.85       220.65
-          512         1000       387.72       434.45       410.11
-         1024         1000       368.04       416.56       394.76
-         2048         1000      1211.46      1447.02      1397.23
-         4096         1000      1240.52      2854.89      1845.46
-         8192         1000      1665.85      1856.75      1791.55
-        16384         1000      3050.95      3240.93      3145.84
-        32768         1000      5523.64      5920.35      5767.86
-        65536          640     10935.51     12686.47     12025.69
-       131072          320     20632.47     22223.99     21683.88
-       262144          160     45287.95     45514.84     45430.74
-       524288           80    101029.68    101507.84    101329.73
-      1048576           40    178558.11    179596.61    179215.53
-      2097152           20    386123.34    391777.75    388960.96
-      4194304           10    708980.56    714099.31    712053.41
-      8388608            5   1419275.74   1430883.33   1426296.45
+            0         1000         0.03         0.04         0.04
+            1         1000        16.66      2207.34       285.88
+            2         1000        16.12        18.13        17.15
+            4         1000        20.11        25.80        22.51
+            8         1000        21.66        28.74        24.81
+           16         1000        27.95        36.66        32.27
+           32         1000        57.32        68.34        62.60
+           64         1000        77.43       101.58        92.33
+          128         1000       138.02       184.22       167.63
+          256         1000       268.97       382.26       337.74
+          512         1000       509.41       721.89       635.87
+         1024         1000       670.70       703.63       685.22
+         2048         1000      1167.30      1211.05      1189.51
+         4096         1000      1373.49      1491.54      1439.74
+         8192         1000      2235.34      2346.79      2290.37
+        16384         1000      6442.20      9157.06      8251.17
+        32768          933      9177.00      9221.44      9199.22
+        65536          552     23948.78     25861.85     25719.17
+       131072          242     32903.76     33008.57     32958.71
+       262144          146     97061.92     97470.83     97300.95
+       524288           72    129280.17    129802.43    129576.16
+      1048576           39    491764.64    492944.55    492384.98
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
@@ -848,7 +846,7 @@ Submitted batch job 23808
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-05-01T16:37:10+09:00">May 1, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-05-07T16:04:43+09:00">May 7, 2025</time></p>
 
       </footer>
 
@@ -856,7 +854,7 @@ Submitted batch job 23808
   <h4 class="page__share-title">共有</h4>
 
   <a href="https://x.com/intent/tweet?text=Oracle+Linux%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%E3%83%BB%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AEHPC%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbuild-oraclelinux-hpcenv%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
-    <i class="fas fa-fw fa-share-alt" aria-hidden="true"></i><span> X</span>
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
   <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbuild-oraclelinux-hpcenv%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
@@ -865,6 +863,10 @@ Submitted batch job 23808
 
   <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
     <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=Oracle+Linux%E3%83%97%E3%83%A9%E3%83%83%E3%83%88%E3%83%95%E3%82%A9%E3%83%BC%E3%83%A0%E3%83%BB%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AEHPC%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%AE%9F%E8%A1%8C%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fbuild-oraclelinux-hpcenv%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
   </a>
 </section>
 
