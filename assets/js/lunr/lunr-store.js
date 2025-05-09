@@ -1865,12 +1865,6 @@ var store = [{
         "url": "/ocitutorials/intermediates/bastion/",
         "teaser": "/ocitutorials/intermediates/bastion/img1.png"
       },{
-        "title": "Oracle Linux Storage Applianceでファイルストレージの構築",
-        "excerpt":"Oracle Linux Storage Applianceを使用することでOracle Cloud Infrastructure(OCI)上にWebインターフェースを使用して簡単に共有ファイルストレージを構築できます。その際にNFSv3、NFSv4そしてSMBv3のプロトコルを使用することができます。 今回のチュートリアルでは実際にOracle Linux Storage Applianceで共有ファイルストレージを作成して、OCI上にあるWindowsインスタンスからSMBプロトコルを介してアクセスしてみます。 チュートリアル一覧に戻る : Oracle Cloud Infrastructure チュートリアル 所要時間：　約30分 前提条件： その2 - クラウドに仮想ネットワーク(VCN)を作るが完了していること その4 - ブロック・ボリュームをインスタンスにアタッチするのブロック・ボリュームの作成を行っていること 注意: チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります 1. 事前準備 1. インスタンス Oracle Linux Storage Applianceを使用するために必要なインスタンスを作成します。その3 - インスタンスを作成するを参考にしてインスタンスを作成します。その際にイメージの変更ボタンをおしてイメージソースを Oracleイメージ にして　Oracle Linux Storage Appliance をクリックします。 OCI上のWindowsインスタンスでSMBの共有ファイルを確認するために、その3 - インスタンスを作成するを参考にしてWindowsインスタンスを作成します。 2. ブロック・ボリュームのアタッチ Oracle...","categories": [],
-        "tags": ["intermediate","oracle-linux-storage-appliance"],
-        "url": "/ocitutorials/intermediates/oracle-linux-storage-appliance/",
-        "teaser": "/ocitutorials/intermediates/oracle-linux-storage-appliance/img10.png"
-      },{
         "title": "OCI Data Integrationチュートリアル",
         "excerpt":"はじめに OCI Data Integration はOCIで利用できるGUIベースのETLサービスです。 このチュートリアルではオブジェクト・ストレージ上のデータを変換し、Autonomous Databaseにロードを行っていきます。 OCI Data Integrationドキュメントに掲載されているチュートリアルの一部です。 目次 : 1.サンプルデータのロードとターゲット表の作成 2.Data Integrationを利用するための準備 3.ワークスペースの作成 4.データ・アセットの作成 5.プロジェクトとデータ・フローの作成 6.データ・フローの編集 7.タスクの作成 8.アプリケーションの作成とタスクの公開と実行 前提条件 : Data Integrationを利用するコンパートメントを準備してください。 Autonomous Databaseのエンドポイントはパブリックエンドポイントとしています。 画像は最新サービスと異なる可能性があります。 1. サンプルデータのロードとターゲット表の作成 ソースとなるオブジェクト・ストレージにファイルをアップロードし、ターゲットとなるAutonomous Databaseにロード先の表を作成します。 ソース：オブジェクト・ストレージ オブジェクト・ストレージにサンプルデータをロードします。 バケットを作成し、次の2つのファイルをアップロードしてください。 ファイルへのリンク : CUSTOMERS.json / REVENUE.csv バケットの作成とファイルのアップロード手順は“その7 - オブジェクト・ストレージを使う”をご確認ください。 ターゲット：Autonomous Database Autonomous Databaseインスタンスを作成しユーザーを作成します。手順は“101:ADBインスタンスを作成してみよう”をご確認ください。ユーザー名は任意ですが、このチュートリアルでは、BETAとします。作成したユーザーBETAで以下のSQLでCUSTOMER_TARGET表を作成してください。 CUSTOMERS_TARGET表作成SQL CREATE TABLE...","categories": [],
         "tags": [],
