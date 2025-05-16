@@ -581,7 +581,7 @@ Wed Apr 23 16:08:41 2025
 # sh ./autogen.sh && ./configure --enable-client
 ```
 
-次に、カレントディレクトリ下の **debian** ディレクトリ以下の3個のファイル **control** ・**control.main** ・**control.modules.in** からキーワード **linux-headers-xxxx** と **linux-image-xxxx** の記載を削除し、差分が以下となるよう修正します。
+次に、カレントディレクトリ以下の **debian** ディレクトリ以下の3個のファイル **control** ・**control.main** ・**control.modules.in** からキーワード **linux-headers-xxxx** と **linux-image-xxxx** の記載を削除し、差分が以下となるよう修正します。
 
 ```sh
 # diff debian/control_sv debian/control
