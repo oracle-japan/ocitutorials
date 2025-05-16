@@ -1211,6 +1211,12 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/run-hpl-e5/",
         "teaser": null
       },{
+        "title": "HPL実行方法（BM.Standard.E6.256編）",
+        "excerpt":"0. 概要 本パフォーマンス関連Tipsで解説する HPL は、第4世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E6.256 のインスタンス上で、AMDの HPL 実装である AMD Zen HPL optimized for AMD EPYC processors （以下 AMD HPL と呼称します。）を OpenMPI から起動して実行します。 以上より、本ドキュメントで解説する HPL 実行は、以下の手順を経て行います。 BM.Standard.E6.256 インスタンス作成 AMD HPL ダウンロード・インストール HPL 実行 本パフォーマンス関連Tipsは、以下の環境で HPL を実行しており、以下の性能が出ています。 [実行環境] シェイプ： BM.Standard.E6.256 CPU： AMD EPYC 9755ベース x 2（256コア） メモリ： DDR5...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-hpl-e6/",
+        "teaser": null
+      },{
         "title": "STREAM実行方法（BM.Optimized3.36編）",
         "excerpt":"0. 概要 本ドキュメントで解説する STREAM の実行は、 Intel oneAPI Base Toolkit に含まれるCコンパイラの Intel oneAPI DPC++/C++ Compiler で STREAM のソースコードをコンパイルして作成したバイナリを使用します。 STREAM を実行するインスタンスは、 BM.Optimized3.36 を使用し、 STREAM の性能向上を目的に NUMA nodes per socket （以降 NPS と呼称します。）が 2 （以降 NPS2 と呼称します。）となるようBIOSで設定します。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Optimized3.36 インスタンス作成 Intel oneAPI Base Toolkit インストール STREAM ダウンロード・コンパイル STREAM 実行 本ドキュメントは、以下の環境で STREAM...","categories": [],
         "tags": [],
@@ -1221,6 +1227,12 @@ var store = [{
         "excerpt":"0. 概要 本パフォーマンス関連Tipsで解説する STREAM は、第4世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E5.192 のインスタンス上で、 AMD Optimizing C/C++ and Fortran Compilers （以降 AOCC と呼称します。）で STREAM のソースコードをコンパイルして実行します。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Standard.E5.192 インスタンス作成 STREAM ダウンロード・コンパイル STREAM 実行 本パフォーマンス関連Tipsは、以下の環境で STREAM を実行しており、以下の性能が出ています。 [実行環境] シェイプ： BM.Standard.E5.192 CPU： AMD EPYC 9654ベース x 2（192コア） メモリ： DDR5 2.3 TB 理論性能： 7.3728 TFLOPS（ベース動作周波数2.4 GHz時）...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-stream-e5/",
+        "teaser": null
+      },{
+        "title": "STREAM実行方法（BM.Standard.E6.256編）",
+        "excerpt":"0. 概要 本パフォーマンス関連Tipsで解説する STREAM は、第5世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E6.256 のインスタンス上で、 AMD Optimizing C/C++ and Fortran Compilers （以降 AOCC と呼称します。）で STREAM のソースコードをコンパイルして実行します。 以上より、本ドキュメントで解説する STREAM 実行は、以下の手順を経て行います。 BM.Standard.E6.256 インスタンス作成 STREAM ダウンロード・コンパイル STREAM 実行 本パフォーマンス関連Tipsは、以下の環境で STREAM を実行しており、以下の性能が出ています。 [実行環境] シェイプ： BM.Standard.E6.256 CPU： AMD EPYC 9755ベース x 2（256コア） メモリ： DDR5 3.072 TB 理論性能： 11.0592 TFLOPS（ベース動作周波数2.7 GHz時）...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-stream-e6/",
         "teaser": null
       },{
         "title": "Intel MPI Benchmarks実行方法",
@@ -1260,7 +1272,7 @@ var store = [{
         "teaser": null
       },{
         "title": "CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips",
-        "excerpt":"0. 概要 本パフォーマンス関連Tipsは、 BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタで OpenFOAM を使用する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。 メモリ帯域の有効利用を考慮した最適なノード内並列実行方法 スケーラビリティーを考慮した最適なノード間並列実行方法 NVMe SSDローカルディスクをストレージ領域に活用する方法 本パフォーマンス関連Tipsの性能計測は、 OCI HPCテクニカルTips集 の OpenFOAMインストール・利用方法 に従って構築された OpenFOAM を使用し、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境でバッチジョブとして計測しています。 また、 NUMA nodes per socket （以降 NPS と呼称）に NPS1 と NPS2 を指定して実行する計測は、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム運用Tips の 3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 に従って構築した Slurm 環境で行っています。...","categories": [],
+        "excerpt":"0. 概要 本パフォーマンス関連Tipsは、 BM.Optimized3.36 を クラスタ・ネットワーク でノード間接続するHPCクラスタで OpenFOAM を実行する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。 メモリ帯域の有効利用を考慮した最適なノード内並列実行方法 スケーラビリティーを考慮した最適なノード間並列実行方法 NVMe SSDローカルディスクをストレージ領域に活用する方法 本パフォーマンス関連Tipsの性能計測は、 OCI HPCテクニカルTips集 の OpenFOAMインストール・利用方法 に従って構築された OpenFOAM を使用し、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム構築方法 に従って構築された Slurm 環境でバッチジョブとして計測しています。 また、 NUMA nodes per socket （以降 NPS と呼称）に NPS1 と NPS2 を指定して実行する計測は、 OCI HPCテクニカルTips集 の Slurmによるリソース管理・ジョブ管理システム運用Tips の 3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御 に従って構築した Slurm 環境で行っています。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/openfoam-tuning/",
         "teaser": null
@@ -1283,23 +1295,29 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/cpu-binding-e5/",
         "teaser": "/ocitutorials/hpc/benchmark/cpu-binding-e5/e5_architecture_nps4.png"
       },{
-        "title": "OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）",
-        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベア・メタル・シェイプ BM.Optimized3.36 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード数 ： 1 ・ 2 ・...","categories": [],
-        "tags": [],
-        "url": "/ocitutorials/hpc/benchmark/openmpi-perftune/",
-        "teaser": "/ocitutorials/hpc/benchmark/openmpi-perftune/are_08_36_step3.png"
-      },{
         "title": "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）",
         "excerpt":"0. 概要 0-0. 概要 本パフォーマンス関連Tipsは、NUMA（Non-Umiform Memory Access）アーキテクチャを採用する第5世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E6.256 を使用するインスタンスで、並列プログラムの実行時性能に大きく影響するMPIが生成するプロセスとOpenMPが生成するスレッドのコア割当てについて、アプリケーション性能に有利となる典型的なパターンを例に挙げ、以下の観点でその実行方法を解説します。 PRRTE を使用するプロセス・スレッドのコア割当て この割当て方法は、 OpenMPI に同梱される PRRTE のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、ジョブスケジューラを使用せずに mpirun を使用してMPI並列アプリケーションをインタラクティブに実行する場合に使用します。 Slurm を使用するプロセス・スレッドのコア割当て この割当て方法は、 Slurm のMPIプロセスのコア割当て機能と、 GNUコンパイラ のOpenMPスレッドのコア割当て機能を組合せて、意図したプロセス・スレッドのコア割当てを実現します。 この方法は、 Slurm のジョブスケジューラ環境で srun を使用してMPI並列アプリケーションを実行する場合に使用します。 また最後の章では、プロセス・スレッドのコア割当てが想定通りに行われているかどうかを確認する方法と、この方法を使用して本パフォーマンス関連Tipsで紹介したコア割当てを行った際の出力例を紹介します。 なお、プロセス・スレッドのコア割当て同様に並列プログラムの実行時性能に大きく影響するメモリ割り当ては、割当てられるコアと同一NUMAノード内のメモリを割り当てることにより多くのケースで性能が最大となることから、以下のように - -localalloc オプションを付与した numactl コマンドの使用を前提とし、本パフォーマンス関連Tipsの実行例を記載します。 $ numactl --localalloc a.out 0-1. 前提システム プロセス・スレッドのコア割当ては、使用するインスタンスのNUMAアーキテクチャやNUMAノードの構成方法に影響を受けますが、本パフォーマンス関連Tipsでは第5世代...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/cpu-binding-e6/",
         "teaser": "/ocitutorials/hpc/benchmark/cpu-binding-e6/e6_architecture_nps4.png"
       },{
+        "title": "OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）",
+        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、HPCワークロード向けベア・メタル・シェイプ BM.Optimized3.36 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード数 ： 1 ・ 2 ・...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/openmpi-perftune/",
+        "teaser": "/ocitutorials/hpc/benchmark/openmpi-perftune/are_08_36_step3.png"
+      },{
         "title": "OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）",
-        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、第4世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E5.192 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel MPI Benchmarks で計測し、最適な 実行時パラメータ の組み合わせを導きます。 [計測条件] ノード数 ： 1...","categories": [],
+        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 特に集合通信の高速化を意識して開発されている HCOLL や Unified Collective Communication （以降 UCC と呼称します。）を使用することで、集合通信を高速化することが可能です。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、第4世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E5.192 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/openmpi-perftune-e5/",
-        "teaser": "/ocitutorials/hpc/benchmark/openmpi-perftune-e5/are_192_step3.png"
+        "teaser": "/ocitutorials/hpc/benchmark/openmpi-perftune-e5/are_192_step2.png"
+      },{
+        "title": "OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）",
+        "excerpt":"0. 概要 オープンソースのMPI実装である OpenMPI は、 Modular Component Architecture （以降 MCA と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この MCA パラメータにはMPI集合通信性能に影響するものがあります。 特に集合通信の高速化を意識して開発されている HCOLL や Unified Collective Communication （以降 UCC と呼称します。）を使用することで、集合通信を高速化することが可能です。 また OpenMPI は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに UCX を採用し、この UCX のパラメータにもMPI集合通信性能に影響するパラメータが存在します。 またMPI集合通信は、ノード内並列では実質的にメモリコピーとなるため、メモリ性能に影響するMPIプロセスのコア割当てや NUMA nodes per socket （以降 NPS と呼称します。）もその性能に影響します。 以上を踏まえて本パフォーマンス関連Tipsは、第5世代 AMD EPYC プロセッサを搭載するベア・メタル・シェイプ BM.Standard.E6.256 に於ける OpenMPI のMPI集合通信性能にフォーカスし、以下の 計測条件 を組合せたテストケース毎に以下の 実行時パラメータ を変えてその性能を Intel...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/openmpi-perftune-e6/",
+        "teaser": "/ocitutorials/hpc/benchmark/openmpi-perftune-e6/are_256_step2.png"
       },{
         "title": "PAPIでHPCアプリケーションをプロファイリング",
         "excerpt":"HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを実行する場合、高価な計算資源を有効活用出来ているかを検証するため、アプリケーションのプロファイリングを実施することが一般的です。 PAPI は、HPCワークロード向け ベアメタル・シェイプ に採用されている Intel Ice Lake や AMD EPYC 9004シリーズ のCPUが持つハードウェアカウンタから浮動小数点演算数やキャッシュヒット数といったプロファイリングに有益な情報を取得するAPIを提供し、HPCアプリケーションのプロファイリングに欠かせないツールとなっています。 本プロファイリング関連Tipsは、 ベアメタル・インスタンス 上で実行するHPCアプリケーションを PAPI を使ってプロファイリングする方法を解説します。 0. 概要 PAPI (Performance Application Programming Interface) は、異なるプラットフォーム間を共通のインターフェースで利用できるように設計された性能解析ツールで、プロファイリング対象のアプリケーションからAPIをコールすることで、CPU/GPUをはじめとする様々なハードウェアからプロファイリングに有益な情報を収集します。 この PAPI の可搬性は、ハードウェア固有の部分を吸収する下層と、プロファイリングを行うアプリケーション開発者が利用する抽象化された上位層にソフトウェアスタックを分割することで、これを実現しています。これらの関係は、 ここ に記載のアーキテクチャ図が参考になります。 PAPI のAPIは、HPCアプリケーションをプロファイリングするユースケースの場合、 Low Level API と High Level API から選択して利用することが出来ます。 High Level API は、内部で Low Level API を使用することでより高機能のプロファイリングが可能なAPIを提供し、 Low...","categories": [],
