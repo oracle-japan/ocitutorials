@@ -303,7 +303,7 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```sh
 SlurmdParameters=l3cache_as_socket
 NodeName=inst-e6 Sockets=32 CoresPerSocket=8 ThreadsPerCore=1 RealMemory=3000000 TmpDisk=10000 State=UNKNOWN
-PartitionName=e6 Nodes=inst-e5 Default=YES MaxTime=INFINITE State=UP
+PartitionName=e6 Nodes=inst-e6 Default=YES MaxTime=INFINITE State=UP
 ```
 
 ここでは、本テクニカルTipsで使用する **BM.Standard.E6.256** に搭載する2個の第5世代 **AMD EPYC** プロセッサが32個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効（※6）としたホスト名が **inst-e6** の **BM.Standard.E6.256** 1ノードを、パーティション名 **e6** に割り当てています。
@@ -331,8 +331,8 @@ $ sudo su - slurm -c "scontrol reconfigure"
 ```sh
 $ sudo su - slurm -c "sinfo"
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-sltest*      up   infinite      3   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-e5
-e5           up   infinite      1   idle inst-e5
+sltest*      up   infinite      3   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-e6
+e6           up   infinite      1   idle inst-e6
 $
 ```
 
@@ -347,7 +347,7 @@ $
 ## 2-1. AOCC稼働確認
 
 以下コマンドを計算ノードの **AOCC** を利用するユーザで実行し、メモリ性能を計測するベンチマークプログラムの **[STREAM](https://www.cs.virginia.edu/stream/)** をコンパイル・実行することで、 **AOCC** の稼働確認を行います。  
-なおこの **STREAM** の実行は、 **BM.Standard.E5.192** を想定した設定になっています。
+なおこの **STREAM** の実行は、 **BM.Standard.E6.256** を想定した設定になっています。
 
 ```sh
 $ cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
@@ -361,7 +361,7 @@ $ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.o
 ## 2-2. OpenMPI・Slurm稼働確認
 
 **Slurm** クライアントの **OpenMPI** と **Slurm** を利用するユーザで、以下のスクリプトをファイル名 **imb_ata.sh** で作成します。  
-なおこの **Intel MPI Benchmarks** の実行は、 **BM.Standard.E5.192** を想定した設定になっています。
+なおこの **Intel MPI Benchmarks** の実行は、 **BM.Standard.E6.256** を想定した設定になっています。
 
 
 ```sh

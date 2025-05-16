@@ -1,7 +1,7 @@
 ---
 title: "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）"
 excerpt: "NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラが有するコア割当て制御機能に精通している必要があります。本パフォーマンス関連Tipsは、MPI実装にOpenMPI、OpenMP実装にGNUコンパイラ、及びジョブスケジューラにSlurmを取り上げ、第5世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E6.256でこれらのコア割当て機能を駆使してプロセス・スレッドのコア割当てを行う方法を解説します。"
-order: "229"
+order: "2208"
 layout: single
 header:
   teaser: "/hpc/benchmark/cpu-binding-e6/e6_architecture_nps4.png"
@@ -34,7 +34,7 @@ $ numactl --localalloc a.out
 
 ## 0-1. 前提システム
 
-プロセス・スレッドのコア割当ては、使用するインスタンスのNUMAアーキテクチャやNUMAノードの構成方法に影響を受けますが、本パフォーマンス関連Tipsでは第5世代 **AMD EPYC** プロセッサを搭載する **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** を使用し、NUMAノード構成に **NUMA nodes per socket** （以降 **NPS** と呼称します。）が **1** （これがデフォルトで、以降 **NPS1** と呼称します。）と **4** （以降 **NPS4** と呼称します。）の場合を取り上げ（※1）、それぞれに関するコア割当て方法を解説します。
+プロセス・スレッドのコア割当ては、使用するインスタンスのNUMAアーキテクチャやNUMAノードの構成方法に影響を受けますが、本パフォーマンス関連Tipsでは第5世代 **AMD EPYC** プロセッサを搭載する **BM.Standard.E6.256** を使用し、NUMAノード構成に **NUMA nodes per socket** （以降 **NPS** と呼称します。）が **1** （これがデフォルトで、以降 **NPS1** と呼称します。）と **4** （以降 **NPS4** と呼称します。）の場合を取り上げ（※1）、それぞれに関するコア割当て方法を解説します。
 
 また使用する **BM.Standard.E6.256** は、 **Simultanious Multi Threading** （以降 **SMT** と呼称します。）を無効化（デフォルトは有効です。）しています。（※1）
 
@@ -67,7 +67,7 @@ $ numactl --localalloc a.out
 本パフォーマンス関連Tipsで取り上げるプロセス・スレッドのコア割当ては、パフォーマンスの観点で利用頻度の高い以下のパターンを解説します。  
 ここで取り上げるコア割当てパターンは、第5世代 **AMD EPYC** プロセッサが **CCD** 単位にL3キャッシュを搭載し、L3キャッシュ当たりの割当てコア数を均等にすることで性能向上を得やすい点を考慮します。
 
-| No.    | NPS      | ノード当たり<br>プロセス数 | プロセス当たり<br>スレッド数 | プロセス分割方法<br>（※2） | 備考                                           |
+| No.    | NPS      | ノード当たり<br>プロセス数 | プロセス当たり<br>スレッド数 | プロセス分割方法<br>（※3） | 備考                                           |
 | :----: | :------: | :-------------: | :--------------: | :--------------: | :------------------------------------------: |
 | **1**  | **NPS1** | 1               | 1                | -                | -                                            |
 | **2**  | **NPS1** | 2               | 1                | -                | **NUMA** ノード当たり1プロセス                         |
@@ -91,7 +91,7 @@ $ numactl --localalloc a.out
 | **20** | **NPS4** | 8               | 32               | -                | **NUMA** ノード当たり1プロセス<br>MPI/OpenMPハイブリッド並列実行 |
 | **21** | **NPS4** | 32              | 8                | -                | **CCD** 当たり1プロセス<br>MPI/OpenMPハイブリッド並列実行     |
 
-※2） **CCD** に対するプロセスの分割方法を示します。
+※3） **CCD** に対するプロセスの分割方法を示します。
 
 ![コアバインディング1](core_binding1.png)
 
@@ -202,13 +202,13 @@ $ mpirun -n 32 --bind-to core --map-by ppr:1:l3cache:PE=8 -x OMP_NUM_THREAD=8 -x
 例えば **No. 9** のコア割当てを行う場合のコマンドは、以下になります。
 
 ```sh
-$ srun -p e6 -n 192 --cpu-bind=map_ldom:`for i in \`seq 0 7\`; do for j in \`echo 0 2 3 1 12 14 15 13\`; do for k in \`seq $j 4 $((j+8))\`; do echo -n $k","; done; done; done | sed 's/,$//g'` numactl --localalloc ./a.out
+$ srun -p e6 -n 256 --cpu-bind=map_ldom:`for i in \`seq 0 7\`; do for j in \`echo 0 2 3 1 16 18 19 17\`; do for k in \`seq $j 4 $((j+12))\`; do echo -n $k","; done; done; done | sed 's/,$//g'` numactl --localalloc ./a.out
 ```
 
 また **No. 11** のコア割当てを行う場合のコマンドは、以下になります。
 
 ```sh
-$ OMP_NUM_THREADS=8 OMP_PROC_BIND=TRUE srun -p e6 -n 24 -c 8 --cpu-bind=map_ldom:`for i in \`echo 0 2 3 1 12 14 15 13\`; do seq -s, $i 4 $((i+8)) | tr '\n' ','; done | sed 's/,$//g'` numactl --localalloc ./a.out
+$ OMP_NUM_THREADS=8 OMP_PROC_BIND=TRUE srun -p e6 -n 32 -c 8 --cpu-bind=map_ldom:`for i in \`echo 0 2 3 1 16 18 19 17\`; do seq -s, $i 4 $((i+12)) | tr '\n' ','; done | sed 's/,$//g'` numactl --localalloc ./a.out
 ```
 
 以降では、コア割当てパターンを実現するオプション・環境変数の組み合わせを解説します。

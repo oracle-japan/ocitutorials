@@ -1,7 +1,7 @@
 ---
 title: "CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips"
 excerpt: "OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンスBM.Optimized3.36をクラスタ・ネットワークでノード間接続するHPCクラスタでOpenFOAMを使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。"
-order: "224"
+order: "2204"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
@@ -11,7 +11,7 @@ header:
 ***
 # 0. 概要
 
-本パフォーマンス関連Tipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **[OpenFOAM](https://www.openfoam.com/)** を使用する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。
+本パフォーマンス関連Tipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **[OpenFOAM](https://www.openfoam.com/)** を実行する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。
 
 1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法
 2. スケーラビリティーを考慮した最適なノード間並列実行方法
@@ -46,7 +46,7 @@ header:
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※1）**NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※1）**SMT** ・ **NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。
@@ -126,7 +126,7 @@ header:
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※3）**NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※3）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※4） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、ソルバー部分に着目すると、以下のことが判明しています。
@@ -235,7 +235,7 @@ header:
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 10タイムステップ（デフォルト値：1,000タイムステップ）
 
-※5）**NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※5）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※6） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。

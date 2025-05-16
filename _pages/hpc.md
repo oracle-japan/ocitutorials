@@ -231,8 +231,8 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 | 名称                      | ベンチマークサイトURL                                                                                               | 対象シェイプ                                                                                                                                  |
 | :---------------------: | :--------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
-| **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**       |
-| **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)** |
+| **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**<br>**[BM.Standard.E6.256](/ocitutorials/hpc/benchmark/run-hpl-e6/)**       |
+| **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)**<br>**[BM.Standard.E6.256](/ocitutorials/hpc/benchmark/run-stream-e6/)** |
 | **Intel MPI Benchmarks** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                                                                            |
 | **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[BM.GPU.H100.8](/ocitutorials/hpc/benchmark/run-nccltests-h100/)**                                                 |
 
@@ -281,16 +281,26 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
     本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第4世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
 
+- **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/cpu-binding-e6/)**
+
+    NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。  
+    このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
+    本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第5世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
+
 - **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)**
 
     MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や **NUMA nodes per socket** 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。  
     本パフォーマンス関連Tipsは、MPIの実装に **[OpenMPI](https://www.open-mpi.org/)** を取り上げ、これが採用する **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** や **[UCX](https://openucx.org/)** の実行時パラメーター、MPIプロセス分割方法や **NUMA nodes per socket** を組合せて、HPCワークロード向けベア・メタル・シェイプ **BM.Optimized3.36** でMPI集合通信をチューニングする方法を解説します。
 
-- **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/cpu-binding-e5/)**
+- **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)**
 
-    NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。  
-    このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラがそれぞれ有するコア割当て制御機能に精通している必要があります。  
-    本パフォーマンス関連Tipsは、 **MPI** 実装に **[OpenMPI](https://www.open-mpi.org/)** 、 **OpenMP** 実装にGNUコンパイラ、及びジョブスケジューラに **[Slurm](https://slurm.schedmd.com/)** を取り上げ、第5世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でこれらのコア割当て機能を駆使してMPIプロセスやOpenMPスレッドのコア割当てを行う方法を解説します。
+    MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や **NUMA nodes per socket** 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。  
+    本パフォーマンス関連Tipsは、MPIの実装に **[OpenMPI](https://www.open-mpi.org/)** を取り上げ、これが採用する **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** や **[UCX](https://openucx.org/)** の実行時パラメーター、MPIプロセス分割方法や **NUMA nodes per socket** を組合せて、第4世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E5.192](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でMPI集合通信をチューニングする方法を解説します。
+
+- **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)**
+
+    MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や **NUMA nodes per socket** 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。  
+    本パフォーマンス関連Tipsは、MPIの実装に **[OpenMPI](https://www.open-mpi.org/)** を取り上げ、これが採用する **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** や **[UCX](https://openucx.org/)** の実行時パラメーター、MPIプロセス分割方法や **NUMA nodes per socket** を組合せて、第5世代 **AMD EPYC** プロセッサを搭載するベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** でMPI集合通信をチューニングする方法を解説します。
 
 ## 2-3. プロファイリング関連Tips集
 
@@ -482,7 +492,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 - **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)**
 
     HPCワークロードは、複数の計算ノードを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで実行することが主流ですが、 **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。  
-    このように単一ノードでHPCワークロードを実行する場合は、ベースOSの **Oracle Linux** のバージョンに制約のある **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** を使用する必要が無く、 **[プラットフォーム・イメージ](#5-17-プラットフォーム・イメージ)** から最新の **Oracle Linux** を選択することが可能になります。  
+    このように単一ノードでHPCワークロードを実行する場合は、ベースOSの **Oracle Linux** のバージョンに制約のある **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** を使用する必要が無く、 **[プラットフォーム・イメージ](#5-17-プラットフォームイメージ)** から最新の **Oracle Linux** を選択することが可能になります。  
     本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** から提供される最新の **Oracle Linux** 上に **[OpenMPI](https://www.open-mpi.org/)** と **[Slurm](https://slurm.schedmd.com/)** をインストールしてHPC環境を構築する方法を解説します。
 
 ## 3-6. その他

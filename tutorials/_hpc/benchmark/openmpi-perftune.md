@@ -1,7 +1,7 @@
 ---
 title: "OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）"
 excerpt: "MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本パフォーマンス関連Tipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、HPCワークロード向けベア・メタル・シェイプBM.Optimized3.36でMPI集合通信をチューニングする方法を解説します。"
-order: "228"
+order: "2208"
 layout: single
 header:
   teaser: "/hpc/benchmark/openmpi-perftune/are_08_36_step3.png"

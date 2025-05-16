@@ -38,14 +38,14 @@ header:
     - 問題サイズ(N)： 523,008
     - ブロックサイズ(NB)： 384
     - プロセスグリッド(PxQ)： 1x2
-  
+
 [実行結果]
 
 - FLOPS
     - 7.4578 TFLOPS（ **NPS** が **1** の場合）
     - 7.4168 TFLOPS（ **NPS** が **4** の場合）
 
-※1） **NPS** の違いによる性能差は見られません。
+※1） **NPS** の違いによる有意な性能差は見られません。
 
 ***
 # 1. BM.Standard.E5.192インスタンス作成
@@ -89,7 +89,6 @@ $ echo 3  | sudo tee /proc/sys/vm/drop_caches
 $ echo 1  | sudo tee /proc/sys/vm/compact_memory
 $ echo 'always' | sudo tee /sys/kernel/mm/transparent_hugepage/defrag
 $ echo 0 | sudo tee /proc/sys/kernel/numa_balancing
-$ sudo cpupower frequency-set -g performance
 ```
 
 次に、下コマンドを **HPL** を実行するノードの **HPL** を実行するユーザで実行します。  
