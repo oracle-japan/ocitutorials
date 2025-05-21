@@ -1,0 +1,1106 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.1 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編） | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Standard.E6.256を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-e6/">
+
+
+  <meta property="og:description" content="ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Standard.E6.256を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-e6/architecture_diagram.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-05-22T00:14:21+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-e6/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/hpc/spinup-nfs-server-e6/architecture_diagram.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）
+
+        
+      </h1>
+      
+        <p class="page__lead">ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Standard.E6.256を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-lustre-server-fswl/">File Storage with Lustreでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-e6/" class="active">ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e6/">HPL実行方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e6/">STREAM実行方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e6/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e6/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）">
+    <meta itemprop="description" content="ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Standard.E6.256を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。">
+    <meta itemprop="datePublished" content="2025-05-22T00:14:21+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-事前準備">1. 事前準備</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-構成ソースプロバイダ作成">1-1. 構成ソース・プロバイダ作成</a></li><li><a href="#1-2-iamポリシー作成">1-2. IAMポリシー作成</a></li><li><a href="#1-3-スタック作成">1-3. スタック作成</a></li></ul></li><li><a href="#2ブロックボリュームnfsサーバ構築">2.ブロック・ボリュームNFSサーバ構築</a></li><li><a href="#3-ブロックボリュームnfsサーバ確認">3. ブロック・ボリュームNFSサーバ確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-nfsサーバログイン">3-1. NFSサーバログイン</a></li><li><a href="#3-2-cloud-init完了確認">3-2. cloud-init完了確認</a></li><li><a href="#3-3-nfsサーバos再起動">3-3. NFSサーバOS再起動</a></li><li><a href="#3-4-nfsサーバファイルシステム確認">3-4. NFSサーバファイルシステム確認</a></li><li><a href="#3-5-nfsサーバnfsサービス確認">3-5. NFSサーバNFSサービス確認</a></li><li><a href="#3-6-nfsサーバlinuxカーネル確認">3-6. NFSサーバLinuxカーネル確認</a></li></ul></li><li><a href="#4-nfsクライアント設定">4. NFSクライアント設定</a></li><li><a href="#5-ファイルシステムベンチマーク">5. ファイルシステムベンチマーク</a><ul><li><a href="#5-0-ファイルシステムベンチマーク概要">5-0. ファイルシステムベンチマーク概要</a></li><li><a href="#5-1-nfsクライアント用インスタンス作成">5-1. NFSクライアント用インスタンス作成</a></li><li><a href="#5-2-openmpiインストール">5-2. OpenMPIインストール</a></li><li><a href="#5-3-io500インストール">5-3. IO500インストール</a></li><li><a href="#5-4-ファイルシステムベンチマーク実行">5-4. ファイルシステムベンチマーク実行</a></li></ul></li><li><a href="#6-スタックの破棄">6. スタックの破棄</a></li></ul>
+            </nav>
+          </aside>
+        
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+
+<h1 id="0-概要">0. 概要</h1>
+
+<p><strong>ブロック・ボリューム</strong> は、以下の特徴からHPCクラスタやGPUクラスタのファイル共有ストレージとして使用するNFSサーバのストレージに最適なサービスです。</p>
+
+<ul>
+  <li>同一 <strong>可用性ドメイン</strong> 内の異なる <strong>フォルト・ドメイン</strong> に複数のレプリカを持ち高い可用性を実現</li>
+  <li>ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現</li>
+</ul>
+
+<p>また、ベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E6.256</a></strong> は、200 GbpsのTCP/IP接続用ポートを1個搭載し、全二重通信の2系統のラインをそれぞれiSCSI接続の <strong>ブロック・ボリューム</strong> アクセス用途とNFSクライアントへのNFSサービス用途にフル活用することで、10GB/sを超えるスループットを持つコストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。</p>
+
+<p>OCIは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> も提供していますが、本チュートリアルのように <strong>ブロック・ボリューム</strong> とベア・メタル・シェイプ <strong>BM.Standard.E6.256</strong> を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 <strong>ファイル・ストレージ</strong> よりも格段にコストパフォーマンスを引き上げることが出来ます。<br />
+<strong>ファイル・ストレージ</strong> とブロック・ボリュームNFSサーバの比較詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
+
+<p>本チュートリアルは、 <strong>GitHub</strong> のパブリックレポジトリ（ <strong><a href="https://github.com/fwiw6430/tutorial_bvnfs_e6">tutorial_bvnfs_e6</a></strong> ）から公開されている <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> に読み込ませて作成する <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の <strong>Deployment target</strong> 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する <strong>IOR</strong> と <strong>mdtest</strong> で検証します。<br />
+この <strong>IOR</strong> と <strong>mdtest</strong> の検証結果は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較">2-1. コストパフォーマンスによる比較</a></strong> を参照してください。</p>
+
+<p><img src="architecture_diagram.png" alt="システム構成図" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">構成</th>
+      <th style="text-align: center">用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">ストレージ</td>
+      <td style="text-align: center"><strong>ブロック・ボリューム</strong><br />Min. 1 TB Balanced x 32</td>
+      <td style="text-align: center">ファイル共有ストレージ<br />ファイル格納領域</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">NFSサーバ</td>
+      <td style="text-align: center"><strong>BM.Standard.E6.256</strong> x 1<br /><strong>Oracle Linux</strong> 8.10</td>
+      <td style="text-align: center">NFSサーバ</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">プライベートエンドポイント</td>
+      <td style="text-align: center"><strong>リソース・マネージャ</strong><br />プライベートエンドポイント x 1</td>
+      <td style="text-align: center">NFSサーバ構築スクリプトを配布・起動する<br /><strong>Terraform</strong> プロビジョナー用エンドポイント</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">NFSクライアント</td>
+      <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible">VM.Standard.E6.Flex</a></strong> x 4<br /><strong>Oracle Linux</strong> 9.5</td>
+      <td style="text-align: center">ファイルシステムベンチマーク用<br />NFSクライアント</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>本チュートリアルで作成するブロック・ボリュームNFSサーバ構築用の <strong>スタック</strong> は、適用すると以下の処理を行います。</p>
+
+<ul>
+  <li><strong>仮想クラウド・ネットワーク</strong> と関連するネットワークリソースの作成（※1）</li>
+  <li><strong>ブロック・ボリューム</strong> の作成</li>
+  <li>NFSサーバ用インスタンスの作成</li>
+  <li>作成した <strong>ブロック・ボリューム</strong> をNFSサーバにアタッチ</li>
+  <li><strong>Terraform</strong> プロビジョナーでNFSサーバにSSHアクセスする際に使用するSSH鍵ペア作成・配布</li>
+  <li><strong>Terraform</strong> のfileプロビジョナーでNFSサーバにNFSサーバ構成用スクリプト（※2）を配布</li>
+  <li><strong>Terraform</strong> のremote-execプロビジョナーでNFSサーバ上でNFSサーバ構成用スクリプト（※2）を実行</li>
+  <li>構築したNFSサーバのホスト名・IPアドレス出力</li>
+</ul>
+
+<p>※1）既存の <strong>仮想クラウド・ネットワーク</strong> を活用することも可能で、この場合はこの <strong>仮想クラウド・ネットワーク</strong> が以下の条件を満たしているている必要があります。</p>
+
+<ul>
+  <li>NFSサーバ・NFSクライアント間接続とNFSサーバ・ <strong>ブロック・ボリューム</strong> 間iSCSI接続用のプライベートサブネットが存在する</li>
+  <li><strong>NATゲートウェイ</strong> と <strong>サービス・ゲートウェイ</strong> が存在する</li>
+  <li>プライベートサブネットに <strong>NATゲートウェイ</strong> と <strong>サービス・ゲートウェイ</strong> へのルーティングを適切に設定した <strong>ルート・テーブル</strong> が紐づいている</li>
+</ul>
+
+<p>※2）このスクリプト（ <strong>nfssrv_configure.sh</strong> ）は、NFSサーバのopcユーザのホームディレクトリに配置され、以下の処理を行います。</p>
+
+<ul>
+  <li><strong>ブロック・ボリューム</strong> のストレージに
+    <ul>
+      <li>ボリュームグループを作成</li>
+      <li>論理ボリュームをストライブ幅32（<strong>ブロック・ボリューム</strong> 数32に対応）で作成</li>
+      <li>XFSファイルシステムを作成</li>
+    </ul>
+  </li>
+  <li>作成したXFSファイルシステムを <strong>/mnt/bv</strong> にマウント</li>
+  <li>NFSサービスを以下の設定で起動
+    <ul>
+      <li>スレッド数256</li>
+      <li><strong>/mnt/bv</strong> をworld writableでエクスポート</li>
+    </ul>
+  </li>
+  <li><strong>Oracle Linux</strong> のカーネルを <strong>RedHat Compatible Kernel</strong> （以降 <strong>RHCK</strong> と呼称します。）に変更</li>
+</ul>
+
+<p>またこの <strong>スタック</strong> は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )を含み、 <strong>cloud-init</strong> がNFSサーバの作成時に以下の処理を行います。</p>
+
+<ul>
+  <li>タイムゾーンをJSTに変更</li>
+  <li><strong>firewalld</strong> 停止</li>
+  <li><strong>SELinux</strong> 無効化</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約1時間</p>
+
+<p><strong>前提条件 :</strong> ブロック・ボリュームNFSサーバを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
+
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+
+<hr />
+<h1 id="1-事前準備">1. 事前準備</h1>
+
+<h2 id="1-0-概要">1-0. 概要</h2>
+
+<p>本章は、ブロック・ボリュームNFSサーバを構築するにあたり事前に必要な以下リソースを作成します。</p>
+
+<ul>
+  <li><strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
+  <li><strong>IAMポリシー</strong></li>
+  <li><strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong></li>
+</ul>
+
+<h2 id="1-1-構成ソースプロバイダ作成">1-1. 構成ソース・プロバイダ作成</h2>
+
+<p>本章は、ひな型となる <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> スクリプトを <strong>GitHub</strong> パブリックレポジトリから取り込むための <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong> を作成します。</p>
+
+<p><strong>構成ソース・プロバイダ</strong> の作成は、 <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">ここ</a></strong> を参照してください。</p>
+
+<h2 id="1-2-iamポリシー作成">1-2. IAMポリシー作成</h2>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> からブロック・ボリュームNFSサーバを作成するために必要な <strong>IAMポリシー</strong> を作成します。</p>
+
+<p>OCIコンソールにログインし、 <strong>アイデンティティとセキュリティ</strong> → <strong>ポリシー</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下 <strong>xxxxコンパートメント内のポリシー</strong> 画面で、 <strong>ポリシーの作成</strong> ボタンをクリックします。<br />
+この際、 <strong>コンパートメント</strong> プルダウンメニューがブロック・ボリュームNFSサーバを作成する <strong>コンパートメント</strong> と異なる場合は、これを修正します。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ポリシーの作成</strong> 画面で、各フィールドに以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ul>
+  <li><strong>名前</strong> ： <strong>IAMポリシー</strong> に付与する名前</li>
+  <li><strong>説明</strong> ： <strong>IAMポリシー</strong> に付与する説明（用途等）</li>
+  <li><strong>ポリシー・ビルダー</strong> ： 作成する <strong>IAMポリシー</strong> を指定する以下構文（ <strong>手動エディタの表示</strong> ボタンをクリックして表示）</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>allow service compute_management to use tag-namespace <span class="k">in </span>compartment compartment_name
+allow service compute_management to manage compute-management-family <span class="k">in </span>compartment compartment_name
+allow service compute_management to <span class="nb">read </span>app-catalog-listing <span class="k">in </span>compartment compartment_name
+allow group group_name to manage all-resources <span class="k">in </span>compartment compartment_name
+</code></pre></div></div>
+
+<p>※4）<strong>コンパートメント</strong> 名は、自身のものに置き換えます。<br />
+※5）4行目の <strong>グループ</strong> 名は、自身のものに置き換えます。</p>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<h2 id="1-3-スタック作成">1-3. スタック作成</h2>
+
+<p>本章は、ブロック・ボリュームNFSサーバを構築するための <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。</p>
+
+<p>OCIコンソールにログインし、ブロック・ボリュームNFSサーバを作成するリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
+
+<ul>
+  <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
+  <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
+  <li><strong>構成ソース・プロバイダ :</strong> 先に作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
+  <li><strong>リポジトリ :</strong> <strong>tutorial_bvnfs_e6</strong></li>
+  <li><strong>ブランチ :</strong> <strong>master</strong></li>
+  <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
+  <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
+</ul>
+
+<p><img src="stack_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
+
+<ul>
+  <li><strong>General options</strong> フィールド
+    <ul>
+      <li><strong>Compartment :</strong> ブロック・ボリュームNFSサーバを作成する <strong>コンパートメント</strong></li>
+      <li><strong>Availability Domain :</strong> ブロック・ボリュームNFSサーバを作成する <strong>可用性ドメイン</strong></li>
+      <li><strong>SSH public key :</strong> NFSサーバにログインする際使用するSSH秘密鍵に対応する公開鍵<br />
+（公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能）</li>
+      <li><strong>Use existing VCN :</strong> 既存の <strong>仮想クラウド・ネットワーク</strong> を使用するかどうかを指定（デフォルト： <strong>仮想クラウド・ネットワーク</strong> を新規作成）<br />
+（既存の <strong>仮想クラウド・ネットワーク</strong> を使用する場合は、チェックすると表示されるVCN・Storageサブネット・NFSサブネットの各フィールドにOCIDを指定します。）</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="stack_page02.png" alt="画面ショット" /></p>
+
+<ul>
+  <li><strong>Block volume options</strong> フィールド
+    <ul>
+      <li><strong>Block volume total size :</strong> <strong>ブロック・ボリューム</strong> の総容量（最低：32,000GB）</li>
+    </ul>
+  </li>
+</ul>
+
+<p><img src="stack_page03.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page06.png" alt="画面ショット" /></p>
+
+<p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時に <strong>スタック</strong> の適用が開始され、ブロック・ボリュームNFSサーバの構築が始まりますが、このチュートリアルでは後の章で改めて <strong>スタック</strong> の適用を行います。</p>
+
+<p>これで、以下画面のとおりブロック・ボリュームNFSサーバ構築用 <strong>スタック</strong> が作成されました。</p>
+
+<p><img src="stack_page07.png" alt="画面ショット" /></p>
+
+<hr />
+<h1 id="2ブロックボリュームnfsサーバ構築">2.ブロック・ボリュームNFSサーバ構築</h1>
+
+<p>本章は、先に作成した <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を使用し、ブロック・ボリュームNFSサーバを構築します。</p>
+
+<p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page12.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page13.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
+
+<p><img src="stack_page14.png" alt="画面ショット" /></p>
+
+<p>表示される以下 <strong>ログ</strong> フィールドで、リソースの作成状況を確認します。</p>
+
+<p><img src="stack_page15.png" alt="画面ショット" /></p>
+
+<p>この適用が完了するまでの所要時間は、10分程度です。</p>
+
+<p>ステータスが <strong>成功</strong> となれば、ブロック・ボリュームNFSサーバの作成が完了しており、以下のように <strong>ログ</strong> フィールドの最後にNFSサーバのホスト名とIPアドレスが出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Outputs:
+NFS_server_instances_created <span class="o">=</span> <span class="o">{</span>
+  <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"nfs-srv"</span>
+  <span class="s2">"private_ip  "</span> <span class="o">=</span> <span class="s2">"10.0.3.206"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="3-ブロックボリュームnfsサーバ確認">3. ブロック・ボリュームNFSサーバ確認</h1>
+
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、作成されたブロック・ボリュームNFSサーバ環境を確認します。</p>
+
+<h2 id="3-1-nfsサーバログイン">3-1. NFSサーバログイン</h2>
+
+<p>NFSサーバは、プライベートサブネットに接続されているため、パブリックサブネットに接続されているBastionノードや、プライベートサブネットに接続するインスタンスへのSSH接続を提供する <strong>要塞</strong> を使用し、構築時に指定したSSH公開鍵に対応する秘密鍵を使用してopcユーザでSSHログインします。</p>
+
+<h2 id="3-2-cloud-init完了確認">3-2. cloud-init完了確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> は、NFSサーバが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをNFSサーバのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cloud-init status
+status: <span class="k">done</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
+
+<h2 id="3-3-nfsサーバos再起動">3-3. NFSサーバOS再起動</h2>
+
+<p>以下コマンドをNFSサーバのopcユーザで実行し、OSを再起動します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+</code></pre></div></div>
+
+<h2 id="3-4-nfsサーバファイルシステム確認">3-4. NFSサーバファイルシステム確認</h2>
+
+<p>以下コマンドをNFSサーバのopcユーザで実行し、 <strong>ブロック・ボリューム</strong> 上に作成したファイルシステムが <strong>/mnt/bv</strong> にマウントされ、そのサイズが指定したものになっていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">df</span> <span class="nt">-h</span> /mnt/bv
+Filesystem         Size  Used Avail Use% Mounted on
+/dev/mapper/bv-bv  xxxT  xxxG  xxxT   x% /mnt/bv
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-5-nfsサーバnfsサービス確認">3-5. NFSサーバNFSサービス確認</h2>
+
+<p>以下コマンドをNFSサーバのopcユーザで実行し、NFSサービスが起動しており <strong>ブロック・ボリューム</strong> 上に作成したファイルシステム（ <strong>/mnt/bv</strong> ）がエクスポートされていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemctl status nfs-server.service
+● nfs-server.service - NFS server and services
+     Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/nfs-server.service<span class="p">;</span> enabled<span class="p">;</span> preset: disabled<span class="o">)</span>
+    Drop-In: /run/systemd/generator/nfs-server.service.d
+             └─order-with-mounts.conf
+     Active: active <span class="o">(</span>exited<span class="o">)</span> since Thu 2024-10-03 12:22:18 JST<span class="p">;</span> 2h 29min ago
+       Docs: man:rpc.nfsd<span class="o">(</span>8<span class="o">)</span>
+             man:exportfs<span class="o">(</span>8<span class="o">)</span>
+   Main PID: 18857 <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+        CPU: 29ms
+
+Oct 03 12:22:18 nfs-srv systemd[1]: Starting NFS server and services...
+Oct 03 12:22:18 nfs-srv exportfs[18779]: exportfs: No host name given with /mnt/bv <span class="o">(</span>rw,sync,no_root_squa&gt;
+Oct 03 12:22:18 nfs-srv systemd[1]: Finished NFS server and services.
+<span class="nv">$ </span><span class="nb">sudo </span>exportfs
+/mnt/bv       	&lt;world&gt;
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-6-nfsサーバlinuxカーネル確認">3-6. NFSサーバLinuxカーネル確認</h2>
+
+<p>以下コマンドをNFSサーバのopcユーザで実行し、Linuxカーネルが <strong>RHCK</strong> になっていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">uname</span> <span class="nt">-r</span>
+4.18.0-553.47.1.el8_10.x86_64
+<span class="err">$</span>
+</code></pre></div></div>
+
+<hr />
+<h1 id="4-nfsクライアント設定">4. NFSクライアント設定</h1>
+
+<p>本章は、NFSサーバでエクスポートしている <strong>/mnt/bv</strong> をNFSクライアントでマウントします。</p>
+
+<p>以下コマンドをNFSクライアントのopcユーザで実行し、NFSサーバでエクスポートされている <strong>/mnt/bv</strong> を <strong>/mnt/nfs</strong> としてNFSマウントします。<br />
+なお、コマンド中の <strong>nfs_server_ip</strong> は、自身のNFSサーバのNFSプライベートサブネット側のIPアドレスにに置き換えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"nfs_server_ip:/mnt/bv /mnt/nfs nfs vers=3,defaults,noatime,nodiratime,bg,timeo=100,ac,actimeo=120,nocto,rsize=1048576,wsize=1048576,nolock,local_lock=none,proto=tcp,sec=sys,_netdev 0 0"</span> | <span class="nb">sudo tee</span> <span class="nt">-a</span> /etc/fstab
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /mnt/nfs
+<span class="nv">$ </span><span class="nb">sudo </span>mount /mnt/nfs
+</code></pre></div></div>
+
+<hr />
+<h1 id="5-ファイルシステムベンチマーク">5. ファイルシステムベンチマーク</h1>
+
+<h2 id="5-0-ファイルシステムベンチマーク概要">5-0. ファイルシステムベンチマーク概要</h2>
+
+<p>本章は、ファイルシステムベンチマークツールである <strong>IOR</strong> と <strong>mdtest</strong> をNFSクライアントからNFSファイルシステム領域に対して実行し、その性能を検証します。</p>
+
+<p><strong>IOR</strong> と <strong>mdtest</strong>は、複数のNFSクライアントからベンチマークを実行する際のNFSクライアント間通信にMPIを使用します。ここでは、 <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> を使用します。</p>
+
+<p>またここで使用する <strong>IOR</strong> と <strong>mdtest</strong> は、 <strong><a href="https://io500.org/">IO500</a></strong> に含まれるものを使用します。</p>
+
+<p>以上より、本章で実施するファイルシステムベンチマークは、以下の手順を経て行います。</p>
+
+<ul>
+  <li>NFSクライアント用インスタンス作成</li>
+  <li><strong>OpenMPI</strong> インストール</li>
+  <li><strong>IO500</strong> インストール</li>
+  <li>ファイルシステムベンチマーク実行</li>
+</ul>
+
+<h2 id="5-1-nfsクライアント用インスタンス作成">5-1. NFSクライアント用インスタンス作成</h2>
+
+<p>NFSクライアントとして使用する以下のインスタンスを作成します。</p>
+
+<ul>
+  <li>シェイプ ： <strong>VM.Standard.E6.Flex</strong> （100コア、1.1TBメモリ）</li>
+  <li>OS ： <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm">Oracle-Linux-9.5-2025.04.16-0</a></strong></li>
+  <li>インスタンス数 ：4</li>
+  <li>接続サブネット ：プライベートサブネット</li>
+</ul>
+
+<p>次に、これら4ノードのNFSクライアントで、 <strong><a href="#4-nfsクライアント設定">4. NFSクライアント設定</a></strong> の手順に従い、ブロック・ボリュームNFSサーバのストレージをNFSマウントします。</p>
+
+<h2 id="5-2-openmpiインストール">5-2. OpenMPIインストール</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> に従い、4ノードのNFSクライアントに <strong>OpenMPI</strong> をインストールします。</p>
+
+<p>次に、NFSクライアントのうちのどれか1ノードにopcユーザでSSHログインし、以下のように4ノードのNFSクライアントのホスト名を含むファイルを <strong>/mnt/nfs/io500</strong> ディレクトリに作成、これを使用してOpenMPIの稼働確認を行います。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
+/mnt/nfs/io500
+<span class="nv">$ </span><span class="nb">cat</span> ./hostlist.txt 
+inst-mf3vw-nfscli
+inst-ph77v-nfscli
+inst-lbjs1-nfscli
+inst-2cxtz-nfscli
+<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ./hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span>ssh <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nv">$hname</span> <span class="nb">hostname</span><span class="p">;</span> <span class="k">done</span>
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 4 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ./hostlist.txt /bin/hostname
+inst-mf3vw-nfscli
+inst-ph77v-nfscli
+inst-2cxtz-nfscli
+inst-lbjs1-nfscli
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="5-3-io500インストール">5-3. IO500インストール</h2>
+
+<p>以下コマンドをNFSクライアントのうちのどれか1ノードのopcユーザで実行し、IO500を <strong>/mnt/nfs/io500/io500</strong> ディレクトリににインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">pwd</span>
+/mnt/nfs/io500
+<span class="nv">$ </span>git clone https://github.com/IO500/io500.git <span class="nt">-b</span> io500-isc24
+<span class="nv">$ </span><span class="nb">cd</span> ./io500 <span class="o">&amp;&amp;</span> ./prepare.sh
+</code></pre></div></div>
+
+<p>なお、最後のコマンドが以下のメッセージでエラーするため、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ar: ./lz4/lib/<span class="k">*</span>.o: No such file or directory
+</code></pre></div></div>
+
+<p>インストールスクリプトを以下のように修正し、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff build/pfind/compile.sh_org build/pfind/compile.sh
+25c25
+&lt;   FILES+<span class="o">=</span>./lz4/lib/<span class="k">*</span>.o
+<span class="nt">---</span>
+<span class="o">&gt;</span>   FILES+<span class="o">=</span>./lz4/lib/<span class="k">*</span>.a
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>再度以下のコマンドを実行してインストールを完了します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./prepare.sh
+</code></pre></div></div>
+
+<h2 id="5-4-ファイルシステムベンチマーク実行">5-4. ファイルシステムベンチマーク実行</h2>
+
+<p><strong>IOR</strong> と <strong>mdtest</strong> を実行する以下のスクリプトを <strong>/mnt/nfs/io500/io500_easy.sh</strong> として作成し、これに実行権を与えます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nv">MPI_HOSTFILE</span><span class="o">=</span>/mnt/nfs/io500/hostlist.txt
+<span class="nv">IO500_BIN_PATH</span><span class="o">=</span>/mnt/nfs/io500/io500/bin
+<span class="nv">IO500_DATA_DIR</span><span class="o">=</span>/mnt/nfs/io500/datafiles
+<span class="c"># Set the number of times to repeat each test for mdtest and ior</span>
+<span class="nv">rep_count</span><span class="o">=</span>3
+<span class="c"># Set MPI parameter from arguments</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">=</span>~ ^[0-9]+<span class="nv">$ </span><span class="o">&amp;&amp;</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> <span class="o">=</span>~ ^[0-9]+<span class="nv">$ </span><span class="o">]]</span><span class="p">;</span> <span class="k">then
+  </span><span class="nv">num_proc_total</span><span class="o">=</span><span class="nv">$1</span>
+  <span class="nv">num_proc_pnode</span><span class="o">=</span><span class="nv">$2</span>
+<span class="k">else
+  </span><span class="nb">echo</span> <span class="s2">"Specify num. of MPI total processes as 1st argument and num. of processes per node as 2nd argument."</span>
+  <span class="nb">exit </span>1
+<span class="k">fi</span>
+<span class="c"># mdtest easy write</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 <span class="nv">$rep_count</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">name</span><span class="o">=</span><span class="s2">"try"</span><span class="nv">$i</span>
+  <span class="nb">echo</span> <span class="s2">"### Starting mdtest easy write </span><span class="nv">$name</span><span class="s2">"</span>
+  <span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy
+  <span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+  mpiexec <span class="nt">--mca</span> btl_base_warn_component_unused 0 <span class="nt">--mca</span> pml ob1 <span class="nt">-np</span> <span class="nv">$num_proc_total</span> <span class="nt">-npernode</span> <span class="nv">$num_proc_pnode</span> <span class="nt">-hostfile</span> <span class="nv">$MPI_HOSTFILE</span> <span class="nv">$IO500_BIN_PATH</span>/mdtest <span class="nt">-Y</span> <span class="nt">-C</span> <span class="nt">-F</span> <span class="nt">-P</span> <span class="nt">-d</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy <span class="nt">-n</span> 1000000 <span class="nt">-u</span> <span class="nt">-L</span> <span class="nt">-a</span> POSIX <span class="nt">-x</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy-stonewall <span class="nt">-N</span> 1 <span class="nt">-W</span> 300
+<span class="k">done</span>
+<span class="c"># IOR easy write</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 <span class="nv">$rep_count</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">name</span><span class="o">=</span><span class="s2">"try"</span><span class="nv">$i</span>
+  <span class="nb">echo
+  echo
+  echo</span> <span class="s2">"### Starting IOR easy write </span><span class="nv">$name</span><span class="s2">"</span>
+  <span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/ior_easy
+  <span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+  mpiexec <span class="nt">--mca</span> btl_base_warn_component_unused 0 <span class="nt">--mca</span> pml ob1 <span class="nt">-np</span> <span class="nv">$num_proc_total</span> <span class="nt">-npernode</span> <span class="nv">$num_proc_pnode</span> <span class="nt">-hostfile</span> <span class="nv">$MPI_HOSTFILE</span> <span class="nv">$IO500_BIN_PATH</span>/ior <span class="nt">-w</span>  <span class="nt">-a</span> POSIX <span class="nt">-t</span> 2m <span class="nt">-v</span> <span class="nt">-b</span> 9920000m <span class="nt">-F</span> <span class="nt">-i</span> 1 <span class="nt">-C</span> <span class="nt">-Q</span> 1 <span class="nt">-g</span> <span class="nt">-G</span> 27 <span class="nt">-k</span> <span class="nt">-e</span> <span class="nt">-o</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/ior_easy <span class="nt">-O</span> <span class="nv">stoneWallingStatusFile</span><span class="o">=</span><span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/stonewall <span class="nt">-O</span> <span class="nv">stoneWallingWearOut</span><span class="o">=</span>1 <span class="nt">-D</span> 300
+<span class="k">done</span>
+<span class="c"># IOR easy read</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 <span class="nv">$rep_count</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">name</span><span class="o">=</span><span class="s2">"try"</span><span class="nv">$i</span>
+  <span class="nb">echo
+  echo
+  echo</span> <span class="s2">"### Starting IOR easy read </span><span class="nv">$name</span><span class="s2">"</span>
+  <span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+  mpiexec <span class="nt">--mca</span> btl_base_warn_component_unused 0 <span class="nt">--mca</span> pml ob1 <span class="nt">-np</span> <span class="nv">$num_proc_total</span> <span class="nt">-npernode</span> <span class="nv">$num_proc_pnode</span> <span class="nt">-hostfile</span> <span class="nv">$MPI_HOSTFILE</span> <span class="nv">$IO500_BIN_PATH</span>/ior <span class="nt">-r</span> <span class="nt">-R</span>  <span class="nt">-a</span> POSIX <span class="nt">-t</span> 2m <span class="nt">-v</span> <span class="nt">-b</span> 9920000m <span class="nt">-F</span> <span class="nt">-i</span> 1 <span class="nt">-C</span> <span class="nt">-Q</span> 1 <span class="nt">-g</span> <span class="nt">-G</span> 27 <span class="nt">-k</span> <span class="nt">-e</span> <span class="nt">-o</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/ior_easy <span class="nt">-O</span> <span class="nv">stoneWallingStatusFile</span><span class="o">=</span><span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/stonewall
+<span class="k">done</span>
+<span class="c"># mdtest easy stat</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 <span class="nv">$rep_count</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">name</span><span class="o">=</span><span class="s2">"try"</span><span class="nv">$i</span>
+  <span class="nb">echo
+  echo
+  echo</span> <span class="s2">"### Starting mdtest easy stat </span><span class="nv">$name</span><span class="s2">"</span>
+  <span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+  mpiexec <span class="nt">--mca</span> btl_base_warn_component_unused 0 <span class="nt">--mca</span> pml ob1 <span class="nt">-np</span> <span class="nv">$num_proc_total</span> <span class="nt">-npernode</span> <span class="nv">$num_proc_pnode</span> <span class="nt">-hostfile</span> <span class="nv">$MPI_HOSTFILE</span> <span class="nv">$IO500_BIN_PATH</span>/mdtest <span class="nt">-T</span> <span class="nt">-F</span> <span class="nt">-P</span> <span class="nt">-d</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy <span class="nt">-n</span> 1000000 <span class="nt">-u</span> <span class="nt">-L</span> <span class="nt">-a</span> POSIX <span class="nt">-x</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy-stonewall <span class="nt">-N</span> 1
+<span class="k">done</span>
+<span class="c"># mdtest easy delete</span>
+<span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 <span class="nv">$rep_count</span><span class="sb">`</span>
+<span class="k">do
+  </span><span class="nv">name</span><span class="o">=</span><span class="s2">"try"</span><span class="nv">$i</span>
+  <span class="nb">echo
+  echo
+  echo</span> <span class="s2">"### Starting mdtest easy delete </span><span class="nv">$name</span><span class="s2">"</span>
+  <span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+  mpiexec <span class="nt">--mca</span> btl_base_warn_component_unused 0 <span class="nt">--mca</span> pml ob1 <span class="nt">-np</span> <span class="nv">$num_proc_total</span> <span class="nt">-npernode</span> <span class="nv">$num_proc_pnode</span> <span class="nt">-hostfile</span> <span class="nv">$MPI_HOSTFILE</span> <span class="nv">$IO500_BIN_PATH</span>/mdtest <span class="nt">-r</span> <span class="nt">-F</span> <span class="nt">-P</span> <span class="nt">-d</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy <span class="nt">-n</span> 1000000 <span class="nt">-u</span> <span class="nt">-L</span> <span class="nt">-a</span> POSIX <span class="nt">-x</span> <span class="nv">$IO500_DATA_DIR</span>/<span class="nv">$name</span>/mdt_easy-stonewall <span class="nt">-N</span> 1
+<span class="k">done
+</span><span class="nb">date</span> <span class="s1">'+%Y/%m/%d %T'</span>
+</code></pre></div></div>
+
+<p>このスクリプトは、 <strong>mdtest</strong> のcreate, stat, deleteと <strong>IOR</strong> のwrite, readを各3回実行し、NFSファイルシステムのメタデータ性能とスループット性能を計測します。</p>
+
+<p>次に、以下コマンドをNFSクライアントのうちの1ノードのopcユーザで実行し、スクリプトの出力から性能値を確認します。<br />
+この実行に要する時間は、一時間程度です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>/mnt/nfs/io500/io500_easy.sh 256 64
+</code></pre></div></div>
+
+<hr />
+<h1 id="6-スタックの破棄">6. スタックの破棄</h1>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を破棄することで、構築したブロック・ボリュームNFSサーバ環境を削除します。</p>
+
+<p>以降の手順を実施すると、本チュートリアルで作成したOCI上のリソースをすべて削除することになるため、 <strong>ブロック・ボリューム上に作成したファイルが全て消失</strong> します。</p>
+
+<p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page16.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page17.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
+
+<p><img src="stack_page18.png" alt="画面ショット" /></p>
+
+<p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
+
+<p><img src="stack_page15.png" alt="画面ショット" /></p>
+
+<p>この破棄が完了するまでの所要時間は、5分程度です。</p>
+
+<p>ステータスが <strong>成功</strong> となれば、ブロック・ボリュームNFSサーバ環境の削除が完了しています。</p>
+
+<p>これで、このチュートリアルは終了です。</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-05-22T00:14:21+09:00">May 22, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%81%A7%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%EF%BC%88BM.Standard.E6.256%E7%B7%A8%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-nfs-server-e6%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-nfs-server-e6%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-e6/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%81%A7%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8B%EF%BC%88BM.Standard.E6.256%E7%B7%A8%EF%BC%89%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fspinup-nfs-server-e6%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/spinup-nfs-server/" class="pagination--pager" title="ブロック・ボリュームでファイル共有ストレージを構築する（BM.Optimized3.36編）">前へ</a>
+    
+    
+      <a href="/ocitutorials/hpc/spinup-nfs-server-nvme/" class="pagination--pager" title="短期保存データ用高速ファイル共有ストレージを構築する">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
