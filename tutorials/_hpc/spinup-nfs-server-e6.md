@@ -1,11 +1,11 @@
 ---
-title: "ブロック・ボリュームでファイル共有ストレージを構築する（BM.Optimized3.36編）"
-excerpt: "ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Optimized3.36を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。"
-order: "1320"
+title: "ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）"
+excerpt: "ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Standard.E6.256を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。"
+order: "1321"
 layout: single
 header:
-  teaser: "/hpc/spinup-nfs-server/architecture_diagram.png"
-  overlay_image: "/hpc/spinup-nfs-server/architecture_diagram.png"
+  teaser: "/hpc/spinup-nfs-server-e6/architecture_diagram.png"
+  overlay_image: "/hpc/spinup-nfs-server-e6/architecture_diagram.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
 #link: https://community.oracle.com/tech/welcome/discussion/4474261/
 ---
@@ -22,20 +22,20 @@ table, th, td {
 - 同一 **可用性ドメイン** 内の異なる **フォルト・ドメイン** に複数のレプリカを持ち高い可用性を実現
 - ディスク装置にNVMe SSDを採用することで高いスループットとIOPSを実現
 
-また、ベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** は、50 GbpsのTCP/IP接続用ポートを2個搭載し、それぞれをiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途に割当てることで、コストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
+また、ベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** は、200 GbpsのTCP/IP接続用ポートを1個搭載し、全二重通信の2系統のラインをそれぞれiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途にフル活用することで、10GB/sを超えるスループットを持つコストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
 
-OCIは、NFSのマネージドサービスである **ファイル・ストレージ** も提供していますが、本チュートリアルのように **ブロック・ボリューム** とベア・メタル・シェイプ **BM.Optimized3.36** を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 **ファイル・ストレージ** よりも格段にコストパフォーマンスを引き上げることが出来ます。  
+OCIは、NFSのマネージドサービスである **ファイル・ストレージ** も提供していますが、本チュートリアルのように **ブロック・ボリューム** とベア・メタル・シェイプ **BM.Standard.E6.256** を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 **ファイル・ストレージ** よりも格段にコストパフォーマンスを引き上げることが出来ます。  
 **ファイル・ストレージ** とブロック・ボリュームNFSサーバの比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
-本チュートリアルは、 **GitHub** のパブリックレポジトリ（ **[tutorial_bvnfs](https://github.com/fwiw6430/tutorial_bvnfs)** ）から公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の **Deployment target** 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する **IOR** と **mdtest** で検証します。  
+本チュートリアルは、 **GitHub** のパブリックレポジトリ（ **[tutorial_bvnfs_e6](https://github.com/fwiw6430/tutorial_bvnfs_e6)** ）から公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の **Deployment target** 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する **IOR** と **mdtest** で検証します。  
 この **IOR** と **mdtest** の検証結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。
 
 ![システム構成図](architecture_diagram.png)
 
 |               | 構成                                               | 用途                                                     |
 | :-----------: | :----------------------------------------------: | :----------------------------------------------------: |
-| ストレージ         | **ブロック・ボリューム**<br>Min. 1 TB Balanced x 15        | ファイル共有ストレージ<br>ファイル格納領域                                |
-| NFSサーバ        | **BM.Optimized3.36** x 1<br>**Oracle Linux** 8.10 | NFSサーバ                                                 |
+| ストレージ         | **ブロック・ボリューム**<br>Min. 1 TB Balanced x 32        | ファイル共有ストレージ<br>ファイル格納領域                                |
+| NFSサーバ        | **BM.Standard.E6.256** x 1<br>**Oracle Linux** 8.10 | NFSサーバ                                                 |
 | プライベートエンドポイント | **リソース・マネージャ**<br>プライベートエンドポイント x 1              | NFSサーバ構築スクリプトを配布・起動する<br>**Terraform** プロビジョナー用エンドポイント |
 | NFSクライアント     | **[VM.Standard.E6.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** x 4<br>**Oracle Linux** 9.5 | ファイルシステムベンチマーク用<br>NFSクライアント                           |
 
@@ -46,28 +46,25 @@ OCIは、NFSのマネージドサービスである **ファイル・ストレ�
 - NFSサーバ用インスタンスの作成
 - 作成した **ブロック・ボリューム** をNFSサーバにアタッチ
 - **Terraform** プロビジョナーでNFSサーバにSSHアクセスする際に使用するSSH鍵ペア作成・配布
-- **Terraform** のfileプロビジョナーでNFSサーバにNFSサーバ構成用スクリプト（※3）を配布
-- **Terraform** のremote-execプロビジョナーでNFSサーバ上でNFSサーバ構成用スクリプト（※3）を実行
+- **Terraform** のfileプロビジョナーでNFSサーバにNFSサーバ構成用スクリプト（※2）を配布
+- **Terraform** のremote-execプロビジョナーでNFSサーバ上でNFSサーバ構成用スクリプト（※2）を実行
 - 構築したNFSサーバのホスト名・IPアドレス出力
 
 ※1）既存の **仮想クラウド・ネットワーク** を活用することも可能で、この場合はこの **仮想クラウド・ネットワーク** が以下の条件を満たしているている必要があります。
 
-- NFSサーバ・NFSクライアント間接続用NFSプライベートサブネットが存在する（※2）
-- NFSサーバ・ **ブロック・ボリューム** 間iSCSI接続用Storageプライベートサブネットが存在する（※2）
+- NFSサーバ・NFSクライアント間接続とNFSサーバ・ **ブロック・ボリューム** 間iSCSI接続用のプライベートサブネットが存在する
 - **NATゲートウェイ** と **サービス・ゲートウェイ** が存在する
-- 各プライベートサブネットに **NATゲートウェイ** と **サービス・ゲートウェイ** へのルーティングを適切に設定した **ルート・テーブル** が紐づいている
+- プライベートサブネットに **NATゲートウェイ** と **サービス・ゲートウェイ** へのルーティングを適切に設定した **ルート・テーブル** が紐づいている
 
-※2）それぞれ独立したサブネットである必要があります。
-
-※3）このスクリプト（ **nfssrv_configure.sh** ）は、NFSサーバのopcユーザのホームディレクトリに配置され、以下の処理を行います。
+※2）このスクリプト（ **nfssrv_configure.sh** ）は、NFSサーバのopcユーザのホームディレクトリに配置され、以下の処理を行います。
 
 - **ブロック・ボリューム** のストレージに
   - ボリュームグループを作成
-  - 論理ボリュームをストライブ幅15（**ブロック・ボリューム** 数15に対応）で作成
+  - 論理ボリュームをストライブ幅32（**ブロック・ボリューム** 数32に対応）で作成
   - XFSファイルシステムを作成
 - 作成したXFSファイルシステムを **/mnt/bv** にマウント
 - NFSサービスを以下の設定で起動
-  - スレッド数64
+  - スレッド数256
   - **/mnt/bv** をworld writableでエクスポート
 - **Oracle Linux** のカーネルを **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）に変更
 
@@ -144,7 +141,7 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
 - **Terraformの構成のオリジン :** ソース・コード制御システム
 - **ソースコード管理タイプ :** **GitHub**
 - **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
-- **リポジトリ :** **tutorial_bvnfs**
+- **リポジトリ :** **tutorial_bvnfs_e6**
 - **ブランチ :** **master**
 - **名前 :** スタックに付与する名前（任意）
 - **説明 :** スタックに付与する説明（任意）
@@ -164,7 +161,7 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
 ![画面ショット](stack_page02.png)
 
 - **Block volume options** フィールド
-  - **Block volume total size :** **ブロック・ボリューム** の総容量（最低：15,000GB）
+  - **Block volume total size :** **ブロック・ボリューム** の総容量（最低：32,000GB）
 
 ![画面ショット](stack_page03.png)
 
@@ -199,7 +196,7 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
 
 ![画面ショット](stack_page15.png)
 
-この適用が完了するまでの所要時間は、5分程度です。
+この適用が完了するまでの所要時間は、10分程度です。
 
 ステータスが **成功** となれば、ブロック・ボリュームNFSサーバの作成が完了しており、以下のように **ログ** フィールドの最後にNFSサーバのホスト名とIPアドレスが出力されます。
 
@@ -328,7 +325,7 @@ NFSクライアントとして使用する以下のインスタンスを作成�
 - シェイプ ： **VM.Standard.E6.Flex** （100コア、1.1TBメモリ）
 - OS ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
 - インスタンス数 ：4
-- 接続サブネット ：NFSプライベートサブネット
+- 接続サブネット ：プライベートサブネット
 
 次に、これら4ノードのNFSクライアントで、 **[4. NFSクライアント設定](#4-nfsクライアント設定)** の手順に従い、ブロック・ボリュームNFSサーバのストレージをNFSマウントします。
 
@@ -467,7 +464,7 @@ date '+%Y/%m/%d %T'
 この実行に要する時間は、一時間程度です。
 
 ```sh
-$ /mnt/nfs/io500/io500_easy.sh 64 16
+$ /mnt/nfs/io500/io500_easy.sh 256 64
 ```
 
 ***
@@ -493,7 +490,7 @@ $ /mnt/nfs/io500/io500_easy.sh 64 16
 
 ![画面ショット](stack_page15.png)
 
-この破棄が完了するまでの所要時間は、3分程度です。
+この破棄が完了するまでの所要時間は、5分程度です。
 
 ステータスが **成功** となれば、ブロック・ボリュームNFSサーバ環境の削除が完了しています。
 
