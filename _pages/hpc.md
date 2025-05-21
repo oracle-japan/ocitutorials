@@ -159,7 +159,8 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | 標準FSS                        | **[ファイル・ストレージで<br>ファイル共有ストレージを<br>構築する](/ocitutorials/hpc/spinup-nfs-server-fss/)**                   | 長期保存データ         | 120 MiB/s（※8）      | **ファイル・ストレージ** が<br>提供するバックアップ機能<br>（※11）                                      |
 | 高性能FSS                       | **[ファイル・ストレージで<br>ファイル共有ストレージを<br>構築する](/ocitutorials/hpc/spinup-nfs-server-fss/)**                   | 長期保存データ         | 10 GiB/s（※8）       | **ファイル・ストレージ** が<br>提供するバックアップ機能<br>（※11）                                      |
 | **File Storage with Lustre** | **[File Storage with Lustre<br>でファイル共有ストレージ<br>を構築する](/ocitutorials/hpc/spinup-lustre-server-fswl/)** | 長期保存データ         | 3.9 - 25 GB/s（※9）  | -<br>（※12）                                                                          |
-| ブロック・ボリューム<br>NFSサーバ         | **[ブロック・ボリュームで<br>ファイル共有ストレージを<br>構築する](/ocitutorials/hpc/spinup-nfs-server/)**                       | 中期保存データ         | 5 GiB/s（※10）       | **[Rclone](https://rclone.org/)** を使用した<br> **オブジェクト・ストレージ** への<br>バックアップ（※13） |
+| 標準ブロック・ボリューム<br>NFSサーバ         | **[ブロック・ボリュームで<br>ファイル共有ストレージを<br>構築する<br>（BM.Optimized3.36編）](/ocitutorials/hpc/spinup-nfs-server/)**                       | 中期保存データ         | 5 GiB/s（※10）       | **[Rclone](https://rclone.org/)** を使用した<br> **オブジェクト・ストレージ** への<br>バックアップ（※13） |
+| 高性能ブロック・ボリューム<br>NFSサーバ         | **[ブロック・ボリュームで<br>ファイル共有ストレージを<br>構築する<br>（BM.Standard.E6.256編）](/ocitutorials/hpc/spinup-nfs-server-e6/)**                       | 中期保存データ         | 10 GiB/s（※10）       | **[Rclone](https://rclone.org/)** を使用した<br> **オブジェクト・ストレージ** への<br>バックアップ（※13） |
 | DenceIO<br>NFSサーバ            | **[短期保存データ用<br>高速ファイル共有ストレージ<br>を構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)**                   | 短期保存データ         | 10 GiB/s（※10）      | **[Rclone](https://rclone.org/)** を使用した<br> **オブジェクト・ストレージ** への<br>バックアップ（※13） |
 
 ※7）対象の構築手法が提供するデータ可用性レベルに応じて分類しています。（データ可用性が低いほど短期保存データ用ファイル共有ストレージに分類）  
