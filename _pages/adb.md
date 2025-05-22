@@ -169,7 +169,10 @@ toc: true
     
 + **[404:クラウド・リンクによるデータ共有をしてみよう](/ocitutorials/adb/adb404-cloud-link){:target="_blank"}**  
     * クラウド・リンクを使用したデータの共有手順をご紹介します。
-    
+
++ **[405: ライブ共有を使ってみよう](/ocitutorials/adb/adb405-live-share){:target="_blank"}**  
+    * この共有では、受信者はOracle表またはビューから直接、最新のデータにアクセスします。 
+
 ## 運用管理編
 
 + **[501: OCICLIを利用したインスタンス操作](/ocitutorials/adb/adb501-ocicli){:target="_blank"}**

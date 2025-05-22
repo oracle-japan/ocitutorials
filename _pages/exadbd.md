@@ -47,6 +47,13 @@ OCIであればExadataもサブスクリプションで使えます。インス�
 
 + **[108: Data Guardを構成しよう](/ocitutorials/exadbd/exadb-d108-dataguard/){:target="_blank"}**
 
++ **[109: ExaDB-DにAutonomous Recovery Service (RCV/ZRCV) をセットアップしよう](/ocitutorials/exadbd/exadb-d109-zrcv/){:target="_blank"}**
+
++ **[110:ExaDB-Dのスタンバイ・データベースからバックアップを取得およびリストアしてみよう](/ocitutorials/exadbd/exadb-d110-dataguard-standby-bkup/){:target="_blank"}**
+
++ **[111:ExaDB-DでZRCVの長期保管バックアップ（LTR）を作成してみよう](/ocitutorials/exadbd/exadb-d111-ltr/){:target="_blank"}**
+
+
 <br/>
 
 **Database編のチュートリアル一覧に[もどる](/ocitutorials/database/){:target="_blank"}**

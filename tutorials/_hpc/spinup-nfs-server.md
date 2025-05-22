@@ -1,6 +1,6 @@
 ---
-title: "ブロック・ボリュームでファイル共有ストレージを構築する"
-excerpt: "ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロックストレージサービスであるブロック・ボリュームを使用するコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。"
+title: "ブロック・ボリュームでファイル共有ストレージを構築する（BM.Optimized3.36編）"
+excerpt: "ブロック・ボリュームでファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、ブロック・ボリュームとベアメタルシェイプのBM.Optimized3.36を組合せたコストパフォーマンスに優れるNFSファイル共有ストレージを、OCIコンソールから簡単に構築することが出来るようになります。"
 order: "1320"
 layout: single
 header:
@@ -35,9 +35,9 @@ OCIは、NFSのマネージドサービスである **ファイル・ストレ�
 |               | 構成                                               | 用途                                                     |
 | :-----------: | :----------------------------------------------: | :----------------------------------------------------: |
 | ストレージ         | **ブロック・ボリューム**<br>Min. 1 TB Balanced x 15        | ファイル共有ストレージ<br>ファイル格納領域                                |
-| NFSサーバ        | **BM.Optimized3.36** x 1<br>**Oracle Linux** 9.4 | NFSサーバ                                                 |
+| NFSサーバ        | **BM.Optimized3.36** x 1<br>**Oracle Linux** 8.10 | NFSサーバ                                                 |
 | プライベートエンドポイント | **リソース・マネージャ**<br>プライベートエンドポイント x 1              | NFSサーバ構築スクリプトを配布・起動する<br>**Terraform** プロビジョナー用エンドポイント |
-| NFSクライアント     | **VM.Standard2.24** x 4<br>**Oracle Linux** 8.10 | ファイルシステムベンチマーク用<br>NFSクライアント                           |
+| NFSクライアント     | **[VM.Standard.E6.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** x 4<br>**Oracle Linux** 9.5 | ファイルシステムベンチマーク用<br>NFSクライアント                           |
 
 本チュートリアルで作成するブロック・ボリュームNFSサーバ構築用の **スタック** は、適用すると以下の処理を行います。
 
@@ -69,7 +69,7 @@ OCIは、NFSのマネージドサービスである **ファイル・ストレ�
 - NFSサービスを以下の設定で起動
   - スレッド数64
   - **/mnt/bv** をworld writableでエクスポート
-
+- **Oracle Linux** のカーネルを **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）に変更
 
 またこの **スタック** は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がNFSサーバの作成時に以下の処理を行います。
 
@@ -124,8 +124,8 @@ allow service compute_management to read app-catalog-listing in compartment comp
 allow group group_name to manage all-resources in compartment compartment_name
 ```
 
-※1）**コンパートメント** 名は、自身のものに置き換えます。  
-※2）4行目の **グループ** 名は、自身のものに置き換えます。  
+※4）**コンパートメント** 名は、自身のものに置き換えます。  
+※5）4行目の **グループ** 名は、自身のものに置き換えます。  
 
 ![画面ショット](console_page02.png)
 
@@ -278,6 +278,16 @@ $ sudo exportfs
 $
 ```
 
+## 3-6. NFSサーバLinuxカーネル確認
+
+以下コマンドをNFSサーバのopcユーザで実行し、Linuxカーネルが **RHCK** になっていることを確認します。
+
+```sh
+$ uname -r
+4.18.0-553.47.1.el8_10.x86_64
+$
+```
+
 ***
 # 4. NFSクライアント設定
 
@@ -315,8 +325,8 @@ $ sudo mount /mnt/nfs
 
 NFSクライアントとして使用する以下のインスタンスを作成します。
 
-- シェイプ ： **VM.Standard2.24**
-- OS ： **Oracle Linux** 8.10（Oracle-Linux-8.10-2024.08.29-0 UEK）
+- シェイプ ： **VM.Standard.E6.Flex** （100コア、1.1TBメモリ）
+- OS ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
 - インスタンス数 ：4
 - 接続サブネット ：NFSプライベートサブネット
 
@@ -324,7 +334,7 @@ NFSクライアントとして使用する以下のインスタンスを作成�
 
 ## 5-2. OpenMPIインストール
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、4ノードのNFSクライアントに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** に従い、4ノードのNFSクライアントに **OpenMPI** をインストールします。
 
 次に、NFSクライアントのうちのどれか1ノードにopcユーザでSSHログインし、以下のように4ノードのNFSクライアントのホスト名を含むファイルを **/mnt/nfs/io500** ディレクトリに作成、これを使用してOpenMPIの稼働確認を行います。
 
@@ -336,6 +346,7 @@ inst-mf3vw-nfscli
 inst-ph77v-nfscli
 inst-lbjs1-nfscli
 inst-2cxtz-nfscli
+$ for hname in `cat ./hostlist.txt`; do ssh -oStrictHostKeyChecking=accept-new $hname hostname; done
 $ mpirun -n 4 -N 1 -hostfile ./hostlist.txt /bin/hostname
 inst-mf3vw-nfscli
 inst-ph77v-nfscli
@@ -349,11 +360,32 @@ $
 以下コマンドをNFSクライアントのうちのどれか1ノードのopcユーザで実行し、IO500を **/mnt/nfs/io500/io500** ディレクトリににインストールします。
 
 ```sh
-$ sudo yum install -y git autoconf automake
 $ pwd
 /mnt/nfs/io500
-$ git clone https://github.com/IO500/io500.git -b io500-isc20
-$ cd io500
+$ git clone https://github.com/IO500/io500.git -b io500-isc24
+$ cd ./io500 && ./prepare.sh
+```
+
+なお、最後のコマンドが以下のメッセージでエラーするため、
+
+```sh
+ar: ./lz4/lib/*.o: No such file or directory
+```
+
+インストールスクリプトを以下のように修正し、
+
+```sh
+$ diff build/pfind/compile.sh_org build/pfind/compile.sh
+25c25
+<   FILES+=./lz4/lib/*.o
+---
+>   FILES+=./lz4/lib/*.a
+$
+```
+
+再度以下のコマンドを実行してインストールを完了します。
+
+```sh
 $ ./prepare.sh
 ```
 
@@ -389,6 +421,8 @@ done
 for i in `seq 1 $rep_count`
 do
   name="try"$i
+  echo
+  echo
   echo "### Starting IOR easy write $name"
   mkdir -p $IO500_DATA_DIR/$name/ior_easy
   date '+%Y/%m/%d %T'
@@ -398,6 +432,8 @@ done
 for i in `seq 1 $rep_count`
 do
   name="try"$i
+  echo
+  echo
   echo "### Starting IOR easy read $name"
   date '+%Y/%m/%d %T'
   mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/ior -r -R  -a POSIX -t 2m -v -b 9920000m -F -i 1 -C -Q 1 -g -G 27 -k -e -o $IO500_DATA_DIR/$name/ior_easy -O stoneWallingStatusFile=$IO500_DATA_DIR/$name/stonewall
@@ -406,6 +442,8 @@ done
 for i in `seq 1 $rep_count`
 do
   name="try"$i
+  echo
+  echo
   echo "### Starting mdtest easy stat $name"
   date '+%Y/%m/%d %T'
   mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -T -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
@@ -414,6 +452,8 @@ done
 for i in `seq 1 $rep_count`
 do
   name="try"$i
+  echo
+  echo
   echo "### Starting mdtest easy delete $name"
   date '+%Y/%m/%d %T'
   mpiexec --mca btl_base_warn_component_unused 0 --mca pml ob1 -np $num_proc_total -npernode $num_proc_pnode -hostfile $MPI_HOSTFILE $IO500_BIN_PATH/mdtest -r -F -P -d $IO500_DATA_DIR/$name/mdt_easy -n 1000000 -u -L -a POSIX -x $IO500_DATA_DIR/$name/mdt_easy-stonewall -N 1
@@ -427,9 +467,7 @@ date '+%Y/%m/%d %T'
 この実行に要する時間は、一時間程度です。
 
 ```sh
-$ pwd
-/mnt/nfs/io500
-$ ./io500_easy.sh 16 4
+$ /mnt/nfs/io500/io500_easy.sh 64 16
 ```
 
 ***

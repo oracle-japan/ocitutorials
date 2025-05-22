@@ -526,10 +526,12 @@ Database Actionsからのユーザー作成方法については、[101: ADBイ�
 Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。
   ```sql
   grant connect, ctxapp, dwrole to docuser;
-  grant execute on DBMS_CLOUD_AI to docuser;
   grant execute on DBMS_VECTOR to docuser;
   grant execute on DBMS_VECTOR_CHAIN to docuser;
-  
+  ```
+
+以下を実行して、DOCUSERにホスト・アクセス権限を付与します。
+  ```sql
   BEGIN
     DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
       host => '*',

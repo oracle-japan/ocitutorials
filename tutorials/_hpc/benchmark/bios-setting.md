@@ -1,7 +1,7 @@
 ---
 title: "パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法"
 excerpt: "ベアメタルインスタンスは、デプロイする際にBIOSの設定を指定することが可能です。これらの設定は、NPS（NUMA nodes per socket）やSMT（Simultanious Multi Threading）といった、当該インスタンスの性能に影響するものが少なくありません。本パフォーマンス関連Tipsは、これらのBIOS設定を指定してHPC/GPUクラスタを構築する方法を解説します。"
-order: "221"
+order: "2201"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)

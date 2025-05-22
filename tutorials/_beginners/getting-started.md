@@ -31,7 +31,7 @@ Oracle Cloud Infrastructure を使い始めるにあたって、コンソール�
 
 # 1. サポートされるブラウザの確認
 
-このチュートリアルでは、Oracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。
+このチュートリアルではOracle Cloud Infrastructure のコンソール画面からの操作を中心に作業を行います。
 
 [サポートされるブラウザ](https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/signingin.htm#Supporte)を確認し、いずれかのブラウザをローカル環境にインストールしてください。
 
