@@ -45,6 +45,8 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 ## Database Management
 + **[OCI Base Database ServiceでDatabase Managementを有効化する](/ocitutorials/management/dbcs-database-management/)**
 
++ **[OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする](/ocitutorials/management/database-management_tuning-advisor/)**
+
 ## Operations Insights
 + **[OCI Base Database ServiceでOperations Insightsを有効化する](/ocitutorials/management/dbcs_operations_insights/)**
 
