@@ -1,0 +1,720 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.1 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Database ManagementにはSQLチューニング・アドバイザの機能があります。SQLのチューニング方法に関するアドバイスや推奨事項を得ることができます。またアドバイスされた推奨事項をSQLチューニング・アドバイザの画面から実装できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/management/database-management_tuning-advisor/">
+
+
+  <meta property="og:description" content="OCI Database ManagementにはSQLチューニング・アドバイザの機能があります。SQLのチューニング方法に関するアドバイスや推奨事項を得ることができます。またアドバイスされた推奨事項をSQLチューニング・アドバイザの画面から実装できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-05-23T11:51:26+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/management/database-management_tuning-advisor/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Database ManagementにはSQLチューニング・アドバイザの機能があります。SQLのチューニング方法に関するアドバイスや推奨事項を得ることができます。またアドバイスされた推奨事項をSQLチューニング・アドバイザの画面から実装できます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/management" itemprop="item"><span itemprop="name">Management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">監視・管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_detect_rule/">検出ルールを作成してアラート通知を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_logcollection4externalhost/">Logging Analytics：OCI外部のホストからOSログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_logcollection4ocivm/">Logging Analytics：OCIコンピュートからOSのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logging_datadog/">OCIのログをDataDogで監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_basedb/">Stack Monitoring を使用してBaseDBのメトリックを可視化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_install/">Stack Monitoring を使用して OCI Compute のメトリックを可視化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_metric_extention/">Stack Monitoringでメトリック拡張を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_onboarding/">Stack Monitoring オンボーディング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs-database-management/">Base Database ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_onboarding/">Logging Analytics オンボーディング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs_operations_insights/">OCIのBase Database ServiceでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management_tuning-advisor/" class="active">OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする">
+    <meta itemprop="description" content="OCI Database ManagementにはSQLチューニング・アドバイザの機能があります。SQLのチューニング方法に関するアドバイスや推奨事項を得ることができます。またアドバイスされた推奨事項をSQLチューニング・アドバイザの画面から実装できます。">
+    <meta itemprop="datePublished" content="2025-05-23T11:51:26+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1データの作成">1.データの作成</a></li><li><a href="#11-サンプルスキーマのダウンロード">1.1 サンプル・スキーマのダウンロード</a></li><li><a href="#12-pdbの接続先情報を追加">1.2 PDBの接続先情報を追加</a></li><li><a href="#13-スキーマの作成">1.3 スキーマの作成</a></li><li><a href="#14-表領域の作成">1.4 表領域の作成</a></li><li><a href="#15-サンプルスキーマの作成">1.5 サンプルスキーマの作成</a></li><li><a href="#16-データの増幅">1.6 データの増幅</a></li><li><a href="#2sqlチューニングアドバイザを利用したパフォーマンスチューニング">2.SQLチューニング・アドバイザを利用したパフォーマンス・チューニング</a></li><li><a href="#21-バケットの作成">2.1 バケットの作成</a></li><li><a href="#22-sqlチューニング対象のsqlの実行">2.2 SQL(チューニング対象のSQL)の実行</a></li><li><a href="#23-実行したsqlをsqlモニタリングで確認">2.3 実行したSQLをSQLモニタリングで確認</a></li><li><a href="#24-sqlチューニングアドバイザの実行">2.4 SQLチューニング・アドバイザの実行</a></li><li><a href="#24-推奨事項の実装">2.4 推奨事項の実装</a></li><li><a href="#25sqlを再実行">2.5　SQLを再実行</a></li><li><a href="#26-sqlモニタリングで確認">2.6 SQLモニタリングで確認</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p><strong>チュートリアル概要 :</strong><br />
+このチュートリアルでは、OCI Database ManagementのSQLチューニング・アドバイザでSQLのパフォーマンス・チューニングをする手順をご紹介します。</p>
+
+<p><strong>所要時間 :</strong> 約60分</p>
+
+<p><strong>前提条件1 :</strong> テナンシ上で以下のリソースが作成済であること</p>
+<ul>
+  <li>コンパートメント</li>
+  <li>ユーザー</li>
+  <li>ユーザーグループ</li>
+  <li>VCN</li>
+  <li>BaseDB</li>
+</ul>
+
+<p><strong>前提条件2 :</strong> Database Management が有効化済みであること<br />
+<a href="https://oracle-japan.github.io/ocitutorials/management/dbcs-database-management/">こちら</a>を参考にDatabase Managementを有効化できます。</p>
+
+<p class="notice--info"><strong>注意</strong><br />
+監視対象のBaseDBがStandard Editionの場合、SQLチューニング・アドバイザを含むパフォーマンスに関連する機能をご利用いただけませんのでご注意ください。</p>
+
+<h1 id="1データの作成">1.データの作成</h1>
+<p>Oracle Databaseにはトレーニングやデモに使用できる<a href="https://docs.oracle.com/cd/G11854_01/comsc/introduction-to-sample-schemas.html#GUID-844E92D8-A4C8-4522-8AF5-761D4BE99200">サンプル・スキーマ</a>が提供されています。
+今回はサンプル・スキーマとして提供されているSHスキーマに対してSQL文を実行し、チューニング・アドバイザでパフォーマンスを改善する手順をご紹介します。</p>
+
+<h1 id="11-サンプルスキーマのダウンロード">1.1 サンプル・スキーマのダウンロード</h1>
+<p><a href="https://github.com/oracle-samples/db-sample-schemas/releases">こちら</a>からデータベースのバージョンに合わせたスクリプトをダウンロードし、oracleディレクトリに配置します。（今回はBaseDBのバージョンが19.2なのでOracle Database Sample Schemas 19.2をダウンロード）</p>
+
+<h1 id="12-pdbの接続先情報を追加">1.2 PDBの接続先情報を追加</h1>
+<p>tnsnames.oraにPDBの接続情報がない場合は、PDBの接続情報を追加します。
+Base DBにログインし、oracleユーザに切り替えます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo su - oracle
+</code></pre></div></div>
+
+<p>tnsnames.oraファイルを編集し、以下の内容を追記します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vi $ORACLE_HOME/network/admin/tnsnames.ora
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;PDB名&gt;=
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = &lt;ホスト名&gt;)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = &lt;PDBのサービス名&gt;)
+    )
+  )
+</code></pre></div></div>
+<h1 id="13-スキーマの作成">1.3 スキーマの作成</h1>
+<p>Base DBにログインし、oracleユーザに切り替えます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo su - oracle
+</code></pre></div></div>
+<p>zipファイルを解凍します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ unzip db-sample-schemas-19.2.zip
+</code></pre></div></div>
+<p>ディレクトリを変更します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd db-sample-schemas-19.2
+</code></pre></div></div>
+<p>展開された各スクリプト内には、「<strong>SUB__CWD</strong>」という文字列が埋め込まれているので、展開したディレクトリ名に置換します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ perl -p -i.bak -e 's#__SUB__CWD__#'$(pwd)'#g' *.sql */*.sql */*.dat
+</code></pre></div></div>
+
+<h1 id="14-表領域の作成">1.4 表領域の作成</h1>
+<p>サンプル・スキーマ用の表領域を作成します。<br />
+sysdbaユーザなどでCDBにログインします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sqlplus / as sysdba
+</code></pre></div></div>
+
+<p>サンプル・スキーマを構築するPDBに切り替えます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alter session set container=&lt;PDB名&gt;;
+</code></pre></div></div>
+
+<p>作成するスキーマ用の表領域を作成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>create bigfile tablespace &lt;表領域名&gt; datafile '+DATA(DATAFILE)' size 50g ;
+</code></pre></div></div>
+
+<h1 id="15-サンプルスキーマの作成">1.5 サンプルスキーマの作成</h1>
+<p>NOLOG引数を使用して、CDBにログインします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sqlplus /nolog
+</code></pre></div></div>
+
+<p>SHスキーマをインストールします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@/home/oracle/db-sample-schemas-19.2/mksample.sql systempassword syspassword hrpassword oepassword pmpassword ixpassword shpassword bipassword &lt;表領域名&gt; temp &lt;ログディレクトリ名&gt; &lt;PDB名&gt;;
+</code></pre></div></div>
+
+<p class="notice--info"><strong>注意</strong><br />
+systempasswordとsyspasswordは事前に設定したパスワードを指定します。
+hr, oe, pm, ix, sh, biユーザのパスワードはそれぞれ上記のコマンドで指定したパスワード（hrpassword、oepassword、pmpassword、ixpassword、shpassword、bipassword）が設定されます。</p>
+
+<h1 id="16-データの増幅">1.6 データの増幅</h1>
+<p>SALES表のデータを増やします。<br />
+SHユーザでPDBにログインします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sqlplus sh/&lt;shユーザのパスワード&gt;@&lt;PDB名&gt;
+</code></pre></div></div>
+
+<p>元のSALES表を別名に変更します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rename SALES to SALES_ORG;
+</code></pre></div></div>
+
+<p>ダミー列を2つ追加した新たなSALES表（非パーティション表）を作成します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CREATE TABLE "SH"."SALES"
+   (    "PROD_ID" NUMBER NOT NULL ENABLE,
+        "CUST_ID" NUMBER NOT NULL ENABLE,
+        "TIME_ID" DATE NOT NULL ENABLE,
+        "CHANNEL_ID" NUMBER NOT NULL ENABLE,
+        "PROMO_ID" NUMBER NOT NULL ENABLE,
+        "QUANTITY_SOLD" NUMBER(10,2) NOT NULL ENABLE,
+        "AMOUNT_SOLD" NUMBER(10,2) NOT NULL ENABLE,
+        "DUMMY1" CHAR(100),
+        "DUMMY2" CHAR(110)
+   );
+</code></pre></div></div>
+
+<p>元のSALES表（SALES_ORG）から新規作成したSALES表へレコードをコピーします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES
+  nologging
+    select PROD_ID,
+           CUST_ID,
+           TIME_ID+15*365+3, 
+           CHANNEL_ID,
+           PROMO_ID,
+           QUANTITY_SOLD,
+           AMOUNT_SOLD,
+           rpad(to_char(mod(CUST_ID,30)),100,'dummy1'),
+           rpad(to_char(mod(CUST_ID,30)),110,'dummy2')
+      from SH.SALES_ORG;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+
+<p>データ容量（レコード数）を256MBから約32GBまで増やします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>insert /*+append */ into SH.SALES nologging select * from SH.SALES;
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit;
+</code></pre></div></div>
+
+<h1 id="2sqlチューニングアドバイザを利用したパフォーマンスチューニング">2.SQLチューニング・アドバイザを利用したパフォーマンス・チューニング</h1>
+<h1 id="21-バケットの作成">2.1 バケットの作成</h1>
+<p>チューニング・アドバイザで出力されたSQLジョブを実行した結果を格納するオブジェクト・ストレージのバケットを作成しておきます。
+オブジェクトストレージはOCIコンソールのメニューボタン→ストレージ→バケット→ボールトの作成をクリックします。
+<img src="image01.png" alt="画面ショット" /></p>
+
+<p>バケット名に任意の名前を入力して「作成」をクリックします。
+<img src="image02.png" alt="画面ショット" /></p>
+
+<h1 id="22-sqlチューニング対象のsqlの実行">2.2 SQL(チューニング対象のSQL)の実行</h1>
+<p>SHユーザでPDBにログインします。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sqlplus sh/&lt;shユーザのパスワード&gt;@&lt;PDB名&gt;
+</code></pre></div></div>
+
+<p>データを増幅させたSALES表に対してテーブル・フルスキャンが発生する以下のSQL(チューニング対象のSQL)を実行します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select /*+MONITOR */ COUNT(*) from sales where 900&lt;= cust_ID and cust_ID &lt;=1000 order by cust_id;
+</code></pre></div></div>
+
+<h1 id="23-実行したsqlをsqlモニタリングで確認">2.3 実行したSQLをSQLモニタリングで確認</h1>
+<p>SQLを実行したPDBの「パフォーマンス・ハブ」をクリックします。
+<img src="image03.png" alt="画面ショット" /></p>
+
+<p>ASH分析の画面で実行したSQLのSQLIDをクリックします。
+<img src="image04.png" alt="画面ショット" /></p>
+
+<p>「SQLモニタリング」をクリックします。
+<img src="image05.png" alt="画面ショット" /></p>
+
+<p>実行時間、I/O負荷、実行計画を確認できます。
+実行計画からテーブル・フルアクセスによる実行を確認できます。<br />
+※下記画像はSQLモニタリングの画面をHTML形式で保存したキャプチャです。
+<img src="image06.png" alt="画面ショット" /></p>
+
+<h1 id="24-sqlチューニングアドバイザの実行">2.4 SQLチューニング・アドバイザの実行</h1>
+<p>ASH分析の画面で実行したSQLを選択し、「SQLのチューニング」をクリックします。
+<img src="image07.png" alt="画面ショット" /></p>
+
+<p>下記の情報を設定し、「実行」をクリックします。</p>
+<ul>
+  <li>名前：任意の名前</li>
+  <li>ソース：選択したSQL文</li>
+  <li>合計時間の制限：任意の分数</li>
+  <li>分析の有効範囲：制限ありまたは包括的（SQLプロファイルの推奨事項を含む場合は包括的）</li>
+  <li>資格証明：作成した資格証明（作成していない場合は作成）</li>
+</ul>
+
+<p><img src="image08.png" alt="画面ショット" />
+<img src="image09.png" alt="画面ショット" /></p>
+
+<h1 id="24-推奨事項の実装">2.4 推奨事項の実装</h1>
+<p>チューニング・アドバイザの実行が完了するとDatabasse ManagementのSQLチューニング・アドバイザのタスクに完了済みと表示されます。
+「該当の名前」をクリックします。
+<img src="image10.png" alt="画面ショット" /></p>
+
+<p>SQL結果に索引の作成が推奨事項として表示されます。
+<img src="image11.png" alt="画面ショット" /></p>
+
+<p>3点リーダーの「推奨事項を実装」をクリックします。
+<img src="image12.png" alt="画面ショット" /></p>
+
+<p>下記の情報を設定し、推奨事項を実装をクリックします。</p>
+<ul>
+  <li>名前：任意の名前</li>
+  <li>新規索引表領域：デフォルト</li>
+  <li>資格証明：作成した資格証明（作成していない場合は作成）</li>
+  <li>ジョブ出力のバケット：作成したバケット</li>
+</ul>
+
+<p><img src="image13.png" alt="画面ショット" />
+<img src="image14.png" alt="画面ショット" /></p>
+
+<p>※SQLの表示から実装するSQLを確認することもできます。</p>
+
+<p>推奨事項の実装が完了すると、Databasse Managementのジョブに完了と表示されます。
+<img src="image16.png" alt="画面ショット" /></p>
+
+<h1 id="25sqlを再実行">2.5　SQLを再実行</h1>
+<p>Sales表に対してTable Full Scanが発生するSQLを再度実行します。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>select /*+MONITOR */ COUNT(*) from sales where 900&lt;= cust_ID and cust_ID &lt;=1000 order by cust_id;
+</code></pre></div></div>
+<h1 id="26-sqlモニタリングで確認">2.6 SQLモニタリングで確認</h1>
+<p>SQLモニタリングから再実行したSQLのパフォーマンスを確認します。
+チューニング前のSQLよりも実行時間の短縮、I/Oバイトの現象を確認できます。
+また実行計画からインデックス・レンジ・スキャンで実行されている（推奨実行の実装で作成した索引が使用されている）ことを確認できます。
+<img src="image17.png" alt="画面ショット" /></p>
+
+<p>このようにDatabase ManagementのSQLチューニング・アドバイザを活用することで、SQLのパフォーマンスを改善できる可能性がありますので是非試してみてください。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-05-23T11:51:26+09:00">May 23, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=OCI+Database+Management%E3%81%AESQL%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%83%BB%E3%82%A2%E3%83%89%E3%83%90%E3%82%A4%E3%82%B6%E3%81%A7%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%83%BB%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%82%92%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fdatabase-management_tuning-advisor%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fdatabase-management_tuning-advisor%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/management/database-management_tuning-advisor/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=OCI+Database+Management%E3%81%AESQL%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%83%BB%E3%82%A2%E3%83%89%E3%83%90%E3%82%A4%E3%82%B6%E3%81%A7%E3%83%91%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%B3%E3%82%B9%E3%83%BB%E3%83%81%E3%83%A5%E3%83%BC%E3%83%8B%E3%83%B3%E3%82%B0%E3%82%92%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fdatabase-management_tuning-advisor%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/management/database-management/" class="pagination--pager" title="OCI Database ManagementでOracleDBのパフォーマンス監視をする">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>

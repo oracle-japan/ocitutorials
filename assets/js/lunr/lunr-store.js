@@ -1997,6 +1997,12 @@ var store = [{
         "url": "/ocitutorials/management/database-management/",
         "teaser": null
       },{
+        "title": "OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする",
+        "excerpt":"チュートリアル概要 : このチュートリアルでは、OCI Database ManagementのSQLチューニング・アドバイザでSQLのパフォーマンス・チューニングをする手順をご紹介します。 所要時間 : 約60分 前提条件1 : テナンシ上で以下のリソースが作成済であること コンパートメント ユーザー ユーザーグループ VCN BaseDB 前提条件2 : Database Management が有効化済みであること こちらを参考にDatabase Managementを有効化できます。 注意 監視対象のBaseDBがStandard Editionの場合、SQLチューニング・アドバイザを含むパフォーマンスに関連する機能をご利用いただけませんのでご注意ください。 1.データの作成 Oracle Databaseにはトレーニングやデモに使用できるサンプル・スキーマが提供されています。 今回はサンプル・スキーマとして提供されているSHスキーマに対してSQL文を実行し、チューニング・アドバイザでパフォーマンスを改善する手順をご紹介します。 1.1 サンプル・スキーマのダウンロード こちらからデータベースのバージョンに合わせたスクリプトをダウンロードし、oracleディレクトリに配置します。（今回はBaseDBのバージョンが19.2なのでOracle Database Sample Schemas 19.2をダウンロード） 1.2 PDBの接続先情報を追加 tnsnames.oraにPDBの接続情報がない場合は、PDBの接続情報を追加します。 Base DBにログインし、oracleユーザに切り替えます。 $ sudo su - oracle tnsnames.oraファイルを編集し、以下の内容を追記します。 $ vi...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/management/database-management_tuning-advisor/",
+        "teaser": null
+      },{
         "title": "これはODのCloud Optimization Initiativeのページです",
         "excerpt":"これはODのCloud Optimization Initiativeのページです     ","categories": [],
         "tags": [],
