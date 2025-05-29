@@ -26,6 +26,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[Stack Monitoring を使用して OCI Compute のメトリックを可視化する](/ocitutorials/management/stack_monitoring_install/)**
 + **[Stack Monitoring を使用して BaseDB のメトリックを可視化する](/ocitutorials/management/stack_monitoring_basedb/)**
 + **[Stack Monitoring でメトリック拡張を設定する](/ocitutorials/management/stack_monitoring_metric_extention/)**
++ **[Stack Monitoring でプロセス監視を設定する](/ocitutorials/management/stack_monitoring_process_set/)**
 
 
 ## Logging
