@@ -1949,6 +1949,12 @@ var store = [{
         "url": "/ocitutorials/management/stack_monitoring_onboarding/",
         "teaser": null
       },{
+        "title": "Stack Monitoringでプロセス監視を設定する",
+        "excerpt":"チュートリアル概要 : 本チュートリアルでは、Stack Monitoring のプロセスベースのカスタム・リソースを設定しホストで実行されているプロセスを監視する手順をご紹介します。 所要時間 : 約20分 前提条件1 : テナンシ上で以下のリソースが作成済であること コンパートメント ユーザー ユーザーグループ VCN 対象リソース 前提条件2 : Stack Monitoring が有効化済みであること こちらを参考にStack Monitoringを有効化できます。 前提条件3 : Stack Monitoringで対象リソースが監視されていること こちらを参考にStack Monitoring でBaseDB を監視できます。 こちらを参考にStack Monitoring でCompute を監視できます。 1.プロセス・セットの作成 本チュートリアルではコンピュートで実行されているnginxのプロセスを監視するための設定をご紹介します。 プロセスを監視するためのプロセス・セットは、プロセスのモニターから作成できます。 プロセスセットの作成をクリックします。 プロセス・セットのプロパティは以下のように設定します。 表示名：任意の名前 ラベル：nginx-main-process プロセス・コマンド：nginx プロセス・ライン行正規表現パターン：nginx: master.* ターゲット・ホスト：プロセスを実行している監視対象のリソース リソースタイプと収集方法について プロセス・ユーザーはプロセスを実行中のユーザーの名前がある場合は指定します。 プロセス・セットのプロパティを設定したら、「作成してマップ」クリックします。 プロセスセットを設定したリソースのトポロジから作成したプロセスセットをクリックします。...","categories": [],
+        "tags": ["management"],
+        "url": "/ocitutorials/management/stack_monitoring_process_set/",
+        "teaser": null
+      },{
         "title": "Base Database ServiceでDatabase Managementを有効化する",
         "excerpt":"OCI Observability &amp; Managementのサービスの1つ、Database Managementでは、Enterprise Managerで提供されているパフォーマンス分析の機能を中心に、Oracle DBのパフォーマンスを監視することが可能です。本章では、OCIのDatabase Cloud ServiceでDatabase Managementを有効化する手順を紹介します。Base DBでDatabase Managementを有効化する場合、エージェントレスで利用を開始することが出来ます。 所要時間 : 約50分 前提条件 : OCIのBaseDBが1インスタンス作成されていること BaseDBのインスタンスの作成方法はその8-クラウドでOracle Databaseを使うをご参照ください。 注意 : ※監視対象のBaseDBがStandard Editionの場合、Database Managementの一部機能をご利用いただけませんのでご注意ください。 1. IAMポリシーの作成 Database Managementを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。 以下のポリシーをテナンシで作成してください。 1-1. ユーザーがDatabase Managementを利用するためのポリシー allow group &lt;IAＭグループ名&gt; to MANAGE dbmgmt-family in tenancy/compartment &lt;コンパートメント名&gt; allow group &lt;IAMグループ名&gt; to MANAGE database-family in tenancy/compartment...","categories": [],
         "tags": ["management"],
