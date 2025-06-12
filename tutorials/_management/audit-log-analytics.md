@@ -51,6 +51,7 @@ allow service loganalytics to READ loganalytics-features-family in tenancy
 allow service loganalytics to {LOG_ANALYTICS_LIFECYCLE_INSPECT, LOG_ANALYTICS_LIFECYCLE_READ} in tenancy
 allow service loganalytics to MANAGE cloud-events-rule in tenancy/compartment <コンパートメント名>
 allow service loganalytics to READ compartments in tenancy
+allow any-user to {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} in compartment id <コンパートメントOCID> where all {request.principal.type='serviceconnector', target.loganalytics-log-group.id='<LoggingAnalyticsのロググループOCID>', request.principal.compartment.id='<コンパートメントOICD>'}
 ```
 
 1-3. ユーザーがLogging Analyticsを使用するためのポリシー
