@@ -755,6 +755,18 @@ var store = [{
         "url": "/ocitutorials/cloud-native/wls-for-oke-provisioning/",
         "teaser": null
       },{
+        "title": "WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう",
+        "excerpt":"本ハンズオンでは、以下の構成を作成します。 マーケットプレイスから環境を作成すると、VCN（仮想クラウド・ネットワーク）やロードバランサーが自動的に構成され、プライベートネットワーク上にWebLogicがインストールされたインスタンスが作成されます。また、外部からのアクセス用に踏み台サーバー（Bastion）とパブリックサブネットも自動的に作成されます。 今回はプロビジョニングした後、踏み台サーバーにWebLogic Remote Consoleをインストールして、WebLogicの管理サーバーへアクセスする手順を学習します。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること ハンズオンの全体像 WebLogic Server for OCI(UCM)環境を作成する 踏み台インスタンスにVNC Viewerでアクセスする 踏み台インスタンスにWebLogic Remote Consoleをインストールする WebLogic Remote Consoleで管理サーバーへアクセスする 事前準備 1. SSHキーペアを用意する 任意のSSHキーペアをご用意ください。 新たに作成する場合は、左上のハンバーガーメニューを展開して、「コンピュート」から「インスタンス」を選択し、「インスタンスの作成」をクリックします。 作成画面より、SSHキーの「秘密キー」と「公開キー」の両方をダウンロードし、利用します。 2. OCI VaultでSecretを作成する WebLogic Server for OCIでは、WebLogic作成時の管理用パスワードはOCI Vaultにて管理します。 左上のハンバーガーメニューを展開して、「アイデンティティとセキュリティ」から「ボールト」を選択します。 「ボールトの作成」をクリックします。 名前に「handson vault」と入力し、「ボールトの作成」をクリックします。 ボールトの作成には数分かかる場合があります。適宜ブラウザの更新を行ってください。 作成したボールト名をクリックし、「キーの作成」をクリックします。 名前に「handson key」と入力し、「キーの作成」をクリックします。 「シークレット」をクリックし、「シークレットの作成」をクリックします。 名前に「wlsadmin」と入力し、暗号化キーは「handson key」を選択し、シークレットコンテンツは「welcome1」と入力し、「シークレットの作成」をクリックします。 3. OCI IAMで権限の設定を行う(Optional)...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/",
+        "teaser": null
+      },{
+        "title": "WebLogic Server for OCI(14.1.2)の基本的な操作を体験してみよう",
+        "excerpt":"本ハンズオンではWebLogic for OCI(14.1.2)のサーバーの起動・停止、データソースの作成、サンプルアプリケーションのデプロイ、そしてロードバランサー経由での動作確認までの基本的な操作手順について学習します。 前提条件 クラウド環境 Oracle Cloudのアカウントを取得済みであること WebLogic Server for OCI(14.1.2)をプロビジョニングしてみようを実施済みであること 本ハンズオンではこちらで作成したWebLogic Server for OCI(14.1.2)の環境と踏み台インスタンスにインストールしたWebLogic Remote Consoleを利用して操作を行います。 ハンズオンの全体像 事前準備を行う(ADBの作成、sqlplusのインストールなど) WebLogicにデータソースの設定を行う WebLogicにアプリケーションをデプロイする Load Balancerからアプリケーションにアクセスする 事前準備 データベースをセットアップする 1. Autonomous Databaseをプロビジョニングする 左上のハンバーガーメニューを展開して、「Oracle Database」から「Autonomous Database」を選択します。 「Autonomous Databaseの作成」をクリックします。 Autonomous Database Serverlessの作成では以下のように入力・設定します。 Note: 特に記載のない部分に関してはデフォルトの値で構いません 上部の入力項目 項目 値 表示名 handson_db データベース名 handsonDB ワークロード・タイプ トランザクション処理 パスワード Welcome1234! パスワードの確認...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/cloud-native/wls-for-oci-1412-beginners/",
+        "teaser": null
+      },{
         "title": "Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう",
         "excerpt":"このチュートリアルでは、別々のデータベースを持つ2つのサンプルアプリケーション間の分散トランザンクションについて、Oracle Transaction Manager for Microservices(MicroTx)を利用しながら一貫性を確保する体験をしていただく内容になっています。 このチュートリアルには以下のサービスが含まれます。 Oracle Container Engine for Kubernetes（略称：OKE）: マネージドなKuberentesクラスタを提供するクラウドサービスです。 Oracle Transaction Manager for Microservices（略称：MicroTx）: Oracleが提供する分散トランザクションマネージャです。 Oracle Autonomous Transaction Processing（略称：ATP）: 運用がすべて自動化された自律型データベースサービスです。 MicroTxについて MicroTxは現在Free版での提供となり、商用環境ではご利用頂けません。(評価/検証目的でのご利用となります) 今回のハンズオンもFree版のMicroTxを利用します。 商用環境でご利用いただけるMicroTxは後日リリース予定です。 前提条件 チュートリアルを開始する前に以下を準備してください。 Oracle Cloudのアカウントを取得済みであること OKEハンズオン事前準備を実施済みであること Oracle Cloud Infrastructureの基本操作はチュートリアル : OCIコンソールにアクセスして基本を理解するをご確認ください。 ゴールを確認する はじめに、手順を最後まで実施したときにどのような環境が作られるか確認して、ゴールの全体像を掴んでおきましょう。 手順を最後まで行うと、下図のような環境が構成されます。 構成要素 説明 OKE アプリケーションのコンテナが稼働するクラスター本体です。OKEをプロビジョニングすると、Oracle Cloudの各種IaaS上に自動的に構成されます。 ATP 今回デプロイするサンプルアプリケーションが利用するデータベースです。今回は2つのアプリケーションそれぞれに1つずつATPを持ちます。 MicroTx 2つのアプリケーション間のトランザクション一貫性を確保するための分散トランザクションマネージャです。 この環境を構築後にサンプルアプリケーションを利用して、MicroTxを利用したトランザクション制御を体験して頂きます。...","categories": [],
         "tags": [],

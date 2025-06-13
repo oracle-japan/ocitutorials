@@ -1,0 +1,981 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.1 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCIが提供するWebLogic Server for OCI(14.1.2)のプロビジョニングを体験していただけるコンテンツです。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/">
+
+
+  <meta property="og:description" content="OCIが提供するWebLogic Server for OCI(14.1.2)のプロビジョニングを体験していただけるコンテンツです。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-06-13T15:59:13+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCIが提供するWebLogic Server for OCI(14.1.2)のプロビジョニングを体験していただけるコンテンツです。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/cloud-native" itemprop="item"><span itemprop="name">Cloud native</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Cloud Native編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-commons/">Oracle Cloud Infrastructure(OCI) DevOps事前準備</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-compute/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-oke/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/devops-for-beginners-functions/">Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ci-for-beginners/">OCI Container Instances をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-commons/">Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-beginners/">Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-intermediates/">KubernetesでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/fn-for-beginners/">Fn Project ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-for-beginners/">OCI Functions ハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-beginners/">Oracle Cloud Infrasturcture API Gateway + Oracle Functionsハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-vmshape-for-intermediates/">OCI Functionsを利用した仮想マシン (VM) のシェイプ変更</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-atp-for-beginners/">OCI API GatewayとOCI Functions を利用したデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-ords-for-intermediates/">Oracle Functionsを利用したORDSでのデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-nosql-for-intermediates/">Oracle Functionsを利用したNoSQLデータベースアクセス</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/functions-apigateway-for-intermediates/">Oracle Functionsを利用したAPI Gatewayの認証</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/apigateway-for-beginners/">OCI API Gatewayハンズオン</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/osm-for-beginners/">OCI Service Meshを使ってサービスメッシュ環境を作ろう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-mp-for-beginners/">Helidon(MP)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-beginners/">OCI Cacheを使ってみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/ocicache-for-commons/">OCI Cacheを使ってレスポンス・キャッシングをしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/helidon-se-for-beginners/">Helidon(SE)を始めてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-provisioning/">WebLogic Server for OCIをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-migration/">WebLogic Server for OCIにアプリケーションを移行してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/">WebLogic Server for OKEをプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/" class="active">WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/wls-for-oci-1412-beginners/">WebLogic Server for OCI(14.1.2)の基本的な操作を体験してみよう</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/cloud-native/microtx-for-beginners/">Oracle Transaction Manager for Microservices(MicroTx)を体験してみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう">
+    <meta itemprop="description" content="OCIが提供するWebLogic Server for OCI(14.1.2)のプロビジョニングを体験していただけるコンテンツです。">
+    <meta itemprop="datePublished" content="2025-06-13T15:59:13+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#前提条件">前提条件</a></li><li><a href="#ハンズオンの全体像">ハンズオンの全体像</a></li><li><a href="#事前準備">事前準備</a><ul><li><a href="#1-sshキーペアを用意する">1. SSHキーペアを用意する</a></li><li><a href="#2-oci-vaultでsecretを作成する">2. OCI VaultでSecretを作成する</a></li><li><a href="#3-oci-iamで権限の設定を行うoptional">3. OCI IAMで権限の設定を行う(Optional)</a></li></ul></li><li><a href="#環境の作成">環境の作成</a><ul><li><a href="#1-マーケットプレイスにてスタックを起動する">1. マーケットプレイスにてスタックを起動する</a></li><li><a href="#2-weblogic-server-for-ociをプロビジョニングする">2. WebLogic Server for OCIをプロビジョニングする</a></li><li><a href="#3-weblogic-remote-console-のインストール">3. WebLogic Remote Console のインストール</a><ul><li><a href="#31-踏み台インスタンスにvnc環境を構築する">3.1 踏み台インスタンスにVNC環境を構築する</a></li><li><a href="#32-vcnのセキュリティグループのポートを開放する">3.2 VCNのセキュリティグループのポートを開放する</a></li><li><a href="#33-踏み台インスタンスにweblogic-remote-consoleをインストールする">3.3 踏み台インスタンスにWebLogic Remote Consoleをインストールする</a></li></ul></li><li><a href="#4-weblogic-remote-console-からweblogic-管理サーバへアクセスする">4. WebLogic Remote Console からWebLogic 管理サーバへアクセスする</a></li><li><a href="#5-weblogic-remote-console-について">5. WebLogic Remote Console について</a><ul><li><a href="#weblogic-remote-console-4つのパースペクティブについて">WebLogic Remote Console 4つのパースペクティブについて</a></li><li><a href="#weblogic-remote-console-ドメイン編集手順の変更">WebLogic Remote Console ドメイン編集手順の変更</a></li></ul></li></ul></li></ul>
+            </nav>
+          </aside>
+        
+        <p>本ハンズオンでは、以下の構成を作成します。<br />
+マーケットプレイスから環境を作成すると、VCN（仮想クラウド・ネットワーク）やロードバランサーが自動的に構成され、プライベートネットワーク上にWebLogicがインストールされたインスタンスが作成されます。また、外部からのアクセス用に踏み台サーバー（Bastion）とパブリックサブネットも自動的に作成されます。<br />
+今回はプロビジョニングした後、踏み台サーバーにWebLogic Remote Consoleをインストールして、WebLogicの管理サーバーへアクセスする手順を学習します。</p>
+
+<p><img src="0.0.001.jpg" alt="" /></p>
+
+<h2 id="前提条件">前提条件</h2>
+<ul>
+  <li>クラウド環境
+    <ul>
+      <li>Oracle Cloudのアカウントを取得済みであること</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ハンズオンの全体像">ハンズオンの全体像</h2>
+
+<ol>
+  <li>WebLogic Server for OCI(UCM)環境を作成する</li>
+  <li>踏み台インスタンスにVNC Viewerでアクセスする</li>
+  <li>踏み台インスタンスにWebLogic Remote Consoleをインストールする</li>
+  <li>WebLogic Remote Consoleで管理サーバーへアクセスする</li>
+</ol>
+
+<h2 id="事前準備">事前準備</h2>
+<h3 id="1-sshキーペアを用意する">1. SSHキーペアを用意する</h3>
+<p>任意のSSHキーペアをご用意ください。<br />
+新たに作成する場合は、左上のハンバーガーメニューを展開して、「コンピュート」から「インスタンス」を選択し、「インスタンスの作成」をクリックします。<br />
+作成画面より、SSHキーの「秘密キー」と「公開キー」の両方をダウンロードし、利用します。
+<img src="0.1.ssh01.jpg" alt="" /></p>
+
+<h3 id="2-oci-vaultでsecretを作成する">2. OCI VaultでSecretを作成する</h3>
+<p>WebLogic Server for OCIでは、WebLogic作成時の管理用パスワードは<a href="https://docs.oracle.com/ja-jp/iaas/Content/KeyManagement/Concepts/keyoverview.htm">OCI Vault</a>にて管理します。</p>
+
+<p>左上のハンバーガーメニューを展開して、「アイデンティティとセキュリティ」から「ボールト」を選択します。
+<img src="0.1.001.jpg" alt="" /></p>
+
+<p>「ボールトの作成」をクリックします。 
+<img src="0.1.002.jpg" alt="" /></p>
+
+<p>名前に「handson vault」と入力し、「ボールトの作成」をクリックします。
+<img src="0.1.003.jpg" alt="" /></p>
+
+<p class="notice--info">ボールトの作成には数分かかる場合があります。適宜ブラウザの更新を行ってください。</p>
+
+<p>作成したボールト名をクリックし、「キーの作成」をクリックします。<br />
+<img src="0.1.004.jpg" alt="" /></p>
+
+<p>名前に「handson key」と入力し、「キーの作成」をクリックします。
+<img src="0.1.005.jpg" alt="" /></p>
+
+<p>「シークレット」をクリックし、「シークレットの作成」をクリックします。
+<img src="0.1.006.jpg" alt="" /></p>
+
+<p>名前に「wlsadmin」と入力し、暗号化キーは「handson key」を選択し、シークレットコンテンツは「welcome1」と入力し、「シークレットの作成」をクリックします。
+<img src="0.1.007.jpg" alt="" /></p>
+
+<!--
+### 3. アプリケーションの取得
+[こちら](https://objectstorage.us-ashburn-1.oraclecloud.com/p/kKrDQg6Tfj6f_PO7hJYfVEVsFIDCUVtdy7_WuI6N8wPXd1Po4SCoYAciOWkCG-c_/n/orasejapan/b/wls4oci/o/TodoApp-0.0.1-SNAPSHOT.war)より、本ハンズオンで利用するアプリケーションをダウンロードしてください。  
+-->
+
+<h3 id="3-oci-iamで権限の設定を行うoptional">3. OCI IAMで権限の設定を行う(Optional)</h3>
+<p>WebLogic Server for OCI の利用には以下の2種類のポリシー設定が必要です。<br />
+あらかじめこれらの権限設定を実施した上で、WebLogic Server for OCIによるプロビジョニングを行います。</p>
+<ul>
+  <li>WebLogic Server for OCI環境の管理者が所属するグループに対するポリシー
+    <ul>
+      <li>WebLogic Server for OCI のWebコンソールの利用や作成後のリソース/環境の管理に必要な権限</li>
+    </ul>
+  </li>
+  <li>WebLogic Server for OCI が利用する動的グループに対するポリシー
+    <ul>
+      <li>WebLogic Server for OCIがプロビジョニングを行う際に必要な権限<br />
+この手順では、ルート・コンパートメントにプロビジョニングを行うため、自動でこれらの権限が設定されます。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="環境の作成">環境の作成</h2>
+<p>WebLogic Server環境を作成します。</p>
+
+<h3 id="1-マーケットプレイスにてスタックを起動する">1. マーケットプレイスにてスタックを起動する</h3>
+
+<p>左上のハンバーガーメニューを展開して、「マーケットプレイス」から「すべてのアプリケーション」を選択します。
+<img src="2.1.001.jpg" alt="" /></p>
+
+<p>検索欄に「Oracle WebLogic Server Enterprise Edition UCM」と入力し、先頭に出てくるパネルをクリックします。
+<img src="2.1.002.jpg" alt="" /></p>
+
+<p>バージョンは14.1.2.0を選択します。<br />
+<img src="1.1.001.jpg" alt="" /></p>
+
+<p class="notice--info"><code class="language-plaintext highlighter-rouge">14.1.2.0.***</code> の <code class="language-plaintext highlighter-rouge">***</code> の部分はキャプチャと異なる場合があります。</p>
+
+<p>チェックボックスにチェックを入れ、「スタックの起動」をクリックします。
+<img src="1.1.002.jpg" alt="" /></p>
+
+<h3 id="2-weblogic-server-for-ociをプロビジョニングする">2. WebLogic Server for OCIをプロビジョニングする</h3>
+
+<p>最初の <strong>スタック情報</strong> の画面はそのまま「Next」をクリックします。
+<img src="1.2.000.jpg" alt="" /></p>
+
+<p>次に <strong>変数の構成</strong> の画面では以下のように入力・選択します。</p>
+
+<p class="notice--info"><strong>Note: 特に記載のない部分に関してはデフォルトの値で構いません</strong></p>
+
+<ul>
+  <li>
+    <p>Stack Configuration</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Resource Name Prefix</td>
+          <td><strong>wls1412</strong></td>
+        </tr>
+        <tr>
+          <td>SSH Public Key</td>
+          <td><a href="#1-ssh%E3%82%AD%E3%83%BC%E3%83%9A%E3%82%A2%E3%82%92%E7%94%A8%E6%84%8F%E3%81%99%E3%82%8B">1. SSHキーペアを用意する</a>で作成したSSH Keyを選択。</td>
+        </tr>
+        <tr>
+          <td>OCI Policies</td>
+          <td>ご利用の環境によって選択してください。</td>
+        </tr>
+        <tr>
+          <td>Create a Virtual Cloud Network</td>
+          <td><strong>チェックする</strong></td>
+        </tr>
+        <tr>
+          <td>Provision Load Balancer</td>
+          <td><strong>チェックする</strong></td>
+        </tr>
+        <tr>
+          <td>Enable Secured Production Mode</td>
+          <td><strong>チェックを外す</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>Virtual Cloud Networking</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Virtual Cloud Network Name</td>
+          <td><strong>vcn</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>WebLogic Domain Configuration</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Validated Secret for WebLogic Server Admin Password</td>
+          <td><a href="#2-oci-vault%E3%81%A7secret%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B">2. OCI VaultでSecretを作成する</a>で作成したSecretを選択</td>
+        </tr>
+        <tr>
+          <td>Java Development Kit version</td>
+          <td><strong>jdk21</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>WebLogic Server Compute Instance</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>値</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Node Count</td>
+          <td><strong>2</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p>入力、選択すると以下のようになります。
+確認出来たら「Next」をクリックします。</p>
+
+<p><img src="1.2.001.jpg" alt="" /></p>
+
+<p><strong>確認</strong> の画面で「作成」をクリックします。</p>
+
+<p><img src="1.2.002.jpg" alt="" /></p>
+
+<p class="notice--info"><strong>Note: 作成完了までは10分ほどかかります。</strong></p>
+
+<p><strong>成功</strong> になったら、踏み台インスタンスのパブリックIPと管理サーバーが入っているインスタンスのプライベートIPを確認しておきます。左下にある「出力」から <strong>bastion_instance_public_ip(※1ページ目)</strong>, <strong>weblogic_server_administration_console(※2ページ目)</strong>, <strong>weblogic_instances(※2ページ目)</strong> のipアドレス部分をそれぞれどこかにコピーして保存しておきます。こちらは後の手順で使用します。</p>
+
+<p><img src="1.2.003.jpg" alt="" /></p>
+
+<p><img src="1.2.003_0.jpg" alt="" /></p>
+
+<h3 id="3-weblogic-remote-console-のインストール">3. WebLogic Remote Console のインストール</h3>
+
+<p>WebLogic Remote ConsoleはインストールベースのGUIアプリケーションであるため、踏み台インスタンスにVNC Viwerからアクセスして操作を行います。</p>
+
+<h4 id="31-踏み台インスタンスにvnc環境を構築する">3.1 踏み台インスタンスにVNC環境を構築する</h4>
+
+<p>最初に踏み台インスタンスにVNC環境を構築します。 <br />
+sshでアクセスして以下のコマンドを順番に実行します。</p>
+
+<p class="notice--info">踏み台インスタンスのパブリックipは直前の手順で確認した <strong>bastion_instance_public_ip</strong> の値です。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum update -y --nobest
+
+$ sudo yum groupinstall "Server with GUI" -y
+
+$ sudo yum install tigervnc-server -y
+</code></pre></div></div>
+
+<p>次にVNC環境のパスワードを設定します。<strong>vncpasswd</strong> のコマンドを実行し、任意のパスワードを設定します。ここでは<strong>handson</strong>。<br />
+view-only passwordの質問は <strong>n</strong> を入力します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vncpasswd
+Password:
+=&gt; handson
+Verify:
+=&gt; handson
+Would you like to enter a view-only password (y/n)?
+=&gt; n
+</code></pre></div></div>
+
+<p>以下のコマンドを実行して、<strong>/etc/tigervnc/vncserver.users</strong> に <strong>:1=opc</strong> を追加します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ echo ":1=opc" | sudo tee -a /etc/tigervnc/vncserver.users &gt; /dev/null
+</code></pre></div></div>
+
+<p><strong>/etc/tigervnc/vncserver.users</strong> が以下のようになっていることを確認します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># TigerVNC User assignment
+# 
+# This file assigns users to specific VNC display numbers.
+# The syntax is &lt;display&gt;=&lt;username&gt;. E.g.:
+#
+# :2=andrew
+# :3=lisa
+:1=opc
+</code></pre></div></div>
+
+<p>以下のコマンドを実行し、vncserverを起動、サービスに登録します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl daemon-reload
+$ sudo systemctl start vncserver@:1.service
+$ sudo systemctl enable vncserver@:1.service
+</code></pre></div></div>
+
+<p>以下のコマンドを実行し、firewallの5901ポートを解放します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo firewall-cmd --add-port=5901/tcp --permanent --zone=public
+$ sudo firewall-cmd --reload
+</code></pre></div></div>
+
+<h4 id="32-vcnのセキュリティグループのポートを開放する">3.2 VCNのセキュリティグループのポートを開放する</h4>
+
+<p>VNCにアクセスするためにはVCNのネットワーク・セキュリティ・グループ(またはセキュリティリスト)も5901ポートを解放する必要があります。</p>
+
+<p>OCIにログインし、「ネットワーキング」ー「仮想クラウド・ネットワーク」から<a href="#2-weblogic-server-for-oci%E3%82%92%E3%83%97%E3%83%AD%E3%83%93%E3%82%B8%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B">2. WebLogic Server for OCIをプロビジョニングする</a>で作成されたVCN(本手順の場合は<strong>wls1412-vcn</strong>)を開いて、左下のメニューから「ネットワーク・セキュリティ・グループ」をクリックして、踏み台のセキュリティ・グループである <strong>wls1412-bastion-nsg</strong> をクリックして開きます。</p>
+
+<p><img src="1.3.001.jpg" alt="" /></p>
+
+<p>「ルールの追加」をクリックして、5901ポートをイングレスに追加します。</p>
+
+<p><img src="1.3.002.jpg" alt="" /></p>
+
+<p>追加したら、以下のように表示されます。</p>
+
+<p><img src="1.3.003.jpg" alt="" /></p>
+
+<p>次に同様の手順で、管理サーバーのネットワーク・セキュリティ・グループ(wls1412-admin-server-nsg)の7001ポートをイングレスに追加します。</p>
+
+<p><img src="1.3.004.jpg" alt="" /></p>
+
+<p>追加すると以下のように表示されます。</p>
+
+<p><img src="1.3.005.jpg" alt="" /></p>
+
+<p>以上で設定は完了しました。VNC Viewer等を使って踏み台環境へアクセスします。
+画面サイズや色などはお好みで調整ください。</p>
+
+<h4 id="33-踏み台インスタンスにweblogic-remote-consoleをインストールする">3.3 踏み台インスタンスにWebLogic Remote Consoleをインストールする</h4>
+
+<p>次にWebLogic Remote Consoleをダウンロード・インストールします。
+VNC Viewer等でアクセスした環境のターミナルで以下のコマンドを実行します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ wget https://github.com/oracle/weblogic-remote-console/releases/download/v2.4.16/weblogic-remote-console-2.4.16-linux.rpm
+$ sudo yum install -y libXScrnSaver
+$ sudo rpm -ivh weblogic-remote-console-2.4.16-linux.rpm
+</code></pre></div></div>
+
+<h3 id="4-weblogic-remote-console-からweblogic-管理サーバへアクセスする">4. WebLogic Remote Console からWebLogic 管理サーバへアクセスする</h3>
+
+<p>インストールが完了したら、WebLogic Remote Consoleを開きます。</p>
+
+<p><img src="1.4.001.jpg" alt="" /></p>
+
+<p>パスワードが求められるので任意の値を入力します。</p>
+
+<p><img src="1.4.002.jpg" alt="" /></p>
+
+<p>Startup Taskでは <strong>Add Admin Server Connection Provider</strong> を選択して「Choose」をクリックします。</p>
+
+<p><img src="1.4.003.jpg" alt="" /></p>
+
+<p><strong>Admin Server Connection Provider</strong> の画面では以下のように入力し、「OK」をクリックします。 <br />
+{private ip}はプロビジョニングした後のジョブで出力された<strong>weblogic_server_administration_console</strong>のIPアドレス部分の値です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>項目</th>
+      <th>値</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Connection Provider Name</td>
+      <td>wls1412</td>
+    </tr>
+    <tr>
+      <td>User Name</td>
+      <td>weblogic</td>
+    </tr>
+    <tr>
+      <td>Password</td>
+      <td>welcome1</td>
+    </tr>
+    <tr>
+      <td>URL</td>
+      <td>http://{private ip}:7001</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="1.4.004.jpg" alt="" /></p>
+
+<p>アクセスが成功すると以下の画面が表示されます。</p>
+
+<p><img src="1.4.005.jpg" alt="" /></p>
+
+<p>デフォルトでは言語が英語に設定されているので、日本語に変更します。</p>
+
+<p>左上のFileから「Preferences」をクリックします。</p>
+
+<p><img src="1.4.006.jpg" alt="" /></p>
+
+<p>Language/LocaleからJapaneseを選択して、Remote Consoleを一旦閉じて開きなおします。</p>
+
+<p><img src="1.4.007.jpg" alt="" /></p>
+
+<p>Remote Consoleが日本語化されます。</p>
+
+<p><img src="1.4.008.jpg" alt="" /></p>
+
+<h3 id="5-weblogic-remote-console-について">5. WebLogic Remote Console について</h3>
+
+<p>Oracle WebLogic Remote Consoleは、Oracle WebLogic Serverドメインを管理するグラフィカル・ユーザー・インタフェースです。</p>
+
+<p>WebLogic Remote Consoleは、REST APIを使用して柔軟性を提供し、様々な環境のドメインに接続できるようにします: クラウド内の物理または仮想マシン、コンテナまたはKubernetesポッド内。 また、WebLogic Remote Consoleを使用して、WebLogic Deploy Tooling (WDT)メタデータ・モデルを管理できます - つまり、ドメイン・テンプレートを作成し、同じ環境内で管理できます。</p>
+
+<p>WebLogic Remote Consoleは、WebLogic Server 12.2.1.4.0以降と互換性があり、関連するWebLogic Serverリリースで使用可能な機能と一致するようにユーザー・インタフェースを調整します。</p>
+
+<p>WebLogic Remote Consoleを使用して、次の操作を行うことができます:</p>
+
+<ul>
+  <li>WebLogic Serverのインスタンスとクラスタの管理</li>
+  <li>WDTメタデータ・モデルの作成および変更</li>
+  <li>アプリケーションのデプロイ、管理およびモニター</li>
+  <li>ユーザー、グループ、ロールの管理などのセキュリティ・パラメータの構成</li>
+  <li>データベース接続性(JDBC),およびメッセージング(JMS)などのWebLogic Serverサービスの構成</li>
+</ul>
+
+<p>詳細は<a href="https://oracle-japan-oss-docs.github.io/weblogic-remote-console/docs/">こちら</a>のドキュメントを参照してください。</p>
+
+<h4 id="weblogic-remote-console-4つのパースペクティブについて">WebLogic Remote Console 4つのパースペクティブについて</h4>
+
+<p>リモート・コンソールでは異なる領域に特化した4つのパースペクティブに分かれてドメインを管理します。</p>
+
+<p><img src="image-wrc-about.png" alt="" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>パースペクティブ</th>
+      <th>アイコン</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ツリーの編集</td>
+      <td><img src="image-wrc-icon1.png" alt="" /></td>
+      <td>WebLogic Server ドメインの編集可能なビュー。<br />変更を加えてドメインにコミットする場合は、このパースペクティブを使用します。</td>
+    </tr>
+    <tr>
+      <td>構成ビュー・ツリー</td>
+      <td><img src="image-wrc-icon2.png" alt="" /></td>
+      <td>WebLogic Server ドメインの読み取り専用ビュー。<br />変更を加えずにドメインの現在の設定を確認する場合は、このパースペクティブを使用します。</td>
+    </tr>
+    <tr>
+      <td>モニタリング・ツリー</td>
+      <td><img src="image-wrc-icon3.png" alt="" /></td>
+      <td>実行中のドメインのランタイム統計の概要。<br />サーバーごとの統計、またはドメイン内のすべてのサーバーを集計した統計を表示できます。<br />たとえば、Server1 で実行されているアプリケーションと、1 つ以上のサーバーで実行されているアプリケーションを比較します。<br />モニタリング・ツリーでは、サーバーやアプリケーションの起動や停止などの制御操作も提供されます。</td>
+    </tr>
+    <tr>
+      <td>セキュリティ・データ・ツリー</td>
+      <td><img src="image-wrc-icon4.png" alt="" /></td>
+      <td>セキュリティ領域内のセキュリティ・プロバイダーのデータの編集可能なビュー。<br />これには、ユーザー、グループ、ポリシーなどが含まれます。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="notice--info">
+
+<p><strong>ツリーの編集と構成ビュー・ツリー</strong><br />
+ツリーの編集と構成ビュー・ツリーのパースペクティブは似ていますが、2つの別々のConfiguration MBean から生成されるため、2つのパースペクティブの間には明確な違いが生じます。</p>
+<ol>
+  <li>「ツリーの編集」で行われた変更は、コミットするまで、または非動的変更の場合はサーバーを再起動するまで、構成ビュー・ツリーには表示されません。</li>
+  <li>動的に計算されたドメインコンテンツの一部は「ツリーの編集」に表示されません。たとえば、以下の項目が該当します。
+    <ul>
+      <li>動的クラスター（およびそのサーバー）</li>
+      <li>状況に応じた構成</li>
+      <li>システムプロパティを使用してコマンドラインから行った変更</li>
+      <li>プロダクションモード関連の設定の一部変更<br />
+編集可能なConfiguration MBeanと読み取り専用のConfiguration MBeanの違いの詳細については、以下を参照してください。
+        <ul>
+          <li><a href="https://docs.oracle.com/pls/topic/lookup?ctx=en/middleware/fusion-middleware/weblogic-remote-console/administer&amp;id=DOMCF-GUID-223E202F-DA06-45C3-B297-E66655F4E9AB">Oracle WebLogic Server のドメイン構成の理解における構成変更の管理</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+</div>
+
+<h4 id="weblogic-remote-console-ドメイン編集手順の変更">WebLogic Remote Console ドメイン編集手順の変更</h4>
+
+<p>WebLogic Server 14.1.1以前の管理コンソールではドメインに対して追加の構成や変更を行う場合に、「チェンジ・センター」で、「ロックして編集」ボタンを推してロックを獲得し、「変更のアクティブ化」ボタンを選択して変更を確定させるという手順でしたが、リモート・コンソールでは「ツリーの編集」で追加の構成や変更を行うとカート🛒に変更が追加され、カートから「変更のコミット」をすることで変更を確定させるという手順に変わりました。</p>
+
+<ul>
+  <li>WebLogic 14.1.1 以前の管理コンソールでのドメイン更新の流れ
+    <ol>
+      <li>「ロックして編集」ボタンでロックを獲得</li>
+      <li>ドメインの追加の構成や変更</li>
+      <li>「変更のアクティブ化」ボタンで変更を確定</li>
+    </ol>
+  </li>
+  <li>WebLogic 14.1.2 以降のリモート・コンソールでのドメイン更新の流れ
+    <ol>
+      <li>「ツリーの編集」からドメインの追加の構成や変更(更新内容はカートに追加される)</li>
+      <li>カートの「変更のコミット」ボタンで変更を確定</li>
+    </ol>
+  </li>
+</ul>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-13T15:59:13+09:00">June 13, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=WebLogic+Server+for+OCI%2814.1.2%29%E3%82%92%E3%83%97%E3%83%AD%E3%83%93%E3%82%B8%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-1412-provisioning%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-1412-provisioning%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=WebLogic+Server+for+OCI%2814.1.2%29%E3%82%92%E3%83%97%E3%83%AD%E3%83%93%E3%82%B8%E3%83%A7%E3%83%8B%E3%83%B3%E3%82%B0%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fcloud-native%2Fwls-for-oci-1412-provisioning%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oke-provisioning/" class="pagination--pager" title="WebLogic Server for OKEをプロビジョニングしてみよう">前へ</a>
+    
+    
+      <a href="/ocitutorials/cloud-native/wls-for-oci-1412-beginners/" class="pagination--pager" title="WebLogic Server for OCI(14.1.2)の基本的な操作を体験してみよう">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
