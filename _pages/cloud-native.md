@@ -142,6 +142,12 @@ lastmod: "2022-04-06"
 + **[WebLogic Server for OCIをプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oci-provisioning/)**  
     WebLogic Server for OCI は、Oracleが提供するアプリケーションサーバーのWebLogic ServerをOCI上で簡単に構築できるオファリングです。こちらのハンズオンでは、WebLogic Server for OCIのプロビジョニング、アプリケーションのデプロイを学んでいただけるコンテンツになります。【所要時間:約1時間】
 
++ **[WebLogic Server for OCI(14.1.2)をプロビジョニングしてみよう](/ocitutorials/cloud-native/wls-for-oci-1412-provisioning/)**  
+    こちらのハンズオンでは、WebLogic Server for OCI(14.1.2)のプロビジョニングとWebLogic Remote Consoleからのアクセスを学んでいただけるコンテンツになります。【所要時間:約1時間】
+
++ **[WebLogic Server for OCI(14.1.2)の基本的な操作を体験してみよう](/ocitutorials/cloud-native/wls-for-oci-1412-beginners/)**  
+    こちらのハンズオンでは、WebLogic Remote Consoleを使ったWebLogic Server for OCI(14.1.2)のデータソースの作成やアプリケーションのデプロイなど、基本的な操作を学んでいただけるコンテンツになります。【所要時間:約1時間】
+
 + **[WebLogic Server for OCIにアプリケーションを移行してみよう](/ocitutorials/cloud-native/wls-for-oci-migration/)**  
    こちらのハンズオンでは、WebLogic Server for OCIに対してのアプリケーションの移行を学んでいただけるコンテンツになります。【所要時間:約1時間】
 
