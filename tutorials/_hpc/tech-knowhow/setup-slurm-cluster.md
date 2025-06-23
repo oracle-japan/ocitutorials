@@ -47,17 +47,17 @@ table, th, td {
 
 | サブシステム          | 使用するシェイプ                                                                    | OS                           | ノード数           | 接続<br>サブネット                | 役割                                                           |
 | :-------------: | :-------------------------------------------------------------------------: | :--------------------------: | :------------: | :------------------------: | :----------------------------------------------------------: |
-| Slurm<br>マネージャ  | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※6）         | 1              | プライベート                     | **slurmctld** と **slurmdbd** が稼働するSlurm管理ノード                 |
-| Slurm<br>クライアント | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※6） | 1              | プライベート                     | アプリケーション開発用フロントエンドノード<br>**Slurm** にジョブを投入するジョブサブミッションクライアント |
-| 計算ノード           | **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**<br>対応ベアメタルシェイプ<br>（※3） | **Oracle Linux** 8.10<br>（※6） | 2ノード以上<br>（※3） | プライベート<br> **クラスタ・ネットワーク** | **slurmd** が稼働するジョブ実行ノード                                     |
-| NFSサーバ          | -<br>（※4）                                                                   | -                            | 1              | プライベート                     | ジョブ投入ユーザのホームディレクトリをNFSでサービス<br>（※5）                              |
+| Slurm<br>マネージャ  | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5）         | 1              | プライベート                     | **slurmctld** と **slurmdbd** が稼働するSlurm管理ノード                 |
+| Slurm<br>クライアント | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5） | 1              | プライベート                     | アプリケーション開発用フロントエンドノード<br>**Slurm** にジョブを投入するジョブサブミッションクライアント |
+| 計算ノード           | **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**<br>対応ベアメタルシェイプ<br>（※2） | **Oracle Linux** 8.10<br>（※5） | 2ノード以上<br>（※2） | プライベート<br> **クラスタ・ネットワーク** | **slurmd** が稼働するジョブ実行ノード                                     |
+| NFSサーバ          | -<br>（※3）                                                                   | -                            | 1              | プライベート                     | ジョブ投入ユーザのホームディレクトリをNFSでサービス<br>（※4）                              |
 
 ![画面ショット](architecture_diagram.png)
 
 ※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
-※4）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
-※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
-※6）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
+※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
+※5）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
 計算ノードの構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
 

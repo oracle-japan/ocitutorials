@@ -193,7 +193,7 @@ NodeName=inst-xxxxx-x9 Arch=x86_64 CoresPerSocket=18
 $
 ```
 
-ステータスが **ALLOCATED+DRAIN** の場合は、実行中のジョブが終了するまで待機します。
+ステータスが **ALLOCATED+DRAIN** の場合は、実行中のジョブが終了し **IDLE+DRAIN** になるまで待機します。
 
 次に、対象の計算/GPUノードのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードで **slurmd** を停止します。
 
