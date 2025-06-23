@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-06-13T15:59:13+09:00">
+  <meta property="article:published_time" content="2025-06-24T07:43:40+09:00">
 
 
 
@@ -331,13 +331,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
-        
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
         
@@ -383,9 +379,13 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/"></a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/"></a></li></p>
         
       </ul>
     </li>
@@ -400,7 +400,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="File Storage with Lustreでファイル共有ストレージを構築する">
     <meta itemprop="description" content="File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。">
-    <meta itemprop="datePublished" content="2025-06-13T15:59:13+09:00">
+    <meta itemprop="datePublished" content="2025-06-24T07:43:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -567,11 +567,11 @@
       <td style="text-align: center">-</td>
     </tr>
     <tr>
-      <td style="text-align: center">プライベート<br />（※5）</td>
+      <td style="text-align: center">プライベート</td>
       <td style="text-align: center">イングレス</td>
       <td style="text-align: center">いいえ</td>
-      <td style="text-align: center">10.0.0.0/16</td>
-      <td style="text-align: center">全プロトコル</td>
+      <td style="text-align: center">10.0.0.0/16<br />（※5）</td>
+      <td style="text-align: center">全プロトコル<br />（※5）</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">-</td>
     </tr>
@@ -587,7 +587,7 @@
   </tbody>
 </table>
 
-<p>※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可しますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。<br />
+<p>※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可しますが、これを自身のサイトのアクセス元IPアドレスに限定することで、セキュリティーレベルを向上させることが可能です。<br />
 ※5）この設定により、作成した <strong>仮想クラウド・ネットワーク</strong> に割り当てられる全てのIPアドレスからの全てのポートへのアクセスを許可しますが、 <strong>File Storage with Lustre</strong> を使用する際の最低限必要な <strong>セキュリティリスト</strong> とするための関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/security-rules.htm#top__different-subnet">ここ</a></strong> を参照してください。</p>
 
 <h2 id="1-2-bastionノード作成">1-2. Bastionノード作成</h2>
@@ -710,9 +710,9 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrL
 <p><img src="console_page06.png" alt="画面ショット" /></p>
 
 <p>ステータスが <strong>ACTIVE</strong> となれば、 <strong>File Storage with Lustre</strong> の作成が完了しています。<br />
-作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分強です。</p>
+作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分程度です。</p>
 
-<p>次に、ステータスが <strong>ACTIVE</strong> となった以下 <strong>Lustreファイル・システム詳細</strong> 画面で、 <strong>Lustreプロパティ</strong> フィールドの <strong>マウント・コマンド</strong> の <strong>コピー</strong> ボタンをクリックし、Lustreクライアントからマウントする際のコマンドを保存します。</p>
+<p>次に、ステータスが <strong>ACTIVE</strong> となった以下 <strong>Lustreファイル・システム詳細</strong> 画面で、 <strong>Lustreプロパティ</strong> フィールドの <strong>マウント・コマンド</strong> の <strong>コピー</strong> ボタンをクリックし、Lustreクライアントからマウントする際のコマンドをクリップボードに保存します。</p>
 
 <p><img src="console_page07.png" alt="画面ショット" /></p>
 
@@ -743,7 +743,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrL
 
 <h3 id="3-1-1-インスタンス作成">3-1-1. インスタンス作成</h3>
 
-<p>Lustreクライアントとする計算ノードのインスタンスは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90">2. HPCクラスタ作成</a></strong> と <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90">3. 計算ノード確認</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
+<p>Lustreクライアントとする計算ノードのインスタンスは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-hpcクラスタ作成">2. HPCクラスタ作成</a></strong> と <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#3-計算ノード確認">3. 計算ノード確認</a></strong> の手順に従い、以下属性のインスタンスを作成します。</p>
 
 <ul>
   <li><strong>シェイプ</strong> ： <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></li>
@@ -752,9 +752,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrL
   <li><strong>SSHキーの追加</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵</li>
 </ul>
 
-<p>※6）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
-
-<p>サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
+<p>※6）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
 
 <h3 id="3-1-2-lustreクライアント用rpmパッケージビルド">3-1-2. Lustreクライアント用RPMパッケージビルド</h3>
 
@@ -849,9 +847,7 @@ Mon Apr 21 17:20:52 JST 2025
   <li><strong>サブネット</strong> ： 先に作成したLustreクライアント接続用プライベートサブネット</li>
 </ul>
 
-<p>※7） <strong>プラットフォーム・イメージ</strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm">Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0</a></strong> は、インストールされているNVIDIA GPUドライバが  <strong>RedHat Compatible Kernel</strong> （以降 <strong>RHCK</strong> と呼称します。）用ではないため、このイメージで作成後に <strong>RHCK</strong> 用のNVIDIA GPUドライバをインストールします。</p>
-
-<p>サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
+<p>※7） <strong>プラットフォーム・イメージ</strong> <strong><a href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm">Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0</a></strong> は、インストールされているNVIDIA GPUドライバが  <strong>RedHat Compatible Kernel</strong> （以降 <strong>RHCK</strong> と呼称します。）用ではないため、このイメージで作成後に <strong>RHCK</strong> 用のNVIDIA GPUドライバをインストールします。サポートされるLustreクライアントのイメージに関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients">ここ</a></strong> を参照してください。</p>
 
 <p>次に、 <strong><a href="https://blogs.oracle.com/linux/post/changing-the-default-kernel-in-oracle-linux-its-as-simple-as-1-2-3">ここ</a></strong> のブログの手順に従い、GPUノードのカーネルを <strong>RHCK</strong> に変更します。</p>
 
@@ -1161,7 +1157,7 @@ Mon Apr 21 17:20:52 JST 2025
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-13T15:59:13+09:00">June 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-24T07:43:40+09:00">June 24, 2025</time></p>
 
       </footer>
 

@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-06-13T15:59:13+09:00">
+  <meta property="article:published_time" content="2025-06-24T07:43:40+09:00">
 
 
 
@@ -341,13 +341,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
-        
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
         
@@ -393,9 +389,13 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/"></a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/"></a></li></p>
         
       </ul>
     </li>
@@ -410,7 +410,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法">
     <meta itemprop="description" content="ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。このフレームワーク構築に活用できるソフトウェアはいくつかありますが、OCIロギングとGrafanaを統合したログ監視は、Grafanaの多彩な機能を活用できる点で有力な選択肢です。本テクニカルTipsは、OCIロギングとGrafanaを使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-06-13T15:59:13+09:00">
+    <meta itemprop="datePublished" content="2025-06-24T07:43:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -425,11 +425,7 @@
             </nav>
           </aside>
         
-        <p>ノード数が多くなるHPC/GPUクラスタは、各計算/GPUノードに分散するログを一元的に監視するフレームワークを構築することで、運用管理工数の低減や監視対象ログの見落としを防ぎ、システムセキュリティーを効率的に維持することが可能です。<br />
-OCI上にこのフレームワークを構築する際、活用できるソフトウェアはいくつかありますが、 <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/home.htm">OCIロギング</a></strong> と <strong><a href="https://grafana.com/">Grafana</a></strong> を統合したログ監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br />
-本テクニカルTipsは、 <strong>OCIロギング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのログを効率的に監視する方法を解説します。</p>
-
-<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
+        <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 
 <hr />
 <h1 id="0-概要">0. 概要</h1>
@@ -439,8 +435,8 @@ OCI上にこのフレームワークを構築する際、活用できるソフ�
 
 <ul>
   <li>Grafanaサーバ（1ノード）<br />
-<strong>OCIロギング</strong> から計算/GPUノードの監視対象ログを収集し、ウェブブラウザに対してこれを表示します。<br />
-本テクニカルTipsでは、インターネットに接続するログ監視端末からSSHのポートフォワードで <strong>Grafana</strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
+<strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Logging/home.htm">OCIロギング</a></strong> から計算/GPUノードの監視対象ログを収集し、ウェブブラウザに対してこれを表示します。<br />
+本テクニカルTipsでは、インターネットに接続するログ監視端末からSSHのポートフォワードで <strong><a href="https://grafana.com/">Grafana</a></strong> のGUIにアクセスするため、パブリックサブネットに接続します。</li>
   <li>
     <p>ログサーバ（1ノード）<br />
 ログクライアントから監視対象ログを収集し、 <strong>OCIロギング</strong> にこれを送信します。<br />
@@ -922,7 +918,7 @@ allow dynamic-group dynamicgroup_name to manage all-resources <span class="k">in
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-13T15:59:13+09:00">June 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-24T07:43:40+09:00">June 24, 2025</time></p>
 
       </footer>
 

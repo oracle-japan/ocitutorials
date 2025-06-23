@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-06-13T15:59:13+09:00">
+  <meta property="article:published_time" content="2025-06-24T07:43:40+09:00">
 
 
 
@@ -341,13 +341,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
-        
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
-        
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
         
@@ -393,9 +389,13 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタル・インスタンスのカーネルダンプ取得方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/"></a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/"></a></li></p>
         
       </ul>
     </li>
@@ -410,7 +410,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Slurmによるリソース管理・ジョブ管理システム構築方法">
     <meta itemprop="description" content="HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-06-13T15:59:13+09:00">
+    <meta itemprop="datePublished" content="2025-06-24T07:43:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -480,7 +480,7 @@ table, th, td {
     <tr>
       <td style="text-align: center">Slurm<br />マネージャ</td>
       <td style="text-align: center">任意の仮想マシン<br /></td>
-      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※6）</td>
+      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※5）</td>
       <td style="text-align: center">1</td>
       <td style="text-align: center">プライベート</td>
       <td style="text-align: center"><strong>slurmctld</strong> と <strong>slurmdbd</strong> が稼働するSlurm管理ノード</td>
@@ -488,26 +488,26 @@ table, th, td {
     <tr>
       <td style="text-align: center">Slurm<br />クライアント</td>
       <td style="text-align: center">任意の仮想マシン<br /></td>
-      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※6）</td>
+      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※5）</td>
       <td style="text-align: center">1</td>
       <td style="text-align: center">プライベート</td>
       <td style="text-align: center">アプリケーション開発用フロントエンドノード<br /><strong>Slurm</strong> にジョブを投入するジョブサブミッションクライアント</td>
     </tr>
     <tr>
       <td style="text-align: center">計算ノード</td>
-      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong><br />対応ベアメタルシェイプ<br />（※3）</td>
-      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※6）</td>
-      <td style="text-align: center">2ノード以上<br />（※3）</td>
+      <td style="text-align: center"><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong><br />対応ベアメタルシェイプ<br />（※2）</td>
+      <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br />（※5）</td>
+      <td style="text-align: center">2ノード以上<br />（※2）</td>
       <td style="text-align: center">プライベート<br /> <strong>クラスタ・ネットワーク</strong></td>
       <td style="text-align: center"><strong>slurmd</strong> が稼働するジョブ実行ノード</td>
     </tr>
     <tr>
       <td style="text-align: center">NFSサーバ</td>
-      <td style="text-align: center">-<br />（※4）</td>
+      <td style="text-align: center">-<br />（※3）</td>
       <td style="text-align: center">-</td>
       <td style="text-align: center">1</td>
       <td style="text-align: center">プライベート</td>
-      <td style="text-align: center">ジョブ投入ユーザのホームディレクトリをNFSでサービス<br />（※5）</td>
+      <td style="text-align: center">ジョブ投入ユーザのホームディレクトリをNFSでサービス<br />（※4）</td>
     </tr>
   </tbody>
 </table>
@@ -515,9 +515,9 @@ table, th, td {
 <p><img src="architecture_diagram.png" alt="画面ショット" /></p>
 
 <p>※2）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続された2ノードの <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> を、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> の手順に従い、 <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称）を無効化して使用します。<br />
-※4）<strong>ファイル・ストレージ</strong> やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。<br />
-※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。<br />
-※6）<strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> で、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。Slurmマネージャは、計算ノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。</p>
+※3）<strong>ファイル・ストレージ</strong> やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。<br />
+※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。<br />
+※5）<strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> で、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。Slurmマネージャは、計算ノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。</p>
 
 <p>計算ノードの構築手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> が参考になります。</p>
 
@@ -1078,7 +1078,7 @@ JobID             User  AllocCPUS               Start                 End
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-13T15:59:13+09:00">June 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-24T07:43:40+09:00">June 24, 2025</time></p>
 
       </footer>
 
