@@ -160,7 +160,7 @@ MPI集合通信を効率的に実行する **MCA** コンポーネントの **HC
 **HCOLL** は、NUMA・ソケット・UMA（ノード）の各グループを階層構造として定義し、上位の階層を跨ぐプロセス間通信（最上位層はノード間通信）を減らすことで集合通信の最適化を行います。  
 このため **HCOLL** 使用の有無は、特にノードを跨ぐケースで集合通信性能に影響を及ぼします。
 
-**HCOLL** がMPI集合通信性能に及ぼす影響は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** 、 **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** 、及び **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
+**HCOLL** がMPI集合通信性能に及ぼす影響は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
 
 ## 3-2. hook_comm_method_display
 
@@ -286,7 +286,7 @@ $
 
 ここで指定する境界メッセージは、ノード内通信のプロトコル用とノード間通信のプロトコル用を個別に指定することが可能です。
 
-この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
 
 以下は、ノード内通信とノード間通信の境界メッセージ長にそれぞれ32kbと128kbを指定しています。
 
@@ -305,7 +305,7 @@ $ mpirun -x UCX_RNDV_THRESH=128kb a.out
 **UCX** が使用するバッファーコピープロトコル（短いメッセージ長で有利）とゼロコピープロトコル（長いメッセージ長で有利）（ノード内通信の場合 **cma** ・ **knem** ・ **xpmem** ：ノード間通信の場合 **RDMA put** ・ **RDMA get** 等）を切り替えるメッセージ長の境界を指定します。  
 メッセージ長の指定は、そのユニットに **b** （B）、 **kb** （KB）、 **mb** （MB）、及び **gb** （GB）を使用します。また設定値 **auto** （デフォルト）は、境界メッセージ長を **UCX** に選択させることを指定します。
 
-この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法](/ocitutorials/hpc/benchmark/openmpi-perftune/)** を参照してください。
+この境界メッセージ長は、MPI通信性能に影響を及ぼしますが、詳細は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
 
 以下は、境界メッセージ長に128KBを指定しています。
 
@@ -339,4 +339,4 @@ $
 MPI集合通信を効率的に実行する **MCA** コンポーネントの **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）を使用するかどうかを制御し、使用する場合はその値に **1** を、使用しない場合は **0** （デフォルト）を指定します。  
 なお **UCC** を使用する場合は、合わせて **coll_ucc_priority** を **100** に設定する必要があります。
 
-**UCC** がMPI集合通信性能に及ぼす影響は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** 、 **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** 、及び **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
+**UCC** がMPI集合通信性能に及ぼす影響は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e5/)** /  **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** を参照してください。
