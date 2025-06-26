@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-06-24T07:43:40+09:00">
+  <meta property="article:published_time" content="2025-06-26T20:16:40+09:00">
 
 
 
@@ -410,7 +410,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）">
     <meta itemprop="description" content="MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法やNUMA nodes per socket等のアプリケーション実行環境まで、様々な要因がその性能に影響します。本パフォーマンス関連Tipsは、MPIの実装にOpenMPIを取り上げ、これが採用するModular Component ArchitectureやUCXの実行時パラメーター、MPIプロセス分割方法やNUMA nodes per socketを組合せて、HPCワークロード向けベア・メタル・シェイプBM.Optimized3.36でMPI集合通信をチューニングする方法を解説します。">
-    <meta itemprop="datePublished" content="2025-06-24T07:43:40+09:00">
+    <meta itemprop="datePublished" content="2025-06-26T20:16:40+09:00">
     
 
     <div class="page__inner-wrap">
@@ -428,7 +428,8 @@
         <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>オープンソースのMPI実装である <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、  <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> （以降 <strong>MCA</strong> と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この <strong>MCA</strong> パラメータにはMPI集合通信性能に影響するものがあります。</p>
+<p>オープンソースのMPI実装である <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> は、  <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> （以降 <strong>MCA</strong> と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この <strong>MCA</strong> パラメータにはMPI集合通信性能に影響するものがあります。<br />
+特にMPI集合通信の高速化を意識して開発されている <strong><a href="https://docs.nvidia.com/networking/display/hpcxv223/hcoll">HCOLL</a></strong> や <strong><a href="https://github.com/openucx/ucc">Unified Collective Communication</a></strong> （以降 <strong>UCC</strong> と呼称します。）は、その特性を理解して適切に利用することで、MPI集合通信性能を大幅に向上させることが可能です。</p>
 
 <p>また <strong>OpenMPI</strong> は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに <strong><a href="https://openucx.org/">UCX</a></strong> を採用し、この <strong>UCX</strong> のパラメータにもMPI集合通信性能に影響するパラメータが存在します。</p>
 
@@ -451,33 +452,35 @@
   <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※2）</li>
   <li><strong>UCX_ZCOPY_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※3）</li>
   <li><strong>coll_hcoll_enable</strong> ： <strong>0</strong> ・ <strong>1</strong> （※4）</li>
-  <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割（※5）</li>
-  <li><strong>NPS</strong> ：  <strong>1</strong> （以降 <strong>NPS1</strong> と呼称します。）・ <strong>2</strong> （以降 <strong>NPS2</strong> と呼称します。）（※6）</li>
+  <li><strong>coll_ucc_enable</strong> ： <strong>0</strong> ・ <strong>1</strong> （※5）</li>
+  <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割（※6）</li>
+  <li><strong>NPS</strong> ：  <strong>1</strong> （以降 <strong>NPS1</strong> と呼称します。）・ <strong>2</strong> （以降 <strong>NPS2</strong> と呼称します。）（※7）</li>
 </ul>
 
 <p>※1） <strong>UCX</strong> のパラメータで、2ノード以上の <strong>計測条件</strong> で使用します。詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-4-ucx_tls">3-4. UCX_TLS</a></strong> を参照してください。<br />
 ※2） <strong>UCX</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-6-ucx_rndv_thresh">3-6. UCX_RNDV_THRESH</a></strong> を参照してください。<br />
 ※3） <strong>UCX</strong> のパラメータで、2ノード以上の <strong>計測条件</strong> で使用します。詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-7-ucx_zcopy_thresh">3-7. UCX_ZCOPY_THRESH</a></strong> を参照してください。<br />
 ※4） <strong>MCA</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-1-coll_hcoll_enable">3-1. coll_hcoll_enable</a></strong> を参照してください。<br />
-※5）NUMAノードに対するMPIプロセスの分割方法で、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></strong> を参照してください。<br />
-※6）<strong>NPS</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+※5） <strong>MCA</strong> のパラメータで、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/#3-9-coll_ucc_enable">3-9. coll_ucc_enable</a></strong> を参照してください。<br />
+※6）NUMAノードに対するMPIプロセスの分割方法で、詳細は <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></strong> を参照してください。<br />
+※7）<strong>NPS</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 
 <p>また本パフォーマンス関連Tipsの検証は、以下の実行環境で実施しています。</p>
 
 <p>[実行環境]</p>
 <ul>
-  <li>シェイプ： <strong>BM.Optimized3.36</strong> （  <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）無効（※7））</li>
-  <li>ノード間接続 ： <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> （※8）</li>
-  <li>OS： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※9）</li>
-  <li><strong>OpenMPI</strong> ： 5.0.6（※10）</li>
-  <li><strong>Intel MPI Benchmarks</strong> ： 2021.7（※11）</li>
+  <li>シェイプ： <strong>BM.Optimized3.36</strong> （  <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称します。）無効（※8））</li>
+  <li>ノード間接続 ： <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> （※9）</li>
+  <li>OS： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※10）</li>
+  <li><strong>OpenMPI</strong> ： 5.0.6（※11）</li>
+  <li><strong>Intel MPI Benchmarks</strong> ： 2021.7（※12）</li>
 </ul>
 
-<p>※7）<strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。<br />
-※8）本テクニカルTipsの2ノード以上の全ての計測は、 <strong>クラスタ・ネットワーク</strong> の同一リーフスイッチ配下のインスタンスを使用して行っています。同一リーフスイッチ配下に配置されたインスタンス間のノード間接続に於ける効果は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></strong> を参照してください。<br />
-※9）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
-※10） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。<br />
-※11） <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> に従って構築された <strong>Intel MPI Benchmarks</strong> です。</p>
+<p>※8）<strong>SMT</strong> の設定方法は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。<br />
+※9）本テクニカルTipsの2ノード以上の全ての計測は、 <strong>クラスタ・ネットワーク</strong> の同一リーフスイッチ配下のインスタンスを使用して行っています。同一リーフスイッチ配下に配置されたインスタンス間のノード間接続に於ける効果は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></strong> を参照してください。<br />
+※10）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
+※11） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。<br />
+※12） <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> に従って構築された <strong>Intel MPI Benchmarks</strong> です。</p>
 
 <p>また <strong>Intel MPI Benchmarks</strong> の計測は、 <strong>numactl</strong> コマンドを介して以下の実行時オプションを指定して起動します。</p>
 
@@ -543,6 +546,7 @@
 <ul>
   <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong></li>
   <li><strong>coll_hcoll_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
+  <li><strong>coll_ucc_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
   <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割</li>
   <li><strong>NPS</strong> ：  <strong>1</strong> ・ <strong>2</strong></li>
 </ul>
@@ -551,473 +555,1201 @@
 
 <h3 id="1-1-0-概要">1-1-0. 概要</h3>
 
-<p>本章は、1ノードに8 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、1ノードに8 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
-<p>下表は、各MPI集合通信関数の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
-特に <strong>Alltoall</strong> は8KBから128KB、 <strong>Allreduce</strong> は32KBから16MBのメッセージサイズに於いて、性能が向上します。</p>
+<h3 id="1-1-1-alltoall">1-1-1. Alltoall</h3>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
+
+<p><img src="ata_01_08_n1_bl_no.png" alt="Alltoall 1 node 8 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_08_n1_bl_uc.png" alt="Alltoall 1 node 8 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_08_n1_bl_hc.png" alt="Alltoall 1 node 8 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_08_n1_cy_no.png" alt="Alltoall 1 node 8 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_08_n1_cy_uc.png" alt="Alltoall 1 node 8 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_08_n1_cy_hc.png" alt="Alltoall 1 node 8 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_08_n2_bl_no.png" alt="Alltoall 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_08_n2_bl_uc.png" alt="Alltoall 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_08_n2_bl_hc.png" alt="Alltoall 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p><img src="ata_01_08_n2_cy_no.png" alt="Alltoall 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_08_n2_cy_uc.png" alt="Alltoall 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_08_n2_cy_hc.png" alt="Alltoall 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center">MPI集合通信関数</th>
-      <th style="text-align: right">UCX_RNDV_THRESH</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center"><strong>Alltoall</strong></td>
-      <td style="text-align: right">32kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allgather</strong></td>
-      <td style="text-align: right">64kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allreduce</strong></td>
-      <td style="text-align: right">128kb</td>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">32KB</td>
+      <td style="text-align: right">32KB</td>
+      <td style="text-align: right">32KB</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>HCOLL</strong> 使用の有無は、以下の傾向がみられます。</p>
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_08_step1_no.png" alt="Alltoall 1 node 8 processes no coll" /></p>
+
+<p><img src="ata_01_08_step1_uc.png" alt="Alltoall 1 node 8 processes UCC" /></p>
+
+<p><img src="ata_01_08_step1_hc.png" alt="Alltoall 1 node 8 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="ata_01_08_step2.png" alt="Alltoall 1 node 8 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
 
 <ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>4Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>32Bから512Bのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-      <li>8KBから32KBのメッセージサイズで使用しない場合が使用する場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allreduce</strong>
-    <ul>
-      <li>32Bから4KBのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-      <li>32MBから1GBのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
+  <li><strong>UCC</strong> は32KB以上で性能が低下しそれ未満で顕著な傾向無し</li>
+  <li><strong>HCOLL</strong> は顕著な傾向無し</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して32KB以上で性能が向上しそれ未満で顕著な傾向無し</li>
+  <li>チューニング未適用は8KBから128KBの間で大幅に性能が低下</li>
 </ul>
-
-<p><strong>NPS</strong> とMPIプロセス分割方法は、その違いによる有意な差はみられません。</p>
-
-<h3 id="1-1-1-alltoall">1-1-1. Alltoall</h3>
-
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
-
-<p><img src="ata_01_08_n1_bl.png" alt="Alltoall 1 node 8 processes NPS1 Block" /></p>
-
-<p><img src="ata_01_08_n1_cy.png" alt="Alltoall 1 node 8 processes NPS1 Cyclic" /></p>
-
-<p><img src="ata_01_08_n2_bl.png" alt="Alltoall 1 node 8 processes NPS2 Block" /></p>
-
-<p><img src="ata_01_08_n2_cy.png" alt="Alltoall 1 node 8 processes NPS2 Cyclic" /></p>
-
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
-
-<p><img src="ata_01_08.png" alt="Alltoall 1 node 8 processes" /></p>
 
 <h3 id="1-1-2-allgather">1-1-2. Allgather</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="aga_01_08_n1_bl.png" alt="Allgather 1 node 8 processes NPS1 Block" /></p>
+<p><img src="aga_01_08_n1_bl_no.png" alt="Allgather 1 node 8 processes NPS1 no coll" /></p>
 
-<p><img src="aga_01_08_n1_cy.png" alt="Allgather 1 node 8 processes NPS1 Cyclic" /></p>
+<p><img src="aga_01_08_n1_bl_uc.png" alt="Allgather 1 node 8 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_08_n2_bl.png" alt="Allgather 1 node 8 processes NPS2 Block" /></p>
+<p><img src="aga_01_08_n1_bl_hc.png" alt="Allgather 1 node 8 processes NPS1 HCOLL" /></p>
 
-<p><img src="aga_01_08_n2_cy.png" alt="Allgather 1 node 8 processes NPS2 Cyclic" /></p>
+<p><img src="aga_01_08_n1_cy_no.png" alt="Allgather 1 node 8 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>64kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="aga_01_08_n1_cy_uc.png" alt="Allgather 1 node 8 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_08.png" alt="Allgather 1 node 8 processes" /></p>
+<p><img src="aga_01_08_n1_cy_hc.png" alt="Allgather 1 node 8 processes NPS1 HCOLL" /></p>
+
+<p><img src="aga_01_08_n2_bl_no.png" alt="Allgather 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_08_n2_bl_uc.png" alt="Allgather 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_08_n2_bl_hc.png" alt="Allgather 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p><img src="aga_01_08_n2_cy_no.png" alt="Allgather 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_08_n2_cy_uc.png" alt="Allgather 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_08_n2_cy_hc.png" alt="Allgather 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">64KB</td>
+      <td style="text-align: right">32KB</td>
+      <td style="text-align: right">64KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_08_step1_no.png" alt="Allgather 1 node 8 processes no coll" /></p>
+
+<p><img src="aga_01_08_step1_uc.png" alt="Allgather 1 node 8 processes UCC" /></p>
+
+<p><img src="aga_01_08_step1_hc.png" alt="Allgather 1 node 8 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの組合せ（ <strong>UCX_RNDV_THRESH=auto</strong> ・ <strong>coll_hcoll_enable=1</strong> ・ <strong>coll_ucc_enable=0</strong> ）を含めています。</p>
+
+<p><img src="aga_01_08_step2.png" alt="Allgather 1 node 8 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> はほぼ全域で性能が低下</li>
+  <li><strong>HCOLL</strong> はほぼ全域で性能が低下</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して4KBから32KBの間で性能が向上しそれ未満で性能が低下</li>
+  <li>チューニング適用による性能の変化無し</li>
+</ul>
 
 <h3 id="1-1-3-allreduce">1-1-3. Allreduce</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="are_01_08_n1_bl.png" alt="Allreduce 1 node 8 processes NPS1 Block" /></p>
+<p><img src="are_01_08_n1_bl_no.png" alt="Allreduce 1 node 8 processes NPS1 no coll" /></p>
 
-<p><img src="are_01_08_n1_cy.png" alt="Allreduce 1 node 8 processes NPS1 Cyclic" /></p>
+<p><img src="are_01_08_n1_bl_uc.png" alt="Allreduce 1 node 8 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_08_n2_bl.png" alt="Allreduce 1 node 8 processes NPS2 Block" /></p>
+<p><img src="are_01_08_n1_bl_hc.png" alt="Allreduce 1 node 8 processes NPS1 HCOLL" /></p>
 
-<p><img src="are_01_08_n2_cy.png" alt="Allreduce 1 node 8 processes NPS2 Cyclic" /></p>
+<p><img src="are_01_08_n1_cy_no.png" alt="Allreduce 1 node 8 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="are_01_08_n1_cy_uc.png" alt="Allreduce 1 node 8 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_08.png" alt="Allreduce 1 node 8 processes" /></p>
+<p><img src="are_01_08_n1_cy_hc.png" alt="Allreduce 1 node 8 processes NPS1 HCOLL" /></p>
+
+<p><img src="are_01_08_n2_bl_no.png" alt="Allreduce 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_08_n2_bl_uc.png" alt="Allreduce 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_08_n2_bl_hc.png" alt="Allreduce 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p><img src="are_01_08_n2_cy_no.png" alt="Allreduce 1 node 8 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_08_n2_cy_uc.png" alt="Allreduce 1 node 8 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_08_n2_cy_hc.png" alt="Allreduce 1 node 8 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">64KB</td>
+      <td style="text-align: right">128KB</td>
+      <td style="text-align: right">128KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_08_step1_no.png" alt="Allreduce 1 node 8 processes no coll" /></p>
+
+<p><img src="are_01_08_step1_uc.png" alt="Allreduce 1 node 8 processes UCC" /></p>
+
+<p><img src="are_01_08_step1_hc.png" alt="Allreduce 1 node 8 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="are_01_08_step2.png" alt="Allreduce 1 node 8 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は256KB以上で性能が向上しそれ未満で性能が低下</li>
+  <li><strong>HCOLL</strong> はほぼ全域で性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対してほぼ全域で性能が低下</li>
+  <li>チューニング未適用は16KBから16MBの間で大幅に性能が低下</li>
+</ul>
 
 <h2 id="1-2--16-mpiプロセス">1-2.  16 MPIプロセス</h2>
 
 <h3 id="1-2-0-概要">1-2-0. 概要</h3>
 
-<p>本章は、1ノードに16 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、1ノードに16 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
-<p>下表は、各MPI集合通信関数の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
-特に <strong>Alltoall</strong> は8KBから128KB、 <strong>Allreduce</strong> は64KBから16MBのメッセージサイズに於いて、性能が向上します。</p>
+<h3 id="1-2-1-alltoall">1-2-1. Alltoall</h3>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
+
+<p><img src="ata_01_16_n1_bl_no.png" alt="Alltoall 1 node 16 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_16_n1_bl_uc.png" alt="Alltoall 1 node 16 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_16_n1_bl_hc.png" alt="Alltoall 1 node 16 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_16_n1_cy_no.png" alt="Alltoall 1 node 16 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_16_n1_cy_uc.png" alt="Alltoall 1 node 16 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_16_n1_cy_hc.png" alt="Alltoall 1 node 16 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_16_n2_bl_no.png" alt="Alltoall 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_16_n2_bl_uc.png" alt="Alltoall 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_16_n2_bl_hc.png" alt="Alltoall 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p><img src="ata_01_16_n2_cy_no.png" alt="Alltoall 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_16_n2_cy_uc.png" alt="Alltoall 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_16_n2_cy_hc.png" alt="Alltoall 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center">MPI集合通信関数</th>
-      <th style="text-align: right">UCX_RNDV_THRESH</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center"><strong>Alltoall</strong></td>
-      <td style="text-align: right">32kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allgather</strong></td>
-      <td style="text-align: right">32kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allreduce</strong></td>
-      <td style="text-align: right">128kb</td>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">32KB</td>
+      <td style="text-align: right">32KB</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>HCOLL</strong> 使用の有無は、以下の傾向がみられます。</p>
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_16_step1_no.png" alt="Alltoall 1 node 16 processes no coll" /></p>
+
+<p><img src="ata_01_16_step1_uc.png" alt="Alltoall 1 node 16 processes UCC" /></p>
+
+<p><img src="ata_01_16_step1_hc.png" alt="Alltoall 1 node 16 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="ata_01_16_step2.png" alt="Alltoall 1 node 16 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
 
 <ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>使用しない場合は8KBのメッセージサイズに特異点が発生</li>
-    </ul>
-  </li>
-  <li><strong>Allreduce</strong>
-    <ul>
-      <li>4KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-      <li>32MBから1GBのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
+  <li><strong>UCC</strong> は16KB以上で性能が低下し128B未満で性能が向上</li>
+  <li><strong>HCOLL</strong> は1KB以上で顕著な傾向無くそれ未満で性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して32KB以上で性能が低下しそれ未満で顕著な傾向無し</li>
+  <li>チューニング未適用は8KBから128KBの間で大幅に性能が低下</li>
 </ul>
-
-<p><strong>NPS</strong> とMPIプロセス分割方法は、以下の傾向がみられます。</p>
-
-<ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>16MBから32MBのメッセージサイズで <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="1-2-1-alltoall">1-2-1. Alltoall</h3>
-
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
-
-<p><img src="ata_01_16_n1_bl.png" alt="Alltoall 1 node 16 processes NPS1 Block" /></p>
-
-<p><img src="ata_01_16_n1_cy.png" alt="Alltoall 1 node 16 processes NPS1 Cyclic" /></p>
-
-<p><img src="ata_01_16_n2_bl.png" alt="Alltoall 1 node 16 processes NPS2 Block" /></p>
-
-<p><img src="ata_01_16_n2_cy.png" alt="Alltoall 1 node 16 processes NPS2 Cyclic" /></p>
-
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
-
-<p><img src="ata_01_16.png" alt="Alltoall 1 node 16 processes" /></p>
 
 <h3 id="1-2-2-allgather">1-2-2. Allgather</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="aga_01_16_n1_bl.png" alt="Allgather 1 node 16 processes NPS1 Block" /></p>
+<p><img src="aga_01_16_n1_bl_no.png" alt="Allgather 1 node 16 processes NPS1 no coll" /></p>
 
-<p><img src="aga_01_16_n1_cy.png" alt="Allgather 1 node 16 processes NPS1 Cyclic" /></p>
+<p><img src="aga_01_16_n1_bl_uc.png" alt="Allgather 1 node 16 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_16_n2_bl.png" alt="Allgather 1 node 16 processes NPS2 Block" /></p>
+<p><img src="aga_01_16_n1_bl_hc.png" alt="Allgather 1 node 16 processes NPS1 HCOLL" /></p>
 
-<p><img src="aga_01_16_n2_cy.png" alt="Allgather 1 node 16 processes NPS2 Cyclic" /></p>
+<p><img src="aga_01_16_n1_cy_no.png" alt="Allgather 1 node 16 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>32kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="aga_01_16_n1_cy_uc.png" alt="Allgather 1 node 16 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_16.png" alt="Allgather 1 node 16 processes" /></p>
+<p><img src="aga_01_16_n1_cy_hc.png" alt="Allgather 1 node 16 processes NPS1 HCOLL" /></p>
+
+<p><img src="aga_01_16_n2_bl_no.png" alt="Allgather 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_16_n2_bl_uc.png" alt="Allgather 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_16_n2_bl_hc.png" alt="Allgather 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p><img src="aga_01_16_n2_cy_no.png" alt="Allgather 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_16_n2_cy_uc.png" alt="Allgather 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_16_n2_cy_hc.png" alt="Allgather 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">64KB</td>
+      <td style="text-align: right">32KB</td>
+      <td style="text-align: right">32KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_16_step1_no.png" alt="Allgather 1 node 16 processes no coll" /></p>
+
+<p><img src="aga_01_16_step1_uc.png" alt="Allgather 1 node 16 processes UCC" /></p>
+
+<p><img src="aga_01_16_step1_hc.png" alt="Allgather 1 node 16 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="aga_01_16_step2.png" alt="Allgather 1 node 16 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は16KB以上で顕著な傾向無くそれ未満で性能が低下</li>
+  <li><strong>HCOLL</strong> は32KB以上で顕著な傾向無くそれ未満のほぼ全域で性能が低下</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して4KBから16KBの間で性能が向上しそれ未満で性能が低下</li>
+  <li>チューニング適用による性能の変化無し</li>
+</ul>
 
 <h3 id="1-2-3-allreduce">1-2-3. Allreduce</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="are_01_16_n1_bl.png" alt="Allreduce 1 node 16 processes NPS1 Block" /></p>
+<p><img src="are_01_16_n1_bl_no.png" alt="Allreduce 1 node 16 processes NPS1 no coll" /></p>
 
-<p><img src="are_01_16_n1_cy.png" alt="Allreduce 1 node 16 processes NPS1 Cyclic" /></p>
+<p><img src="are_01_16_n1_bl_uc.png" alt="Allreduce 1 node 16 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_16_n2_bl.png" alt="Allreduce 1 node 16 processes NPS2 Block" /></p>
+<p><img src="are_01_16_n1_bl_hc.png" alt="Allreduce 1 node 16 processes NPS1 HCOLL" /></p>
 
-<p><img src="are_01_16_n2_cy.png" alt="Allreduce 1 node 16 processes NPS2 Cyclic" /></p>
+<p><img src="are_01_16_n1_cy_no.png" alt="Allreduce 1 node 16 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="are_01_16_n1_cy_uc.png" alt="Allreduce 1 node 16 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_16.png" alt="Allreduce 1 node 16 processes" /></p>
+<p><img src="are_01_16_n1_cy_hc.png" alt="Allreduce 1 node 16 processes NPS1 HCOLL" /></p>
+
+<p><img src="are_01_16_n2_bl_no.png" alt="Allreduce 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_16_n2_bl_uc.png" alt="Allreduce 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_16_n2_bl_hc.png" alt="Allreduce 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p><img src="are_01_16_n2_cy_no.png" alt="Allreduce 1 node 16 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_16_n2_cy_uc.png" alt="Allreduce 1 node 16 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_16_n2_cy_hc.png" alt="Allreduce 1 node 16 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">64KB</td>
+      <td style="text-align: right">128KB</td>
+      <td style="text-align: right">128KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_16_step1_no.png" alt="Allreduce 1 node 16 processes no coll" /></p>
+
+<p><img src="are_01_16_step1_uc.png" alt="Allreduce 1 node 16 processes UCC" /></p>
+
+<p><img src="are_01_16_step1_hc.png" alt="Allreduce 1 node 16 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="are_01_16_step2.png" alt="Allreduce 1 node 16 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は32KB以上で性能が向上しそれ未満で性能が低下</li>
+  <li><strong>HCOLL</strong> は32MB以上で性能が向上し4KB以下で性能が低下</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して8KB以上で顕著な傾向が無くそれ未満で性能が低下</li>
+  <li>チューニング未適用は8KBから16MBの間で大幅に性能が低下</li>
+</ul>
 
 <h2 id="1-3--32-mpiプロセス">1-3.  32 MPIプロセス</h2>
 
 <h3 id="1-3-0-概要">1-3-0. 概要</h3>
 
-<p>本章は、1ノードに32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関毎に検証します。</p>
+<p>本章は、1ノードに32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
-<p>下表は、各MPI集合通信関数の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
-特に <strong>Alltoall</strong> は8KBから512KB、 <strong>Allreduce</strong> は128KBから16MBのメッセージサイズに於いて、性能が向上します。</p>
+<h3 id="1-3-1-alltoall">1-3-1. Alltoall</h3>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
+
+<p><img src="ata_01_32_n1_bl_no.png" alt="Alltoall 1 node 32 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_32_n1_bl_uc.png" alt="Alltoall 1 node 32 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_32_n1_bl_hc.png" alt="Alltoall 1 node 32 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_32_n1_cy_no.png" alt="Alltoall 1 node 32 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_32_n1_cy_uc.png" alt="Alltoall 1 node 32 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_32_n1_cy_hc.png" alt="Alltoall 1 node 32 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_32_n2_bl_no.png" alt="Alltoall 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_32_n2_bl_uc.png" alt="Alltoall 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_32_n2_bl_hc.png" alt="Alltoall 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p><img src="ata_01_32_n2_cy_no.png" alt="Alltoall 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_32_n2_cy_uc.png" alt="Alltoall 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_32_n2_cy_hc.png" alt="Alltoall 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center">MPI集合通信関数</th>
-      <th style="text-align: right">UCX_RNDV_THRESH</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center"><strong>Alltoall</strong></td>
-      <td style="text-align: right">16kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allgather</strong></td>
-      <td style="text-align: right">16kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allreduce</strong></td>
-      <td style="text-align: right">128kb</td>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>HCOLL</strong> 使用の有無は、以下の傾向がみられます。</p>
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_32_step1_no.png" alt="Alltoall 1 node 32 processes no coll" /></p>
+
+<p><img src="ata_01_32_step1_uc.png" alt="Alltoall 1 node 32 processes UCC" /></p>
+
+<p><img src="ata_01_32_step1_hc.png" alt="Alltoall 1 node 32 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="ata_01_32_step2.png" alt="Alltoall 1 node 32 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
 
 <ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>1KBまでのメッセージサイズで使用する場合が使用しない場合に対しておおむね優位</li>
-    </ul>
-  </li>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>2KBから8KBまでのメッセージサイズで使用しない場合が使用する場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allreduce</strong>
-    <ul>
-      <li>32Bから4KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-      <li>32MBから1GBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
+  <li><strong>UCC</strong> は16KB以上と128B以下で性能が低下</li>
+  <li><strong>HCOLL</strong> は2KB以上で顕著な傾向が無くそれ未満で概ね性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して16KB以上で性能が低下しそれ未満で顕著な傾向無し</li>
+  <li>チューニング未適用は8KBから512KBの間で大幅に性能が低下</li>
 </ul>
-
-<p><strong>NPS</strong> とMPIプロセス分割方法は、以下の傾向がみられます。</p>
-
-<ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>2MBから32MBまでのメッセージサイズで <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>32MBメッセージサイズでブロック分割がサイクリック分割に対して優位</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="1-3-1-alltoall">1-3-1. Alltoall</h3>
-
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
-
-<p><img src="ata_01_32_n1_bl.png" alt="Alltoall 1 node 32 processes NPS1 Block" /></p>
-
-<p><img src="ata_01_32_n1_cy.png" alt="Alltoall 1 node 32 processes NPS1 Cyclic" /></p>
-
-<p><img src="ata_01_32_n2_bl.png" alt="Alltoall 1 node 32 processes NPS2 Block" /></p>
-
-<p><img src="ata_01_32_n2_cy.png" alt="Alltoall 1 node 32 processes NPS2 Cyclic" /></p>
-
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
-
-<p><img src="ata_01_32.png" alt="Alltoall 1 node 32 processes" /></p>
 
 <h3 id="1-3-2-allgather">1-3-2. Allgather</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="aga_01_32_n1_bl.png" alt="Allgather 1 node 32 processes NPS1 Block" /></p>
+<p><img src="aga_01_32_n1_bl_no.png" alt="Allgather 1 node 32 processes NPS1 no coll" /></p>
 
-<p><img src="aga_01_32_n1_cy.png" alt="Allgather 1 node 32 processes NPS1 Cyclic" /></p>
+<p><img src="aga_01_32_n1_bl_uc.png" alt="Allgather 1 node 32 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_32_n2_bl.png" alt="Allgather 1 node 32 processes NPS2 Block" /></p>
+<p><img src="aga_01_32_n1_bl_hc.png" alt="Allgather 1 node 32 processes NPS1 HCOLL" /></p>
 
-<p><img src="aga_01_32_n2_cy.png" alt="Allgather 1 node 32 processes NPS2 Cyclic" /></p>
+<p><img src="aga_01_32_n1_cy_no.png" alt="Allgather 1 node 32 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="aga_01_32_n1_cy_uc.png" alt="Allgather 1 node 32 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_32.png" alt="Allgather 1 node 32 processes" /></p>
+<p><img src="aga_01_32_n1_cy_hc.png" alt="Allgather 1 node 32 processes NPS1 HCOLL" /></p>
+
+<p><img src="aga_01_32_n2_bl_no.png" alt="Allgather 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_32_n2_bl_uc.png" alt="Allgather 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_32_n2_bl_hc.png" alt="Allgather 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p><img src="aga_01_32_n2_cy_no.png" alt="Allgather 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_32_n2_cy_uc.png" alt="Allgather 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_32_n2_cy_hc.png" alt="Allgather 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_32_step1_no.png" alt="Allgather 1 node 32 processes no coll" /></p>
+
+<p><img src="aga_01_32_step1_uc.png" alt="Allgather 1 node 32 processes UCC" /></p>
+
+<p><img src="aga_01_32_step1_hc.png" alt="Allgather 1 node 32 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="aga_01_32_step2.png" alt="Allgather 1 node 32 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は128Bから512Bの間で性能が低下しそれ以外で顕著な傾向無し</li>
+  <li><strong>HCOLL</strong> は2KBから8KBの間で性能が低下しそれ以外で顕著な傾向無し</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して128Bから512Bの間で性能が低下し2KBから8KBの間で性能が向上</li>
+  <li>チューニング適用による性能の変化無し</li>
+</ul>
 
 <h3 id="1-3-3-allreduce">1-3-3. Allreduce</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="are_01_32_n1_bl.png" alt="Allreduce 1 node 32 processes NPS1 Block" /></p>
+<p><img src="are_01_32_n1_bl_no.png" alt="Allreduce 1 node 32 processes NPS1 no coll" /></p>
 
-<p><img src="are_01_32_n1_cy.png" alt="Allreduce 1 node 32 processes NPS1 Cyclic" /></p>
+<p><img src="are_01_32_n1_bl_uc.png" alt="Allreduce 1 node 32 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_32_n2_bl.png" alt="Allreduce 1 node 32 processes NPS2 Block" /></p>
+<p><img src="are_01_32_n1_bl_hc.png" alt="Allreduce 1 node 32 processes NPS1 HCOLL" /></p>
 
-<p><img src="are_01_32_n2_cy.png" alt="Allreduce 1 node 32 processes NPS2 Cyclic" /></p>
+<p><img src="are_01_32_n1_cy_no.png" alt="Allreduce 1 node 32 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="are_01_32_n1_cy_uc.png" alt="Allreduce 1 node 32 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_32.png" alt="Allreduce 1 node 32 processes" /></p>
+<p><img src="are_01_32_n1_cy_hc.png" alt="Allreduce 1 node 32 processes NPS1 HCOLL" /></p>
+
+<p><img src="are_01_32_n2_bl_no.png" alt="Allreduce 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_32_n2_bl_uc.png" alt="Allreduce 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_32_n2_bl_hc.png" alt="Allreduce 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p><img src="are_01_32_n2_cy_no.png" alt="Allreduce 1 node 32 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_32_n2_cy_uc.png" alt="Allreduce 1 node 32 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_32_n2_cy_hc.png" alt="Allreduce 1 node 32 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">Auto</td>
+      <td style="text-align: right">128KB</td>
+      <td style="text-align: right">128KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_32_step1_no.png" alt="Allreduce 1 node 32 processes no coll" /></p>
+
+<p><img src="are_01_32_step1_uc.png" alt="Allreduce 1 node 32 processes UCC" /></p>
+
+<p><img src="are_01_32_step1_hc.png" alt="Allreduce 1 node 32 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="are_01_32_step2.png" alt="Allreduce 1 node 32 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は512KB以上で性能が向上しそれ未満で顕著な傾向無し</li>
+  <li><strong>HCOLL</strong> は32MB以上と4KB以下で性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して4KB以下で性能が低下</li>
+  <li>チューニング未適用は64KBから16MBの間で大幅に性能が低下</li>
+</ul>
 
 <h2 id="1-4--36-mpiプロセス">1-4.  36 MPIプロセス</h2>
 
 <h3 id="1-4-0-概要">1-4-0. 概要</h3>
 
-<p>本章は、1ノードに36 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数ごとに検証します。</p>
+<p>本章は、1ノードに36 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
-<p>下表は、各MPI集合通信関数の最適な <strong>UCX_RNDV_THRESH</strong> を示しており、この設定値を使用することによりデフォルト値の <strong>auto</strong> に対する性能向上が見られます。<br />
-特に <strong>Alltoall</strong> は8KBから256KB、 <strong>Allreduce</strong> は64KBから16MBのメッセージサイズに於いて、性能が向上します。</p>
+<h3 id="1-4-1-alltoall">1-4-1. Alltoall</h3>
+
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
+
+<p><img src="ata_01_36_n1_bl_no.png" alt="Alltoall 1 node 36 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_36_n1_bl_uc.png" alt="Alltoall 1 node 36 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_36_n1_bl_hc.png" alt="Alltoall 1 node 36 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_36_n1_cy_no.png" alt="Alltoall 1 node 36 processes NPS1 no coll" /></p>
+
+<p><img src="ata_01_36_n1_cy_uc.png" alt="Alltoall 1 node 36 processes NPS1 UCC" /></p>
+
+<p><img src="ata_01_36_n1_cy_hc.png" alt="Alltoall 1 node 36 processes NPS1 HCOLL" /></p>
+
+<p><img src="ata_01_36_n2_bl_no.png" alt="Alltoall 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_36_n2_bl_uc.png" alt="Alltoall 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_36_n2_bl_hc.png" alt="Alltoall 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p><img src="ata_01_36_n2_cy_no.png" alt="Alltoall 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="ata_01_36_n2_cy_uc.png" alt="Alltoall 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="ata_01_36_n2_cy_hc.png" alt="Alltoall 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: center">MPI集合通信関数</th>
-      <th style="text-align: right">UCX_RNDV_THRESH</th>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: center"><strong>Alltoall</strong></td>
-      <td style="text-align: right">16kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allgather</strong></td>
-      <td style="text-align: right">16kb</td>
-    </tr>
-    <tr>
-      <td style="text-align: center"><strong>Allreduce</strong></td>
-      <td style="text-align: right">128kb</td>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>HCOLL</strong> 使用の有無は、以下の傾向がみられます。</p>
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="ata_01_36_step1_no.png" alt="Alltoall 1 node 36 processes no coll" /></p>
+
+<p><img src="ata_01_36_step1_uc.png" alt="Alltoall 1 node 36 processes UCC" /></p>
+
+<p><img src="ata_01_36_step1_hc.png" alt="Alltoall 1 node 36 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">サイクリック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="ata_01_36_step2.png" alt="Alltoall 1 node 36 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
 
 <ul>
-  <li><strong>Alltoall</strong>
-    <ul>
-      <li>1KBまでのメッセージサイズで使用する場合が使用しない場合に対しておおむね優位</li>
-      <li>256KBから2MBまでのメッセージサイズで使用しない場合が使用する場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>1KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allreduce</strong>
-    <ul>
-      <li>4KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-      <li>8MBから1GBまでのメッセージサイズで使用する場合が使用しない場合に対して優位</li>
-    </ul>
-  </li>
+  <li><strong>UCC</strong> は16KB以上で性能が低下し128B以下で性能が向上</li>
+  <li><strong>HCOLL</strong> は128KB以上で性能が低下し1KB以下で概ね性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して16KBから128KBの間で性能が低下</li>
+  <li>チューニング未適用は8KBから256KBの間で大幅に性能が低下</li>
 </ul>
-
-<p><strong>NPS</strong> とMPIプロセス分割方法は、以下の傾向がみられます。</p>
-
-<ul>
-  <li><strong>Allgather</strong>
-    <ul>
-      <li>32MBメッセージサイズでブロック分割がサイクリック分割に対して優位</li>
-    </ul>
-  </li>
-  <li><strong>Allreduce</strong>
-    <ul>
-      <li>1MBから8MBのメッセージサイズで <strong>NPS1</strong> が <strong>NPS2</strong> に対して優位</li>
-    </ul>
-  </li>
-</ul>
-
-<h3 id="1-4-1-alltoall">1-4-1. Alltoall</h3>
-
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
-
-<p><img src="ata_01_36_n1_bl.png" alt="Alltoall 1 node 36 processes NPS1 Block" /></p>
-
-<p><img src="ata_01_36_n1_cy.png" alt="Alltoall 1 node 36 processes NPS1 Cyclic" /></p>
-
-<p><img src="ata_01_36_n2_bl.png" alt="Alltoall 1 node 36 processes NPS2 Block" /></p>
-
-<p><img src="ata_01_36_n2_cy.png" alt="Alltoall 1 node 36 processes NPS2 Cyclic" /></p>
-
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
-
-<p><img src="ata_01_36.png" alt="Alltoall 1 node 36 processes" /></p>
 
 <h3 id="1-4-2-allgather">1-4-2. Allgather</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="aga_01_36_n1_bl.png" alt="Allgather 1 node 36 processes NPS1 Block" /></p>
+<p><img src="aga_01_36_n1_bl_no.png" alt="Allgather 1 node 36 processes NPS1 no coll" /></p>
 
-<p><img src="aga_01_36_n1_cy.png" alt="Allgather 1 node 36 processes NPS1 Cyclic" /></p>
+<p><img src="aga_01_36_n1_bl_uc.png" alt="Allgather 1 node 36 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_36_n2_bl.png" alt="Allgather 1 node 36 processes NPS2 Block" /></p>
+<p><img src="aga_01_36_n1_bl_hc.png" alt="Allgather 1 node 36 processes NPS1 HCOLL" /></p>
 
-<p><img src="aga_01_36_n2_cy.png" alt="Allgather 1 node 36 processes NPS2 Cyclic" /></p>
+<p><img src="aga_01_36_n1_cy_no.png" alt="Allgather 1 node 36 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>16kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="aga_01_36_n1_cy_uc.png" alt="Allgather 1 node 36 processes NPS1 UCC" /></p>
 
-<p><img src="aga_01_36.png" alt="Allgather 1 node 36 processes" /></p>
+<p><img src="aga_01_36_n1_cy_hc.png" alt="Allgather 1 node 36 processes NPS1 HCOLL" /></p>
+
+<p><img src="aga_01_36_n2_bl_no.png" alt="Allgather 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_36_n2_bl_uc.png" alt="Allgather 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_36_n2_bl_hc.png" alt="Allgather 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p><img src="aga_01_36_n2_cy_no.png" alt="Allgather 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="aga_01_36_n2_cy_uc.png" alt="Allgather 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="aga_01_36_n2_cy_hc.png" alt="Allgather 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+      <td style="text-align: right">16KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="aga_01_36_step1_no.png" alt="Allgather 1 node 36 processes no coll" /></p>
+
+<p><img src="aga_01_36_step1_uc.png" alt="Allgather 1 node 36 processes UCC" /></p>
+
+<p><img src="aga_01_36_step1_hc.png" alt="Allgather 1 node 36 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="aga_01_36_step2.png" alt="Allgather 1 node 36 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は64B以下で性能が向上しそれ以外で顕著な傾向無し</li>
+  <li><strong>HCOLL</strong> は1KB以下で性能が向上しそれ以外で顕著な傾向無し</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して2KBから8KBの間で性能が向上しそれ未満で性能が低下</li>
+  <li>チューニング適用による性能の変化無し</li>
+</ul>
 
 <h3 id="1-4-3-allreduce">1-4-3. Allreduce</h3>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> とMPIプロセス分割方法の組合せ毎に示しています。 <strong>coll_hcoll_enable</strong> は、ここでは <strong>1</strong> としています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allreduce</strong> の結果を、 <strong>NPS</strong> 、MPIプロセス分割方法、及び集合通信コンポーネントの組合せ毎に示しています。</p>
 
-<p><img src="are_01_36_n1_bl.png" alt="Allreduce 1 node 36 processes NPS1 Block" /></p>
+<p><img src="are_01_36_n1_bl_no.png" alt="Allreduce 1 node 36 processes NPS1 no coll" /></p>
 
-<p><img src="are_01_36_n1_cy.png" alt="Allreduce 1 node 36 processes NPS1 Cyclic" /></p>
+<p><img src="are_01_36_n1_bl_uc.png" alt="Allreduce 1 node 36 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_36_n2_bl.png" alt="Allreduce 1 node 36 processes NPS2 Block" /></p>
+<p><img src="are_01_36_n1_bl_hc.png" alt="Allreduce 1 node 36 processes NPS1 HCOLL" /></p>
 
-<p><img src="are_01_36_n2_cy.png" alt="Allreduce 1 node 36 processes NPS2 Cyclic" /></p>
+<p><img src="are_01_36_n1_cy_no.png" alt="Allreduce 1 node 36 processes NPS1 no coll" /></p>
 
-<p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>128kb</strong> とした場合が最も性能が良いと判断してこれを固定、 <strong>NPS</strong> 、MPIプロセス分割方法、及び <strong>HCOLL</strong> 使用の有無を比較したものが以下のグラフです。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p><img src="are_01_36_n1_cy_uc.png" alt="Allreduce 1 node 36 processes NPS1 UCC" /></p>
 
-<p><img src="are_01_36.png" alt="Allreduce 1 node 36 processes" /></p>
+<p><img src="are_01_36_n1_cy_hc.png" alt="Allreduce 1 node 36 processes NPS1 HCOLL" /></p>
+
+<p><img src="are_01_36_n2_bl_no.png" alt="Allreduce 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_36_n2_bl_uc.png" alt="Allreduce 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_36_n2_bl_hc.png" alt="Allreduce 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p><img src="are_01_36_n2_cy_no.png" alt="Allreduce 1 node 36 processes NPS2 no coll" /></p>
+
+<p><img src="are_01_36_n2_cy_uc.png" alt="Allreduce 1 node 36 processes NPS2 UCC" /></p>
+
+<p><img src="are_01_36_n2_cy_hc.png" alt="Allreduce 1 node 36 processes NPS2 HCOLL" /></p>
+
+<p>以上より、各集合通信コンポーネントの <strong>UCX_RNDV_THRESH</strong> を下表の値とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>UCX_RNDV_THRESH</strong></td>
+      <td style="text-align: right">Auto</td>
+      <td style="text-align: right">128KB</td>
+      <td style="text-align: right">128KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
+
+<p><img src="are_01_36_step1_no.png" alt="Allreduce 1 node 36 processes no coll" /></p>
+
+<p><img src="are_01_36_step1_uc.png" alt="Allreduce 1 node 36 processes UCC" /></p>
+
+<p><img src="are_01_36_step1_hc.png" alt="Allreduce 1 node 36 processes HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの <strong>UCX_RNDV_THRESH=auto</strong> と <strong>coll_hcoll_enable=1</strong> の組合せを含めています。</p>
+
+<p><img src="are_01_36_step2.png" alt="Allreduce 1 node 36 processes" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は128B以上で性能が向上</li>
+  <li><strong>HCOLL</strong> は128KB以上と4KB以下で性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して8KB以上で顕著な傾向が無くそれ未満で性能が低下</li>
+  <li>チューニング未適用は64KBから64MBの間で大幅に性能が低下</li>
+</ul>
 
 <hr />
 <h1 id="2--2ノード">2.  2ノード</h1>
@@ -1028,14 +1760,15 @@
 
 <ul>
   <li><strong>UCX_TLS</strong> ： <strong>all</strong> ・ <strong>self,sm,rc</strong> ・ <strong>self,sm,ud</strong> ・ <strong>self,sm,dc</strong></li>
-  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※12）</li>
+  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※13）</li>
   <li><strong>UCX_ZCOPY_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong></li>
   <li><strong>coll_hcoll_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
+  <li><strong>coll_ucc_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
   <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割</li>
   <li><strong>NPS</strong> ：  <strong>1</strong> ・ <strong>2</strong></li>
 </ul>
 
-<p>※12） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
+<p>※13） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
 
 <ul>
   <li><strong>intra:auto,inter:auto</strong></li>
@@ -1054,7 +1787,8 @@
   <li>ステップ1
     <ul>
       <li><strong>UCX_TLS</strong> と <strong>UCX_RNDV_THRESH</strong> を組合せた32個のパターンを検証してこれらの最適値を決定</li>
-      <li><strong>coll_hcoll_enable</strong> は <strong>1</strong> に固定</li>
+      <li><strong>coll_hcoll_enable</strong> は <strong>1</strong> に固定（デフォルト）</li>
+      <li><strong>coll_ucc_enable</strong> は <strong>0</strong> に固定（デフォルト）</li>
       <li>MPIプロセス分割方法はブロック分割に固定</li>
       <li><strong>NPS</strong> は <strong>NPS1</strong> に固定</li>
     </ul>
@@ -1063,14 +1797,15 @@
     <ul>
       <li><strong>UCX_ZCOPY_THRESH</strong> の7パターンを検証してこの最適値を決定</li>
       <li><strong>UCX_TLS</strong> と <strong>UCX_RNDV_THRESH</strong> はステップ1で決定した最適値を使用</li>
-      <li><strong>coll_hcoll_enable</strong> は <strong>1</strong> に固定</li>
+      <li><strong>coll_hcoll_enable</strong> は <strong>1</strong> に固定（デフォルト）</li>
+      <li><strong>coll_ucc_enable</strong> は <strong>0</strong> に固定（デフォルト）</li>
       <li>MPIプロセス分割方法はブロック分割に固定</li>
       <li><strong>NPS</strong> は <strong>NPS1</strong> に固定</li>
     </ul>
   </li>
   <li>ステップ3
     <ul>
-      <li><strong>coll_hcoll_enable</strong> とMPIプロセス分割方法と <strong>NPS</strong> を組合せた8パターンを検証してこれらの最適値を決定</li>
+      <li><strong>coll_hcoll_enable</strong> / <strong>coll_ucc_enable</strong> / MPIプロセス分割方法 / <strong>NPS</strong> を組合せた12パターンを検証してこれらの最適値を決定</li>
       <li><strong>UCX_TLS</strong> と <strong>UCX_RNDV_THRESH</strong> はステップ1で決定した最適値を使用</li>
       <li><strong>UCX_ZCOPY_THRESH</strong> はステップ2で決定した最適値を使用</li>
     </ul>
@@ -1081,7 +1816,7 @@
 
 <h3 id="2-1-0-概要">2-1-0. 概要</h3>
 
-<p>本章は、2ノードにノード当たり8 MPIプロセスでトータル16 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、2ノードにノード当たり8 MPIプロセスでトータル16 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -1142,16 +1877,16 @@
 
 <p>[ステップ1]</p>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>UCX_TLS</strong> の設定値毎に示しています。 <strong>coll_hcoll_enable</strong> ・MPIプロセス分割方法・ <strong>NPS</strong> は、ここではそれぞれ <strong>1</strong> ・ブロック分割・ <strong>NPS1</strong> としています。<br />
-なお、ノード内の <strong>UCX_RNDV_THRESH</strong> の最適値は、 <strong><a href="#1-1-1-alltoall">1-1-1 Alltoall</a></strong> の結果から32kbとしています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Alltoall</strong> の結果を、 <strong>UCX_TLS</strong> の設定値毎に示しています。<br />
+ノード内の <strong>UCX_RNDV_THRESH</strong> の最適値は、 <strong><a href="#1-1-1-alltoall">1-1-1 Alltoall</a></strong> の結果から32kbとしています。</p>
 
-<p><img src="ata_02_08_all_step1.png" alt="Alltoall 2 node 8 ppn all step1" /></p>
+<p><img src="ata_02_08_step1_all.png" alt="Alltoall 2 node 8 ppn all step1" /></p>
 
-<p><img src="ata_02_08_rc_step1.png" alt="Alltoall 2 node 8 ppn rc step1" /></p>
+<p><img src="ata_02_08_step1_dc.png" alt="Alltoall 2 node 8 ppn dc step1" /></p>
 
-<p><img src="ata_02_08_ud_step1.png" alt="Alltoall 2 node 8 ppn ud step1" /></p>
+<p><img src="ata_02_08_step1_rc.png" alt="Alltoall 2 node 8 ppn rc step1" /></p>
 
-<p><img src="ata_02_08_dc_step1.png" alt="Alltoall 2 node 8 ppn dc step1" /></p>
+<p><img src="ata_02_08_step1_ud.png" alt="Alltoall 2 node 8 ppn ud step1" /></p>
 
 <p>以上より、 <strong>UCX_RNDV_THRESH</strong> を <strong>intra:32kb,inter:128kb</strong> とした場合が最も性能が良いと判断してこれを固定し、 <strong>UCX_TLS</strong> の各設定値を比較したものが以下のグラフです。</p>
 
@@ -1169,18 +1904,61 @@
 
 <p>[ステップ3]</p>
 
-<p>以下のグラフは、 <strong>NPS</strong> ・MPIプロセス分割方法・ <strong>HCOLL</strong> 使用の有無の各組み合わせで <strong>Alltoall</strong> の結果を示しています。<br />
-なお <strong>HCOLL</strong> 使用の有無は、 <strong>NPS1</strong> とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。<br />
-また比較対象として、全てのパラメータをデフォルトとした <strong>NPS1</strong> とブロック分割の組合せを記載しています。</p>
+<p>以下のグラフは、<strong>NPS</strong> とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。</p>
 
-<p><img src="ata_02_08_step3.png" alt="Alltoall 2 node 8 ppn step3" /></p>
+<p><img src="ata_02_08_step3_no.png" alt="Alltoall 2 node 8 ppn no coll" /></p>
+
+<p><img src="ata_02_08_step3_uc.png" alt="Alltoall 2 node 8 ppn UCC" /></p>
+
+<p><img src="ata_02_08_step3_hc.png" alt="Alltoall 2 node 8 ppn HCOLL" /></p>
+
+<p>以上より、 <strong>NPS</strong> とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: right">No COLL</th>
+      <th style="text-align: right">UCC</th>
+      <th style="text-align: right">HCOLL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>NPS</strong></td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">2</td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">MPIプロセス分割方法</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+      <td style="text-align: right">ブロック分割</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>集合通信コンポーネントを比較したものが以下のグラフです。<br />
+ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの組合せ（ <strong>UCX_RNDV_THRESH=auto</strong> ・ <strong>UCX_ZCOPY_THRESH=auto</strong> ・ <strong>coll_hcoll_enable=1</strong> ・ <strong>coll_ucc_enable=0</strong> ）を含めています。</p>
+
+<p><img src="ata_02_08_step3.png" alt="Alltoall 2 node 8 ppn" /></p>
+
+<p>以上の結果は、以下のように考察することが出来ます。</p>
+
+<ul>
+  <li><strong>UCC</strong> は4KBから256KBの間で性能が低下し256B以下で概ね性能が向上</li>
+  <li><strong>HCOLL</strong> は256B以下で概ね性能が向上</li>
+  <li><strong>UCC</strong> は <strong>HCOLL</strong> に対して64KB以下で概ね性能が低下</li>
+  <li>チューニング未適用は2KBから128KBの間で大幅に性能が低下</li>
+</ul>
 
 <h3 id="2-1-2-allgather">2-1-2. Allgather</h3>
 
 <p>[ステップ1]</p>
 
-<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>UCX_TLS</strong> の設定値毎に示しています。 <strong>coll_hcoll_enable</strong> ・MPIプロセス分割方法・ <strong>NPS</strong> は、ここではそれぞれ <strong>1</strong> ・ブロック分割・ <strong>NPS1</strong> としています。<br />
-なお、ノード内の <strong>UCX_RNDV_THRESH</strong> の最適値は、 <strong><a href="#1-1-2-allgather">1-1-2 Allgather</a></strong> の結果から64kbとしています。</p>
+<p>以下のグラフは、 <strong>UCX_RNDV_THRESH</strong> を変化させたときの <strong>Allgather</strong> の結果を、 <strong>UCX_TLS</strong> の設定値毎に示しています。<br />
+ノード内の <strong>UCX_RNDV_THRESH</strong> の最適値は、 <strong><a href="#1-1-2-allgather">1-1-2 Allgather</a></strong> の結果から64kbとしています。</p>
 
 <p><img src="aga_02_08_all_step1.png" alt="Allgather 2 node 8 ppn all step1" /></p>
 
@@ -1253,7 +2031,7 @@
 
 <h3 id="2-2-0-概要">2-2-0. 概要</h3>
 
-<p>本章は、2ノードにノード当たり16 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、2ノードにノード当たり16 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -1425,7 +2203,7 @@
 
 <h3 id="2-3-0-概要">2-3-0. 概要</h3>
 
-<p>本章は、2ノードにノード当たり32 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、2ノードにノード当たり32 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -1597,7 +2375,7 @@
 
 <h3 id="2-4-0-概要">2-4-0. 概要</h3>
 
-<p>本章は、2ノードにノード当たり36 MPIプロセスでトータル72 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、2ノードにノード当たり36 MPIプロセスでトータル72 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -1792,14 +2570,14 @@
 
 <ul>
   <li><strong>UCX_TLS</strong> ： <strong>all</strong> ・ <strong>self,sm,rc</strong> ・ <strong>self,sm,ud</strong> ・ <strong>self,sm,dc</strong></li>
-  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※13）</li>
+  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※14）</li>
   <li><strong>UCX_ZCOPY_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong></li>
   <li><strong>coll_hcoll_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
   <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割</li>
   <li><strong>NPS</strong> ：  <strong>1</strong> ・ <strong>2</strong></li>
 </ul>
 
-<p>※13） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
+<p>※14） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
 
 <ul>
   <li><strong>intra:auto,inter:auto</strong></li>
@@ -1845,7 +2623,7 @@
 
 <h3 id="3-1-0-概要">3-1-0. 概要</h3>
 
-<p>本章は、4ノードにノード当たり8 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、4ノードにノード当たり8 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2017,7 +2795,7 @@
 
 <h3 id="3-2-0-概要">3-2-0. 概要</h3>
 
-<p>本章は、4ノードにノード当たり16 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、4ノードにノード当たり16 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2189,7 +2967,7 @@
 
 <h3 id="3-3-0-概要">3-3-0. 概要</h3>
 
-<p>本章は、4ノードにノード当たり32 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、4ノードにノード当たり32 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2361,7 +3139,7 @@
 
 <h3 id="3-4-0-概要">3-4-0. 概要</h3>
 
-<p>本章は、4ノードにノード当たり36 MPIプロセスでトータル144 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、4ノードにノード当たり36 MPIプロセスでトータル144 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2538,14 +3316,14 @@
 
 <ul>
   <li><strong>UCX_TLS</strong> ： <strong>all</strong> ・ <strong>self,sm,rc</strong> ・ <strong>self,sm,ud</strong> ・ <strong>self,sm,dc</strong></li>
-  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※14）</li>
+  <li><strong>UCX_RNDV_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong> （※15）</li>
   <li><strong>UCX_ZCOPY_THRESH</strong> ： <strong>auto</strong> ・ <strong>4kb</strong> ・ <strong>8kb</strong> ・ <strong>16kb</strong> ・ <strong>32kb</strong> ・ <strong>64kb</strong> ・ <strong>128kb</strong></li>
   <li><strong>coll_hcoll_enable</strong> ： <strong>0</strong> ・ <strong>1</strong></li>
   <li>MPIプロセス分割方法 ： ブロック分割・サイクリック分割</li>
   <li><strong>NPS</strong> ：  <strong>1</strong> ・ <strong>2</strong></li>
 </ul>
 
-<p>※14） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
+<p>※15） <strong>UCX_RNDV_THRESH</strong> は、ノード内は <strong>auto</strong> と <strong><a href="#1--1ノード">1. 1ノード</a></strong> で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。</p>
 
 <ul>
   <li><strong>intra:auto,inter:auto</strong></li>
@@ -2591,7 +3369,7 @@
 
 <h3 id="4-1-0-概要">4-1-0. 概要</h3>
 
-<p>本章は、8ノードにノード当たり8 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、8ノードにノード当たり8 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2782,7 +3560,7 @@
 
 <h3 id="4-2-0-概要">4-2-0. 概要</h3>
 
-<p>本章は、8ノードにノード当たり16 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、8ノードにノード当たり16 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -2955,7 +3733,7 @@
 
 <h3 id="4-3-0-概要">4-3-0. 概要</h3>
 
-<p>本章は、8ノードにノード当たり32 MPIプロセスでトータル256 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、8ノードにノード当たり32 MPIプロセスでトータル256 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -3146,7 +3924,7 @@
 
 <h3 id="4-4-0-概要">4-4-0. 概要</h3>
 
-<p>本章は、8ノードにノード当たり36 MPIプロセスでトータル288 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせを、MPI集合通信関数毎に検証します。</p>
+<p>本章は、8ノードにノード当たり36 MPIプロセスでトータル288 MPIプロセスを割当てる場合の最適な <strong>実行時パラメータ</strong> の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。</p>
 
 <p>下表は、MPI集合通信関数毎の最適な <strong>UCX_TLS</strong> 、 <strong>UCX_RNDV_THRESH</strong> 、及び <strong>UCX_ZCOPY_THRESH</strong> を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。</p>
 
@@ -3326,7 +4104,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-24T07:43:40+09:00">June 24, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-26T20:16:40+09:00">June 26, 2025</time></p>
 
       </footer>
 
