@@ -62,6 +62,7 @@ header:
 - **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.4
 - **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.17.0
 
+
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
 またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
@@ -147,12 +148,24 @@ $ make -j 36 && sudo make install
 ```sh
 $ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
 $ tar -xvf ./ucx-1.17.0.tar.gz
-$ cd ucx-1.17.0; ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/knem-1.1.4.90mlnx3 --with-xpmem=/opt/xpmem
+$ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/knem-1.1.4.90mlnx3 --with-xpmem=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
 ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。  
 なお **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用します。
+
+## 1-1-7. Unified Collective Communicationインストール
+
+以下コマンドをopcユーザで実行し、 **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）を **/opt** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd .. && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
+$ tar -xvf ./v1.3.0.tar.gz
+$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
+$ make -j 36 && sudo make install
+```
 
 ## 1-2. OpenMPIインストール
 
@@ -162,11 +175,11 @@ $ make -j 36 && sudo make install
 ```sh
 $ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
 $ tar -xvf ./openmpi-5.0.6.tar.gz
-$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-slurm
+$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
 $ make -j 36 all && sudo make install
 ```
 
-ここでは、先にインストールした **OpenUCX** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
 ## 1-3. セットアップ
 
@@ -209,10 +222,10 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 
 ## 2-2. NAS Parallel Benchmarks実行
 
-以下コマンドを全てのノードのopcユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
+以下コマンドを全てのノードの **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
-$ cd ~; wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+$ cd ~ && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 $ tar -xvf ./NPB3.4.3-MZ.tar.gz
 $ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def

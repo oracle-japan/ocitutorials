@@ -65,8 +65,7 @@ table, th, td {
 ```sh
 $ sudo yum-config-manager --add-repo https://yum.repos.intel.com/oneapi
 $ sudo rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-$ sudo dnf install -y intel-basekit
-$ sudo dnf install -y intel-hpckit
+$ sudo dnf install -y intel-basekit intel-hpckit
 ```
 
 ***
@@ -92,19 +91,20 @@ $ cp -pR /opt/intel/oneapi/mkl/latest/share/mkl/benchmarks/mp_linpack /dest_dir/
 | 11行目<br>1カラム目      | プロセスグリッドのP値 | 2       | 使用するMPIプロセス数8からPxQを2x4に設定                                                   |
 | 12行目<br>1カラム目      | プロセスグリッドのQ値 | 4       | 使用するMPIプロセス数8からPxQを2x4に設定                                                   |
 
-次に、 **Intel Distribution for LINPACK Benchmark** 実行用ディレクトリ（ **/dest_dir/mp_linpack** ）直下のファイル **runme_intel64_dynamic** 中の **MPI** 関連パラメータを、以下のように設定します。
+次に、以下コマンドを **HPL** 実行ユーザで **/dest_dir/mp_linpack** ディレクトリで実行します。
+
+```sh
+$ cp runme_intel64_dynamic.txt runme_intel64_dynamic
+$ cp runme_intel64_prv.txt runme_intel64_prv
+$ chmod 755 ./runme_intel64_dynamic ./runme_intel64_prv
+```
+
+次に、先にコピーして作成したファイル **runme_intel64_dynamic** 中の **MPI** 関連パラメータを、以下のように設定します。
 
 | ファイル中の行 | パラメータ        | 設定値 | 備考                                 |
 | :-----: | :----------: | --: | :--------------------------------: |
 | 20行目    | MPI_PROC_NUM | 8   | NUMAノード当たり1 MPIプロセス・2ノードトータルで8プロセス |
 | 25行目    | MPI_PER_NODE | 4   | NUMAノード当たり1 MPIプロセス・ノード当たり4プロセス    |
-
-次に、以下コマンドを **HPL** 実行ユーザで実行します。
-
-```sh
-$ cd /dest_dir/mp_linpack
-$ cp runme_intel64_prv.txt runme_intel64_prv
-```
 
 ***
 # 4. HPL実行
