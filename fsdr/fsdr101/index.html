@@ -1,0 +1,882 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.1 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>OCI Full Stack Disaster Recovery (FSDR)を使ってみよう | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="OCI Full Stack Disaster Recoveryは、世界中のどこからでもOCIリージョン間のコンピュート、データベース、アプリケーションの移行をワンクリックで実行できます。本チュートリアルでは、FSDRを用いてOCIリソースをDR保護グループに登録し、DR計画を発行して実行するまでの流れをご紹介します。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="OCI Full Stack Disaster Recovery (FSDR)を使ってみよう">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/fsdr/fsdr101/">
+
+
+  <meta property="og:description" content="OCI Full Stack Disaster Recoveryは、世界中のどこからでもOCIリージョン間のコンピュート、データベース、アプリケーションの移行をワンクリックで実行できます。本チュートリアルでは、FSDRを用いてOCIリソースをDR保護グループに登録し、DR計画を発行して実行するまでの流れをご紹介します。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/fsdr/fsdr101/fsdr_component.png">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-06-30T16:17:53+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/fsdr/fsdr101/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/fsdr/fsdr101/fsdr_component.png');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          OCI Full Stack Disaster Recovery (FSDR)を使ってみよう
+
+        
+      </h1>
+      
+        <p class="page__lead">OCI Full Stack Disaster Recoveryは、世界中のどこからでもOCIリージョン間のコンピュート、データベース、アプリケーションの移行をワンクリックで実行できます。本チュートリアルでは、FSDRを用いてOCIリソースをDR保護グループに登録し、DR計画を発行して実行するまでの流れをご紹介します。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/fsdr" itemprop="item"><span itemprop="name">Fsdr</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">OCI Full Stack Disaster Recovery (FSDR)を使ってみよう</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">Full Stack Disaster Recovery編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/fsdr/fsdr101/" class="active">OCI Full Stack Disaster Recovery (FSDR)を使ってみよう</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="OCI Full Stack Disaster Recovery (FSDR)を使ってみよう">
+    <meta itemprop="description" content="OCI Full Stack Disaster Recoveryは、世界中のどこからでもOCIリージョン間のコンピュート、データベース、アプリケーションの移行をワンクリックで実行できます。本チュートリアルでは、FSDRを用いてOCIリソースをDR保護グループに登録し、DR計画を発行して実行するまでの流れをご紹介します。">
+    <meta itemprop="datePublished" content="2025-06-30T16:17:53+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#はじめに">はじめに</a></li><li><a href="#1-準備作業バケットの作成">1. 準備作業(バケットの作成)</a><ul><li><a href="#1-1-プライマリリージョン">1-1. プライマリ・リージョン</a></li><li><a href="#1-2-スタンバイリージョン">1-2. スタンバイ・リージョン</a></li></ul></li><li><a href="#2-dr保護グループの作成">2. DR保護グループの作成</a><ul><li><a href="#2-1-プライマリリージョン">2-1. プライマリ・リージョン</a></li><li><a href="#2-2-スタンバイリージョン">2-2. スタンバイ・リージョン</a></li></ul></li><li><a href="#3-dr保護グループの関連付け">3. DR保護グループの関連付け</a></li><li><a href="#4-ociリソースをdr保護グループのメンバーに追加">4. OCIリソースをDR保護グループのメンバーに追加</a><ul><li><a href="#4-1-ボリュームグループの追加">4-1 ボリューム・グループの追加</a></li><li><a href="#4-2-コンピュートインスタンスの追加">4-2 コンピュート・インスタンスの追加</a></li><li><a href="#4-3-autonomous-database-adbの追加">4-3 Autonomous Database (ADB)の追加</a></li></ul></li><li><a href="#5-dr計画の作成">5. DR計画の作成</a></li><li><a href="#6-dr計画の実行">6. DR計画の実行</a></li><li><a href="#参考資料">参考資料</a></li></ul>
+            </nav>
+          </aside>
+        
+        <h1 id="はじめに">はじめに</h1>
+<p><strong>OCI Full Stack Disaster Recovery (FSDR)</strong> は、Oracle Cloud Infrastructure (OCI)のディザスタ・リカバリ・オーケストレーションおよび管理サービスであり、インフラ、ミドルウェア、データベース、アプリケーションなど、アプリケーション・スタックのすべてのレイヤーに包括的なディザスタ・リカバリ機能を提供します。</p>
+
+<p>FSDRは以下の要素で構成されます。</p>
+
+<p><img src="fsdr_component.png" alt="FSDRの構成要素" /></p>
+
+<ul>
+  <li>
+    <p><strong>ディザスタ・リカバリ保護グループ(DR保護グループ)</strong></p>
+
+    <p>DR保護グループは、フル・スタック・アプリケーションのすべてのコンポーネントをグループ化し、すべてのコンポーネントをまとめてリカバリしてフル・スタック・アプリケーションをリストアできるようにします。
+DR保護グループに追加できるコンポーネントは、FSDRが対応しているコンピュート・インスタンス、ボリューム・グループ、Oracle DatabaseなどのOCIリソースです。
+これらのリソースは、DR保護グループのメンバーと呼ばれます。
+DR保護グループは、プライマリ・リージョン(本番環境)とスタンバイ・リージョン(災害対策環境)にそれぞれ1つずつ作成し、それらは関連付けされます。</p>
+  </li>
+  <li>
+    <p><strong>ディザスタ・リカバリ計画(DR計画)</strong></p>
+
+    <p>DR計画は、FSDRによって作成される自動DRワークフローで、プライマリDR保護グループ内のすべてのリソースの障害回復を実行します。
+DR計画は、以下の4種類の計画タイプが存在します。</p>
+
+    <ul>
+      <li>
+        <p><strong>フェイルオーバー(計画外)</strong></p>
+
+        <p>スタンバイDR保護グループへのサービスの計画外切り替えを実行するDR計画のタイプ。
+フェイルオーバー計画は、プライマリ・リージョンでのサービス停止をせず、スタンバイ・リージョンでアプリケーション・スタックを起動することで即時切り替えを実行します。
+フェイルオーバー計画は通常、プライマリ・リージョンが停止または障害発生した場合に使用されます。</p>
+      </li>
+      <li>
+        <p><strong>スイッチオーバー(計画済)</strong></p>
+
+        <p>プライマリDR保護グループからスタンバイDR保護グループへのサービスの計画済切り替えを実行するDR計画のタイプ。
+スイッチオーバー計画は、プライマリ・リージョンのアプリケーション・スタックを停止してから、スタンバイ・リージョンでそれを起動することで、順次切り替えを実行します。
+スイッチオーバー計画は通常、計画済サイト・メンテナンス、ソフトウェアのパッチ適用、DRテストおよび検証の目的で使用されます。</p>
+      </li>
+      <li>
+        <p><strong>ドリルの開始</strong></p>
+
+        <p>DRドリルは、災害対策環境が正常に起動できるかどうかをチェックするために実行されます。
+スタンバイDR保護グループに、スイッチオーバーまたはフェイルオーバーの実行時に起動される環境のレプリカが作成されます。</p>
+      </li>
+      <li>
+        <p><strong>ドリルの停止</strong></p>
+
+        <p>DRドリルを停止するDR計画のタイプです。これにより、ドリルの開始で前に作成した本番スタックのレプリカが削除されます。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>本チュートリアルでは、FSDRを用いてOCIリソースをDR保護グループのメンバーに追加し、スイッチオーバー計画を発行して実行するまでの流れをご紹介します。</p>
+
+<p><br /></p>
+
+<p><strong>目次</strong></p>
+
+<ul>
+  <li><a href="#anchor1">1. 準備作業(バケットの作成)</a></li>
+  <li><a href="#anchor2">2. DR保護グループの作成</a></li>
+  <li><a href="#anchor3">3. DR保護グループの関連付け</a></li>
+  <li><a href="#anchor4">4. OCIリソースをDR保護グループのメンバーに追加</a></li>
+  <li><a href="#anchor5">5. DR計画の作成</a></li>
+  <li><a href="#anchor6">6. DR計画の実行</a></li>
+</ul>
+
+<p><br /></p>
+
+<p><strong>前提条件 :</strong></p>
+<ul>
+  <li>ユーザーに必要なIAMポリシーが割り当てられていること。ポリシーの詳細は<a href="https://docs.oracle.com/ja-jp/iaas/disaster-recovery/doc/about-iam-policies-for-dr.html">ドキュメント</a>を参照ください。</li>
+  <li>2つ以上のリージョンをサブスクライブしていること。</li>
+</ul>
+
+<p><strong>注意 :</strong></p>
+<ul>
+  <li>チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+  <li>本チュートリアルでは、<strong>Japan East(Tokyo)</strong> をプライマリ・リージョン、<strong>Japan Central(Osaka)</strong> をスタンバイ・リージョンとしています。その他のリージョンを使用してチュートリアルを行う場合は、リージョン名を読み替えながら進めてください。</li>
+</ul>
+
+<p><strong>所要時間 :</strong> 約90分</p>
+
+<p><br />
+<a id="anchor1"></a></p>
+<h1 id="1-準備作業バケットの作成">1. 準備作業(バケットの作成)</h1>
+<p>FSDRでは、オブジェクト・ストレージを使用してDR操作ログを格納するため、事前にオブジェクト・ストレージ・バケットを作成します。
+バケットはプライマリ・リージョンとスタンバイ・リージョン両方で作成する必要があります。</p>
+
+<h2 id="1-1-プライマリリージョン">1-1. プライマリ・リージョン</h2>
+<p>まずはプライマリ・リージョン(Tokyo)側からバケットを作成します。</p>
+
+<ol>
+  <li>
+    <p>メニューから<strong>ストレージ →　オブジェクト・ストレージ → バケット</strong>を選択し、有効な管理権限を持つコンパートメントを選択します。</p>
+
+    <p><img src="fsdr_oss1.png" alt="ナビゲーション・メニュー" /></p>
+  </li>
+  <li>
+    <p>右上で<strong>Tokyo</strong>リージョンを選択し、<strong>バケットの作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_oss_nrt2.png" alt="バケット一覧" /></p>
+  </li>
+  <li>
+    <p>バケット名を<strong>fsdr-log-tokyo</strong>にして、それ以外はデフォルト設定のまま<strong>作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_oss_nrt3.png" alt="バケット作成" /></p>
+  </li>
+</ol>
+
+<h2 id="1-2-スタンバイリージョン">1-2. スタンバイ・リージョン</h2>
+<p>次に、スタンバイ・リージョン側でバケットを作成します。</p>
+
+<ol>
+  <li>
+    <p>右上で<strong>Osaka</strong>リージョンを選択し、<strong>バケットの作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_oss_kix2.png" alt="バケット一覧" /></p>
+  </li>
+  <li>
+    <p>バケット名を<strong>fsdr-log-osaka</strong>にして、それ以外はデフォルト設定のまま<strong>作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_oss_kix3.png" alt="バケット作成" /></p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor2"></a></p>
+<h1 id="2-dr保護グループの作成">2. DR保護グループの作成</h1>
+
+<h2 id="2-1-プライマリリージョン">2-1. プライマリ・リージョン</h2>
+<ol>
+  <li>
+    <p>メニューから<strong>移行とディザスタ・リカバリ → ディザスタ・リカバリ → DR保護グループ</strong>を選択します。</p>
+
+    <p><img src="fsdr_pg1.png" alt="ナビゲーション・メニュー" /></p>
+  </li>
+  <li>
+    <p>右上で<strong>Tokyo</strong>リージョンを選択し、<strong>DR保護グループの作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_pg_nrt2.png" alt="DR保護グループ一覧" /></p>
+  </li>
+  <li>
+    <p>名前欄に<strong>drpg-tokyo</strong>と記入し、オブジェクト・ストレージ・バケットで<strong>fsdr-log-tokyo</strong>を選択します。それ以外の設定はデフォルトのまま<strong>作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_pg_nrt3.png" alt="DR保護グループ作成" /></p>
+  </li>
+</ol>
+
+<h2 id="2-2-スタンバイリージョン">2-2. スタンバイ・リージョン</h2>
+
+<ol>
+  <li>
+    <p>右上で<strong>Osaka</strong>リージョンを選択し、<strong>DR保護グループの作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_pg_kix2.png" alt="DR保護グループ一覧" /></p>
+  </li>
+  <li>
+    <p>名前欄に<strong>drpg-osaka</strong>と記入し、オブジェクト・ストレージ・バケットで<strong>fsdr-log-osaka</strong>を選択します。それ以外の設定はデフォルトのまま<strong>作成</strong>ボタンを押します。</p>
+
+    <p><img src="fsdr_pg_kix3.png" alt="DR保護グループ作成" /></p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor3"></a></p>
+<h1 id="3-dr保護グループの関連付け">3. DR保護グループの関連付け</h1>
+<p>作成した2つのDR保護グループの関連付けを行います。</p>
+
+<ol>
+  <li>
+    <p>DR保護グループの一覧画面で、右上から<strong>Tokyo</strong>リージョンを選択し、<strong>drpg-tokyo</strong>を押します。</p>
+
+    <p><img src="fsdr_pair1.png" alt="DR保護グループ一覧" /></p>
+  </li>
+  <li>
+    <p>アクションを押して表示されたプルダウンメニューから<strong>関連付け</strong>を選択します。</p>
+
+    <p><img src="fsdr_pair2.png" alt="DR保護グループ詳細" /></p>
+  </li>
+  <li>
+    <p>ロールは<strong>プライマリ</strong>、ピア・リージョンは<strong>Japan Central(Osaka)</strong>、ピアDR保護グループは<strong>drpg-osaka</strong>をそれぞれ選択して、<strong>関連付け</strong>を押します。
+　　
+　　<img src="fsdr_pair3.png" alt="DR保護グループ関連付け" /></p>
+
+    <p>関連付けが完了すると、<strong>drpg-tokyo</strong>のロールが<strong>プライマリ</strong>になり、ピアDR保護グループで<strong>drpg-osaka</strong>と表示されます。</p>
+
+    <p><img src="fsdr_pair4.png" alt="DR保護グループ詳細" /></p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor4"></a></p>
+<h1 id="4-ociリソースをdr保護グループのメンバーに追加">4. OCIリソースをDR保護グループのメンバーに追加</h1>
+<p>DR保護グループの関連付けが完了したら、いよいよアプリケーションのコンポーネントをDR保護グループに登録します。
+例として、ボリューム・グループ、コンピュート・インスタンス、Autonomous Databaseを、それぞれDR保護グループに登録する方法をご紹介します。
+その他のOCIリソースをメンバーに追加する方法は、マニュアル (<a href="https://docs.oracle.com/ja-jp/iaas/disaster-recovery/doc/add-members-protection-group.html">Oracle Cloud Infrastructureドキュメント</a>) を参照してください。</p>
+
+<h2 id="4-1-ボリュームグループの追加">4-1 ボリューム・グループの追加</h2>
+<p>DR保護グループのメンバーにブロック・ボリュームやブート・ボリュームを追加するとき、各ボリュームをボリューム・グループにまとめ、クロス・リージョン・レプリケーションを有効にする必要があります。
+ここでは、作成済みのブロック・ボリュームをボリューム・グループに登録し、DR保護グループに追加する流れをご紹介します。</p>
+
+<p><strong>前提条件 :</strong> Tokyoリージョンに作成済のブロック・ボリュームがあること。</p>
+
+<ol>
+  <li>
+    <p>メニューから<strong>ストレージ →　ブロック・ストレージ → ボリューム・グループ</strong>を選択し、有効な管理権限を持つコンパートメントを選択します。</p>
+
+    <p><img src="fsdr_vg1.png" alt="ナビゲーション・メニュー" /></p>
+  </li>
+  <li>
+    <p>右上で<strong>Tokyo</strong>リージョンを選択し、<strong>ボリューム・グループの作成</strong>を押します。</p>
+
+    <p><img src="fsdr_vg2.png" alt="ボリューム・グループ一覧" /></p>
+  </li>
+  <li>
+    <p>名前に<strong>fsdr-VolumeGroup</strong>と記入し、可用性ドメインで<strong>TGjA:AP-TOKYO-1-AD-1</strong>を選択します。その後、<strong>次</strong>を押します。</p>
+
+    <p><img src="fsdr_vg3.png" alt="ボリューム・グループ作成" /></p>
+  </li>
+  <li>
+    <p>ボリュームで、作成済みのブロック・ボリュームを選択します。その後、<strong>次</strong>を押します。</p>
+
+    <p><img src="fsdr_vg4.png" alt="ボリューム・グループ作成" /></p>
+  </li>
+  <li>
+    <p>「非同期クロス・リージョン・ボリューム・レプリケーションを有効にします。」のチェックで<strong>オン</strong>を選択し、ターゲット・リージョンで<strong>Japan Central (Osaka)</strong>、可用性ドメインで<strong>TGjA:AP-OSAKA-1-AD-1</strong>を選択します。その後、<strong>確認</strong>のチェックを入れ、<strong>次</strong>を押します。</p>
+
+    <p><img src="fsdr_vg5.png" alt="ボリューム・グループ作成" /></p>
+  </li>
+  <li>
+    <p>設定は変更せず<strong>次</strong>を押します。</p>
+
+    <p><img src="fsdr_vg6.png" alt="ボリューム・グループ作成" /></p>
+  </li>
+  <li>
+    <p>設定内容を確認し、問題なければ<strong>作成</strong>を押します。</p>
+
+    <p><img src="fsdr_vg7.png" alt="ボリューム・グループ作成" /></p>
+  </li>
+  <li>
+    <p><strong>drpg-tokyo</strong>の詳細画面で<strong>メンバー</strong>を選択し、<strong>メンバーの追加</strong>を押します。</p>
+
+    <p><img src="fsdr_member1.png" alt="メンバー一覧" /></p>
+  </li>
+  <li>
+    <p>リソース・タイプで<strong>ボリューム・グループ</strong>を選択します。</p>
+
+    <p><img src="fsdr_vg8.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>「すべての既存プランをリフレッシュし、検証する必要があることを理解しています」をチェックし、ボリューム・グループで<strong>fsdr-VolumeGroup</strong>を選択します。その後、<strong>追加</strong>を押します。</p>
+
+    <p><img src="fsdr_vg9.png" alt="メンバー追加" /></p>
+  </li>
+</ol>
+
+<h2 id="4-2-コンピュートインスタンスの追加">4-2 コンピュート・インスタンスの追加</h2>
+<p>コンピュート・インスタンスは、以下2つのどちらかのタイプを選択し、DR保護グループのメンバーに追加します。</p>
+
+<ul>
+  <li>
+    <p><strong>移動インスタンス</strong></p>
+
+    <p>移動インスタンスは、スイッチオーバー計画かフェイルオーバー計画が実行されると、プライマリDR保護グループからスタンバイDR保護グループに移動されます。
+  インスタンスは、FSDRがプライマリDR保護グループのインスタンスを自動停止(もしくは削除)し、スタンバイDR保護グループで新規にインスタンスを自動作成することで移動されます。
+  ユーザーは、事前にプライマリ・リージョンにのみインスタンスをデプロイします。</p>
+  </li>
+  <li>
+    <p><strong>非移動インスタンス</strong></p>
+
+    <p>非移動インスタンスは、スイッチオーバー計画かフェイルオーバー計画が実行されると、プライマリ・リージョンとスタンバイ・リージョンのインスタンスを起動もしくは停止することで、サービスの切り替えを実現します。
+  プライマリDR保護グループからスタンバイDR保護グループに移動されません。
+  ユーザーは、事前にプライマリ・リージョンとスタンバイ・リージョンの両方にインスタンスをデプロイする必要があります。</p>
+  </li>
+</ul>
+
+<p><img src="fsdr_compute.png" alt="コンピュート・インスタンス・タイプ" /></p>
+
+<p>ここでは、非移動インスタンスをDR保護グループのメンバーとして登録する流れをご紹介します。</p>
+
+<p><strong>前提条件 :</strong> TokyoリージョンおよびOsakaリージョンにそれぞれ作成済のコンピュート・インスタンスがあること。</p>
+
+<ol>
+  <li>
+    <p><strong>drpg-tokyo</strong>の詳細画面で<strong>メンバー</strong>を選択し、<strong>メンバーの追加</strong>を押します。</p>
+
+    <p><img src="fsdr_member1.png" alt="メンバー一覧" /></p>
+  </li>
+  <li>
+    <p>リソース・タイプで<strong>コンピュート</strong>を選択します。</p>
+
+    <p><img src="fsdr_compute_tokyo1.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>「すべての既存プランをリフレッシュし、検証する必要があることを理解しています」をチェックし、インスタンスで作成済みのコンピュート・インスタンスを選択し、コンピュート・インスタンス・タイプで非移動インスタンスを選択します。</p>
+
+    <p><img src="fsdr_compute_tokyo2.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>拡張オプションを押し、「フェイルオーバー/スイッチオーバーでのインスタンスの起動と停止」をチェックします。その後<strong>追加</strong>を押します。</p>
+
+    <p><img src="fsdr_compute_tokyo3.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p><strong>drpg-osaka</strong>の詳細画面で<strong>メンバー</strong>を選択し、<strong>メンバーの追加</strong>を押します。</p>
+
+    <p><img src="fsdr_member2.png" alt="メンバー一覧" /></p>
+  </li>
+  <li>
+    <p>リソース・タイプで<strong>コンピュート</strong>を選択します。</p>
+
+    <p><img src="fsdr_compute_osaka1.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>「すべての既存プランをリフレッシュし、検証する必要があることを理解しています」をチェックし、インスタンスで作成済みのコンピュート・インスタンスを選択し、コンピュート・インスタンス・タイプで非移動インスタンスを選択します。</p>
+
+    <p><img src="fsdr_compute_osaka2.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>拡張オプションを押し、「フェイルオーバー/スイッチオーバーでのインスタンスの起動と停止」をチェックします。その後<strong>追加</strong>を押します。</p>
+
+    <p><img src="fsdr_compute_osaka3.png" alt="メンバー追加" /></p>
+  </li>
+</ol>
+
+<h2 id="4-3-autonomous-database-adbの追加">4-3 Autonomous Database (ADB)の追加</h2>
+<p>Autonomous Database (ADB)をDR保護グループのメンバーに追加するためには、事前にAutonomous Data Guard (AuDG)を構成しておく必要があります。
+ここでは、作成済のADBでAuDGを構成し、DR保護グループに追加する流れをご紹介します。</p>
+
+<p><strong>前提条件 :</strong> Tokyoリージョンに作成済のADBがあること。</p>
+
+<ol>
+  <li>
+    <p>メニューから<strong>Oracle Database →　Autonomous Database</strong>を選択し、有効な管理権限を持つコンパートメントを選択します。</p>
+
+    <p><img src="fsdr_adbs1.png" alt="ナビゲーション・メニュー" /></p>
+  </li>
+  <li>
+    <p>右上で<strong>Tokyo</strong>リージョンを選択し、作成済みADBの名前を押します。</p>
+
+    <p><img src="fsdr_adbs2.png" alt="Autonomous Database一覧" /></p>
+  </li>
+  <li>
+    <p><strong>ディザスタ・リカバリ</strong>を選択肢、<strong>ピア・データベースの追加</strong>を押します。</p>
+
+    <p><img src="fsdr_adbs3.png" alt="ディザスタ・リカバリ" /></p>
+  </li>
+  <li>
+    <p>リージョンで<strong>日本中央(大阪)</strong>を選択します。</p>
+
+    <p><img src="fsdr_adbs4.png" alt="ピア・データベースの追加" /></p>
+  </li>
+  <li>
+    <p><strong>Autonomous Data Guard</strong>を選択し、<strong>追加</strong>を押します。
+これによりAutonomous Data Guardが構成されます。(作業完了まで数分かかります。)
+作成が完了すると、ピアAutonomous Database欄に、Autonomous Data Guardによって作成されてスタンバイ・データベースが表示されます。</p>
+
+    <p><img src="fsdr_adbs5.png" alt="ピア・データベースの追加" /></p>
+
+    <p><img src="fsdr_adbs_result.png" alt="ディザスタ・リカバリ" /></p>
+  </li>
+  <li>
+    <p><strong>drpg-tokyo</strong>の詳細画面で<strong>メンバー</strong>を選択し、<strong>メンバーの追加</strong>を押します。</p>
+
+    <p><img src="fsdr_member1.png" alt="メンバー一覧" /></p>
+  </li>
+  <li>
+    <p>リソース・タイプで<strong>自律型データベース</strong>を選択します。</p>
+
+    <p><img src="fsdr_adbs6.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>「すべての既存プランをリフレッシュし、検証する必要があることを理解しています」をチェックし、データベースで作成済みのADBを選択します。その後、<strong>追加</strong>を押します。</p>
+
+    <p><img src="fsdr_adbs7.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p><strong>drpg-osaka</strong>の詳細画面で<strong>メンバー</strong>を選択し、<strong>メンバーの追加</strong>を押します。(ADBは、プライマリ・リージョンとスタンバイ・リージョンの両方で、DR保護グループのメンバーとして追加します。)</p>
+
+    <p><img src="fsdr_member2.png" alt="メンバー一覧" /></p>
+  </li>
+  <li>
+    <p>リソース・タイプで<strong>自律型データベース</strong>を選択します。</p>
+
+    <p><img src="fsdr_adbs8.png" alt="メンバー追加" /></p>
+  </li>
+  <li>
+    <p>「すべての既存プランをリフレッシュし、検証する必要があることを理解しています」をチェックし、データベースでスタンバイのADBを選択します。その後、<strong>追加</strong>を押します。</p>
+
+    <p><img src="fsdr_adbs9.png" alt="メンバー追加" /></p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor5"></a></p>
+<h1 id="5-dr計画の作成">5. DR計画の作成</h1>
+<p>DR保護グループへのメンバー追加が完了したら、DR計画を作成します。
+DR計画の作成は、スタンバイDR保護グループで行います。
+ここでは4つのDR計画タイプの中から、例としてスイッチオーバー計画を作成していきます。</p>
+
+<ol>
+  <li>
+    <p><strong>drpg-osaka</strong>の詳細画面で<strong>計画</strong>を選択し、<strong>計画の作成</strong>を押します。</p>
+
+    <p><img src="fsdr_drplan1.png" alt="計画一覧" /></p>
+  </li>
+  <li>
+    <p>名前に<strong>dr-plan1</strong>と記入し、プラン・タイプで<strong>スイッチオーバー(計画済)</strong>を選択します。その後、<strong>作成</strong>を押します。</p>
+
+    <p><img src="fsdr_drplan2.png" alt="計画作成" /></p>
+  </li>
+</ol>
+
+<p><br />
+<a id="anchor6"></a></p>
+<h1 id="6-dr計画の実行">6. DR計画の実行</h1>
+<p>最後は作成したスイッチオーバー計画を実行し、プライマリ・リージョンとスタンバイ・リージョンの切り替えを行います。</p>
+
+<ol>
+  <li>
+    <p>DR計画実行前の各DR保護グループの状態は以下の画像のように、それぞれ<strong>drpg-tokyo</strong>(左)がプライマリ、<strong>drpg-osaka</strong>(右)がスタンバイになってることを確認します。</p>
+
+    <p><img src="fsdr_execute_before.png" alt="DR計画実行前" /></p>
+  </li>
+  <li>
+    <p><strong>drpg-osaka</strong>の詳細画面で<strong>計画</strong>を選択し、<strong>dr-plan1</strong>の三点リーダーを押します。その後、表示されたプルダウンメニューから<strong>計画の実行</strong>を選択します。</p>
+
+    <p><img src="fsdr_execute1.png" alt="DR計画一覧" /></p>
+  </li>
+  <li>
+    <p>計画実行名に<strong>execute_switchover</strong>と入力し、<strong>計画の実行</strong>押します。その後、計画が開始されるので、完了まで待ちます。</p>
+
+    <p><img src="fsdr_execute2.png" alt="計画実行" /></p>
+  </li>
+  <li>
+    <p>計画が完了すると、<strong>drpg-tokyo</strong>(左)と<strong>drpg-osaka</strong>(右)のロールが切り替わります。また、メンバーの状態も実行前と逆転します。</p>
+
+    <p><img src="fsdr_execute_result.png" alt="計画実行後" /></p>
+  </li>
+</ol>
+
+<p>以上でこのチュートリアルは終了です。</p>
+
+<h1 id="参考資料">参考資料</h1>
+
+<ul>
+  <li>[製品サイト] <a href="https://www.oracle.com/jp/cloud/full-stack-disaster-recovery/" target="_blank">Full Stack Disaster Recovery</a></li>
+  <li>[マニュアル] <a href="https://docs.oracle.com/en-us/iaas/disaster-recovery/index.html" target="_blank">Oracle Cloud Infrastructureドキュメント(Full Stack Disaster Recovery)</a></li>
+</ul>
+
+<p><br /></p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-06-30T16:17:53+09:00">June 30, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=OCI+Full+Stack+Disaster+Recovery+%28FSDR%29%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Ffsdr%2Ffsdr101%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Ffsdr%2Ffsdr101%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/fsdr/fsdr101/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=OCI+Full+Stack+Disaster+Recovery+%28FSDR%29%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Ffsdr%2Ffsdr101%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
