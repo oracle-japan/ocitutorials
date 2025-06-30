@@ -68,6 +68,15 @@ Always Free ADB / Oracle Database 23ai Freeを利用してOracle Database 23ai�
 + **「Oracle AI Vector Search」チュートリアル一覧は[こちら](/ocitutorials/ai-vector-search){:target="_blank"}**
 <br/>
 
+<br/>
+# <span style="color: brown; ">■ Full Stack Disaster Recovery (FSDR)を使ってみよう</span>
+
+世界中のどこからでもOCIリージョン間のコンピュート、データベース、アプリケーションの移行をワンクリックで実行できるFull Stack Disaster Recovery !
+100%クラウドネイティブなサービスによる新しいディザスタ・リカバリを体験してみましょう！
+
++ **「Full Stack Disaster Recovery」チュートリアル一覧は[こちら](/ocitutorials/fsdr/fsdr101){:target="_blank"}**
+<br/>
+
 <!-- 
 
 ## 移行編（公開準備中）
