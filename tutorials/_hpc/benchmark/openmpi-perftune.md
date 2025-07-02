@@ -154,7 +154,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 8 processes](ata_01_08_step2.png)
 
@@ -215,7 +215,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 8 processes](aga_01_08_step2.png)
 
@@ -276,7 +276,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 8 processes](are_01_08_step2.png)
 
@@ -343,7 +343,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 16 processes](ata_01_16_step2.png)
 
@@ -404,7 +404,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 16 processes](aga_01_16_step2.png)
 
@@ -465,7 +465,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 16 processes](are_01_16_step2.png)
 
@@ -532,7 +532,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 32 processes](ata_01_32_step2.png)
 
@@ -593,7 +593,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 32 processes](aga_01_32_step2.png)
 
@@ -654,7 +654,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 32 processes](are_01_32_step2.png)
 
@@ -721,7 +721,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 36 processes](ata_01_36_step2.png)
 
@@ -782,7 +782,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 36 processes](aga_01_36_step2.png)
 
@@ -843,7 +843,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの **UCX_RNDV_THRESH=auto** と **coll_hcoll_enable=1** の組合せを含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 36 processes](are_01_36_step2.png)
 
@@ -906,7 +906,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、2ノードにノード当たり8 MPIプロセスでトータル16 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -914,23 +914,14 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 4Bから256Bのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 8Bから4KBと32KBから16MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 2-1-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の **HCOLL** の結果から32kbとしています。
 
 ![Alltoall 2 node 8 ppn all step1](ata_02_08_step1_all.png)
 
@@ -948,7 +939,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 2 node 8 ppn step2](ata_02_08_step2.png)
 
@@ -956,7 +947,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものが以下のグラフです。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
 ![Alltoall 2 node 8 ppn no coll](ata_02_08_step3_no.png)
 
@@ -972,7 +963,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合を想定し、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 2 node 8 ppn](ata_02_08_step3.png)
 
@@ -988,15 +979,15 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の結果から64kbとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の **HCOLL** の結果から64kbとしています。
 
-![Allgather 2 node 8 ppn all step1](aga_02_08_all_step1.png)
+![Allgather 2 node 8 ppn all step1](aga_02_08_step1_all.png)
 
-![Allgather 2 node 8 ppn rc step1](aga_02_08_rc_step1.png)
+![Allgather 2 node 8 ppn dc step1](aga_02_08_step1_dc.png)
 
-![Allgather 2 node 8 ppn ud step1](aga_02_08_ud_step1.png)
+![Allgather 2 node 8 ppn rc step1](aga_02_08_step1_rc.png)
 
-![Allgather 2 node 8 ppn dc step1](aga_02_08_dc_step1.png)
+![Allgather 2 node 8 ppn ud step1](aga_02_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1006,7 +997,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 2 node 8 ppn step2](aga_02_08_step2.png)
 
@@ -1014,26 +1005,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 2 node 8 ppn step3](aga_02_08_step3.png)
+![Allgather 2 node 8 ppn no coll](aga_02_08_step3_no.png)
+
+![Allgather 2 node 8 ppn UCC](aga_02_08_step3_uc.png)
+
+![Allgather 2 node 8 ppn HCOLL](aga_02_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 2 node 8 ppn](aga_02_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して16KB以下で概ね性能が向上
+- チューニング適用による性能の変化無し
 
 ### 2-1-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 Allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 Allreduce](#1-1-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 2 node 8 ppn all step1](are_02_08_all_step1.png)
+![Allreduce 2 node 8 ppn all step1](are_02_08_step1_all.png)
 
-![Allreduce 2 node 8 ppn rc step1](are_02_08_rc_step1.png)
+![Allreduce 2 node 8 ppn dc step1](are_02_08_step1_dc.png)
 
-![Allreduce 2 node 8 ppn ud step1](are_02_08_ud_step1.png)
+![Allreduce 2 node 8 ppn rc step1](are_02_08_step1_rc.png)
 
-![Allreduce 2 node 8 ppn dc step1](are_02_08_dc_step1.png)
+![Allreduce 2 node 8 ppn ud step1](are_02_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1043,7 +1055,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 2 node 8 ppn step2](are_02_08_step2.png)
 
@@ -1051,11 +1063,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 2 node 8 ppn step3](are_02_08_step3.png)
+![Allreduce 2 node 8 ppn no coll](are_02_08_step3_no.png)
+
+![Allreduce 2 node 8 ppn UCC](are_02_08_step3_uc.png)
+
+![Allreduce 2 node 8 ppn HCOLL](are_02_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 2 node 8 ppn](are_02_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して128Bから512KBで性能が低下しそれ以外で顕著な傾向無し
+- チューニング未適用は16KBから16MBの間で大幅に性能が低下
 
 ## 2-2. ノード当たり16 MPIプロセス
 
@@ -1063,7 +1096,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、2ノードにノード当たり16 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1071,31 +1104,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 256Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 4Bから16MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 2-2-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の **HCOLL** の結果から32kbとしています。
 
-![Alltoall 2 node 16 ppn all step1](ata_02_16_all_step1.png)
+![Alltoall 2 node 16 ppn all step1](ata_02_16_step1_all.png)
 
-![Alltoall 2 node 16 ppn rc step1](ata_02_16_rc_step1.png)
+![Alltoall 2 node 16 ppn dc step1](ata_02_16_step1_dc.png)
 
-![Alltoall 2 node 16 ppn ud step1](ata_02_16_ud_step1.png)
+![Alltoall 2 node 16 ppn rc step1](ata_02_16_step1_rc.png)
 
-![Alltoall 2 node 16 ppn dc step1](ata_02_16_dc_step1.png)
+![Alltoall 2 node 16 ppn ud step1](ata_02_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1105,7 +1129,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 2 node 16 ppn step2](ata_02_16_step2.png)
 
@@ -1113,26 +1137,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 2 node 16 ppn step3](ata_02_16_step3.png)
+![Alltoall 2 node 16 ppn no coll](ata_02_16_step3_no.png)
+
+![Alltoall 2 node 16 ppn UCC](ata_02_16_step3_uc.png)
+
+![Alltoall 2 node 16 ppn HCOLL](ata_02_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 2 node 16 ppn](ata_02_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は512B未満で性能が向上しそれ以上で顕著な傾向無し
+- **HCOLL** は512B未満で性能が向上しそれ以上で顕著な傾向無し
+- **UCC** は **HCOLL** に対して64KB以下で概ね性能が低下
+- チューニング未適用は2KBから32KBの間で大幅に性能が低下
 
 ### 2-2-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の **HCOLL** の結果から32kbとしています。
 
-![Allgather 2 node 16 ppn all step1](aga_02_16_all_step1.png)
+![Allgather 2 node 16 ppn all step1](aga_02_16_step1_all.png)
 
-![Allgather 2 node 16 ppn rc step1](aga_02_16_rc_step1.png)
+![Allgather 2 node 16 ppn dc step1](aga_02_16_step1_dc.png)
 
-![Allgather 2 node 16 ppn ud step1](aga_02_16_ud_step1.png)
+![Allgather 2 node 16 ppn rc step1](aga_02_16_step1_rc.png)
 
-![Allgather 2 node 16 ppn dc step1](aga_02_16_dc_step1.png)
+![Allgather 2 node 16 ppn ud step1](aga_02_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1142,7 +1187,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 2 node 16 ppn step2](aga_02_16_step2.png)
 
@@ -1150,26 +1195,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 2 node 16 step3](aga_02_16_step3.png)
+![Allgather 2 node 16 ppn no coll](aga_02_16_step3_no.png)
+
+![Allgather 2 node 16 ppn UCC](aga_02_16_step3_uc.png)
+
+![Allgather 2 node 16 ppn HCOLL](aga_02_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 2 node 16 ppn](aga_02_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して顕著な傾向無し
+- チューニング適用による性能の変化無し
 
 ### 2-2-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 2 node 16 ppn all step1](are_02_16_all_step1.png)
+![Allreduce 2 node 16 ppn all step1](are_02_16_step1_all.png)
 
-![Allreduce 2 node 16 ppn rc step1](are_02_16_rc_step1.png)
+![Allreduce 2 node 16 ppn dc step1](are_02_16_step1_dc.png)
 
-![Allreduce 2 node 16 ppn ud step1](are_02_16_ud_step1.png)
+![Allreduce 2 node 16 ppn rc step1](are_02_16_step1_rc.png)
 
-![Allreduce 2 node 16 ppn dc step1](are_02_16_dc_step1.png)
+![Allreduce 2 node 16 ppn ud step1](are_02_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1179,7 +1245,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 2 node 16 ppn step2](are_02_16_step2.png)
 
@@ -1187,11 +1253,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 2 node 16 ppn step3](are_02_16_step3.png)
+![Allreduce 2 node 16 ppn no coll](are_02_16_step3_no.png)
+
+![Allreduce 2 node 16 ppn UCC](are_02_16_step3_uc.png)
+
+![Allreduce 2 node 16 ppn HCOLL](are_02_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 2 node 16 ppn](are_02_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して1MBから16MBで性能が低下し4KB以下で性能が向上
+- チューニング未適用は32KBから16MBの間で大幅に性能が低下
 
 ## 2-3. ノード当たり32 MPIプロセス
 
@@ -1199,7 +1286,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、2ノードにノード当たり32 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1207,31 +1294,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 32Bから8MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 2-3-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の **HCOLL** の結果から16kbとしています。
 
-![Alltoall 2 node 32 ppn all step1](ata_02_32_all_step1.png)
+![Alltoall 2 node 32 ppn all step1](ata_02_32_step1_all.png)
 
-![Alltoall 2 node 32 ppn rc step1](ata_02_32_rc_step1.png)
+![Alltoall 2 node 32 ppn dc step1](ata_02_32_step1_dc.png)
 
-![Alltoall 2 node 32 ppn ud step1](ata_02_32_ud_step1.png)
+![Alltoall 2 node 32 ppn rc step1](ata_02_32_step1_rc.png)
 
-![Alltoall 2 node 32 ppn dc step1](ata_02_32_dc_step1.png)
+![Alltoall 2 node 32 ppn ud step1](ata_02_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1241,7 +1319,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 2 node 32 ppn step2](ata_02_32_step2.png)
 
@@ -1249,26 +1327,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 2 node 32 ppn step3](ata_02_32_step3.png)
+![Alltoall 2 node 32 ppn no coll](ata_02_32_step3_no.png)
+
+![Alltoall 2 node 32 ppn UCC](ata_02_32_step3_uc.png)
+
+![Alltoall 2 node 32 ppn HCOLL](ata_02_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 2 node 32 ppn](ata_02_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は1KB未満で性能が向上しそれ以上で顕著な傾向無し
+- **HCOLL** は1KB未満で性能が向上しそれ以上で顕著な傾向無し
+- **UCC** は **HCOLL** に対して256B以下で概ね性能が低下
+- チューニング未適用は8KB以下で性能が低下
 
 ### 2-3-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の **HCOLL** の結果から16kbとしています。
 
-![Allgather 2 node 32 ppn all step1](aga_02_32_all_step1.png)
+![Allgather 2 node 32 ppn all step1](aga_02_32_step1_all.png)
 
-![Allgather 2 node 32 ppn rc step1](aga_02_32_rc_step1.png)
+![Allgather 2 node 32 ppn dc step1](aga_02_32_step1_dc.png)
 
-![Allgather 2 node 32 ppn ud step1](aga_02_32_ud_step1.png)
+![Allgather 2 node 32 ppn rc step1](aga_02_32_step1_rc.png)
 
-![Allgather 2 node 32 ppn dc step1](aga_02_32_dc_step1.png)
+![Allgather 2 node 32 ppn ud step1](aga_02_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1278,7 +1377,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 2 node 32 ppn step2](aga_02_32_step2.png)
 
@@ -1286,26 +1385,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 2 node 32 ppn step3](aga_02_32_step3.png)
+![Allgather 2 node 32 ppn no coll](aga_02_32_step3_no.png)
+
+![Allgather 2 node 32 ppn UCC](aga_02_32_step3_uc.png)
+
+![Allgather 2 node 32 ppn HCOLL](aga_02_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 2 node 32 ppn](aga_02_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して1KBから4KBの間と16B以下で性能が向上し64Bから512Bの間で性能が低下
+- チューニング未適用は32KB以下で性能が低下
 
 ### 2-3-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 2 node 32 ppn all step1](are_02_32_all_step1.png)
+![Allreduce 2 node 32 ppn all step1](are_02_32_step1_all.png)
 
-![Allreduce 2 node 32 ppn rc step1](are_02_32_rc_step1.png)
+![Allreduce 2 node 32 ppn dc step1](are_02_32_step1_dc.png)
 
-![Allreduce 2 node 32 ppn ud step1](are_02_32_ud_step1.png)
+![Allreduce 2 node 32 ppn rc step1](are_02_32_step1_rc.png)
 
-![Allreduce 2 node 32 ppn dc step1](are_02_32_dc_step1.png)
+![Allreduce 2 node 32 ppn ud step1](are_02_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1315,7 +1435,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 2 node 32 ppn step2](are_02_32_step2.png)
 
@@ -1323,11 +1443,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 2 node 32 ppn step3](are_02_32_step3.png)
+![Allreduce 2 node 32 ppn no coll](are_02_32_step3_no.png)
+
+![Allreduce 2 node 32 ppn UCC](are_02_32_step3_uc.png)
+
+![Allreduce 2 node 32 ppn HCOLL](are_02_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 2 node 32 ppn](are_02_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して1MBから16MBまで性能が向上しそれ以上とそれ以下で概ね性能が低下
+- チューニング未適用は16MB以下で大幅に性能が低下
 
 ## 2-4. ノード当たり36 MPIプロセス
 
@@ -1335,7 +1476,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、2ノードにノード当たり36 MPIプロセスでトータル72 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1343,38 +1484,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 4Bから8MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 有意な差は無し
-- **Allgather**
-    - 局所的にブロック分割がサイクリック分割に対して優位
-- **Allreduce**
-    - 1MBから8MBのメッセージサイズで **NPS1** が **NPS2** に対して優位
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 2-4-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の **HCOLL** の結果から16kbとしています。
 
-![Alltoall 2 node 36 ppn all step1](ata_02_36_all_step1.png)
+![Alltoall 2 node 36 ppn all step1](ata_02_36_step1_all.png)
 
-![Alltoall 2 node 36 ppn rc step1](ata_02_36_rc_step1.png)
+![Alltoall 2 node 36 ppn dc step1](ata_02_36_step1_dc.png)
 
-![Alltoall 2 node 36 ppn ud step1](ata_02_36_ud_step1.png)
+![Alltoall 2 node 36 ppn rc step1](ata_02_36_step1_rc.png)
 
-![Alltoall 2 node 36 ppn dc step1](ata_02_36_dc_step1.png)
+![Alltoall 2 node 36 ppn ud step1](ata_02_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1384,7 +1509,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 2 node 36 ppn step2](ata_02_36_step2.png)
 
@@ -1392,26 +1517,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 2 node 36 ppn step3](ata_02_36_step3.png)
+![Alltoall 2 node 36 ppn no coll](ata_02_36_step3_no.png)
+
+![Alltoall 2 node 36 ppn UCC](ata_02_36_step3_uc.png)
+
+![Alltoall 2 node 36 ppn HCOLL](ata_02_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 2 node 36 ppn](ata_02_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は512B以下で性能が向上
+- **HCOLL** は512B以下で性能が向上
+- **UCC** は **HCOLL** に対して512B以下で概ね性能が低下
+- チューニング未適用は256KB以下で性能が低下
 
 ### 2-4-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の **HCOLL** の結果から16kbとしています。
 
-![Allgather 2 node 36 ppn all step1](aga_02_36_all_step1.png)
+![Allgather 2 node 36 ppn all step1](aga_02_36_step1_all.png)
 
-![Allgather 2 node 36 ppn rc step1](aga_02_36_rc_step1.png)
+![Allgather 2 node 36 ppn dc step1](aga_02_36_step1_dc.png)
 
-![Allgather 2 node 36 ppn ud step1](aga_02_36_ud_step1.png)
+![Allgather 2 node 36 ppn rc step1](aga_02_36_step1_rc.png)
 
-![Allgather 2 node 36 ppn dc step1](aga_02_36_dc_step1.png)
+![Allgather 2 node 36 ppn ud step1](aga_02_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1421,7 +1567,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 2 node 36 ppn step2](aga_02_36_step2.png)
 
@@ -1429,26 +1575,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 2 node 36 ppn step3](aga_02_36_step3.png)
+![Allgather 2 node 36 ppn no coll](aga_02_36_step3_no.png)
+
+![Allgather 2 node 36 ppn UCC](aga_02_36_step3_uc.png)
+
+![Allgather 2 node 36 ppn HCOLL](aga_02_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 2 node 36 ppn](aga_02_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して1KBから4KBの間で性能が向上し64Bから512Bの間で性能が低下
+- チューニング未適用は16KB以下で性能が低下
 
 ### 2-4-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 2 node 36 ppn all step1](are_02_36_all_step1.png)
+![Allreduce 2 node 36 ppn all step1](are_02_36_step1_all.png)
 
-![Allreduce 2 node 36 ppn rc step1](are_02_36_rc_step1.png)
+![Allreduce 2 node 36 ppn dc step1](are_02_36_step1_dc.png)
 
-![Allreduce 2 node 36 ppn ud step1](are_02_36_ud_step1.png)
+![Allreduce 2 node 36 ppn rc step1](are_02_36_step1_rc.png)
 
-![Allreduce 2 node 36 ppn dc step1](are_02_36_dc_step1.png)
+![Allreduce 2 node 36 ppn ud step1](are_02_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1458,7 +1625,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 2 node 36 ppn step2](are_02_36_step2.png)
 
@@ -1466,11 +1633,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 2 node 36 ppn step3](are_02_36_step3.png)
+![Allreduce 2 node 36 ppn no coll](are_02_36_step3_no.png)
+
+![Allreduce 2 node 36 ppn UCC](are_02_36_step3_uc.png)
+
+![Allreduce 2 node 36 ppn HCOLL](are_02_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 2 node 36 ppn](are_02_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して8KB以上で概ね性能が向上しそれ未満で性能が低下
+- チューニング未適用は64MB以下で大幅に性能が低下
 
 ***
 # 3.  4ノード
@@ -1483,6 +1671,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※14）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
 - **coll_hcoll_enable** ： **0** ・ **1**
+- **coll_ucc_enable** ： **0** ・ **1**
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
 - **NPS** ：  **1** ・ **2**
 
@@ -1501,17 +1690,19 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 - ステップ1
     - **UCX_TLS** と **UCX_RNDV_THRESH** を組合せた32個のパターンを検証してこれらの最適値を決定
-    - **coll_hcoll_enable** は **1** に固定
+    - **coll_hcoll_enable** は **1** に固定（デフォルト）
+    - **coll_ucc_enable** は **0** に固定（デフォルト）
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ2
     - **UCX_ZCOPY_THRESH** の7パターンを検証してこの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
-    - **coll_hcoll_enable** は **1** に固定
+    - **coll_hcoll_enable** は **1** に固定（デフォルト）
+    - **coll_ucc_enable** は **0** に固定（デフォルト）
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ3
-    - **coll_hcoll_enable** とMPIプロセス分割方法と **NPS** を組合せた8パターンを検証してこれらの最適値を決定
+    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
     - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
 
@@ -1521,7 +1712,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、4ノードにノード当たり8 MPIプロセスでトータル32 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1529,31 +1720,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 256Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 32KBから8MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 3-1-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の **HCOLL** の結果から32kbとしています。
 
-![Alltoall 4 node 8 ppn all step1](ata_04_08_all_step1.png)
+![Alltoall 4 node 8 ppn all step1](ata_04_08_step1_all.png)
 
-![Alltoall 4 node 8 ppn rc step1](ata_04_08_rc_step1.png)
+![Alltoall 4 node 8 ppn dc step1](ata_04_08_step1_dc.png)
 
-![Alltoall 4 node 8 ppn ud step1](ata_04_08_ud_step1.png)
+![Alltoall 4 node 8 ppn rc step1](ata_04_08_step1_rc.png)
 
-![Alltoall 4 node 8 ppn dc step1](ata_04_08_dc_step1.png)
+![Alltoall 4 node 8 ppn ud step1](ata_04_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1563,7 +1745,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 4 node 8 ppn step2](ata_04_08_step2.png)
 
@@ -1571,26 +1753,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 4 node 8 ppn step3](ata_04_08_step3.png)
+![Alltoall 4 node 8 ppn no coll](ata_04_08_step3_no.png)
+
+![Alltoall 4 node 8 ppn UCC](ata_04_08_step3_uc.png)
+
+![Alltoall 4 node 8 ppn HCOLL](ata_04_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 4 node 8 ppn](ata_04_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は2KBから64KBの間で性能が低下し256B以下で性能が向上
+- **HCOLL** は512Bから32KBの間で性能が低下しそれ未満で性能が向上
+- **UCC** は **HCOLL** に対して128B以下で概ね性能が低下
+- チューニング未適用は2KB以上で性能が低下
 
 ### 3-1-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の結果から64kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の **HCOLL** の結果から64kbとしています。
 
-![Allgather 4 node 8 ppn all step1](aga_04_08_all_step1.png)
+![Allgather 4 node 8 ppn all step1](aga_04_08_step1_all.png)
 
-![Allgather 4 node 8 ppn rc step1](aga_04_08_rc_step1.png)
+![Allgather 4 node 8 ppn dc step1](aga_04_08_step1_dc.png)
 
-![Allgather 4 node 8 ppn ud step1](aga_04_08_ud_step1.png)
+![Allgather 4 node 8 ppn rc step1](aga_04_08_step1_rc.png)
 
-![Allgather 4 node 8 ppn dc step1](aga_04_08_dc_step1.png)
+![Allgather 4 node 8 ppn ud step1](aga_04_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1600,7 +1803,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 4 node 8 ppn step2](aga_04_08_step2.png)
 
@@ -1608,26 +1811,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 4 node 8 ppn step3](aga_04_08_step3.png)
+![Allgather 4 node 8 ppn no coll](aga_04_08_step3_no.png)
+
+![Allgather 4 node 8 ppn UCC](aga_04_08_step3_uc.png)
+
+![Allgather 4 node 8 ppn HCOLL](aga_04_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 4 node 8 ppn](aga_04_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して128Bから1KBの間で性能が低下し2KBと8KBの間と64B以下で性能が向上
+- チューニング適用による性能の変化無し
 
 ### 3-1-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 Allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 Allreduce](#1-1-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 4 node 8 ppn all step1](are_04_08_all_step1.png)
+![Allreduce 4 node 8 ppn all step1](are_04_08_step1_all.png)
 
-![Allreduce 4 node 8 ppn rc step1](are_04_08_rc_step1.png)
+![Allreduce 4 node 8 ppn dc step1](are_04_08_step1_dc.png)
 
-![Allreduce 4 node 8 ppn ud step1](are_04_08_ud_step1.png)
+![Allreduce 4 node 8 ppn rc step1](are_04_08_step1_rc.png)
 
-![Allreduce 4 node 8 ppn dc step1](are_04_08_dc_step1.png)
+![Allreduce 4 node 8 ppn ud step1](are_04_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1637,7 +1861,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 4 node 8 ppn step2](are_04_08_step2.png)
 
@@ -1645,11 +1869,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 4 node 8 ppn step3](are_04_08_step3.png)
+![Allreduce 4 node 8 ppn no coll](are_04_08_step3_no.png)
+
+![Allreduce 4 node 8 ppn UCC](are_04_08_step3_uc.png)
+
+![Allreduce 4 node 8 ppn HCOLL](are_04_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 4 node 8 ppn](are_04_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して128Bから4KBで性能が低下
+- チューニング未適用は32KBから16MBの間で大幅に性能が低下
 
 ## 3-2. ノード当たり16 MPIプロセス
 
@@ -1657,7 +1902,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、4ノードにノード当たり16 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1665,31 +1910,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 1KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 8KBから8MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 3-2-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の **HCOLL** の結果から32kbとしています。
 
-![Alltoall 4 node 16 ppn all step1](ata_04_16_all_step1.png)
+![Alltoall 4 node 16 ppn all step1](ata_04_16_step1_all.png)
 
-![Alltoall 4 node 16 ppn rc step1](ata_04_16_rc_step1.png)
+![Alltoall 4 node 16 ppn dc step1](ata_04_16_step1_dc.png)
 
-![Alltoall 4 node 16 ppn ud step1](ata_04_16_ud_step1.png)
+![Alltoall 4 node 16 ppn rc step1](ata_04_16_step1_rc.png)
 
-![Alltoall 4 node 16 ppn dc step1](ata_04_16_dc_step1.png)
+![Alltoall 4 node 16 ppn ud step1](ata_04_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:32kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1699,7 +1935,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 4 node 16 ppn step2](ata_04_16_step2.png)
 
@@ -1707,26 +1943,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 4 node 16 ppn step3](ata_04_16_step3.png)
+![Alltoall 4 node 16 ppn no coll](ata_04_16_step3_no.png)
+
+![Alltoall 4 node 16 ppn UCC](ata_04_16_step3_uc.png)
+
+![Alltoall 4 node 16 ppn HCOLL](ata_04_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 4 node 16 ppn](ata_04_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は1KB以下で性能が向上
+- **HCOLL** は1KB以下で性能が向上
+- **UCC** は **HCOLL** に対して256B以下で概ね性能が低下
+- チューニング未適用は64KB以下で概ね性能が低下
 
 ### 3-2-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の **HCOLL** の結果から32kbとしています。
 
-![Allgather 4 node 16 ppn all step1](aga_04_16_all_step1.png)
+![Allgather 4 node 16 ppn all step1](aga_04_16_step1_all.png)
 
-![Allgather 4 node 16 ppn rc step1](aga_04_16_rc_step1.png)
+![Allgather 4 node 16 ppn dc step1](aga_04_16_step1_dc.png)
 
-![Allgather 4 node 16 ppn ud step1](aga_04_16_ud_step1.png)
+![Allgather 4 node 16 ppn rc step1](aga_04_16_step1_rc.png)
 
-![Allgather 4 node 16 ppn dc step1](aga_04_16_dc_step1.png)
+![Allgather 4 node 16 ppn ud step1](aga_04_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1736,7 +1993,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 4 node 16 ppn step2](aga_04_16_step2.png)
 
@@ -1744,26 +2001,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 4 node 16 ppn step3](aga_04_16_step3.png)
+![Allgather 4 node 16 ppn no coll](aga_04_16_step3_no.png)
+
+![Allgather 4 node 16 ppn UCC](aga_04_16_step3_uc.png)
+
+![Allgather 4 node 16 ppn HCOLL](aga_04_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 4 node 16 ppn](aga_04_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して64Bから512Bの間で性能が低下し16B以下で性能が向上
+- チューニング未適用は128KB以下で性能が低下
 
 ### 3-2-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の **HCOLL** の結果から128kbとしています。
 
-![Allreduce 4 node 16 ppn all step1](are_04_16_all_step1.png)
+![Allreduce 4 node 16 ppn all step1](are_04_16_step1_all.png)
 
-![Allreduce 4 node 16 ppn rc step1](are_04_16_rc_step1.png)
+![Allreduce 4 node 16 ppn dc step1](are_04_16_step1_dc.png)
 
-![Allreduce 4 node 16 ppn ud step1](are_04_16_ud_step1.png)
+![Allreduce 4 node 16 ppn rc step1](are_04_16_step1_rc.png)
 
-![Allreduce 4 node 16 ppn dc step1](are_04_16_dc_step1.png)
+![Allreduce 4 node 16 ppn ud step1](are_04_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1773,7 +2051,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 4 node 16 ppn step2](are_04_16_step2.png)
 
@@ -1781,11 +2059,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 4 node 16 step3](are_04_16_step3.png)
+![Allreduce 4 node 16 ppn no coll](are_04_16_step3_no.png)
+
+![Allreduce 4 node 16 ppn UCC](are_04_16_step3_uc.png)
+
+![Allreduce 4 node 16 ppn HCOLL](are_04_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|1|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 4 node 16 ppn](are_04_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して2MBから16MBの間で性能が向上し128Bから4KBの間で性能が低下
+- チューニング未適用は16MB以下で大幅に性能が低下
 
 ## 3-3. ノード当たり32 MPIプロセス
 
@@ -1793,7 +2092,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、4ノードにノード当たり32 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1801,31 +2100,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 256Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 16KBから4MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - 1MBまでと16MBから1GBまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 3-3-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
 
-![Alltoall 4 node 32 ppn all step1](ata_04_32_all_step1.png)
+![Alltoall 4 node 32 ppn all step1](ata_04_32_step1_all.png)
 
-![Alltoall 4 node 32 ppn rc step1](ata_04_32_rc_step1.png)
+![Alltoall 4 node 32 ppn dc step1](ata_04_32_step1_dc.png)
 
-![Alltoall 4 node 32 ppn ud step1](ata_04_32_ud_step1.png)
+![Alltoall 4 node 32 ppn rc step1](ata_04_32_step1_rc.png)
 
-![Alltoall 4 node 32 ppn dc step1](ata_04_32_dc_step1.png)
+![Alltoall 4 node 32 ppn ud step1](ata_04_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1835,7 +2125,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 4 node 32 ppn step2](ata_04_32_step2.png)
 
@@ -1843,26 +2133,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 4 node 32 step3](ata_04_32_step3.png)
+![Alltoall 4 node 32 ppn no coll](ata_04_32_step3_no.png)
+
+![Alltoall 4 node 32 ppn UCC](ata_04_32_step3_uc.png)
+
+![Alltoall 4 node 32 ppn HCOLL](ata_04_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 4 node 32 ppn](ata_04_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は512B以下で性能が向上
+- **HCOLL** は256B以下で性能が向上
+- **UCC** は **HCOLL** に対して顕著な傾向無し
+- チューニング未適用は8KB以下で性能が大幅に低下
 
 ### 3-3-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16kbとしています。
 
-![Allgather 4 node 32 ppn all step1](aga_04_32_all_step1.png)
+![Allgather 4 node 32 ppn all step1](aga_04_32_step1_all.png)
 
-![Allgather 4 node 32 ppn rc step1](aga_04_32_rc_step1.png)
+![Allgather 4 node 32 ppn dc step1](aga_04_32_step1_dc.png)
 
-![Allgather 4 node 32 ppn ud step1](aga_04_32_ud_step1.png)
+![Allgather 4 node 32 ppn rc step1](aga_04_32_step1_rc.png)
 
-![Allgather 4 node 32 ppn dc step1](aga_04_32_dc_step1.png)
+![Allgather 4 node 32 ppn ud step1](aga_04_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1872,7 +2183,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 4 node 32 ppn step2](aga_04_32_step2.png)
 
@@ -1880,26 +2191,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 4 node 32 ppn step3](aga_04_32_step3.png)
+![Allgather 4 node 32 ppn no coll](aga_04_32_step3_no.png)
+
+![Allgather 4 node 32 ppn UCC](aga_04_32_step3_uc.png)
+
+![Allgather 4 node 32 ppn HCOLL](aga_04_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 4 node 32 ppn](aga_04_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して32Bから512Bの間で性能が低下
+- チューニング未適用は16KB以下で性能が低下
 
 ### 3-3-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 4 node 32 ppn all step1](are_04_32_all_step1.png)
+![Allreduce 4 node 32 ppn all step1](are_04_32_step1_all.png)
 
-![Allreduce 4 node 32 ppn rc step1](are_04_32_rc_step1.png)
+![Allreduce 4 node 32 ppn dc step1](are_04_32_step1_dc.png)
 
-![Allreduce 4 node 32 ppn ud step1](are_04_32_ud_step1.png)
+![Allreduce 4 node 32 ppn rc step1](are_04_32_step1_rc.png)
 
-![Allreduce 4 node 32 ppn dc step1](are_04_32_dc_step1.png)
+![Allreduce 4 node 32 ppn ud step1](are_04_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1909,7 +2241,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 4 node 32 ppn step2](are_04_32_step2.png)
 
@@ -1917,11 +2249,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 4 node 32 ppn step3](are_04_32_step3.png)
+![Allreduce 4 node 32 ppn no coll](are_04_32_step3_no.png)
+
+![Allreduce 4 node 32 ppn UCC](are_04_32_step3_uc.png)
+
+![Allreduce 4 node 32 ppn HCOLL](are_04_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 4 node 32 ppn](are_04_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して512KBから16MBまで性能が向上し4KB以下で性能が低下
+- チューニング未適用は16MB以下で大幅に性能が低下
 
 ## 3-4. ノード当たり36 MPIプロセス
 
@@ -1929,7 +2282,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、4ノードにノード当たり36 MPIプロセスでトータル144 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -1937,31 +2290,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 256Bまでのメッセージサイズで使用する場合が使用しない場合に対しておおむね優位
-- **Allgather**
-    - 8Bから1KBまでと8KBから4MBまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 3-4-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
 
-![Alltoall 4 node 36 ppn all step1](ata_04_36_all_step1.png)
+![Alltoall 4 node 36 ppn all step1](ata_04_36_step1_all.png)
 
-![Alltoall 4 node 36 ppn rc step1](ata_04_36_rc_step1.png)
+![Alltoall 4 node 36 ppn dc step1](ata_04_36_step1_dc.png)
 
-![Alltoall 4 node 36 ppn ud step1](ata_04_36_ud_step1.png)
+![Alltoall 4 node 36 ppn rc step1](ata_04_36_step1_rc.png)
 
-![Alltoall 4 node 36 ppn dc step1](ata_04_36_dc_step1.png)
+![Alltoall 4 node 36 ppn ud step1](ata_04_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -1971,7 +2315,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 4 node 36 ppn step2](ata_04_36_step2.png)
 
@@ -1979,26 +2323,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 4 node 36 ppn step3](ata_04_36_step3.png)
+![Alltoall 4 node 36 ppn no coll](ata_04_36_step3_no.png)
+
+![Alltoall 4 node 36 ppn UCC](ata_04_36_step3_uc.png)
+
+![Alltoall 4 node 36 ppn HCOLL](ata_04_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|1|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 4 node 36 ppn](ata_04_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は512B以下で概ね性能が向上
+- **HCOLL** は512B以下で性能が向上
+- **UCC** は **HCOLL** に対して256B以下で概ね性能が低下
+- チューニング未適用は全域で性能が低下
 
 ### 3-4-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16kbとしています。
 
-![Allgather 4 node 36 ppn all step1](aga_04_36_all_step1.png)
+![Allgather 4 node 36 ppn all step1](aga_04_36_step1_all.png)
 
-![Allgather 4 node 36 ppn rc step1](aga_04_36_rc_step1.png)
+![Allgather 4 node 36 ppn dc step1](aga_04_36_step1_dc.png)
 
-![Allgather 4 node 36 ppn ud step1](aga_04_36_ud_step1.png)
+![Allgather 4 node 36 ppn rc step1](aga_04_36_step1_rc.png)
 
-![Allgather 4 node 36 ppn dc step1](aga_04_36_dc_step1.png)
+![Allgather 4 node 36 ppn ud step1](aga_04_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2008,7 +2373,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 4 node 36 ppn step2](aga_04_36_step2.png)
 
@@ -2016,26 +2381,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 4 node 36 ppn step3](aga_04_36_step3.png)
+![Allgather 4 node 36 ppn no coll](aga_04_36_step3_no.png)
+
+![Allgather 4 node 36 ppn UCC](aga_04_36_step3_uc.png)
+
+![Allgather 4 node 36 ppn HCOLL](aga_04_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 4 node 36 ppn](aga_04_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して顕著な傾向無し
+- チューニング未適用は16KB以下で性能が低下
 
 ### 3-4-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 4 node 36 ppn all step1](are_04_36_all_step1.png)
+![Allreduce 4 node 36 ppn all step1](are_04_36_step1_all.png)
 
-![Allreduce 4 node 36 ppn rc step1](are_04_36_rc_step1.png)
+![Allreduce 4 node 36 ppn dc step1](are_04_36_step1_dc.png)
 
-![Allreduce 4 node 36 ppn ud step1](are_04_36_ud_step1.png)
+![Allreduce 4 node 36 ppn rc step1](are_04_36_step1_rc.png)
 
-![Allreduce 4 node 36 ppn dc step1](are_04_36_dc_step1.png)
+![Allreduce 4 node 36 ppn ud step1](are_04_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2045,7 +2431,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 4 node 36 ppn step2](are_04_36_step2.png)
 
@@ -2053,11 +2439,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 4 node 36 ppn step3](are_04_36_step3.png)
+![Allreduce 4 node 36 ppn no coll](are_04_36_step3_no.png)
+
+![Allreduce 4 node 36 ppn UCC](are_04_36_step3_uc.png)
+
+![Allreduce 4 node 36 ppn HCOLL](are_04_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 4 node 36 ppn](are_04_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して8KB以上で概ね性能が向上しそれ未満で性能が低下
+- チューニング未適用は32MB以下で大幅に性能が低下
 
 ***
 # 4.  8ノード
@@ -2070,6 +2477,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※15）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
 - **coll_hcoll_enable** ： **0** ・ **1**
+- **coll_ucc_enable** ： **0** ・ **1**
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
 - **NPS** ：  **1** ・ **2**
 
@@ -2088,17 +2496,19 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 - ステップ1
     - **UCX_TLS** と **UCX_RNDV_THRESH** を組合せた32個のパターンを検証してこれらの最適値を決定
-    - **coll_hcoll_enable** は **1** に固定
+    - **coll_hcoll_enable** は **1** に固定（デフォルト）
+    - **coll_ucc_enable** は **0** に固定（デフォルト）
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ2
     - **UCX_ZCOPY_THRESH** の7パターンを検証してこの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
-    - **coll_hcoll_enable** は **1** に固定
+    - **coll_hcoll_enable** は **1** に固定（デフォルト）
+    - **coll_ucc_enable** は **0** に固定（デフォルト）
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ3
-    - **coll_hcoll_enable** とMPIプロセス分割方法と **NPS** を組合せた8パターンを検証してこれらの最適値を決定
+    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
     - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
 
@@ -2108,7 +2518,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、8ノードにノード当たり8 MPIプロセスでトータル64 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -2116,39 +2526,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 1KBまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-    - 2MBから4MBまでのメッセージサイズで使用しない場合が使用する場合に対して優位
-- **Allgather**
-    - 32KBから4MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 有意な差は無し
-- **Allgather**
-    - 256KBから4MBのメッセージサイズでサイクリック分割がブロック分割に対して優位
-- **Allreduce**
-    - 有意な差は無し
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 4-1-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の結果から32kbとしています。
 
-![Alltoall 8 node 8 ppn all step1](ata_08_08_all_step1.png)
+![Alltoall 8 node 8 ppn all step1](ata_08_08_step1_all.png)
 
-![Alltoall 8 node 8 ppn rc step1](ata_08_08_rc_step1.png)
+![Alltoall 8 node 8 ppn dc step1](ata_08_08_step1_dc.png)
 
-![Alltoall 8 node 8 ppn ud step1](ata_08_08_ud_step1.png)
+![Alltoall 8 node 8 ppn rc step1](ata_08_08_step1_rc.png)
 
-![Alltoall 8 node 8 ppn dc step1](ata_08_08_dc_step1.png)
+![Alltoall 8 node 8 ppn ud step1](ata_08_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2158,7 +2551,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 8 node 8 ppn step2](ata_08_08_step2.png)
 
@@ -2166,26 +2559,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 8 node 8 ppn step3](ata_08_08_step3.png)
+![Alltoall 8 node 8 ppn no coll](ata_08_08_step3_no.png)
+
+![Alltoall 8 node 8 ppn UCC](ata_08_08_step3_uc.png)
+
+![Alltoall 8 node 8 ppn HCOLL](ata_08_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 8 node 8 ppn](ata_08_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は1KB以下で性能が向上
+- **HCOLL** は1KB以下で性能が向上
+- **UCC** は **HCOLL** に対して128B以下で概ね性能が低下
+- チューニング未適用は概ね性能が低下
 
 ### 4-1-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の結果から64kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の結果から64kbとしています。
 
-![Allgather 8 node 8 ppn all step1](aga_08_08_all_step1.png)
+![Allgather 8 node 8 ppn all step1](aga_08_08_step1_all.png)
 
-![Allgather 8 node 8 ppn rc step1](aga_08_08_rc_step1.png)
+![Allgather 8 node 8 ppn dc step1](aga_08_08_step1_dc.png)
 
-![Allgather 8 node 8 ppn ud step1](aga_08_08_ud_step1.png)
+![Allgather 8 node 8 ppn rc step1](aga_08_08_step1_rc.png)
 
-![Allgather 8 node 8 ppn dc step1](aga_08_08_dc_step1.png)
+![Allgather 8 node 8 ppn ud step1](aga_08_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:64kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2195,7 +2609,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 8 node 8 ppn step2](aga_08_08_step2.png)
 
@@ -2203,11 +2617,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 8 node 8 ppn step3](aga_08_08_step3.png)
+![Allgather 8 node 8 ppn no coll](aga_08_08_step3_no.png)
+
+![Allgather 8 node 8 ppn UCC](aga_08_08_step3_uc.png)
+
+![Allgather 8 node 8 ppn HCOLL](aga_08_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 8 node 8 ppn](aga_08_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は64KB以上と32B以下で性能が向上し64Bから512Bの間で性能が低下
+- **HCOLL** は64KB以上で性能が向上
+- **UCC** は **HCOLL** に対して64Bから512Bの間で性能が低下し32B以下で性能が向上
+- チューニング未適用は64KB以下で性能が低下
 
 ### 4-1-3. Allreduce
 
@@ -2216,13 +2651,13 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
 なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-3 Allreduce](#1-1-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 8 node 8 ppn all step1](are_08_08_all_step1.png)
+![Allreduce 8 node 8 ppn all step1](are_08_08_step1_all.png)
 
-![Allreduce 8 node 8 ppn rc step1](are_08_08_rc_step1.png)
+![Allreduce 8 node 8 ppn dc step1](are_08_08_step1_dc.png)
 
-![Allreduce 8 node 8 ppn ud step1](are_08_08_ud_step1.png)
+![Allreduce 8 node 8 ppn rc step1](are_08_08_step1_rc.png)
 
-![Allreduce 8 node 8 ppn dc step1](are_08_08_dc_step1.png)
+![Allreduce 8 node 8 ppn ud step1](are_08_08_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2232,7 +2667,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 8 node 8 ppn step2](are_08_08_step2.png)
 
@@ -2240,11 +2675,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 8 node 8 ppn step3](are_08_08_step3.png)
+![Allreduce 8 node 8 ppn no coll](are_08_08_step3_no.png)
+
+![Allreduce 8 node 8 ppn UCC](are_08_08_step3_uc.png)
+
+![Allreduce 8 node 8 ppn HCOLL](are_08_08_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 8 node 8 ppn](are_08_08_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して64MB以上で性能が向上
+- チューニング未適用は16MB以下で大幅に性能が低下
 
 ## 4-2. ノード当たり16 MPIプロセス
 
@@ -2252,7 +2708,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、8ノードにノード当たり16 MPIプロセスでトータル128 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -2260,32 +2716,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 128Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 32Bから512Bのメッセージサイズで使用する場合が使用しない場合に対して優位
-    - 8KBから4MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 4-2-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の結果から32kbとしています。
 
-![Alltoall 8 node 16 ppn all step1](ata_08_16_all_step1.png)
+![Alltoall 8 node 16 ppn all step1](ata_08_16_step1_all.png)
 
-![Alltoall 8 node 16 ppn rc step1](ata_08_16_rc_step1.png)
+![Alltoall 8 node 16 ppn dc step1](ata_08_16_step1_dc.png)
 
-![Alltoall 8 node 16 ppn ud step1](ata_08_16_ud_step1.png)
+![Alltoall 8 node 16 ppn rc step1](ata_08_16_step1_rc.png)
 
-![Alltoall 8 node 16 ppn dc step1](ata_08_16_dc_step1.png)
+![Alltoall 8 node 16 ppn ud step1](ata_08_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2295,7 +2741,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 8 node 16 ppn step2](ata_08_16_step2.png)
 
@@ -2303,26 +2749,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 8 node 16 ppn step3](ata_08_16_step3.png)
+![Alltoall 8 node 16 ppn no coll](ata_08_16_step3_no.png)
+
+![Alltoall 8 node 16 ppn UCC](ata_08_16_step3_uc.png)
+
+![Alltoall 8 node 16 ppn HCOLL](ata_08_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 8 node 16 ppn](ata_08_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は512B以下で性能が向上
+- **HCOLL** は512B以下で概ね性能が向上
+- **UCC** は **HCOLL** に対して2KB以下で概ね性能が低下
+- チューニング未適用は4KB以下で概ね性能が低下
 
 ### 4-2-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の結果から32kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の結果から32kbとしています。
 
-![Allgather 8 node 16 ppn all step1](aga_08_16_all_step1.png)
+![Allgather 8 node 16 ppn all step1](aga_08_16_step1_all.png)
 
-![Allgather 8 node 16 ppn rc step1](aga_08_16_rc_step1.png)
+![Allgather 8 node 16 ppn dc step1](aga_08_16_step1_dc.png)
 
-![Allgather 8 node 16 ppn ud step1](aga_08_16_ud_step1.png)
+![Allgather 8 node 16 ppn rc step1](aga_08_16_step1_rc.png)
 
-![Allgather 8 node 16 ppn dc step1](aga_08_16_dc_step1.png)
+![Allgather 8 node 16 ppn ud step1](aga_08_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:32kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2332,7 +2799,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 8 node 16 ppn step2](aga_08_16_step2.png)
 
@@ -2340,26 +2807,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 8 node 16 ppn step3](aga_08_16_step3.png)
+![Allgather 8 node 16 ppn no coll](aga_08_16_step3_no.png)
+
+![Allgather 8 node 16 ppn UCC](aga_08_16_step3_uc.png)
+
+![Allgather 8 node 16 ppn HCOLL](aga_08_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 8 node 16 ppn](aga_08_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** はほぼ全域で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して32Bから512Bの間で性能が低下し16B以下で性能が向上
+- チューニング未適用は128KB以下で性能が低下
 
 ### 4-2-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 8 node 16 ppn all step1](are_08_16_all_step1.png)
+![Allreduce 8 node 16 ppn all step1](are_08_16_step1_all.png)
 
-![Allreduce 8 node 16 ppn rc step1](are_08_16_rc_step1.png)
+![Allreduce 8 node 16 ppn dc step1](are_08_16_step1_dc.png)
 
-![Allreduce 8 node 16 ppn ud step1](are_08_16_ud_step1.png)
+![Allreduce 8 node 16 ppn rc step1](are_08_16_step1_rc.png)
 
-![Allreduce 8 node 16 ppn dc step1](are_08_16_dc_step1.png)
+![Allreduce 8 node 16 ppn ud step1](are_08_16_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2369,7 +2857,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 8 node 16 ppn step2](are_08_16_step2.png)
 
@@ -2377,11 +2865,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 8 node 16 step3](are_08_16_step3.png)
+![Allreduce 8 node 16 ppn no coll](are_08_16_step3_no.png)
+
+![Allreduce 8 node 16 ppn UCC](are_08_16_step3_uc.png)
+
+![Allreduce 8 node 16 ppn HCOLL](are_08_16_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 8 node 16 ppn](are_08_16_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して1MB以上で性能が向上し128Bから32KBの間で性能が低下
+- チューニング未適用は8MB以下で大幅に性能が低下
 
 ## 4-3. ノード当たり32 MPIプロセス
 
@@ -2389,7 +2898,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、8ノードにノード当たり32 MPIプロセスでトータル256 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -2397,39 +2906,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allgather**
-    - 32Bから256Bのメッセージサイズで使用する場合が使用しない場合に対して優位
-    - 8KBから2MBのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 有意な差は無し
-- **Allgather**
-    - 有意な差は無し
-- **Allreduce**
-    - 512KBから2MBのメッセージサイズで **NPS1** が **NPS2** に対して優位
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 4-3-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16kbとしています。
 
-![Alltoall 8 node 32 ppn all step1](ata_08_32_all_step1.png)
+![Alltoall 8 node 32 ppn all step1](ata_08_32_step1_all.png)
 
-![Alltoall 8 node 32 ppn rc step1](ata_08_32_rc_step1.png)
+![Alltoall 8 node 32 ppn dc step1](ata_08_32_step1_dc.png)
 
-![Alltoall 8 node 32 ppn ud step1](ata_08_32_ud_step1.png)
+![Alltoall 8 node 32 ppn rc step1](ata_08_32_step1_rc.png)
 
-![Alltoall 8 node 32 ppn dc step1](ata_08_32_dc_step1.png)
+![Alltoall 8 node 32 ppn ud step1](ata_08_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2439,7 +2931,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 8 node 32 ppn step2](ata_08_32_step2.png)
 
@@ -2447,26 +2939,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 8 node 32 step3](ata_08_32_step3.png)
+![Alltoall 8 node 32 ppn no coll](ata_08_32_step3_no.png)
+
+![Alltoall 8 node 32 ppn UCC](ata_08_32_step3_uc.png)
+
+![Alltoall 8 node 32 ppn HCOLL](ata_08_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|1|2|
+|MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 8 node 32 ppn](ata_08_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は顕著な傾向無し
+- **HCOLL** は2KBから64KBの間で性能が低下し512B以下で性能が向上
+- **UCC** は **HCOLL** に対して256Bから16KBの間で性能が向上し128B以下で概ね性能が低下
+- チューニング未適用は概ね性能が低下
 
 ### 4-3-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16kbとしています。
 
-![Allgather 8 node 32 ppn all step1](aga_08_32_all_step1.png)
+![Allgather 8 node 32 ppn all step1](aga_08_32_step1_all.png)
 
-![Allgather 8 node 32 ppn rc step1](aga_08_32_rc_step1.png)
+![Allgather 8 node 32 ppn dc step1](aga_08_32_step1_dc.png)
 
-![Allgather 8 node 32 ppn ud step1](aga_08_32_ud_step1.png)
+![Allgather 8 node 32 ppn rc step1](aga_08_32_step1_rc.png)
 
-![Allgather 8 node 32 ppn dc step1](aga_08_32_dc_step1.png)
+![Allgather 8 node 32 ppn ud step1](aga_08_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2476,7 +2989,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 8 node 32 ppn step2](aga_08_32_step2.png)
 
@@ -2484,26 +2997,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 8 node 32 ppn step3](aga_08_32_step3.png)
+![Allgather 8 node 32 ppn no coll](aga_08_32_step3_no.png)
+
+![Allgather 8 node 32 ppn UCC](aga_08_32_step3_uc.png)
+
+![Allgather 8 node 32 ppn HCOLL](aga_08_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 8 node 32 ppn](aga_08_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は4KB以上と8B以下で性能が向上し16Bから1KBの間で性能が低下
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して8B以下で性能が向上し16Bから512KBの間で性能が低下
+- チューニング未適用は16KB以下で性能が低下
 
 ### 4-3-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 8 node 32 ppn all step1](are_08_32_all_step1.png)
+![Allreduce 8 node 32 ppn all step1](are_08_32_step1_all.png)
 
-![Allreduce 8 node 32 ppn rc step1](are_08_32_rc_step1.png)
+![Allreduce 8 node 32 ppn dc step1](are_08_32_step1_dc.png)
 
-![Allreduce 8 node 32 ppn ud step1](are_08_32_ud_step1.png)
+![Allreduce 8 node 32 ppn rc step1](are_08_32_step1_rc.png)
 
-![Allreduce 8 node 32 ppn dc step1](are_08_32_dc_step1.png)
+![Allreduce 8 node 32 ppn ud step1](are_08_32_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2513,7 +3047,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 8 node 32 ppn step2](are_08_32_step2.png)
 
@@ -2521,11 +3055,32 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 8 node 32 ppn step3](are_08_32_step3.png)
+![Allreduce 8 node 32 ppn no coll](are_08_32_step3_no.png)
+
+![Allreduce 8 node 32 ppn UCC](are_08_32_step3_uc.png)
+
+![Allreduce 8 node 32 ppn HCOLL](are_08_32_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|サイクリック分割|サイクリック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 8 node 32 ppn](are_08_32_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して512KB以上で性能が向上し64KB以下で概ね性能が低下
+- チューニング未適用は16MB以下で大幅に性能が低下
 
 ## 4-4. ノード当たり36 MPIプロセス
 
@@ -2533,7 +3088,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 本章は、8ノードにノード当たり36 MPIプロセスでトータル288 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
-下表は、MPI集合通信関数毎の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
+下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
@@ -2541,33 +3096,22 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 | **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
 
-**HCOLL** 使用の有無は、以下の傾向がみられます。
-
-- **Alltoall**
-    - 512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-    - 16KBから64KBまでのメッセージサイズで使用しない場合が使用する場合に対して優位
-- **Allgather**
-    - 4Bから512Bまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-    - 8KBから2MBまでのメッセージサイズで使用する場合が使用しない場合に対して優位
-- **Allreduce**
-    - メッセージサイズ全域で使用する場合が使用しない場合に対して優位
-
-**NPS** とMPIプロセス分割方法は、その違いによる有意な差はみられません。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
 
 ### 4-4-1. Alltoall
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16kbとしています。
 
-![Alltoall 8 node 36 ppn all step1](ata_08_36_all_step1.png)
+![Alltoall 8 node 36 ppn all step1](ata_08_36_step1_all.png)
 
-![Alltoall 8 node 36 ppn rc step1](ata_08_36_rc_step1.png)
+![Alltoall 8 node 36 ppn dc step1](ata_08_36_step1_dc.png)
 
-![Alltoall 8 node 36 ppn ud step1](ata_08_36_ud_step1.png)
+![Alltoall 8 node 36 ppn rc step1](ata_08_36_step1_rc.png)
 
-![Alltoall 8 node 36 ppn dc step1](ata_08_36_dc_step1.png)
+![Alltoall 8 node 36 ppn ud step1](ata_08_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2577,7 +3121,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Alltoall** の結果です。
 
 ![Alltoall 8 node 36 ppn step2](ata_08_36_step2.png)
 
@@ -2585,26 +3129,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Alltoall** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Alltoall 8 node 36 ppn step3](ata_08_36_step3.png)
+![Alltoall 8 node 36 ppn no coll](ata_08_36_step3_no.png)
+
+![Alltoall 8 node 36 ppn UCC](ata_08_36_step3_uc.png)
+
+![Alltoall 8 node 36 ppn HCOLL](ata_08_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|2|2|
+|MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Alltoall 8 node 36 ppn](ata_08_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は顕著な傾向無し
+- **HCOLL** は1KB以上で概ね性能が低下しそれ未満で性能が低下
+- **UCC** は **HCOLL** に対して256B以下で概ね性能が低下
+- チューニング未適用は全域で概ね性能が低下
 
 ### 4-4-2. Allgather
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16kbとしています。
 
-![Allgather 8 node 36 ppn all step1](aga_08_36_all_step1.png)
+![Allgather 8 node 36 ppn all step1](aga_08_36_step1_all.png)
 
-![Allgather 8 node 36 ppn rc step1](aga_08_36_rc_step1.png)
+![Allgather 8 node 36 ppn dc step1](aga_08_36_step1_dc.png)
 
-![Allgather 8 node 36 ppn ud step1](aga_08_36_ud_step1.png)
+![Allgather 8 node 36 ppn rc step1](aga_08_36_step1_rc.png)
 
-![Allgather 8 node 36 ppn dc step1](aga_08_36_dc_step1.png)
+![Allgather 8 node 36 ppn ud step1](aga_08_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:16kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2614,7 +3179,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allgather** の結果です。
 
 ![Allgather 8 node 36 ppn step2](aga_08_36_step2.png)
 
@@ -2622,26 +3187,47 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allgather** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allgather 8 node 36 ppn step3](aga_08_36_step3.png)
+![Allgather 8 node 36 ppn no coll](aga_08_36_step3_no.png)
+
+![Allgather 8 node 36 ppn UCC](aga_08_36_step3_uc.png)
+
+![Allgather 8 node 36 ppn HCOLL](aga_08_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|1|2|2|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allgather 8 node 36 ppn](aga_08_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は16Bから256Bの間で性能が低下しそれ以外で性能が向上
+- **HCOLL** はほぼ全域で性能が向上
+- **UCC** は **HCOLL** に対して16Bから256Bの間で性能が低下
+- チューニング未適用は8KB以下で大幅に性能が低下
 
 ### 4-4-3. Allreduce
 
 [ステップ1]
 
-以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。 **coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。  
-なお、ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
+以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から128kbとしています。
 
-![Allreduce 8 node 36 ppn all step1](are_08_36_all_step1.png)
+![Allreduce 8 node 36 ppn all step1](are_08_36_step1_all.png)
 
-![Allreduce 8 node 36 ppn rc step1](are_08_36_rc_step1.png)
+![Allreduce 8 node 36 ppn dc step1](are_08_36_step1_dc.png)
 
-![Allreduce 8 node 36 ppn ud step1](are_08_36_ud_step1.png)
+![Allreduce 8 node 36 ppn rc step1](are_08_36_step1_rc.png)
 
-![Allreduce 8 node 36 ppn dc step1](are_08_36_dc_step1.png)
+![Allreduce 8 node 36 ppn ud step1](are_08_36_step1_ud.png)
 
 以上より、 **UCX_RNDV_THRESH** を **intra:128kb,inter:128kb** とした場合が最も性能が良いと判断してこれを固定し、 **UCX_TLS** の各設定値を比較したものが以下のグラフです。
 
@@ -2651,7 +3237,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ2]
 
-以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。**coll_hcoll_enable** ・MPIプロセス分割方法・ **NPS** は、ここではそれぞれ **1** ・ブロック分割・ **NPS1** としています。
+以下のグラフは、 **UCX_ZCOPY_THRESH** を変化させたときの **Allreduce** の結果です。
 
 ![Allreduce 8 node 36 ppn step2](are_08_36_step2.png)
 
@@ -2659,8 +3245,29 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 [ステップ3]
 
-以下のグラフは、 **NPS** ・MPIプロセス分割方法・ **HCOLL** 使用の有無の各組み合わせで **Allreduce** の結果を示しています。  
-なお **HCOLL** 使用の有無は、 **NPS1** とブロック分割の組み合わせのみ使用する場合と使用しない場合をグラフにプロットし、それ以外は使用する場合のみグラフにプロットしています。  
-また比較対象として、全てのパラメータをデフォルトとした **NPS1** とブロック分割の組合せを記載しています。
+以下のグラフは、**NPS** とMPIプロセス分割方法の各組合せを集合通信コンポーネント毎に比較したものです。
 
-![Allreduce 8 node 36 ppn step3](are_08_36_step3.png)
+![Allreduce 8 node 36 ppn no coll](are_08_36_step3_no.png)
+
+![Allreduce 8 node 36 ppn UCC](are_08_36_step3_uc.png)
+
+![Allreduce 8 node 36 ppn HCOLL](are_08_36_step3_hc.png)
+
+以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
+
+||No COLL|UCC|HCOLL|
+|:---:|-:|-:|-:|
+|**NPS**|2|1|1|
+|MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
+
+集合通信コンポーネントを比較したものが以下のグラフです。  
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+
+![Allreduce 8 node 36 ppn](are_08_36_step3.png)
+
+以上の結果は、以下のように考察することが出来ます。
+
+- **UCC** は概ね全域で性能が向上
+- **HCOLL** は全域で性能が向上
+- **UCC** は **HCOLL** に対して8KB以下で性能が低下
+- チューニング未適用は64MB以下で大幅に性能が低下
