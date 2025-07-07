@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-07-02T15:18:57+09:00">
+  <meta property="article:published_time" content="2025-07-07T12:22:31+09:00">
 
 
 
@@ -410,7 +410,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="PAPIでHPCアプリケーションをプロファイリング">
     <meta itemprop="description" content="HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを実行する場合、高価な計算資源を有効活用出来ているかを検証するため、アプリケーションのプロファイリングを実施することが一般的です。PAPIは、HPCワークロード向けベ アメタル・シェイプ に採用されているIntel Ice LakeやAMD EPYC 9004シリーズのCPUが持つハードウェアカウンタから浮動小数点演算数やキャッシュヒット数といったプロファイリングに有益な情報を取得するAPIを提供し、HPCアプリケーションのプロファイリングに欠かせないツールとなっています。本プロファイリング関連Tipsは、ベアメタル・インスタンス上で実行するHPCアプリケーションをPAPIを使ってプロファイリングする方法を解説します。">
-    <meta itemprop="datePublished" content="2025-07-02T15:18:57+09:00">
+    <meta itemprop="datePublished" content="2025-07-07T12:22:31+09:00">
     
 
     <div class="page__inner-wrap">
@@ -456,15 +456,18 @@
   <li>総サイクル数</li>
 </ul>
 
-<p>本プロファイリング関連Tipsは、各ソフトウェアに以下のバージョンを使用しています。</p>
+<p>各ソフトウェアは、以下のバージョンを前提とします。</p>
 
 <ul>
-  <li>OS ： <strong>Oracle Linux</strong> 8.9</li>
-  <li><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> ：5.0.0</li>
-  <li><strong>PAPI</strong> ：7.1.0</li>
+  <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※4）</li>
+  <li><strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> ：5.0.6（※5）</li>
+  <li><strong>PAPI</strong> ：7.2.0</li>
 </ul>
 
-<p>また本プロファイリング関連Tipsで使用するインスタンスは、シェイプを <strong>BM.Optimized3.36</strong> 、OSを <strong>Oracle Linux</strong> 8.9として予めデプロイしておきますが、この手順は <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> を参照してください。</p>
+<p>※4）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
+※5） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
+
+<p>また本プロファイリング関連Tipsで使用するインスタンスは、シェイプを <strong>BM.Optimized3.36</strong> 、OSを <strong>Oracle Linux</strong> 8.10ベースのHPC <strong>クラスタネットワーキングイメージ</strong> として予めデプロイしておきますが、この手順は <strong><a href="https://oracle-japan.github.io/ocitutorials/">OCIチュートリアル</a></strong> の  <strong><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance">その3 - インスタンスを作成する</a></strong> を参照してください。</p>
 
 <p>以降では、以下の順に解説を進めます。</p>
 
@@ -481,7 +484,7 @@
 
 <p>本章は、本プロファイリングTipsで使用する <strong>PAPI</strong> 機能を検証するために必要な前提条件ソフトウェアとして、 <strong>OpenMPI</strong> をインストール・セットアップします。</p>
 
-<p>この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするOpenMPI構築方法</a></strong> を参照してください。</p>
+<p>この方法は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="2-papiインストールセットアップ">2. PAPIインストール・セットアップ</h1>
@@ -489,64 +492,58 @@
 <p>本章は、 <strong>PAPI</strong> をインストールし、利用に必要な環境設定を行います。<br />
 なお <strong>PAPI</strong> は、以降のインストール手順の中で環境に合わせた構築を行うため、 <strong>PAPI</strong> を利用する環境（本プロファイリング関連Tipsでは <strong>BM.Optimized3.36</strong> ）以外で本手順を実施（いわゆるクロスコンパイル）した場合、想定通りに動作しない場合があることに留意します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、 <strong>PAPI</strong> をインストールします。<br />
+<p>以下コマンドをopcユーザで実行し、 <strong>PAPI</strong> をインストールします。<br />
 これにより、 <strong>PAPI</strong> のライブラリ群が <strong>/usr/local/lib</strong> に、プロファイリング情報集計ツール等のユーティリティーツール群が <strong>/usr/local/bin</strong> にインストールされます。<br />
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>git clone https://github.com/icl-utk-edu/papi.git
- <span class="nv">$ </span><span class="nb">cd </span>papi/src<span class="p">;</span> ./configure
- <span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、コマンド出力の最後に <strong>PASSED</strong> が出力されることを以って、 <strong>PAPI</strong> が利用可能であることを確認します。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://icl.utk.edu/projects/papi/downloads/papi-7.2.0.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./papi-7.2.0.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>papi-7.2.0/src <span class="o">&amp;&amp;</span> ./configure
+<span class="nv">$ </span>make <span class="nt">-j</span> 36 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをopcユーザで実行し、コマンド出力の最後に <strong>PASSED</strong> が出力されることを以って、 <strong>PAPI</strong> が利用可能であることを確認します。<br />
 このコマンドは、利用可能な全てのプリセットイベント（ここでは42個）をテストし、その結果を表示します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo</span> ./ctests/all_events
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo</span> ./ctests/all_events
 
- Trying all pre-defined events:
- Adding PAPI_L1_DCM   successful
- :
- :
- :
- Adding PAPI_VEC_DP   successful
- Adding PAPI_REF_CYC  successful
- Successfully added, started and stopped 42 events.
- PASSED
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、利用可能なプリセットイベントを確認します。</p>
+Trying all pre-defined events:
+Adding PAPI_L1_DCM   successful
+:
+:
+:
+Adding PAPI_VEC_DP   successful
+Adding PAPI_REF_CYC  successful
+Successfully added, started and stopped 42 events.
+PASSED
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>papi_avail | <span class="nb">grep</span> ^PAPI_ | <span class="nb">awk</span> <span class="s1">'{if($3=="Yes")print $0}'</span>
- PAPI_L1_DCM  0x80000000  Yes   No   Level 1 data cache misses
- :
- :
- :
- PAPI_REF_CYC 0x8000006b  Yes   No   Reference clock cycles
+<p>次に、以下コマンドをopcユーザで実行し、利用可能なプリセットイベントを確認します。</p>
 
- <span class="nv">$ </span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、 <strong>PAPI</strong> 実行に必要な環境変数を設定します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>papi_avail | <span class="nb">grep</span> ^PAPI_ | <span class="nb">awk</span> <span class="s1">'{if($3=="Yes")print $0}'</span>
+PAPI_L1_DCM  0x80000000  Yes   No   Level 1 data cache misses
+:
+:
+:
+PAPI_REF_CYC 0x8000006b  Yes   No   Reference clock cycles
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export LD_LIBRARY_PATH=</span><span class="se">\$</span><span class="s2">LD_LIBRARY_PATH:/usr/local/lib"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
- <span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
-</code></pre></div>    </div>
-  </li>
-</ol>
+<span class="nv">$ </span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、 <strong>PAPI</strong> 実行に必要な環境変数を設定します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export LD_LIBRARY_PATH=/usr/local/lib:</span><span class="se">\$</span><span class="s2">LD_LIBRARY_PATH"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
+<span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
+</code></pre></div></div>
 
 <hr />
 <h1 id="3-サンプルプログラムコンパイル">3. サンプルプログラムコンパイル</h1>
 
-<p>本章は、 <strong>PAPI</strong> を使用してプロファイリング情報を取得する、非並列・OpenMP並列兼用版（<strong>matrix_multiply_thrpa_hl.f90</strong>）とMPI並列版（<strong>matrix_multiply_mpipa_hl.f90</strong> と <strong>para_range.f90</strong>）のサンプルプログラム をそれぞれコンパイルし、実行バイナリを作成します。</p>
+<p>本章は、 <strong>PAPI</strong> を使用してプロファイリング情報を取得する、非並列・OpenMP並列兼用版（<strong>matrix_multiply_thrpa_hl.f90</strong>）とMPI並列版（<strong>matrix_multiply_mpipa_hl.f90</strong> と <strong>para_range.f90</strong>）のサンプルプログラムをそれぞれコンパイルし、実行バイナリを作成します。</p>
 
 <p>このサンプルプログラムは、サイズが3,000x3,000の正方行列を乱数で初期化した後にその行列積を求め、その結果を標準出力に出力します。この際、行列積を求める3重ループ前後で <strong>PAPI</strong> の <strong>High Level API</strong> 関数を呼び出すことで、プロファイリング情報をカーネル部分にフォーカスして取得します。<br />
-ここでOpenMP並列版は、 <strong>PAPI</strong> 関数をスレッド生成後に呼び出している（<strong>!$OMP parallel</strong> と <strong>!$OMP end parallel</strong>の間に配置します。）ことに留意します。これは、 <strong>PAPI</strong> がスレッドの生成を検知できない制限から来ており、スレッド生成前に <strong>PAPI</strong> 関数を呼び出すとその後生成されたスレッドが消費した分のプロファイリング情報を取得することができません。</p>
+ここでOpenMP並列版は、 <strong>PAPI</strong> 関数をスレッド生成後に呼び出している（<strong>!$OMP parallel</strong> と <strong>!$OMP end parallel</strong>の間に配置します。）ことに留意します。これは、 <strong>PAPI</strong> がスレッドの生成を検知できない制限から来ており、スレッド生成前に <strong>PAPI</strong> 関数を呼び出すと、その後生成されたスレッドが消費した分のプロファイリング情報を取得することができません。</p>
 
 <p>[matrix_multiply_thrpa_hl.f90]</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>program main
@@ -673,26 +670,20 @@ end program main
 end
 </code></pre></div></div>
 
-<ol>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムを非並列プログラムとしてコンパイルします。</p>
+<p>以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムを非並列プログラムとしてコンパイルします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>gfortran <span class="nt">-O3</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> serial ./matrix_multiply_thrpa_hl.f90
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムをOpenMP並列プログラムとしてコンパイルします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gfortran <span class="nt">-O3</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> serial ./matrix_multiply_thrpa_hl.f90
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>gfortran <span class="nt">-O3</span> <span class="nt">-fopenmp</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> openmp ./matrix_multiply_thrpa_hl.f90
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、MPI並列版サンプルプログラムをコンパイルします。</p>
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムをOpenMP並列プログラムとしてコンパイルします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>mpifort <span class="nt">-O3</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> mpi ./matrix_multiply_mpipa_hl.f90 ./para_range.f90
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gfortran <span class="nt">-O3</span> <span class="nt">-fopenmp</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> openmp ./matrix_multiply_thrpa_hl.f90
+</code></pre></div></div>
+
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、MPI並列版サンプルプログラムをコンパイルします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpifort <span class="nt">-O3</span> <span class="nt">-I</span>/usr/local/include <span class="nt">-lpapi</span> <span class="nt">-o</span> mpi ./matrix_multiply_mpipa_hl.f90 ./para_range.f90
+</code></pre></div></div>
 
 <hr />
 <h1 id="4-サンプルプログラム実行">4. サンプルプログラム実行</h1>
@@ -703,162 +694,150 @@ end
 
 <p>ここでは、浮動小数点演算数（<strong>PAPI_FP_OPS</strong>）と浮動小数点演算インストラクション数（<strong>PAPI_FP_INS</strong>）を取得しています。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、非並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。</p>
+<p>以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、非並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_EVENTS</span><span class="o">=</span>PAPI_FP_OPS,PAPI_FP_INS
- <span class="nv">$ </span><span class="nb">mkdir</span> ./prof_serial ./prof_openmp ./prof_mpi
- <span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_serial
- <span class="nv">$ </span>./serial <span class="o">&gt;</span> /dev/null
- <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> ./prof_serial/papi_hl_output/
- total 4
- <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 10:47 rank_894286.json
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、OpenMP並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_EVENTS</span><span class="o">=</span>PAPI_FP_OPS,PAPI_FP_INS
+<span class="nv">$ </span><span class="nb">mkdir</span> ./prof_serial ./prof_openmp ./prof_mpi
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_serial
+<span class="nv">$ </span>./serial <span class="o">&gt;</span> /dev/null
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> ./prof_serial/papi_hl_output/
+total 4
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 10:47 rank_894286.json
+<span class="err">$</span>
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_openmp
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、OpenMP並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_openmp
 <span class="nv">$ </span><span class="nb">export </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span>2
 <span class="nv">$ </span>./openmp <span class="o">&gt;</span> /dev/null
 <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> ./prof_openmp/papi_hl_output/
 total 4
 <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 925 Mar 28 12:09 rank_586163.json
 <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、MPI並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。<br />
+</code></pre></div></div>
+
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、MPI並列版実行バイナリを実行して <strong>PAPI</strong> がプロファイリング情報を出力することを確認します。<br />
 この結果より、 <strong>PAPI</strong> はプロセス毎にプロファイリング情報ファイルを出力することがわかります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_mpi
- <span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 ./mpi <span class="o">&gt;</span> /dev/null
- <span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> ./prof_mpi/papi_hl_output/
- total 8
- <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 12:38 rank_000000.json
- <span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 12:38 rank_000001.json
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PAPI_OUTPUT_DIRECTORY</span><span class="o">=</span>./prof_mpi
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 ./mpi <span class="o">&gt;</span> /dev/null
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> ./prof_mpi/papi_hl_output/
+total 8
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 12:38 rank_000000.json
+<span class="nt">-rw-r--r--</span><span class="nb">.</span> 1 opc opc 638 Mar 28 12:38 rank_000001.json
+<span class="err">$</span>
+</code></pre></div></div>
 
 <hr />
 <h1 id="5-プロファイリング結果確認">5. プロファイリング結果確認</h1>
 
 <p>本章は、 <strong>PAPI</strong> が提供する <strong>High Level API</strong> 用プロファイリング情報集計ツールを使用し、先に取得したプロファイリング情報から非並列版・OpenMP並列版・MPI並列版の実行時性能をそれぞれ確認します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、非並列版の性能を確認します。<br />
+<p>以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、非並列版の性能を確認します。<br />
 この出力より、実時間 <strong>32.9秒</strong> で浮動小数点演算を <strong>54.0 G回</strong> 実行し、 <strong>1.6 GFLOPS</strong> の性能であることがわかります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_serial/papi_hl_output
- <span class="o">{</span>
-     <span class="s2">"computation"</span>: <span class="o">{</span>
-         <span class="s2">"region_count"</span>: 1,
-         <span class="s2">"cycles"</span>: 98335317464,
-         <span class="s2">"real_time_nsec"</span>: 32854673374,
-         <span class="s2">"PAPI_FP_OPS"</span>: 54009000020,
-         <span class="s2">"PAPI_FP_INS"</span>: 40509000020
-     <span class="o">}</span>
- <span class="o">}</span>
- <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>derived <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_serial/papi_hl_output
- <span class="o">{</span>
-     <span class="s2">"computation"</span>: <span class="o">{</span>
-         <span class="s2">"Region count"</span>: 1,
-         <span class="s2">"Real time in s"</span>: 32.85,
-         <span class="s2">"MFLIPS/s"</span>: 1233.15,
-         <span class="s2">"MFLOPS/s"</span>: 1644.11
-     <span class="o">}</span>
- <span class="o">}</span>
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、OpenMP並列版の性能を確認します。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_serial/papi_hl_output
+<span class="o">{</span>
+    <span class="s2">"computation"</span>: <span class="o">{</span>
+        <span class="s2">"region_count"</span>: 1,
+        <span class="s2">"cycles"</span>: 98335317464,
+        <span class="s2">"real_time_nsec"</span>: 32854673374,
+        <span class="s2">"PAPI_FP_OPS"</span>: 54009000020,
+        <span class="s2">"PAPI_FP_INS"</span>: 40509000020
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>derived <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_serial/papi_hl_output
+<span class="o">{</span>
+    <span class="s2">"computation"</span>: <span class="o">{</span>
+        <span class="s2">"Region count"</span>: 1,
+        <span class="s2">"Real time in s"</span>: 32.85,
+        <span class="s2">"MFLIPS/s"</span>: 1233.15,
+        <span class="s2">"MFLOPS/s"</span>: 1644.11
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、OpenMP並列版の性能を確認します。<br />
 この出力より、実時間 <strong>17.1秒</strong> で浮動小数点演算を <strong>81.0 G回</strong> 実行し、 <strong>4.8 GFLOPS</strong> の性能であることがわかります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_openmp/papi_hl_output
- <span class="o">{</span>
-     <span class="s2">"computation"</span>: <span class="o">{</span>
-         <span class="s2">"region_count"</span>: 2,
-         <span class="s2">"cycles"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 102064244838,
-             <span class="s2">"min"</span>: 51031993766,
-             <span class="s2">"median"</span>: 51032122419.0,
-             <span class="s2">"max"</span>: 51032251072
-         <span class="o">}</span>,
-         <span class="s2">"real_time_nsec"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 34100545311,
-             <span class="s2">"min"</span>: 17050231232,
-             <span class="s2">"median"</span>: 17050272655.5,
-             <span class="s2">"max"</span>: 17050314079
-         <span class="o">}</span>,
-         <span class="s2">"PAPI_FP_OPS"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 81009000040,
-             <span class="s2">"min"</span>: 40504500020,
-             <span class="s2">"median"</span>: 40504500020.0,
-             <span class="s2">"max"</span>: 40504500020
-         <span class="o">}</span>,
-         <span class="s2">"PAPI_FP_INS"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 81009000040,
-             <span class="s2">"min"</span>: 40504500020,
-             <span class="s2">"median"</span>: 40504500020.0,
-             <span class="s2">"max"</span>: 40504500020
-         <span class="o">}</span>,
-         <span class="s2">"Number of ranks"</span>: 1,
-         <span class="s2">"Number of threads per rank"</span>: 2
-     <span class="o">}</span>
- <span class="o">}</span>
- <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_openmp/papi_hl_output | jq <span class="nt">-r</span> <span class="s1">'[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv'</span> | <span class="nb">awk</span> <span class="nt">-F</span>, <span class="s1">'{print $1/$2 " GFLOPS"}'</span>
- 4.75117 GFLOPS
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをopcユーザで実行し、MPI並列版の性能を確認します。<br />
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_openmp/papi_hl_output
+<span class="o">{</span>
+    <span class="s2">"computation"</span>: <span class="o">{</span>
+        <span class="s2">"region_count"</span>: 2,
+        <span class="s2">"cycles"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 102064244838,
+            <span class="s2">"min"</span>: 51031993766,
+            <span class="s2">"median"</span>: 51032122419.0,
+            <span class="s2">"max"</span>: 51032251072
+        <span class="o">}</span>,
+        <span class="s2">"real_time_nsec"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 34100545311,
+            <span class="s2">"min"</span>: 17050231232,
+            <span class="s2">"median"</span>: 17050272655.5,
+            <span class="s2">"max"</span>: 17050314079
+        <span class="o">}</span>,
+        <span class="s2">"PAPI_FP_OPS"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 81009000040,
+            <span class="s2">"min"</span>: 40504500020,
+            <span class="s2">"median"</span>: 40504500020.0,
+            <span class="s2">"max"</span>: 40504500020
+        <span class="o">}</span>,
+        <span class="s2">"PAPI_FP_INS"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 81009000040,
+            <span class="s2">"min"</span>: 40504500020,
+            <span class="s2">"median"</span>: 40504500020.0,
+            <span class="s2">"max"</span>: 40504500020
+        <span class="o">}</span>,
+        <span class="s2">"Number of ranks"</span>: 1,
+        <span class="s2">"Number of threads per rank"</span>: 2
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_openmp/papi_hl_output | jq <span class="nt">-r</span> <span class="s1">'[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv'</span> | <span class="nb">awk</span> <span class="nt">-F</span>, <span class="s1">'{print $1/$2 " GFLOPS"}'</span>
+4.75117 GFLOPS
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを <strong>PAPI</strong> を利用するユーザで実行し、MPI並列版の性能を確認します。<br />
 この出力より、実時間 <strong>16.4秒</strong> で浮動小数点演算を <strong>54.0 G回</strong> 実行し、 <strong>3.3 GFLOPS</strong> の性能であることがわかります。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_mpi/papi_hl_output
- <span class="o">{</span>
-     <span class="s2">"computation"</span>: <span class="o">{</span>
-         <span class="s2">"region_count"</span>: 2,
-         <span class="s2">"cycles"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 98000743834,
-             <span class="s2">"min"</span>: 48974201500,
-             <span class="s2">"median"</span>: 49000371917.0,
-             <span class="s2">"max"</span>: 49026542334
-         <span class="o">}</span>,
-         <span class="s2">"real_time_nsec"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 32742892813,
-             <span class="s2">"min"</span>: 16362702292,
-             <span class="s2">"median"</span>: 16371446406.5,
-             <span class="s2">"max"</span>: 16380190521
-         <span class="o">}</span>,
-         <span class="s2">"PAPI_FP_OPS"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 54009000040,
-             <span class="s2">"min"</span>: 27004500020,
-             <span class="s2">"median"</span>: 27004500020.0,
-             <span class="s2">"max"</span>: 27004500020
-         <span class="o">}</span>,
-         <span class="s2">"PAPI_FP_INS"</span>: <span class="o">{</span>
-             <span class="s2">"total"</span>: 40509000040,
-             <span class="s2">"min"</span>: 20254500020,
-             <span class="s2">"median"</span>: 20254500020.0,
-             <span class="s2">"max"</span>: 20254500020
-         <span class="o">}</span>,
-         <span class="s2">"Number of ranks"</span>: 2,
-         <span class="s2">"Number of threads per rank"</span>: 1
-     <span class="o">}</span>
- <span class="o">}</span>
- <span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_mpi/papi_hl_output | jq <span class="nt">-r</span> <span class="s1">'[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv'</span> | <span class="nb">awk</span> <span class="nt">-F</span>, <span class="s1">'{print $1/$2 " GFLOPS"}'</span>
- 3.29721 GFLOPS
- <span class="err">$</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_mpi/papi_hl_output
+<span class="o">{</span>
+    <span class="s2">"computation"</span>: <span class="o">{</span>
+        <span class="s2">"region_count"</span>: 2,
+        <span class="s2">"cycles"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 98000743834,
+            <span class="s2">"min"</span>: 48974201500,
+            <span class="s2">"median"</span>: 49000371917.0,
+            <span class="s2">"max"</span>: 49026542334
+        <span class="o">}</span>,
+        <span class="s2">"real_time_nsec"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 32742892813,
+            <span class="s2">"min"</span>: 16362702292,
+            <span class="s2">"median"</span>: 16371446406.5,
+            <span class="s2">"max"</span>: 16380190521
+        <span class="o">}</span>,
+        <span class="s2">"PAPI_FP_OPS"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 54009000040,
+            <span class="s2">"min"</span>: 27004500020,
+            <span class="s2">"median"</span>: 27004500020.0,
+            <span class="s2">"max"</span>: 27004500020
+        <span class="o">}</span>,
+        <span class="s2">"PAPI_FP_INS"</span>: <span class="o">{</span>
+            <span class="s2">"total"</span>: 40509000040,
+            <span class="s2">"min"</span>: 20254500020,
+            <span class="s2">"median"</span>: 20254500020.0,
+            <span class="s2">"max"</span>: 20254500020
+        <span class="o">}</span>,
+        <span class="s2">"Number of ranks"</span>: 2,
+        <span class="s2">"Number of threads per rank"</span>: 1
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="nv">$ </span>papi_hl_output_writer.py <span class="nt">--notation</span><span class="o">=</span>raw <span class="nt">--type</span><span class="o">=</span>summary <span class="nt">--source_dir</span> ./prof_mpi/papi_hl_output | jq <span class="nt">-r</span> <span class="s1">'[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv'</span> | <span class="nb">awk</span> <span class="nt">-F</span>, <span class="s1">'{print $1/$2 " GFLOPS"}'</span>
+3.29721 GFLOPS
+<span class="err">$</span>
+</code></pre></div></div>
 
         
       </section>
@@ -870,7 +849,7 @@ total 4
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-02T15:18:57+09:00">July 2, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-07T12:22:31+09:00">July 7, 2025</time></p>
 
       </footer>
 
