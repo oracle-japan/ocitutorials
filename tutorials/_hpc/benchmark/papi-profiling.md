@@ -35,13 +35,16 @@ header:
 - L1/L2/L3の各キャッシュヒット/ミス数
 - 総サイクル数
 
-本プロファイリング関連Tipsは、各ソフトウェアに以下のバージョンを使用しています。
+各ソフトウェアは、以下のバージョンを前提とします。
 
-- OS ： **Oracle Linux** 8.9
-- **[OpenMPI](https://www.open-mpi.org/)** ：5.0.0
-- **PAPI** ：7.1.0
+- OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※4）
+- **[OpenMPI](https://www.open-mpi.org/)** ：5.0.6（※5）
+- **PAPI** ：7.2.0
 
-また本プロファイリング関連Tipsで使用するインスタンスは、シェイプを **BM.Optimized3.36** 、OSを **Oracle Linux** 8.9として予めデプロイしておきますが、この手順は **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** を参照してください。
+※4）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
+※5） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
+
+また本プロファイリング関連Tipsで使用するインスタンスは、シェイプを **BM.Optimized3.36** 、OSを **Oracle Linux** 8.10ベースのHPC **クラスタネットワーキングイメージ** として予めデプロイしておきますが、この手順は **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** を参照してください。
 
 以降では、以下の順に解説を進めます。
 
@@ -56,7 +59,7 @@ header:
 
 本章は、本プロファイリングTipsで使用する **PAPI** 機能を検証するために必要な前提条件ソフトウェアとして、 **OpenMPI** をインストール・セットアップします。
 
-この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
+この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** を参照してください。
 
 ***
 # 2. PAPIインストール・セットアップ
@@ -64,61 +67,62 @@ header:
 本章は、 **PAPI** をインストールし、利用に必要な環境設定を行います。  
 なお **PAPI** は、以降のインストール手順の中で環境に合わせた構築を行うため、 **PAPI** を利用する環境（本プロファイリング関連Tipsでは **BM.Optimized3.36** ）以外で本手順を実施（いわゆるクロスコンパイル）した場合、想定通りに動作しない場合があることに留意します。
 
-1. 以下コマンドをopcユーザで実行し、 **PAPI** をインストールします。  
+以下コマンドをopcユーザで実行し、 **PAPI** をインストールします。  
 これにより、 **PAPI** のライブラリ群が **/usr/local/lib** に、プロファイリング情報集計ツール等のユーティリティーツール群が **/usr/local/bin** にインストールされます。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
-    ```sh
-    $ git clone https://github.com/icl-utk-edu/papi.git
-    $ cd papi/src; ./configure
-    $ make -j 36 && sudo make install
-    ```
+```sh
+$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://icl.utk.edu/projects/papi/downloads/papi-7.2.0.tar.gz
+$ tar -xvf ./papi-7.2.0.tar.gz
+$ cd papi-7.2.0/src && ./configure
+$ make -j 36 && sudo make install
+```
 
-2. 以下コマンドをopcユーザで実行し、コマンド出力の最後に **PASSED** が出力されることを以って、 **PAPI** が利用可能であることを確認します。  
+次に、以下コマンドをopcユーザで実行し、コマンド出力の最後に **PASSED** が出力されることを以って、 **PAPI** が利用可能であることを確認します。  
 このコマンドは、利用可能な全てのプリセットイベント（ここでは42個）をテストし、その結果を表示します。
 
-    ```sh
-    $ sudo ./ctests/all_events
+```sh
+$ sudo ./ctests/all_events
 
-    Trying all pre-defined events:
-    Adding PAPI_L1_DCM   successful
-    :
-    :
-    :
-    Adding PAPI_VEC_DP   successful
-    Adding PAPI_REF_CYC  successful
-    Successfully added, started and stopped 42 events.
-    PASSED
-    $
-    ```
+Trying all pre-defined events:
+Adding PAPI_L1_DCM   successful
+:
+:
+:
+Adding PAPI_VEC_DP   successful
+Adding PAPI_REF_CYC  successful
+Successfully added, started and stopped 42 events.
+PASSED
+$
+```
 
-3. 以下コマンドをopcユーザで実行し、利用可能なプリセットイベントを確認します。
+次に、以下コマンドをopcユーザで実行し、利用可能なプリセットイベントを確認します。
 
-    ```sh
-    $ papi_avail | grep ^PAPI_ | awk '{if($3=="Yes")print $0}'
-    PAPI_L1_DCM  0x80000000  Yes   No   Level 1 data cache misses
-    :
-    :
-    :
-    PAPI_REF_CYC 0x8000006b  Yes   No   Reference clock cycles
+```sh
+$ papi_avail | grep ^PAPI_ | awk '{if($3=="Yes")print $0}'
+PAPI_L1_DCM  0x80000000  Yes   No   Level 1 data cache misses
+:
+:
+:
+PAPI_REF_CYC 0x8000006b  Yes   No   Reference clock cycles
 
-    $ 
-    ```
+$ 
+```
 
-4. 以下コマンドをopcユーザで実行し、 **PAPI** 実行に必要な環境変数を設定します。
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、 **PAPI** 実行に必要な環境変数を設定します。
 
-    ```sh
-    $ echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/local/lib" | tee -a ~/.bashrc
-    $ source ~/.bashrc
-    ```
+```sh
+$ echo "export LD_LIBRARY_PATH=/usr/local/lib:\$LD_LIBRARY_PATH" | tee -a ~/.bashrc
+$ source ~/.bashrc
+```
 
 ***
 # 3. サンプルプログラムコンパイル
 
-本章は、 **PAPI** を使用してプロファイリング情報を取得する、非並列・OpenMP並列兼用版（**matrix_multiply_thrpa_hl.f90**）とMPI並列版（**matrix_multiply_mpipa_hl.f90** と **para_range.f90**）のサンプルプログラム をそれぞれコンパイルし、実行バイナリを作成します。
+本章は、 **PAPI** を使用してプロファイリング情報を取得する、非並列・OpenMP並列兼用版（**matrix_multiply_thrpa_hl.f90**）とMPI並列版（**matrix_multiply_mpipa_hl.f90** と **para_range.f90**）のサンプルプログラムをそれぞれコンパイルし、実行バイナリを作成します。
 
 このサンプルプログラムは、サイズが3,000x3,000の正方行列を乱数で初期化した後にその行列積を求め、その結果を標準出力に出力します。この際、行列積を求める3重ループ前後で **PAPI** の **High Level API** 関数を呼び出すことで、プロファイリング情報をカーネル部分にフォーカスして取得します。  
-ここでOpenMP並列版は、 **PAPI** 関数をスレッド生成後に呼び出している（**!$OMP parallel** と **!$OMP end parallel**の間に配置します。）ことに留意します。これは、 **PAPI** がスレッドの生成を検知できない制限から来ており、スレッド生成前に **PAPI** 関数を呼び出すとその後生成されたスレッドが消費した分のプロファイリング情報を取得することができません。
+ここでOpenMP並列版は、 **PAPI** 関数をスレッド生成後に呼び出している（**!$OMP parallel** と **!$OMP end parallel**の間に配置します。）ことに留意します。これは、 **PAPI** がスレッドの生成を検知できない制限から来ており、スレッド生成前に **PAPI** 関数を呼び出すと、その後生成されたスレッドが消費した分のプロファイリング情報を取得することができません。
 
 [matrix_multiply_thrpa_hl.f90]
 ```sh
@@ -248,23 +252,23 @@ subroutine para_range(n1, n2, nprocs, irank, ista, iend)
 end
 ```
 
-1. 以下コマンドをopcユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムを非並列プログラムとしてコンパイルします。
+以下コマンドを **PAPI** を利用するユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムを非並列プログラムとしてコンパイルします。
 
-    ```sh
-    $ gfortran -O3 -I/usr/local/include -lpapi -o serial ./matrix_multiply_thrpa_hl.f90
-    ```
+```sh
+$ gfortran -O3 -I/usr/local/include -lpapi -o serial ./matrix_multiply_thrpa_hl.f90
+```
 
-2. 以下コマンドをopcユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムをOpenMP並列プログラムとしてコンパイルします。
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、非並列・OpenMP並列兼用版サンプルプログラムをOpenMP並列プログラムとしてコンパイルします。
 
-    ```sh
-    $ gfortran -O3 -fopenmp -I/usr/local/include -lpapi -o openmp ./matrix_multiply_thrpa_hl.f90
-    ```
+```sh
+$ gfortran -O3 -fopenmp -I/usr/local/include -lpapi -o openmp ./matrix_multiply_thrpa_hl.f90
+```
 
-3. 以下コマンドをopcユーザで実行し、MPI並列版サンプルプログラムをコンパイルします。
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、MPI並列版サンプルプログラムをコンパイルします。
 
-    ```sh
-    $ mpifort -O3 -I/usr/local/include -lpapi -o mpi ./matrix_multiply_mpipa_hl.f90 ./para_range.f90
-    ```
+```sh
+$ mpifort -O3 -I/usr/local/include -lpapi -o mpi ./matrix_multiply_mpipa_hl.f90 ./para_range.f90
+```
 
 ***
 # 4. サンプルプログラム実行
@@ -275,153 +279,153 @@ end
 
 ここでは、浮動小数点演算数（**PAPI_FP_OPS**）と浮動小数点演算インストラクション数（**PAPI_FP_INS**）を取得しています。
 
-1. 以下コマンドをopcユーザで実行し、非並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。
+以下コマンドを **PAPI** を利用するユーザで実行し、非並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。
 
-    ```sh
-    $ export PAPI_EVENTS=PAPI_FP_OPS,PAPI_FP_INS
-    $ mkdir ./prof_serial ./prof_openmp ./prof_mpi
-    $ export PAPI_OUTPUT_DIRECTORY=./prof_serial
-    $ ./serial > /dev/null
-    $ ls -l ./prof_serial/papi_hl_output/
-    total 4
-    -rw-r--r--. 1 opc opc 638 Mar 28 10:47 rank_894286.json
-    $
-    ```
+```sh
+$ export PAPI_EVENTS=PAPI_FP_OPS,PAPI_FP_INS
+$ mkdir ./prof_serial ./prof_openmp ./prof_mpi
+$ export PAPI_OUTPUT_DIRECTORY=./prof_serial
+$ ./serial > /dev/null
+$ ls -l ./prof_serial/papi_hl_output/
+total 4
+-rw-r--r--. 1 opc opc 638 Mar 28 10:47 rank_894286.json
+$
+```
 
-2.  以下コマンドをopcユーザで実行し、OpenMP並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、OpenMP並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。
 
-    ```sh
-    $ export PAPI_OUTPUT_DIRECTORY=./prof_openmp
-    $ export OMP_NUM_THREADS=2
-    $ ./openmp > /dev/null
-    $ ls -l ./prof_openmp/papi_hl_output/
-    total 4
-    -rw-r--r--. 1 opc opc 925 Mar 28 12:09 rank_586163.json
-    $
-    ```
+```sh
+$ export PAPI_OUTPUT_DIRECTORY=./prof_openmp
+$ export OMP_NUM_THREADS=2
+$ ./openmp > /dev/null
+$ ls -l ./prof_openmp/papi_hl_output/
+total 4
+-rw-r--r--. 1 opc opc 925 Mar 28 12:09 rank_586163.json
+$
+```
 
-3. 以下コマンドをopcユーザで実行し、MPI並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。  
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、MPI並列版実行バイナリを実行して **PAPI** がプロファイリング情報を出力することを確認します。  
 この結果より、 **PAPI** はプロセス毎にプロファイリング情報ファイルを出力することがわかります。
 
-    ```sh
-    $ export PAPI_OUTPUT_DIRECTORY=./prof_mpi
-    $ mpirun -n 2 ./mpi > /dev/null
-    $ ls -l ./prof_mpi/papi_hl_output/
-    total 8
-    -rw-r--r--. 1 opc opc 638 Mar 28 12:38 rank_000000.json
-    -rw-r--r--. 1 opc opc 638 Mar 28 12:38 rank_000001.json
-    $
-    ```
+```sh
+$ export PAPI_OUTPUT_DIRECTORY=./prof_mpi
+$ mpirun -n 2 ./mpi > /dev/null
+$ ls -l ./prof_mpi/papi_hl_output/
+total 8
+-rw-r--r--. 1 opc opc 638 Mar 28 12:38 rank_000000.json
+-rw-r--r--. 1 opc opc 638 Mar 28 12:38 rank_000001.json
+$
+```
 
 ***
 # 5. プロファイリング結果確認
 
 本章は、 **PAPI** が提供する **High Level API** 用プロファイリング情報集計ツールを使用し、先に取得したプロファイリング情報から非並列版・OpenMP並列版・MPI並列版の実行時性能をそれぞれ確認します。
 
-1. 以下コマンドをopcユーザで実行し、非並列版の性能を確認します。  
+以下コマンドを **PAPI** を利用するユーザで実行し、非並列版の性能を確認します。  
 この出力より、実時間 **32.9秒** で浮動小数点演算を **54.0 G回** 実行し、 **1.6 GFLOPS** の性能であることがわかります。
 
-    ```sh
-    $ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_serial/papi_hl_output
-    {
-        "computation": {
-            "region_count": 1,
-            "cycles": 98335317464,
-            "real_time_nsec": 32854673374,
-            "PAPI_FP_OPS": 54009000020,
-            "PAPI_FP_INS": 40509000020
-        }
+```sh
+$ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_serial/papi_hl_output
+{
+    "computation": {
+        "region_count": 1,
+        "cycles": 98335317464,
+        "real_time_nsec": 32854673374,
+        "PAPI_FP_OPS": 54009000020,
+        "PAPI_FP_INS": 40509000020
     }
-    $ papi_hl_output_writer.py --notation=derived --type=summary --source_dir ./prof_serial/papi_hl_output
-    {
-        "computation": {
-            "Region count": 1,
-            "Real time in s": 32.85,
-            "MFLIPS/s": 1233.15,
-            "MFLOPS/s": 1644.11
-        }
+}
+$ papi_hl_output_writer.py --notation=derived --type=summary --source_dir ./prof_serial/papi_hl_output
+{
+    "computation": {
+        "Region count": 1,
+        "Real time in s": 32.85,
+        "MFLIPS/s": 1233.15,
+        "MFLOPS/s": 1644.11
     }
-    $
-    ```
+}
+$
+```
 
-2. 以下コマンドをopcユーザで実行し、OpenMP並列版の性能を確認します。  
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、OpenMP並列版の性能を確認します。  
 この出力より、実時間 **17.1秒** で浮動小数点演算を **81.0 G回** 実行し、 **4.8 GFLOPS** の性能であることがわかります。
 
-    ```sh
-    $ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_openmp/papi_hl_output
-    {
-        "computation": {
-            "region_count": 2,
-            "cycles": {
-                "total": 102064244838,
-                "min": 51031993766,
-                "median": 51032122419.0,
-                "max": 51032251072
-            },
-            "real_time_nsec": {
-                "total": 34100545311,
-                "min": 17050231232,
-                "median": 17050272655.5,
-                "max": 17050314079
-            },
-            "PAPI_FP_OPS": {
-                "total": 81009000040,
-                "min": 40504500020,
-                "median": 40504500020.0,
-                "max": 40504500020
-            },
-            "PAPI_FP_INS": {
-                "total": 81009000040,
-                "min": 40504500020,
-                "median": 40504500020.0,
-                "max": 40504500020
-            },
-            "Number of ranks": 1,
-            "Number of threads per rank": 2
-        }
+```sh
+$ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_openmp/papi_hl_output
+{
+    "computation": {
+        "region_count": 2,
+        "cycles": {
+            "total": 102064244838,
+            "min": 51031993766,
+            "median": 51032122419.0,
+            "max": 51032251072
+        },
+        "real_time_nsec": {
+            "total": 34100545311,
+            "min": 17050231232,
+            "median": 17050272655.5,
+            "max": 17050314079
+        },
+        "PAPI_FP_OPS": {
+            "total": 81009000040,
+            "min": 40504500020,
+            "median": 40504500020.0,
+            "max": 40504500020
+        },
+        "PAPI_FP_INS": {
+            "total": 81009000040,
+            "min": 40504500020,
+            "median": 40504500020.0,
+            "max": 40504500020
+        },
+        "Number of ranks": 1,
+        "Number of threads per rank": 2
     }
-    $ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_openmp/papi_hl_output | jq -r '[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv' | awk -F, '{print $1/$2 " GFLOPS"}'
-    4.75117 GFLOPS
-    $
-    ```
+}
+$ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_openmp/papi_hl_output | jq -r '[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv' | awk -F, '{print $1/$2 " GFLOPS"}'
+4.75117 GFLOPS
+$
+```
 
-4. 以下コマンドをopcユーザで実行し、MPI並列版の性能を確認します。  
+次に、以下コマンドを **PAPI** を利用するユーザで実行し、MPI並列版の性能を確認します。  
 この出力より、実時間 **16.4秒** で浮動小数点演算を **54.0 G回** 実行し、 **3.3 GFLOPS** の性能であることがわかります。
 
-    ```sh
-    $ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_mpi/papi_hl_output
-    {
-        "computation": {
-            "region_count": 2,
-            "cycles": {
-                "total": 98000743834,
-                "min": 48974201500,
-                "median": 49000371917.0,
-                "max": 49026542334
-            },
-            "real_time_nsec": {
-                "total": 32742892813,
-                "min": 16362702292,
-                "median": 16371446406.5,
-                "max": 16380190521
-            },
-            "PAPI_FP_OPS": {
-                "total": 54009000040,
-                "min": 27004500020,
-                "median": 27004500020.0,
-                "max": 27004500020
-            },
-            "PAPI_FP_INS": {
-                "total": 40509000040,
-                "min": 20254500020,
-                "median": 20254500020.0,
-                "max": 20254500020
-            },
-            "Number of ranks": 2,
-            "Number of threads per rank": 1
-        }
+```sh
+$ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_mpi/papi_hl_output
+{
+    "computation": {
+        "region_count": 2,
+        "cycles": {
+            "total": 98000743834,
+            "min": 48974201500,
+            "median": 49000371917.0,
+            "max": 49026542334
+        },
+        "real_time_nsec": {
+            "total": 32742892813,
+            "min": 16362702292,
+            "median": 16371446406.5,
+            "max": 16380190521
+        },
+        "PAPI_FP_OPS": {
+            "total": 54009000040,
+            "min": 27004500020,
+            "median": 27004500020.0,
+            "max": 27004500020
+        },
+        "PAPI_FP_INS": {
+            "total": 40509000040,
+            "min": 20254500020,
+            "median": 20254500020.0,
+            "max": 20254500020
+        },
+        "Number of ranks": 2,
+        "Number of threads per rank": 1
     }
-    $ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_mpi/papi_hl_output | jq -r '[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv' | awk -F, '{print $1/$2 " GFLOPS"}'
-    3.29721 GFLOPS
-    $
-    ```
+}
+$ papi_hl_output_writer.py --notation=raw --type=summary --source_dir ./prof_mpi/papi_hl_output | jq -r '[.computation.PAPI_FP_OPS.total, .computation.real_time_nsec.max] | @csv' | awk -F, '{print $1/$2 " GFLOPS"}'
+3.29721 GFLOPS
+$
+```
