@@ -64,7 +64,7 @@ Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japa
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
-- **シェイプ** ： **VM.Optimized3.Flex** （任意のコア数・メモリ容量）
+- **シェイプ** ： **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** （任意のコア数・メモリ容量）
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
