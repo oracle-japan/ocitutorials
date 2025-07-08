@@ -107,8 +107,8 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 # Cloud Guard
 
-+ **[Cloud Guardを使ってみる](https://qiita.com/western24/items/d1469545749866867191)**  
-   本チュートリアルは外部のページで、Cloud Guardの設定手順および確認方法を紹介しています。
++ **[Cloud Guard 設定・操作ガイド](https://speakerdeck.com/oracle4engineer/cloud-guardshe-ding-cao-zuo-gaido)**  
+   本チュートリアルは外部のページで、Cloud Guardの設定手順および操作方法を紹介しています。
 
 <br>
 
@@ -121,10 +121,9 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 <br>
 
 
-# Security Zone
-
-+ **[Security Zoneを有効化する](https://speakerdeck.com/oracle4engineer/scurity-zonesshe-ding-cao-zuo-gaido)**  
-   本チュートリアルは外部のページで、Security Zoneの設定手順について紹介しています。
+# Security Zones
++ **[Security Zones 設定・操作ガイド](https://speakerdeck.com/oracle4engineer/security-zonesshe-ding-cao-zuo-gaido)**  
+   本チュートリアルは外部のページで、Security Zonesの設定手順について紹介しています。
 
 <br>
 
