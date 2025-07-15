@@ -31,7 +31,7 @@ OCIの提供するAI Servicesの基本的な操作などをステップバイス
 
 ## 中級編
 
-- **[Generative AI Agents Service - Agent Development Kit ハンズオン](https://github.com/kenkensonson/oci-ai-agents-service-hol01)
+- **[Generative AI Agents Service - Agent Development Kit ハンズオン](https://github.com/kenkensonson/oci-ai-agents-service-hol01)** Agent Development Kitのサンプルコード実装を体験し、Agentic AIを学ぶチュートリアルです。
 - **[Anomaly Detection ハンズオン](/ocitutorials/datascience/anomaly-detection-for-intermediates/)** OCI DataScienceからSDKを使用して、Anomaly Detection（異常検出）サービスを使用する方法を紹介します。
 - **[Vision ハンズオン](/ocitutorials/datascience/vision-for-intermediates/)** OCI DataScience から REST API を使用して、OCI Vision で公開されている API を使用する方法を紹介します。
 
