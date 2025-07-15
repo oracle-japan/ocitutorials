@@ -1,6 +1,6 @@
 ---
 title: "Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング"
-excerpt: "並列アプリケーションは、ロードバランス不均衡やプロセス間通信の影響等で並列実行数の増加と共にスケーラビリティの低下が発生しますが、HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを高並列実行する場合、高価な計算資源を有効活用する観点から、スケーラビリティ低下の原因を調査しチューニングでスケーラビリティーを改善する開発プロセスを踏んだり、最も効率的な並列実行数を見極める必要があり、これらの判断に必要な情報を得るためにアプリケーションをプロファイリングすることが重要です。本プロファイリング関連Tipsは、ベアメタル・インスタンス上で実行するOpenMPやMPIでコーディングされた並列プログラムをオープンソースのScore-P、Scalasca、及びCubeGUIを駆使してプロファイリングし、並列アプリケーションを効果的に実行するための有益な情報を取得する方法を解説します。"
+excerpt: "並列アプリケーションは、ロードバランス不均衡やプロセス間通信の影響等で並列実行数の増加と共にスケーラビリティの低下が発生しますが、HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを高並列実行する場合、高価な計算資源を有効活用する観点から、スケーラビリティ低下の原因を調査しチューニングでスケーラビリティーを改善する開発プロセスを踏んだり、最も効率的な並列実行数を見極める必要があり、これらの判断に必要な情報を得るためにアプリケーションをプロファイリングすることが重要です。本プロファイリング関連Tipsは、ベアメタル・インスタンス上で実行するOpenMPやMPIでコーディングされた並列アプリケーションをオープンソースのScore-P、Scalasca、及びCubeGUIを駆使してプロファイリングし、これを効果的に実行するための有益な情報を取得する方法を解説します。"
 order: "232"
 layout: single
 header:
@@ -38,15 +38,15 @@ header:
 
 **[CubeGUI](https://www.scalasca.org/scalasca/software/cube-4.x/download.html)** は、**Score-P** が出力するプロファイリング手法のデータを読み込むことで、プロファイリング対象の並列アプリケーションを以下の3評価軸で表示し、
 
-1. 評価指標
+- 評価指標軸
     - CPU時間
     - MPI通信データ量
     - I/Oデータ量
-2. コールツリー
+- コールツリー軸
     - サブルーチン・関数
     - MPI関数
     - OpenMPループ
-3. システム位置
+- システム位置軸
     - ノード
     - MPIプロセス
     - OpneMPスレッド
@@ -79,19 +79,7 @@ header:
 
 ![プロファイリングツール関係図](https://perftools.pages.jsc.fz-juelich.de/cicd/scorep/tags/latest/html/score-p-overview.png)
 
-本プロファイリング関連Tipsは、 **Score-P** 、 **Scalasca** 、及び **CubeGUI** でプロファイリング手法とトレーシング手法を使用する並列アプリケーションのプロファイリングを以下に沿って解説します。  
-なおプロファイリング対象の並列アプリケーションは、 **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)** を使用します。
-
-- HPCクラスタ構築
-- 前提条件ソフトウェアインストール・セットアップ
-- **Score-P** インストール・セットアップ
-- **Scalasca** インストール・セットアップ
-- **CubeGUI** インストール・セットアップ
-- プロファイリング手法データの取得
-- 浮動小数点演算数を含まないプロファイリング手法データの確認
-- 浮動小数点演算数を含むプロファイリング手法データの確認
-- トレーシング手法データの取得・解析
-- トレーシング手法データ解析結果の確認
+以上を踏まえて本プロファイリング関連Tipsは、 **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)** をプロファイリング対象の並列アプリケーションに使用し、 **Score-P** 、 **Scalasca** 、及び **CubeGUI** でプロファイリング手法とトレーシング手法を使用するプロファイリングの手順を解説します。
 
 各ソフトウェアは、以下のバージョンを前提とします。
 
@@ -106,13 +94,23 @@ header:
 ※2）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
 ※3） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
-本プロファイリング関連Tipsで使用するHPCクラスタは、プロファイリング対象の並列アプリケーションを **Score-P** や **Scalasca** と共に実行する計算ノードに **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で相互接続する2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、計算ノードで採取したプロファイリングのデータを **CubeGUI** で解析するBastionノードに1ノードの **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
+本プロファイリング関連Tipsで使用するプロファイリング環境は、プロファイリング対象の並列アプリケーションを **Score-P** や **Scalasca** と共に実行する計算ノードに **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で相互接続する2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、計算ノードで採取したプロファイリングのデータを **CubeGUI** で解析するBastionノードに1ノードの **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
 ここで **CubeGUI** がX11ベースのアプリケーションのため、この操作画面を表示するXサーバの稼働する **CubeGUI** 操作端末を用意します。
 
 ![システム構成図](architecture_diagram.png)
 
+以降では、以下の順に解説します。
+
+1. **[プロファイリング環境構築](#1-プロファイリング環境構築)**
+2. **[プロファイリング手法データの取得](#2-プロファイリング手法データの取得)**
+3. **[プロファイリング手法データの確認](#3-プロファイリング手法データの確認)**
+4. **[トレーシング手法データの取得](#4-トレーシング手法データの取得)**
+5. **[トレーシング手法データの確認](#5-トレーシング手法データの確認)**
+
 ***
-# 1. HPCクラスタ構築
+# 1. プロファイリング環境構築
+
+## 1-1. HPCクラスタ構築
 
 本章は、本プロファイリング関連Tipsで使用するHPCクラスタを構築します。
 
@@ -127,8 +125,9 @@ header:
 
 ※4）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 
-***
-# 2. 前提条件ソフトウェアインストール・セットアップ
+また計算ノードは、プロファイリング利用ユーザのホームディレクトリをNFSで共有します。
+
+## 1-2. 前提条件ソフトウェアインストール・セットアップ
 
 本章は、本プロファイリング関連Tipsで使用する **Score-P** の前提条件ソフトウェアとして、計算ノードに **OpenMPI** と **PAPI** をインストール・セットアップします。
 
@@ -139,8 +138,7 @@ header:
 
 なお本章の作業は、全ての計算ノードで実施します。
 
-***
-# 3. Score-Pインストール・セットアップ
+## 1-3. Score-Pインストール・セットアップ
 
 本章は、 **Score-P** を計算ノードにインストールし、利用に必要な環境設定を行います。  
 なお本章の作業は、全ての計算ノードに実施します。
@@ -150,7 +148,6 @@ header:
 ```sh
 $ yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
 $ dnf install -y binutils-devel libunwind libunwind-devel gcc-plugin-devel llvm-devel clang-devel cmake
-
 ```
 
 次に、以下コマンドをrootユーザで実行し、 **Score-P** をインストールします。  
@@ -172,7 +169,7 @@ $ source ~/.bashrc
 ```
 
 ***
-# 4. Scalascaインストール・セットアップ
+## 1-4. Scalascaインストール・セットアップ
 
 本章は、 **Scalasca** を計算ノードにインストールし、利用に必要な環境設定を行います。  
 なお本章の作業は、全ての計算ノードに実施します。
@@ -226,8 +223,7 @@ SendEnv SCOREP_* SCAN_*
 $
 ```
 
-***
-# 5. CubeGUIインストール・セットアップ
+## 1-5. CubeGUIインストール・セットアップ
 
 本章は、 **CubeGUI** をBastionノードにインストールし、利用に必要な環境設定を行います。
 
@@ -271,14 +267,14 @@ $ cd cubegui-4.9 && ./configure --with-qt=/usr/local/Qt-5.15.17/bin --with-cubel
 $ make -j 16 && sudo make install
 ```
 
-次に、以下コマンドを **CubeGUI** を利用するユーザで実行し、 **CubeGUI** 実行に必要な環境変数を設定します。
+次に、以下コマンドをプロファイリング利用ユーザで実行し、 **CubeGUI** 実行に必要な環境変数を設定します。
 
 ```sh
 $ echo "export PATH=/usr/local/Qt-5.15.17/bin:/opt/cubegui/bin:\$PATH" | tee -a ~/.bashrc
 $ source ~/.bashrc
 ```
 
-次に、Xサーバの稼働する **CubeGUI** 操作端末から以下コマンドを実行し、Xフォワードを有効にしてBastionノードに **CubeGUI** を利用するユーザでログインします。
+次に、Xサーバの稼働する **CubeGUI** 操作端末から以下コマンドを実行し、Xフォワードを有効にしてBastionノードにプロファイリング利用ユーザでログインします。
 
 ```sh
 $ ssh -X user@bastion_IP
@@ -291,7 +287,7 @@ localhost:10.0
 $
 ```
 
-次に、以下コマンドを **CubeGUI** を利用するユーザで実行し、
+次に、以下コマンドをプロファイリング利用ユーザで実行し、
 
 ```sh
 $ cube
@@ -302,27 +298,29 @@ $ cube
 ![画面ショット](cubegui_page02.png)
 
 ***
-# 6. プロファイリング手法データの取得
+# 2. プロファイリング手法データの取得
 
-## 6-0. 概要
+## 2-0. 概要
 
 本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるプロファイリングを実施します。  
-ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。
+ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。  
+この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを **PAPI** による浮動小数点演算数を含まない場合と含む場合で取得するため、以下の手順で実施します。
 
-この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを実施するため、以下の手順で実施します。
+1. 事前準備
+    - **NAS Parallel Benchmarks** バイナリの作成
+    - プロファイリングを実施しない場合の実行時間を計測
+    - プロファイリングを実施した場合の実行時間を計測
+    - 両者に隔たりがある場合プロファイリング対象を限定するフィルタを作成
+2. 浮動小数点演算数を含まないプロファイリング手法データの取得
+    - フィルタを適用して浮動小数点演算数を含まないプロファイリングを実施
+    - 先の実行時間の隔たりが解消していることを確認
+3. 浮動小数点演算数を含むプロファイリング手法データの取得
+    - フィルタを適用して浮動小数点演算数を含むプロファイリングを実施
+    - 先の実行時間の隔たりが解消していることを確認
 
-1. **NAS Parallel Benchmarks** バイナリの作成
-2. プロファイリングを実施しない場合の実行時間を計測
-3. プロファイリングを実施した場合の実行時間を計測
-4. 両者に隔たりがある場合プロファイリング対象を限定するフィルタを作成
-5. フィルタを適用してプロファイリングを実施した場合の実行時間を計測
-6. 先の実行時間の隔たりが解消したことを確認
-
-## 6-1. プロファイリング手法データの取得手順
-
-本手順は、計算ノードのうちの1ノードで実施します。
-
-以下コマンドを **Score-P** を利用するユーザで実行し、プロファイリングを実施しない **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wo_scorep**）とプロファイリングを実施する **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wi_scorep**）を作成します。
+## 2-1. 事前準備
+[](#2-1-事前準備)
+以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングを実施しない **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wo_scorep**）とプロファイリングを実施する **NAS Parallel Benchmarks** のバイナリ（**bt-mz.D.x_wi_scorep**）を作成します。
 
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
@@ -342,7 +340,7 @@ $ make bt-mz CLASS=D
 $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wi_scorep
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、プロファイリングを実施しない場合の実行時間を計測します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングを実施しない場合の実行時間を計測します。
 
 ```sh
 $ mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x OMP_NUM_THREADS=2 -bind-to none ./bin/bt-mz.D.x_wo_scorep | grep "Time in seconds"
@@ -350,8 +348,8 @@ $ mpirun -n 36 -N 18 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x 
 $
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、プロファイリングを実施した場合の実行時間を計測します。  
-この実行により、カレントディレクトリにディレクトリ **scorep_bt-mz_18p36x2_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングを実施した場合の実行時間を計測します。  
+この実行により、カレントディレクトリにディレクトリ **scorep_bt-mz_18p36xO_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
 $ scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
@@ -359,7 +357,7 @@ $ scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_D
 $
 ```
 
-次に、両者に2倍以上の隔たりがあるため、以下のコマンドを **Score-P** を利用するユーザで実行し、プロファイリングのオーバーヘッドの原因を調査します。
+次に、両者の実行時間に2倍以上の隔たりがあるため、以下のコマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングのオーバーヘッドの原因を調査します。
 
 ```sh
 $ scalasca -examine -s scorep_bt-mz_18p36xO_sum
@@ -421,22 +419,32 @@ SCOREP_REGION_NAMES_END
 $
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更したのち、フィルタを適用した場合の実行時間を計測、両者の隔たりが解消したことを確認します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更します。
 
 ```sh
 $ mv scorep_bt-mz_18p36xO_sum prof_wof_wopapi
+```
+
+## 2-2. 浮動小数点演算数を含まないプロファイリング手法データの取得
+
+以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、フィルタを適用して浮動小数点演算数を含まないプロファイリング手法データを取得します。  
+この際、その実行時間を **[2.1. 事前準備](#2-1-事前準備)** のプロファイリングを実施しない場合のもの（168.55秒）と比較し、両者の隔たりが解消していることを確認します。
+
+```sh
 $ scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
  Time in seconds =                   173.31
 $
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、フィルタの適用により除外した **region** が表示されないことを確認します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含まないプロファイリングレポートを作成します。
 
 ```sh
 $ scalasca -examine -s scorep_bt-mz_18p36xO_sum
-INFO: Post-processing runtime summarization report (profile.cubex)...
-/opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36xO_sum/profile.cubex > ./scorep_bt-mz_18p36xO_sum/scorep.score
-INFO: Score report written to ./scorep_bt-mz_18p36xO_sum/scorep.score
+```
+
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、フィルタの適用により除外した **region** が表示されないことを確認します。
+
+```sh
 $ head -n 35 scorep_bt-mz_18p36xO_sum/scorep.score
 Estimated aggregate size of event trace:                   1155MB
 Estimated requirements for largest trace buffer (max_buf): 33MB
@@ -475,37 +483,49 @@ flt     type max_buf[B]     visits  time[s] time[%] time/visit[us]  region
 $
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更したのち、フィルタを適用して **PAPI** の浮動小数点演算数を含むプロファイリングを実施した場合の実行時間を計測、この実行時間がプロファイリングを実施しない場合と大差ないことを確認します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
 
 ```sh
 $ mv scorep_bt-mz_18p36xO_sum prof_wif_wopapi
+```
+
+## 2-3. 浮動小数点演算数を含むプロファイリング手法データの取得
+
+以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、フィルタを適用して浮動小数点演算数を含むプロファイリング手法データを取得します。  
+この際、その実行時間を **[2.1. 事前準備](#2-1-事前準備)** のプロファイリングを実施しない場合のもの（168.55秒）と比較し、両者に大きな隔たりが無いことを確認します。
+
+```sh
 $ SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
  Time in seconds =                   174.21
 $
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、 **PAPI** の浮動小数点演算数を含むプロファイリングレポートを作成、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含むプロファイリングレポートを作成します。
 
 ```sh
 $ scalasca -examine -s scorep_bt-mz_18p36xO_sum
-INFO: Post-processing runtime summarization report (profile.cubex)...
-/opt/scorep/bin/scorep-score  -r ./scorep_bt-mz_18p36xO_sum/profile.cubex > ./scorep_bt-mz_18p36xO_sum/scorep.score
-INFO: Score report written to ./scorep_bt-mz_18p36xO_sum/scorep.score
+```
+
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
+
+```sh
 $ mv scorep_bt-mz_18p36xO_sum prof_wif_wipapi
 ```
 
-以上の手順を経て、十分精度の期待できるプロファイリング手法を用いたプロファイリングのデータを計算ノードの以下ディレクトリに取得することが出来ました。  
-なおこれらのディレクトリは、後にこれらのデータを **CubeGUI** から使用するため、Bastionノードにコピーします。
+***
+# 3. プロファイリング手法データの確認
+
+## 3-0. 概要
+
+本章は、先に取得したプロファイリング手法のデータを、 浮動小数点演算数を含まないものと含むものに分けて、その確認を行います。  
+なお、 **[2. プロファイリング手法データの取得](#2-プロファイリング手法データの取得)** により、十分精度の期待できるプロファイリング手法を用いたプロファイリングのデータが計算ノードのプロファイリング利用ユーザのホームディレクトリ配下の以下ディレクトリに作成されているため、以降の手順に備えてこれらをBastionノードのプロファイリング利用ユーザのホームディレクトリ配下に予めコピーしておきます。
 
 -  **prof_wif_wopapi** ：浮動小数点演算数を含まない
 -  **prof_wif_wipapi** ：浮動小数点演算数を含む
 
-***
-# 7. 浮動小数点演算数を含まないプロファイリング手法データの確認
+## 3-1. 浮動小数点演算数を含まないプロファイリング手法データの確認
 
-本章は、先に取得した浮動小数点演算数を含まないプロファイリング手法のデータを確認します。
-
-以下コマンドを計算ノードの **Score-P** を利用するユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
+以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
 
 ```sh
 $ scalasca -examine -s -x "-s totaltime" prof_wif_wopapi
@@ -559,7 +579,7 @@ $
 - MPI通信時間がトータル時間の **2.4%** を占めている
 - MPI_Waitall関数がトータル時間の **2.1%** を占めておりこの分プロセス間のロードバランスに問題がある
 
-次に、以下コマンドをBastionノードの **CubeGUI** を利用するユーザで実行し、 **CubeGUI** を起動します。
+次に、以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、 **CubeGUI** を起動します。
 
 ```sh
 $ cube path_to_dir/prof_wif_wopapi/profile.cubex
@@ -614,11 +634,9 @@ $ cube path_to_dir/prof_wif_wopapi/profile.cubex
 ![画面ショット](cubegui_page13.png)
 
 ***
-# 8. 浮動小数点演算数を含むプロファイリング手法データの確認
+## 3-2. 浮動小数点演算数を含むプロファイリング手法データの確認
 
-本章は、先に取得した浮動小数点演算数を含むプロファイリング手法のデータを確認します。
-
-以下コマンドをBastionノードのopcユーザで実行し、 **CubeGUI** を起動します。
+以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、 **CubeGUI** を起動します。
 
 ```sh
 $ cube path_to_dir/prof_wif_wipapi/profile.cubex
@@ -655,38 +673,34 @@ $ cube path_to_dir/prof_wif_wipapi/profile.cubex
 ![画面ショット](cubegui_page20.png)
 
 ***
-# 9. トレーシング手法データの取得・解析
+# 4. トレーシング手法データの取得
 
-本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でトレーシング手法によるプロファイリングを実施、取得したデータを **Scalasca** で解析します。  
-ここでは、先のプロファイリング手法と同様36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。
+本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でトレーシング手法によるプロファイリングを取得します。  
+ここでは、先のプロファイリング手法と同様36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。  
+この際、プロファイリングによるオーバーヘッド発生を考慮した精度の良いプロファイリングデータを取得するため、先のプロファイリング手法で作成したフィルタを使用します。
 
-この際、プロファイリングによるオーバーヘッド発生を考慮した上で精度の良いプロファイリングデータを取得するため、先のプロファイリング手法で作成したフィルタを使用します。
-
-本手順は、計算ノードのうちの1ノードで実施します。
-
-以下コマンドを **Score-P** を利用するユーザで実行し、フィルタを適用してプロファイリングを実施した場合の実行時間を計測、 **[プロファイリング手法データの取得](#6-プロファイリング手法データの取得)** の結果と比較して実行時間に隔たりが無いことを確認します。  
-ここで、 **[プロファイリング手法データの取得](#6-プロファイリング手法データの取得)** のフィルタを適用した際のプロファイリングレポートの出力 **Estimated memory requirements (SCOREP_TOTAL_MEMORY)** に表示されているトレーシング手法のデータを格納するために必要なメモリ領域サイズの37MBを環境変数に指定して実行していることに留意します。
+以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、フィルタを適用してトレーシング手法データを取得します。  
+この際、その実行時間を **[2.1. 事前準備](#2-1-事前準備)** のプロファイリングを実施しない場合のもの（168.55秒）と比較し、両者に大きな隔たりが無いことを確認します。  
+ここで、 **[2.2. 浮動小数点演算数を含まないプロファイリング手法データの取得](#2-2-浮動小数点演算数を含まないプロファイリング手法データの取得)** のフィルタを適用した際のプロファイリングレポートの出力 **Estimated memory requirements (SCOREP_TOTAL_MEMORY)** に表示されているトレーシング手法のデータを格納するために必要なメモリ領域サイズの37MBを環境変数に指定して実行することに留意します。
 
 ```sh
 $ SCOREP_TOTAL_MEMORY=37M scalasca -analyze -q -t -f ./scorep.filt mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
  Time in seconds =                   174.91
 ```
 
-次に、以下コマンドを **Score-P** を利用するユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
 
 ```sh
 $ mv scorep_bt-mz_18p36xO_trace trac_wif
 ```
 
-以上の手順を経て、十分精度の期待できるトレーシング手法を用いたプロファイリングのデータをディレクトリ **trac_wif** に取得することが出来ました。  
-なおこのディレクトリは、後にこのデータを **CubeGUI** で確認するため、Bastionノードにコピーします。
-
 ***
-# 10. トレーシング手法データの確認
+# 5. トレーシング手法データの確認
 
-本章は、先に取得したトレーシング手法のデータを確認します。
+本章は、先に取得したトレーシング手法のデータを確認します。  
+なお、 **[4. トレーシング手法データの取得](#4-トレーシング手法データの取得)** により、十分精度の期待できるトレーシング手法を用いたプロファイリングのデータが計算ノードのプロファイリング利用ユーザのホームディレクトリ配下のディレクトリ **trac_wif** に作成されているため、以降の手順に備えてこれをBastionノードのプロファイリング利用ユーザのホームディレクトリ配下に予めコピーしておきます。
 
-以下コマンドをBastionノードの **CubeGUI** を利用するユーザで実行し、 **CubeGUI** を起動します。
+以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、 **CubeGUI** を起動します。
 
 ```sh
 $ cube path_to_dir/trac_wif/scout.cubex
