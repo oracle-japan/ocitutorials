@@ -826,6 +826,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p>MPI並列アプリケーションは、MPI通信時間がボトルネックになっている場合そのMPI通信をチューニングすることで性能が向上しますが、ボトルネックのMPI通信が集合通信の場合は、使用する通信アルゴリズムやその切り替えメッセージサイズ等の実行時パラメータ、MPIプロセス分割方法や <strong>NUMA nodes per socket</strong> 等のアプリケーション実行環境まで、様々な要因がその性能に影響します。<br />
   本パフォーマンス関連Tipsは、MPIの実装に <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> を取り上げ、これが採用する <strong><a href="https://docs.open-mpi.org/en/v5.0.x/mca.html">Modular Component Architecture</a></strong> や <strong><a href="https://openucx.org/">UCX</a></strong> の実行時パラメーター、MPIプロセス分割方法や <strong>NUMA nodes per socket</strong> を組合せて、第5世代 <strong>AMD EPYC</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard">BM.Standard.E6.256</a></strong> でMPI集合通信をチューニングする方法を解説します。</p>
   </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/profiling-tuning/">プロファイリング情報に基づく並列アプリケーションチューニング方法</a></strong></p>
+
+    <p>並列アプリケーションは、実行時のプロセス間通信に要する時間が性能に悪影響を及ぼしますが、プロファイリングツールから収集する情報で最も時間を要している通信を特定し、この通信パターンに応じたチューニングを適用することで、その性能を改善できる場合があります。<br />
+  本パフォーマンス・プロファイリング関連Tipsは、MPI並列アプリケーションをオープンソースのプロファイリングツールでプロファイリングし、収集した情報からMPI通信パターンに応じたチューニングを適用、その性能を改善する方法を解説します。<br />
+  なおこのコンテンツは、 <strong><a href="#2-3-プロファイリング関連tips集">2-3. プロファイリング関連Tips集</a></strong> にも同一のものが掲載されています。</p>
+  </li>
 </ul>
 
 <h2 id="2-3-プロファイリング関連tips集">2-3. プロファイリング関連Tips集</h2>
@@ -844,7 +851,14 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     <p><strong><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></strong></p>
 
     <p>並列アプリケーションは、ロードバランス不均衡やプロセス間通信の影響等で並列実行数の増加と共にスケーラビリティの低下が発生しますが、HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを高並列実行する場合、高価な計算資源を有効活用する観点から、スケーラビリティ低下の原因を調査しチューニングでスケーラビリティーを改善する開発プロセスを踏んだり、最も効率的な並列実行数を見極める必要があり、これらの判断に必要な情報を得るためにアプリケーションをプロファイリングすることが重要です。<br />
-  本プロファイリング関連Tipsは、ベアメタルインスタンス上で実行するOpenMPやMPIでコーディングされた並列プログラムをオープンソースの <strong><a href="https://www.vi-hps.org/projects/score-p/">Score-P</a></strong> 、 <strong><a href="https://www.scalasca.org/">Scalasca</a></strong> 、及び <strong><a href="https://www.scalasca.org/scalasca/software/cube-4.x/download.html">CubeGUI</a></strong> を駆使してプロファイリングし、並列アプリケーションを効果的に実行するための有益な情報を取得する方法を解説します。</p>
+  本プロファイリング関連Tipsは、ベアメタルインスタンス上で実行するOpenMPやMPIでコーディングされた並列アプリケーションをオープンソースの <strong><a href="https://www.vi-hps.org/projects/score-p/">Score-P</a></strong> 、 <strong><a href="https://www.scalasca.org/">Scalasca</a></strong> 、及び <strong><a href="https://www.scalasca.org/scalasca/software/cube-4.x/download.html">CubeGUI</a></strong> を駆使してプロファイリングし、これを効果的に実行するための有益な情報を取得する方法を解説します。</p>
+  </li>
+  <li>
+    <p><strong><a href="/ocitutorials/hpc/benchmark/profiling-tuning/">プロファイリング情報に基づく並列アプリケーションチューニング方法</a></strong></p>
+
+    <p>並列アプリケーションは、実行時のプロセス間通信に要する時間が性能に悪影響を及ぼしますが、プロファイリングツールから収集する情報で最も時間を要している通信を特定し、この通信パターンに応じたチューニングを適用することで、その性能を改善できる場合があります。<br />
+  本パフォーマンス・プロファイリング関連Tipsは、MPI並列アプリケーションをオープンソースのプロファイリングツールでプロファイリングし、収集した情報からMPI通信パターンに応じたチューニングを適用、その性能を改善する方法を解説します。<br />
+  なおこのコンテンツは、 <strong><a href="#2-2-パフォーマンス関連tips集">2-2. パフォーマンス関連Tips集</a></strong> にも同一のものが掲載されています。</p>
   </li>
 </ul>
 
