@@ -21,6 +21,8 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 ## Monitoring
 + **[モニタリング機能でOCIのリソースを監視する](/ocitutorials/intermediates/monitoring-resources/)**
 
++ **[モニタリング機能でカスタム・メトリックを設定する](/ocitutorials/management/monitoring_custom_metric/)**
+
 ## Stack Monitoring
 + **[Stack Monitoring オンボーディング](/ocitutorials/management/stack_monitoring_onboarding/)**
 + **[Stack Monitoring を使用して OCI Compute のメトリックを可視化する](/ocitutorials/management/stack_monitoring_install/)**
@@ -46,7 +48,6 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 ## Database Management
 + **[OCI Base Database ServiceでDatabase Managementを有効化する](/ocitutorials/management/dbcs-database-management/)**
 
-+ **[OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする](/ocitutorials/management/database-management_tuning-advisor/)**
 
 ## Operations Insights
 + **[OCI Base Database ServiceでOperations Insightsを有効化する](/ocitutorials/management/dbcs_operations_insights/)**
