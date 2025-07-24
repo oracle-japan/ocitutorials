@@ -14,7 +14,7 @@ header:
 # 0. 概要
 
 オープンソースのMPI実装である **[OpenMPI](https://www.open-mpi.org/)** は、  **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** （以降 **MCA** と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この **MCA** パラメータにはMPI集合通信性能に影響するものがあります。  
-特に集合通信の高速化を意識して開発されている **[HCOLL](https://docs.nvidia.com/networking/display/hpcxv223/hcoll)** や **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）を使用することで、集合通信を高速化することが可能です。
+特にMPI集合通信の高速化を意識して開発されている **[HCOLL](https://docs.nvidia.com/networking/display/hpcxv223/hcoll)** や **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）は、その特性を理解して適切に利用することで、MPI集合通信性能を大幅に向上させることが可能です。
 
 また **OpenMPI** は、高帯域・低遅延のMPIプロセス間通信を実現するためにその通信フレームワークに **[UCX](https://openucx.org/)** を採用し、この **UCX** のパラメータにもMPI集合通信性能に影響するパラメータが存在します。
 
@@ -85,7 +85,7 @@ $ IMB-MPI1 -msglog 0:xx -mem 3.1G -off_cache 384,64 -npmin num_of_procs alltoall
 
 ## 1-0. 概要
 
-本章は、1ノードに24 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証し、その結果を考察します。
+本章は、1ノードに24 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
 ## 1-1. Alltoall
 
@@ -178,7 +178,7 @@ $ IMB-MPI1 -msglog 0:xx -mem 3.1G -off_cache 384,64 -npmin num_of_procs alltoall
 
 ## 2-0. 概要
 
-本章は、1ノードに48 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証し、その結果を考察します。
+本章は、1ノードに48 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
 ## 2-1. Alltoall
 
@@ -325,7 +325,7 @@ $ IMB-MPI1 -msglog 0:xx -mem 3.1G -off_cache 384,64 -npmin num_of_procs alltoall
 
 ## 3-0. 概要
 
-本章は、1ノードに96 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証し、その結果を考察します。
+本章は、1ノードに96 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
 ## 3-1. Alltoall
 
@@ -473,7 +473,7 @@ $ IMB-MPI1 -msglog 0:xx -mem 3.1G -off_cache 384,64 -npmin num_of_procs alltoall
 
 ## 4-0. 概要
 
-本章は、1ノードに192 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせを、MPI集合通信関数毎に検証し、その結果を考察します。
+本章は、1ノードに192 MPIプロセスを割当てる場合の最適な **実行時パラメータ** の組み合わせをMPI集合通信関数毎に検証し、その結果を考察します。
 
 ## 4-1. Alltoall
 

@@ -14,7 +14,7 @@ header:
 複数の計算ノードを  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
 
 ※1）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
-※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux 9.5** です。
+※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux** 9.5です。
 
 ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
 
@@ -23,7 +23,7 @@ header:
 - 理論性能： 11.0592 TFLOPS（ベース動作周波数2.7 GHz時）
 - メモリ帯域： 1,228.8 GB/s
 
-以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** で提供される最新の **Oracle Linux**上に **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）、 **[OpenMPI](https://www.open-mpi.org/)** 、及び **[Slurm](https://slurm.schedmd.com/)** をインストールし、 **BM.Standard.E6.256** のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。
+以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** で提供される最新の **Oracle Linux** 上に **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）、 **[OpenMPI](https://www.open-mpi.org/)** 、及び **[Slurm](https://slurm.schedmd.com/)** をインストールし、 **BM.Standard.E6.256** のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。
 
 なお本テクニカルTipsは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の手順に従い予め **Slurm** 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降"計算ノード"と呼称します。）をこの **Slurm** 環境に組み込みます。
 
@@ -372,10 +372,10 @@ $ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.o
 #SBATCH -J alltoall
 #SBATCH -o alltoall.%J
 #SBATCH -e stderr.%J
-srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:20 -mem 4G -off_cache 384,64 -npmin $SLURM_NTASKS alltoall
+srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin $SLURM_NTASKS alltoall
 ```
 
-このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから1 MiBまでで計測しています。  
+このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから4 MiBまでで計測しています。  
 **BM.Standard.E6.256** 上で実行する **Intel MPI Benchmarks** のMPI集合通信性能については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** も合わせて参照してください。
 
 次に、以下コマンドをSlurmクライアントの **OpenMPI** と **Slurm** を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。
@@ -387,7 +387,7 @@ $ cat ./alltoall.23808
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.7, MPI-1 part
 #----------------------------------------------------------------
-# Date                  : Fri May  2 01:52:03 2025
+# Date                  : Thu May 15 11:01:49 2025
 # Machine               : x86_64
 # System                : Linux
 # Release               : 5.15.0-307.178.5.el9uek.x86_64
@@ -398,10 +398,10 @@ $ cat ./alltoall.23808
 
 # Calling sequence was: 
 
-# /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:20 -mem 4G -off_cache 384,64 -npmin 256 alltoall 
+# IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin 256 alltoall 
 
 # Minimum message length in bytes:   0
-# Maximum message length in bytes:   1048576
+# Maximum message length in bytes:   4194304
 #
 # MPI_Datatype                   :   MPI_BYTE 
 # MPI_Datatype for reductions    :   MPI_FLOAT 
@@ -418,28 +418,30 @@ $ cat ./alltoall.23808
 # #processes = 256 
 #----------------------------------------------------------------
        #bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]
-            0         1000         0.03         0.04         0.04
-            1         1000        16.66      2207.34       285.88
-            2         1000        16.12        18.13        17.15
-            4         1000        20.11        25.80        22.51
-            8         1000        21.66        28.74        24.81
-           16         1000        27.95        36.66        32.27
-           32         1000        57.32        68.34        62.60
-           64         1000        77.43       101.58        92.33
-          128         1000       138.02       184.22       167.63
-          256         1000       268.97       382.26       337.74
-          512         1000       509.41       721.89       635.87
-         1024         1000       670.70       703.63       685.22
-         2048         1000      1167.30      1211.05      1189.51
-         4096         1000      1373.49      1491.54      1439.74
-         8192         1000      2235.34      2346.79      2290.37
-        16384         1000      6442.20      9157.06      8251.17
-        32768          933      9177.00      9221.44      9199.22
-        65536          552     23948.78     25861.85     25719.17
-       131072          242     32903.76     33008.57     32958.71
-       262144          146     97061.92     97470.83     97300.95
-       524288           72    129280.17    129802.43    129576.16
-      1048576           39    491764.64    492944.55    492384.98
+            0         1000         0.03         0.07         0.04
+            1         1000        15.70        17.36        16.51
+            2         1000        16.03        18.09        16.94
+            4         1000        19.68        25.45        22.19
+            8         1000        21.41        28.68        24.55
+           16         1000        27.46        36.49        31.73
+           32         1000        58.81        69.93        63.79
+           64         1000        77.19       101.71        92.30
+          128         1000       138.43       186.32       168.70
+          256         1000       264.57       376.56       333.16
+          512         1000       515.11       727.02       642.06
+         1024         1000       681.28       745.76       713.37
+         2048         1000      1201.30      1326.77      1263.68
+         4096         1000      1368.93      1580.36      1506.19
+         8192         1000      2265.81      2435.26      2352.52
+        16384         1000      7443.38      8580.72      8378.64
+        32768          723     10915.73     10958.66     10934.60
+        65536          469     17203.79     17285.94     17245.66
+       131072          216     33008.39     33167.20     33078.34
+       262144          153     90906.49     97779.62     96820.62
+       524288           74    129953.34    130580.67    130270.10
+      1048576           37    381725.97    382766.24    382262.62
+      2097152           20    518567.46    520676.45    519697.06
+      4194304            2   1042525.93   1048633.12   1046537.92
 
 
 # All processes entering MPI_Finalize

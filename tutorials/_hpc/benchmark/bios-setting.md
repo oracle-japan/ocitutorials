@@ -92,7 +92,7 @@ header:
 
 ## 1-2. TerraformスクリプトでBIOS設定を指定する方法
 
-本章は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** を使用する自動構築でHPC/GPUクラスタを構築するHPC/GPUノードにBIOS設定を適用する方法を解説します。
+本章は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** を使用する自動構築でHPC/GPUクラスタを構築する際、クラスタを構成するHPC/GPUノードにBIOS設定を適用する方法を解説します。
 
 詳細は、HPCクラスタの場合は **OCI HPCチュートリアル集** の **[HPCクラスタを構築する（基礎インフラ自動構築編）](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** の **[0-1-2. スタック作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-1-2-スタック作成)**（**[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する場合）か **[0-2-3. Terraformスクリプト作成](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/#0-2-3-terraformスクリプト作成)**（**[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する場合）を、GPUクラスタの場合は **OCI HPCチュートリアル集** の **[GPUクラスタを構築する（基礎インフラ自動構築編）](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の **[0-1-2. スタック作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-2-スタック作成)** （ **リソース・マネージャ** を使用する場合）か **[0-2-2. Terraformスクリプト作成](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-2-terraformスクリプト作成)** （ **Terraform** CLIを使用する場合）を参照してください。
 

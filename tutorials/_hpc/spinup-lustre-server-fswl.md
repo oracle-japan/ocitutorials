@@ -97,15 +97,15 @@ header:
 
 作成後、 **セキュリティリスト** が以下となるように修正します。
 
-| サブネット  | 通信方向  | ステートレス | ソース         | IPプロトコル  | ソース・ポート<br>範囲 | 宛先ポート<br>範囲 |
-| :----: | :---: | :----: | :---------: | :------: | :-------: | :-----: |
-| パブリック  | イングレス | いいえ    | 0.0.0.0/0<br>（※4）   | TCP      | All       | 22      |
-|        |       | いいえ    | 10.0.0.0/16 | 全プロトコル | -         | -       |
-|        | イグレス  | いいえ    | 0.0.0.0/0   | 全プロトコル | -         | -       |
-| プライベート<br>（※5） | イングレス | いいえ    | 10.0.0.0/16 | 全プロトコル | -         | -       |
-|        | イグレス  | いいえ    | 0.0.0.0/0   | 全プロトコル | -         | -       |
+| サブネット  | 通信方向  | ステートレス | ソース                 | IPプロトコル        | ソース・ポート<br>範囲 | 宛先ポート<br>範囲 |
+| :----: | :---: | :----: | :-----------------: | :------------: | :-----------: | :---------: |
+| パブリック  | イングレス | いいえ    | 0.0.0.0/0<br>（※4）   | TCP            | All           | 22          |
+|        |       | いいえ    | 10.0.0.0/16         | 全プロトコル         | -             | -           |
+|        | イグレス  | いいえ    | 0.0.0.0/0           | 全プロトコル         | -             | -           |
+| プライベート | イングレス | いいえ    | 10.0.0.0/16<br>（※5） | 全プロトコル<br>（※5） | -             | -           |
+|        | イグレス  | いいえ    | 0.0.0.0/0           | 全プロトコル         | -             | -           |
 
-※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可しますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。  
+※4）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可しますが、これを自身のサイトのアクセス元IPアドレスに限定することで、セキュリティーレベルを向上させることが可能です。  
 ※5）この設定により、作成した **仮想クラウド・ネットワーク** に割り当てられる全てのIPアドレスからの全てのポートへのアクセスを許可しますが、 **File Storage with Lustre** を使用する際の最低限必要な **セキュリティリスト** とするための関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/security-rules.htm#top__different-subnet)** を参照してください。
 
 ## 1-2. Bastionノード作成
@@ -212,9 +212,9 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 ![画面ショット](console_page06.png)
 
 ステータスが **ACTIVE** となれば、 **File Storage with Lustre** の作成が完了しています。  
-作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分強です。
+作成が完了するまでの所要時間は、本チュートリアル構成の場合で10分程度です。
 
-次に、ステータスが **ACTIVE** となった以下 **Lustreファイル・システム詳細** 画面で、 **Lustreプロパティ** フィールドの **マウント・コマンド** の **コピー** ボタンをクリックし、Lustreクライアントからマウントする際のコマンドを保存します。
+次に、ステータスが **ACTIVE** となった以下 **Lustreファイル・システム詳細** 画面で、 **Lustreプロパティ** フィールドの **マウント・コマンド** の **コピー** ボタンをクリックし、Lustreクライアントからマウントする際のコマンドをクリップボードに保存します。
 
 ![画面ショット](console_page07.png)
 
@@ -241,16 +241,14 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 
 ### 3-1-1. インスタンス作成
 
-Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[2. HPCクラスタ作成](/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90)** と **[3. 計算ノード確認](/ocitutorials/hpc/spinup-cluster-network/#2-hpc%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E4%BD%9C%E6%88%90)** の手順に従い、以下属性のインスタンスを作成します。
+Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[2. HPCクラスタ作成](/ocitutorials/hpc/spinup-cluster-network/#2-hpcクラスタ作成)** と **[3. 計算ノード確認](/ocitutorials/hpc/spinup-cluster-network/#3-計算ノード確認)** の手順に従い、以下属性のインスタンスを作成します。
 
 - **シェイプ** ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
 - **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※6）
 - **サブネット** ： 先に作成したLustreクライアント接続用プライベートサブネット
 - **SSHキーの追加** ：先にBastionノードで作成したSSH鍵ペアの公開鍵
 
-※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
-
-サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
+※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
 
 ### 3-1-2. Lustreクライアント用RPMパッケージビルド
 
@@ -345,9 +343,7 @@ LustreクライアントとするGPUノードのインスタンスは、 **[OCI 
 - **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**（※7）
 - **サブネット** ： 先に作成したLustreクライアント接続用プライベートサブネット
 
-※7） **プラットフォーム・イメージ** **[Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm)** は、インストールされているNVIDIA GPUドライバが  **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）用ではないため、このイメージで作成後に **RHCK** 用のNVIDIA GPUドライバをインストールします。
-
-サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
+※7） **プラットフォーム・イメージ** **[Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm)** は、インストールされているNVIDIA GPUドライバが  **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）用ではないため、このイメージで作成後に **RHCK** 用のNVIDIA GPUドライバをインストールします。サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
 
 次に、 **[ここ](https://blogs.oracle.com/linux/post/changing-the-default-kernel-in-oracle-linux-its-as-simple-as-1-2-3)** のブログの手順に従い、GPUノードのカーネルを **RHCK** に変更します。
 
