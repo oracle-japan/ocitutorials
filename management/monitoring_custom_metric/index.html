@@ -1,0 +1,601 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.2 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="モニタリングのカスタム・メトリック機能を使うことで、通常のメトリックでは監視できないユーザ独自のメトリックをモニタリングで監視できます。アラームを設定すれば、通常のメトリックと同様にメトリックの値がしきい値に達した場合に管理者に通知できます。">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/management/monitoring_custom_metric/">
+
+
+  <meta property="og:description" content="モニタリングのカスタム・メトリック機能を使うことで、通常のメトリックでは監視できないユーザ独自のメトリックをモニタリングで監視できます。アラームを設定すれば、通常のメトリックと同様にメトリックの値がしきい値に達した場合に管理者に通知できます。">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-07-26T13:05:45+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/management/monitoring_custom_metric/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する
+
+        
+      </h1>
+      
+        <p class="page__lead">モニタリングのカスタム・メトリック機能を使うことで、通常のメトリックでは監視できないユーザ独自のメトリックをモニタリングで監視できます。アラームを設定すれば、通常のメトリックと同様にメトリックの値がしきい値に達した場合に管理者に通知できます。
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/management" itemprop="item"><span itemprop="name">Management</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">監視・管理編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_detect_rule/">検出ルールを作成してアラート通知を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_logcollection4externalhost/">Logging Analytics：OCI外部のホストからOSログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_logcollection4ocivm/">Logging Analytics：OCIコンピュートからOSのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logging_datadog/">OCIのログをDataDogで監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/monitoring_custom_metric/" class="active">モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_basedb/">Stack Monitoring を使用してBaseDBのメトリックを可視化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_install/">Stack Monitoring を使用して OCI Compute のメトリックを可視化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_metric_extention/">Stack Monitoringでメトリック拡張を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_onboarding/">Stack Monitoring オンボーディング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/stack_monitoring_process_set/">Stack Monitoringでプロセス監視を設定する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs-database-management/">Base Database ServiceでDatabase Managementを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_onboarding/">Logging Analytics オンボーディング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/dbcs_operations_insights/">OCIのBase Database ServiceでOperations Insightsを有効化する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_adb_log/">Logging AnalyticsでAutonomous Databaseのログを収集する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/logginganalytics_customparser/">カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/management-cloud-tutorials/">Oracle Management Cloud チュートリアルまとめ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/monitoring_prometheus/">Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management/">OCI Database ManagementでOracleDBのパフォーマンス監視をする</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/management/database-management_tuning-advisor/">OCI Database ManagementのSQLチューニング・アドバイザでパフォーマンス・チューニングをする</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="モニタリングのカスタム・メトリックでユーザ独自のメトリックを監視する">
+    <meta itemprop="description" content="モニタリングのカスタム・メトリック機能を使うことで、通常のメトリックでは監視できないユーザ独自のメトリックをモニタリングで監視できます。アラームを設定すれば、通常のメトリックと同様にメトリックの値がしきい値に達した場合に管理者に通知できます。">
+    <meta itemprop="datePublished" content="2025-07-26T13:05:45+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#1-pythonスクリプトの作成">1. Pythonスクリプトの作成</a></li><li><a href="#2-メトリックの公開">2. メトリックの公開</a></li><li><a href="#3-モニタリングメトリックの参照各リソースの詳細画面からの参照">3. モニタリング・メトリックの参照（各リソースの詳細画面からの参照）</a></li><li><a href="#4アラームの作成">4.アラームの作成</a></li></ul>
+            </nav>
+          </aside>
+        
+        <p>OCIのモニタリング・サービスではカスタム・メトリックの機能を利用して、通常のメトリックでは監視できないユーザ独自のメトリックをモニタリングで監視できます。カスタム・メトリックで追加したメトリックも通常のメトリックと同様にアラームで事前定義した条件にメトリック値が合致した際には管理者に通知を行うことで管理者はタイムリーに適切な対処を行うことができます。</p>
+
+<p>この章では、デフォルトのメトリックでは監視できないコンピュート・インスタンスのディスク使用率をMonitoringのカスタム・メトリックで監視する手順をご紹介します。ディスク使用率以外でもOSで稼働する特定プロセスの有無（プロセスが見つかれば1、なければ0をポスト）など数値で取得できるメトリックであればカスタム・メトリックで監視できます。</p>
+
+<p><strong>所要時間 :</strong> 約30分</p>
+
+<p><strong>前提条件1 :</strong></p>
+
+<p><a href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/">インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を通じてコンピュート・インスタンスの作成が完了していること</p>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。</p>
+
+<p><strong>前提条件2 :</strong>
+<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/">モニタリング機能でOCIのリソースを監視する</a>を通じてモニタリングのメトリックが参照できること</p>
+
+<p><strong>必要な権限 :</strong> カスタム・メトリックの監視には以下の権限設定が最低限必要です。</p>
+<ul>
+  <li>動的グループ
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>instance.compartment.id = '&lt;compartment_ocid&gt;'
+</code></pre></div>    </div>
+    <p>動的グループの概要と設定方法については以下を参照ください。<br />
+参考：<a href="https://oracle-japan.github.io/ocidocs/services/governance%20and%20administration/iam-200/">OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細</a></p>
+  </li>
+  <li>ポリシー
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Allow dynamic-group &lt;group-name&gt; to use metrics in tenancy
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h1 id="1-pythonスクリプトの作成">1. Pythonスクリプトの作成</h1>
+<p>カスタム・メトリックはOCI CLIやAPIで設定することができますが、ここではPython スクリプトでカスタム・メトリックを監視する方法を紹介します。
+まだPythonがインストールされていない場合は、インストールしておきます。</p>
+
+<p>今回はコンピュートのディスク使用率を取得して、モニタリングにポストするPythonスクリプトを作成します。
+ディスク使用率のメトリックを収集するコンピュート・インスタンスに下記のスクリプト（disk_usage.py）を作成します。</p>
+
+<p class="notice--info"><strong>書き換えが必要な項目</strong> <br />
+“compartment_ocid”と”service_endpoint” については対象のコンピュートが存在するコンパートメントのOCIDとリージョンのエンドポイントに書き換えます。
+エンドポイントについては、<a href="https://docs.oracle.com/en-us/iaas/api/#/en/monitoring/20180401/">こちら</a>から確認できます。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import oci,psutil,datetime
+from pytz import timezone
+
+signer = oci.auth.signers.InstancePrincipalsSecurityTokenSigner()
+monitoring_client = oci.monitoring.MonitoringClient(config={}, signer=signer, service_endpoint="https://telemetry-ingestion.ap-mumbai-1.oraclecloud.com")
+
+# ディスクの使用率を取得
+disk = psutil.disk_usage('/')
+disk_usage=disk.percent
+print(disk_usage)
+   
+times_stamp = datetime.datetime.now(timezone('UTC'))
+
+post_metric_data_response = monitoring_client.post_metric_data(
+   post_metric_data_details=oci.monitoring.models.PostMetricDataDetails(
+      metric_data=[
+            oci.monitoring.models.MetricDataDetails(
+               namespace="custom_metrics",
+               compartment_id="your_compartment_ocid",
+               name="disk_usage",
+               dimensions={'resourceDisplayName': 'srv01'},
+               datapoints=[
+                  oci.monitoring.models.Datapoint(
+                        timestamp=datetime.datetime.strftime(
+                           times_stamp,"%Y-%m-%dT%H:%M:%S.%fZ"),
+                        value=disk_usage)]
+               )]
+   )
+)
+
+print(post_metric_data_response.data)
+</code></pre></div></div>
+
+<h1 id="2-メトリックの公開">2. メトリックの公開</h1>
+<p>下記のスクリプトを実行して、モニタリング・サービスにメトリックが表示されるか確認できます。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python disk_usage.py
+</code></pre></div></div>
+
+<p class="notice--info"><strong>スケジュール実行</strong> <br />
+OCIのモニタリング・サービスにデータを定期的に送信するには、スクリプトをスケジュール実行します。OSがLinuxの場合はcronジョブ、Windowsの場合はスケジューリング・タスクを使用することでスケジュール実行できます。</p>
+
+<h1 id="3-モニタリングメトリックの参照各リソースの詳細画面からの参照">3. モニタリング・メトリックの参照（各リソースの詳細画面からの参照）</h1>
+<p>ナビゲーション・メニューを開き、「監視および管理」の「メトリック・エクスプローラ」をクリックします。
+<img src="image01.png" alt="画面ショット" /></p>
+
+<p>画面下部の問い合わせで以下の項目を設定し、「チャートの更新」をクリックすると画面上部にメトリックのグラフが表示されます。</p>
+<ul>
+  <li>コンパートメント：コンピュート・インスタンスの存在するコンパートメント</li>
+  <li>メトリック・ネームスペース：custom_metrics</li>
+  <li>メトリック名：disk_usage</li>
+  <li>間隔：任意の間隔</li>
+  <li>統計：任意の統計</li>
+  <li>ディメンション名：resourceDisplayName</li>
+  <li>ディメンション値：srv01</li>
+</ul>
+
+<p><img src="image02.png" alt="画面ショット" /></p>
+
+<p><img src="image03.png" alt="画面ショット" /></p>
+
+<h1 id="4アラームの作成">4.アラームの作成</h1>
+<p>アラームを作成することで、メトリックの値が特定のしきい値に達したらアラームを発報してメール等でユーザーに通知が可能です。
+カスタム・メトリックで作成したメトリックは、custom_metricsを使用することでアラームを設定することができます。</p>
+
+<p>詳細のアラーム作成手順については<a href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90">こちら</a>をご確認ください。</p>
+
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+  
+
+
+  
+
+  <p class="page__taxonomy">
+    <strong><i class="fas fa-fw fa-tags" aria-hidden="true"></i> タグ: </strong>
+    <span itemprop="keywords">
+    
+      <a href="/ocitutorials/tags/#management" class="page__taxonomy-item p-category" rel="tag">management</a>
+    
+    </span>
+  </p>
+
+
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-26T13:05:45+09:00">July 26, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%BB%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%81%A7%E3%83%A6%E3%83%BC%E3%82%B6%E7%8B%AC%E8%87%AA%E3%81%AE%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fmonitoring_custom_metric%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fmonitoring_custom_metric%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/management/monitoring_custom_metric/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=%E3%83%A2%E3%83%8B%E3%82%BF%E3%83%AA%E3%83%B3%E3%82%B0%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%83%BB%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%81%A7%E3%83%A6%E3%83%BC%E3%82%B6%E7%8B%AC%E8%87%AA%E3%81%AE%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%82%92%E7%9B%A3%E8%A6%96%E3%81%99%E3%82%8B%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fmanagement%2Fmonitoring_custom_metric%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/management/logging_datadog/" class="pagination--pager" title="OCIのログをDataDogで監視する">前へ</a>
+    
+    
+      <a href="/ocitutorials/management/stack_monitoring_basedb/" class="pagination--pager" title="Stack Monitoring を使用してBaseDBのメトリックを可視化する">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
