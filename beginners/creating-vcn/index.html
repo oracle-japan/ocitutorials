@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/img4.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn/1_overviewVCN.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2025-07-29T20:43:49+09:00">
+  <meta property="article:published_time" content="2025-08-06T10:41:04+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-vcn/img4.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/creating-vcn/1_overviewVCN.png');"
 >
   
     <div class="wrapper">
@@ -292,7 +292,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その2 - クラウドに仮想ネットワーク(VCN)を作る">
     <meta itemprop="description" content="クラウドの最初の一歩は、クラウド上に皆さん専用のネットワーク(VCN)を作るところから始まります。難しい作業は必要ありません。まずはやってみましょう!!">
-    <meta itemprop="datePublished" content="2025-07-29T20:43:49+09:00">
+    <meta itemprop="datePublished" content="2025-08-06T10:41:04+09:00">
     
 
     <div class="page__inner-wrap">
@@ -303,273 +303,385 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</a></li><li><a href="#2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</a></li><li><a href="#3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#目次">目次：</a></li><li><a href="#1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</a></li><li><a href="#vcnのコンポーネント">VCNのコンポーネント</a></li><li><a href="#2-複数のコンポーネント含めたvcnをウィザードで一括作成する">2. 複数のコンポーネント含めたVCNをウィザードで一括作成する</a></li><li><a href="#3-作成されたリソースを確認する">3. 作成されたリソースを確認する</a></li><li><a href="#-vcn">① VCN</a></li><li><a href="#-サブネット">② サブネット</a></li><li><a href="#-ゲートウェイ">③ ゲートウェイ</a></li><li><a href="#-ルート表">④ ルート表</a></li><li><a href="#-セキュリティリスト">⑤ セキュリティリスト</a></li><li><a href="#セキュリティリストのルール記述要素">セキュリティリストのルール記述要素</a></li><li><a href="#4-インターネットからインスタンスへssh接続するときのパケットの動き">4. インターネットからインスタンスへSSH接続するときのパケットの動き</a></li></ul>
             </nav>
           </aside>
         
         <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
-<p>Oracle Cloud Infrastructure を利用するにあたっての最初のステップは、<strong>仮想クラウド・ネットワーク(Virtual Cloud Network : VCN)</strong> を作成することです。ネットワークの管理者が最初に仮想ネットワークを作ることで、その後インスタンスの管理者やストレージの管理者が、作成した仮想ネットワークの構成やルールに従ってコンポーネントを配置することができるようになります。</p>
-
-<p>このチュートリアルでは、コンソール画面から仮想クラウド・ネットワーク(VCN)を1つ作成し、その構成について確認してくことで、OCIのネットワークに対する理解を深めます。</p>
+<p>このチュートリアルでは、コンソール画面から<strong>仮想クラウド・ネットワーク(Virtual Cloud Network : VCN)</strong> を1つ作成し、その構成について確認してくことで、OCIのネットワークに対する理解を深めます。<br />
+<strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
 
 <p><strong>所要時間 :</strong> 約15分</p>
 
 <p><strong>前提条件 :</strong></p>
-
 <ol>
   <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
   <li><a href="../getting-started">その1 - OCIコンソールにアクセスして基本を理解する</a>を完了していること</li>
 </ol>
 
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
-
-<p><strong>目次：</strong></p>
-
+<h2 id="目次"><strong>目次：</strong></h2>
 <ul>
   <li><a href="#1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</a></li>
-  <li><a href="#2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</a></li>
-  <li><a href="#3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</a></li>
-</ul>
+  <li><a href="#2-複数のコンポーネント含めたvcnをウィザードで一括作成する">2. 複数のコンポーネント含めたVCNをウィザードで一括作成する</a></li>
+  <li><a href="#3-作成されたリソースを確認する">3 作成されたリソースを確認する</a></li>
+  <li>
+    <p><a href="#4-インターネットからインスタンスへssh接続するときのパケットの動き">4. インターネットからインスタンスへSSH接続するときのパケットの動き</a></p>
 
-<p><strong>参考動画：</strong>本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。</p>
+    <p><strong>参考動画：</strong>本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。</p>
 
-<ul>
-  <li><a href="https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+2.%E4%BB%AE%E6%83%B3%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/1_wkkm6sru">Oracle Cloud Infrastructure ハンズオン - 2.仮想クラウドネットワーク</a></li>
+    <ul>
+      <li><a href="https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+2.%E4%BB%AE%E6%83%B3%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/1_wkkm6sru">Oracle Cloud Infrastructure ハンズオン - 2.仮想クラウドネットワーク</a></li>
+    </ul>
+  </li>
 </ul>
 
 <p><a id="anchor1"></a></p>
 
-<h1 id="1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</h1>
+<h2 id="1-仮想クラウドネットワークvcnとは">1. 仮想クラウドネットワーク(VCN)とは?</h2>
+<p><strong>仮想クラウド・ネットワーク(Virtual Cloud Network : VCN)</strong>とは、Oracle Cloud Infrastructure内に作成するソフトウェア定義のプライベートなネットワークです。<br />
+VCNというネットワーク空間を作ることで、インスタンスやストレージなどのコンポーネントをネットワーク上に配置し、それらが通信できるようになります。</p>
 
-<p>仮想クラウド・ネットワークの作成は、基本的にはオンプレミスでよく利用されるネットワークの各コンポーネントの仮想バージョンをクラウド上で構築していくようなものをイメージしていただくとわかりやすいと思います。</p>
+<h2 id="vcnのコンポーネント"><strong>VCNのコンポーネント</strong></h2>
 
-<p>仮想クラウド・ネットワークは以下のようなコンポーネントから構成されます。</p>
+<p>仮想クラウドネットワーク(VCN)は以下のようなコンポーネントから構成されています。<br />
+① <strong>VCN (Virtual Cloud Network)</strong> <br />
+② <strong>サブネット</strong> <br />
+③ <strong>ゲートウェイ</strong> <br />
+④ <strong>ルート表</strong> <br />
+⑤ <strong>セキュリティリスト</strong> <br />
+<br />
+<em>その他のリソース :</em> VNIC、IPアドレス、ネットワークセキュリティグループ、プライベートDNSなど<br /></p>
 
-<ul>
-  <li><strong>サブネット</strong> - 仮想ネットワークを構成するIPv4のサブネット</li>
-  <li><strong>仮想NIC</strong> - インスタンスにアタッチされ、サブネットに接続する仮想的なネットワーク・インターフェース・カード</li>
-  <li><strong>プライベートIPアドレス</strong> - 仮想NICにアサインされるIPアドレス</li>
-  <li><strong>インターネット・ゲートウェイ</strong> - VCNとインターネットとを接続するゲートウェイ</li>
-  <li><strong>動的ルーティング・ゲートウェイ(DRG)</strong> - VPNやFastConnect(閉域網/専用線接続サービス)によってオンプレミス・ネットワークなどと接続するゲートウェイ</li>
-  <li><strong>ローカル・ピアリング・ゲートウェイ(LPG)</strong> - 他のVCNと接続するゲートウェイ</li>
-  <li><strong>NATゲートウェイ</strong> - インターネットに到達する必要があるが、インターネットからは到達できないようにしたい場合</li>
-  <li><strong>サービス・ゲートウェイ</strong> - VCN外のOracle Cloudサービス(パブリックIPアドレスでアクセスするサービス)にプライベートに接続可能</li>
-  <li><strong>ルート表</strong> - VCN/サブネットのルーティングを行う仮想ルーターに設定するルーティング・テーブル</li>
-  <li><strong>セキュリティ・リスト</strong> - VCN/サブネットの仮想ファイアウォールに設定するルール</li>
-  <li><strong>ネットワーク・セキュリティ・グループ</strong> - 仮想ファイアウォールの役割を持つ新たな機能で、セキュリティ・リストよりもより細やかな設定が可能</li>
-  <li><strong>DHCPオプション</strong> - インスタンスがDHCPサーバーから取得する情報の設定</li>
-</ul>
+<p><img src="1_overviewVCN.png" alt="image.png" /></p>
+
+<p class="notice--info"><strong>ポイント</strong> <br />
+・上記①〜⑤が主要コンポーネント <br />
+・このコンポーネントの役割を理解する<br />
+・さらにこれらリソースがどのリソースと紐づいているかを意識する</p>
 
 <p><a id="anchor2"></a></p>
 
-<h1 id="2-仮想クラウドネットワークの作成">2. 仮想クラウド・ネットワークの作成</h1>
-
-<p>仮想クラウド・ネットワークを作成します。今回は、予め設定されているテンプレート構成をもとに、付随するネットワーク・コンポーネントも一度に作成する <strong>VCNウィザード</strong> を利用して作成していきます。（すべてカスタムで作成することも可能です。）</p>
-
-<ol>
+<h2 id="2-複数のコンポーネント含めたvcnをウィザードで一括作成する">2. 複数のコンポーネント含めたVCNをウィザードで一括作成する</h2>
+<ul>
   <li>
-    <p>コンソールメニューから <strong><code class="language-plaintext highlighter-rouge">ネットワーキング</code></strong> → <strong><code class="language-plaintext highlighter-rouge">仮想クラウド・ネットワーク</code></strong> を選択し、<strong><code class="language-plaintext highlighter-rouge">VCNウィザード</code></strong> ボタンを押します。</p>
+    <p><strong>左上のナビゲーションメニュー → ネットワーキング → 「仮想クラウド・ネットワーク」を選択</strong></p>
 
-    <p><img width="700" alt="img1.png" src="img1.png" /></p>
+    <p><img src="2_SelectNetwork.png" alt="image.png" /></p>
+  </li>
+  <li><strong>白い「アクション」タブ→「VCNウィザードの起動」をクリック</strong> （「VCNの作成」ボタンはVCNしか作成されません）</li>
+  <li>
+    <p><strong>「インターネット接続性を持つVCNの作成」</strong>が選択されていることを確認して、VCNウィザードの起動をクリック
+  <img src="2_selectWizardAndInternet.png" alt="image.png" /></p>
+  </li>
+  <li>「VCN名」に任意の名前を入力して 下の<strong>次</strong>をクリック （この名前は他の自動で作成されるコンポーネントにも使われます。）</li>
+  <li>
+    <p>コンパートメントには現在のコンパートメントが表示されています。別のコンパートメントに作成する場合は変更できます。</p>
 
-    <p><img width="700" alt="img2.png" src="img2.png" /></p>
-
-    <p>※この際、左下の <strong>”リスト範囲”</strong> でリソースを <strong>作成したいコンパートメントを選択していること</strong> を確認してください。ここでは handson コンパートメントを作成して使用しています。</p>
-
-    <ul>
-      <li>
-        <p>画面左下のリスト範囲</p>
-
-        <p><img width="280" alt="img3.png" src="img3.png" /></p>
-      </li>
-    </ul>
+    <p><img src="2_InputVCNName.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>立ち上がった VCNウィザード ウィンドウで、デフォルトの <strong>”インターネット接続性を持つVCN”</strong> を選択した状態で <strong><code class="language-plaintext highlighter-rouge">VCNウィザードの起動</code></strong> をクリックします。このタイプを選択すると、以下のコンポーネントが作成されます。</p>
+    <p>作成されるリソース一覧を確認して <strong>作成</strong></p>
 
-    <ul>
-      <li>
-        <p>VCN、パブリック・サブネット、プライベート・サブネット、インターネット・ゲートウェイ(IG)、NATゲートウェイ(NAT)、サービス・ゲートウェイ(SG)</p>
-
-        <p><img width="600" alt="img4.png" src="img4.png" /></p>
-      </li>
-    </ul>
+    <p><img src="2_ConfirmVCN.png" alt="image.png" /></p>
   </li>
   <li>
-    <p><strong>インターネット接続性を持つVCNの作成</strong> ウィンドウに以下の項目を入力し、<strong><code class="language-plaintext highlighter-rouge">次</code></strong> ボタンを押します</p>
+    <p><em>結果:</em> インターネットからアクセス可能な環境が自動生成されました。</p>
 
-    <ul>
-      <li>
-        <p><strong>基本情報</strong></p>
-
-        <ul>
-          <li>
-            <p><strong>VCN名</strong> - 任意 (画面では TutorialVCN と入力しています)</p>
-          </li>
-          <li>
-            <p><strong>コンパートメント</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</p>
-
-            <p><img width="650" alt="img5.png" src="img5.png" /></p>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <p><strong>VCNとサブネットの構成</strong></p>
-
-        <ul>
-          <li>
-            <p><strong>VCN CIDRブロック</strong> - デフォルトの <strong>10.0.0.0/16</strong> のまま。</p>
-          </li>
-          <li>
-            <p><strong>パブリック・サブネットCIDRブロック</strong> - デフォルトの <strong>10.0.0.0/24</strong> のまま。</p>
-          </li>
-          <li>
-            <p><strong>プライベート・サブネットCIDRブロック</strong> - デフォルトの <strong>10.0.1.0/24</strong> のまま。</p>
-
-            <p><img width="650" alt="img6.png" src="img6.png" /></p>
-          </li>
-        </ul>
-      </li>
-    </ul>
+    <p><img src="2_VCNdetails.png" alt="image.png" /></p>
   </li>
-  <li>
-    <p>次の <strong>確認および作成</strong> 画面で、これから作成されるリソースを確認し、<strong><code class="language-plaintext highlighter-rouge">作成</code></strong> ボタンをクリックします。</p>
-  </li>
-  <li>
-    <p>仮想クラウド・ネットワークが作成されます。</p>
-
-    <p><img width="600" alt="img7.png" src="img7.png" /></p>
-  </li>
-  <li>
-    <p>左下の、<strong><code class="language-plaintext highlighter-rouge">仮想クラウドネットワークの表示</code></strong> ボタンをクリックし、作成されたVCNのページを表示します。</p>
-
-    <p><img width="700" alt="img8.png" src="img8.png" /></p>
-  </li>
-</ol>
+</ul>
 
 <p><a id="anchor3"></a></p>
 
-<h1 id="3-作成した仮想クラウドネットワークの確認">3. 作成した仮想クラウド・ネットワークの確認</h1>
+<h2 id="3-作成されたリソースを確認する">3. 作成されたリソースを確認する</h2>
+<p>ここからはインターネットへの接続設定が構成されているVCNとその中にあるコンポーネントを確認していきます。<br /></p>
 
-<p>作成した仮想クラウド・ネットワーク(VCN)の詳細を確認し、どのようなコンポーネントが作成されているかを理解します。</p>
+<h2 id="-vcn">① VCN</h2>
+<ul>
+  <li>CIDR 範囲: <code class="language-plaintext highlighter-rouge">10.0.0.0/16</code> (ウィザードでデフォルトで入っていた値)</li>
+  <li>
+    <p>このVCNで使われるDNSドメイン名は <名前>.oraclevcn.com であることを確認します</名前></p>
+
+    <p><img src="3_VCN.png" alt="image.png" /></p>
+  </li>
+</ul>
+
+<h2 id="-サブネット">② サブネット</h2>
+<p>サブネットはVCNを分割して作成されるネットワークです。 
+VCN詳細画面の上の「サブネット」の欄を見ます。<br />10.0.0.0/16というネットワークから10.0.0.0/24と10.0.1.0/24の小さなネットワークを切り出しています。</p>
+
+<p><img src="3_subnet.png" alt="image.png" /></p>
+
+<p>サブネットには2つの種類があります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>種類</th>
+      <th>サブネット名</th>
+      <th>CIDR</th>
+      <th>備考　</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>パブリックサブネット</td>
+      <td>パブリック・サブネット-<入力名></入力名></td>
+      <td>例:<code class="language-plaintext highlighter-rouge">10.0.0.0/24</code></td>
+      <td>パブリックIPが使えます</td>
+    </tr>
+    <tr>
+      <td>プライベートサブネット</td>
+      <td>プライベート・サブネット-<入力名></入力名></td>
+      <td>例:<code class="language-plaintext highlighter-rouge">10.0.1.0/24</code></td>
+      <td>プライベートIPのみが使えます</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この二種類の違いについてはパブリックIPアドレスを付与できるかできないかの違いで覚えておきましょう。<br />パブリックIPアドレスとは全世界で被らないIPアドレスなので、インターネットから到達することができます。</p>
+
+<h2 id="-ゲートウェイ">③ ゲートウェイ</h2>
+<p>ゲートウェイはVCNのネットワークの境界に位置し、ネットワークの出入り口となるコンポーネントです。 
+ウィザードによって3つのゲートウェイが作成されています。</p>
+
+<p><img src="3_gateway.png" alt="image.png" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>種類</th>
+      <th>ゲートウェイ名</th>
+      <th>用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>インターネットゲートウェイ</td>
+      <td>インターネット・ゲートウェイ-<入力名></入力名></td>
+      <td>パブリックサブネットからインターネットへ行くため</td>
+    </tr>
+    <tr>
+      <td>NATゲートウェイ</td>
+      <td>NATゲートウェイ-<入力名></入力名></td>
+      <td>プライベートサブネットからインターネットへ行くため</td>
+    </tr>
+    <tr>
+      <td>サービスゲートウェイ</td>
+      <td>サービスゲートウェイ-<入力名></入力名></td>
+      <td>Oracle Services Networkというリージョン内サービスへ行くため</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ウィザードでは作成されませんが、他のゲートウェイとして動的ルーティングゲートウェイ (DRG) やローカル・ピアリング・ゲートウェイがあります。</p>
+
+<h2 id="-ルート表">④ ルート表</h2>
+<p>ルート表はサブネット内から出ていく通信が次にどこへ行くかを示すコンポーネントです。<br /></p>
+
+<p>ウィザードによって2つのルート表が作成されており、この2つのルート表はそれぞれパブリックサブネットとプライベートサブネットに紐づいています。</p>
+
+<p><img src="3_routetable.png" alt="image.png" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ルート表の名前</th>
+      <th>紐づくサブネット</th>
+      <th>適用される通信</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>default route table for <入力名></入力名></td>
+      <td>パブリックサブネット</td>
+      <td>パブリックサブネットから出ていく通信</td>
+    </tr>
+    <tr>
+      <td>route table for private プライベート・サブネット-<入力名></入力名></td>
+      <td>プライベートサブネット</td>
+      <td>プライベートサブネットから出ていく通信</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>次にパブリックサブネットに紐づくdefault route tableの中身を見てみましょう。</p>
+<ul>
+  <li>宛先：<code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></li>
+  <li>ターゲット：インターネットゲートウェイ</li>
+</ul>
+
+<p>つまり、パブリックサブネット内のインスタンスからサブネットの外に出るとき、全ての通信（0.0.0.0/0）がインターネットゲートウェイへ行くことになります。<br />
+同様にプライベートサブネットに紐づくルート表はNATゲートウェイとサービスゲートウェイへのルートルールがあります。</p>
+
+<p><img src="3_routetableAndDetail.png" alt="image.png" /></p>
+
+<p>ちなみに、ルート表がどのサブネットに紐づいているかを確認するには、サブネットの詳細画面から確認します。
+default route table for <入力名>はパブリックサブネットに紐づいています。プライベートサブネット用のルート表も同様にプライベートサブネットの詳細画面から確認できます。</入力名></p>
+
+<p><img width="700" alt="img1.png" src="3_routetableSubnet.png" /></p>
+
+<h2 id="-セキュリティリスト">⑤ セキュリティリスト</h2>
+<p>セキュリティリストはファイアウォールのようなコンポーネントで許可する通信を記述します。<br />
+セキュリティリストはサブネットに紐づいてます。
+ウィザードによって2つのセキュリティリストが作成されています。</p>
+
+<p><img src="3_securitylist.png" alt="image.png" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名前</th>
+      <th>紐づくサブネット</th>
+      <th>備考</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Default Security List for test <入力名></入力名></td>
+      <td>パブリックサブネット</td>
+      <td>パブリックサブネット内のVNICに適用されるルール</td>
+    </tr>
+    <tr>
+      <td>プライベート・サブネット-<入力名>のセキュリティ・リスト</入力名></td>
+      <td>プライベートサブネット</td>
+      <td>プライベートサブネット内のVNICに適用されるルール</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>セキュリティリストがどのサブネットに紐づいているかは、サブネットの詳細画面から確認できます。</p>
+
+<p><img src="3_securitylistSubnet.png" alt="image.png" /></p>
+
+<h2 id="セキュリティリストのルール記述要素"><strong>セキュリティリストのルール記述要素</strong></h2>
+<p>セキュリティリストのルールには以下の要素がセットとなって記述されています。</p>
+<ul>
+  <li>イングレス方向 / エグレス方向</li>
+  <li>送信元CIDR/宛先CIDR、プロトコル、ポート番号</li>
+  <li>ステートフル / ステートレス</li>
+</ul>
+
+<p>Default Security List for test <入力名> と書かれたパブリックサブネットに紐づくセキュリティリストを見ていきましょう。<br /></入力名></p>
+
+<p><img src="3_securitylistDetail.png" alt="image.png" /></p>
+
+<p><strong>例: デフォルトのセキュリティリスト (パブリック) のイングレスルール</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ステートレス</th>
+      <th>送信元</th>
+      <th>プロトコル</th>
+      <th>ポート</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>いいえ</td>
+      <td><code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></td>
+      <td>TCP</td>
+      <td>22 (SSH通信)</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>ステートレスがいいえ→ステートフル<br />
+ステートフルというのは状態を保持するという意味があるので、例えば行きの通信でイングレスルールに合致したものは、その帰りの通信も自動的に許可されます。
+ステートレスルールでは片方向で許可されたとしても、帰りの方向でも許可されていないと通信ができません。<br />
+例えばイングレスルールでSSH通信がステートレスで許可された時、帰っていく通信はエグレスルールでも記述する必要があります。</li>
+  <li>送信元0.0.0.0/0<br />
+すべてのIPアドレスを指します。つまり、送信元がどこでもという意味です。</li>
+  <li>TCP22番ポ―ト<br />
+これはsshというリモートログインするプロトコルです。</li>
+</ul>
+
+<p>他にもICMPの一部タイプとコードがデフォルトで設定されています。</p>
+
+<p><strong>例: デフォルトのセキュリティリスト (パブリック) のエグレスルール</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ステートレス</th>
+      <th>送信元</th>
+      <th>プロトコル</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>いいえ</td>
+      <td><code class="language-plaintext highlighter-rouge">0.0.0.0/0</code></td>
+      <td>全てのポートすべてのプロトコル</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>宛先が0.0.0.0/0、つまり全ての宛先への通信が許可されています。</li>
+  <li>ステートフルとなっているため、出ていった通信が帰ってくる時にも自動的に許可されます。</li>
+</ul>
+
+<p>つまり、通信の起点がVNICから出ていく方向の通信は全て許可されていて、帰りの通信もステートフルルールによって許可されます。</p>
+
+<p class="notice--info"><strong>重要:</strong> <br />セキュリティリストは許可する通信のみを記述していくホワイトリスト方式です。<br />何も書いていない場合、セキュリティリストに適用されたVNICでパケットがブロックされるため通信はできません。</p>
+
+<p><strong>（参考） ネットワークセキュリティグループ (NSG)</strong>
+<br />これは⑤のセキュリティリストと役割は同じになります。<br />
+異なる点は紐づくリソースとセキュリティルールが適用される範囲です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>比較項目</th>
+      <th>紐づくリソース</th>
+      <th>適用範囲</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>セキュリティリスト</td>
+      <td>サブネット</td>
+      <td>サブネット内の全VNIC</td>
+    </tr>
+    <tr>
+      <td>ネットワークセキュリティグループ</td>
+      <td>VNIC</td>
+      <td>紐づけたVNICのみ</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote class="notice--info">
+  <p><strong>Tips</strong><br />
+セキュリティリストとネットワークセキュリティグループの両方を使った場合 <strong>OR</strong> 条件で許可される。<br />通常は片方のみを使って運用。</p>
+</blockquote>
+
+<p><a id="anchor4"></a></p>
+
+<h2 id="4-インターネットからインスタンスへssh接続するときのパケットの動き">4. インターネットからインスタンスへSSH接続するときのパケットの動き</h2>
+<p>ネットワークはパケットと呼ばれる小さな小包でやり取りされています。
+パケットの気持ちになって順番にどのリソースを経由していくのか見ていきましょう。お使いのPCからインターネットを経由してクラウド内のインスタンスにsshを行う場合を考えてましょう。<br />
+次の章のコンピュートインスタンスを作成してSSH接続するものと同じです。</p>
+
+<p><img src="4_packetrouting.png" alt="image.png" /></p>
 
 <ol>
-  <li>
-    <p>コンソールで、先ほど作成した <strong>TutorialVCN</strong> のリンクをクリックし、詳細画面を表示します</p>
-  </li>
-  <li>
-    <p>上部に表示されている 仮想クラウド・ネットワークの概要情報を確認します</p>
-
-    <p>アドレス空間が <strong>10.0.0.0/16</strong> で、ネットワークのDNSドメイン名が <strong>tutorialvcn.oraclevcn.com</strong> であることを確認します</p>
-
-    <p><img width="550" alt="img9.png" src="img9.png" /></p>
-
-    <blockquote>
-      <p><strong>Note</strong></p>
-
-      <p>これらの設定は、VCNウィザードでテンプレートに従って自動的に作成されたものです</p>
-    </blockquote>
-  </li>
-  <li>
-    <p>下部には、作成されたリソースが表示されています。
-パブリック・サブネットとプライベート・サブネットの2つが作成されていることを確認します。どちらも<strong>リージョナル・サブネット</strong>です。
-まず、<strong>”パブリック・サブネット-&lt;VCN名&gt;”</strong> のリンクをクリックし、サブネットの詳細画面を開きます。</p>
-
-    <p><img width="700" alt="img10.png" src="img10.png" /></p>
-  </li>
-  <li>
-    <p><strong>”パブリック・サブネット-&lt;VCN名&gt;”</strong> の画面で、このサブネットに設定されているセキュリティ・リスト、ルート表、DHCPオプションを確認できます。これらのコンポーネントは、VCN内に複数作成でき、各サブネット単位で割り当てます。
-セキュリティ・リストは <strong>Default Security List for &lt;VCN名&gt;</strong>、ルート表は <strong>Default Route Table for &lt;VCN名&gt;</strong>、DHCPオプションは <strong>Default DHCP Options for &lt;VCN名&gt;</strong> が設定されていることがわかったので、これらの中身を確認していきます。</p>
-
-    <p><img width="700" alt="img11.png" src="img11.png" /></p>
-
-    <blockquote>
-      <p><strong>Note</strong></p>
-
-      <p>作成されているサブネットはテンプレートに従って自動的に作成されたものです。もし異なる内容のサブネットを作成したい場合には、この画面から作成されたサブネットを終了(Terminate)し、新しいサブネットを作成することができます。</p>
-    </blockquote>
-  </li>
-  <li>
-    <p>左側のサブメニューで <strong>”インターネット・ゲートウェイ”</strong> を選択し、作成済のインターネット・ゲートウェイを確認します
-インターネット・ゲートウェイが1つ作成されています。</p>
-
-    <p><img width="700" alt="img12.png" src="img12.png" /></p>
-  </li>
-  <li>
-    <p>左側のサブメニューで <strong>”ルート表”</strong> を選択し、作成済のルート表を確認します。Default Route Tableと、プライベート・サブネット用のルート表の2つが作成されていることを確認します。</p>
-
-    <p><img width="700" alt="img13.png" src="img13.png" /></p>
-  </li>
-  <li>
-    <p>ルート表のうち、<strong>Default Route Table for &lt;VCN名&gt;</strong> リンクをクリックし、作成されているルート表の詳細を確認します。</p>
-
-    <p>0.0.0.0/0 に対するルート(デフォルトルート)として、<strong>インターネット・ゲートウェイ-&lt;VCN名&gt;</strong> がターゲットに定義されていることを確認します。</p>
-
-    <p><img width="700" alt="img14.png" src="img14.png" /></p>
-  </li>
-  <li>
-    <p>左側のサブメニューで <strong>”インターネット・ゲートウェイ”</strong> を選択し、作成済のインターネット・ゲートウェイを確認します。インターネット・ゲートウェイが1つ作成されています。</p>
-
-    <p><img width="700" alt="img15.png" src="img15.png" /></p>
-  </li>
-  <li>
-    <p>次に、ページ上部の <strong>”VCN名”</strong> のリンクを押して画面をもどり、次に左側サブメニューから <strong>”セキュリティ・リスト”</strong> を選択します
-下部に作成済セキュリティ・リストが表示されるので、<strong>Default Security List for &lt;VCN名&gt;</strong> リンクをクリックし、詳細を表示します</p>
-
-    <p><img width="700" alt="img16.png" src="img16.png" /></p>
-  </li>
-  <li>
-    <p><strong>Default Security List for &lt;VCN名&gt;</strong> の画面で、作成済みのセキュリティ・リストに設定されているルールの内容を確認します</p>
-
-    <p><img width="700" alt="img17.png" src="img17.png" /></p>
-
-    <p><strong>イングレス・ルール</strong> (インバウンドのルール) として、以下のステートフル・ルールが定義され、またステートレス・ルールは定義されていないことがわかります</p>
-
-    <ul>
-      <li>
-        <p>パブリック・インターネット(0.0.0.0/0) からの ssh(TCP/22) に対する接続の許可</p>
-      </li>
-      <li>
-        <p>パブリック・インターネット(0.0.0.0/0) からのICMP通信に対してはタイプ3(Destination Unreachable)のコード4(Fragmentation Needed and Don’t Fragment was Set)を返答</p>
-      </li>
-      <li>
-        <p><strong>TestVCN</strong> 内(10.0.0.0/16) からのICMP通信に対してはタイプ3(Destination Unreachable)を返答</p>
-
-        <blockquote>
-          <p><strong>Note</strong></p>
-
-          <p>ICMPのコードおよびタイプの詳細については IANAのサイト をご覧ください</p>
-        </blockquote>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <p>ページ左側のサブメニューから <strong>”エグレス・ルール”</strong> を選択し、定義済の Egress Rule (アウトバウンドのルール) の内容を確認します</p>
-
-    <p><img width="700" alt="img18.png" src="img18.png" /></p>
-
-    <p><strong>エグレス・ルール</strong> としては、パブリック・インターネット(0.0.0.0/0) に対する全てのステートフル通信が許可されていることがわかります</p>
-  </li>
-  <li>
-    <p>ページ上部の <strong>”VCN名”</strong> のリンクを押して画面をもどり、次にページ左側のサブメニューから <strong>”DHCPオプション”</strong> を選択します
-下部に作成済のDHCPオプションが表示されるので、 <strong>Default DHCP Options for &lt;VCN名&gt;</strong> リンクをクリックし、詳細を表示します
-DHCPのオプションとして、リゾルバーの設定がインターネットおよびVNC内の名前解決に、検索ドメインがVCNのDNSドメイン名(tutorialvcn.oraclevcn.com)に設定されていることを確認します</p>
-
-    <p><img width="700" alt="img19.png" src="img19.png" /></p>
-  </li>
-  <li>
-    <p>次に、手順4以降と同様に、プライベート・サブネットに設定されているルート表、セキュリティ・リストもどのような設定になっているかを確認しましょう。プライベート・サブネットの場合は、インターネット・ゲートウェイ経由で外部アクセスをすることはできないので、NATゲートウェイおよびサービス・ゲートウェイが設定されていることがわかります。</p>
-  </li>
+  <li>ノートPC → インスタンスのパブリックIPが目的地として<strong>インターネットゲートウェイ</strong> へ</li>
+  <li>インターネットゲートウェイ →インスタンスのIPアドレスにルーティングされます</li>
+  <li><strong>VNIC</strong> に到達すると<strong>セキュリティリスト</strong> で許可確認 (TCP 22)</li>
+  <li>インスタンス (OpenSSH) に接続</li>
+  <li>VNICから出ていく戻りパケットは3のステートフルルールで自動的に許可される</li>
+  <li>ルート表 <code class="language-plaintext highlighter-rouge">0.0.0.0/0 → インターネットゲートウェイ</code>というルートルールからインターネットゲートウェイへ向かう</li>
+  <li>インターネット経由でノートPCへ戻る</li>
 </ol>
 
+<hr />
+
 <p>これで、この章の作業は終了です。</p>
-
-<p>この章では、<strong>TutorialVCN</strong> という仮想クラウド・ネットワークをひとつ作成し、デフォルトで作成されている付随コンポーネントの設定の詳細を確認しました。</p>
-
-<p>今回は <strong>VCNウィザード</strong> という方法で <strong>インターネット接続性を持つVCN</strong> を作成しましたが、作成されたコンポーネントは自由に変更、削除することができます。また今回は使わなかった <strong>仮想クラウド・ネットワークの作成</strong> の方法を使用すると、付随するコンポーネントを手動で作成することも可能です。</p>
-
-<p>用途に応じて適切なオプションで仮想クラウド・ネットワーク(VCN)を作成するようにしてください。</p>
 
 <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
 
@@ -583,7 +695,7 @@ DHCPのオプションとして、リゾルバーの設定がインターネッ�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-07-29T20:43:49+09:00">July 29, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-06T10:41:04+09:00">August 6, 2025</time></p>
 
       </footer>
 
