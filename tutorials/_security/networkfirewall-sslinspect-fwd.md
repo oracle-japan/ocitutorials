@@ -6,8 +6,8 @@ order: "111"
 tags:
  - security
 header:
- teaser: "/security/networkfirewall-sslinspect-fwd/sslfwd00.png"
- overlay_image: "/security/networkfirewall-sslinspect-fwd/sslfwd00.png"
+ teaser: "/security/networkfirewall-sslinspect-fwd/sslfwd20.png"
+ overlay_image: "/security/networkfirewall-sslinspect-fwd/sslfwd20.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -51,7 +51,7 @@ Allow any-user to read secret-family in compartment <compartment_ID> where ALL {
 以下が本チュートリアルで使用する構成図です。
 OCI環境を出入りする通信はNetwork Firewallを経由し、Network Firewallによって監視および検査が行われます。
 
-![構成図](sslfwd00.png)
+![構成図](sslfwd20.png)
 
 OCI内部に作成するインスタンスとして、本チュートリアルではWindowsインスタンスを作成します。Linuxインスタンスでもcurlコマンドを使用すれば同様の操作が可能ですので、[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/)で設定した環境を引き続き使用して実施することもできます。
 

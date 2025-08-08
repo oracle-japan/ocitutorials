@@ -6,8 +6,8 @@ layout: single
 tags:
  - security
 header:
- teaser: "/security/networkfirewall-setup/nfw00.png"
- overlay_image: "/security/networkfirewall-setup/nfw00.png"
+ teaser: "/security/networkfirewall-setup/nfw32.png"
+ overlay_image: "/security/networkfirewall-setup/nfw32.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -41,7 +41,7 @@ OCI Network Firewallは2022年7月にリリースされた、パロアルトネ�
 以下が本チュートリアルで作成するNetwork Firewallの構成図です。
 OCI環境を出入りする通信はNetwork Firewallを経由し、監視および検査が行われます。
 
-![構成図](nfw00.png)
+![構成図](nfw32.png)
 
 本チュートリアルでは動作テストのためにOCI内にWEBサーバーを準備した後ウィルステストファイルを配置し、外部からの通信がNetwork Firewallによってブロックされることを確認するところまでを行います。
 
@@ -89,7 +89,7 @@ VCN作成画面にて以下項目を入力し、**[次]** をクリックしま�
 
 作成されるリソースを確認し、**[作成]** をクリックすると以下の環境でVCNが作成されます。  
 
- ![VCNウィザードで作成されるリソース](nfw05.png)
+ ![VCNウィザードで作成されるリソース](nfw33.png)
 
 今回はプライベート・サブネット、サービス・ゲートウェイ、NATゲートウェイを使用しません。そのため、後続の構成図ではこれらのリソースを省略しています。
 
@@ -176,7 +176,7 @@ Network Firewallを配置するためのサブネットを作成します。
 
 ここまでで以下の構成が整いました。
 
-![構成途中1](nfw10.png)
+![構成途中1](nfw34.png)
 
 <br><br>
 
@@ -412,7 +412,7 @@ VCN詳細画面の「インターネット・ゲートウェイ」セクショ�
 
 ここまでの設定により、現時点での環境は以下のようになっています。
 
-![構築途中3](nfw31.png)
+![構築途中3](nfw35.png)
 
 <br><br>
 

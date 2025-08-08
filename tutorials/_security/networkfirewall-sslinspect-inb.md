@@ -6,8 +6,8 @@ order: "111"
 tags:
  - security
 header:
- teaser: "/security/networkfirewall-sslinspect-inb/sslinb00.png"
- overlay_image: "/security/networkfirewall-sslinspect-inb/sslinb00.png"
+ teaser: "/security/networkfirewall-sslinspect-inb/sslinb25.png"
+ overlay_image: "/security/networkfirewall-sslinspect-inb/sslinb25.png"
  overlay_filter: rgba(34, 66, 55, 0.7)
 
 ---
@@ -50,7 +50,7 @@ Allow any-user to read secret-family in compartment <compartment_ID> where ALL {
 以下が本チュートリアルで使用する構成図です。
 OCI環境を出入りする通信はNetwork Firewallを経由し、Network Firewallによって監視および検査が行われます。
 
-![構成図](sslinb00.png)
+![構成図](sslinb25.png)
 
 この構成図において、本チュートリアルで作成するリソースはOCI Vaultのみです。そのほかのリソースについては、事前に「[OCI Network Firewallを構築する](/ocitutorials/security/networkfirewall-setup/) 」を参考に環境をご準備ください。
 
