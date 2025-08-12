@@ -26,22 +26,16 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 # OCI IAM Identity Domainsチュートリアル
 
-+ **[OCI IAM Identity Domainsのドメインの追加とライセンスタイプを変更する](/ocitutorials/identity/identitydomain-createdomain-alterdomaintype)**  
-   本チュートリアルでは、Identity Domainsのドメインタイプを新規作成する手順と、ドメインのライセンスタイプの変更手順を紹介します。
++ **[新規Identity Domainを作成する、また既存のIdentity Domainのタイプを変更する](https://speakerdeck.com/oracle4engineer/create-identity-domain-and-change-type)**  
+   本チュートリアルは外部のページで、新規Identity Domainを作成する、また既存のIdentity Domainのタイプを変更するための設定手順を紹介しています。
 
-+ **[OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する](/ocitutorials/identity/identitydomain-setup-users/)**  
-   本チュートリアルではIdentity DomainsでのOCIテナント管理者ユーザーと、一般ユーザーの作成手順を紹介します。
++ **[OCI IAM Identity Domains - テナント管理者・一般ユーザーを作成する](https://speakerdeck.com/oracle4engineer/identity-domains-create-users-adminuser-etc)**  
+   本チュートリアルは外部のページで、Identity DomainでのOCIテナント管理者ユーザーと、一般ユーザーの作成手順を紹介しています。
 
-+ **[OCI IAM Identity DomainでユーザーのMFAを有効化する](/ocitutorials/identity/identitydomain-mfa/)**  
-   本チュートリアルでは、Identity Domainsの特定のグループに属しているユーザーに二要素認証を要求するための設定手順を紹介します。
++ **[OCI IAM Identity DomainsでEntra IDとSAMLでの認証連携を行う](https://speakerdeck.com/oracle4engineer/identity-domain-federation-settings-with-entra-id)**  
+   本チュートリアルは外部のページで、OCI IAM Identity DomainsとEntra ID（外部IdP）で認証連携・ユーザー同期を行うための実装手順を紹介しています。
 
-+ **[OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する](/ocitutorials/identity/identitydomain-azuread/)**  
-   本チュートリアルでは、SAMLによるIdentity DomainsとAzure ADとの認証連携を設定する手順を紹介します。本チュートリアルを完了することで、Azure ADのIDとパスワードでOCIにサインオンすることが可能になります。
-
-+ **[OCI IAM Identity DomainでAPEXで作成したアプリに認証と認可をする](/ocitutorials/identity/identitydomain-apex-sso/)**  
-   本チュートリアルでは、Oracle Application Express（APEX）で作成したアプリケーションとIdentity Domainsの認証連携、およびIdentity Domainsのグループに基づくアクセス制御（認可）の実装手順を紹介します。
-
-+ **[OCI IAM Identity Domainsで複数Identity Domain間の認証連携環境を構築する](https://speakerdeck.com/oracle4engineer/sso-setup-between-multiple-identity-domains)**  
++ **[OCI IAM Identity Domainsで複数Identity Domain間とSAMLでの認証連携を行う](https://speakerdeck.com/oracle4engineer/sso-setup-between-multiple-identity-domains)**  
    本チュートリアルは外部のページで、複数のOCI IAM Identity Domain間で認証連携およびユーザー同期を行うための実装手順を紹介しています。
 
 + **[OCI IAM Identity DomainsのIdPポリシーの設定を行う](https://speakerdeck.com/oracle4engineer/identity-domain-idp-policy)**  
@@ -69,7 +63,19 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
    本チュートリアルは外部のページで、OCI IAM Identity DomainsでOktaとSAMLによる認証連携の設定手順を紹介しています。
 
 + **[OCI IAM Identity DomainsでSSO対象アプリアクセス時のMFA要求・IPアクセス制御を行う](https://speakerdeck.com/oracle4engineer/oci-iam-identity-domains-mfa-and-ip-address-access-control-for-sso-apps)**  
-   本チュートリアルでは、OCI Identity Domainsにて、サインオンポリシーを利用しSSO対象アプリケーションアクセス時にMFA要求やIPアドレスによるアクセス制御を行うための設定手順です。 ※OCIコンソールは対象外です。
+   本チュートリアルは外部のページで、OCI Identity Domainsにて、サインオンポリシーを利用しSSO対象アプリケーションアクセス時にMFA要求やIPアドレスによるアクセス制御を行うための設定手順を紹介しています。 ※OCIコンソールは対象外です。
 
 + **[OCI IAM Identity DomainsでIPアドレスによるOCIコンソールアクセスの制御を行う](https://speakerdeck.com/oracle4engineer/oci-iam-identity-domains-control-oci-console-access-by-ip-address)**  
-   本チュートリアルでは、OCIコンソールにアクセスできるIPアドレスを制御するためのIdentity Domainsの設定手順になります。
+   本チュートリアルは外部のページで、OCIコンソールにアクセスできるIPアドレスを制御するためのIdentity Domainsの設定手順を紹介しています。
+
++ **[OCI IAM Identity DomainsでAPEXアプリケーションの認証およびMFAを行う](https://speakerdeck.com/oracle4engineer/identity-domain-for-apex-apps)**  
+   本チュートリアルは外部のページで、OCI IAM Identity DomainとAPEXアプリケーションの認証連携および認可制御を行うための設定手順を紹介しています。
+
++ **[OCI IAM Identity DomainsでAPEX管理者サイトの認証およびMFAを行う](https://speakerdeck.com/oracle4engineer/identity-domain-for-apex-admin-site)**  
+   本チュートリアルは外部のページで、OCI IAM Identity DomainsとAPEX(ADB)の管理サービスやワークスペースサイトの認証連携およびMFAを実施する設定手順を紹介しています。
+
++ **[OCI IAM Identity Domainsでパスワードセット後の”サインインへ進む”ボタンを非表示にする](https://speakerdeck.com/oracle4engineer/identity-domain-hidden-continue-to-sign-in-button)**  
+   本チュートリアルは外部のページで、OCI IAM Identity Domainsにて、初期パスワードセットやパスワードリセット後の画面から「サインインに進む」ボタンを非表示にするための設定手順を紹介しています。
+
++ **[OCI IAM Identity DomainsでCSVファイルからユーザーとグループをインポートする](https://speakerdeck.com/oracle4engineer/identity-domain-importing-using-csv-file)**  
+   本チュートリアルは外部のページで、OCI IAM Identity Domainsで提供されているサンプルファイルを利用したユーザーとグループをインポートするための設定手順を紹介しています。
