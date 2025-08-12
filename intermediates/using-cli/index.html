@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-12T18:14:18+09:00">
+  <meta property="article:published_time" content="2025-08-13T08:16:11+09:00">
 
 
 
@@ -348,7 +348,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="コマンドライン(CLI)でOCIを操作する">
     <meta itemprop="description" content="クラウドの管理を簡単にしたいなら、コマンドラインツールのOCICLIを試してみましょう。APIを直接コールするよりもずっと簡単に、スクリプトを使ってクラウドのコンポーネントを操作できます。">
-    <meta itemprop="datePublished" content="2025-08-12T18:14:18+09:00">
+    <meta itemprop="datePublished" content="2025-08-13T08:16:11+09:00">
     
 
     <div class="page__inner-wrap">
@@ -600,14 +600,14 @@
   <li>**Enter a location for your config [C:\Users\ <ユーザー名>\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下</ユーザー名></li>
   <li><strong>Enter a user OCID:</strong> - ステップ2-2 で確認したユーザーのOCIDを入力</li>
   <li><strong>Enter a tenancy OCID:</strong> - ステップ2-2 で確認したテナンシのOCIDを入力</li>
-  <li><strong>Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):</strong> - アクセスしたいリージョンのインデックス（ap-tokyo-1リージョンなら13）、またはリージョン名を入力</li>
+  <li><strong>Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):</strong> - アクセスしたいリージョンのインデックス番号、またはリージョン名を入力</li>
   <li><strong>Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]:</strong> - Y</li>
   <li><strong>Enter a directory for your keys to be created [C:\Users&lt;ユーザー名&gt;.oci]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
   <li><strong>Enter a name for your key [oci_api_key]:</strong> - 入力なしで <kbd>Enter</kbd> キーを押下</li>
-  <li><strong>Enter a passphrase for your private key (empty for no passphrase):</strong> - 任意（パスフレーズを設定しない場合は 入力なしで <kbd>Enter</kbd> キーを押下）</li>
+  <li><strong>Enter a passphrase for your private key (empty for no passphrase):</strong> - 任意（パスフレーズを設定しない場合はN/Aと入力して <kbd>Enter</kbd> キーを押下）</li>
 </ul>
 
-<p>スクリプトが完了すると、対話形式の１つめの質問で確認されたロケーション（C:\Users\ <ユーザー名>\.oci\config）に、config ファイル と API 鍵ペア（秘密鍵がoci_api_key.pem、公開鍵がoci_api_key_public.pemという名前）が生成されています。</ユーザー名></p>
+<p>スクリプトが完了すると、対話形式の１つめの質問で確認されたロケーション（C:\Users\ <ユーザー名>\.oci）に、config ファイル と API 鍵ペア（秘密鍵がoci_api_key.pem、公開鍵がoci_api_key_public.pemという名前）が生成されています。</ユーザー名></p>
 
 <h2 id="3-2-apiキーのアップロード">3-2. APIキーのアップロード</h2>
 
@@ -617,16 +617,16 @@
 
 <ol>
   <li>
-    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>コンパートメント</strong> を選択します。</p>
+    <p>Oracle Cloud Infrastructure にログインし、コンソールメニューから <strong>アイデンティティとセキュリティ</strong> → <strong>ドメイン</strong> → ユーザーの人数が表示されたリンクをクリックします。</p>
   </li>
   <li>
     <p>ユーザーの一覧が表示されるので、APIアクセスに使用するユーザー名のリンク（先ほどOCIDをコピーしたユーザー (例：api.user) ）をクリックします。</p>
   </li>
   <li>
-    <p>ユーザーの詳細画面が開きますので、左下の リソース・メニューから <strong><code class="language-plaintext highlighter-rouge">APIキー</code></strong>を選択し、<strong><code class="language-plaintext highlighter-rouge">APIキーの追加</code></strong> ボタンを押します</p>
+    <p>ユーザーの詳細画面が開きますので、左下の リソース・メニューから <strong><code class="language-plaintext highlighter-rouge">APIキー</code></strong>を選択し、<strong><code class="language-plaintext highlighter-rouge">APIキーの追加</code></strong> ボタンを押します。</p>
   </li>
   <li>
-    <p>「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名>\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、 **`追加`** というボタンをクリックします。</ユーザー名></p>
+    <p>「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名>\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、 **`追加`** というボタンをクリックします（ファイルアップロード以外に「公開キーの貼り付け」も可能です）。</ユーザー名></p>
 
     <p><img src="image-20210913160624374.png" alt="image-20210913160624374.png" /></p>
   </li>
@@ -1286,7 +1286,7 @@ sort-by オプションの詳細については oci compute image list –help �
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-12T18:14:18+09:00">August 12, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-13T08:16:11+09:00">August 13, 2025</time></p>
 
       </footer>
 
