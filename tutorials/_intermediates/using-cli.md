@@ -255,15 +255,15 @@ oci setup config
 - **Enter a location for your config [C:\Users\ <ユーザー名 >\.oci\config]:** 入力なしで <kbd>Enter</kbd> キーを押下
 - **Enter a user OCID:** - ステップ2-2 で確認したユーザーのOCIDを入力
 - **Enter a tenancy OCID:** - ステップ2-2 で確認したテナンシのOCIDを入力
-- **Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):** - アクセスしたいリージョンのインデックス（ap-tokyo-1リージョンなら13）、またはリージョン名を入力
+- **Enter a region by index or name(Enter a region by index or name(e.g.1: af-johannesburg-1, 2: ap-chiyoda-1,（中略）, 44: us-sanjose-1):** - アクセスしたいリージョンのインデックス番号、またはリージョン名を入力
 - **Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]:** - Y
 - **Enter a directory for your keys to be created [C:\Users\<ユーザー名>\.oci]:** - 入力なしで <kbd>Enter</kbd> キーを押下
 - **Enter a name for your key [oci_api_key]:** - 入力なしで <kbd>Enter</kbd> キーを押下
-- **Enter a passphrase for your private key (empty for no passphrase):** - 任意（パスフレーズを設定しない場合は 入力なしで <kbd>Enter</kbd> キーを押下）
+- **Enter a passphrase for your private key (empty for no passphrase):** - 任意（パスフレーズを設定しない場合はN/Aと入力して <kbd>Enter</kbd> キーを押下）
 
 
 
-スクリプトが完了すると、対話形式の１つめの質問で確認されたロケーション（C:\Users\ <ユーザー名 >\.oci\config）に、config ファイル と API 鍵ペア（秘密鍵がoci_api_key.pem、公開鍵がoci_api_key_public.pemという名前）が生成されています。
+スクリプトが完了すると、対話形式の１つめの質問で確認されたロケーション（C:\Users\ <ユーザー名 >\.oci）に、config ファイル と API 鍵ペア（秘密鍵がoci_api_key.pem、公開鍵がoci_api_key_public.pemという名前）が生成されています。
 
 
 
@@ -275,13 +275,13 @@ CLI から OCI に対してアクセスを行う際に API の認証が行われ
 
 
 
-1. Oracle Cloud Infrastructure にログインし、コンソールメニューから **アイデンティティとセキュリティ** → **コンパートメント** を選択します。
+1. Oracle Cloud Infrastructure にログインし、コンソールメニューから **アイデンティティとセキュリティ** → **ドメイン** → ユーザーの人数が表示されたリンクをクリックします。
 
 2. ユーザーの一覧が表示されるので、APIアクセスに使用するユーザー名のリンク（先ほどOCIDをコピーしたユーザー (例：api.user) ）をクリックします。
 
-3. ユーザーの詳細画面が開きますので、左下の リソース・メニューから **`APIキー`**を選択し、**`APIキーの追加`** ボタンを押します  
+3. ユーザーの詳細画面が開きますので、左下の リソース・メニューから **`APIキー`**を選択し、**`APIキーの追加`** ボタンを押します。
 
-4. 「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名 >\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、 **`追加`** というボタンをクリックします。
+4. 「公開キー・ファイルの選択」を選択し、先ほど作成した鍵ペアのうち、公開鍵のファイル（例：C:\Users\ <ユーザー名 >\.oci\oci_api_key_public.pem）を、「ファイルを削除または 1つを選択」という枠の中へ、ドラッグアンドドロップし、 **`追加`** というボタンをクリックします（ファイルアップロード以外に「公開キーの貼り付け」も可能です）。
 
    ![image-20210913160624374.png](image-20210913160624374.png)
 
