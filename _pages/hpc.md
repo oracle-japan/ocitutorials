@@ -21,7 +21,7 @@ table, th, td {
 HPC/機械学習ワークロードの実行に最適なベアメタルインスタンス、GPUインスタンス、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 等の各種IaaSサービスを組み合わせて、様々な用途のHPC/GPUクラスタを構築する手順を解説するチュートリアル集です。  
 提供するチュートリアルは、以下のカテゴリに分かれています。
 
-    1. **[HPCクラスタ](#1-1-hpcクラスタ)**
+    1. **[HPC/GPUクラスタ](#1-1-hpcgpuクラスタ)**
     2. **[機械学習環境](#1-2-機械学習環境)**
     3. **[ファイル共有ストレージ](#1-3-ファイル共有ストレージ)**
     4. **[チュートリアルを組み合わせた実践的HPCシステム構築](#1-4-チュートリアルを組み合わせた実践的hpcシステム構築)**
@@ -63,10 +63,10 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 各チュートリアルは、以下4つのカテゴリに分類されます。
 
-- **[HPCクラスタ](#1-1-hpcクラスタ)**
+- **[HPC/GPUクラスタ](#1-1-hpcgpuクラスタ)**
 
-    このカテゴリは、最新のCPUを搭載するベアメタルインスタンスを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** で高帯域・低遅延に接続する、CPUワークロード向けHPCクラスタを構築するためのチュートリアルを集めています。  
-    チュートリアルで構築するHPCクラスタは、NFS、LDAP、 **Slurm** 、 **OpenMPI** 等、システム運用・利用に欠かせないソフトウェアが使えます。
+    このカテゴリは、最新のCPUを搭載するベアメタルインスタンスを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** で高帯域・低遅延に接続する、CPUワークロード向けHPCクラスタやGPUワークロード向けGPUクラスタを構築するためのチュートリアルを集めています。  
+    チュートリアルで構築するHPC/GPUクラスタは、NFS、LDAP、 **Slurm** 、 **OpenMPI** 等、システム運用・利用に欠かせないソフトウェアが使えます。
 
 - **[機械学習環境](#1-2-機械学習環境)**
 
@@ -81,7 +81,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     このカテゴリは、前述3つのカテゴリのチュートリアルを組み合わせることで、より実践的なHPCシステムを構築するためのチュートリアルを集めています。
 
-**[HPCクラスタ](#1-1-hpcクラスタ)** と **[機械学習環境](#1-2-機械学習環境)** のカテゴリは、利用目的や構築手法の異なるチュートリアルを複数用意しており、自身の要件に合わせて以下の観点で使用するチュートリアルを選択します。
+**[HPC/GPUクラスタ](#1-1-hpcgpuクラスタ)** と **[機械学習環境](#1-2-機械学習環境)** のカテゴリは、利用目的や構築手法の異なるチュートリアルを複数用意しており、自身の要件に合わせて以下の観点で使用するチュートリアルを選択します。
 
 - 構築手法
 
@@ -91,11 +91,9 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     |                     | 利点                                                            | 欠点                                                | 備考                                                                                                              |     |
     | :-----------------: | ------------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --- |
-    | 自動構築<br>（**スタック**）      | 構築作業時間（※1）が短い<br>GUI操作（※2）が可能                            | 構築手順のブラックボックス化<br>　・システム構成の変更が難しい<br>　・問題発生時の原因究明が困難 | ※1）スタックメニュー選択の時間<br>※2） **OCI** コンソール操作                                                                                 |     |
-    | 自動構築<br>（**Terraform**） | 構築作業時間（※3）が短い<br>CLI/GUI（※4）を選択可能                           | **Terraform** 実行環境（※5）が必要                              | ※3）スタックメニュー選択の時間<br>or<br>**Terraform** スクリプト内変数修正<br>に要する時間<br>※4）**Terraform** CLI/ **OCI** コンソール<br>※5）**Terraform** CLIを選択した場合 |     |
+    | 自動構築<br>（**スタック**）      | 構築作業時間（※1）が短い<br>GUI操作（※2）が可能                            | 構築手順のブラックボックス化<br>　・システム構成の変更が難しい<br>　・問題発生時の原因究明が困難 | ※1）**スタック** メニュー選択の時間<br>※2） **OCI** コンソール操作                                                                                 |     |
+    | 自動構築<br>（**Terraform**） | 構築作業時間（※3）が短い<br>CLI/GUI（※4）を選択可能                           | **Terraform** 実行環境（※5）が必要                              | ※3）**スタック** メニュー選択の時間<br>or<br>**Terraform** スクリプト内変数修正<br>に要する時間<br>※4）**Terraform** CLI/ **OCI** コンソール<br>※5）**Terraform** CLIを選択した場合 |     |
     | 手動構築<br>（ **OCI** コンソール）  | 構築手順が明確<br>　・システム構成の変更が容易<br>　・問題発生時の原因究明が容易<br>GUI操作（※6）が可能 | 構築作業時間が長い                                       | ※6） **OCI** コンソール操作                                                                                                   |     |
-
-
 
 - クラスタ管理機能の有無
 
@@ -118,30 +116,37 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     - **Enroot** with **Pyxis** integrated in **Slurm**
     - **containerd**
 
-## 1-1. HPCクラスタ
+## 1-1. HPC/GPUクラスタ
 
-本章は、HPCクラスタを構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。
+本章は、HPC/GPUクラスタを構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。  
+なおNo. 5、6、7、及び8は、それぞれ **[機械学習環境](#1-2-機械学習環境)** カテゴリのNo. 3、4、5、及び6と同じチュートリアルです。
 
-| チュートリアル名                                                                                      | 構築手法                | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算ノードOS                |
-| :-------------------------------------------------------------------------------------------: | :-----------------: | :----------: | :---------------: | :--------------------: |
-| **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                | 手動構築  | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
-| **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**      | 自動構築<br>（**Terraform** CLI/**スタック**） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
-| **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                 | 自動構築<br>（**スタック**）      | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
-| **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)** | 自動構築<br>（**スタック**）      | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
+| No. | チュートリアル名                                                                                       | 構築手法                                      | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算/GPUノードOS            |
+| :-: | :--------------------------------------------------------------------------------------------: | :---------------------------------------: | :----------: | :---------------: | :--------------------: |
+| 1   | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)**                 | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 2   | **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)**       | 自動構築<br>（**Terraform** CLI/**スタック**）      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 3   | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)**                  | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
+| 4   | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling)**  | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
+| 5   | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 6   | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 7   | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
+| 8   | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
+| 9   | **[GPUクラスタを構築する<br>(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)**           | 手動構築                                      | 無し           | スタティック            | **Ubuntu** 24.04       |
 
 ## 1-2. 機械学習環境
 
-本章は、機械学習環境を構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。
+本章は、機械学習環境を構築するチュートリアルを集めています。自身の要件に合わせてチュートリアルを選んだら、そのチュートリアル名をクリックします。  
+なおNo. 3、4、5、及び6は、それぞれ **[HPC/GPUクラスタ](#1-1-hpcgpuクラスタ)** カテゴリのNo. 5、6、7、及び8と同じチュートリアルです。
 
-| チュートリアル名                                                                                       | GPU<br>ノード数 | 構築手法                             | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム                                                        | GPUノードOS               |
-| :--------------------------------------------------------------------------------------------: | :---------: | :------------------------------: | :----------: | :---------------: | :------------------------------------------------------------------: | :--------------------: |
-| **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-| **[GPUインスタンスで<br>分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 8     |
-| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（Terraform CLI<br>/スタック） | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（スタック）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
-| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数          | 自動構築<br>（スタック）                   | 有り           | オンデマンド            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
-| **[GPUクラスタを構築する<br>(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)**           | 複数          | 手動構築                             | 無し           | スタティック            | -                                                                    | **Ubuntu** 20.04       |
+|No.| チュートリアル名                                                                                       | GPU<br>ノード数 | 構築手法                             | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム                                                        | GPUノードOS               |
+| :---------:| :--------------------------------------------------------------------------------------------: | :---------: | :------------------------------: | :----------: | :---------------: | :------------------------------------------------------------------: | :--------------------: |
+|1| **[GPUインスタンスで<br>機械学習にトライ](/ocitutorials/hpc/spinup-ml-instance/)**                            | 単一          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
+|2| **[GPUインスタンスで<br>分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 8     |
+|3| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
+|4| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
+|5| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（**スタック**）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
+|6| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/)** | 複数          | 自動構築<br>（**スタック**）                   | 有り           | オンデマンド            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
+
 
 ## 1-3. ファイル共有ストレージ
 
@@ -228,14 +233,14 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 - **Intel MPI Benchmarks**
 - **NCCL Tests**
 
-各ベンチマークの実行方法は、下表の対象シェイプ部分のリンクをクリックして参照してください。
+各ベンチマークの実行方法は、下表のコンテンツ列のリンクをクリックしてください。
 
-| 名称                      | ベンチマークサイトURL                                                                                               | 対象シェイプ                                                                                                                                  |
-| :---------------------: | :--------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------: |
-| **HPL**                 | **[Link](https://www.netlib.org/benchmark/hpl/)**                                                          | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-hpl-e5/)**<br>**[BM.Standard.E6.256](/ocitutorials/hpc/benchmark/run-hpl-e6/)**       |
-| **STREAM**              | **[Link](https://www.cs.virginia.edu/stream/)**                                                            | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[BM.Standard.E5.192](/ocitutorials/hpc/benchmark/run-stream-e5/)**<br>**[BM.Standard.E6.256](/ocitutorials/hpc/benchmark/run-stream-e6/)** |
-| **Intel MPI Benchmarks** | **[Link](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **[BM.Optimized3.36](/ocitutorials/hpc/benchmark/run-imb/)**                                                                            |
-| **NCCL Tests**          | **[Link](https://github.com/NVIDIA/nccl-tests)**                                                           | **[BM.GPU.A100-v2.8/BM.GPU4.8](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[BM.GPU.H100.8](/ocitutorials/hpc/benchmark/run-nccltests-h100/)**                                                 |
+| 名称                                                                                                                         | 対象シェイプ                                                                                                                                                                                                          | 対象OS | コンテンツ |
+| :------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--: | :---: |
+| **[HPL](https://www.netlib.org/benchmark/hpl/)**                                                                           | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**          | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux**     |**[ここ](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e6/)**       |
+| **[STREAM](https://www.cs.virginia.edu/stream/)**                                                                          | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256** |**Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux**       |**[ここ](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e6/)**       |
+| **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **BM.Optimized3.36**                                                                                                                                                    |**Oracle LInux**     | **[ここ](/ocitutorials/hpc/benchmark/run-imb/)**       |
+| **[NCCL Tests](https://github.com/NVIDIA/nccl-tests)**                                                                     | **BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.H100.8**                                                            | **Oracle LInux**<br>**Ubuntu**<br> **Oracle LInux**      |**[ここ](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-h100/)**       |
 
 ## 2-2. パフォーマンス関連Tips集
 
@@ -466,10 +471,11 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 ## 3-4. 機械学習
 
-- **[UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)**
+- **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)**
 
-    機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に **Ubuntu** で行われていることから、そのOSに **Ubuntu** を使用するのが主流になっていますが、 **Ubuntu** をOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
-    本テクニカルTipsは、 **Ubuntu** をGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。
+    HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に **Ubuntu** で行われていることから、そのOSに **Ubuntu** を使用するのが主流になっていますが、 **Ubuntu** をOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
+    本テクニカルTipsは、 **Ubuntu** をGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。  
+    なおこのコンテンツは、 **[3-5. ソフトウェア環境](#3-5-ソフトウェア環境)** にも同一のものが掲載されています。
 
 ## 3-5. ソフトウェア環境
 
@@ -507,6 +513,12 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
     HPCワークロードは、複数の計算ノードを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで実行することが主流ですが、 **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。  
     このように単一ノードでHPCワークロードを実行する場合は、ベースOSの **Oracle Linux** のバージョンに制約のある **[クラスタネットワーキングイメージ](#5-13-クラスタネットワーキングイメージ)** を使用する必要が無く、 **[プラットフォーム・イメージ](#5-17-プラットフォームイメージ)** から最新の **Oracle Linux** を選択することが可能になります。  
     本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** から提供される最新の **Oracle Linux** 上に **[OpenMPI](https://www.open-mpi.org/)** と **[Slurm](https://slurm.schedmd.com/)** をインストールしてHPC環境を構築する方法を解説します。
+
+- **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)**
+
+    HPC/機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に **Ubuntu** で行われていることから、そのOSに **Ubuntu** を使用するのが主流になっていますが、 **Ubuntu** をOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
+    本テクニカルTipsは、 **Ubuntu** をGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUノードを構築する方法を解説します。  
+    なおこのコンテンツは、 **[3-4. 機械学習](#3-4-機械学習)** にも同一のものが掲載されています。
 
 ## 3-6. その他
 
@@ -693,7 +705,7 @@ HPC/GPUクラスタ構築の際、OSレベルのカスタマイズを加えた�
 **クラスタオートスケーリング** は、オラクルが作成・メンテナンスしているオンデマンドクラスタ管理ツールで、 **Slurm** に投入されるジョブに応じて必要なベアメタルインスタンスを **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** と共に作成してワークロードを実行するためのクラスタ環境を動的に構築、ジョブ終了後設定したアイドル時間が経過すると自動的にこのクラスタ環境を削除します。   
 このため **クラスタオートスケーリング** は、1本のジョブのために1クラスタを割当てる **Cluster per job** アプローチを採用していると言えます。
 
-**クラスタオートスケーリング** は、 **[HPCクラスタスタック](#5-10-hpcクラスタスタック)** に含まれるPythonとシェルで書かれたスクリプト群で実現され、この **[スタック](#5-3-スタック)** の **Autoscaling** フィールドの **Scheduler based autoscaling** チェックボックスをオンにしてスタックを適用することで、これらスクリプト群がインストールされ利用可能になります。
+**クラスタオートスケーリング** は、 **[HPCクラスタスタック](#5-10-hpcクラスタスタック)** に含まれるPythonとシェルで書かれたスクリプト群で実現され、この **[スタック](#5-3-スタック)** の **Autoscaling** フィールドの **Scheduler based autoscaling** チェックボックスをオンにして **スタック** を適用することで、これらスクリプト群がインストールされ利用可能になります。
 
 ## 5-10. HPCクラスタスタック
 
@@ -711,7 +723,7 @@ HPC/GPUクラスタ構築の際、OSレベルのカスタマイズを加えた�
 - コンテナランタイム（ **[Enroot](https://github.com/NVIDIA/enroot/)** ）
 - ジョブスケジューラからのコンテナインポート・起動・停止（ **[Pyxis](https://github.com/NVIDIA/pyxis)** ）
 
-このスタックによる自動構築は、大きく2つのステップに分かれており、前半は **[Terraform](#5-12-terraform)** を使用した **OCI** リソース作成フェーズで、後半は **Terraform** から起動される **Ansible** によるOSカスタマイズフェーズです。  
+この **スタック** による自動構築は、大きく2つのステップに分かれており、前半は **[Terraform](#5-12-terraform)** を使用した **OCI** リソース作成フェーズで、後半は **Terraform** から起動される **Ansible** によるOSカスタマイズフェーズです。  
 具体的には、使用する機能により以下のような処理が行われます。
 
 ［ **Terraform** による **OCI** リソース作成フェーズ］
@@ -735,7 +747,7 @@ HPC/GPUクラスタ構築の際、OSレベルのカスタマイズを加えた�
 - **Slurm** 環境構築
 - **Enroot** 環境構築
 
-このスタックを利用すると、通常であれば数日かかるようなHPC/GPUクラスタ構築作業を、 **OCI** コンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。
+この **スタック** を利用すると、通常であれば数日かかるようなHPC/GPUクラスタ構築作業を、 **OCI** コンソールのGUIから10項目程度のメニューを選択するだけで実施することが可能になります。
 
 **マーケットプレイス** の **HPCクラスタスタック** ページは、 **[ここ](https://cloud.oracle.com/marketplace/application/67628143/)** をクリックしてアクセスします。 **OCI** へのログインを要求された場合は、ログインを完了して下さい。
 

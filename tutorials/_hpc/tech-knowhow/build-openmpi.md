@@ -95,13 +95,13 @@ $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
 
 ## 1-1-2. libeventインストール
 
-以下コマンドをopcユーザで実行し、 **libevent** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
-$ cd libevent-2.1.12-stable; ./configure --prefix=/opt/libevent
+$ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
 $ make -j 36 && sudo make install
 ```
 

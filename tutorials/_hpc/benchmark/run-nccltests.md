@@ -1,5 +1,5 @@
 ---
-title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）"
+title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）"
 excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
 order: "2140"
 layout: single
