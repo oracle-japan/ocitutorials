@@ -1122,7 +1122,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-cluster-network/architecture_diagram.png"
       },{
         "title": "HPCクラスタを構築する(基礎インフラ自動構築編)",
-        "excerpt":"このチュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンス（本チュートリアルでは BM.Optimized3.36 を使用）を クラスタ・ネットワーク でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するHPCクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 計算ノード用 インスタンス構成 作成 クラスタ・ネットワーク と計算ノード構築 HPCクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 計算ノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 構築したBastionノード・計算ノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。 インターネット経由ログイン -&gt; パブリックサブネット接続 拠点間接続経由ログイン -&gt;...","categories": [],
+        "excerpt":"このチュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンス（本チュートリアルでは BM.Optimized3.36 を使用）を クラスタ・ネットワーク でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は OCI HPCチュートリアル集 の HPCクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するHPCクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCN と関連するネットワークリソース作成 Bastionノード作成 計算ノード用 インスタンス構成 作成 クラスタ・ネットワーク と計算ノード作成 HPCクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 計算ノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 作成したBastionノード・計算ノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。 インターネット経由ログイン -&gt; パブリックサブネット接続 拠点間接続経由ログイン...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-hpc-cluster-withterraform/",
         "teaser": "/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png"
@@ -1158,7 +1158,7 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(基礎インフラ自動構築編)",
-        "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCNと関連するネットワークリソース構築 Bastionノード構築 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード構築 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 構築したBastionノード・GPUノードのホスト名・IPアドレス出力 Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。...","categories": [],
+        "excerpt":"このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは BM.GPU4.8 を使用）を クラスタ・ネットワーク でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された Terraform スクリプトを活用して自動構築し、Dockerコンテナ上で NCCL（NVIDIA Collective Communication Library） のGPU間通信性能を NCCL Tests で検証します。 この自動構築は、 Terraform スクリプトを リソース・マネージャ に読み込ませて作成する スタック を使用する方法と、 Terraform 実行環境を用意して Terraform CLIを使用する方法から選択することが出来ます。 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する HPCクラスタスタック も利用可能で、詳細は GPUクラスタを構築する(スタティッククラスタ自動構築編) を参照してください。 本チュートリアルで作成するGPUクラスタ構築用の Terraform スクリプトは、そのひな型が GitHub のパブリックレポジトリから公開されており、適用すると以下の処理を行います。 VCN と関連するネットワークリソース作成 Bastionノード作成 GPUノード用 インスタンス構成 作成 クラスタ・ネットワーク とGPUノード作成 GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布 GPUノードの全ホスト名を記載したホストリストファイル（ /home/opc/hostlist.txt ）作成 作成したBastionノード・GPUノードのホスト名・IPアドレス出力...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster-withterraform/",
         "teaser": "/ocitutorials/hpc/spinup-hpc-cluster-withterraform/architecture_diagram.png"
@@ -1170,13 +1170,13 @@ var store = [{
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster-withstack/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(オンデマンドクラスタ自動構築編)",
-        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の NVIDIA A100 40/80 GBと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.GM4.8 とこれらを接続する クラスタ・ネットワーク を提供しており、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行するGPUクラスタを構築するには最適なクラウドサービスです。 このチュートリアルは、 マーケットプレイス から無償で利用可能な HPCクラスタスタック を利用し、以下構成のオンデマンドGPUクラスタを構築します。 NVIDIA A100 40 GBを8枚搭載するGPUノード（ BM.GPU4.8 ） インターコネクト: クラスタ・ネットワーク （ノード当たり100 Gbps x 16） インターネットからSSH接続可能なBastionノード OS: Oracle Linux 7.9 コンテナランタイム: Enroot ジョブスケジューラ: Slurm + Pyxis オンデマンドクラスタ機能： クラスタオートスケーリング ファイル・ストレージ によるGPUクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA...","categories": [],
+        "excerpt":"Oracle Cloud Infrastructure（以降OCIと記載）は、8枚の NVIDIA A100 GPUと総帯域幅1.6 Tbps（100 Gbps x 16）のRDMA対応ネットワークインタフェースを搭載するベアメタルGPUシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 とこれらを接続する クラスタ・ネットワーク を提供しており、1ノードには搭載しきれない多数のGPUを必要とする大規模なAIや機械学習のワークロードを実行するGPUクラスタを構築するには最適なクラウドサービスです。 このチュートリアルは、 マーケットプレイス から無償で利用可能な HPCクラスタスタック を利用し、以下構成のオンデマンドGPUクラスタを構築します。 NVIDIA A100 40 GBを8枚搭載するGPUノード（ BM.GPU4.8 ） インターコネクト: クラスタ・ネットワーク （ノード当たり100 Gbps x 16） インターネットからSSH接続可能なBastionノード OS: Oracle Linux 7.9 コンテナランタイム: Enroot ジョブスケジューラ: Slurm + Pyxis オンデマンドクラスタ機能： クラスタオートスケーリング ファイル・ストレージ によるGPUクラスタ内ホームディレクトリ共有 LDAPによるクラスタ内ユーザ統合管理 またこのチュートリアルは、デプロイしたGPUクラスタで複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/",
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/architecture_diagram.png"
       },{
         "title": "GPUクラスタを構築する(Ubuntu OS編)",
-        "excerpt":"本チュートリアルは、AIや機械学習ワークロードに最適なNVIDIA A100 40/80 GB 8枚と100 GbpsのRDMA対応ネットワークインタフェースを16ポート搭載するUbuntuをOSとするGPUノード（ BM.GPU4.8/BM.GPU.A100-v2.8 ）を クラスタ・ネットワーク を使用してノード間接続し、1ノードでは搭載しきれないGPUを必要とする大規模な分散機械学習ワークロードを実行するためのGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を NCCL（NVIDIA Collective Communication Library） テストプログラム（ NCCL Tests ）で検証します。 本チュートリアルは、 OCI HPCテクニカルTips集 の以下2本のコンテンツを組合せ、 クラスタ・ネットワーク とGPUを使用するためのソフトウェアをインストール・セットアップし、GPUクラスタを構築します。 クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法 UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法 これらソフトウェアのインストールは、手順が多く相応の所要時間が必要なため、予め最小ノード（2ノード）のクラスタを構築してこのGPUノードにソフトウェアをインストール、このGPUノードの カスタム・イメージ を使用して、実際に使用するGPUクラスタを構築します。 以上より、UbuntuをOSとするGPUクラスタの構築は、以下の手順を経て行います。 カスタム・イメージ 取得用2ノードGPUクラスタ構築 クラスタ・ネットワーク 接続用ソフトウェアインストール クラスタ・ネットワーク 接続・確認 GPU関連ソフトウェアインストール CUDA Samples によるGPU動作確認 NCCL 通信性能検証 カスタム・イメージ 取得 cloud-init 設定ファイル（cloud-config）作成 インスタンス構成 作成 クラスタ・ネットワーク 作成...","categories": [],
+        "excerpt":"0. 概要 本チュートリアルは、8枚の NVIDIA A100 GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 と Ubuntu を組み合わせたGPUノードを クラスタ・ネットワーク でノード間接続するGPUクラスタを構築し、以下のGPUアプリケーション開発環境ソフトウェアのインストール・セットアップと NVIDIA Driver : NVIDIA製GPUドライバソフトウェア NVIDIA CUDA : CUDAライブラリ NVIDIA Fabric Manager : NVSwitch （ BM.GPU4.8 / BM.GPU.A100-v2.8 に搭載）管理ソフトウェア NVIDIA HPC SDK ： NVIDIA製GPU向けHPC/機械学習アプリケーション開発環境 CUDA-aware MPIライブラリ： CUDA IPC / GPUDirect RDMA 対応のデバイスメモリアドレッシング可能なMPIライブラリ 以下の クラスタ・ネットワーク 接続に必要なソフトウェアのインストール・セットアップを行い、 Mellanox OFED...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/",
         "teaser": "/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/architecture_diagram.png"
@@ -1271,10 +1271,16 @@ var store = [{
         "url": "/ocitutorials/hpc/benchmark/run-imb/",
         "teaser": null
       },{
-        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）",
+        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）",
         "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、GPUクラスタ上に Docker Community Edition と NVIDIA Container Toolkit で構築されたコンテナ実行環境で TensorFlow NGC Container を起動し、このコンテナに含まれる NCCL（NVIDIA Collective Communication Library） とコンテナ上でビルドする NCCL Tests を使用します。 本ドキュメントで NCCL Tests を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ 機械学習環境 のチュートリアル GPUクラスタを構築する(基礎インフラ手動構築編) や GPUクラスタを構築する(基礎インフラ自動構築編) の手順に従う等により、 Docker Community Edition と NVIDIA Container Toolkit...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-nccltests/",
+        "teaser": null
+      },{
+        "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）",
+        "excerpt":"0. 概要 本ドキュメントで解説する NCCL Tests の実行は、8枚の NVIDIA A100 GPUを搭載するベアメタルシェイプ BM.GPU4.8/BM.GPU.A100-v2.8 を使用し、これらを クラスタ・ネットワーク で接続するGPUクラスタ、あるいは単一のGPUインスタンスで実施します。 このGPUクラスタ/インスタンスは、OSを Ubuntu とし、 NVIDIA HPC SDK に含まれる NCCL（NVIDIA Collective Communication Library） を使用して NCCL Tests をコンパイル・実行します。 以上より、本ドキュメントで解説する NCCL Tests の実行は、以下の手順で行います。 GPUクラスタ/インスタンス構築 NCCL Testsコンパイル NCCL Tests実行 本ドキュメントでは、以下の環境で NCCL の通信性能を計測し、 シェイプ ： BM.GPU4.8 OS ： Ubuntu 24.04 （※1） NCCL ：...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/",
         "teaser": null
       },{
         "title": "NCCL Tests実行方法（BM.GPU.H100.8編）",
@@ -1386,7 +1392,7 @@ var store = [{
         "teaser": null
       },{
         "title": "クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法",
-        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 クラスタ・ネットワーク への接続は、使用するインスタンスが以下の接続条件を満たし、このインスタンスデプロイ後に以下の接続処理を完了する必要があります。 [接続条件] クラスタ・ネットワーク 対応シェイプ（ ここ を参照）を使用している クラスタ・ネットワーク のデプロイに伴ってデプロイされている クラスタ・ネットワーク 接続に必要な以下ソフトウェアがインストールされている Mellanox OFED WPAサプリカント（※1） 802.1X認証関連ユーティリティソフトウェア クラスタ・ネットワーク 設定ユーティリティソフトウェア ※1）クラスタ・ネットワーク は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 ここ のサイトが参考になります。 [接続処理] クラスタ・ネットワーク との802.1X認証（接続条件 3-3. が実施） クラスタ・ネットワーク 接続用ネットワークインターフェース作成（接続条件 3-4. が実施） 接続条件 3. のソフトウェアは、ベースとなるOSに Oracle Linux を使用する クラスタネットワーキングイメージ には予めインストールされていますが、 Rocky Linux ・ CentOS ・ Ubuntu でもこれらのソフトウェアを自身でインストールすることで...","categories": [],
+        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 クラスタ・ネットワーク への接続は、使用するインスタンスが以下の接続条件を満たし、このインスタンス作成後に以下の接続処理を完了する必要があります。 [接続条件] クラスタ・ネットワーク 対応シェイプ（ ここ を参照）を使用している クラスタ・ネットワーク の作成に伴って作成されている クラスタ・ネットワーク 接続に必要な以下ソフトウェアがインストールされている Mellanox OFED WPAサプリカント（※1） 802.1X認証関連ユーティリティソフトウェア クラスタ・ネットワーク 設定ユーティリティソフトウェア ※1）クラスタ・ネットワーク は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 ここ のサイトが参考になります。 [接続処理] クラスタ・ネットワーク との802.1X認証（接続条件 3-3. が実施） クラスタ・ネットワーク 接続用ネットワークインターフェース作成（接続条件 3-4. が実施） 接続条件 3. のソフトウェアは、ベースとなるOSに Oracle Linux を使用する クラスタネットワーキングイメージ には予めインストールされていますが、 Rocky Linux ・ CentOS ・ Ubuntu でもこれらのソフトウェアを自身でインストールすることで...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/",
         "teaser": null
@@ -1481,8 +1487,8 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/metric-monitoring/",
         "teaser": null
       },{
-        "title": "UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法",
-        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 インスタンスOSに利用可能なLinuxディストリビューションは、 Oracle Linux をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。 NVIDIA Driver : NVIDIA製GPUドライバソフトウェア NVIDIA CUDA : CUDAライブラリ NVIDIA Fabric Manager : NVSwitch （ BM.GPU4.8 / BM.GPU.A100-v2.8 に搭載）管理ソフトウェア（※1） ※1）NVSwitch を搭載するシェイプの場合のみインストールします。 本テクニカルTipsは、これらのソフトウェアをインストールし CUDA Samples でその動作確認を行う手順を、GPUシェイプ BM.GPU4.8 とUbuntu 20.04を例に解説します。 1. GPUインスタンスデプロイ 本章は、Ubuntu 20.04をOSとする BM.GPU4.8 をデプロイします。 OCIコンソールにログインし、GPUインスタンスをデプロイする リージョン を選択後、 コンピュート → インスタンス とメニューを辿ります。...","categories": [],
+        "title": "UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法",
+        "excerpt":"注意 : 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。 0. 概要 GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 Oracle Linux をはじめ主要なものが プラットフォーム・イメージ として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている Ubuntu もこれに含まれます。 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンス作成後に自身でインストール・セットアップする必要があります。 NVIDIA Driver : NVIDIA製GPUドライバソフトウェア NVIDIA CUDA : CUDAライブラリ NVIDIA Fabric Manager : NVSwitch （ BM.GPU4.8 / BM.GPU.A100-v2.8 に搭載）管理ソフトウェア（※1） NVIDIA HPC SDK ： NVIDIA製GPU向けHPC/機械学習アプリケーション開発環境 CUDA-aware MPIライブラリ： CUDA IPC / GPUDirect RDMA 対応のデバイスメモリアドレッシング可能なMPIライブラリ ※1）NVSwitch を搭載するシェイプの場合のみインストールします。 本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、GPUシェイプ BM.GPU4.8 を例に解説します。...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/",
         "teaser": null

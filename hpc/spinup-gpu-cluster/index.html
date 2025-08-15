@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-13T08:16:11+09:00">
+  <meta property="article:published_time" content="2025-08-15T15:53:41+09:00">
 
 
 
@@ -301,7 +301,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
@@ -371,7 +373,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
         
@@ -402,7 +404,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ手動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。">
-    <meta itemprop="datePublished" content="2025-08-13T08:16:11+09:00">
+    <meta itemprop="datePublished" content="2025-08-15T15:53:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -671,19 +673,17 @@ runcmd:
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を作成します。</p>
 
+<p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
 <ol>
   <li>
-    <p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
-
-    <p>3.1 <strong>インスタンス構成情報</strong> フィールド</p>
+    <p><strong>インスタンス構成情報</strong> フィールド</p>
 
     <ul>
       <li><strong>名前</strong> ：インスタンス構成に付与する名前</li>
@@ -691,74 +691,89 @@ runcmd:
     </ul>
 
     <p><img src="console_page02.png" alt="画面ショット" /></p>
-
-    <p>3.2 <strong>インスタンスの作成先のコンパートメント</strong> フィールド：インスタンスをデプロイするコンパートメント</p>
+  </li>
+  <li>
+    <p><strong>インスタンスの作成先のコンパートメント</strong> フィールド：インスタンスをデプロイするコンパートメント</p>
 
     <p><img src="console_page03.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>配置</strong> フィールド</p>
 
-    <p>3.3 <strong>配置</strong> フィールド</p>
     <ul>
       <li><strong>可用性ドメイン</strong> ：インスタンスをデプロイする可用性ドメイン</li>
     </ul>
 
     <p><img src="console_page04.png" alt="画面ショット" /></p>
-
-    <p>3.4 <strong>イメージとシェイプ</strong> フィールド</p>
+  </li>
+  <li>
+    <p><strong>イメージとシェイプ</strong> フィールド</p>
 
     <p><img src="console_page05.png" alt="画面ショット" /></p>
 
     <ul>
       <li>
-        <p><strong>イメージ</strong> ：Oracle Linux - GPU Cluster Networking Image (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> アイコンを選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4-2024.05.08-0</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
+        <p><strong>イメージ</strong> ：Oracle Linux - GPU Cluster Networking Image<br />
+ （ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> アイコンを選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4-2024.05.08-0</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
 
         <p><img src="console_page06.png" alt="画面ショット" /></p>
       </li>
       <li>
-        <p><strong>Shape</strong> ：<strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> （ <strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</p>
+        <p><strong>Shape</strong> ：<strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong><br />
+ （ <strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</p>
 
         <p><img src="console_page07.png" alt="画面ショット" /></p>
       </li>
     </ul>
+  </li>
+  <li>
+    <p><strong>ネットワーキング</strong> フィールド</p>
 
-    <p>3.5 <strong>ネットワーキング</strong> フィールド</p>
     <ul>
       <li><strong>プライマリ・ネットワーク</strong> ： 先に作成したVCNを選択</li>
       <li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
     </ul>
 
     <p><img src="console_page08.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>SSHキーの追加</strong> フィールド</p>
 
-    <p>3.6 <strong>SSHキーの追加</strong> フィールド</p>
     <ul>
-      <li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵の公開鍵（ 以下 <strong>公開キーの貼付け</strong> ラジオボタンを選択することで入力フィールドを表示）</li>
+      <li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵の公開鍵<br />
+ （以下 <strong>公開キーの貼付け</strong> ラジオボタンを選択することで入力フィールドを表示）</li>
     </ul>
 
     <p><img src="console_page09.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>ブート・ボリューム</strong> フィールド</p>
 
-    <p>3.7 <strong>ブート・ボリューム</strong> フィールド</p>
     <ul>
-      <li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※2）
-        <ul>
-          <li><strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能</li>
-        </ul>
-      </li>
+      <li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※2）<br />
+ （ <strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能）</li>
     </ul>
 
     <p><img src="console_page27.png" alt="画面ショット" /></p>
 
     <p>※2）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
-
-    <p>3.8 <strong>管理</strong> フィールド（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
+  </li>
+  <li>
+    <p><strong>管理</strong> フィールド<br />
+（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
 
     <p><img src="console_page10.png" alt="画面ショット" /></p>
 
     <ul>
-      <li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を選択（ <strong>参照</strong> ボタンでファイルを選択）</li>
+      <li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を選択<br />
+ （ <strong>参照</strong> ボタンでファイルを選択）</li>
     </ul>
 
     <p><img src="console_page11.png" alt="画面ショット" /></p>
-
-    <p>3.9 <strong>Oracle Cloudエージェント</strong> フィールド（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
+  </li>
+  <li>
+    <p><strong>Oracle Cloudエージェント</strong> フィールド<br />
+（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
 
     <ul>
       <li><strong>Compute HPC RDMA Auto-Configuration</strong> ：チェック</li>
@@ -1200,7 +1215,7 @@ Epoch 3/3
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-13T08:16:11+09:00">August 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-15T15:53:41+09:00">August 15, 2025</time></p>
 
       </footer>
 

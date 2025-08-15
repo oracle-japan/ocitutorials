@@ -10,8 +10,8 @@
   <head>
     <meta charset="utf-8">
 
-<!-- begin _includes/seo.html --><title>UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
+<!-- begin _includes/seo.html --><title>UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法 | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -23,11 +23,11 @@
 <meta property="og:type" content="article">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
-<meta property="og:title" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
+<meta property="og:title" content="UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法">
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">
 
 
-  <meta property="og:description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
+  <meta property="og:description" content="HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-13T08:16:11+09:00">
+  <meta property="article:published_time" content="2025-08-15T15:53:41+09:00">
 
 
 
@@ -164,12 +164,12 @@
     <div class="wrapper">
       <h1 id="page-title" class="page__title" itemprop="headline">
         
-          UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法
+          UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法
 
         
       </h1>
       
-        <p class="page__lead">機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。
+        <p class="page__lead">HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。
 </p>
       
       
@@ -225,7 +225,7 @@
     
       
       
-        <li class="current">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</li>
+        <li class="current">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</li>
       
     
   </ol>
@@ -311,7 +311,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
@@ -381,7 +383,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="active">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/" class="active">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
         
@@ -410,9 +412,9 @@
 
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
-    <meta itemprop="headline" content="UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法">
-    <meta itemprop="description" content="機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスをデプロイする場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共にデプロイした後GPU利用に必要なソフトウェアをインストール・セットアップすることで、機械学習ワークロード向けGPUノードを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-08-13T08:16:11+09:00">
+    <meta itemprop="headline" content="UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法">
+    <meta itemprop="description" content="HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。">
+    <meta itemprop="datePublished" content="2025-08-15T15:53:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -423,7 +425,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-gpuインスタンスデプロイ">1. GPUインスタンスデプロイ</a></li><li><a href="#2-gpu関連ソフトウェアインストール">2. GPU関連ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-nvidia-driverインストール">2-1. NVIDIA Driverインストール</a></li><li><a href="#2-2-nvidia-cudanvidia-fabric-managerインストール">2-2. NVIDIA CUDA・NVIDIA Fabric Managerインストール</a></li></ul></li><li><a href="#3-cuda-samplesによるgpu動作確認">3. CUDA SamplesによるGPU動作確認</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-gpuインスタンス作成">1. GPUインスタンス作成</a></li><li><a href="#2-nvidia-gpu関連ソフトウェアインストール">2. NVIDIA GPU関連ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-インストール手順">2-1. インストール手順</a></li></ul></li><li><a href="#3-openmpiインストールセットアップ">3. OpenMPIインストール・セットアップ</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1--openmpi前提ソフトウェアrpmパッケージインストール">3-1.  OpenMPI前提ソフトウェア・RPMパッケージインストール</a></li><li><a href="#3-2-openmpiインストール">3-2. OpenMPIインストール</a></li><li><a href="#3-3-セットアップ">3-3. セットアップ</a></li></ul></li><li><a href="#4-動作確認">4. 動作確認</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-cuda-samplesによるnvidia-cuda-toolkit動作確認">4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認</a></li><li><a href="#4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認">4-2. OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認</a></li><li><a href="#4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認">4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</a></li><li><a href="#4-4-nccl-testsによるnvidia-fabric-manager動作確認">4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -432,215 +434,493 @@
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p>インスタンスOSに利用可能なLinuxディストリビューションは、 <strong>Oracle Linux</strong> をはじめ主要なものが用意されていますが、機械学習ワークロード実行のためのGPUノードのOSで主流になっているUbuntuもこれに含まれます。<br />
-ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンスデプロイ後に自身でインストール・セットアップする必要があります。</p>
+<p>GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 <strong>Oracle Linux</strong> をはじめ主要なものが <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている <strong>Ubuntu</strong> もこれに含まれます。<br />
+ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンス作成後に自身でインストール・セットアップする必要があります。</p>
 
 <ul>
-  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/tesla-installation-notes/index.html">NVIDIA Driver</a></strong> : NVIDIA製GPUドライバソフトウェア</li>
+  <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#">NVIDIA Driver</a></strong> : NVIDIA製GPUドライバソフトウェア</li>
   <li><strong><a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html">NVIDIA CUDA</a></strong> : CUDAライブラリ</li>
   <li><strong><a href="https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html">NVIDIA Fabric Manager</a></strong> : <strong>NVSwitch</strong> （ <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong> に搭載）管理ソフトウェア（※1）</li>
+  <li><strong><a href="https://developer.nvidia.com/hpc-sdk">NVIDIA HPC SDK</a></strong> ： NVIDIA製GPU向けHPC/機械学習アプリケーション開発環境</li>
+  <li>CUDA-aware MPIライブラリ： <strong>CUDA IPC</strong> / <strong>GPUDirect RDMA</strong> 対応のデバイスメモリアドレッシング可能なMPIライブラリ</li>
 </ul>
 
 <p>※1）<strong>NVSwitch</strong> を搭載するシェイプの場合のみインストールします。</p>
 
-<p>本テクニカルTipsは、これらのソフトウェアをインストールし <strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong> でその動作確認を行う手順を、GPUシェイプ <strong>BM.GPU4.8</strong> とUbuntu 20.04を例に解説します。</p>
-
-<hr />
-<h1 id="1-gpuインスタンスデプロイ">1. GPUインスタンスデプロイ</h1>
-
-<p>本章は、Ubuntu 20.04をOSとする <strong>BM.GPU4.8</strong> をデプロイします。</p>
+<p>本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、GPUシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8</a></strong> を例に解説します。</p>
 
 <ol>
-  <li>
-    <p>OCIコンソールにログインし、GPUインスタンスをデプロイする <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>インスタンスの作成</strong> ボタンをクリックします。</p>
-
-    <p><img src="console_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される <strong>コンピュート・インスタンスの作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
-
-    <p>3.1</p>
-    <ul>
-      <li><strong>名前</strong> ：インスタンスに付与する名前</li>
-      <li><strong>コンパートメントに作成</strong> ：インスタンスを作成する <strong>コンパートメント</strong></li>
-    </ul>
-
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-
-    <p>3.2 <strong>配置</strong> フィールド</p>
-    <ul>
-      <li><strong>可用性ドメイン</strong> ：インスタンスをデプロイする <strong>可用性ドメイン</strong></li>
-    </ul>
-
-    <p><img src="console_page03.png" alt="画面ショット" /></p>
-
-    <p>3.3 <strong>イメージとシェイプ</strong> フィールド</p>
-
-    <p><img src="console_page04.png" alt="画面ショット" /></p>
-
-    <ul>
-      <li><strong>イメージ</strong> ：Canonical Ubuntu 20.04 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Ubuntu</strong> を選択し <strong>イメージ名</strong> 列で <strong>Canonical Ubuntu 20.04</strong> を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
-    </ul>
-
-    <p><img src="console_page05.png" alt="画面ショット" /></p>
-
-    <ul>
-      <li><strong>Shape</strong> ： <strong>BM.GPU4.8</strong> (<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します。</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック。）</li>
-    </ul>
-
-    <p><img src="console_page06.png" alt="画面ショット" /></p>
-
-    <p>3.4 <strong>プライマリVNIC情報</strong> フィールド</p>
-    <ul>
-      <li><strong>プライマリ・ネットワーク</strong> ： GPUインスタンスを接続する <strong>仮想クラウドネットワーク</strong></li>
-      <li><strong>サブネット</strong> ：GPUインスタンスを接続する <strong>サブネット</strong></li>
-    </ul>
-
-    <p><img src="console_page07.png" alt="画面ショット" /></p>
-
-    <p>3.5 <strong>SSHキーの追加</strong> フィールド</p>
-    <ul>
-      <li><strong>SSHキー</strong> ：GPUインスタンスにログインする際使用するSSH秘密鍵に対応する公開鍵
-        <ul>
-          <li>公開鍵ファイルのアップロード（ <strong>公開キー・ファイル(.pub)のアップロード</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>公開キーの貼付け</strong> ）が選択可能</li>
-        </ul>
-      </li>
-    </ul>
-
-    <p><img src="console_page08.png" alt="画面ショット" /></p>
-
-    <p>3.6 <strong>ブート・ボリューム</strong> フィールド</p>
-    <ul>
-      <li><strong>ブート・ボリューム・サイズ(GB)</strong> ：GPUインスタンスの <strong>ブート・ボリューム</strong> サイズ
-        <ul>
-          <li><strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能</li>
-        </ul>
-      </li>
-    </ul>
-
-    <p><img src="console_page09.png" alt="画面ショット" /></p>
-
-    <p>※ 通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
-  </li>
-  <li>
-    <p>以下コマンドでGPUインスタンスにSSHログインします。この時、インストール時にデフォルトで作成されるユーザが <strong>ubuntu</strong> であることに留意します。<br />
-なお、 <strong>Canonical Ubuntu 20.04</strong> イメージの <strong>BM.GPU4.8</strong> インスタンスの場合、作成開始からSSHでログインできるまでに30分程度かかります。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>ssh ubunsu@a100-ub204
-</code></pre></div>    </div>
-  </li>
+  <li><strong><a href="https://github.com/nvidia/cuda-samples">CUDA Samples</a></strong></li>
+  <li>OpenACCサンプルプログラム</li>
+  <li>OpenACC/MPIハイブリッドサンプルプログラム</li>
+  <li><strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong></li>
 </ol>
 
+<p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
+
+<ul>
+  <li>OS ： <strong>Ubuntu</strong> 24.04 / 22.04 （※2）</li>
+  <li><strong>NVIDIA Driver</strong> ： 580.65.06</li>
+  <li><strong>NVIDIA CUDA</strong> ： 12.9</li>
+  <li><strong>NVIDIA Fabric Manager</strong> ： 580.65.06</li>
+  <li><strong>NVIDIA HPC SDK</strong> ： 25.5</li>
+  <li>CUDA-aware MPIライブラリ ： <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> 5.0.6</li>
+</ul>
+
+<p>※2） <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> の <strong><a href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-05-20-0.htm">Canonical-Ubuntu-24.04-2025.05.20-0</a></strong> /  <strong><a href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2204/canonical-ubuntu-22-04-2025-07-23-0.htm">Canonical-Ubuntu-22.04-2025.07.23-0</a></strong> です。</p>
+
 <hr />
-<h1 id="2-gpu関連ソフトウェアインストール">2. GPU関連ソフトウェアインストール</h1>
+<h1 id="1-gpuインスタンス作成">1. GPUインスタンス作成</h1>
+
+<p>本章は、 <strong>Ubuntu</strong> をOSとする <strong>BM.GPU4.8</strong> を作成します。</p>
+
+<p>OCIコンソールにログインし、GPUインスタンスを作成する <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿ります。</p>
+
+<p>次に、表示される以下画面で、<strong>インスタンスの作成</strong> ボタンをクリックします。</p>
+
+<p><img src="console_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>基本情報</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ul>
+  <li><strong>名前</strong> ：インスタンスに付与する名前</li>
+  <li><strong>コンパートメントに作成</strong> ：インスタンスを作成する <strong>コンパートメント</strong></li>
+  <li><strong>可用性ドメイン</strong> ：インスタンスを作成する <strong>可用性ドメイン</strong></li>
+  <li><strong>イメージ</strong> ： <strong>Canonical-Ubuntu-24.04-2025.05.20-0</strong> / <strong>Canonical-Ubuntu-22.04-2025.07.23-0</strong> 
+（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Ubuntu</strong> を選択し <strong>イメージ名</strong> 列で <strong>Canonical Ubuntu 24.04</strong> / <strong>Canonical Ubuntu 22.04</strong> を選択し <strong>イメージ・ビルド</strong> プルダウンメニューで <strong>2025.05.20-0</strong> / <strong>2025.07.23-0</strong> を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
+</ul>
+
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<ul>
+  <li><strong>Shape</strong> ： <strong>BM.GPU4.8</strong><br />
+（ <strong>シェイプの変更</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します。</strong> チェックボックスをチェックし、 <strong>シェイプの選択</strong> ボタンをクリック。）</li>
+</ul>
+
+<p><img src="console_page03.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>セキュリティ</strong> 画面で、 <strong>次</strong> ボタンをクリックします。</p>
+
+<p>次に、表示される <strong>ネットワーキング</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ul>
+  <li><strong>プライマリ・ネットワーク</strong> ： GPUインスタンスを接続する <strong>仮想クラウドネットワーク</strong></li>
+  <li><strong>サブネット</strong> ： GPUインスタンスを接続する <strong>サブネット</strong></li>
+  <li><strong>SSHキーの追加</strong> ：GPUインスタンスにSSHログインする際使用するSSH秘密鍵に対応する公開鍵<br />
+（公開鍵ファイルのアップロード（ <strong>公開キー・ファイル(.pub)のアップロード</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>公開キーの貼付け</strong> ）が選択可能）</li>
+</ul>
+
+<p>次に、表示される <strong>ストレージ</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br />
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+
+<ul>
+  <li><strong>ブート・ボリューム・サイズ(GB)</strong> ：GPUインスタンスの <strong>ブート・ボリューム</strong> サイズ<br />
+（ <strong>Specify a custom boot volume size and performance setting</strong> チェックボックスをチェックすると指定可能）<br />
+通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</li>
+</ul>
+
+<p>次に、表示される <strong>確認</strong> 画面で、作成するGPUインスタンスの情報を確認し <strong>作成</strong> ボタンをクリックします。</p>
+
+<p>次に、以下コマンドでGPUインスタンスにSSHログインします。この時、作成時にデフォルトで作成されるユーザが <strong>ubuntu</strong> であることに留意します。<br />
+なお、 <strong>BM.GPU4.8</strong> インスタンスの場合、作成開始からSSHログインできるまでに20分程度かかります。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh ubuntu@aaa.bbb.ccc.ddd
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、Linuxカーネルの自動アップグレードを停止します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades_org
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/Upgrade "1"/Upgrade "0"/g'</span> /etc/apt/apt.conf.d/20auto-upgrades
+<span class="nv">$ </span><span class="nb">sudo </span>diff /etc/apt/apt.conf.d/20auto-upgrades_org /etc/apt/apt.conf.d/20auto-upgrades
+2c2
+&lt; APT::Periodic::Unattended-Upgrade <span class="s2">"1"</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> APT::Periodic::Unattended-Upgrade <span class="s2">"0"</span><span class="p">;</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、apparmorサービスを永続的に停止します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> apparmor
+</code></pre></div></div>
+
+<hr />
+<h1 id="2-nvidia-gpu関連ソフトウェアインストール">2. NVIDIA GPU関連ソフトウェアインストール</h1>
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、デプロイしたGPUインスタンスに <strong>NVIDIA Driver</strong> 、 <strong>NVIDIA CUDA</strong> 、及び <strong>NVIDIA Fabric Manager</strong> をインストールします。</p>
+<p>本章は、GPUインスタンスに以下の <strong>NVIDIA</strong> GPU関連ソフトウェアをインストールします。</p>
 
-<p>なお、本テクニカルTipsでのこれらソフトウェアのインストールは、Ubuntuパッケージマネージャを使用します。</p>
+<ul>
+  <li><strong>NVIDIA Driver</strong></li>
+  <li><strong>NVIDIA CUDA Toolkit</strong></li>
+  <li><strong>NVIDIA Fabric Manager</strong>（※3）</li>
+  <li><strong>NVIDIA HPC SDK</strong></li>
+</ul>
 
-<h2 id="2-1-nvidia-driverインストール">2-1. NVIDIA Driverインストール</h2>
+<p>※3） <strong>NVSwitch</strong> を搭載するシェイプの場合のみ実施します。</p>
 
-<p>本章は、GPUインスタンスに <strong>NVIDIA Driver</strong> をインストールします。</p>
+<p>本テクニカルTipsでのこれらソフトウェアのインストールは、 <strong>Ubuntu</strong> パッケージマネージャを使用します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA Driver</strong> をインストールします。</p>
+<h2 id="2-1-インストール手順">2-1. インストール手順</h2>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
- <span class="nv">$ </span>wget https://developer.download.nvidia.com/compute/cuda/repos/<span class="nv">$distribution</span>/x86_64/cuda-keyring_1.0-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.0-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>apt update
- <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nt">-y</span> <span class="nb">install </span>cuda-drivers <span class="nt">--no-install-recommends</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSを再起動します。<br />
-この再起動は、起動後SSHログインできるまでに20分程度かかります。</p>
+<p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA Driver</strong> をインストールします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-</ol>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
+<span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://developer.download.nvidia.com/compute/cuda/repos/<span class="nv">$distribution</span>/x86_64/cuda-keyring_1.1-1_all.deb
+<span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.1-1_all.deb
+<span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-580
+</code></pre></div></div>
 
-<h2 id="2-2-nvidia-cudanvidia-fabric-managerインストール">2-2. NVIDIA CUDA・NVIDIA Fabric Managerインストール</h2>
+<p>次に、OCIコンソールからGPUインスタンスを再起動します。<br />
+この再起動は、 <strong>BM.GPU4.8</strong> の場合でSSHログインできるまでに20分程度かかります。</p>
 
-<p>本章は、GPUインスタンスに <strong>NVIDIA CUDA</strong> と <strong>NVIDIA Fabric Manager</strong> をインストールします。</p>
+<p>GPUインスタンス起動後、ubuntuユーザでSSHログインして以下コマンドを実行し、先の <strong>NVIDIA Driver</strong> のインストールでGPUを認識できていることを確認します。</p>
 
-<ol>
-  <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA CUDA</strong> をインストールします。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nvidia-smi
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt-key del 7fa2af80
- <span class="nv">$ distribution</span><span class="o">=</span><span class="si">$(</span><span class="nb">.</span> /etc/os-release<span class="p">;</span><span class="nb">echo</span> <span class="nv">$ID$VERSION_ID</span> | <span class="nb">sed</span> <span class="nt">-e</span> <span class="s1">'s/\.//g'</span><span class="si">)</span>
- <span class="nv">$ </span>wget https://developer.download.nvidia.com/compute/cuda/repos/<span class="nv">$distribution</span>/x86_64/cuda-keyring_1.1-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> cuda-keyring_1.1-1_all.deb
- <span class="nv">$ </span><span class="nb">sudo </span>apt update
- <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-11-8
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA Fabric Manager</strong> をインストール・セットアップします。<br />
-この手順は、 <strong>NVSwitch</strong> を搭載するシェイプの場合のみ実施します。</p>
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA CUDA</strong> と後の動作確認で必要なソフトウェアをインストールします。</p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds-11-8
- <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
- <span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> nvidia-fabricmanager
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSを再起動します。<br />
-この再起動は、起動後SSHログインできるまでに20分程度かかります。</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-toolkit-12-9 cmake unzip
+</code></pre></div></div>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
-</code></pre></div>    </div>
-  </li>
-</ol>
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>NVIDIA Fabric Manager</strong> をインストール・セットアップします。<br />
+なおこの手順と次のGPUインスタンス再起動は、 <strong>NVSwitch</strong> を搭載するシェイプの場合のみ実施します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvidia-gds-12-9
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cuda-drivers-fabricmanager
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable </span>nvidia-fabricmanager
+</code></pre></div></div>
+
+<p>次に、OCIコンソールからGPUインスタンスを再起動します。<br />
+この再起動は、 <strong>BM.GPU4.8</strong> の場合でSSHログインできるまでに20分程度かかります。</p>
+
+<p>GPUインスタンス起動後、ubuntuユーザでSSHログインして以下コマンドを実行し、 <strong>NVIDIA HPC SDK</strong> をインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | <span class="nb">sudo </span>gpg <span class="nt">--dearmor</span> <span class="nt">-o</span> /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /'</span> | <span class="nb">sudo tee</span> /etc/apt/sources.list.d/nvhpc.list
+<span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> nvhpc-25-5-cuda-multi environment-modules
+<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.5 /usr/share/modules/modulefiles/nvhpc
+</code></pre></div></div>
 
 <hr />
-<h1 id="3-cuda-samplesによるgpu動作確認">3. CUDA SamplesによるGPU動作確認</h1>
+<h1 id="3-openmpiインストールセットアップ">3. OpenMPIインストール・セットアップ</h1>
 
-<p>本章は、 <strong>CUDA Samples</strong> で先のGPU関連ソフトウェアのインストールが正しく行われたかを確認します。</p>
+<h2 id="3-0-概要">3-0. 概要</h2>
+
+<p>本章は、GPUインスタンスにCUDA-aware <strong>OpenMPI</strong> とその前提ソフトウェアの以下ソフトウェアをインストールします。</p>
+
+<ul>
+  <li><strong><a href="https://libevent.org/">libevent</a></strong></li>
+  <li><strong><a href="https://www.open-mpi.org/projects/hwloc/">hwloc</a></strong></li>
+  <li><strong><a href="https://openpmix.github.io/">OpenPMIx</a></strong></li>
+  <li><strong><a href="https://knem.gitlabpages.inria.fr/">KNEM</a></strong></li>
+  <li><strong><a href="https://github.com/hpc/xpmem">XPMEM</a></strong></li>
+  <li><strong><a href="https://github.com/NVIDIA/gdrcopy">gdrcopy</a></strong></li>
+  <li><strong><a href="https://openucx.readthedocs.io/en/master/index.html#">OpenUCX</a></strong></li>
+  <li><strong><a href="https://github.com/openucx/ucc">Unified Collective Communication</a></strong> （以降 <strong>UCC</strong> と呼称します。）</li>
+</ul>
+
+<h2 id="3-1--openmpi前提ソフトウェアrpmパッケージインストール">3-1.  OpenMPI前提ソフトウェア・RPMパッケージインストール</h2>
+
+<p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、前提RPMパッケージをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> libssl-dev autoconf libtool zlib1g-dev
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>libevent</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./libevent-2.1.12-stable.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/libevent
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>hwloc</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./hwloc-2.11.2.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>hwloc-2.11.2 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-cuda</span><span class="o">=</span>/usr/local/cuda-12.9
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./pmix-5.0.4.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>pmix-5.0.4 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>KNEM</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://gitlab.inria.fr/knem/knem.git
+<span class="nv">$ </span><span class="nb">cd </span>knem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/knem
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>XPMEM</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
+<span class="nv">$ </span><span class="nb">cd </span>xpmem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/xpmem
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>KNEM</strong> と <strong>XPMEM</strong> をカーネルモジュールとしてインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra
+<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /opt/xpmem/lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/kernel/xpmem/xpmem.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/
+<span class="nv">$ </span><span class="nb">sudo</span> /opt/knem/sbin/knem_local_install
+<span class="nv">$ </span><span class="nb">sudo </span>modprobe <span class="nt">-a</span> xpmem knem
+<span class="nv">$ </span><span class="nb">echo </span>knem | <span class="nb">sudo tee</span> /etc/modules-load.d/knem.conf
+<span class="nv">$ </span><span class="nb">echo </span>xpmem | <span class="nb">sudo tee</span> /etc/modules-load.d/xpmem.conf
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>gdrcopy</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./v2.5.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>gdrcopy-2.5 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 128 <span class="nv">CUDA</span><span class="o">=</span>/usr/local/cuda-12.9 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nv">prefix</span><span class="o">=</span>/opt/gdrcopy <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">sudo</span> ./insmod.sh
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.18.1/ucx-1.18.1.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./ucx-1.18.1.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>ucx-1.18.1 <span class="o">&amp;&amp;</span> ./contrib/configure-release <span class="nt">--prefix</span><span class="o">=</span>/opt/ucx <span class="nt">--with-knem</span><span class="o">=</span>/opt/knem <span class="nt">--with-xpmem</span><span class="o">=</span>/opt/xpmem <span class="nt">--with-cuda</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nt">-with-gdrcopy</span><span class="o">=</span>/opt/gdrcopy
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>UCC</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。<br />
+最後のコマンドは、 <strong>BM.GPU4.8</strong> の場合で30分程度を要します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./v1.3.0.tar.gz
+<span class="nv">$ </span><span class="nb">cd</span> ./ucc-1.3.0/ <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/ucc <span class="nt">--with-ucx</span><span class="o">=</span>/opt/ucx <span class="nt">--with-cuda</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nt">--with-nccl</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/nccl
+<span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="3-2-openmpiインストール">3-2. OpenMPIインストール</h2>
+
+<p>以下コマンドをGPUインスタンスのubuntuユーザで実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./openmpi-5.0.6.tar.gz
+<span class="nv">$ </span><span class="nb">.</span> /etc/profile.d/modules.sh
+<span class="nv">$ </span>module load nvhpc
+<span class="nv">$ </span><span class="nb">cd </span>openmpi-5.0.6 <span class="o">&amp;&amp;</span> ./configure <span class="nt">--prefix</span><span class="o">=</span>/opt/openmpi <span class="nt">--with-libevent</span><span class="o">=</span>/opt/libevent <span class="nt">--with-hwloc</span><span class="o">=</span>/opt/hwloc <span class="nt">--with-pmix</span><span class="o">=</span>/opt/pmix <span class="nt">--with-ucx</span><span class="o">=</span>/opt/ucx <span class="nt">--with-ucc</span><span class="o">=</span>/opt/ucc <span class="nt">--with-slurm</span> <span class="nt">--with-cuda</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nv">CC</span><span class="o">=</span>nvc <span class="nv">CXX</span><span class="o">=</span>nvc++ <span class="nv">FC</span><span class="o">=</span>nvfortran <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">"-mno-hle"</span>
+</code></pre></div></div>
+
+<p>次に、カレントディレクトリに作成されたファイル <strong>libtool</strong> を以下のように修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff libtool_org libtool
+10550a10551
+<span class="o">&gt;</span> 	  <span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/compilers/bin:<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>make <span class="nt">-j</span> 128 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="3-3-セットアップ">3-3. セットアップ</h2>
+
+<p>本章は、GPU環境利用ユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。</p>
+
+<p>以下のファイルを <strong>/usr/share/modules/modulefiles/openmpi</strong> で作成します。<br />
+このファイルは、 <strong>Environment modules</strong> にモジュール名 <strong>openmpi</strong> を登録し、これをロードすることで <strong>OpenMPI</strong> 利用環境の設定が可能になります</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#%Module1.0</span>
+<span class="c">##</span>
+<span class="c">## OpenMPI for NVIDIA compiler 25.5</span>
+
+proc ModulesHelp <span class="o">{</span> <span class="o">}</span> <span class="o">{</span>
+        puts stderr <span class="s2">"OpenMPI 5.0.6 for NVIDIA compiler 25.5</span><span class="se">\n</span><span class="s2">"</span>
+<span class="o">}</span>
+
+module-whatis   <span class="s2">"OpenMPI 5.0.6 for NVIDIA compiler 25.5"</span>
+
+<span class="nb">set </span>pkg_root    /opt/openmpi
+<span class="nb">set </span>ver         5.0.6
+
+setenv MPI_ROOT <span class="nv">$pkg_root</span>
+setenv MPICC    mpicc
+setenv MPICXX   mpicxx
+setenv MPIFC    mpif90
+
+prepend-path PATH               <span class="nv">$pkg_root</span>/bin
+prepend-path LD_LIBRARY_PATH    <span class="nv">$pkg_root</span>/lib
+prepend-path LIBRARY_PATH       <span class="nv">$pkg_root</span>/lib
+prepend-path CPATH              <span class="nv">$pkg_root</span>/include
+prepend-path C_INCLUDE_PATH     <span class="nv">$pkg_root</span>/include
+prepend-path CPLUS_INCLUDE_PATH <span class="nv">$pkg_root</span>/include
+prepend-path MANPATH            <span class="nv">$pkg_root</span>/share/man
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、GPU環境利用ユーザをグループ <strong>rdma</strong> に登録します。<br />
+なお、コマンド中のユーザ名は実際のユーザ名に置き換えて実行します。
+これは、 <strong>OpenMPI</strong> から起動する <strong>KNEM</strong> を利用するために必要です。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>usermod <span class="nt">-aG</span> rdma user_name
+</code></pre></div></div>
+
+<hr />
+<h1 id="4-動作確認">4. 動作確認</h1>
+
+<h2 id="4-0-概要">4-0. 概要</h2>
+
+<p>本章は、ここまでにインストールしたソフトウェアの動作確認を以下の順に実施します。</p>
 
 <ol>
   <li>
-    <p>以下Webサイトにサクセスし、CUDA 11.8用のCUDA SamplesのソースコードをGPUインスタンスのubuntuユーザのホームディレクトリにダウンロードします。</p>
-
-    <p><a href="https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip">https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v11.8.zip</a></p>
+    <p><strong><a href="#4-1-cuda-samplesによるnvidia-cuda-toolkit動作確認">CUDA SamplesによるNVIDIA CUDA Toolkit動作確認</a></strong><br />
+ <strong>NVIDIA CUDA Toolkit</strong> に含まれるCUDAコンパイラとCUDAライブラリを使用する <strong>CUDA Samples</strong> をコンパイル・実行することで、 <strong>NVIDIA CUDA Toolkit</strong> 含まれるCUDAコンパイラの動作を確認します。</p>
   </li>
   <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>CUDA Samples</strong> をビルドします。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install</span> <span class="nt">-y</span> cmake
- <span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=/usr/local/cuda-11.8/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bash_profile
- <span class="nv">$ </span><span class="nb">source</span> ~/.bash_profile
- <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ~/cuda-samples-11.8.tar.gz
- <span class="nv">$ </span><span class="nb">cd </span>cuda-samples-11.8<span class="p">;</span> make
-</code></pre></div>    </div>
+    <p><strong><a href="#4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認">OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認</a></strong><br />
+OpenACCのディレクティブを含むCプログラムをコンパイル・実行することで、 <strong>NVIDIA HPC SDK</strong> に含まれるOpneACC対応Cコンパイラの動作を確認します。</p>
   </li>
   <li>
-    <p>以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>CUDA Samples</strong> が正しく動作するかを確認します。<br />
-この時、各サンプルプログラムの最後に出力される”Result”行が”PASS”となっていることで、正常動作を確認します。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">$ </span>./bin/x86_64/linux/release/deviceQuery
- :
- :
- deviceQuery, CUDA Driver <span class="o">=</span> CUDART, CUDA Driver Version <span class="o">=</span> 12.2, CUDA Runtime Version <span class="o">=</span> 12.2, NumDevs <span class="o">=</span> 8
- Result <span class="o">=</span> PASS
- <span class="nv">$ </span>./bin/x86_64/linux/release/bandwidthTest
- :
- :
- Result <span class="o">=</span> PASS
-
- NOTE: The CUDA Samples are not meant <span class="k">for </span>performance measurements. Results may vary when GPU Boost is enabled.
- <span class="err">$</span>
-</code></pre></div>    </div>
+    <p><strong><a href="#4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認">OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</a></strong><br />
+OpenACCのディレクティブを含むMPI Cプログラムをコンパイル・実行することで、CUDA-aware <strong>OpenMPI</strong> の動作を確認します。</p>
+  </li>
+  <li>
+    <p><strong><a href="#4-4-nccl-testsによるnvidia-fabric-manager動作確認">NCCL TestsによるNVIDIA Fabric Manager動作確認</a></strong><br />
+<strong>NCCL Tests</strong> で8枚のGPUを使用する <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> の <strong>All-Reduce</strong> 通信性能を計測し、十分な性能が出ていることをもって <strong>NVIDIA Fabric Manager</strong> の動作を確認します。</p>
   </li>
 </ol>
+
+<h2 id="4-1-cuda-samplesによるnvidia-cuda-toolkit動作確認">4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認</h2>
+
+<p>以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、 <strong>CUDA Samples</strong> をコンパイルします。<br />
+なお、makeコマンドの並列数はGPUインスタンスのコア数に合わせて調整します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v12.9.zip
+<span class="nv">$ </span>unzip v12.9.zip
+<span class="nv">$ </span>module purge
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>/usr/local/cuda-12.9/bin:<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>
+<span class="nv">$ </span><span class="nb">cd </span>cuda-samples-12.9 <span class="o">&amp;&amp;</span> <span class="nb">mkdir </span>build <span class="o">&amp;&amp;</span> <span class="nb">cd </span>build <span class="o">&amp;&amp;</span> cmake .. <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 128
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、 <strong>CUDA Samples</strong> が正しく動作することを確認します。<br />
+この時、出力に搭載する全てのGPUの情報が含まれ、最後に出力される <strong>Result =</strong> 行が <strong>PASS</strong> となっていることで、 <strong>NVIDIA CUDA Toolkit</strong> の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./Samples/1_Utilities/deviceQuery/deviceQuery
+:
+:
+deviceQuery, CUDA Driver <span class="o">=</span> CUDART, CUDA Driver Version <span class="o">=</span> 12.9, CUDA Runtime Version <span class="o">=</span> 12.9, NumDevs <span class="o">=</span> 8
+Result <span class="o">=</span> PASS
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認">4-2. OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認</h2>
+
+<p>以下のOpenACCサンプルプログラムをファイル名 <strong>test.c</strong> として作成します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>/test.c
+<span class="c">#include &lt;stdio.h&gt;</span>
+<span class="c">#define N 1000000000</span>
+int array[N]<span class="p">;</span>
+int main<span class="o">()</span> <span class="o">{</span>
+<span class="c">#pragma acc parallel loop copy(array[0:N])</span>
+   <span class="k">for</span><span class="o">(</span>int i <span class="o">=</span> 0<span class="p">;</span> i &lt; N<span class="p">;</span> i++<span class="o">)</span> <span class="o">{</span>
+      array[i] <span class="o">=</span> 3.0<span class="p">;</span>
+   <span class="o">}</span>
+   <span class="nb">printf</span><span class="o">(</span><span class="s2">"Success!</span><span class="se">\n</span><span class="s2">"</span><span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、 <strong>NVIDIA HPC SDK</strong> の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>
+<span class="nv">$ </span>module purge
+<span class="nv">$ </span>module load nvhpc
+<span class="nv">$ </span>nvc <span class="nt">-acc</span> <span class="nt">-gpu</span><span class="o">=</span>cc70 test.c <span class="nt">-o</span> gpu.exe
+<span class="nv">$ </span>./gpu.exe &amp; <span class="nb">sleep </span>3<span class="p">;</span> nvidia-smi | <span class="nb">tail</span> <span class="nt">-3</span>
+<span class="o">[</span>1] 18096
+Success!
+|<span class="o">=========================================================================================</span>|
+|    0   N/A  N/A           18096      C   ./gpu.exe                              4234MiB |
++-----------------------------------------------------------------------------------------+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認">4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</h2>
+
+<p>ここで使用するOpenACC/MPIハイブリッドのサンプルプログラムは、 <strong><a href="https://www.itc.u-tokyo.ac.jp/">東京大学 情報基盤センター</a></strong> 様がGitHubの以下レポジトリから公開している、並列プログラミング講習会向けのものを利用させて頂くこととします。</p>
+
+<p><strong><a href="https://github.com/hoshino-UTokyo/lecture_openacc_mpi">https://github.com/hoshino-UTokyo/lecture_openacc_mpi</a></strong></p>
+
+<p>以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、サンプルプログラムのソースツリーをクローンします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/hoshino-UTokyo/lecture_openacc_mpi.git
+</code></pre></div></div>
+
+<p>以降では、ダウンロードした <strong>lecture_openacc_mpi/C/openacc_mpi_basic/04_cuda_aware</strong> ディレクトリ配下のサンプルプログラムを使用します。<br />
+この際、 <strong>東京大学 情報基盤センター</strong> 様との環境の違いから、このディレクトリの <strong>Makefile</strong> を以下のように修正します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diff Makefile_org Makefile
+8c8
+&lt; CFLAGS    <span class="o">=</span> <span class="nt">-O3</span> <span class="nt">-acc</span> <span class="nt">-Minfo</span><span class="o">=</span>accel  <span class="nt">-ta</span><span class="o">=</span>tesla,cc80
+<span class="nt">---</span>
+<span class="o">&gt;</span> CFLAGS    <span class="o">=</span> <span class="nt">-O3</span> <span class="nt">-acc</span> <span class="nt">-Minfo</span><span class="o">=</span>accel  <span class="nt">-gpu</span><span class="o">=</span>cc80
+<span class="err">$</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、CUDA-aware <strong>OpenMPI</strong> の動作を確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>/lecture_openacc_mpi/C/openacc_mpi_basic/04_cuda_aware
+<span class="nv">$ </span>module purge
+<span class="nv">$ </span>module load nvhpc openmpi
+<span class="nv">$ </span>make
+mpicc <span class="nt">-O3</span> <span class="nt">-acc</span> <span class="nt">-Minfo</span><span class="o">=</span>accel  <span class="nt">-gpu</span><span class="o">=</span>cc80 <span class="nt">-c</span> main.c
+<span class="s2">"main.c"</span>, line 57: warning: The independent loop parallelism with no parallelism level is <span class="nb">set </span>to <span class="nb">seq </span>when inferring the routine parallelism of the enclosing <span class="k">function</span> <span class="o">[</span>independent_loop_type]
+  <span class="c">#pragma acc loop independent</span>
+  ^
+
+Remark: individual warnings can be suppressed with <span class="s2">"--diag_suppress &lt;warning-name&gt;"</span>
+
+main:
+     54, Generating create<span class="o">(</span>a[:16777216],b[:16777216]<span class="o">)</span> <span class="o">[</span><span class="k">if </span>not already present]
+         Generating copyout<span class="o">(</span>b[:16777216],a[:16777216]<span class="o">)</span> <span class="o">[</span><span class="k">if </span>not already present]
+     58, Loop is parallelizable
+         Generating NVIDIA GPU code
+         58, <span class="c">#pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */</span>
+     72, Generating implicit copy<span class="o">(</span><span class="nb">sum</span><span class="o">)</span> <span class="o">[</span><span class="k">if </span>not already present]
+         Generating copyin<span class="o">(</span>b[:16777216]<span class="o">)</span> <span class="o">[</span><span class="k">if </span>not already present]
+     76, Loop is parallelizable
+         Generating NVIDIA GPU code
+         76, <span class="c">#pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */</span>
+             Generating reduction<span class="o">(</span>+:sum<span class="o">)</span>
+mpicc <span class="nt">-O3</span> <span class="nt">-acc</span> <span class="nt">-Minfo</span><span class="o">=</span>accel  <span class="nt">-gpu</span><span class="o">=</span>cc80  main.o   <span class="nt">-o</span> run
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 ./run
+num of GPUs <span class="o">=</span> 8
+Rank 1: <span class="nb">hostname</span> <span class="o">=</span> inst-6lpdh-ao-ub24, GPU num <span class="o">=</span> 1
+Rank 0: <span class="nb">hostname</span> <span class="o">=</span> inst-6lpdh-ao-ub24, GPU num <span class="o">=</span> 0
+mean <span class="o">=</span> 30.00
+Time <span class="o">=</span>    0.023 <span class="o">[</span>sec]
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="4-4-nccl-testsによるnvidia-fabric-manager動作確認">4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認</h2>
+
+<p><strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></strong> の手順に従い、1ノード8GPUの <strong>NCCL</strong>  <strong>All-Reduce</strong> 通信性能を <strong>NCCL Tests</strong> で計測し、 <strong>NVSwitch</strong> に期待される性能の <strong>230 GB/s</strong> （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 <strong>NVIDIA Fabric Manager</strong> の動作を確認します。</p>
 
         
       </section>
@@ -652,14 +932,14 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-13T08:16:11+09:00">August 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-15T15:53:41+09:00">August 15, 2025</time></p>
 
       </footer>
 
       <section class="page__share">
   <h4 class="page__share-title">共有</h4>
 
-  <a href="https://x.com/intent/tweet?text=Ubuntu%E3%82%92OS%E3%81%A8%E3%81%99%E3%82%8B%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%90%91%E3%81%91GPU%E3%83%8E%E3%83%BC%E3%83%89%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fgpu-with-ubuntu%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+  <a href="https://x.com/intent/tweet?text=Ubuntu%E3%82%92OS%E3%81%A8%E3%81%99%E3%82%8BHPC%2F%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%90%91%E3%81%91GPU%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fgpu-with-ubuntu%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
     <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
   </a>
 
@@ -671,7 +951,7 @@
     <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
   </a>
 
-  <a href="https://bsky.app/intent/compose?text=Ubuntu%E3%82%92OS%E3%81%A8%E3%81%99%E3%82%8B%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%90%91%E3%81%91GPU%E3%83%8E%E3%83%BC%E3%83%89%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fgpu-with-ubuntu%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+  <a href="https://bsky.app/intent/compose?text=Ubuntu%E3%82%92OS%E3%81%A8%E3%81%99%E3%82%8BHPC%2F%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%AD%E3%83%BC%E3%83%89%E5%90%91%E3%81%91GPU%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E6%A7%8B%E7%AF%89%E6%96%B9%E6%B3%95%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Ftech-knowhow%2Fgpu-with-ubuntu%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
     <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
   </a>
 </section>

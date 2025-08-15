@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-13T08:16:11+09:00">
+  <meta property="article:published_time" content="2025-08-15T15:53:41+09:00">
 
 
 
@@ -301,7 +301,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
@@ -371,7 +373,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
         
@@ -402,7 +404,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="GPUクラスタを構築する(基礎インフラ自動構築編)">
     <meta itemprop="description" content="GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。">
-    <meta itemprop="datePublished" content="2025-08-13T08:16:11+09:00">
+    <meta itemprop="datePublished" content="2025-08-15T15:53:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -432,13 +434,13 @@ table, th, td {
 <p>本チュートリアルで作成するGPUクラスタ構築用の <strong>Terraform</strong> スクリプトは、そのひな型が <strong>GitHub</strong> のパブリックレポジトリから公開されており、適用すると以下の処理を行います。</p>
 
 <ul>
-  <li>VCNと関連するネットワークリソース構築</li>
-  <li>Bastionノード構築</li>
+  <li><strong>VCN</strong> と関連するネットワークリソース作成</li>
+  <li>Bastionノード作成</li>
   <li>GPUノード用 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> 作成</li>
-  <li><strong>クラスタ・ネットワーク</strong> とGPUノード構築</li>
+  <li><strong>クラスタ・ネットワーク</strong> とGPUノード作成</li>
   <li>GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布</li>
   <li>GPUノードの全ホスト名を記載したホストリストファイル（ <strong>/home/opc/hostlist.txt</strong> ）作成</li>
-  <li>構築したBastionノード・GPUノードのホスト名・IPアドレス出力</li>
+  <li>作成したBastionノード・GPUノードのホスト名・IPアドレス出力</li>
 </ul>
 
 <p>Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。</p>
@@ -450,7 +452,7 @@ table, th, td {
 
 <p>※1）構築方法に <strong>Terraform</strong> CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。</p>
 
-<p>またVCNと関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。</p>
+<p>また <strong>VCN</strong> と関連するネットワークリソースは、既存のものを使用することも可能で、この場合はこれらが以下の条件を満たしているている必要があります。</p>
 
 <ul>
   <li>プライベートサブネットが存在する</li>
@@ -462,14 +464,10 @@ table, th, td {
 <p>※2）この詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認">1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認</a></strong> を参照してください。</p>
 
 <p><img src="/ocitutorials/hpc/spinup-cluster-network/architecture_diagram.png" alt="システム構成図（パブリック）" /></p>
-<center><u>Bastionノードパブリックサブネット接続</u></center>
-<p><br /></p>
 
 <p><img src="/ocitutorials/hpc/spinup-cluster-network/architecture_diagram_private.png" alt="システム構成図（プライベート）" /></p>
-<center><u>Bastionノードプライベートサブネット接続</u></center>
-<p><br /></p>
 
-<p>Bastionノード構築は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )を含み、 <strong>cloud-init</strong> がBastionノードデプロイ時に以下の処理を行います。</p>
+<p>Bastionノード作成は、 <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )を含み、 <strong>cloud-init</strong> がBastionノード作成時に以下の処理を行います。</p>
 
 <ul>
   <li>タイムゾーンをJSTに変更</li>
@@ -477,7 +475,7 @@ table, th, td {
   <li>GPUノードのDNS名前解決をショートホスト名で行うための <strong>resolv.conf</strong> 修正</li>
 </ul>
 
-<p>またGPUノード用 <strong>インスタンス構成</strong> は、 <strong>cloud-config</strong> を含み、 <strong>cloud-init</strong> がGPUノードデプロイ時に以下の処理を行います。</p>
+<p>またGPUノード用 <strong>インスタンス構成</strong> は、 <strong>cloud-config</strong> を含み、 <strong>cloud-init</strong> がGPUノード作成時に以下の処理を行います。</p>
 
 <ul>
   <li>タイムゾーンをJSTに変更</li>
@@ -502,17 +500,24 @@ table, th, td {
 <p>本章は、GPUクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。<br />
 この手順は、構築手法に <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong><a href="/ocitutorials/hpc/#5-12-terraform">Terraform</a></strong> CLIを使用する方法を採用するかで異なります。</p>
 
-<p>[ <strong>リソース・マネージャ</strong> を使用する方法]</p>
-<ul>
-  <li><strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong> 作成</li>
-  <li><strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 作成</li>
-</ul>
+<ol>
+  <li>
+    <p><strong>リソース・マネージャ</strong> を使用する方法</p>
 
-<p>[ <strong>Terraform</strong> CLIを使用する方法]</p>
-<ul>
-  <li><strong>Terraform</strong> 実行環境構築</li>
-  <li><strong>Terraform</strong> スクリプト作成</li>
-</ul>
+    <ul>
+      <li><strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong> 作成</li>
+      <li><strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> 作成</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Terraform</strong> CLIを使用する方法</p>
+
+    <ul>
+      <li><strong>Terraform</strong> 実行環境構築</li>
+      <li><strong>Terraform</strong> スクリプト作成</li>
+    </ul>
+  </li>
+</ol>
 
 <p>以降では、2つの異なる構築手法毎にその手順を解説します。</p>
 
@@ -528,43 +533,51 @@ table, th, td {
 
 <p>本章は、GPUクラスタを構築するための <strong><a href="/ocitutorials/hpc/#5-2-リソースマネージャ">リソース・マネージャ</a></strong> 用 <strong><a href="/ocitutorials/hpc/#5-3-スタック">スタック</a></strong> を作成します。</p>
 
-<ol>
-  <li>
-    <p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
-  </li>
-  <li>
-    <p>表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
+<p>OCIコンソールにログインし、GPUクラスタを構築するリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
 
-    <p><img src="console_page02.png" alt="画面ショット" /></p>
-  </li>
-  <li>表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。
-    <ul>
-      <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
-      <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
-      <li><strong>構成ソース・プロバイダ :</strong> 先に作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
-      <li><strong>リポジトリ :</strong> <strong>tutorial_cn_rm</strong></li>
-      <li><strong>ブランチ :</strong> <strong>master</strong></li>
-      <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
-      <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
-    </ul>
+<p>次に、表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
 
-    <p><img src="stack_page01.png" alt="画面ショット" /></p>
-  </li>
-  <li>表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。<br />
-4.1 <strong>General options</strong> フィールド
+<p><img src="console_page02.png" alt="画面ショット" /></p>
+
+<p>次に、表示される以下 <strong>スタック情報</strong> 画面で、以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
+
+<ul>
+  <li><strong>Terraformの構成のオリジン :</strong> ソース・コード制御システム</li>
+  <li><strong>ソースコード管理タイプ :</strong> <strong>GitHub</strong></li>
+  <li><strong>構成ソース・プロバイダ :</strong> 先に作成した <strong><a href="/ocitutorials/hpc/#5-14-構成ソースプロバイダ">構成ソース・プロバイダ</a></strong></li>
+  <li><strong>リポジトリ :</strong> <strong>tutorial_cn_rm</strong></li>
+  <li><strong>ブランチ :</strong> <strong>master</strong></li>
+  <li><strong>名前 :</strong> スタックに付与する名前（任意）</li>
+  <li><strong>説明 :</strong> スタックに付与する説明（任意）</li>
+</ul>
+
+<p><img src="stack_page01.png" alt="画面ショット" /></p>
+
+<p>次に、表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
+
+<ul>
+  <li>
+    <p><strong>General options</strong> フィールド</p>
+
     <ul>
-      <li><strong>Compartment :</strong> GPUクラスタをデプロイする <strong>コンパートメント</strong></li>
-      <li><strong>Availability Domain :</strong> GPUクラスタをデプロイする <strong>可用性ドメイン</strong></li>
+      <li><strong>Compartment :</strong> GPUクラスタを構築する <strong>コンパートメント</strong></li>
+      <li><strong>Availability Domain :</strong> GPUクラスタを構築する <strong>可用性ドメイン</strong></li>
       <li><strong>SSH public key :</strong> Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵<br />
- （公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能）</li>
+  （公開鍵ファイルのアップロード（ <strong>SSHキー・ファイルの選択</strong> ）と公開鍵のフィールドへの貼り付け（ <strong>SSHキーの貼付け</strong> ）が選択可能）</li>
       <li><strong>Private bastion :</strong> Bastionノードをプライベートサブネットに接続するかどうかを指定（デフォルト：パブリックサブネット接続）<br />
- （パブリックサブネットに接続する場合はチェックオフ/プライベートサブネットに接続する場合はチェック）</li>
-      <li><strong>Use existing VCN :</strong> 既存のVCNを使用するかどうかを指定（デフォルト：VCNを新規作成）<br />
- （既存のVCNを使用する場合は、チェックすると表示されるVCN・パブリックサブネット・プライベートサブネットの各フィールドにOCIDを指定します。）</li>
+  （パブリックサブネットに接続する場合はチェックオフ/プライベートサブネットに接続する場合はチェック）</li>
+      <li><strong>Use existing VCN :</strong> 既存の <strong>VCN</strong> を使用するかどうかを指定（デフォルト： <strong>VCN</strong> を新規作成）<br />
+  （既存の <strong>VCN</strong> を使用する場合は、チェックすると表示される <strong>VCN</strong> ・パブリックサブネット・プライベートサブネットの各フィールドにOCIDを指定します。）</li>
     </ul>
+  </li>
+</ul>
 
-    <p><img src="stack_page02.png" alt="画面ショット" /><br />
-4.2 <strong>Compute/GPU node options</strong> フィールド</p>
+<p><img src="stack_page02.png" alt="画面ショット" /></p>
+
+<ul>
+  <li>
+    <p><strong>Compute/GPU node options</strong> フィールド</p>
+
     <ul>
       <li><strong>Display name postfix :</strong> GPUノードホスト名の接尾辞（※3）</li>
       <li><strong>Shape :</strong> <strong>BM.GPU4.8</strong></li>
@@ -575,81 +588,82 @@ table, th, td {
       <li><strong>NPS for BM.GPU4.8 :</strong> GPUノードの <strong>NPS</strong> 設定値 (デフォルト：NPS4) （※6）</li>
       <li><strong>SMT :</strong> GPUノードの <strong>SMT</strong> 設定値 (デフォルト：有効) （※6）</li>
     </ul>
-
-    <p><img src="stack_page03.png" alt="画面ショット" /></p>
-
-    <p>※3） 例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
- ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th style="text-align: center">No.<br />（※7）</th>
-          <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
-          <th style="text-align: center">OCID</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="text-align: center">7</td>
-          <td style="text-align: center">8.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna</td>
-        </tr>
-        <tr>
-          <td style="text-align: center">9</td>
-          <td style="text-align: center">8.8</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
-        </tr>
-        <tr>
-          <td style="text-align: center">8</td>
-          <td style="text-align: center">7.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p>※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。</p>
-
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c">#cloud-config</span>
- timezone: Asia/Tokyo
- runcmd:
- <span class="c">#</span>
- <span class="c"># Mount NVMe local storage</span>
-     - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
-     - lvcreate <span class="nt">-l</span> 100%FREE nvme
-     - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
-     - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
-     - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-     - systemctl daemon-reload
-     - mount /mnt/localdisk
- <span class="c">#</span>
- <span class="c"># Stop firewalld</span>
-     - systemctl disable <span class="nt">--now</span> firewalld
- <span class="c">#</span>
- <span class="c"># Expand root file system to those set by instance configuration</span>
-     - /usr/libexec/oci-growfs <span class="nt">-y</span>
- <span class="c">#</span>
- <span class="c"># Add public subnet to DNS search</span>
-     - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
-     - chattr <span class="nt">-R</span> +i /etc/resolv.conf
- <span class="c">#</span>
- <span class="c"># NFS mount setting</span>
-     - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
-     - mount /home
-</code></pre></div>    </div>
-
-    <p>※6）詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
-
-    <p>※7）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージNo.です。</p>
   </li>
-  <li>
-    <p>表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+</ul>
 
-    <p><img src="stack_page04.png" alt="画面ショット" /></p>
+<p><img src="stack_page03.png" alt="画面ショット" /></p>
 
-    <p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時に <strong>スタック</strong> の適用が開始され、GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めて <strong>スタック</strong> の適用を行います。</p>
-  </li>
-</ol>
+<p>※3） 例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
+※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">No.<br />（※7）</th>
+      <th style="text-align: center"><strong>Oracle Linux</strong><br />バージョン</th>
+      <th style="text-align: center">OCID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">8.9</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">8.8</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">7.9</td>
+      <td style="text-align: center">ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。<br />
+なお既存の <strong>VCN</strong> を使用する場合は、以下の <strong>cloud-config</strong> 中のDNSサーチパスにパブリックサブネット名（<strong>public.vcn.oraclevcn.com</strong>）を追加している箇所を、既存のパブリックサブネット名に変更します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
+timezone: Asia/Tokyo
+runcmd:
+<span class="c">#</span>
+<span class="c"># Mount NVMe local storage</span>
+    - vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
+    - lvcreate <span class="nt">-l</span> 100%FREE nvme
+    - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
+    - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
+    - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+    - systemctl daemon-reload
+    - mount /mnt/localdisk
+<span class="c">#</span>
+<span class="c"># Stop firewalld</span>
+    - systemctl disable <span class="nt">--now</span> firewalld
+<span class="c">#</span>
+<span class="c"># Expand root file system to those set by instance configuration</span>
+    - /usr/libexec/oci-growfs <span class="nt">-y</span>
+<span class="c">#</span>
+<span class="c"># Add public subnet to DNS search</span>
+    - <span class="nb">sed</span> <span class="nt">-i</span> <span class="s1">'/^search/s/$/ public.vcn.oraclevcn.com/g'</span> /etc/resolv.conf
+    - chattr <span class="nt">-R</span> +i /etc/resolv.conf
+<span class="c">#</span>
+<span class="c"># NFS mount setting</span>
+    - <span class="nb">echo</span> <span class="s2">"bastion:/home /home nfs defaults,vers=3 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
+    - systemctl daemon-reload
+    - mount /home
+</code></pre></div></div>
+
+<p>※6）詳細は、 <strong><a href="/ocitutorials/hpc/#2-2-パフォーマンス関連tips集">パフォーマンス関連Tips集</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
+
+<p>※7）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージNo.です。</p>
+
+<p>次に、表示される <strong>確認</strong> 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 <strong>作成されたスタックで適用を実行しますか。</strong> フィールドの <strong>適用の実行</strong> をチェックオフし、下部の <strong>作成</strong> ボタンをクリックします。</p>
+
+<p><img src="stack_page04.png" alt="画面ショット" /></p>
+
+<p>ここで <strong>適用の実行</strong> をチェックした場合、 <strong>作成</strong> ボタンのクリックと同時に <strong>スタック</strong> の適用が開始され、GPUクラスタの構築が始まりますが、このチュートリアルでは後の章で改めて <strong>スタック</strong> の適用を行います。</p>
 
 <p>これで、以下画面のとおりGPUクラスタ構築用 <strong>スタック</strong> が作成されました。</p>
 
@@ -698,7 +712,7 @@ table, th, td {
     </tr>
     <tr>
       <td>outputs.tf</td>
-      <td>構築したリソース情報の出力</td>
+      <td>作成したリソース情報の出力</td>
     </tr>
     <tr>
       <td>terraform.tfvars</td>
@@ -778,7 +792,7 @@ table, th, td {
     </tr>
     <tr>
       <td>region</td>
-      <td>GPUクラスタをデプロイするリージョン識別子</td>
+      <td>GPUクラスタを構築するリージョン識別子</td>
       <td><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm">ここ</a></strong> を参照</td>
     </tr>
   </tbody>
@@ -797,12 +811,12 @@ table, th, td {
   <tbody>
     <tr>
       <td>compartment_ocid</td>
-      <td>GPUクラスタをデプロイする <strong>コンパートメント</strong> のOCID</td>
+      <td>GPUクラスタを構築する <strong>コンパートメント</strong> のOCID</td>
       <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/GSG/Tasks/contactingsupport_topic-Finding_the_OCID_of_a_Compartment.htm">ここ</a></strong> を参照</td>
     </tr>
     <tr>
       <td>ad</td>
-      <td>GPUクラスタをデプロイする <strong>可用性ドメイン</strong> 識別子</td>
+      <td>GPUクラスタを構築する <strong>可用性ドメイン</strong> 識別子</td>
       <td style="text-align: center">（※8）</td>
     </tr>
     <tr>
@@ -812,22 +826,22 @@ table, th, td {
     </tr>
     <tr>
       <td>exist_vcn</td>
-      <td>既存のVCNを使用するかどうかの指定（true/false）</td>
+      <td>既存の <strong>VCN</strong> を使用するかどうかの指定（true/false）</td>
       <td style="text-align: center">-</td>
     </tr>
     <tr>
       <td>vcn_ocid</td>
-      <td>既存のVCNを使用する場合のVCNのOCID（※12）</td>
+      <td>既存の <strong>VCN</strong> を使用する場合の <strong>VCN</strong> のOCID（※12）</td>
       <td style="text-align: center">（※13）</td>
     </tr>
     <tr>
       <td>public_ocid</td>
-      <td>既存のVCNを使用する場合のパブリックサブネットのOCID（※12）</td>
+      <td>既存の <strong>VCN</strong> を使用する場合のパブリックサブネットのOCID（※12）</td>
       <td style="text-align: center">（※13）</td>
     </tr>
     <tr>
       <td>private_ocid</td>
-      <td>既存のVCNを使用する場合のプライベートサブネットのOCID（※12）</td>
+      <td>既存の <strong>VCN</strong> を使用する場合のプライベートサブネットのOCID（※12）</td>
       <td style="text-align: center">（※13）</td>
     </tr>
     <tr>
@@ -880,8 +894,8 @@ table, th, td {
 <p>※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> を参照してください。<br />
 ※10）詳細は、 <strong><a href="/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報">OCI HPCパフォーマンス関連情報</a></strong> の <strong><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。<br />
 ※11）例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br />
-※12）既存のVCNを使用する場合のみコメントを外して指定します。<br />
-※13）OCIコンソール上で当該VCN・サブネットの詳細画面を表示して確認します。</p>
+※12）既存の <strong>VCN</strong> を使用する場合のみコメントを外して指定します。<br />
+※13）OCIコンソール上で当該 <strong>VCN</strong> ・サブネットの詳細画面を表示して確認します。</p>
 
 <hr />
 <h1 id="1-gpuクラスタ構築">1. GPUクラスタ構築</h1>
@@ -894,50 +908,44 @@ table, th, td {
 
 <h2 id="1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</h2>
 
-<ol>
-  <li>
-    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
+<p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>適用</strong> ボタンをクリックします。</p>
 
-    <p><img src="stack_page06.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
+<p><img src="stack_page06.png" alt="画面ショット" /></p>
 
-    <p><img src="stack_page07.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
+<p>次に、表示される以下 <strong>適用</strong> サイドバーで、 <strong>適用</strong> ボタンをクリックします。</p>
 
-    <p><img src="stack_page08.png" alt="画面ショット" /></p>
+<p><img src="stack_page07.png" alt="画面ショット" /></p>
 
-    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースのデプロイ状況を確認します。</p>
+<p>次に、表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の適用が実施されています。</p>
 
-    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+<p><img src="stack_page08.png" alt="画面ショット" /></p>
 
-    <p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
+<p>表示される以下 <strong>ログ</strong> フィールドで、リソースの作成状況を確認します。</p>
 
-    <p>ステータスが <strong>成功</strong> となれば、GPUクラスタのデプロイが完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
+<p><img src="stack_page09.png" alt="画面ショット" /></p>
 
-    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Outputs:
+<p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 
- Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
-   <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
-   <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
-   <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
- <span class="o">}</span>
- Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
-   <span class="s2">"inst-9fhuq-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
-     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol89"</span>
-     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
-   <span class="o">}</span>
-   <span class="s2">"inst-dz99s-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
-     <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol89"</span>
-     <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
-   <span class="o">}</span>
- <span class="o">}</span>
-</code></pre></div>    </div>
-  </li>
-</ol>
+<p>ステータスが <strong>成功</strong> となれば、GPUクラスタの構築が完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Outputs:
+
+Bastion_instances_created <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"bastion"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.1.138"</span>
+    <span class="s2">"public_ip"</span> <span class="o">=</span> <span class="s2">"123.456.789.123"</span>
+<span class="o">}</span>
+Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"inst-9fhuq-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-9fhuq-gpu4-ol89"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.10"</span>
+    <span class="o">}</span>
+    <span class="s2">"inst-dz99s-gpu4-ol89"</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="s2">"display_name"</span> <span class="o">=</span> <span class="s2">"inst-dz99s-gpu4-ol89"</span>
+    <span class="s2">"private_ip"</span> <span class="o">=</span> <span class="s2">"10.0.2.73"</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
 
 <h2 id="1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</h2>
 
@@ -978,7 +986,7 @@ Compute_in_cn_created <span class="o">=</span> <span class="o">{</span>
 
 <h2 id="2-0-概要">2-0. 概要</h2>
 
-<p>本章は、デプロイされたGPUクラスタ環境を確認します。</p>
+<p>本章は、構築されたGPUクラスタ環境を確認します。</p>
 
 <p>この際、作成されたGPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからGPUクラスタ内の全GPUノードにSSHでコマンドを発行、その環境を確認します。<br />
 なおこのホストリストファイルは、Bastionノードと全GPUノードに <strong>/home/opc/hostlist.txt</strong> として存在します。</p>
@@ -1231,31 +1239,25 @@ Mon Jul  1 02:58:34 2024
 
 <h2 id="5-1-リソースマネージャを使用する方法">5-1. リソース・マネージャを使用する方法</h2>
 
-<ol>
-  <li>
-    <p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
+<p>以下 <strong>スタックの詳細</strong> 画面で、 <strong>破棄</strong> ボタンをクリックします。</p>
 
-    <p><img src="stack_page10.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
+<p><img src="stack_page10.png" alt="画面ショット" /></p>
 
-    <p><img src="stack_page11.png" alt="画面ショット" /></p>
-  </li>
-  <li>
-    <p>表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
+<p>次に、表示される以下 <strong>破棄</strong> サイドバーで、 <strong>破棄</strong> ボタンをクリックします。</p>
 
-    <p><img src="stack_page12.png" alt="画面ショット" /></p>
+<p><img src="stack_page11.png" alt="画面ショット" /></p>
 
-    <p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
+<p>次に、表示される以下 <strong>ジョブ詳細</strong> ウィンドウで、左上のステータスが <strong>受入れ済</strong> → <strong>進行中</strong> と遷移すれば、 <strong>スタック</strong> の破棄が実施されています。</p>
 
-    <p><img src="stack_page09.png" alt="画面ショット" /></p>
+<p><img src="stack_page12.png" alt="画面ショット" /></p>
 
-    <p>この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。</p>
+<p>表示される以下 <strong>ログ</strong> フィールドで、リソースの削除状況を確認します。</p>
 
-    <p>ステータスが <strong>成功</strong> となれば、GPUクラスタの削除が完了しています。</p>
-  </li>
-</ol>
+<p><img src="stack_page09.png" alt="画面ショット" /></p>
+
+<p>この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。</p>
+
+<p>ステータスが <strong>成功</strong> となれば、GPUクラスタの削除が完了しています。</p>
 
 <h2 id="5-2-terraform-cliの場合">5-2. Terraform CLIの場合</h2>
 
@@ -1283,7 +1285,7 @@ Destroy <span class="nb">complete</span><span class="o">!</span> Resources: 18 d
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-13T08:16:11+09:00">August 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-15T15:53:41+09:00">August 15, 2025</time></p>
 
       </footer>
 

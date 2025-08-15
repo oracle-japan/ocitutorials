@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-13T08:16:11+09:00">
+  <meta property="article:published_time" content="2025-08-15T15:53:41+09:00">
 
 
 
@@ -311,7 +311,9 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
         
@@ -381,7 +383,7 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
         
-          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとする機械学習ワークロード向けGPUノード構築方法</a></li></p>
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
         
@@ -412,7 +414,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法">
     <meta itemprop="description" content="クラスタ・ネットワークに接続するインスタンスは、接続に必要なソフトウェアがインストールされている必要があり、これらを含んだOSイメージがクラスタネットワーキングイメージとしてマーケットプレースから提供されていますが、これらのベースとなるOSは、Oracle Linuxのみです。本テクニカルTipsは、クラスタ・ネットワーク対応シェイプのBM.Optimized3.36やBM.GPU4.8/BM.GPU.A100-v2.8を使用するインスタンスをOracle Linux以外のOSでクラスタ・ネットワークに接続する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-08-13T08:16:11+09:00">
+    <meta itemprop="datePublished" content="2025-08-15T15:53:41+09:00">
     
 
     <div class="page__inner-wrap">
@@ -423,7 +425,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</a></li><li><a href="#2-クラスタネットワーク接続用ソフトウェアインストール">2. クラスタ・ネットワーク接続用ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-rocky-linux-87の場合">2-1. Rocky Linux 8.7の場合</a><ul><li><a href="#2-1-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-1-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-1-2-mellanox-ofedダウンロードインストール">2-1-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-1-3--wpaサプリカントoci-cn-authインストール">2-1-3.  WPAサプリカント・oci-cn-authインストール</a></li></ul></li><li><a href="#2-2-centos-79の場合">2-2. CentOS 7.9の場合</a><ul><li><a href="#2-2-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-2-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-2-2-mellanox-ofedダウンロードインストール">2-2-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-2-3-oci-cn-authインストール">2-2-3. oci-cn-authインストール</a></li></ul></li><li><a href="#2-3-ubuntuの場合">2-3. Ubuntuの場合</a><ul><li><a href="#2-3-1-カスタムイメージ取得用計算gpuノードへのログインと事前準備">2-3-1. カスタム・イメージ取得用計算/GPUノードへのログインと事前準備</a></li><li><a href="#2-3-2-mellanox-ofedダウンロードインストール">2-3-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3. WPAサプリカントインストール・OCAプラグイン有効化</a></li></ul></li></ul></li><li><a href="#3-クラスタネットワーク接続確認">3. クラスタ・ネットワーク接続・確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a><ul><li><a href="#3-1-1-rocky-linux-87の場合">3-1-1. Rocky Linux 8.7の場合</a></li><li><a href="#3-1-2-centos-79の場合">3-1-2. CentOS 7.9の場合</a></li><li><a href="#3-1-3-ubuntu-on-bmoptimized336の場合">3-1-3. Ubuntu on BM.Optimized3.36の場合</a></li><li><a href="#3-1-4-ubuntu-on-bmgpu48bmgpua100-v28の場合">3-1-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8の場合</a></li></ul></li><li><a href="#3-2-intel-mpi-benchmark実行">3-2. Intel MPI Benchmark実行</a><ul><li><a href="#3-2-0-概要">3-2-0. 概要</a></li><li><a href="#3-2-1-rocky-linux-87">3-2-1. Rocky Linux 8.7</a></li><li><a href="#3-2-2-centos-79">3-2-2. CentOS 7.9</a></li><li><a href="#3-2-3-ubuntu-on-bmoptimized336">3-2-3. Ubuntu on BM.Optimized3.36</a></li><li><a href="#3-2-4-ubuntu-bmgpu48bmgpua100-v28">3-2-4. Ubuntu BM.GPU4.8/BM.GPU.A100-v2.8</a></li></ul></li></ul></li><li><a href="#4-カスタムイメージ取得">4. カスタム・イメージ取得</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-カスタムイメージ使用時問題となる設定修正">4-1. カスタム・イメージ使用時問題となる設定修正</a><ul><li><a href="#4-1-0-概要">4-1-0. 概要</a></li><li><a href="#4-1-1-rocky-linux-87の場合">4-1-1. Rocky Linux 8.7の場合</a></li><li><a href="#4-1-2-centos-79の場合">4-1-2. CentOS 7.9の場合</a></li><li><a href="#4-1-3-ubuntu-on-bmoptimized336の場合">4-1-3. Ubuntu on BM.Optimized3.36の場合</a></li><li><a href="#4-1-4-ubuntu-on-bmgpu48bmgpua100-v28の場合">4-1-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8の場合</a></li></ul></li><li><a href="#4-2-カスタムイメージ取得">4-2. カスタム・イメージ取得</a></li></ul></li><li><a href="#5-cloud-config作成">5. cloud-config作成</a></li><li><a href="#6-インスタンス構成作成">6. インスタンス構成作成</a></li><li><a href="#7-クラスタネットワーク作成">7. クラスタ・ネットワーク作成</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</a></li><li><a href="#2-クラスタネットワーク接続用ソフトウェアインストール">2. クラスタ・ネットワーク接続用ソフトウェアインストール</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-rocky-linux-87の場合">2-1. Rocky Linux 8.7の場合</a><ul><li><a href="#2-1-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-1-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-1-2-mellanox-ofedダウンロードインストール">2-1-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-1-3--wpaサプリカントoci-cn-authインストール">2-1-3.  WPAサプリカント・oci-cn-authインストール</a></li></ul></li><li><a href="#2-2-centos-79の場合">2-2. CentOS 7.9の場合</a><ul><li><a href="#2-2-1-カスタムイメージ取得用計算ノードへのログインと事前準備">2-2-1. カスタム・イメージ取得用計算ノードへのログインと事前準備</a></li><li><a href="#2-2-2-mellanox-ofedダウンロードインストール">2-2-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-2-3-oci-cn-authインストール">2-2-3. oci-cn-authインストール</a></li></ul></li><li><a href="#2-3-ubuntuの場合">2-3. Ubuntuの場合</a><ul><li><a href="#2-3-1-カスタムイメージ取得用計算gpuノードへのログインと事前準備">2-3-1. カスタム・イメージ取得用計算/GPUノードへのログインと事前準備</a></li><li><a href="#2-3-2-mellanox-ofedダウンロードインストール">2-3-2. Mellanox OFEDダウンロード・インストール</a></li><li><a href="#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化">2-3-3. WPAサプリカントインストール・OCA HPCプラグイン有効化</a></li></ul></li></ul></li><li><a href="#3-クラスタネットワーク接続確認">3. クラスタ・ネットワーク接続・確認</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-rocky-linux-87">3-1. Rocky Linux 8.7</a><ul><li><a href="#3-1-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a></li><li><a href="#3-1-2-intel-mpi-benchmark実行">3-1-2. Intel MPI Benchmark実行</a></li></ul></li><li><a href="#3-2-centos-79">3-2. CentOS 7.9</a><ul><li><a href="#3-2-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-2-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a></li><li><a href="#3-2-2-intel-mpi-benchmark実行">3-2-2. Intel MPI Benchmark実行</a></li></ul></li><li><a href="#3-3-ubuntu-on-bmoptimized336">3-3. Ubuntu on BM.Optimized3.36</a><ul><li><a href="#3-3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a></li><li><a href="#3-3-2-intel-mpi-benchmark実行">3-3-2. Intel MPI Benchmark実行</a></li></ul></li><li><a href="#3-4-ubuntu-on-bmgpu48bmgpua100-v28">3-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</a><ul><li><a href="#3-4-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-4-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</a></li><li><a href="#3-4-2-intel-mpi-benchmark実行">3-4-2. Intel MPI Benchmark実行</a></li></ul></li></ul></li><li><a href="#4-カスタムイメージ取得">4. カスタム・イメージ取得</a><ul><li><a href="#4-0-概要">4-0. 概要</a></li><li><a href="#4-1-カスタムイメージ使用時問題となる設定修正">4-1. カスタム・イメージ使用時問題となる設定修正</a><ul><li><a href="#4-1-0-概要">4-1-0. 概要</a></li><li><a href="#4-1-1-rocky-linux-87の場合">4-1-1. Rocky Linux 8.7の場合</a></li><li><a href="#4-1-2-centos-79の場合">4-1-2. CentOS 7.9の場合</a></li><li><a href="#4-1-3-ubuntu-on-bmoptimized336の場合">4-1-3. Ubuntu on BM.Optimized3.36の場合</a></li><li><a href="#4-1-4-ubuntu-on-bmgpu48bmgpua100-v28の場合">4-1-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8の場合</a></li></ul></li><li><a href="#4-2-カスタムイメージ取得">4-2. カスタム・イメージ取得</a></li></ul></li><li><a href="#5-cloud-config作成">5. cloud-config作成</a><ul><li><a href="#5-0-概要">5-0. 概要</a></li><li><a href="#5-1-rocky-linux-87">5-1. Rocky Linux 8.7</a></li><li><a href="#5-2-centos-79">5-2. CentOS 7.9</a></li><li><a href="#5-3-ubuntu-on-bmoptimized336">5-3. Ubuntu on BM.Optimized3.36</a></li><li><a href="#5-4-ubuntu-on-bmgpu48bmgpua100-v28">5-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</a></li></ul></li><li><a href="#6-インスタンス構成作成">6. インスタンス構成作成</a></li><li><a href="#7-クラスタネットワーク作成">7. クラスタ・ネットワーク作成</a></li></ul>
             </nav>
           </aside>
         
@@ -432,16 +434,16 @@
 <hr />
 <h1 id="0-概要">0. 概要</h1>
 
-<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続は、使用するインスタンスが以下の接続条件を満たし、このインスタンスデプロイ後に以下の接続処理を完了する必要があります。</p>
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続は、使用するインスタンスが以下の接続条件を満たし、このインスタンス作成後に以下の接続処理を完了する必要があります。</p>
 
 <p>[接続条件]</p>
 
 <ol>
-  <li><strong>クラスタ・ネットワーク</strong> 対応シェイプ（ <strong><a href="https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#supported-shapes">ここ</a></strong> を参照）を使用している</li>
-  <li><strong>クラスタ・ネットワーク</strong> のデプロイに伴ってデプロイされている</li>
+  <li><strong>クラスタ・ネットワーク</strong> 対応シェイプ（ <strong><a href="https://docs.public.oneportal.content.oci.oraclecloud.com/ja-jp/iaas/Content/Compute/Tasks/managingclusternetworks.htm#cluster-networks-supported-shapes">ここ</a></strong> を参照）を使用している</li>
+  <li><strong>クラスタ・ネットワーク</strong> の作成に伴って作成されている</li>
   <li><strong>クラスタ・ネットワーク</strong> 接続に必要な以下ソフトウェアがインストールされている
     <ol>
-      <li>Mellanox OFED</li>
+      <li><strong>Mellanox OFED</strong></li>
       <li>WPAサプリカント（※1）</li>
       <li>802.1X認証関連ユーティリティソフトウェア</li>
       <li><strong>クラスタ・ネットワーク</strong> 設定ユーティリティソフトウェア</li>
@@ -461,11 +463,11 @@
 <p><strong>接続条件 3.</strong> のソフトウェアは、ベースとなるOSに <strong>Oracle Linux</strong> を使用する <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> には予めインストールされていますが、 <strong>Rocky Linux</strong> ・ <strong>CentOS</strong> ・ <strong>Ubuntu</strong> でもこれらのソフトウェアを自身でインストールすることで <strong>クラスタ・ネットワーク</strong> に接続することが可能で、本テクニカルTipsではこの方法を解説します。</p>
 
 <p><strong>接続条件 3-3.</strong> のソフトウェアは、oci-cn-auth（※2）を使用する方法と <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm">Oracle Cloud Agent</a></strong> （以降 <strong>OCA</strong> と呼称）の <strong>Compute HPC RDMA Authentication</strong> プラグインを利用する方法があり、 <strong>接続条件 3-4.</strong> のソフトウェアは、OSの機能を使用する方法と <strong>OCA</strong> の <strong>Compute HPC RDMA Auto-Configuration</strong> プラグインを利用する方法があります。<br />
-ここで <strong>OCA</strong> が <strong>Ubuntu</strong> に対応していることから、本テクニカルTipsではOSが <strong>Ubuntu</strong> の場合は <strong>OCA</strong> のプラグインを使用する手順を解説し、 <strong>Rocky Linux</strong> と <strong>CentOS</strong> の場合はoci-cn-authとOSの機能を使用する手順を解説します。</p>
+ここで <strong>OCA</strong> が <strong>Ubuntu</strong> に対応していることから、本テクニカルTipsではOSが <strong>Ubuntu</strong> の場合は <strong>OCA</strong> のHPCプラグインを使用する手順を解説し、 <strong>Rocky Linux</strong> と <strong>CentOS</strong> の場合はoci-cn-authとOSの機能を使用する手順を解説します。</p>
 
 <p>※2）<strong>クラスタ・ネットワーク</strong> に接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。</p>
 
-<p>これらソフトウェアのインストールは、手順が多く相応の所要時間が必要なため、予め最小ノード（2ノード）のクラスタを構築してこの計算/GPUノードにこれらのソフトウェアをインストール、この計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> で実際に使用するHPC/GPUクラスタを構築します。</p>
+<p>これらソフトウェアのインストールは、手順が多く相応の所要時間が必要なため、予め最小ノード（2ノード）のクラスタを構築してこの計算/GPUノードにこれらのソフトウェアをインストール、この計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> で本運用に供するHPC/GPUクラスタを構築します。</p>
 
 <p>以上より、 <strong>クラスタ・ネットワーク</strong> 未対応OSを使ったHPC/GPUクラスタの構築は、以下の手順を経て行います。</p>
 
@@ -479,31 +481,36 @@
   <li><strong>インスタンス構成</strong> を指定した <strong>クラスタ・ネットワーク</strong> 作成</li>
 </ul>
 
-<p>以降は、下表の組み合わせの <strong>クラスタ・ネットワーク</strong> 対応シェイプとOSでデプロイしたインスタンスを使用し、これらを <strong>クラスタ・ネットワーク</strong> に接続する手順を解説します。</p>
+<p>以降は、下表の組み合わせの <strong>クラスタ・ネットワーク</strong> 対応シェイプとOSで作成した計算/GPUノードを <strong>クラスタ・ネットワーク</strong> に接続する手順を解説します。</p>
 
 <table>
   <thead>
     <tr>
+      <th style="text-align: center">No.</th>
       <th style="text-align: center">クラスタ・ネットワーク対応シェイプ</th>
       <th style="text-align: center">OS</th>
     </tr>
   </thead>
   <tbody>
     <tr>
+      <td style="text-align: center">1</td>
       <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong></td>
       <td style="text-align: center"><strong>Rocky Linux</strong> 8.7（※3）</td>
     </tr>
     <tr>
+      <td style="text-align: center">2</td>
       <td style="text-align: center"> </td>
       <td style="text-align: center"><strong>CentOS</strong> 7.9</td>
     </tr>
     <tr>
+      <td style="text-align: center">3</td>
       <td style="text-align: center"> </td>
-      <td style="text-align: center"><strong>Ubuntu</strong> 20.04 / <strong>Ubuntu</strong> 22.04（※4）</td>
+      <td style="text-align: center"><strong>Ubuntu</strong> 20.04 / <strong>Ubuntu</strong> 22.04 / <strong>Ubuntu</strong> 24.04（※4）</td>
     </tr>
     <tr>
+      <td style="text-align: center">4（※5）</td>
       <td style="text-align: center"><strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></td>
-      <td style="text-align: center"><strong>Ubuntu</strong> 20.04 / <strong>Ubuntu</strong> 22.04（※4）</td>
+      <td style="text-align: center"><strong>Ubuntu</strong> 20.04 / <strong>Ubuntu</strong> 22.04 （※4）</td>
     </tr>
   </tbody>
 </table>
@@ -513,18 +520,21 @@
 
 <ul>
   <li>カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築時の計算/GPUノードに使用するOSイメージ</li>
-  <li>Mellanox OFEDダウンロード・インストール時に使用するISOイメージファイル</li>
+  <li><strong>Mellanox OFED</strong> ダウンロード・インストール時に使用するISOイメージファイル</li>
 </ul>
+
+<p>※5）この組み合わせの手順は、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></strong> を参照してください。</p>
 
 <hr />
 <h1 id="1-カスタムイメージ取得用2ノードhpcgpuクラスタ構築">1. カスタム・イメージ取得用2ノードHPC/GPUクラスタ構築</h1>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するためのソフトウェアをインストールした <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得するため、2ノードのHPC/GPUクラスタを構築します。<br />
-このHPC/GPUクラスタは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）を活用し、このチュートリアルの以下の章を実施することで、その構築を行います。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続するためのソフトウェアをインストールした <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を取得するため、2ノードのHPCクラスタを構築します。</p>
+
+<p>このHPCクラスタは、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> を活用し、このチュートリアルの以下の章を実施することで、その構築を行います。</p>
 
 <ul>
-  <li><strong><a href="/ocitutorials/hpc/spinup-cluster-network/#0-hpcクラスタ作成事前作業">0. HPCクラスタ作成事前作業</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#0-gpuクラスタ作成事前作業">0. GPUクラスタ作成事前作業</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）</li>
-  <li><strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-hpcクラスタ作成">1. HPCクラスタ作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-gpuクラスタ作成">1. GPUクラスタ作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）</li>
+  <li><strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-hpcクラスタ作成事前作業">1. HPCクラスタ作成事前作業</a></strong></li>
+  <li><strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-hpcクラスタ作成">2. HPCクラスタ作成</a></strong></li>
 </ul>
 
 <p>この際、上記チュートリアルに対して、以下の点を変更して実施します。</p>
@@ -532,36 +542,35 @@
 <ul>
   <li>
     <p>cloud-config適用除外<br />
-<strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-1-cloud-config作成">1-1. cloud-config作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-1-cloud-config作成">1-1. cloud-config作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）で作成しているcloud-configは、その処理内容をカスタム・イメージ取得用の計算/GPUノードに適用する必要が無いため、作成しません。<br />
- またこれに伴い、後の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></strong> の <strong>3.7 管理フィールド</strong> （ <strong>BM.Optimized3.36</strong> の場合）/  <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></strong> の <strong>3.8 管理フィールド</strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）で指定しているcloud-configの適用も、実施しません。</p>
+<strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-1-cloud-config作成">2-1. cloud-config作成</a></strong> で作成しているcloud-configは、その処理内容をカスタム・イメージ取得用の計算ノードに適用する必要が無いため、作成しません。<br />
+またこれに伴い、後の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-2-インスタンス構成作成">2-2. インスタンス構成作成</a></strong> の <strong>7 管理フィールド</strong> で指定しているcloud-configの適用も、実施しません。</p>
   </li>
   <li>
     <p>イメージ変更<br />
-<strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/  <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成">1-2. インスタンス構成作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の <strong>3.4 イメージとシェイプ フィールド</strong> で指定するイメージは、 使用するOSが <strong>Rocky Linux</strong> 8.7、 <strong>CentOS</strong> 7.9、 <strong>Ubuntu</strong> 20.04、又は <strong>Ubuntu</strong> 22.04かに合わせて、以下を指定します。</p>
+<strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-2-インスタンス構成作成">2-2. インスタンス構成作成</a></strong> の <strong>4 イメージとシェイプ フィールド</strong> で指定するイメージは、 使用するOSが <strong>Rocky Linux</strong> 、 <strong>CentOS</strong> 、又は <strong>Ubuntu</strong> かに合わせて、以下を指定します。</p>
 
     <ul>
-      <li>
-        <p><strong>イメージ</strong> ：Rocky Linux 8.7 - Free(x86_64) (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>Select an image</strong> サイドバーで <strong>Rocky Linux</strong> を選択し表示される <strong>Rocky Linux 8.7 - Free(x86_64)</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>8.7.3</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
-
-        <p><img src="console_page01.png" alt="画面ショット" />
-<img src="console_page01-2.png" alt="画面ショット" /></p>
-      </li>
-      <li>
-        <p><strong>イメージ</strong> ：CentOS 7 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>CentOS</strong> を選択し表示される <strong>CentOS 7</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>2023.04.20-0</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
-
-        <p><img src="console_page02.png" alt="画面ショット" /></p>
-      </li>
-      <li>
-        <p><strong>イメージ</strong> ：Canonical Ubuntu 20.04 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Ubuntu</strong> を選択し表示される <strong>Canonical Ubuntu 20.04</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>2024.02.17-0</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
-
-        <p><img src="console_page02-2.png" alt="画面ショット" /></p>
-      </li>
-      <li>
-        <p><strong>イメージ</strong> ：Canonical Ubuntu 22.04 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Ubuntu</strong> を選択し表示される <strong>Canonical Ubuntu 22.04</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>2024.05.31-0</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
-
-        <p><img src="console_page02-3.png" alt="画面ショット" /></p>
-      </li>
+      <li><strong>イメージ</strong> ：Rocky Linux 8.7 - Free(x86_64) (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>Select an image</strong> サイドバーで <strong>Rocky Linux</strong> を選択し表示される <strong>Rocky Linux 8.7 - Free(x86_64)</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>8.7.3</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
     </ul>
+
+    <p><img src="console_page01.png" alt="画面ショット" /><br />
+  <img src="console_page01-2.png" alt="画面ショット" /></p>
+
+    <ul>
+      <li><strong>イメージ</strong> ：CentOS 7 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>CentOS</strong> を選択し表示される <strong>CentOS 7</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>2023.04.20-0</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
+    </ul>
+
+    <p><img src="console_page02.png" alt="画面ショット" /></p>
+
+    <ul>
+      <li><strong>イメージ</strong> ：Canonical Ubuntu 2x.04 (<strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Ubuntu</strong> を選択し表示される <strong>Canonical Ubuntu 2x.04</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>2025.05.20-0</strong> （選択できなければ最新を選択）を選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
+    </ul>
+
+    <p><img src="console_page02-1.png" alt="画面ショット" /></p>
+  </li>
+  <li>
+    <p><strong>OCA</strong> 有効化のスキップ<br />
+<strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-2-インスタンス構成作成">2-2. インスタンス構成作成</a></strong> の <strong>8 Oracle Cloudエージェント フィールド</strong> で有効化している <strong>OCA</strong> の <strong>Compute HPC RDMA Auto-Configuration</strong> と <strong>Compute HPC RDMA Authentication</strong> のプラグインは、 <strong>Rocky Linux</strong> と <strong>CentOS</strong> では <strong>OCA</strong> を使用せず、 <strong>Ubuntu</strong> ではのちの手順で有効化を行うため、何れのOSの場合もここでは有効化を行いません。</p>
   </li>
 </ul>
 
@@ -575,12 +584,12 @@
 
 <ul>
   <li><strong>カスタム・イメージ</strong> 取得用計算/GPUノードへのログインと事前準備</li>
-  <li>Mellanox OFEDダウンロード・インストール</li>
-  <li>WPAサプリカントインストール・OCAプラグイン有効化（OSが <strong>Ubuntu</strong> の場合）</li>
+  <li><strong>Mellanox OFED</strong> ダウンロード・インストール</li>
+  <li>WPAサプリカントインストール・ <strong>OCA</strong> HPCプラグイン有効化（OSが <strong>Ubuntu</strong> の場合）</li>
   <li>WPAサプリカント・oci-cn-authインストール（OSが <strong>Ubuntu</strong> 以外の場合）</li>
 </ul>
 
-<p>なお本章の作業は、最終的にMPIの稼働確認を行う必要から、2台の計算/GPUノードの何れにも実施します。</p>
+<p>なお本章の作業は、2台の計算/GPUノードの何れにも実施します。</p>
 
 <h2 id="2-1-rocky-linux-87の場合">2-1. Rocky Linux 8.7の場合</h2>
 
@@ -617,9 +626,9 @@
 
 <h3 id="2-1-2-mellanox-ofedダウンロードインストール">2-1-2. Mellanox OFEDダウンロード・インストール</h3>
 
-<p>本章は、Mellanox OFED ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
+<p>本章は、 <strong>Mellanox OFED</strong> ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
 
-<p>Mellanox OFED ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
+<p><strong>Mellanox OFED</strong> ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
 
 <p><a href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/">https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/</a></p>
 
@@ -627,7 +636,7 @@
 
 <p><img src="OFED_download_rocky.png" alt="画面ショット" /></p>
 
-<p>次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDの前提パッケージをインストール後OSをアップデートします。</p>
+<p>次に、以下コマンドを計算ノードのrockyユーザで実行し、 <strong>Mellanox OFED</strong> の前提パッケージをインストール後OSをアップデートします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> perl pciutils pkgconf-pkg-config lsof tk kernel-modules-extra tcl gcc-gfortran
 <span class="nv">$ </span><span class="nb">sudo </span>dnf update <span class="nt">-y</span>
@@ -638,7 +647,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
 </code></pre></div></div>
 
-<p>次に、以下コマンドを計算ノードのrockyユーザで実行し、Mellanox OFEDをインストールします。</p>
+<p>次に、以下コマンドを計算ノードのrockyユーザで実行し、 <strong>Mellanox OFED</strong> をインストールします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>mount <span class="nt">-o</span> ro,loop ~/MLNX_OFED_LINUX-23.10-2.1.3.1-rhel8.9-x86_64.iso /mnt/iso
 <span class="nv">$ </span><span class="nb">cd</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo</span> ./mlnxofedinstall <span class="nt">--without-fw-update</span> <span class="nt">-q</span>
@@ -693,9 +702,9 @@
 
 <h3 id="2-2-2-mellanox-ofedダウンロードインストール">2-2-2. Mellanox OFEDダウンロード・インストール</h3>
 
-<p>本章は、Mellanox OFED ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
+<p>本章は、 <strong>Mellanox OFED</strong> ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
 
-<p>Mellanox OFED ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
+<p><strong>Mellanox OFED</strong> ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
 
 <p><a href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/">https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/</a></p>
 
@@ -703,7 +712,7 @@
 
 <p><img src="OFED_download_cent.png" alt="画面ショット" /></p>
 
-<p>次に、Mellanox OFEDをインストールするため、以下コマンドを計算ノードのopcユーザで実行します。</p>
+<p>次に、 <strong>Mellanox OFED</strong> をインストールするため、以下コマンドを計算ノードのopcユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> python-devel kernel-devel-<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span> redhat-rpm-config createrepo rpm-build tcl gcc-gfortran tk automake libtool autoconf fuse-libs
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>mount <span class="nt">-o</span> ro,loop ~/MLNX_OFED_LINUX-5.4-3.6.8.1-rhel7.9-x86_64.iso /mnt/iso
@@ -711,7 +720,7 @@
 <span class="nv">$ </span><span class="nb">sudo </span>dracut <span class="nt">-f</span>
 </code></pre></div></div>
 
-<p>次に、インストールしたMellanox OFEDを有効化するため、OSを再起動します。</p>
+<p>次に、インストールした <strong>Mellanox OFED</strong> を有効化するため、OSを再起動します。</p>
 
 <h3 id="2-2-3-oci-cn-authインストール">2-2-3. oci-cn-authインストール</h3>
 
@@ -733,6 +742,7 @@
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> 取得用計算/GPUノードにログインし、以降の作業に必要な事前準備として以下の作業を行います。</p>
 
 <ul>
+  <li>OS自動アップデート停止</li>
   <li>iptables停止</li>
   <li>インスタンス名による名前解決設定適用</li>
   <li>前提条件ソフトウェアインストール</li>
@@ -741,6 +751,26 @@
 <p>計算/GPUノードへのログインは、 <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-1-計算ノードログイン">2-1. 計算ノードログイン</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#21-gpuノードログイン">2-1. GPUノードログイン</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の手順に従い実施しますが、この際 <strong>Ubuntu</strong> のインストール時に作成されるログインユーザが <strong>ubuntu</strong> であることを考慮し、以下のようにBastionノードからubuntuユーザでSSHログインします。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh ubuntu@inst-wyr6m-comp
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSの自動アップデートを停止します。<br />
+この手順は、以降の作業でカーネルのバージョンに依存するカーネルモジュールのロードを行うため、それ以降の意図せぬカーネルの自動アップデートを避けるために実施します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /etc/apt/apt.conf.d/20auto-upgrades /tmp/
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/Upgrade "1"/Upgrade "0"/g'</span> /etc/apt/apt.conf.d/20auto-upgrades
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span> <span class="s1">'s/Lists "1"/Lists "0"/g'</span> /etc/apt/apt.conf.d/20auto-upgrades
+<span class="nv">$ </span><span class="nb">sudo </span>diff /tmp/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
+1,2c1,2
+&lt; APT::Periodic::Update-Package-Lists <span class="s2">"1"</span><span class="p">;</span>
+&lt; APT::Periodic::Unattended-Upgrade <span class="s2">"1"</span><span class="p">;</span>
+<span class="nt">---</span>
+<span class="o">&gt;</span> APT::Periodic::Update-Package-Lists <span class="s2">"0"</span><span class="p">;</span>
+<span class="o">&gt;</span> APT::Periodic::Unattended-Upgrade <span class="s2">"0"</span><span class="p">;</span>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl disable <span class="nt">--now</span> unattended-upgrades
+Synchronizing state of unattended-upgrades.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install disable unattended-upgrades
+Removed <span class="s2">"/etc/systemd/system/multi-user.target.wants/unattended-upgrades.service"</span><span class="nb">.</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、iptablesを停止します。</p>
@@ -762,56 +792,88 @@
 
 <h3 id="2-3-2-mellanox-ofedダウンロードインストール">2-3-2. Mellanox OFEDダウンロード・インストール</h3>
 
-<p>本章は、Mellanox OFED ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
+<p>本章は、 <strong>Mellanox OFED</strong> ISOイメージファイルをNVIDIAのウェブサイトからダウンロードし、これをインストールします。</p>
 
-<p>Mellanox OFED ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
+<p><strong>Mellanox OFED</strong> ISOイメージファイルのダウンロードは、以下のサイトから行います。</p>
 
 <p><a href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/">https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/</a></p>
 
-<p>この際、以下のメニューを選択し、 <strong>Ubuntu</strong> のバージョンに合わせてISOイメージファイル <strong>MLNX_OFED_LINUX-23.10-2.1.3.1-ubuntu20.04-x86_64.iso</strong> （ <strong>Ubuntu</strong> 20.04の場合）か <strong>MLNX_OFED_LINUX-23.10-2.1.3.1-ubuntu22.04-x86_64.iso</strong> （ <strong>Ubuntu</strong> 22.04の場合）を入手し、このファイルを計算/GPUノードのubuntuユーザのホームディレクトリ直下にコピーします。</p>
+<p>この際、以下メニューを選択して <strong>Ubuntu</strong> のバージョンに合わせたISOイメージファイルを入手し、このファイルを計算/GPUノードのubuntuユーザのホームディレクトリ直下にコピーします。</p>
 
 <p>[ <strong>Ubuntu</strong> 20.04の場合]</p>
 
-<p><img src="OFED_download_ubuntu.png" alt="画面ショット" /></p>
+<p><img src="OFED_download_ubuntu20.png" alt="画面ショット" /></p>
 
 <p>[ <strong>Ubuntu</strong> 22.04の場合]</p>
 
 <p><img src="OFED_download_ubuntu22.png" alt="画面ショット" /></p>
 
-<p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、Mellanox OFEDをインストールします。</p>
+<p>[ <strong>Ubuntu</strong> 24.04の場合]</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>mount <span class="nt">-o</span> ro,loop ~/MLNX_OFED_LINUX-23.10-2.1.3.1-ubuntu2x.04-x86_64.iso /mnt/iso
+<p><img src="OFED_download_ubuntu24.png" alt="画面ショット" /></p>
+
+<p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、 <strong>Mellanox OFED</strong> をインストールします。<br />
+この際、ISOイメージのファイル名は、使用する <strong>Ubuntu</strong> のバージョンに合わせて変更します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>mount <span class="nt">-o</span> ro,loop ~/MLNX_OFED_LINUX-2x.xx-x.x.x.x-ubuntu2x.04-x86_64.iso /mnt/iso
 <span class="nv">$ </span><span class="nb">cd</span> /mnt/iso <span class="o">&amp;&amp;</span> <span class="nb">sudo</span> ./mlnxofedinstall <span class="nt">--without-fw-update</span> <span class="nt">-q</span>
 </code></pre></div></div>
 
-<p>この際、ISOイメージのファイル名は、使用する <strong>Ubuntu</strong> のバージョンに合わせて変更します。</p>
+<p>次に、OCIコンソールからGPUインスタンスを再起動します。<br />
+この再起動は、 <strong>BM.GPU4.8</strong> の場合でSSHログインできるまでに20分程度かかります。</p>
 
-<p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、OSを再起動します。</p>
+<h3 id="2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化">2-3-3. WPAサプリカントインストール・OCA HPCプラグイン有効化</h3>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>shutdown <span class="nt">-r</span> now
+<p>本章は、WPAサプリカントのインストールと <strong>OCA</strong> HPCプラグインの有効化を実施し、 <strong><a href="#0-概要">0. 概要</a></strong> で説明した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続に必要な接続処理を実施します。</p>
+
+<p>以下コマンドを計算/GPUノードのubuntuユーザで実行し、WPAサプリカントと <strong>OCA</strong> HPCプラグインの前提条件ソフトウェアをインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> wpasupplicant mstflint
 </code></pre></div></div>
 
-<h3 id="2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3. WPAサプリカントインストール・OCAプラグイン有効化</h3>
+<p>次に、 <strong>Compute HPC RDMA Auto-Configuration</strong> プラグインの設定ファイル <strong>/etc/oracle-cloud-agent/plugins/oci-hpc/oci-hpc-configure/rdma_network.json</strong> を以下の内容で作成します。<br />
+なおこの設定ファイルは、使用するシェイプが <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合のみ作成します。</p>
 
-<p>本章は、WPAサプリカントのインストールと <strong>OCA</strong> プラグインの有効化を実施し、 <strong><a href="#0-概要">0. 概要</a></strong> で説明した <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続に必要な接続処理を実施します。</p>
-
-<p>以下コマンドを計算/GPUノードのubuntuユーザで実行し、WPAサプリカントをインストールします。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> wpasupplicant
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">{</span>
+  <span class="s2">"rdma-network"</span>: <span class="o">[</span>
+    <span class="o">{</span>
+	<span class="s2">"default-settings"</span>: <span class="o">{</span> 
+            <span class="s2">"rdma_network"</span>: <span class="s2">"192.168.0.0/16"</span>,
+            <span class="s2">"overwrite_config_files"</span>: <span class="nb">false</span>,
+            <span class="s2">"single_subnet"</span>: <span class="nb">true</span>,
+            <span class="s2">"modify_subnet"</span>: <span class="nb">true</span>,
+            <span class="s2">"modify_arp"</span>: <span class="nb">true</span>
+        <span class="o">}</span>,
+        <span class="s2">"subnet-settings"</span>: <span class="o">{</span>
+            <span class="s2">"netmask"</span>: <span class="s2">"255.255.0.0"</span>, 
+            <span class="s2">"override_netconfig_netmask"</span>: <span class="s2">"255.255.0.0"</span>
+        <span class="o">}</span>,
+        <span class="s2">"arp-settings"</span>: <span class="o">{</span>
+            <span class="s2">"rp_filter"</span>: <span class="s2">"0"</span>,
+            <span class="s2">"arp_ignore"</span>: <span class="s2">"1"</span>,
+            <span class="s2">"arp_announce"</span>: <span class="s2">"2"</span>,
+            <span class="s2">"accept_local"</span>: <span class="s2">"1"</span>,
+            <span class="s2">"arp_filter"</span>: <span class="s2">"1"</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">]</span>   
+<span class="o">}</span>
 </code></pre></div></div>
 
-<p>次に、OCIコンソールにログインし、以下対象の計算/GPUノードの <strong>インスタンスの詳細</strong> 画面で <strong>Oracle Cloudエージェント</strong> タブをクリックし、 <strong>Compute HPC RDMA Auto-Configuration</strong> プラグインと <strong>Compute HPC RDMA Authentication</strong> プラグインを <strong>有効</strong> にします。</p>
+<p>次に、OCIコンソールにログインし、以下対象の計算/GPUノードの <strong>インスタンスの詳細</strong> 画面で <strong>管理</strong> タブをクリックし、 <strong>Compute HPC RDMA Auto-Configuration</strong> プラグインと <strong>Compute HPC RDMA Authentication</strong> プラグインの <strong>有効化</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page06.png" alt="画面ショット" /></p>
 
-<p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、 <strong>oci-rdma-authentication</strong> と <strong>wpa_supplicant</strong> の各プロセスが動作していることを確認します。<br />
-なお、これらプロセスの起動には10分程度を要します。</p>
+<p>次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、 <strong>wpa_supplicant</strong> のプロセスが <strong>クラスタ・ネットワーク</strong> に接続するポートの数だけ動作し、802.1X認証が通っていることを確認します。<br />
+なおこの結果が得られるまで、 <strong>OCA</strong> HPCプラグインの有効化を実施してから20分程度の時間を要します。<br />
+以下は、16ポートを有する <strong>BM.GPU4.8</strong> の実行例です。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ps <span class="nt">-leaf</span> | <span class="nb">grep</span> <span class="nt">-e</span> oci-rdma-authentication <span class="nt">-e</span> wpa_supplicant | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep
-</span>4 S root        3437       1  0  80   0 -  4126 -      05:43 ?        00:00:00 /sbin/wpa_supplicant <span class="nt">-u</span> <span class="nt">-s</span> <span class="nt">-O</span> /run/wpa_supplicant
-4 S root        3674    2038  0  80   0 -  3046 -      05:48 ?        00:00:00 /usr/bin/sudo <span class="nt">-n</span> /snap/oracle-cloud-agent/current/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication
-4 S root        3685    3674  0  80   0 - 315314 -     05:48 ?        00:00:01 /snap/oracle-cloud-agent/current/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication
-4 S root        4141       1  0  80   0 -  4420 -      05:49 ?        00:00:00 /usr/sbin/wpa_supplicant <span class="nt">-P</span>/var/run/wpa_supplicant-ens800f0np0.pid <span class="nt">-c</span>/etc/wpa_supplicant/wpa_supplicant-wired-8021x.conf <span class="nt">-Dwired</span> <span class="nt">-iens800f0np0</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ps <span class="nt">-leaf</span> | <span class="nb">grep </span>wpa_supplicant-en | <span class="nb">grep</span> <span class="nt">-v</span> <span class="nb">grep</span> | <span class="nb">wc</span> <span class="nt">-l</span>
+16
+<span class="nv">$ </span><span class="nb">sudo </span>wpa_cli status | <span class="nb">grep </span>state
+<span class="nv">wpa_state</span><span class="o">=</span>COMPLETED
+Supplicant PAE <span class="nv">state</span><span class="o">=</span>AUTHENTICATED
+EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <span class="err">$</span>
 </code></pre></div></div>
 
@@ -820,26 +882,20 @@
 
 <h2 id="3-0-概要">3-0. 概要</h2>
 
-<p>本章は、計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続に必要な設定を行い、Mellanox OFEDに含まれる <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> を使用してその性能を確認します。<br />
-以下は、その手順概要です。</p>
+<p>本章は、計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> への接続に必要な設定を行い、 <strong>Mellanox OFED</strong> に含まれる <strong><a href="https://www.open-mpi.org/">OpenMPI</a></strong> と <strong><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html">Intel MPI Benchmark</a></strong> を使用してその性能を確認します。</p>
 
-<ul>
-  <li><strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成</li>
-  <li><strong>Intel MPI Benchmark</strong> 実行</li>
-</ul>
+<p>なおこれらの手順は、使用するOSやシェイプによってその手順が異なるため、以下のパターンに分けてそれぞれ解説します。</p>
 
-<p>なお、ネットワークインターフェース作成は、使用するOSやシェイプによってその手順が異なるため、以下のパターンに分けてそれぞれ解説します。</p>
+<ol>
+  <li><strong><a href="#3-1-rocky-linux-87">Rocky Linux 8.7</a></strong></li>
+  <li><strong><a href="#3-2-centos-79">CentOS 7.9</a></strong></li>
+  <li><strong><a href="#3-3-ubuntu-on-bmoptimized336">Ubuntu on BM.Optimized3.36</a></strong></li>
+  <li><strong><a href="#3-4-ubuntu-on-bmgpu48bmgpua100-v28">Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
+</ol>
 
-<ul>
-  <li><strong>Rocky Linux</strong> 8.7</li>
-  <li><strong>CentOS</strong> 7.9</li>
-  <li><strong>Ubuntu</strong> on <strong>BM.Optimized3.36</strong></li>
-  <li><strong>Ubuntu</strong> on <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong></li>
-</ul>
+<h2 id="3-1-rocky-linux-87">3-1. Rocky Linux 8.7</h2>
 
-<h2 id="3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</h2>
-
-<h3 id="3-1-1-rocky-linux-87の場合">3-1-1. Rocky Linux 8.7の場合</h3>
+<h3 id="3-1-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-1-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</h3>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェースを作成し、 <strong>クラスタ・ネットワーク</strong> への接続を確認します。<br />
 この作業は、2台の計算ノードの何れにも実施します。</p>
@@ -868,12 +924,35 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <span class="err">$</span>
 </code></pre></div></div>
 
-<h3 id="3-1-2-centos-79の場合">3-1-2. CentOS 7.9の場合</h3>
+<h3 id="3-1-2-intel-mpi-benchmark実行">3-1-2. Intel MPI Benchmark実行</h3>
+
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続した計算/GPUノードで十分なインターコネクト性能が出ていることを確認するため、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行し、その結果を確認します。</p>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でrockyユーザのパスフレーズ無しSSH接続環境を構築します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa rocky@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts rocky@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドをBastionノードのopcユーザで実行し、後の <strong>Intel MPI Benchmark</strong> Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。<br />
+なお、ホスト名リストを作成していない場合は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt rocky@<span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
+</code></pre></div></div>
+
+<p>次に、以下コマンドを何れか1台の計算ノードのrockyユーザで実行し、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.7a1/bin/mpivars.sh
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+</code></pre></div></div>
+
+<h2 id="3-2-centos-79">3-2. CentOS 7.9</h2>
+
+<h3 id="3-2-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-2-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</h3>
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェースを作成し、 <strong>クラスタ・ネットワーク</strong> への接続を確認します。<br />
-この作業は、2台の計算ノードの何れにも実施します。</p>
-
-<p><strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースを作成するため、以下のスクリプトを作成して実行権を与えます。</p>
+この作業は、2台の計算ノードの何れにも実施します。
+<strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースを作成するため、以下のスクリプトを作成して実行権を与えます。</p>
 
 <p>[oci-rdma-configure-rh7.sh]</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
@@ -908,152 +987,25 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <span class="err">$</span>
 </code></pre></div></div>
 
-<h3 id="3-1-3-ubuntu-on-bmoptimized336の場合">3-1-3. Ubuntu on BM.Optimized3.36の場合</h3>
-
-<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェースは、先の <strong><a href="#2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3 WPAサプリカントインストール・OCAプラグイン有効化</a></strong> により既に作成されているため、ここではその確認のみ行います。<br />
-この作業は、2台の計算ノードの何れにも実施します。</p>
-
-<p>以下コマンドを計算ノードのubuntuユーザで実行し、 <strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースにIPアドレスが設定され、802.1X認証が通ったことを確認します。<br />
-なお、802.1X認証が完了するまで、 <strong>OCA</strong> プラグインの有効化を実施してから10分程度の時間を要します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a s dev ens800f0np0 | <span class="nb">grep</span> <span class="s1">'inet '</span>
-    inet 192.168.0.xxx/24 brd 192.168.0.255 scope global ens800f0np0
-<span class="nv">$ </span><span class="nb">grep  </span><span class="nv">state</span><span class="o">=</span> /var/log/oracle-cloud-agent/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication.log | <span class="nb">tail</span> <span class="nt">-3</span>
-<span class="nv">wpa_state</span><span class="o">=</span>COMPLETED
-Supplicant PAE <span class="nv">state</span><span class="o">=</span>AUTHENTICATED
-EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
-<span class="err">$</span>
-</code></pre></div></div>
-
-<h3 id="3-1-4-ubuntu-on-bmgpu48bmgpua100-v28の場合">3-1-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8の場合</h3>
-
-<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16ポートのネットワークインターフェースは、先の <strong><a href="#2-3-3-wpaサプリカントインストールocaプラグイン有効化">2-3-3 WPAサプリカントインストール・OCAプラグイン有効化</a></strong> により既に作成されているため、ここではその確認のみ行います。<br />
-この作業は、2台のGPUノードの何れにも実施します。</p>
-
-<p>以下コマンドをGPUノードのubuntuユーザで実行し、 <strong>クラスタ・ネットワーク</strong> 接続用の16個のネットワークインターフェースにIPアドレスが設定されていることを確認します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"enp[1-3,5-9]"</span> | <span class="nb">grep </span>inet | <span class="nb">sort</span> <span class="nt">-t</span><span class="nb">.</span> <span class="nt">-n</span> <span class="nt">-k</span> 3,3
-</code></pre></div></div>
-
-<p>想定通りにIPアドレスが設定されていれば、各インターフェースとIPアドレスは以下の関係になります。</p>
-
-<table>
-  <thead>
-    <tr>
-      <th>ポート名</th>
-      <th>IPアドレス</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>enp12s0f0np0</td>
-      <td>192.168.0.x/24</td>
-    </tr>
-    <tr>
-      <td>enp12s0f1np1</td>
-      <td>192.168.1.x/24</td>
-    </tr>
-    <tr>
-      <td>enp22s0f0np0</td>
-      <td>192.168.2.x/24</td>
-    </tr>
-    <tr>
-      <td>enp22s0f1np1</td>
-      <td>192.168.3.x/24</td>
-    </tr>
-    <tr>
-      <td>enp72s0f0np0</td>
-      <td>192.168.4.x/24</td>
-    </tr>
-    <tr>
-      <td>enp72s0f1np1</td>
-      <td>192.168.5.x/24</td>
-    </tr>
-    <tr>
-      <td>enp76s0f0np0</td>
-      <td>192.168.6.x/24</td>
-    </tr>
-    <tr>
-      <td>enp76s0f1np1</td>
-      <td>192.168.7.x/24</td>
-    </tr>
-    <tr>
-      <td>enp138s0f0np0</td>
-      <td>192.168.8.x/24</td>
-    </tr>
-    <tr>
-      <td>enp138s0f1np1</td>
-      <td>192.168.9.x/24</td>
-    </tr>
-    <tr>
-      <td>enp148s0f0np0</td>
-      <td>192.168.10.x/24</td>
-    </tr>
-    <tr>
-      <td>enp148s0f1np1</td>
-      <td>192.168.11.x/24</td>
-    </tr>
-    <tr>
-      <td>enp195s0f0np0</td>
-      <td>192.168.12.x/24</td>
-    </tr>
-    <tr>
-      <td>enp195s0f1np1</td>
-      <td>192.168.13.x/24</td>
-    </tr>
-    <tr>
-      <td>enp209s0f0np0</td>
-      <td>192.168.14.x/24</td>
-    </tr>
-    <tr>
-      <td>enp209s0f1np1</td>
-      <td>192.168.15.x/24</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>次に、以下コマンドをGPUノードのubuntuユーザで実行し、802.1X認証が通ったことを確認します。<br />
-なお、802.1X認証が完了するまで、 <strong>OCA</strong> プラグインの有効化を実施してから10分程度の時間を要します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep  </span><span class="nv">state</span><span class="o">=</span> /var/log/oracle-cloud-agent/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication.log | <span class="nb">tail</span> <span class="nt">-3</span>
-<span class="nv">wpa_state</span><span class="o">=</span>COMPLETED
-Supplicant PAE <span class="nv">state</span><span class="o">=</span>AUTHENTICATED
-EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
-<span class="err">$</span>
-</code></pre></div></div>
-
-<h2 id="3-2-intel-mpi-benchmark実行">3-2. Intel MPI Benchmark実行</h2>
-
-<h3 id="3-2-0-概要">3-2-0. 概要</h3>
-
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> に接続した計算/GPUノードで十分なインターコネクト性能が出ていることを確認するため、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行し、その結果を確認します。<br />
-この手順は、使用するOSやシェイプによって異なるため、以下それぞれについて解説します。</p>
-
-<h3 id="3-2-1-rocky-linux-87">3-2-1. Rocky Linux 8.7</h3>
-
-<p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でrockyユーザのパスフレーズ無しSSH接続環境を構築します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa rocky@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
-<span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts rocky@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
-</code></pre></div></div>
-
-<p>次に、以下コマンドをBastionノードのopcユーザで実行し、後の <strong>Intel MPI Benchmark</strong> Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。<br />
-なお、ホスト名リストを作成していない場合は、 <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ./hostlist.txt rocky@<span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
-</code></pre></div></div>
-
-<p>次に、以下コマンドを何れか1台の計算ノードのrockyユーザで実行し、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.7a1/bin/mpivars.sh
-<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
-</code></pre></div></div>
-
-<h3 id="3-2-2-centos-79">3-2-2. CentOS 7.9</h3>
+<h3 id="3-2-2-intel-mpi-benchmark実行">3-2-2. Intel MPI Benchmark実行</h3>
 
 <p><strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#3-mpiプログラム実行2ノード編">3. MPIプログラム実行（2ノード編）</a></strong> の手順に従い、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行します。</p>
 
-<h3 id="3-2-3-ubuntu-on-bmoptimized336">3-2-3. Ubuntu on BM.Optimized3.36</h3>
+<h2 id="3-3-ubuntu-on-bmoptimized336">3-3. Ubuntu on BM.Optimized3.36</h2>
+
+<h3 id="3-3-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</h3>
+
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェースは、先の <strong><a href="#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化">2-3-3 WPAサプリカントインストール・OCA HPCプラグイン有効化</a></strong> により既に作成されているため、ここではその確認のみ行います。<br />
+この作業は、2台の計算ノードの何れにも実施します。</p>
+
+<p>以下コマンドを計算ノードのubuntuユーザで実行し、 <strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースにIPアドレスが設定されていることを確認します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a s dev ens800f0np0 | <span class="nb">grep</span> <span class="s1">'inet '</span>
+    inet 192.168.0.xxx/24 brd 192.168.0.255 scope global ens800f0np0
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h3 id="3-3-2-intel-mpi-benchmark実行">3-3-2. Intel MPI Benchmark実行</h3>
 
 <p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でubuntuユーザのパスフレーズ無しSSH接続環境を構築します。</p>
 
@@ -1067,23 +1019,107 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/hostlist.txt ubuntu@<span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドを全ての計算ノードのubuntuユーザで実行し、 <strong>OpenMPI</strong> 実行に必要な環境変数を設定します。<br />
-なお、ubuntuユーザのホームディレクトリを全ての計算ノードで共有している場合は、何れか1台の計算ノードでこれを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MPIROOT=/usr/mpi/gcc/openmpi-4.1.7a1"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">{MPIROOT}/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export LD_LIBRARY_PATH=</span><span class="se">\$</span><span class="s2">{MPIROOT}/lib</span><span class="se">\$</span><span class="s2">{LD_LIBRARY_PATH:+:</span><span class="se">\$</span><span class="s2">{LD_LIBRARY_PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-</code></pre></div></div>
-
 <p>次に、以下コマンドを何れか1台の計算ノードのubuntuユーザで実行し、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
-<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">MPIROOT</span><span class="o">=</span>/usr/mpi/gcc/openmpi-4.1.7rc1
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="k">${</span><span class="nv">MPIROOT</span><span class="k">}</span>/bin:<span class="k">${</span><span class="nv">PATH</span><span class="k">}</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="k">${</span><span class="nv">MPIROOT</span><span class="k">}</span>/lib:<span class="k">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="k">}</span>
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong
 </code></pre></div></div>
 
-<h3 id="3-2-4-ubuntu-bmgpu48bmgpua100-v28">3-2-4. Ubuntu BM.GPU4.8/BM.GPU.A100-v2.8</h3>
+<h2 id="3-4-ubuntu-on-bmgpu48bmgpua100-v28">3-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</h2>
 
-<p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全てのGPUノード間でubuntuユーザのパスフレーズ無しSSH接続環境を構築します。</p>
+<h3 id="3-4-1-クラスタネットワーク接続用ネットワークインターフェース作成">3-4-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成</h3>
+
+<p><strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 接続用の16ポートのネットワークインターフェースは、先の <strong><a href="#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化">2-3-3 WPAサプリカントインストール・OCA HPCプラグイン有効化</a></strong> により既に作成されているため、ここではその確認のみ行います。<br />
+この作業は、2台のGPUノードの何れにも実施します。</p>
+
+<p>以下コマンドをGPUノードのubuntuユーザで実行し、</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"en[p,s][1-3,5-9]"</span> | <span class="nb">grep </span>inet
+</code></pre></div></div>
+
+<p><strong>クラスタ・ネットワーク</strong> 接続用の16個のネットワークインターフェースに以下のIPアドレスが設定されていることを確認します。<br />
+なお <strong>x</strong> は、 <strong>VCN</strong> に接続するプライマリVNICに割り当てられるIPアドレスの4フィールド目の値です。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">ネットワークインターフェース名</th>
+      <th style="text-align: center">IPアドレス</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">enp12s0f0np0</td>
+      <td style="text-align: center">192.168.0.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp12s0f1np1</td>
+      <td style="text-align: center">192.168.1.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp22s0f0np0</td>
+      <td style="text-align: center">192.168.2.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp22s0f1np1</td>
+      <td style="text-align: center">192.168.3.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp72s0f0np0</td>
+      <td style="text-align: center">192.168.4.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp72s0f1np1</td>
+      <td style="text-align: center">192.168.5.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp76s0f0np0</td>
+      <td style="text-align: center">192.168.6.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp76s0f1np1</td>
+      <td style="text-align: center">192.168.7.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp138s0f0np0</td>
+      <td style="text-align: center">192.168.8.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp138s0f1np1</td>
+      <td style="text-align: center">192.168.9.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp148s0f0np0</td>
+      <td style="text-align: center">192.168.10.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp148s0f1np1</td>
+      <td style="text-align: center">192.168.11.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp195s0f0np0</td>
+      <td style="text-align: center">192.168.12.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp195s0f1np1</td>
+      <td style="text-align: center">192.168.13.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp209s0f0np0</td>
+      <td style="text-align: center">192.168.14.x/16</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">enp209s0f1np1</td>
+      <td style="text-align: center">192.168.15.x/16</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="3-4-2-intel-mpi-benchmark実行">3-4-2. Intel MPI Benchmark実行</h3>
+
+<p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全てのGPUノードにコピーすることで、全てのGPUノード間でubuntuユーザのパスフレーズ無しSSH接続環境を構築します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-oStrictHostKeyChecking</span><span class="o">=</span>accept-new <span class="nt">-p</span> ~/.ssh/id_rsa ubuntu@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
 <span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/.ssh/known_hosts ubuntu@<span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
@@ -1095,18 +1131,33 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>hname <span class="k">in</span> <span class="sb">`</span><span class="nb">cat</span> ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp <span class="nt">-p</span> ~/hostlist.txt ubuntu@<span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドを全てのGPUノードのubuntuユーザで実行し、 <strong>OpenMPI</strong> 実行に必要な環境変数を設定します。<br />
-なお、ubuntuユーザのホームディレクトリを全てのGPUノードで共有している場合は、何れか1台のGPUノードでこれを実行します。</p>
+<p>次に、以下コマンドを何れか1台のGPUノードのubuntuユーザで実行し、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行して16ポート全てのレイテンシとスループットを確認します。<br />
+なおこのレイテンシとスループットは、計測する2ノードが同一ラックに搭載されているかどうかにより大きく異なり、以下は同一ラックに搭載されている場合の出力例です。異なるラックに搭載されている場合は、レイテンシが <strong>4 us</strong> 弱、スループットが <strong>12 GB/s</strong> 弱となります。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export MPIROOT=/usr/mpi/gcc/openmpi-4.1.7a1"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export PATH=</span><span class="se">\$</span><span class="s2">{MPIROOT}/bin</span><span class="se">\$</span><span class="s2">{PATH:+:</span><span class="se">\$</span><span class="s2">{PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"export LD_LIBRARY_PATH=</span><span class="se">\$</span><span class="s2">{MPIROOT}/lib</span><span class="se">\$</span><span class="s2">{LD_LIBRARY_PATH:+:</span><span class="se">\$</span><span class="s2">{LD_LIBRARY_PATH}}"</span> | <span class="nb">tee</span> <span class="nt">-a</span> ~/.bashrc
-</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>0 3<span class="p">;</span> <span class="nb">seq </span>6 17<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nv">dev_name</span><span class="o">=</span><span class="s2">"mlx5_"</span><span class="k">${</span><span class="nv">i</span><span class="k">}</span><span class="s2">":1"</span><span class="p">;</span> <span class="nb">echo</span> <span class="k">${</span><span class="nv">dev_name</span><span class="k">}</span><span class="p">;</span> /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span><span class="k">${</span><span class="nv">dev_name</span><span class="k">}</span> /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong | <span class="nb">tail</span> <span class="nt">-12</span> | <span class="nb">head</span> <span class="nt">-8</span><span class="p">;</span> <span class="nb">echo</span><span class="p">;</span> <span class="k">done
+</span>mlx5_0:1
+<span class="c">#---------------------------------------------------</span>
+<span class="c"># Benchmarking PingPong </span>
+<span class="c"># #processes = 2 </span>
+<span class="c">#---------------------------------------------------</span>
+       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+            0         1000         2.33         0.00
+    134217728            1     10978.10     12225.96
+    268435456            1     21950.63     12229.06
+:
+:
+:
+mlx5_17:1
+<span class="c">#---------------------------------------------------</span>
+<span class="c"># Benchmarking PingPong </span>
+<span class="c"># #processes = 2 </span>
+<span class="c">#---------------------------------------------------</span>
+       <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+            0         1000         2.51         0.00
+    134217728            1     11005.68     12195.31
+    268435456            1     22054.96     12171.21
 
-<p>次に、以下コマンドを何れか1台のGPUノードのubuntuユーザで実行し、 <strong>Intel MPI Benchmark</strong> Ping-Pongを実行します。</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> ~/.bashrc
-<span class="nv">$ </span><span class="k">for </span>i <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>0 3<span class="p">;</span> <span class="nb">seq </span>6 17<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$i</span><span class="p">;</span> mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_<span class="nv">$i</span>:1 /usr/mpi/gcc/openmpi-4.1.7a1/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 27:28 pingpong<span class="p">;</span> <span class="k">done</span>
+<span class="err">$</span>
 </code></pre></div></div>
 
 <hr />
@@ -1117,19 +1168,19 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> 取得用2ノードHPC/GPUクラスタの計算/GPUノードのうちどちらか一台で、 <strong>カスタム・イメージ</strong> を取得します。
 以下は、その手順概要です。</p>
 
-<ul>
-  <li><strong>カスタム・イメージ</strong> 使用時問題となる設定修正</li>
-  <li><strong>カスタム・イメージ</strong> 取得</li>
-</ul>
+<ol>
+  <li><strong><a href="#4-1-カスタムイメージ使用時問題となる設定修正">カスタム・イメージ使用時問題となる設定修正</a></strong></li>
+  <li><strong><a href="#4-2-カスタムイメージ取得">カスタム・イメージ取得</a></strong></li>
+</ol>
 
 <h2 id="4-1-カスタムイメージ使用時問題となる設定修正">4-1. カスタム・イメージ使用時問題となる設定修正</h2>
 
 <h3 id="4-1-0-概要">4-1-0. 概要</h3>
 
-<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用してクラスタをデプロイする際に問題となる設定を、 <strong>カスタム・イメージ</strong> 取得前に除去します。</p>
+<p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を使用して <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を作成する際に問題となる設定を、 <strong>カスタム・イメージ</strong> 取得前に除去します。</p>
 
 <p>ここで問題となる設定は、 <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> 用ネットワークインターフェース設定です。<br />
-これは、このネットワークインターフェースが <strong>カスタム・イメージ</strong> 取得インスタンス用の静的IPアドレスを含んでいるためで、そのまま <strong>カスタム・イメージ</strong> を取得すると、これを使用してデプロイしたインスタンスで全て同じIPアドレスが設定され、IPアドレス競合により <strong>クラスタ・ネットワーク</strong> に接続することが出来ません。
+これは、このネットワークインターフェースが <strong>カスタム・イメージ</strong> 取得インスタンス用の静的IPアドレスを含んでいるためで、そのまま <strong>カスタム・イメージ</strong> を取得すると、これを使用して作成したインスタンスで全て同じIPアドレスが設定され、IPアドレス競合により <strong>クラスタ・ネットワーク</strong> に接続することが出来ません。
 以上より、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定を削除しますが、この方法は使用するOSやシェイプにより異なり、以降ではそれぞれについてその手順を解説します。</p>
 
 <h3 id="4-1-1-rocky-linux-87の場合">4-1-1. Rocky Linux 8.7の場合</h3>
@@ -1160,7 +1211,7 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <p>以下コマンドをGPUノードのubuntuユーザで実行します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ subnet</span><span class="o">=</span>0<span class="p">;</span> <span class="nv">ip4f</span><span class="o">=</span><span class="sb">`</span>ip a s dev enp45s0f0np0 | <span class="nb">grep</span> <span class="s1">'inet '</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="o">[</span>/,.] <span class="s1">'{print $4}'</span><span class="sb">`</span>
-<span class="nv">$ </span><span class="k">for </span>dev <span class="k">in</span> <span class="sb">`</span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">": enp[1-3,5-9]"</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="o">[</span>:,<span class="se">\ </span><span class="o">]</span> <span class="s1">'{print $3}'</span> | <span class="nb">sort</span> <span class="nt">-n</span> <span class="nt">-tp</span> <span class="nt">-k</span> 2,2<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$subnet</span> <span class="nv">$dev</span><span class="p">;</span> <span class="nb">sudo </span>ip addr del 192.168.<span class="nv">$subnet</span>.<span class="nv">$ip4f</span>/24 dev <span class="nv">$dev</span><span class="p">;</span> <span class="nv">subnet</span><span class="o">=</span><span class="k">$((</span><span class="o">++</span>subnet<span class="k">))</span><span class="p">;</span> <span class="k">done</span>
+<span class="nv">$ </span><span class="k">for </span>dev <span class="k">in</span> <span class="sb">`</span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">": enp[1-3,5-9]"</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="o">[</span>:,<span class="se">\ </span><span class="o">]</span> <span class="s1">'{print $3}'</span> | <span class="nb">sort</span> <span class="nt">-n</span> <span class="nt">-tp</span> <span class="nt">-k</span> 2,2<span class="sb">`</span><span class="p">;</span> <span class="k">do </span><span class="nb">echo</span> <span class="nv">$subnet</span> <span class="nv">$dev</span><span class="p">;</span> <span class="nb">sudo </span>ip addr del 192.168.<span class="nv">$subnet</span>.<span class="nv">$ip4f</span>/16 dev <span class="nv">$dev</span><span class="p">;</span> <span class="nv">subnet</span><span class="o">=</span><span class="k">$((</span><span class="o">++</span>subnet<span class="k">))</span><span class="p">;</span> <span class="k">done</span>
 <span class="nv">$ </span><span class="nb">sudo rm</span> /etc/network/interfaces.d/<span class="k">*</span>
 </code></pre></div></div>
 
@@ -1173,11 +1224,11 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 
 <p>本章は、 <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> 取得用インスタンスで <strong>カスタム・イメージ</strong> を取得します。</p>
 
-<p><strong>カスタム・イメージ</strong> の取得は、当該インスタンスの以下 <strong>インスタンスの詳細</strong> ページで <strong>その他のアクション</strong> プルダウンメニューから <strong>カスタム・イメージの作成</strong> メニューを選択し、</p>
+<p><strong>カスタム・イメージ</strong> の取得は、当該インスタンスの以下 <strong>インスタンスの詳細</strong> ページで <strong>アクション</strong> プルダウンメニュー → <strong>その他のアクション</strong> プルダウンメニュー → <strong>カスタム・イメージの作成</strong> メニューを選択し、</p>
 
 <p><img src="console_page03.png" alt="画面ショット" /></p>
 
-<p>表示される以下画面で <strong>名前</strong> フィールドに <strong>カスタム・イメージ</strong> に付与する名前を指定し、 <strong>カスタム・イメージの作成</strong> ボタンをクリックします。</p>
+<p>表示される以下 <strong>カスタム・イメージの作成</strong> 画面で <strong>名前</strong> フィールドに <strong>カスタム・イメージ</strong> に付与する名前を指定し、 <strong>カスタム・イメージの作成</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page04.png" alt="画面ショット" /></p>
 
@@ -1186,7 +1237,9 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 <hr />
 <h1 id="5-cloud-config作成">5. cloud-config作成</h1>
 
-<p>本章は、実際に利用するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を作成します。<br />
+<h2 id="5-0-概要">5-0. 概要</h2>
+
+<p>本章は、本運用に供するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> 設定ファイル（cloud-config）を作成します。<br />
 このcloud-configは、以下の目的で使用します。</p>
 
 <ul>
@@ -1197,14 +1250,17 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 
 <p>ここで作成するcloud-configは、使用するOSやシェイプにあわせて以下から選択します。</p>
 
-<ul>
-  <li><strong>Rocky Linux</strong> 8.7</li>
-  <li><strong>CentOS</strong> 7.9</li>
-  <li><strong>Ubuntu</strong> on <strong>BM.Optimized3.36</strong></li>
-  <li><strong>Ubuntu</strong> on <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong></li>
-</ul>
+<ol>
+  <li><strong><a href="#5-1-rocky-linux-87">Rocky Linux 8.7</a></strong></li>
+  <li><strong><a href="#5-2-centos-79">CentOS 7.9</a></strong></li>
+  <li><strong><a href="#5-3-ubuntu-on-bmoptimized336">Ubuntu on BM.Optimized3.36</a></strong></li>
+  <li><strong><a href="#5-4-ubuntu-on-bmgpu48bmgpua100-v28">Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
+</ol>
 
-<p>[ <strong>Rocky Linux</strong> 8.7（※6）]</p>
+<h2 id="5-1-rocky-linux-87">5-1. Rocky Linux 8.7</h2>
+
+<p>以下は、 <strong>Rocky Linux</strong> 8.7用のcloud-configです。<br />
+なお、本cloud-configは <strong>VCN</strong> に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作する点に留意します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
@@ -1229,9 +1285,10 @@ runcmd:
   - systemctl start oci-cn-auth.service
 </code></pre></div></div>
 
-<p>※6）本cloud-configは、 仮想クラウド・ネットワーク に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。</p>
+<h2 id="5-2-centos-79">5-2. CentOS 7.9</h2>
 
-<p>[ <strong>CentOS</strong> 7.9（※7）]</p>
+<p>以下は、 <strong>CentOS</strong> 7.9用のcloud-configです。<br />
+なお、本cloud-configは <strong>VCN</strong> に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作する点に留意します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
@@ -1267,25 +1324,27 @@ runcmd:
 </code></pre></div></div>
 <p>※7）本cloud-configは、 仮想クラウド・ネットワーク に接続するプライマリVNICに割り当てるサブネットマスクが24ビットの場合のみ動作します。</p>
 
-<p>[ <strong>Ubuntu</strong> on <strong>BM.Optimized3.36</strong> ]</p>
+<h2 id="5-3-ubuntu-on-bmoptimized336">5-3. Ubuntu on BM.Optimized3.36</h2>
+
+<p>以下は、 <strong>BM.Optimized3.36</strong> 上で動作する <strong>Ubuntu</strong> 用のcloud-configです。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
 runcmd:
 <span class="c">#</span>
 <span class="c"># Mount NVMe local storage</span>
-  - parted <span class="nt">-s</span> /dev/nvme0n1 mklabel gpt
-  - parted <span class="nt">-s</span> /dev/nvme0n1 <span class="nt">--</span> mkpart primary xfs 1 <span class="nt">-1</span>
-<span class="c"># To ensure partition is really created before mkfs phase</span>
-  - <span class="nb">sleep </span>10
-  - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme0n1p1
+  - vgcreate nvme /dev/nvme0n1
+  - lvcreate <span class="nt">-l</span> 100%FREE nvme
+  - mkfs.xfs <span class="nt">-L</span> localscratch /dev/nvme/lvol0
   - <span class="nb">mkdir</span> <span class="nt">-p</span> /mnt/localdisk
   - <span class="nb">echo</span> <span class="s2">"LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0"</span> <span class="o">&gt;&gt;</span> /etc/fstab
   - systemctl daemon-reload
   - mount /mnt/localdisk
 </code></pre></div></div>
 
-<p>[ <strong>Ubuntu</strong> on <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> ]</p>
+<h2 id="5-4-ubuntu-on-bmgpu48bmgpua100-v28">5-4. Ubuntu on BM.GPU4.8/BM.GPU.A100-v2.8</h2>
+
+<p>以下は、 <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> 上で動作する <strong>Ubuntu</strong> 用のcloud-configです。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#cloud-config</span>
 timezone: Asia/Tokyo
@@ -1304,18 +1363,18 @@ runcmd:
 <hr />
 <h1 id="6-インスタンス構成作成">6. インスタンス構成作成</h1>
 
-<p>本章は、実際に利用するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-2-インスタンス構成作成">1.2 インスタンス構成作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-2-インスタンス構成作成">1.2 インスタンス構成作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の手順に従い作成します。<br />
-ここで、 <strong>3.4 イメージとシェイプ フィールド</strong> で指定するイメージは、以下 <strong>イメージの選択</strong> サイドバーで <strong>マイ・イメージ</strong> を選択し表示される先に作成した <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を選択し、 <strong>イメージの選択</strong> ボタンをクリックします。</p>
+<p>本章は、本運用に供するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> を、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-2-インスタンス構成作成">2.2 インスタンス構成作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成">2.2 インスタンス構成作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の手順に従い作成します。<br />
+ここで、 <strong>4. イメージとシェイプ フィールド</strong> で指定するイメージは、以下 <strong>イメージの選択</strong> サイドバーで <strong>マイ・イメージ</strong> を選択し表示される先に作成した <strong><a href="/ocitutorials/hpc/#5-6-カスタムイメージ">カスタム・イメージ</a></strong> を選択し、 <strong>イメージの選択</strong> ボタンをクリックします。</p>
 
 <p><img src="console_page05.png" alt="画面ショット" /></p>
 
 <p>また、 <strong>インスタンス構成</strong> に指定するcloud-configは、先に作成したものとします。</p>
 
-<p>また <strong>Ubuntu</strong> の場合は、以下 <strong>インスタンス構成の作成</strong> 画面の <strong>拡張オプションの表示</strong> ボタンをクリックし、</p>
+<p>また <strong>Ubuntu</strong> の場合は、以下 <strong>基本情報</strong> 画面の <strong>イメージとシェイプ</strong> フィールドの <strong>拡張オプション</strong> ボタンをクリックし、</p>
 
 <p><img src="console_page07.png" alt="画面ショット" /></p>
 
-<p>表示される画面の <strong>Oracle Cloudエージェント</strong> タブをクリックし、表示される以下 <strong>Oracle Cloudエージェント</strong> タブで以下の項目をチェックします。</p>
+<p>表示される <strong>Oracle Cloudエージェント</strong> フィールドの以下プルダウンメニューで、以下のプラグインをチェックします。</p>
 
 <ul>
   <li><strong>Compute HPC RDMA Auto-Configuration</strong></li>
@@ -1327,10 +1386,10 @@ runcmd:
 <hr />
 <h1 id="7-クラスタネットワーク作成">7. クラスタ・ネットワーク作成</h1>
 
-<p>本章は、実際に利用するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#1-3-クラスタネットワーク作成">1.3 クラスタ・ネットワーク作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#1-3-クラスタネットワーク作成">1.3 クラスタ・ネットワーク作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の手順に従い作成します。<br />
-ここで、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> は先に作成したもの、 <strong>インスタンス数</strong> は実際に利用するHPC/GPUクラスタの計算/GPUノード数とします。</p>
+<p>本章は、本運用に供するHPC/GPUクラスタ構築のための <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> を、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の <strong><a href="/ocitutorials/hpc/spinup-cluster-network/#2-3-クラスタネットワーク作成">2.3 クラスタ・ネットワーク作成</a></strong> （ <strong>BM.Optimized3.36</strong> の場合）/ <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/#2-3-クラスタネットワーク作成">2.3 クラスタ・ネットワーク作成</a></strong> （ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）の手順に従い作成します。<br />
+ここで、 <strong><a href="/ocitutorials/hpc/#5-7-インスタンス構成">インスタンス構成</a></strong> は先に作成したもの、 <strong>インスタンス数</strong> は本運用に供するHPC/GPUクラスタの計算/GPUノード数とします。</p>
 
-<p><strong>クラスタ・ネットワーク</strong> のデプロイ完了後、計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> が終了した時点で、計算/GPUノードの <strong>クラスタ・ネットワーク</strong> への接続が完了しています。</p>
+<p><strong>クラスタ・ネットワーク</strong> の作成完了後、計算/GPUノードの <strong><a href="/ocitutorials/hpc/#5-11-cloud-init">cloud-init</a></strong> が終了した時点で、計算/GPUノードの <strong>クラスタ・ネットワーク</strong> への接続が完了しています。</p>
 
 <p><strong>クラスタ・ネットワーク</strong> のネットワークインターフェースに正しくIPアドレスが振られていることを確認するため、以下コマンドを計算/GPUノードのopc（ <strong>CentOS</strong> ）/rocky（ <strong>Rocky Linux</strong> ）/ubuntu（ <strong>Ubuntu</strong> ）ユーザで実行し、その出力を確認します。</p>
 
@@ -1341,23 +1400,12 @@ runcmd:
 
 <p>[ <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合]</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"enp[1-3,5-9]"</span> | <span class="nb">grep </span>inet | <span class="nb">sort</span> <span class="nt">-t</span><span class="nb">.</span> <span class="nt">-n</span> <span class="nt">-k</span> 3,3
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ip a | <span class="nb">grep</span> <span class="nt">-E</span> <span class="s2">"en[p,s][1-3,5-9]"</span> | <span class="nb">grep </span>inet
 </code></pre></div></div>
 
 <p>次に、802.1X認証が通ったことを確認するため、以下コマンドを計算/GPUノードのopc（ <strong>CentOS</strong> ）/rocky（ <strong>Rocky Linux</strong> ）/ubuntu（ <strong>Ubuntu</strong> ）ユーザで実行し、その出力を確認します。</p>
 
-<p>[ <strong>Ubuntu</strong> 以外の場合]</p>
-
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>wpa_cli status | <span class="nb">grep </span>state
-<span class="nv">wpa_state</span><span class="o">=</span>COMPLETED
-Supplicant PAE <span class="nv">state</span><span class="o">=</span>AUTHENTICATED
-EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
-<span class="err">$</span>
-</code></pre></div></div>
-
-<p>[ <strong>Ubuntu</strong> の場合]</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">grep  </span><span class="nv">state</span><span class="o">=</span> /var/log/oracle-cloud-agent/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication.log | <span class="nb">tail</span> <span class="nt">-3</span>
 <span class="nv">wpa_state</span><span class="o">=</span>COMPLETED
 Supplicant PAE <span class="nv">state</span><span class="o">=</span>AUTHENTICATED
 EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
@@ -1374,7 +1422,7 @@ EAP <span class="nv">state</span><span class="o">=</span>SUCCESS
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-13T08:16:11+09:00">August 13, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-15T15:53:41+09:00">August 15, 2025</time></p>
 
       </footer>
 
