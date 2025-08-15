@@ -70,7 +70,7 @@ table, th, td {
 | Slurmクライアント | slurm-cli   |
 | 計算ノード       | inst-aaaaa-x9<br>inst-bbbbb-x9 |
 
-また、各サブシステムのセキュリティーに関するOS設定は、 **firewalld** を停止し、 **SElinux** をDisabledにします。
+また、各サブシステムのセキュリティーに関するOS設定は、 **firewalld** を停止し、 **SELinux** をDisabledにします。
 
 ***
 # 2. 環境構築
