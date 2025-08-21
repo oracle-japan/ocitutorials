@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/img6.png">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/attaching-block-volume/BVoverview.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2025-08-15T15:53:41+09:00">
+  <meta property="article:published_time" content="2025-08-21T09:49:50+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/attaching-block-volume/img6.png');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/attaching-block-volume/BVoverview.png');"
 >
   
     <div class="wrapper">
@@ -292,7 +292,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その4 - ブロック・ボリュームをインスタンスにアタッチする">
     <meta itemprop="description" content="ストレージ容量が足りない? そんなときは、ブロック・ボリュームをネットワーク越しにインスタンスにアタッチできます。">
-    <meta itemprop="datePublished" content="2025-08-15T15:53:41+09:00">
+    <meta itemprop="datePublished" content="2025-08-21T09:49:50+09:00">
     
 
     <div class="page__inner-wrap">
@@ -303,35 +303,33 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</a></li><li><a href="#2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</a></li><li><a href="#3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</a></li></ul>
+              <ul class="toc__menu"><li><a href="#目次">目次：</a></li><li><a href="#1-ブロックボリュームとは">1. ブロック・ボリュームとは</a></li><li><a href="#2-ブロックボリュームの作成">2. ブロック・ボリュームの作成</a></li><li><a href="#3-ボリュームのインスタンスへのアタッチ">3. ボリュームのインスタンスへのアタッチ</a></li><li><a href="#4-ボリュームのフォーマットおよびマウント">4. ボリュームのフォーマットおよびマウント</a></li></ul>
             </nav>
           </aside>
         
-        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a></p>
+        <p><strong>チュートリアル一覧に戻る :</strong> <a href="../..">Oracle Cloud Infrastructure チュートリアル</a>
+<br /><br /></p>
 
-<p>Oracle Cloud Infrastructure ブロック・ボリューム・サービスを利用することにより、ベアメタル・インスタンスや仮想マシン・インスタンスからブロックデバイスとして利用することができるボリュームを、簡単に作成、管理することができます。用途に応じたサイズのボリュームを作成、インスタンスへのアタッチ、変更などが可能です。インスタンスからボリュームに対するアクセスは iSCSI もしくは準仮想化を通じて行われます。
-インスタンスにアタッチしたボリュームは、通常のディスク・ドライブと同じようにOSから利用することができ、またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。</p>
-
-<p>ブロック・ボリュームの典型的なユースケースとしては以下のようなものがあります。</p>
-
-<ul>
-  <li>インスタンスのストレージの拡張 : Oracle Cloud Infrastructure の ベアメタル・インスタンス、仮想マシン・インスタンスいずれに対しても、ブロック・ボリュームをアタッチすることでOSのストレージ領域を拡張することができます。</li>
-  <li>永続化されたストレージ領域の利用 : インスタンスを終了(Terminate)しても、ブロック・ボリュームとそこに格納されたデータは永続します。これらはボリュームを明示的に終了(Terminate)するまで存続します。</li>
-  <li>インスタンス間のデータの移動 : インスタンスにアタッチしたブロック・ボリュームをデタッチし、別のインスタンスにアタッチすることにより、1つのインスタンスから別のインスタンスにデータを簡単に移動させることができます。
-このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。</li>
-</ul>
-
-<p>ブロック・ボリュームのバックアップについては応用編の<a href="../../intermediates/taking-block-volume-backups">ブロック・ボリュームをバックアップする</a> をどうぞ。</p>
+<p><strong>＜その4 - ブロック・ボリュームをインスタンスにアタッチする＞</strong> では、コンソール画面から<strong>ブロック・ボリューム</strong> と呼ばれるストレージを作成し、インスタンスにアタッチをしてストレージ領域を拡張させます。<br /></p>
 
 <p><strong>所要時間 :</strong> 約20分</p>
 
 <p><strong>前提条件 :</strong></p>
-
 <ul>
-  <li><a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a> と<a href="../creating-compute-instance">その3 - インスタンスを作成する</a> を完了し、仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること</li>
+  <li><a href="../creating-vcn">その2 - クラウドに仮想ネットワーク(VCN)を作る</a></li>
+  <li><a href="../creating-compute-instance">その3 - インスタンスを作成する</a>
+<br />仮想クラウド・ネットワーク(VCN)の中に任意のLinuxインスタンスの作成が完了していること</li>
 </ul>
 
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<h2 id="目次"><strong>目次：</strong></h2>
+<ul>
+  <li><a href="#1-ブロックボリュームとは">1. ブロック・ボリュームとは?</a></li>
+  <li><a href="#2-ブロックボリュームの作成">2. ブロック・ボリュームの作成</a></li>
+  <li><a href="#3-ボリュームのインスタンスへのアタッチ">3 ボリュームのインスタンスへのアタッチ</a></li>
+  <li><a href="#4-ボリュームのフォーマットおよびマウント">4. ボリュームのフォーマットおよびマウント</a></li>
+</ul>
 
 <p><strong>参考動画：</strong> 本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。</p>
 
@@ -341,167 +339,169 @@
 
 <p><a id="anchor1"></a></p>
 
-<h1 id="1-ブロックボリュームの作成">1. ブロック・ボリュームの作成</h1>
+<h2 id="1-ブロックボリュームとは">1. ブロック・ボリュームとは</h2>
+
+<p><strong>ブロック・ボリューム</strong>は、OCI上でデータを保存・格納するブロックストレージサービスです。インスタンスに「アタッチ」するとネットワーク越しにストレージを使うことができます。またインスタンスからデタッチし、新しい別のインスタンスにアタッチすることで、データを失うことなく移行することが可能です。</p>
+
+<p>主な用途：</p>
+<ul>
+  <li>インスタンスのストレージ容量拡張</li>
+  <li>インスタンス間のデータ移動や一時的な退避</li>
+  <li>インスタンス削除後もボリューム単体でデータを保持</li>
+</ul>
+
+<p>ボリュームタイプ：</p>
+<ul>
+  <li>ブートボリューム：OSが入った起動用ディスク</li>
+  <li>ブロックボリューム：データ保存用の追加ディスク</li>
+</ul>
+
+<p><img src="BVoverview.png" alt="image.png" /></p>
+
+<p>このチュートリアルでは、ブロック・ボリュームの基本的な使い方をご案内します。
+ブロック・ボリュームのバックアップについては応用編の<a href="../../intermediates/taking-block-volume-backups">ブロック・ボリュームをバックアップする</a> をどうぞ。</p>
+
+<p><a id="anchor2"></a></p>
+
+<h2 id="2-ブロックボリュームの作成">2. ブロック・ボリュームの作成</h2>
 
 <ol>
   <li>
     <p>コンソールメニューから <strong>ストレージ</strong> → <strong>ブロック・ストレージ</strong> → <strong>ブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+
+    <p><img src="console.png" alt="image.png" /></p>
   </li>
-  <li>
-    <p>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。</p>
+  <li>立ち上がった <strong>ブロック・ボリュームの作成</strong> ウィンドウに以下の項目を入力し、<strong>ブロック・ボリュームの作成</strong> ボタンを押します。
     <ul>
-      <li><strong>名前</strong> - 任意 (集合ハンズオン研修の場合は、講師の指示に従ってください)</li>
+      <li><strong>名前</strong> - 任意</li>
       <li><strong>コンパートメントに作成</strong> - デフォルトで現在のコンパートメントが選択されています。もし別のコンパートメントに作成したい場合は選択します。</li>
-      <li><strong>可用性ドメイン</strong> - - 第3章でインスタンスを作成したものと同じアベイラビリティ・ドメインを選択。</li>
+      <li><strong>可用性ドメイン</strong> - 第3章でインスタンスを作成したものと同じAD（アベイラビリティ・ドメイン）を選択。</li>
     </ul>
 
-    <blockquote>
-      <p><strong>POINT</strong></p>
-
-      <p>ブロック・ボリュームは同じ可用性ドメイン(AD)にあるインスタンスからのみアクセスが可能です。別の可用性ドメインや、別のリージョンのインスタンスからアクセスすることはできません。</p>
+    <blockquote class="notice--warning">
+      <p><strong>注意</strong><br />
+ブロック・ボリュームは同じ可用性ドメイン(AD)にあるインスタンスからのみアクセスが可能です。<br />
+別の可用性ドメインや、別のリージョンのインスタンスからアクセスすることはできません。</p>
     </blockquote>
 
-    <ul>
-      <li>
-        <p><strong>ボリューム・サイズとパフォーマンス</strong></p>
+    <p><img src="2_createBVsize.png" alt="image.png" /></p>
 
+    <ul>
+      <li><strong>ボリューム・サイズとパフォーマンス</strong>
         <ul>
           <li><strong>カスタム</strong> を選択</li>
           <li><strong>サイズ(GB)</strong> - 50 を入力</li>
+          <li><strong>パフォーマンス・ベースの自動チューニング</strong> - オフのまま</li>
           <li><strong>VPU</strong> - 10 (バランス) を選択</li>
+          <li><strong>デタッチ済ボリューム自動チューニング</strong> - オフのまま</li>
         </ul>
       </li>
-      <li><strong>バックアップ・ポリシー</strong> - ここでは空欄のまま。（必要に応じてポリシーを選択することで自動的にバックアップ取得することも可能です）</li>
-      <li><strong>クロス・リージョン・レプリケーション</strong> - ここでは空欄のまま。</li>
-      <li><strong>暗号化</strong> - <em>Oracle管理キーを使用した暗号化</em> が選択されていることを確認</li>
+    </ul>
+
+    <p class="notice--info"><strong>重要</strong><br />
+ストレージのパフォーマンス（IOPSとスループット）はVPUとボリュームサイズで決まります。</p>
+
+    <p><img src="2_createBVoption.png" alt="image.png" /></p>
+
+    <ul>
+      <li><strong>その他バックアップなどのオプション</strong>
+        <ul>
+          <li><strong>予約</strong> - オフのまま</li>
+          <li><strong>バックアップ・ポリシー</strong> - 空欄のまま</li>
+          <li><strong>クロスAD/リージョン・レプリケーション</strong> - 空欄のまま</li>
+          <li><strong>ボリュームの暗号化</strong> - <em>Oracle管理キーを使用した暗号化</em> が選択されていることを確認</li>
+        </ul>
+      </li>
     </ul>
   </li>
+  <li>ボリュームの作成中は プロビジョニング中 と表示され、ステータスが 使用可能 になるまで待ちます。</li>
 </ol>
 
-<p><img src="bv_img1.png" alt="bv_img1.png" /></p>
-
-<ol>
-  <li>
-    <p>ボリュームの作成中は プロビジョニング中 と表示されます。</p>
-
-    <p><img src="bv_img2.png" alt="bv_img2.png" /></p>
-  </li>
-  <li>
-    <p>ボリュームの作成が完了し、ステータスが 使用可能 になったことを確認します。</p>
-
-    <p><img src="bv_img3.png" alt="bv_img3.png" /></p>
-  </li>
-</ol>
+<p><img src="3_completeCreatingBV.png" alt="image.png" /></p>
 
 <p><a id="anchor2"></a></p>
 
-<h1 id="2-ボリュームのインスタンスへのアタッチ">2. ボリュームのインスタンスへのアタッチ</h1>
+<h2 id="3-ボリュームのインスタンスへのアタッチ">3. ボリュームのインスタンスへのアタッチ</h2>
 
-<p>第3章で作成した仮想マシンのコンピュート・インスタンスに、先ほど作成したブロック・ボリュームをアタッチします。</p>
-
-<p>アタッチ方法はiSCSIと準仮想化が選べますが、仮想マシン・インスタンスからのアタッチであれば準仮想化のほうが使い勝手がよいので今回は準仮想化を選択していきます。（念のためiSCSIの場合の追加手順も記載してあります。）</p>
-
-<ul>
-  <li>準仮想化 - OSからのコマンド操作は不要なので利用は簡単。</li>
-  <li>iSCSI - コンソールでの操作に加え、追加のOSコマンド操作が必要。ベアメタル・インスタンスの場合はiSCSIのみ。</li>
-</ul>
-
-<p>ブロック・ボリュームの画面からもアタッチ操作ができますが、今回はコンピュート・インスタンスの画面からアタッチしていきましょう。</p>
+<p>第3章で作成した仮想マシンのコンピュート・インスタンスに、先ほど作成したブロック・ボリュームをアタッチします。<br />
+コンピュート・インスタンスの画面からもアタッチ操作ができますが、今回はブロック・ボリュームの画面からアタッチしていきましょう。</p>
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>コンピュート</strong> → <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択します。</p>
-  </li>
-  <li>
-    <p>第2章で作成した実行中のインスタンス名のリンクをクリックし、インスタンスの詳細画面にナビゲートします。
-<img src="bv_img4.png" alt="bv_img4.png" /></p>
-  </li>
-  <li>
-    <p>画面下部の <strong>リソース</strong> から <strong>アタッチされたブロック・ボリューム</strong> を選択し、<strong>ブロック・ボリュームのアタッチ</strong> ボタンを押します。
-  <img src="bv_img5.png" alt="bv_img5.png" /></p>
-  </li>
-  <li>立ち上がった <strong>ブロック・ボリュームのアタッチ</strong> ウィンドウに以下の項目を入力し、<strong>アタッチ</strong> ボタンを押します。
-    <ul>
-      <li>
-        <p><strong>ボリューム・アタッチメント・タイプ</strong> - <em>準仮想化</em> を選択</p>
-      </li>
-      <li>
-        <p><strong>転送中暗号化の使用</strong> - 空欄のまま</p>
-      </li>
-      <li>
-        <p><strong>ボリューム</strong></p>
+    <p>作成したブロックボリュームの詳細画面上部から <strong>アタッチされたインスタンス</strong> 選択し、<strong>インスタンスにアタッチ</strong>ボタンを押します。</p>
 
+    <p><img src="3_attachInsConsole.png" alt="image.png" /></p>
+  </li>
+  <li>
+    <p>インスタンスにブロックボリュームをアタッチする際に必要となる各種設定項目</p>
+
+    <p><img src="3_attachInsDetail.png" alt="image.png" /></p>
+
+    <ul>
+      <li><strong>インスタンスにアタッチ</strong>
         <ul>
-          <li><strong>ボリュームの選択</strong> を選択します。</li>
-          <li>
-            <コンパートメント名>の **ボリューム** - 先ほど作成したブロック・ボリュームを選択します
-   
-</コンパートメント名>
-          </li>
+          <li><strong>アタッチメント・タイプ</strong> - <strong>準仮想化</strong> を選択</li>
+          <li><strong>アクセス・タイプ</strong> - <strong>読取り/書込み</strong> を選択</li>
         </ul>
       </li>
-      <li>
-        <p><strong>デバイス・パス</strong> - 任意のパスを選択します</p>
-      </li>
-      <li>
-        <p><strong>アクセス</strong> - <em>読取り/書込み</em> を選択</p>
-
-        <p><img src="bv_img6.png" alt="bv_img6.png" /></p>
+      <li><strong>インスタンス</strong>
+        <ul>
+          <li><strong>インスタンス</strong> の選択</li>
+          <li><strong>コンパートメント</strong> - インスタンスを作成したコンパートメントを選択</li>
+          <li><strong>作成したインスタンス</strong>の名前が出てくるので選択</li>
+          <li><strong>デバイスパス</strong> - 任意</li>
+        </ul>
       </li>
     </ul>
   </li>
   <li>
-    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> <strong>ブロック・ボリュームのアタッチ</strong> のウィンドウが開きます。内容を確認したらウィンドウを閉じます。</p>
+    <p>アタッチ中は、ステータスが <strong>アタッチ中</strong> と表示されアタッチが完了すると、ステータスが <strong>アタッチ済</strong> に変わります。
+<img src="3_attachingToattached.png" alt="image.png" /></p>
 
-    <p><img src="bv_img7.png" alt="bv_img7.png" /></p>
+    <hr />
+
+    <p>アタッチ方法はiSCSIと準仮想化が選べますが、仮想マシン・インスタンスからのアタッチであれば準仮想化のほうが使い勝手がよいので今回は準仮想化を選択していきます。（念のためiSCSIの場合の追加手順も記載してあります。）</p>
+
+    <ul>
+      <li><strong>準仮想化</strong> - OSからのコマンド操作は不要なので利用は簡単。</li>
+      <li><strong>iSCSI</strong> - コンソールでの操作に加え、追加のOSコマンド操作が必要。ベアメタル・インスタンスの場合はiSCSIのみ。</li>
+    </ul>
+
+    <hr />
   </li>
   <li>
-    <p>アタッチ中は、ステータスが <strong>アタッチ中</strong> と表示されます。</p>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> <strong>ブアタッチされたインスタンス</strong> の3点リーダーから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
 
-    <p><img src="bv_img8.png" alt="bv_img8.png" /></p>
+    <p><img src="3_iSCSI1.png" alt="image.png" /></p>
   </li>
   <li>
-    <p>アタッチが完了すると、ステータスが <strong>アタッチ済</strong> に変わります。</p>
+    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> 立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするための<strong>アタッチ・コマンド</strong>をコピーします。</p>
 
-    <p><img src="bv_img9.png" alt="bv_img9.png" /></p>
+    <p><img width="600" alt="img1.png" src="3_iSCSI2command.png" /></p>
   </li>
-  <li>
-    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> アタッチされたボリュームの右側の <strong>・・・</strong> メニューから <strong>iSCSIコマンドおよび情報</strong> を選択します。</p>
+  <li><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行し、実行結果が <strong>successful</strong> となっていることを確認します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[opc@tutorial-ins ~]$ sudo iscsiadm -m node -o new -T iqn.2015-12.com.oracleiaas:25a98dc6-22c6-44d9-9be8-5220889a0da1 -p 169.254.2.3:3260
+New iSCSI node [tcp:[hw=,ip=,net_if=,iscsi_if=default] 169.254.2.3,3260,-1 iqn.2015-12.com.oracleiaas:25a98dc6-22c6-44d9-9be8-5220889a0da1] added
+[opc@tutorial-ins ~]$ sudo iscsiadm -m node -o update -T iqn.2015-12.com.oracleiaas:25a98dc6-22c6-44d9-9be8-5220889a0da1 -n node.startup -v automatic
+[opc@tutorial-ins ~]$ sudo iscsiadm -m node -T iqn.2015-12.com.oracleiaas:25a98dc6-22c6-44d9-9be8-5220889a0da1 -p 169.254.2.3:3260 -l
+Login to [iface: default, target: iqn.2015-12.com.oracleiaas:25a98dc6-22c6-44d9-9be8-5220889a0da1, portal: 169.254.2.3,3260] successful.
+</code></pre></div>    </div>
 
-    <p><img src="bv_img10.png" alt="bv_img10.png" /></p>
+    <p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。<br />
+コマンドは再起動の度に実行する必要はありません。</p>
   </li>
-  <li>
-    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> 立ち上がった <strong>iSCSIコマンドおよび情報</strong> ウィンドウの中に、インスタンスから iSCSI デバイスにアクセスするためのコマンドをコピーします。
-<strong>アタッチ・コマンド</strong> というコマンドブロックの左下にある コピー リンクをクリックし、表示が <strong>コピー済</strong> となったことを確認します。</p>
+  <li>OSから新しくブロックデバイスが認識されていることを以下のコマンドを実行して確認します。
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lsblk
+</code></pre></div>    </div>
+    <p><img width="600" alt="img1.png" src="3_addedsdb.png" /></p>
 
-    <p><img src="img11.png" alt="img11.png" /></p>
-  </li>
-  <li>
-    <p><strong>（アタッチメント・タイプでiSCSIタイプを選択した場合のみ）</strong> インスタンスに opcユーザーで sshアクセスし、先ほどコピーしたコマンドをペーストして実行し、実行結果が <strong>successful</strong> となっていることを確認します。</p>
-
-    <p>実行した iSCSI コマンドによって、インスタンスを再ブートした後も、iSCSI ボリュームに再度ログインされます。</p>
-
-    <p>コマンドは再起動の度に実行する必要はありません。</p>
-
-    <p><img src="img12.png" alt="img12" /></p>
-  </li>
-  <li>
-    <p>以下のコマンドを実行し、OSから新しくブロックデバイスが認識されていることを確認します。</p>
-
-    <blockquote>
-
-      <p>lsblk　　</p>
-    </blockquote>
-
-    <p><img src="bv_img13.png" alt="bv_img13.png" /></p>
-
-    <p>上記の例では、新しく /dev/sdb という50GBのボリュームが認識されています。</p>
+    <p>上記の例では、新しく sdb という50GBのボリュームが認識されています。</p>
   </li>
 </ol>
 
 <p><a id="anchor3"></a></p>
 
-<h1 id="3-ボリュームのフォーマットおよびマウント">3. ボリュームのフォーマットおよびマウント</h1>
+<h2 id="4-ボリュームのフォーマットおよびマウント">4. ボリュームのフォーマットおよびマウント</h2>
 
 <p>その後、実際にボリューム上にデータを配置する際には、各OS上で適切なファイルシステムを構築して利用してください。</p>
 
@@ -666,7 +666,7 @@ $
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-15T15:53:41+09:00">August 15, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-21T09:49:50+09:00">August 21, 2025</time></p>
 
       </footer>
 
