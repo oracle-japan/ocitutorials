@@ -1,6 +1,6 @@
 ---
 title: "GPUクラスタを構築する(Ubuntu OS編)"
-excerpt: "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでUbuntuのベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。"
+excerpt: "UbuntuをOSとするGPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでUbuntuのベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。"
 order: "1270"
 layout: single
 header:
@@ -21,11 +21,11 @@ header:
 - **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** ： NVIDIA製GPU向けHPC/機械学習アプリケーション開発環境
 - CUDA-aware MPIライブラリ： **CUDA IPC** / **GPUDirect RDMA** 対応のデバイスメモリアドレッシング可能なMPIライブラリ
 
-以下の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に必要なソフトウェアのインストール・セットアップを行い、
+以下の **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストール・セットアップを行い、
 
 - **[Mellanox OFED](https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/)** ： **クラスタ・ネットワーク** 接続NIC（**NVIDIA Mellanox ConnectX**）ドライバーソフトウェア
 - WPAサプリカント： **クラスタ・ネットワーク** 接続時の802.1X認証クライアントソフトウェア
-- **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）HPC関連プラグイン
+- **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）HPC関連プラグイン： **クラスタ・ネットワーク** 接続用エージェントソフトウェア
 
 1ノードに搭載しきれないGPUを使用する複数のGPUノードに跨る大規模HPC/分散機械学習ワークロードのGPUアプリケーション開発・実行環境を構築します。
 
@@ -38,7 +38,7 @@ header:
 
 ここで紹介する構築手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の以下2本のコンテンツを組合せ、 **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **Ubuntu** にGPUアプリケーション開発環境ソフトウェアと **クラスタ・ネットワーク** 接続に必要なソフトウェアをインストール・セットアップします。
 
-- **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)**
+- **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)**
 - **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)**
 
 これらソフトウェアのインストールは、手順が多く相応の所要時間が必要なため、予め2ノードのGPUクラスタを構築してGPUノードにソフトウェアをインストールし、このGPUノードの **[カスタム・イメージ](/ocitutorials/hpc/#5-6-カスタムイメージ)** で運用に供するGPUクラスタを構築します。
@@ -62,14 +62,14 @@ header:
 本チュートリアルは、以下のソフトウェアバージョンを前提とします。
 
 - OS ： **Ubuntu** 24.04 / 22.04 （※2）
-- **NVIDIA Driver** ： 580.65.06
+- **NVIDIA Driver** ： 575.57.08
 - **NVIDIA CUDA** ： 12.9
-- **NVIDIA Fabric Manager** ： 580.65.06
+- **NVIDIA Fabric Manager** ： 575.57.08
 - **NVIDIA HPC SDK** ： 25.5
 - CUDA-aware MPIライブラリ ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.6
 - **Mellanox OFED** ： 24.10-3.2.5.0-LTS
 
-※2） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.05.20-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-05-20-0.htm)** /  **[Canonical-Ubuntu-22.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2204/canonical-ubuntu-22-04-2025-07-23-0.htm)** です。
+※2） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** /  **[Canonical-Ubuntu-22.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2204/canonical-ubuntu-22-04-2025-07-23-0.htm)** です。
 
 **所要時間 :** 約5時間
 
@@ -91,16 +91,16 @@ header:
 
 - cloud-config適用除外  
 **[2-1. cloud-config作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-1-cloud-config作成)** で作成しているcloud-configは、その処理内容をカスタム・イメージ取得用のGPUノードに適用する必要が無いため、作成しません。  
-またこれに伴い、後の **[2-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **8. 管理フィールド** で指定しているcloud-configの適用も、実施しません。
+またこれに伴い、後の **[2-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **8. 管理フィールド** で指定しているcloud-configも適用しません。
 
 - イメージ変更  
 **[2-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **4. イメージとシェイプ フィールド** で指定するイメージは、 **Canonical Ubuntu 24.04 / 22.04** を指定します。  
-（ **イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Ubuntu** を選択し表示される **Canonical Ubuntu 24.04 / 22.04** を選択して表示される **イメージ・ビルド** フィールドで **2025.05.20-0 / 2025.07.23-0** （選択できなければ最新を選択）を選択し **イメージの選択** ボタンをクリック）
+（ **イメージの変更** ボタンをクリックして表示される以下 **イメージの選択** サイドバーで **Ubuntu** を選択し表示される **Canonical Ubuntu 24.04 / 22.04** を選択して表示される **イメージ・ビルド** フィールドで **2025.07.23-0 / 2025.07.23-0** （選択できなければ最新を選択）を選択し **イメージの選択** ボタンをクリック）
 
   ![画面ショット](console_page00.png)
 
 - **OCA** 有効化のスキップ  
-**[2-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **9. Oracle Cloudエージェント フィールド** で有効化している **OCA** の **Compute HPC RDMA Auto-Configuration** と **Compute HPC RDMA Authentication** のプラグインは、のちの手順で有効化を行うため、ここでは有効化を行いません。
+**[2-2. インスタンス構成作成](/ocitutorials/hpc/spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **9. Oracle Cloudエージェント フィールド** で有効化している **OCA** の **Compute HPC RDMA Auto-Configuration** と **Compute HPC RDMA Authentication** のHPC関連プラグインは、のちの手順で有効化を行うため、ここでは有効化を行いません。
 
 ***
 # 2. クラスタ・ネットワーク接続用ソフトウェアインストール
@@ -114,14 +114,14 @@ header:
 
 本章は、GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な設定とその接続確認を実施します。
 
-この接続・確認は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)** の **[3. クラスタ・ネットワーク接続・確認](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/#3-クラスタネットワーク接続確認)** の手順を **BM.GPU4.8** と **Ubuntu** 24.04 / 22.04の場合で実施します。
+この接続・確認は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)** の **[3. クラスタ・ネットワーク接続・確認](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/#3-クラスタネットワーク接続確認)** の手順を **BM.GPU4.8** と **Ubuntu** 24.04 / 22.04の場合で実施します。
 
 ***
 # 4. GPUアプリケーション開発環境ソフトウェア環境構築
 
 本章は、GPUノードにGPUアプリケーション開発環境ソフトウェアをインストール・セットアップします。
 
-このGPUアプリケーション開発環境ソフトウェアのインストール・セットアップは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)** の **[2. NVIDIA GPU関連ソフトウェアインストール](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#2-nvidia-gpu関連ソフトウェアインストール)** と **[3. OpenMPIインストール・セットアップ](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#3-openmpiインストールセットアップ)** と **[4. 動作確認](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-動作確認)** を2台のGPUノードの何れにも実施します。
+このGPUアプリケーション開発環境ソフトウェアのインストール・セットアップは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)** の **[2. NVIDIA GPU関連ソフトウェアインストール](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#2-nvidia-gpu関連ソフトウェアインストール)** と **[3. OpenMPIインストール・セットアップ](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#3-openmpiインストールセットアップ)** と **[4. 動作確認](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-動作確認)** を2台のGPUノードの何れにも実施します。
 
 ***
 # 5. ノードを跨るデバイスメモリ間通信GPUアプリケーション動作確認
@@ -191,7 +191,7 @@ $
 
 ## 5-2. NCCL Tests
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)** の手順に従い、2ノード16GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、期待される性能が出ることを確認します。
+**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、2ノード16GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、期待される性能が出ることを確認します。
 
 
 ***
@@ -199,7 +199,7 @@ $
 
 本章は、 **[カスタム・イメージ](/ocitutorials/hpc/#5-6-カスタムイメージ)** 取得用2ノードGPUクラスタのGPUノードのうちどちらか一台で、 **カスタム・イメージ** を取得します。
 
-この **カスタム・イメージ** 取得は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)** の **[4. カスタム・イメージ取得](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/#4-カスタムイメージ取得)** を **BM.GPU4.8** と **Ubuntu** の組合わせで実施します。
+この **カスタム・イメージ** 取得は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/)** の **[4. カスタム・イメージ取得](/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/#4-カスタムイメージ取得)** を **BM.GPU4.8** と **Ubuntu** の組合わせで実施します。
 
 ***
 # 7. 本運用GPUクラスタ構築

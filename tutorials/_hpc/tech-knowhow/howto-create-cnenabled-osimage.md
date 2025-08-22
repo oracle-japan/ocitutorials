@@ -35,7 +35,7 @@ header:
 **接続条件 3.** のソフトウェアは、ベースとなるOSに **Oracle Linux** を使用する **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** には予めインストールされていますが、 **Rocky Linux** ・ **CentOS** ・ **Ubuntu** でもこれらのソフトウェアを自身でインストールすることで **クラスタ・ネットワーク** に接続することが可能で、本テクニカルTipsではこの方法を解説します。
 
 **接続条件 3-3.** のソフトウェアは、oci-cn-auth（※2）を使用する方法と **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）の **Compute HPC RDMA Authentication** プラグインを利用する方法があり、 **接続条件 3-4.** のソフトウェアは、OSの機能を使用する方法と **OCA** の **Compute HPC RDMA Auto-Configuration** プラグインを利用する方法があります。  
-ここで **OCA** が **Ubuntu** に対応していることから、本テクニカルTipsではOSが **Ubuntu** の場合は **OCA** のHPCプラグインを使用する手順を解説し、 **Rocky Linux** と **CentOS** の場合はoci-cn-authとOSの機能を使用する手順を解説します。
+ここで **OCA** が **Ubuntu** に対応していることから、本テクニカルTipsではOSが **Ubuntu** の場合は **OCA** のHPC関連プラグインを使用する手順を解説し、 **Rocky Linux** と **CentOS** の場合はoci-cn-authとOSの機能を使用する手順を解説します。
 
 ※2）**クラスタ・ネットワーク** に接続する際の802.1X認証で必要な認証処理機能を提供するユーティリティーソフトウェアで、GitHubから公開されています。
 
@@ -114,7 +114,7 @@ header:
 
 - **カスタム・イメージ** 取得用計算/GPUノードへのログインと事前準備
 - **Mellanox OFED** ダウンロード・インストール
-- WPAサプリカントインストール・ **OCA** HPCプラグイン有効化（OSが **Ubuntu** の場合）
+- WPAサプリカントインストール・ **OCA** HPC関連プラグイン有効化（OSが **Ubuntu** の場合）
 - WPAサプリカント・oci-cn-authインストール（OSが **Ubuntu** 以外の場合）
 
 なお本章の作業は、2台の計算/GPUノードの何れにも実施します。
@@ -271,7 +271,7 @@ $ sudo rpm -ivh ./oci-cn-auth-0.2.11-4.el7.noarch.rpm
 - インスタンス名による名前解決設定適用
 - 前提条件ソフトウェアインストール
 
-計算/GPUノードへのログインは、 **[2-1. 計算ノードログイン](/ocitutorials/hpc/spinup-cluster-network/#2-1-計算ノードログイン)** （ **BM.Optimized3.36** の場合）/ **[2-1. GPUノードログイン](/ocitutorials/hpc/spinup-gpu-cluster/#21-gpuノードログイン)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）の手順に従い実施しますが、この際 **Ubuntu** のインストール時に作成されるログインユーザが **ubuntu** であることを考慮し、以下のようにBastionノードからubuntuユーザでSSHログインします。
+計算/GPUノードへのログインは、 **[3-1. 計算ノードログイン](/ocitutorials/hpc/spinup-cluster-network/#3-1-計算ノードログイン)** （ **BM.Optimized3.36** の場合）/ **[3-1. GPUノードログイン](/ocitutorials/hpc/spinup-gpu-cluster/#31-gpuノードログイン)** （ **BM.GPU4.8/BM.GPU.A100-v2.8** の場合）の手順に従い実施しますが、この際 **Ubuntu** のインストール時に作成されるログインユーザが **ubuntu** であることを考慮し、以下のようにBastionノードからubuntuユーザでSSHログインします。
 
 ```sh
 $ ssh ubuntu@inst-wyr6m-comp
@@ -350,11 +350,11 @@ $ cd /mnt/iso && sudo ./mlnxofedinstall --without-fw-update -q
 次に、OCIコンソールからGPUインスタンスを再起動します。  
 この再起動は、 **BM.GPU4.8** の場合でSSHログインできるまでに20分程度かかります。
 
-### 2-3-3. WPAサプリカントインストール・OCA HPCプラグイン有効化
+### 2-3-3. WPAサプリカントインストール・OCA HPC関連プラグイン有効化
 
-本章は、WPAサプリカントのインストールと **OCA** HPCプラグインの有効化を実施し、 **[0. 概要](#0-概要)** で説明した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に必要な接続処理を実施します。
+本章は、WPAサプリカントのインストールと **OCA** HPC関連プラグインの有効化を実施し、 **[0. 概要](#0-概要)** で説明した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に必要な接続処理を実施します。
 
-以下コマンドを計算/GPUノードのubuntuユーザで実行し、WPAサプリカントと **OCA** HPCプラグインの前提条件ソフトウェアをインストールします。
+以下コマンドを計算/GPUノードのubuntuユーザで実行し、WPAサプリカントと **OCA** HPC関連プラグインの前提条件ソフトウェアをインストールします。
 
 ```sh
 $ sudo apt-get install -y wpasupplicant mstflint
@@ -395,13 +395,13 @@ $ sudo apt-get install -y wpasupplicant mstflint
 ![画面ショット](console_page06.png)
 
 次に、以下コマンドを計算/GPUノードのubuntuユーザで実行し、 **wpa_supplicant** のプロセスが **クラスタ・ネットワーク** に接続するポートの数だけ動作し、802.1X認証が通っていることを確認します。  
-なおこの結果が得られるまで、 **OCA** HPCプラグインの有効化を実施してから20分程度の時間を要します。  
+なおこの結果が得られるまで、 **OCA** HPC関連プラグインの有効化を実施してから20分程度の時間を要します。  
 以下は、16ポートを有する **BM.GPU4.8** の実行例です。
 
 ```sh
 $ ps -leaf | grep wpa_supplicant-en | grep -v grep | wc -l
 16
-$ sudo wpa_cli status | grep state
+$ grep  state= /var/log/oracle-cloud-agent/plugins/oci-hpc/oci-rdma-authentication/oci-rdma-authentication.log | tail -3
 wpa_state=COMPLETED
 Supplicant PAE state=AUTHENTICATED
 EAP state=SUCCESS
@@ -413,7 +413,7 @@ $
 
 ## 3-0. 概要
 
-本章は、計算/GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な設定を行い、 **Mellanox OFED** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmark](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を使用してその性能を確認します。
+本章は、計算/GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** への接続に必要な設定を行い、 **Mellanox OFED** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を使用してその性能を確認します。
 
 なおこれらの手順は、使用するOSやシェイプによってその手順が異なるため、以下のパターンに分けてそれぞれ解説します。
 
@@ -456,9 +456,9 @@ EAP state=SUCCESS
 $
 ```
 
-### 3-1-2. Intel MPI Benchmark実行
+### 3-1-2. Intel MPI Benchmarks実行
 
-本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続した計算/GPUノードで十分なインターコネクト性能が出ていることを確認するため、 **Intel MPI Benchmark** Ping-Pongを実行し、その結果を確認します。
+本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続した計算/GPUノードで十分なインターコネクト性能が出ていることを確認するため、 **Intel MPI Benchmarks** Ping-Pongを実行し、その結果を確認します。
 
 以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でrockyユーザのパスフレーズ無しSSH接続環境を構築します。
 
@@ -467,14 +467,14 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -oStrictHostKeyChecking
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts rocky@$hname:~/.ssh/; done
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmark** Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmarks** Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。  
 なお、ホスト名リストを作成していない場合は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ./hostlist.txt rocky@$hname:~/; done
 ```
 
-次に、以下コマンドを何れか1台の計算ノードのrockyユーザで実行し、 **Intel MPI Benchmark** Ping-Pongを実行します。
+次に、以下コマンドを何れか1台の計算ノードのrockyユーザで実行し、 **Intel MPI Benchmarks** Ping-Pongを実行します。
 
 ```sh
 $ source /usr/mpi/gcc/openmpi-4.1.7a1/bin/mpivars.sh
@@ -525,15 +525,15 @@ EAP state=SUCCESS
 $
 ```
 
-### 3-2-2. Intel MPI Benchmark実行
+### 3-2-2. Intel MPI Benchmarks実行
 
-**[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[3. MPIプログラム実行（2ノード編）](/ocitutorials/hpc/spinup-cluster-network/#3-mpiプログラム実行2ノード編)** の手順に従い、 **Intel MPI Benchmark** Ping-Pongを実行します。
+**[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[3. MPIプログラム実行（2ノード編）](/ocitutorials/hpc/spinup-cluster-network/#3-mpiプログラム実行2ノード編)** の手順に従い、 **Intel MPI Benchmarks** Ping-Pongを実行します。
 
 ## 3-3. Ubuntu on BM.Optimized3.36
 
 ### 3-3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPCプラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
 この作業は、2台の計算ノードの何れにも実施します。
 
 以下コマンドを計算ノードのubuntuユーザで実行し、 **クラスタ・ネットワーク** 接続用のネットワークインターフェースにIPアドレスが設定されていることを確認します。
@@ -544,7 +544,7 @@ $ ip a s dev ens800f0np0 | grep 'inet '
 $
 ```
 
-### 3-3-2. Intel MPI Benchmark実行
+### 3-3-2. Intel MPI Benchmarks実行
 
 以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全ての計算ノードにコピーすることで、全ての計算ノード間でubuntuユーザのパスフレーズ無しSSH接続環境を構築します。
 
@@ -553,14 +553,14 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -oStrictHostKeyChecking
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts ubuntu@$hname:~/.ssh/; done
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmark** Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmarks** Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。  
 なお、ホスト名リストを作成していない場合は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/hostlist.txt ubuntu@$hname:~/; done
 ```
 
-次に、以下コマンドを何れか1台の計算ノードのubuntuユーザで実行し、 **Intel MPI Benchmark** Ping-Pongを実行します。
+次に、以下コマンドを何れか1台の計算ノードのubuntuユーザで実行し、 **Intel MPI Benchmarks** Ping-Pongを実行します。
 
 ```sh
 $ export MPIROOT=/usr/mpi/gcc/openmpi-4.1.7rc1
@@ -573,7 +573,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi
 
 ### 3-4-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16ポートのネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPCプラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16ポートのネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpcプラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
 この作業は、2台のGPUノードの何れにも実施します。
 
 以下コマンドをGPUノードのubuntuユーザで実行し、
@@ -604,7 +604,7 @@ $ ip a | grep -E "en[p,s][1-3,5-9]" | grep inet
 | enp209s0f0np0   | 192.168.14.x/16 |
 | enp209s0f1np1   | 192.168.15.x/16 |
 
-### 3-4-2. Intel MPI Benchmark実行
+### 3-4-2. Intel MPI Benchmarks実行
 
 以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全てのGPUノードにコピーすることで、全てのGPUノード間でubuntuユーザのパスフレーズ無しSSH接続環境を構築します。
 
@@ -613,14 +613,14 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -oStrictHostKeyChecking
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts ubuntu@$hname:~/.ssh/; done
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmark** Ping-Pongを実行する際に使用するGPUノードのホスト名リストを全GPUノードにコピーします。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmarks** Ping-Pongを実行する際に使用するGPUノードのホスト名リストを全GPUノードにコピーします。  
 なお、ホスト名リストを作成していない場合は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/hostlist.txt ubuntu@$hname:~/; done
 ```
 
-次に、以下コマンドを何れか1台のGPUノードのubuntuユーザで実行し、 **Intel MPI Benchmark** Ping-Pongを実行して16ポート全てのレイテンシとスループットを確認します。  
+次に、以下コマンドを何れか1台のGPUノードのubuntuユーザで実行し、 **Intel MPI Benchmarks** Ping-Pongを実行して16ポート全てのレイテンシとスループットを確認します。  
 なおこのレイテンシとスループットは、計測する2ノードが同一ラックに搭載されているかどうかにより大きく異なり、以下は同一ラックに搭載されている場合の出力例です。異なるラックに搭載されている場合は、レイテンシが **4 us** 弱、スループットが **12 GB/s** 弱となります。
 
 ```sh
