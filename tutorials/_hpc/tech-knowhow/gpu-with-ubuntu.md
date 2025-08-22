@@ -34,13 +34,13 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
 - OS ： **Ubuntu** 24.04 / 22.04 （※2）
-- **NVIDIA Driver** ： 580.65.06
+- **NVIDIA Driver** ： 575.57.08
 - **NVIDIA CUDA** ： 12.9
-- **NVIDIA Fabric Manager** ： 580.65.06
-- **NVIDIA HPC SDK** ： 25.5
+- **NVIDIA Fabric Manager** ： 575.57.08
+- **NVIDIA HPC SDK** ： 25.7
 - CUDA-aware MPIライブラリ ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.6
 
-※2） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.05.20-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-05-20-0.htm)** /  **[Canonical-Ubuntu-22.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2204/canonical-ubuntu-22-04-2025-07-23-0.htm)** です。
+※2） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** /  **[Canonical-Ubuntu-22.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2204/canonical-ubuntu-22-04-2025-07-23-0.htm)** です。
 
 ***
 # 1. GPUインスタンス作成
@@ -95,16 +95,24 @@ OCIコンソールにログインし、GPUインスタンスを作成する **�
 $ ssh ubuntu@aaa.bbb.ccc.ddd
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、Linuxカーネルの自動アップグレードを停止します。
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、OSの自動アップデートを停止します。  
+この手順は、以降の作業でカーネルのバージョンに依存するカーネルモジュールのロードを行うため、それ以降の意図せぬカーネルの自動アップデートを避けるために実施します。
 
 ```sh
-$ sudo cp -p /etc/apt/apt.conf.d/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades_org
+$ sudo cp -p /etc/apt/apt.conf.d/20auto-upgrades /tmp/
 $ sudo sed -i 's/Upgrade "1"/Upgrade "0"/g' /etc/apt/apt.conf.d/20auto-upgrades
-$ sudo diff /etc/apt/apt.conf.d/20auto-upgrades_org /etc/apt/apt.conf.d/20auto-upgrades
-2c2
+$ sudo sed -i 's/Lists "1"/Lists "0"/g' /etc/apt/apt.conf.d/20auto-upgrades
+$ sudo diff /tmp/20auto-upgrades /etc/apt/apt.conf.d/20auto-upgrades
+1,2c1,2
+< APT::Periodic::Update-Package-Lists "1";
 < APT::Periodic::Unattended-Upgrade "1";
 ---
+> APT::Periodic::Update-Package-Lists "0";
 > APT::Periodic::Unattended-Upgrade "0";
+$ sudo systemctl disable --now unattended-upgrades
+Synchronizing state of unattended-upgrades.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
+Executing: /usr/lib/systemd/systemd-sysv-install disable unattended-upgrades
+Removed "/etc/systemd/system/multi-user.target.wants/unattended-upgrades.service".
 $
 ```
 
@@ -175,8 +183,8 @@ GPUインスタンス起動後、ubuntuユーザでSSHログインして以下�
 $ curl https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg
 $ echo 'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /' | sudo tee /etc/apt/sources.list.d/nvhpc.list
 $ sudo apt update
-$ sudo apt install -y nvhpc-25-5-cuda-multi environment-modules
-$ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.5 /usr/share/modules/modulefiles/nvhpc
+$ sudo apt install -y nvhpc-25-7-cuda-multi environment-modules
+$ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/modules/modulefiles/nvhpc
 ```
 
 ***
@@ -251,17 +259,6 @@ $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 128 && sudo make install
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **KNEM** と **XPMEM** をカーネルモジュールとしてインストールします。
-
-```sh
-$ sudo mkdir /lib/modules/`uname -r`/extra
-$ sudo cp -p /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/
-$ sudo /opt/knem/sbin/knem_local_install
-$ sudo modprobe -a xpmem knem
-$ echo knem | sudo tee /etc/modules-load.d/knem.conf
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
-```
-
 次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **gdrcopy** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
@@ -269,7 +266,20 @@ $ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
 $ cd ~/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.tar.gz
 $ tar -xvf ./v2.5.tar.gz
 $ cd gdrcopy-2.5 && make -j 128 CUDA=/usr/local/cuda-12.9 all && sudo make prefix=/opt/gdrcopy install
-$ sudo ./insmod.sh
+```
+
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **KNEM** 、 **XPMEM** 、及び **gdrcopy** をカーネルモジュールとしてインストールします。
+
+```sh
+$ sudo mkdir /lib/modules/`uname -r`/extra
+$ sudo cp -p /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/
+$ sudo cp ~/`hostname`/gdrcopy-2.5/src/gdrdrv/gdrdrv.ko /lib/modules/`uname -r`/extra/
+$ sudo /opt/knem/sbin/knem_local_install
+$ echo knem | sudo tee /etc/modules-load.d/knem.conf
+$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
+$ echo gdrdrv | sudo tee /etc/modules-load.d/gdrdrv.conf
+$ echo "options gdrdrv dbg_enabled=0 info_enabled=0 use_persistent_mapping=1" | sudo tee /etc/modprobe.d/gdrdrv.conf
+$ sudo modprobe -a xpmem knem gdrdrv
 ```
 
 次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
@@ -289,7 +299,7 @@ $ make -j 128 && sudo make install
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
 $ tar -xvf ./v1.3.0.tar.gz
-$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx --with-cuda=/usr/local/cuda-12.9 --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/nccl
+$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx --with-cuda=/usr/local/cuda-12.9 --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 $ make -j 128 && sudo make install
 ```
 
@@ -310,7 +320,7 @@ $ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/lib
 ```sh
 $ diff libtool_org libtool
 10550a10551
-> 	  export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/compilers/bin:${PATH}
+> 	  export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/compilers/bin:${PATH}
 $
 ```
 
@@ -504,4 +514,4 @@ $
 
 ## 4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。
+**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。

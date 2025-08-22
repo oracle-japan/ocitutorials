@@ -29,7 +29,7 @@ header:
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.6
 - ノード間接続 ： **クラスタ・ネットワーク** （100Gbps x 16 /ノード）
 
-※1） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.05.20-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-05-20-0.htm)** です。  
+※1） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。  
 
 以下の性能が出ています。
 
@@ -60,7 +60,7 @@ header:
 $ mkdir ~/`hostname` && cd ~/`hostname` && git clone https://github.com/NVIDIA/nccl-tests.git
 $ module purge
 $ module load nvhpc openmpi
-$ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda-12.9 NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/nccl
+$ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda-12.9 NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 ```
 
 ***
@@ -78,7 +78,7 @@ $ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/
 以下コマンドをGPUノードの **NCCL Tests** 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する **NCCL** の **All-Reduce** 通信性能を計測します。
 
 ```sh
-$ cd ~/nccl-tests
+$ cd ~/`hostname`/nccl-tests
 $ module purge
 $ module load nvhpc openmpi
 $ mpirun -n 8 ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
@@ -109,7 +109,7 @@ $
 
 ## 3-2. 2ノード16GPU
 
-以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、16枚のGPUと16個のRDMAネットワークポートを使用する、2ノードに跨る **NCCL** のAll-Reduce通信性能を計測します。
+以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する **NCCL** のAll-Reduce通信性能を計測します。
 
 ```sh
 $ cd ~/nccl-tests

@@ -1,6 +1,6 @@
 ---
 title: "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）"
-excerpt: "本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
+excerpt: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスのBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
 order: "2140"
 layout: single
 header:
@@ -13,7 +13,7 @@ header:
 
 本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、GPUクラスタ上に **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたコンテナ実行環境で **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
+本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、2インスタンスのベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
@@ -119,9 +119,9 @@ $
 ```
 
 ***
-# 2. NCCL Testsビルド
+# 2. NCCL Testsコンパイル
 
-本章は、 **NCCL Tests** をビルドします。
+本章は、 **NCCL Tests** をコンパイルします。
 
 以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザで実行し、 **NCCL Tests** を **GitHub** からダウンロードしてビルドします。
 
@@ -133,9 +133,47 @@ $ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda 
 ***
 # 3. NCCL Tests実行
 
-本章は、 **NCCL Tests** を実行します。
+## 3-0. 概要
 
-以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** の **All-Reduce** 通信性能を計測します。  
+本章は、以下の2パターンで **NCCL Tests** を実行します。
+
+1. **[1ノード8GPU](#3-1-1ノード8gpu)**
+2. **[2ノード16GPU](#3-2-2ノード16gpu)**
+
+## 3-1. 1ノード8GPU
+
+以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザでそれぞれ実行し、8枚のGPUを使用した **NCCL** の **All-Reduce** 通信性能を計測します。
+
+```sh
+$ mpirun --allow-run-as-root -np 8 ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
+# Collective test starting: all_reduce_perf
+# nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid   1466 on inst-xlyxo-ao-ol81gcn device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid   1467 on inst-xlyxo-ao-ol81gcn device  1 [0000:15:00] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid   1468 on inst-xlyxo-ao-ol81gcn device  2 [0000:51:00] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid   1469 on inst-xlyxo-ao-ol81gcn device  3 [0000:54:00] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid   1470 on inst-xlyxo-ao-ol81gcn device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid   1471 on inst-xlyxo-ao-ol81gcn device  5 [0000:92:00] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid   1472 on inst-xlyxo-ao-ol81gcn device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid   1473 on inst-xlyxo-ao-ol81gcn device  7 [0000:da:00] NVIDIA A100-SXM4-40GB
+#
+#                                                              out-of-place                       in-place          
+#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+ 10737418240    2684354560     float     sum      -1    80576  133.26  233.20      0    80569  133.27  233.22      0
+# Out of bounds values : 0 OK
+# Avg bus bandwidth    : 233.211 
+#
+# Collective test concluded: all_reduce_perf
+
+$
+```
+
+## 3-2. 2ノード16GPU
+
+以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る **NCCL** の **All-Reduce** 通信性能を計測します。  
 ここで、 **-H** オプションに指定するマスターノード（inst-xxxxx-gpu4-ol89）とスレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
