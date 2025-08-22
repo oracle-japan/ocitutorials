@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-21T09:49:50+09:00">
+  <meta property="article:published_time" content="2025-08-22T11:27:43+09:00">
 
 
 
@@ -414,7 +414,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）">
     <meta itemprop="description" content="本ドキュメントは、HPC/機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンスBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-08-21T09:49:50+09:00">
+    <meta itemprop="datePublished" content="2025-08-22T11:27:43+09:00">
     
 
     <div class="page__inner-wrap">
@@ -454,7 +454,7 @@
   <li>ノード間接続 ： <strong>クラスタ・ネットワーク</strong> （100Gbps x 16 /ノード）</li>
 </ul>
 
-<p>※1） <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> の <strong><a href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-05-20-0.htm">Canonical-Ubuntu-24.04-2025.05.20-0</a></strong> です。</p>
+<p>※1） <strong><a href="/ocitutorials/hpc/#5-17-プラットフォームイメージ">プラットフォーム・イメージ</a></strong> の <strong><a href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm">Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> です。</p>
 
 <p>以下の性能が出ています。</p>
 
@@ -489,7 +489,7 @@
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/NVIDIA/nccl-tests.git
 <span class="nv">$ </span>module purge
 <span class="nv">$ </span>module load nvhpc openmpi
-<span class="nv">$ </span><span class="nb">cd </span>nccl-tests <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 128 <span class="nv">MPI</span><span class="o">=</span>1 <span class="nv">MPI_HOME</span><span class="o">=</span>/opt/openmpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nv">NCCL_HOME</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/nccl
+<span class="nv">$ </span><span class="nb">cd </span>nccl-tests <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 128 <span class="nv">MPI</span><span class="o">=</span>1 <span class="nv">MPI_HOME</span><span class="o">=</span>/opt/openmpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nv">NCCL_HOME</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 </code></pre></div></div>
 
 <hr />
@@ -508,7 +508,7 @@
 
 <p>以下コマンドをGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/nccl-tests
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>/nccl-tests
 <span class="nv">$ </span>module purge
 <span class="nv">$ </span>module load nvhpc openmpi
 <span class="nv">$ </span>mpirun <span class="nt">-n</span> 8 ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 1
@@ -539,7 +539,7 @@
 
 <h2 id="3-2-2ノード16gpu">3-2. 2ノード16GPU</h2>
 
-<p>以下コマンドをGPUクラスタ内の何れかのGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、16枚のGPUと16個のRDMAネットワークポートを使用する、2ノードに跨る <strong>NCCL</strong> のAll-Reduce通信性能を計測します。</p>
+<p>以下コマンドをGPUクラスタ内の何れかのGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する <strong>NCCL</strong> のAll-Reduce通信性能を計測します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/nccl-tests
 <span class="nv">$ </span>module purge
@@ -588,7 +588,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-21T09:49:50+09:00">August 21, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-22T11:27:43+09:00">August 22, 2025</time></p>
 
       </footer>
 

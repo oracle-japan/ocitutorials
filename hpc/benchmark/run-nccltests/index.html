@@ -11,7 +11,7 @@
     <meta charset="utf-8">
 
 <!-- begin _includes/seo.html --><title>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編） | Oracle Cloud Infrastructure チュートリアル</title>
-<meta name="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+<meta name="description" content="本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスのBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
 
 
   <meta name="author" content="Oracle Japan Solution Engineers">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-nccltests/">
 
 
-  <meta property="og:description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+  <meta property="og:description" content="本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスのBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
 
 
 
@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-08-21T09:49:50+09:00">
+  <meta property="article:published_time" content="2025-08-22T11:27:43+09:00">
 
 
 
@@ -169,7 +169,7 @@
         
       </h1>
       
-        <p class="page__lead">本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。
+        <p class="page__lead">本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスのBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。
 </p>
       
       
@@ -413,8 +413,8 @@
 
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）">
-    <meta itemprop="description" content="本ドキュメントは、AIや機械学習のワークロード実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでGPUワークロード向けベアメタルインスタンス（BM.GPU4.8/BM.GPU.A100-v2.8）をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-08-21T09:49:50+09:00">
+    <meta itemprop="description" content="本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスのBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。">
+    <meta itemprop="datePublished" content="2025-08-22T11:27:43+09:00">
     
 
     <div class="page__inner-wrap">
@@ -425,7 +425,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-コンテナ環境構築">1. コンテナ環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-コンテナ間ssh接続環境構築">1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#1-2-mpi実行を妨げる設定の修正">1-2. MPI実行を妨げる設定の修正</a></li><li><a href="#1-3-コンテナ起動">1-3. コンテナ起動</a></li><li><a href="#1-4-sshdインストール起動">1-4. sshdインストール・起動</a></li></ul></li><li><a href="#2-nccl-testsビルド">2. NCCL Testsビルド</a></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-コンテナ環境構築">1. コンテナ環境構築</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-コンテナ間ssh接続環境構築">1-1. コンテナ間SSH接続環境構築</a></li><li><a href="#1-2-mpi実行を妨げる設定の修正">1-2. MPI実行を妨げる設定の修正</a></li><li><a href="#1-3-コンテナ起動">1-3. コンテナ起動</a></li><li><a href="#1-4-sshdインストール起動">1-4. sshdインストール・起動</a></li></ul></li><li><a href="#2-nccl-testsコンパイル">2. NCCL Testsコンパイル</a></li><li><a href="#3-nccl-tests実行">3. NCCL Tests実行</a><ul><li><a href="#3-0-概要">3-0. 概要</a></li><li><a href="#3-1-1ノード8gpu">3-1. 1ノード8GPU</a></li><li><a href="#3-2-2ノード16gpu">3-2. 2ノード16GPU</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -434,7 +434,7 @@
 
 <p>本ドキュメントで解説する <strong><a href="https://github.com/nvidia/nccl-tests">NCCL Tests</a></strong> の実行は、GPUクラスタ上に <strong>Docker Community Edition</strong> と <strong><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html">NVIDIA Container Toolkit</a></strong> で構築されたコンテナ実行環境で <strong><a href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow">TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong><a href="https://developer.nvidia.com/nccl">NCCL（NVIDIA Collective Communication Library）</a></strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用します。</p>
 
-<p>本ドキュメントで <strong>NCCL Tests</strong> を実行するGPUクラスタは、2インスタンスのGPUワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> のチュートリアル <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の手順に従う等により、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を使用してコンテナからGPUが利用可能な環境を予め用意します。</p>
+<p>本ドキュメントで <strong>NCCL Tests</strong> を実行するGPUクラスタは、2インスタンスのベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu">BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-2-機械学習環境">機械学習環境</a></strong> のチュートリアル <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の手順に従う等により、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を使用してコンテナからGPUが利用可能な環境を予め用意します。</p>
 
 <p>以上より、本ドキュメントで解説する <strong>NCCL Tests</strong> の実行は、以下の手順を経て行います。</p>
 
@@ -543,9 +543,9 @@ inst-yyyyy-gpu4-ol89
 </code></pre></div></div>
 
 <hr />
-<h1 id="2-nccl-testsビルド">2. NCCL Testsビルド</h1>
+<h1 id="2-nccl-testsコンパイル">2. NCCL Testsコンパイル</h1>
 
-<p>本章は、 <strong>NCCL Tests</strong> をビルドします。</p>
+<p>本章は、 <strong>NCCL Tests</strong> をコンパイルします。</p>
 
 <p>以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロードしてビルドします。</p>
 
@@ -556,9 +556,48 @@ inst-yyyyy-gpu4-ol89
 <hr />
 <h1 id="3-nccl-tests実行">3. NCCL Tests実行</h1>
 
-<p>本章は、 <strong>NCCL Tests</strong> を実行します。</p>
+<h2 id="3-0-概要">3-0. 概要</h2>
 
-<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全16ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br />
+<p>本章は、以下の2パターンで <strong>NCCL Tests</strong> を実行します。</p>
+
+<ol>
+  <li><strong><a href="#3-1-1ノード8gpu">1ノード8GPU</a></strong></li>
+  <li><strong><a href="#3-2-2ノード16gpu">2ノード16GPU</a></strong></li>
+</ol>
+
+<h2 id="3-1-1ノード8gpu">3-1. 1ノード8GPU</h2>
+
+<p>以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザでそれぞれ実行し、8枚のGPUを使用した <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 8 ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 1
+<span class="c"># Collective test starting: all_reduce_perf</span>
+<span class="c"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
+<span class="c">#</span>
+<span class="c"># Using devices</span>
+<span class="c">#  Rank  0 Group  0 Pid   1466 on inst-xlyxo-ao-ol81gcn device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  1 Group  0 Pid   1467 on inst-xlyxo-ao-ol81gcn device  1 [0000:15:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  2 Group  0 Pid   1468 on inst-xlyxo-ao-ol81gcn device  2 [0000:51:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  3 Group  0 Pid   1469 on inst-xlyxo-ao-ol81gcn device  3 [0000:54:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  4 Group  0 Pid   1470 on inst-xlyxo-ao-ol81gcn device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  5 Group  0 Pid   1471 on inst-xlyxo-ao-ol81gcn device  5 [0000:92:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  6 Group  0 Pid   1472 on inst-xlyxo-ao-ol81gcn device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#  Rank  7 Group  0 Pid   1473 on inst-xlyxo-ao-ol81gcn device  7 [0000:da:00] NVIDIA A100-SXM4-40GB</span>
+<span class="c">#</span>
+<span class="c">#                                                              out-of-place                       in-place          </span>
+<span class="c">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
+<span class="c">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
+ 10737418240    2684354560     float     <span class="nb">sum</span>      <span class="nt">-1</span>    80576  133.26  233.20      0    80569  133.27  233.22      0
+<span class="c"># Out of bounds values : 0 OK</span>
+<span class="c"># Avg bus bandwidth    : 233.211 </span>
+<span class="c">#</span>
+<span class="c"># Collective test concluded: all_reduce_perf</span>
+
+<span class="err">$</span>
+</code></pre></div></div>
+
+<h2 id="3-2-2ノード16gpu">3-2. 2ノード16GPU</h2>
+
+<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用した、2ノードのGPUノードに跨る <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br />
 ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-xxxxx-gpu4-ol89）とスレーブノード（inst-yyyyy-gpu4-ol89）のホスト名は、自身の環境に合わせて修正します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">--allow-run-as-root</span> <span class="nt">-np</span> 2 <span class="nt">-H</span> inst-xxxxx-gpu4-ol89:1,inst-yyyyy-gpu4-ol89:1 <span class="nt">-mca</span> plm_rsh_args <span class="s2">"-p 22222"</span> <span class="nt">--mca</span> btl_tcp_if_exclude docker0,lo <span class="nt">-x</span> <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span>4 <span class="nt">-x</span> <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span>3 <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>eth0 <span class="nt">-x</span> <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">"=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17"</span> ./build/all_reduce_perf <span class="nt">-b</span> 10G <span class="nt">-e</span> 10G <span class="nt">-t</span> 1 <span class="nt">-g</span> 8
@@ -602,7 +641,7 @@ inst-yyyyy-gpu4-ol89
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-21T09:49:50+09:00">August 21, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-22T11:27:43+09:00">August 22, 2025</time></p>
 
       </footer>
 
