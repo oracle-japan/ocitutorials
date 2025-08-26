@@ -31,13 +31,13 @@
 
 
 
-  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/object-storage/001.webp">
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/beginners/object-storage/1_overview.png">
 
 
 
 
 
-  <meta property="article:published_time" content="2025-08-22T11:27:43+09:00">
+  <meta property="article:published_time" content="2025-08-26T14:09:49+09:00">
 
 
 
@@ -158,7 +158,7 @@
 
 
 <div class="page__hero--overlay"
-  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/object-storage/001.webp');"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/beginners/object-storage/1_overview.png');"
 >
   
     <div class="wrapper">
@@ -292,7 +292,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="その7 - オブジェクト・ストレージを使う">
     <meta itemprop="description" content="オブジェクト・ストレージを使うと、とても堅牢なデータストアを信じられないくらい安価に利用できます。まずは簡単な使い方を学びましょう">
-    <meta itemprop="datePublished" content="2025-08-22T11:27:43+09:00">
+    <meta itemprop="datePublished" content="2025-08-26T14:09:49+09:00">
     
 
     <div class="page__inner-wrap">
@@ -303,25 +303,31 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#1-コンソール画面の確認とバケットの作成">1. コンソール画面の確認とバケットの作成</a></li><li><a href="#2-オブジェクトのアップロードダウンロード">2. オブジェクトのアップロード、ダウンロード</a></li><li><a href="#3-事前認証済リクエストの作成">3. 事前認証済リクエストの作成</a></li></ul>
+              <ul class="toc__menu"><li><a href="#目次">目次：</a></li><li><a href="#1-オブジェクトストレージとは">1. オブジェクト・ストレージとは</a></li><li><a href="#2-コンソール画面の確認とバケットの作成">2. コンソール画面の確認とバケットの作成</a></li><li><a href="#3オブジェクトのアップロードダウンロード">3.オブジェクトのアップロード、ダウンロード</a></li><li><a href="#4-事前認証済リクエストの作成">4. 事前認証済リクエストの作成</a></li></ul>
             </nav>
           </aside>
         
         <p><strong>チュートリアル一覧に戻る :</strong> <a href="..">入門編 - Oracle Cloud Infrastructure を使ってみよう</a></p>
 
-<p>Oracle Cloud Infrastructureオブジェクト・ストレージ・サービスは、高い信頼性と高い費用対効果を両立するスケーラブルなクラウドストレージです。
-オブジェクト・ストレージを利用すると、分析用のビッグ・データや、イメージやビデオ等のリッチ・メディア・コンテンツなど、あらゆるコンテンツ・タイプの非構造化データを無制限に保管できます。</p>
+<p><strong>＜その7 - オブジェクト・ストレージを使う＞</strong> では、コンソール画面から<strong>オブジェクト・ストレージ</strong>と呼ばれるストレージを作成し、スタンダード・バケットの作成やオブジェクトのアップロード、ダウンロードなどの基本的な操作、また事前認証リクエストを作成して一般ユーザー向けにダウンロードリンクを生成する手順について学習します。<br /></p>
 
-<p>オブジェクト・ストレージはリージョン単位のサービスで、コンピュート・インスタンスからは独立して動作します。
-ユーザーはオブジェクト・ストレージのエンドポイントに対し、OCIの内部、外部を問わずどこからでもアクセスすることができます。
-OCIのIdentity and Access Management(IAM)機能を利用した適切なアクセスコントロールや、リソース・リミットを設定することも可能です。</p>
+<p><strong>所要時間 :</strong> 約10分</p>
 
-<p>この章では、コンソール画面からオブジェクト・ストレージにアクセスし、スタンダード・バケットの作成やオブジェクトのアップロード、ダウンロードなどの基本的な操作、また事前認証リクエストを作成して一般ユーザー向けにダウンロードリンクを生成する手順について学習します。</p>
-
+<p><strong>前提条件 :</strong></p>
 <ul>
-  <li><strong>所要時間</strong> : 15分</li>
-  <li><strong>前提条件</strong> : 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切なオブジェクト・ストレージの管理権限がユーザーに付与されていること</li>
-  <li><strong>注意</strong> : チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります</li>
+  <li><strong>権限</strong> : 適切なコンパートメント(ルート・コンパートメントでもOKです)と、そこに対する適切なオブジェクト・ストレージの管理権限がユーザーに付与されていること</li>
+</ul>
+
+<p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
+
+<h2 id="目次"><strong>目次：</strong></h2>
+<ul>
+  <li><a href="#1_ObjectStorage_about">1. オブジェクト・ストレージとは</a></li>
+  <li><a href="#2_console_bucket">2. コンソール画面の確認とバケットの作成</a></li>
+  <li><a href="#3_upload_download">3 オブジェクトのアップロード、ダウンロード</a></li>
+  <li>
+    <p><a href="#4_PAR">4. 事前認証済リクエストの作成</a></p>
+  </li>
   <li>
     <p><strong>参考動画：</strong>本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。</p>
 
@@ -331,73 +337,96 @@ OCIのIdentity and Access Management(IAM)機能を利用した適切なアクセ
   </li>
 </ul>
 
-<h1 id="1-コンソール画面の確認とバケットの作成">1. コンソール画面の確認とバケットの作成</h1>
+<p><a id="1_ObjectStorage_about"></a></p>
+<h2 id="1-オブジェクトストレージとは">1. オブジェクト・ストレージとは</h2>
 
-<p>オブジェクト・ストレージ・サービスにおいて、バケットはオブジェクトを格納する箱として機能します。
-バケットはコンパートメントに紐付ける必要があり、バケットおよびその中のオブジェクトに対する操作に関する権限は、コンパートメントのポリシーを通じて制御します。</p>
+<p><strong>オブジェクト・ストレージ</strong>は、高い信頼性と高い費用対効果を両立するスケーラブルなクラウドストレージです。
+オブジェクト・ストレージを利用すると、分析用のビッグ・データや、イメージやビデオ等のリッチ・メディア・コンテンツなど、あらゆるコンテンツ・タイプの非構造化データを無制限に保管できます。</p>
 
-<p>まず、コンソール画面からバケットを作成していきます。</p>
+<p>オブジェクト・ストレージはリージョン単位のサービスで、コンピュート・インスタンスからは独立して動作します。オブジェクト・ストレージはOracle Services Network（OSN）にエンドポイントがあり、VCN内からサービスゲートウェイを経由したりインターネットを経由したりしてこのエンドポイントにアクセスすることができます。
+OCIのIdentity and Access Management(IAM)機能を利用した適切なアクセスコントロールや、リソース・リミットを設定することも可能です。</p>
+
+<p><img src="1_overview.png" alt="image.png" /></p>
+
+<p><a id="2_console_bucket"></a></p>
+
+<h2 id="2-コンソール画面の確認とバケットの作成">2. コンソール画面の確認とバケットの作成</h2>
+<p><br />
+<strong>オブジェクト・ストレージの主要用語</strong></p>
+<ul>
+  <li><strong>バケット（Bucket）:</strong>
+  データ（オブジェクト）を保存するための入れ物。すべてのオブジェクトはバケット内に格納される。</li>
+  <li><strong>オブジェクト（Object）:</strong>
+  バケットに保存される個々のデータ（ファイル）。ファイル本体とメタデータで構成される</li>
+  <li><strong>ストレージ層:</strong>
+  保存データの利用頻度や保存コストに応じて選ぶことができ、以下の3つの層がある。
+    <ul>
+      <li>スタンダード層（頻繁にアクセスするデータ）</li>
+      <li>頻度の低いアクセス層（たまに使うデータ）</li>
+      <li>アーカイブ層（長期間保存・ほとんどアクセスしないデータ）</li>
+    </ul>
+  </li>
+</ul>
+
+<p><br />
+まず、コンソール画面からバケットを作成していきます。</p>
 
 <ol>
   <li>
-    <p>コンソールメニューから <strong>ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ</strong> を選択し、<strong>バケットの作成</strong> ボタンを押します</p>
+    <p>コンソールメニューから <strong>ストレージ → オブジェクト・ストレージとアーカイブ・ストレージ → バケット</strong> を選択し、<strong>バケットの作成</strong> ボタンを押します</p>
   </li>
-  <li>立ち上がった <strong>バケットの作成</strong> ウィンドウに以下の項目を入力し、<strong>バケットの作成</strong> ボタンを押します。指定がないものは任意の値でOKです。
+  <li>以下の項目を入力し、<strong>バケットの作成</strong> ボタンを押します。指定がないものは任意の値でOKです。
     <ul>
-      <li><strong>バケット名</strong> - 任意の文字列 (画面では TutorialBucket1 と入力しています)</li>
+      <li><strong>バケット名</strong> - 任意の文字列 (このバケット名はテナンシの中で一意である必要があるため同じテナンシで複数のユーザがいる場合は調整する)</li>
       <li><strong>デフォルト・ストレージ層</strong> - <em>標準</em> を選択</li>
       <li><strong>自動階層化の有効化</strong> - チェックなし</li>
       <li><strong>オブジェクト・バージョニングの有効化</strong> - チェックなし</li>
       <li><strong>オブジェクト・イベントの出力</strong>  - チェックなし</li>
       <li><strong>コミットされていないマルチパート・アップロードのクリーンアップ</strong> - チェックなし</li>
-      <li><strong>暗号化</strong> - <em>ORACLE管理キーを使用した暗号化</em> を選択<br />
- <img src="os_image1.png" alt="os_image1.png" /></li>
+      <li><strong>暗号化</strong> - <em>Oracle管理キーを使用した暗号化</em> を選択</li>
     </ul>
+
+    <p><img src="2_createBucket.png" alt="2_createBucket.png" /></p>
   </li>
   <li>バケットの作成が完了し、コンソールに表示されていることを確認します
- <img src="os_image2.png" alt="os_image2.png" /></li>
+ <img src="2_createdB.png" width="600" alt="作成されたボリュームのスクリーンショット" /></li>
 </ol>
 
-<h1 id="2-オブジェクトのアップロードダウンロード">2. オブジェクトのアップロード、ダウンロード</h1>
+<p><a id="3_upload_download"></a></p>
+<h2 id="3オブジェクトのアップロードダウンロード">3.オブジェクトのアップロード、ダウンロード</h2>
 
 <ol>
   <li>
-    <p>作成したバケット名のリンクをクリックし、バケットの詳細画面を表示します</p>
+    <p>作成したバケット名のリンクをクリックし、バケットの詳細画面から<strong>オブジェクトのアップロード</strong> ボタンを押します
+ <img src="3_console.png" alt="3_console.png" /></p>
   </li>
   <li>
-    <p><strong>アップロード</strong> ボタンを押します</p>
-  </li>
-  <li>
-    <p>立ち上がった <strong>オブジェクトのアップロード</strong> ウィンドウで <strong>ファイルを選択</strong> リンクを押してローカルPCのファイルを選択するか、またはドラッグ&amp;ドロップでファイルをウィンドウの 「ここにファイルをドロップします」という場所にドロップします</p>
+    <p>立ち上がった <strong>オブジェクトのアップロード</strong> ウィンドウで <strong>ファイルを選択</strong> リンクを押してローカルPCのファイルを選択するか、またはドラッグ&amp;ドロップでファイルをウィンドウの 「ファイルをドロップするか選択」という場所にドロップします。</p>
 
-    <p><img src="os_image3.png" alt="os_image3.png" /></p>
-  </li>
-  <li>
-    <p>必要に応じて <strong>オブジェクト名の接頭辞</strong> を入力し、<strong>アップロード</strong> ボタンを押します。ファイル名に日本語が含まれる場合は、ここをASCII文字で設定することを推奨します。</p>
+    <p><img src="3_upload2.png" alt="3_upload2.png" /></p>
 
-    <blockquote>
-      <p><strong>TIPS</strong><br />
-オブジェクト名の接頭辞は、後からこのオブジェクトにアクセスする際のURIパスに含まれるため、わかりやすい名称をつけるようにしてください。
-UNICODE文字であれば日本語でも可能ですが、アクセス時にクライアント側でURLエンコード処理を行う必要があります。
-オブジェクト名の命名についての詳細は、マニュアルの <a href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/Object/Tasks/managingobjects.htm#namerequirements">オブジェクトの管理 - オブジェクト名</a> をご覧ください。</p>
-    </blockquote>
+    <p>その他オプションは特に選択しませんが、説明を以下にします。</p>
+    <ul>
+      <li><strong>オブジェクト名の接頭辞</strong> - オブジェクト名の先頭文字列で検索やグルーピングに使う</li>
+      <li><strong>ストレージ層</strong> - 保存データの利用頻度に応じて選択できる</li>
+      <li><strong>追加のチェックサム</strong>  - データの整合性確認のために付与するハッシュ値</li>
+      <li><strong>レスポンスヘッダーとメタデータ</strong>  ‐ オブジェクト取得時に指定ヘッダーやカスタム情報を追加できる</li>
+    </ul>
   </li>
   <li>
-    <p>オブジェクトが正しくアップロードされたことを確認します</p>
+    <p>オプションは特に指定せず「オブジェクトのアップロード」ボタンを押してアップロードすると、オブジェクトの欄から確認できます。</p>
 
-    <p><img src="os_image4.png" alt="os_image4.png" /></p>
+    <p><img src="3_upload3.png" alt="3_upload3.png" /></p>
   </li>
   <li>
-    <p>アップロードしたオブジェクトの右側の ・・・ メニューから <strong>オブジェクト詳細の表示</strong> を選択し、オブジェクトの詳細情報を表示します</p>
+    <p>アップロードしたオブジェクトの右側の ・・・ メニューから <strong>オブジェクト詳細の表示</strong> を選択し、<strong>ダウンロード</strong> ボタンを押して、オブジェクトが正しくダウンロードできることを確認します。</p>
 
-    <p><img src="os_image5.png" alt="os_image5.png" /></p>
-  </li>
-  <li>
-    <p><strong>ダウンロード</strong> ボタンを押して、オブジェクトが正しくダウンロードできることを確認します</p>
+    <p><img src="3_download.png" alt="3_download.png" /></p>
   </li>
 </ol>
 
-<h1 id="3-事前認証済リクエストの作成">3. 事前認証済リクエストの作成</h1>
+<p><a id="4_PAR"></a></p>
+<h2 id="4-事前認証済リクエストの作成">4. 事前認証済リクエストの作成</h2>
 
 <p>事前認証リクエスト(Pre-Authenticated Request) は、Oracle Cloud Infrastructure の認証されたユーザー以外のメンバーに対して、オブジェクトへのアクセス権限を付与する際に利用します。</p>
 
@@ -419,41 +448,42 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
       <li><strong>有効期限</strong> - デフォルトのまま</li>
     </ul>
 
-    <p><img src="os_image6.png" alt="os_image6.png" /></p>
+    <p><img src="4_careatePAR.png" alt="4_careatePAR.png" /></p>
   </li>
   <li>
     <p>事前認証リクエストの作成が完了すると、リクエストURLが生成されます。ウィンドウに表示された情報を確認し、<strong>事前認証済リクエストのURL</strong> ボックスの右にあるアイコンをクリックして、URLをクリップボードにコピーします</p>
 
-    <p><img src="os_image7.png" alt="os_image7.png" /></p>
+    <p><img src="4_copyPAR.png" alt="4_copyPAR.png" /></p>
+
+    <blockquote class="notice--warning">
+      <p><strong>注意</strong><br />
+この事前認証済リクエストのページは一度しか表示できません。間違って閉じた場合はもう一度、事前認証済リクエストを作成します。</p>
+    </blockquote>
   </li>
   <li>
-    <p>別のブラウザを開き、コピーしたURLをアドレスバーにペーストします</p>
+    <p>別のブラウザを開き、コピーしたURLをアドレスバーにペーストします
+ <img src="4_pasteURL.png" alt="4_pasteURL.png" /></p>
 
-    <blockquote>
+    <blockquote class="notice--info">
       <p><strong>TIPS</strong><br />
 同じブラウザでもOKですが、OCIコンソールを操作しているものとは異なるブラウザ(例えば現在使用しているブラウザがFirefoxならChrome)を立ち上げることで、Oracle Cloud Infrastructure の認証をスキップしていることがより明確に理解できます</p>
     </blockquote>
 
-    <p><img src="os_image8.png" alt="os_image8.png" /></p>
+    <p><img src="4_display_pic.png" alt="4_display_pic.png" />
+ <br /></p>
 
-    <p>ファイルがダウンロードされ、事前認証済リクエストが正しく機能していることが確認できます。ここではオブジェクトが画像ファイルのためブラウザ上で画像表示ができています。</p>
+    <p>ファイルがダウンロードされ、事前認証済リクエストが正しく機能していることが確認できます。ここではオブジェクトをダウンロードして表示しています。</p>
 
-    <blockquote>
+    <blockquote class="notice--info">
       <p><strong>TIPS</strong><br />
-ブラウザからアクセスした場合にファイルのダウンロードが行われず、ウィンドウ内で情報が表示される場合があります。
-アクセス時の挙動については、ファイルタイプとブラウザの設定に依存します。</p>
+ブラウザからアクセスした場合にファイルのダウンロードが行われず、ウィンドウ内で情報が表示される場合があります。アクセス時の挙動については、ファイルタイプとブラウザの設定に依存します。</p>
     </blockquote>
   </li>
   <li>
-    <p>作成済み事前認証済リクエストを確認します
-コンソール画面に戻り、左下メニューから <strong>事前認証済リクエスト</strong> リンクを選択します。下部に先ほど作成した事前認証済リクエストが表示されます。</p>
+    <p>作成済み事前認証済リクエストを確認します<br />
+コンソール画面に戻り、上部の <strong>「管理」</strong> の欄を選択します。作成した事前認証済リクエストが表示されます。右側の ・・・ メニューから <strong>「事前認証済リクエストの削除」</strong> を選択し、先ほど作成した事前認証済リクエストを削除します。</p>
 
-    <p><img src="os_image9.png" alt="os_image9.png" /></p>
-  </li>
-  <li>
-    <p>右側の ・・・ メニューから <strong>削除</strong> を選択し、先ほど作成した事前認証済リクエストを削除します</p>
-
-    <p><img src="os_image10.png" alt="os_image10.png" /></p>
+    <p><img src="4_deletePAR.png" alt="4_deletePAR.png" /></p>
   </li>
   <li>
     <p>先ほどファイルをダウンロードした、別のブラウザに戻り、リロードボタンを押して再度ファイルのダウンロードを試みます</p>
@@ -463,7 +493,7 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
 
     <p><code class="language-plaintext highlighter-rouge">{"code":"NotAuthenticated","message":"The required information to complete authentication was not provided."}</code></p>
 
-    <p><img src="os_image11.png" alt="os_image11.png" /></p>
+    <p><img src="4_invalidPAR.png" alt="4_invalidPAR.png" /></p>
   </li>
 </ol>
 
@@ -481,7 +511,7 @@ UNICODE文字であれば日本語でも可能ですが、アクセス時にク�
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-22T11:27:43+09:00">August 22, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-08-26T14:09:49+09:00">August 26, 2025</time></p>
 
       </footer>
 
