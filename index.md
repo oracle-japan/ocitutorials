@@ -40,7 +40,11 @@ OCIコンソールの基本的な操作方法やネットワーク、ストレ�
 
 - **[OCI応用編](/ocitutorials/intermediates/)**  
 OCIの応用編チュートリアルです。  
-LoadBalancerや証明書サービスなどをはじめとした各OCIサービスの応用的な使い方を学習できます。　　
+LoadBalancerや証明書サービスなどをはじめとした各OCIサービスの応用的な使い方を学習できます。
+
+- **[OCI実践のヒント編](/ocitutorials/oci-in-practice/)**  
+OCIの各サービスを組み合わせて使う際のポイントや、構築・運用時に役立つちょっとしたノウハウをメモ形式でまとめました。
+困った時にすぐ使えるヒントとしてご活用ください。
 
 - **[Oracle Database編](/ocitutorials/database)**  
 Oracle Database関連サービスのチュートリアルです。  
