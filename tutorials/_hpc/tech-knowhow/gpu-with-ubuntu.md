@@ -259,6 +259,16 @@ $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
 $ make -j 128 && sudo make install
 ```
 
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **KNEM** と **XPMEM** をカーネルモジュールとしてインストールします。
+
+```sh
+$ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem.ko
+$ sudo /opt/knem/sbin/knem_local_install
+$ echo knem | sudo tee /etc/modules-load.d/knem.conf
+$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
+$ sudo modprobe xpmem
+```
+
 次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **gdrcopy** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
@@ -266,20 +276,32 @@ $ make -j 128 && sudo make install
 $ cd ~/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.tar.gz
 $ tar -xvf ./v2.5.tar.gz
 $ cd gdrcopy-2.5 && make -j 128 CUDA=/usr/local/cuda-12.9 all && sudo make prefix=/opt/gdrcopy install
+$ sudo sed 's/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g' ./insmod.sh | sudo tee /opt/gdrcopy/bin/insmod.sh && sudo chmod 755 /opt/gdrcopy/bin/insmod.sh
+$ sudo install -D -m 644 ~/`hostname`/gdrcopy-2.5/src/gdrdrv/gdrdrv.ko /lib/modules/`uname -r`/extra/gdrdrv.ko
+$ sudo depmod -a
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **KNEM** 、 **XPMEM** 、及び **gdrcopy** をカーネルモジュールとしてインストールします。
+次に、以下のファイルを **/etc/systemd/system/gdrcopy.service** として作成します。
 
 ```sh
-$ sudo mkdir /lib/modules/`uname -r`/extra
-$ sudo cp -p /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/
-$ sudo cp ~/`hostname`/gdrcopy-2.5/src/gdrdrv/gdrdrv.ko /lib/modules/`uname -r`/extra/
-$ sudo /opt/knem/sbin/knem_local_install
-$ echo knem | sudo tee /etc/modules-load.d/knem.conf
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
-$ echo gdrdrv | sudo tee /etc/modules-load.d/gdrdrv.conf
-$ echo "options gdrdrv dbg_enabled=0 info_enabled=0 use_persistent_mapping=1" | sudo tee /etc/modprobe.d/gdrdrv.conf
-$ sudo modprobe -a xpmem knem gdrdrv
+[Unit]
+Description=Start gdrcopy
+
+[Service]
+ExecStart=/opt/gdrcopy/bin/insmod.sh
+Restart=no
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **gdrcopy** をカーネルモジュールとしてインストールします。
+
+```sh
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now gdrcopy
 ```
 
 次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
@@ -358,8 +380,8 @@ setenv MPICXX   mpicxx
 setenv MPIFC    mpif90
 
 prepend-path PATH               $pkg_root/bin
-prepend-path LD_LIBRARY_PATH    $pkg_root/lib
-prepend-path LIBRARY_PATH       $pkg_root/lib
+prepend-path LD_LIBRARY_PATH    $pkg_root/lib:/opt/gdrcopy/lib
+prepend-path LIBRARY_PATH       $pkg_root/lib:/opt/gdrcopy/lib
 prepend-path CPATH              $pkg_root/include
 prepend-path C_INCLUDE_PATH     $pkg_root/include
 prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
