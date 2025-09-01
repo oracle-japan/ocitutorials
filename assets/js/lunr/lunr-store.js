@@ -1541,6 +1541,12 @@ var store = [{
         "url": "/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/",
         "teaser": "/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/connection_type.png"
       },{
+        "title": "Installation procedure for OpenOnDemand on OCI HPC Cluster",
+        "excerpt":"Introduction In High-Performance Computing (HPC) environments, users have traditionally relied on Linux command-line interfaces (CUI). Some commercial products and HPC cloud SaaS offerings provide GUI-based access. This article introduces the installation procedure for OpenOnDemand, an open-source solution enabling such functionality. While the base environment here is an OCI HPC Cluster...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/openondemand/",
+        "teaser": null
+      },{
         "title": "OCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する",
         "excerpt":"2021年にOCIの新しい認証基盤としてOCI IAM Identity Domainsが登場しました。Identity DomainsはOCIのIAMサービスに代わりOCIへのユーザーの認証・認可の役割と、OCIのIdentity Cloud Serviceで提供していた他サービスとの認証連携の機能を提供しています。 本チュートリアルではSAMLによるOCI IAM Identity DomainsとAzure ADとの認証連携（外部IDP連携）を設定する手順を紹介します。Azure ADはMicrosoft社が提供するクラウドベースのIDおよびアクセス管理サービスです。本チュートリアルを完了することでAzure ADにサインオンするだけでOCIにもサインオンが可能になります。 所要時間 : 60分 前提条件 : 対象 Azure AD は構築済みとします。 注意 : ※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。 1. OCI IAM Identity DomainsのSAMLメタデータダウンロード OCI IAM Identity DomainsにてSMALメタデータをダウンロードします。 OCIのログイン画面でクラウド・アカウント名を入力します。 Select an identity domain to sign inのドロップダウンボックスから「Default」を選択し「Next」ボタンをクリックします。 ログイン画面でOCIテナント管理者のユーザー名とパスワードを入力してサインインします。 OCI コンソール画面左上のメニューより「アイデンティティとセキュリティ」→「アイデンティティ」を選択します。 アイデンティティ画面にて、「ドメイン」を選択し、ドメインを作成したいコンパートメントを指定し、ドメインを選択します。（今回は「Tutorial」ドメインを選択します。） ※自身で作成したIdentity...","categories": [],
         "tags": ["identity"],

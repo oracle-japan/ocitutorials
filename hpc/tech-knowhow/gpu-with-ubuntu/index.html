@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-09-01T21:42:48+09:00">
+  <meta property="article:published_time" content="2025-09-02T08:57:01+09:00">
 
 
 
@@ -401,6 +401,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/openondemand/">Installation procedure for OpenOnDemand on OCI HPC Cluster</a></li></p>
+        
       </ul>
     </li>
   </ul>
@@ -414,7 +416,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法">
     <meta itemprop="description" content="HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-09-01T21:42:48+09:00">
+    <meta itemprop="datePublished" content="2025-09-02T08:57:01+09:00">
     
 
     <div class="page__inner-wrap">
@@ -684,25 +686,45 @@ Removed <span class="s2">"/etc/systemd/system/multi-user.target.wants/unattended
 <span class="nv">$ </span>make <span class="nt">-j</span> 128 <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nb">install</span>
 </code></pre></div></div>
 
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>KNEM</strong> と <strong>XPMEM</strong> をカーネルモジュールとしてインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo install</span> <span class="nt">-D</span> <span class="nt">-m</span> 644 /opt/xpmem/lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/kernel/xpmem/xpmem.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/xpmem.ko
+<span class="nv">$ </span><span class="nb">sudo</span> /opt/knem/sbin/knem_local_install
+<span class="nv">$ </span><span class="nb">echo </span>knem | <span class="nb">sudo tee</span> /etc/modules-load.d/knem.conf
+<span class="nv">$ </span><span class="nb">echo </span>xpmem | <span class="nb">sudo tee</span> /etc/modules-load.d/xpmem.conf
+<span class="nv">$ </span><span class="nb">sudo </span>modprobe xpmem
+</code></pre></div></div>
+
 <p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>gdrcopy</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.tar.gz
 <span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./v2.5.tar.gz
 <span class="nv">$ </span><span class="nb">cd </span>gdrcopy-2.5 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 128 <span class="nv">CUDA</span><span class="o">=</span>/usr/local/cuda-12.9 all <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>make <span class="nv">prefix</span><span class="o">=</span>/opt/gdrcopy <span class="nb">install</span>
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="s1">'s/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g'</span> ./insmod.sh | <span class="nb">sudo tee</span> /opt/gdrcopy/bin/insmod.sh <span class="o">&amp;&amp;</span> <span class="nb">sudo chmod </span>755 /opt/gdrcopy/bin/insmod.sh
+<span class="nv">$ </span><span class="nb">sudo install</span> <span class="nt">-D</span> <span class="nt">-m</span> 644 ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>/gdrcopy-2.5/src/gdrdrv/gdrdrv.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/gdrdrv.ko
+<span class="nv">$ </span><span class="nb">sudo </span>depmod <span class="nt">-a</span>
 </code></pre></div></div>
 
-<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>KNEM</strong> 、 <strong>XPMEM</strong> 、及び <strong>gdrcopy</strong> をカーネルモジュールとしてインストールします。</p>
+<p>次に、以下のファイルを <strong>/etc/systemd/system/gdrcopy.service</strong> として作成します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo mkdir</span> /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra
-<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-p</span> /opt/xpmem/lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/kernel/xpmem/xpmem.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/
-<span class="nv">$ </span><span class="nb">sudo cp</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span>/gdrcopy-2.5/src/gdrdrv/gdrdrv.ko /lib/modules/<span class="sb">`</span><span class="nb">uname</span> <span class="nt">-r</span><span class="sb">`</span>/extra/
-<span class="nv">$ </span><span class="nb">sudo</span> /opt/knem/sbin/knem_local_install
-<span class="nv">$ </span><span class="nb">echo </span>knem | <span class="nb">sudo tee</span> /etc/modules-load.d/knem.conf
-<span class="nv">$ </span><span class="nb">echo </span>xpmem | <span class="nb">sudo tee</span> /etc/modules-load.d/xpmem.conf
-<span class="nv">$ </span><span class="nb">echo </span>gdrdrv | <span class="nb">sudo tee</span> /etc/modules-load.d/gdrdrv.conf
-<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"options gdrdrv dbg_enabled=0 info_enabled=0 use_persistent_mapping=1"</span> | <span class="nb">sudo tee</span> /etc/modprobe.d/gdrdrv.conf
-<span class="nv">$ </span><span class="nb">sudo </span>modprobe <span class="nt">-a</span> xpmem knem gdrdrv
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Start gdrcopy
+
+<span class="o">[</span>Service]
+<span class="nv">ExecStart</span><span class="o">=</span>/opt/gdrcopy/bin/insmod.sh
+<span class="nv">Restart</span><span class="o">=</span>no
+<span class="nv">Type</span><span class="o">=</span>oneshot
+<span class="nv">RemainAfterExit</span><span class="o">=</span><span class="nb">yes</span>
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</code></pre></div></div>
+
+<p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>gdrcopy</strong> をカーネルモジュールとしてインストールします。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>systemctl daemon-reload
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> gdrcopy
 </code></pre></div></div>
 
 <p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br />
@@ -775,8 +797,8 @@ setenv MPICXX   mpicxx
 setenv MPIFC    mpif90
 
 prepend-path PATH               <span class="nv">$pkg_root</span>/bin
-prepend-path LD_LIBRARY_PATH    <span class="nv">$pkg_root</span>/lib
-prepend-path LIBRARY_PATH       <span class="nv">$pkg_root</span>/lib
+prepend-path LD_LIBRARY_PATH    <span class="nv">$pkg_root</span>/lib:/opt/gdrcopy/lib
+prepend-path LIBRARY_PATH       <span class="nv">$pkg_root</span>/lib:/opt/gdrcopy/lib
 prepend-path CPATH              <span class="nv">$pkg_root</span>/include
 prepend-path C_INCLUDE_PATH     <span class="nv">$pkg_root</span>/include
 prepend-path CPLUS_INCLUDE_PATH <span class="nv">$pkg_root</span>/include
@@ -942,7 +964,7 @@ Time <span class="o">=</span>    0.023 <span class="o">[</span>sec]
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-01T21:42:48+09:00">September 1, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-02T08:57:01+09:00">September 2, 2025</time></p>
 
       </footer>
 

@@ -1,0 +1,749 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.27.3 by Michael Rose
+  Copyright 2013-2025 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+
+<html lang="ja-JP" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Installation procedure for OpenOnDemand on OCI HPC Cluster | Oracle Cloud Infrastructure チュートリアル</title>
+<meta name="description" content="Introduction">
+
+
+  <meta name="author" content="Oracle Japan Solution Engineers">
+  
+  <meta property="article:author" content="Oracle Japan Solution Engineers">
+  
+
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:site_name" content="Oracle Cloud Infrastructure チュートリアル">
+<meta property="og:title" content="Installation procedure for OpenOnDemand on OCI HPC Cluster">
+<meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/openondemand/">
+
+
+  <meta property="og:description" content="Introduction">
+
+
+
+  <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg">
+
+
+
+
+
+  <meta property="article:published_time" content="2025-09-02T08:57:01+09:00">
+
+
+
+
+
+
+<link rel="canonical" href="https://oracle-japan.github.io/ocitutorials/hpc/openondemand/">
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+  <link href="/ocitutorials/feed.xml" type="application/atom+xml" rel="alternate" title="Oracle Cloud Infrastructure チュートリアル Feed">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+  
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/ocitutorials/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-128.png" sizes="128x128">
+<link rel="icon" href="https://www.oracle.com/asset/web/favicons/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-120.png" sizes="120x120">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-152.png" sizes="152x152">
+<link rel="apple-touch-icon" href="https://www.oracle.com/asset/web/favicons/favicon-180.png" sizes="180x180">
+<link rel="shortcut icon" type="image/x-icon" href="/ocitutorials/assets/favicon/favicon.ico">
+<link rel="manifest" href="/ocitutorials/assets/favicon/site.webmanifest">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single" dir="ltr">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+          <a class="site-logo" href="/ocitutorials/"><img src="/ocitutorials/assets/images/social-og-oracle-badge.jpg" alt="OCI チュートリアル"></a>
+        
+        <a class="site-title" href="/ocitutorials/">
+          OCI チュートリアル
+          <span class="site-subtitle">Oracle Cloud Infrastructure を使ってみよう</span>
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/#%E3%83%81%E3%83%A5%E3%83%BC%E3%83%88%E3%83%AA%E3%82%A2%E3%83%AB%E3%82%B3%E3%83%B3%E3%83%86%E3%83%B3%E3%83%84%E4%B8%80%E8%A6%A7"
+                
+                
+              >チュートリアル一覧</a>
+            </li><li class="masthead__menu-item">
+              <a
+                href="/ocitutorials/about/"
+                
+                
+              >このサイトについて</a>
+            </li></ul>
+        
+        <button class="search__toggle" type="button">
+          <span class="visually-hidden">Toggle search</span>
+          <i class="fas fa-search"></i>
+        </button>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">メニュー</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+  
+
+
+
+
+
+
+
+<div class="page__hero--overlay"
+  style=" background-image: linear-gradient(rgba(34, 66, 55, 0.7), rgba(34, 66, 55, 0.7)), url('/ocitutorials/assets/images/rh01-cloud-home-pine-background.jpg');"
+>
+  
+    <div class="wrapper">
+      <h1 id="page-title" class="page__title" itemprop="headline">
+        
+          Installation procedure for OpenOnDemand on OCI HPC Cluster
+
+        
+      </h1>
+      
+        <p class="page__lead"><hr />
+
+<h1 id="introduction">Introduction</h1>
+</p>
+      
+      
+
+
+      
+    </div>
+  
+  
+</div>
+
+
+
+
+
+
+  
+    
+
+
+
+<nav class="breadcrumbs">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    
+    
+    
+      
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/" itemprop="item"><span itemprop="name">ホーム</span></a>
+
+          <meta itemprop="position" content="1" />
+        </li>
+        <span class="sep">></span>
+      
+      
+        
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/ocitutorials/hpc" itemprop="item"><span itemprop="name">Hpc</span></a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <span class="sep">></span>
+      
+    
+      
+      
+        <li class="current">Installation procedure for OpenOnDemand on OCI HPC Cluster</li>
+      
+    
+  </ol>
+</nav>
+
+  
+
+
+<div id="main" role="main">
+  
+  <div class="sidebar sticky">
+  
+  
+    
+      
+      
+      
+      
+    
+    
+      
+
+<nav class="nav__list">
+  
+  <input id="ac-toc" name="accordion-toc" type="checkbox" />
+  <label for="ac-toc">メニュー</label>
+  <ul class="nav__items">
+    <li>
+      
+      <a href=""><span class="nav__sub-title">HPC編</span></a>
+      <ul>
+        
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-cluster-network/">HPCクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withterraform/">HPCクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster/">HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-hpc-cluster-withautoscaling/">HPCクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance/">GPUインスタンスで機械学習にトライ</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-ml-instance-cntnd/">GPUインスタンスで分散機械学習環境を構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withautoscaling/">GPUクラスタを構築する(オンデマンドクラスタ自動構築編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/">GPUクラスタを構築する(Ubuntu OS編)</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-fss/">ファイル・ストレージでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-lustre-server-fswl/">File Storage with Lustreでファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server/">ブロック・ボリュームでファイル共有ストレージを構築する（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-e6/">ブロック・ボリュームでファイル共有ストレージを構築する（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-nfs-server-nvme/">短期保存データ用高速ファイル共有ストレージを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl/">HPL実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e5/">HPL実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-hpl-e6/">HPL実行方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream/">STREAM実行方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e5/">STREAM実行方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-stream-e6/">STREAM実行方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/">Intel MPI Benchmarks実行方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-h100/">NCCL Tests実行方法（BM.GPU.H100.8編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/bios-setting/">パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/stop-unused-service/">不要サービス停止によるパフォーマンスチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/">クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openfoam-tuning/">CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftips/">OpenMPIのMPI通信性能に影響するパラメータとその関連Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e5/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/cpu-binding-e6/">パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune/">OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e5/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E5.192編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/openmpi-perftune-e6/">OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/papi-profiling/">PAPIでHPCアプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/scorep-profiling/">Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/profiling-tuning/">プロファイリング情報に基づく並列アプリケーションチューニング方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/">クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/rdma-interface-configure/">クラスタ・ネットワーク接続用ネットワークインターフェース作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-create-cnenabled-osimage/">クラスタ・ネットワーク未対応OSを使ったクラスタ・ネットワーク接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/determine-cnrelated-issue/">クラスタ・ネットワークに接続する計算/GPUノード作成時の問題判別方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-get-cnrelated-statistics/">クラスタ・ネットワーク統計情報の取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/nvme-filesystem/">ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/">HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/bv-sharedstorage-recovery/">ブロック・ボリュームを使用するNFSサーバのインスタンス障害からの復旧方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/boot-volume-extension/">計算/GPUノードのブート・ボリューム動的拡張方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/">ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/">計算/GPUノードの効果的な名前解決方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-os-customization/">計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/compute-host-list/">計算/GPUノードのホスト名リスト作成方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-resize/">計算/GPUノードの追加・削除・入れ替え方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/">pdshで効率的にクラスタ管理オペレーションを実行</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/instance-principal-auth/">オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/log-monitoring/">OCIロギングとGrafanaを使用したHPC/GPUクラスタのログ監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/metric-monitoring/">OCIモニタリングとGrafanaを使用したHPC/GPUクラスタのメトリック監視方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/">UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/">Slurmによるリソース管理・ジョブ管理システム構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-blas/">線形代数演算ライブラリインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/slurm-tips/">Slurmによるリソース管理・ジョブ管理システム運用Tips</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a></li></p>
+        
+          <p></p><li><a href="/ocitutorials/hpc/openondemand/" class="active">Installation procedure for OpenOnDemand on OCI HPC Cluster</a></li></p>
+        
+      </ul>
+    </li>
+  </ul>
+</nav>
+    
+  
+  </div>
+
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Installation procedure for OpenOnDemand on OCI HPC Cluster">
+    <meta itemprop="description" content="Introduction">
+    <meta itemprop="datePublished" content="2025-09-02T08:57:01+09:00">
+    
+
+    <div class="page__inner-wrap">
+      
+
+      <section class="page__content" itemprop="text">
+        
+          <aside class="sidebar__right sticky">
+            <nav class="toc">
+              <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
+              <ul class="toc__menu"><li><a href="#introduction">Introduction</a></li><li><a href="#what-is-openondemand">What is OpenOnDemand?</a></li><li><a href="#what-is-an-hpc-cluster">What is an HPC Cluster?</a></li><li><a href="#deployment-steps">Deployment Steps</a><ul><li><a href="#configure-the-hpc-cluster">Configure the HPC Cluster</a></li><li><a href="#access-the-login-node-via-ssh">Access the Login Node via SSH</a></li><li><a href="#enable-required-repositories">Enable Required Repositories</a></li><li><a href="#install-prerequisite-packages">Install Prerequisite Packages</a></li><li><a href="#install-openondemand-4">Install OpenOnDemand 4</a></li><li><a href="#enable-apache-httpd-pam-authentication-module">Enable Apache httpd PAM Authentication Module</a></li><li><a href="#create-a-self-signed-tls-certificate">Create a Self-Signed TLS Certificate</a></li><li><a href="#add-certificate-to-hosts-trusted-ca-store">Add Certificate to Host’s Trusted CA Store</a></li><li><a href="#configure-apacheood-portal">Configure Apache/OOD Portal</a></li><li><a href="#define-slurm-cluster">Define Slurm Cluster</a></li><li><a href="#create-portal-users">Create Portal Users</a></li><li><a href="#update-vcn-security-list">Update VCN Security List</a></li><li><a href="#verify-login">Verify Login</a></li></ul></li><li><a href="#conclusion">Conclusion</a></li></ul>
+            </nav>
+          </aside>
+        
+        <hr />
+<h1 id="introduction">Introduction</h1>
+
+<p>In High-Performance Computing (HPC) environments, users have traditionally relied on Linux command-line interfaces (CUI). Some commercial products and HPC cloud SaaS offerings provide GUI-based access.</p>
+
+<p>This article introduces the installation procedure for OpenOnDemand, an open-source solution enabling such functionality. While the base environment here is an OCI HPC Cluster (Slurm cluster), the same steps apply to other Slurm clusters as well.</p>
+
+<hr />
+<h1 id="what-is-openondemand">What is OpenOnDemand?</h1>
+
+<p>OpenOnDemand (https://openondemand.org/) is an open-source web portal for HPC clusters that use job schedulers (Slurm, PBS, LSF, etc.) as their backend. Through a web browser, users can perform the following interactive operations:</p>
+
+<p><img src="1.png" alt="画面ショット" /></p>
+
+<p>These features provide intuitive and secure access to HPC clusters, which previously required CLI-only operation.</p>
+
+<hr />
+<h1 id="what-is-an-hpc-cluster">What is an HPC Cluster?</h1>
+
+<p>An HPC Cluster is a Terraform+Ansible-based script that enables quick deployment of HPC workloads on OCI.<br />
+OCI provides “Resource Manager,” a Terraform-as-a-Service, allowing easy deployment via a web-based wizard.</p>
+
+<p>https://github.com/oracle-quickstart/oci-hpc</p>
+
+<hr />
+<h1 id="deployment-steps">Deployment Steps</h1>
+
+<h2 id="configure-the-hpc-cluster">Configure the HPC Cluster</h2>
+<p>Follow this reference:</p>
+
+<p>https://qiita.com/itokazu/items/63d2e3cebdcdda5afce0</p>
+
+<h2 id="access-the-login-node-via-ssh">Access the Login Node via SSH</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh opc@&lt;Public IP&gt;
+</code></pre></div></div>
+
+<h2 id="enable-required-repositories">Enable Required Repositories</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>dnf <span class="nb">install </span>epel-release
+<span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_codeready_builder
+<span class="nb">sudo </span>yum-config-manager <span class="nt">--enable</span> ol8_developer_EPEL
+</code></pre></div></div>
+
+<h2 id="install-prerequisite-packages">Install Prerequisite Packages</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>dnf <span class="nt">-y</span> module <span class="nb">enable </span>ruby:3.3 nodejs:20
+</code></pre></div></div>
+
+<h2 id="install-openondemand-4">Install OpenOnDemand 4</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> https://yum.osc.edu/ondemand/4.0/ondemand-release-web-4.0-1.el8.noarch.rpm
+<span class="nb">sudo </span>dnf <span class="nb">install</span> <span class="nt">-y</span> ondemand mod_authnz_pam
+<span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> httpd
+</code></pre></div></div>
+
+<h2 id="enable-apache-httpd-pam-authentication-module">Enable Apache httpd PAM Authentication Module</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>vi /etc/httpd/conf.modules.d/55-authnz_pam.conf
+<span class="c"># LoadModule authnz_pam_module modules/mod_authnz_pam.so</span>
+↓ Change to:
+LoadModule authnz_pam_module modules/mod_authnz_pam.so
+</code></pre></div></div>
+
+<h2 id="create-a-self-signed-tls-certificate">Create a Self-Signed TLS Certificate</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">PRIVATE_IP</span><span class="o">=</span><span class="s2">"&lt;Private IP of Login Node&gt;"</span>
+<span class="nb">sudo </span>openssl req <span class="nt">-new</span> <span class="nt">-newkey</span> rsa:4096 <span class="nt">-nodes</span> <span class="nt">-x509</span> <span class="nt">-sha256</span> <span class="nt">-days</span> 825   <span class="nt">-keyout</span>  /etc/pki/tls/private/ood-ip.key   <span class="nt">-out</span>     /etc/pki/tls/certs/ood-ip.crt   <span class="nt">-subj</span> <span class="s2">"/CN=</span><span class="k">${</span><span class="nv">IP</span><span class="k">}</span><span class="s2">"</span>   <span class="nt">-addext</span> <span class="s2">"subjectAltName = IP:</span><span class="k">${</span><span class="nv">PRIVATE_IP</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<h2 id="add-certificate-to-hosts-trusted-ca-store">Add Certificate to Host’s Trusted CA Store</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp</span> /etc/pki/tls/certs/ood-self.crt /etc/pki/ca-trust/source/anchors/
+<span class="nb">sudo </span>update-ca-trust extract
+</code></pre></div></div>
+
+<h2 id="configure-apacheood-portal">Configure Apache/OOD Portal</h2>
+
+<p>Replace <code class="language-plaintext highlighter-rouge">&lt;Public IP of Login Node&gt;</code> before running.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /etc/ood/config
+
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="sh">'</span><span class="no">EOF</span><span class="sh">' | sudo tee /etc/ood/config/ood_portal.yml
+servername: "&lt;Public IP of Login Node&gt;"
+
+ssl:
+  - 'SSLCertificateFile "/etc/pki/tls/certs/ood-ip.crt"'
+  - 'SSLCertificateKeyFile "/etc/pki/tls/private/ood-ip.key"'
+
+auth:
+  - 'AuthType Basic'
+  - 'AuthName "Open OnDemand"'
+  - 'AuthBasicProvider PAM'
+  - 'AuthPAMService ood'
+  - 'Require valid-user'
+</span><span class="no">EOF
+
+</span><span class="nb">sudo cp</span> /etc/pam.d/sshd /etc/pam.d/ood
+
+<span class="nb">sudo</span> /opt/ood/ood-portal-generator/sbin/update_ood_portal
+<span class="nb">sudo </span>systemctl <span class="nb">enable</span> <span class="nt">--now</span> httpd
+</code></pre></div></div>
+
+<h2 id="define-slurm-cluster">Define Slurm Cluster</h2>
+
+<p>Replace <code class="language-plaintext highlighter-rouge">&lt;Private IP of Login Node&gt;</code>.</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /etc/ood/config/clusters.d
+<span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="sh">'</span><span class="no">EOF</span><span class="sh">' | sudo tee /etc/ood/config/clusters.d/myslurm.yml
+---
+v2:
+  metadata:
+    title: "OCI HPC Cluster"
+  login:
+    host: "&lt;Private IP of Login Node&gt;"
+  job:
+    adapter: "slurm"
+    bin: "/usr/bin"
+    conf: "/etc/slurm/slurm.conf"
+    copy_environment: false
+</span><span class="no">EOF
+</span></code></pre></div></div>
+
+<h2 id="create-portal-users">Create Portal Users</h2>
+
+<p>The HPC Cluster includes an LDAP server.</p>
+
+<p>Register users in LDAP:</p>
+
+<p>https://qiita.com/itokazu/items/25ace87c5c6851f1c11f</p>
+
+<h2 id="update-vcn-security-list">Update VCN Security List</h2>
+
+<p>Allow inbound connections on port 443 in the Subnet’s Security List.</p>
+
+<p>Example uses <code class="language-plaintext highlighter-rouge">0.0.0.0/0</code> (all IPs), but adjust as needed.</p>
+
+<p><img src="2.png" alt="画面ショット" /></p>
+
+<h2 id="verify-login">Verify Login</h2>
+
+<p>Access in the browser:</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://&lt;Public IP of Login Node&gt;
+</code></pre></div></div>
+
+<p>A warning screen appears. Click <strong>“Proceed to 132.145.xx.xx (Not Secure)”</strong>.</p>
+
+<p><img src="3.png" alt="画面ショット" /></p>
+
+<p>A login prompt will appear. Enter the LDAP username and password.</p>
+
+<p><img src="4.png" alt="画面ショット" /></p>
+
+<p>Upon success, the OOD portal screen is displayed.</p>
+
+<p><img src="5.png" alt="画面ショット" /></p>
+
+<hr />
+<h1 id="conclusion">Conclusion</h1>
+
+<p>With these steps, OpenOnDemand is successfully installed on an OCI HPC Cluster.<br />
+End users can manage jobs and files through a browser without relying on a login shell, enabling easier collaboration and documentation within teams.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-02T08:57:01+09:00">September 2, 2025</time></p>
+
+      </footer>
+
+      <section class="page__share">
+  <h4 class="page__share-title">共有</h4>
+
+  <a href="https://x.com/intent/tweet?text=Installation+procedure+for+OpenOnDemand+on+OCI+HPC+Cluster%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fopenondemand%2F" class="btn btn--x" aria-label="Share on X" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 X">
+    <i class="fab fa-fw fa-x-twitter" aria-hidden="true"></i><span> X</span>
+  </a>
+
+  <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fopenondemand%2F" class="btn btn--facebook" aria-label="Share on Facebook" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Facebook">
+    <i class="fab fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span>
+  </a>
+
+  <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://oracle-japan.github.io/ocitutorials/hpc/openondemand/" class="btn btn--linkedin" aria-label="Share on LinkedIn" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 LinkedIn">
+    <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i><span> LinkedIn</span>
+  </a>
+
+  <a href="https://bsky.app/intent/compose?text=Installation+procedure+for+OpenOnDemand+on+OCI+HPC+Cluster%20https%3A%2F%2Foracle-japan.github.io%2Focitutorials%2Fhpc%2Fopenondemand%2F" class="btn btn--bluesky" onclick="window.open(this.href, 'window', 'left=20,top=20,width=500,height=500,toolbar=1,resizable=0'); return false;" title="共有 Bluesky">
+    <i class="fab fa-fw fa-bluesky" aria-hidden="true"></i><span> Bluesky</span>
+  </a>
+</section>
+
+
+      
+  <nav class="pagination">
+    
+      <a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/" class="pagination--pager" title="サイト間VPNによるOCIとの拠点間接続方法">前へ</a>
+    
+    
+      <a href="#" class="pagination--pager disabled">次へ</a>
+    
+  </nav>
+
+
+    </div>
+
+    
+  </article>
+
+  
+  
+    
+<div class="page__related">
+  
+  <h2 class="page__related-title">関連記事</h2>
+  <div class="grid__wrapper">
+    
+  </div>
+</div>
+
+  
+</div>
+
+      
+    </div>
+
+    
+      <div class="search-content">
+        <div class="search-content__inner-wrap"><form class="search-content__form" onkeydown="return event.key != 'Enter';" role="search">
+    <label class="sr-only" for="search">
+      Enter your search term...
+    </label>
+    <input type="search" id="search" class="search-input" tabindex="-1" placeholder="検索キーワードを入力してください..." />
+  </form>
+  <div id="results" class="results"></div></div>
+
+      </div>
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        
+
+<div class="page__footer-follow">
+  <ul class="social-icons">
+    
+      <li><strong>フォロー</strong></li>
+    
+
+    
+      
+        
+          <li><a href="https://twitter.com/#ocijp" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden="true"></i> Twitter</a></li>
+        
+      
+        
+          <li><a href="https://github.com/oracle-japan" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden="true"></i> GitHub</a></li>
+        
+      
+    
+
+    
+      <li><a href="/ocitutorials/feed.xml"><i class="fas fa-fw fa-rss-square" aria-hidden="true"></i> Feed</a></li>
+    
+  </ul>
+</div>
+
+
+<div class="page__footer-copyright">&copy; 2025 <a href="https://oracle-japan.github.io">Oracle Cloud Infrastructure チュートリアル</a>. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/jekyll-themes/minimal-mistakes/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/ocitutorials/assets/js/main.min.js"></script>
+
+
+
+
+<script src="/ocitutorials/assets/js/lunr/lunr.min.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-store.js"></script>
+<script src="/ocitutorials/assets/js/lunr/lunr-en.js"></script>
+
+
+
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6W7FEC5CEH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6W7FEC5CEH', { 'anonymize_ip': false});
+</script>
+
+
+
+
+
+
+
+  
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+  
+    <script src="/ocitutorials/assets/js/clipboardrouge.js"></script>
+  
+    <script src="/ocitutorials/assets/js/tabs.js"></script>
+  
+    <script src="/ocitutorials/assets/js/sidebar.js"></script>
+  
+
+
+  </body>
+</html>
