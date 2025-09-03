@@ -157,21 +157,21 @@ OCIコンソールハンバーガーメニューを開きます。`監視およ�
 
 - トリガールール:
 
-    - Operator:`greater than`
+    - 演算子:`greater than`
 
-    - Value:`90`
+    - 値:`90`
 
-    - Trigger delay minutes :`1`
+    - トリガー遅延分数 :`1`
 
 ![image-20200327155521852](create-alarm-02.png)
 
-「Notifications」の**Destination**にファンクションを選択します。
+「アラーム通知の定義」の「宛先」にファンクションを選択します。
 
-   - Destination service:「Notifications」
+   - 宛先サービス:「通知」
 
    - コンパートメント: ご自身のコンパートメントを指定。今回はルートコンパートメントを指定。
 
-   - トピック: `Create Topic`をクリック
+   - トピック: `トピックの作成`をクリック
 
      ![](create-alarm-03.png)
      トピックとファンクションを既に作成している場合は、新しいトピックを作成する代わりに、ここでそのトピックを選択できます。
@@ -186,11 +186,11 @@ OCIコンソールハンバーガーメニューを開きます。`監視およ�
      
      - ファンクション: `fn-resize-vm`
 
-`Create topic and subscription`をクリックします。
+`トピックとサブスクリプションの作成`をクリックします。
 
 ![](create-alarm-04.png)
 
-**Define alarm notifications**から作成されたトピックを選択して、`Save alarm`をクリックします。
+「アラーム通知の定義」から作成されたトピックを選択して、`アラームの保存`をクリックします。
 
    ![](create-alarm-05.png)
 
@@ -205,7 +205,7 @@ Notificationサービスはファンクションや電子メールの他にもHT
 
 このステップでは、[Fn Projectハンズオン](/ocitutorials/cloud-native/fn-for-beginners/)で作成したコンピュートインスタンスを利用して動作確認を行います。
 
-現在VMのシェイプを確認します。例えば、以下の例では現状のスペックが`1 OCPU/12GB RAM`になっています。
+現在VMのシェイプを確認します。例えば、以下の例では現状のスペックが`1 OCPU/16GB RAM`になっています。
 
 ![image-20200327161440948](instance-detail-01.png)
 
