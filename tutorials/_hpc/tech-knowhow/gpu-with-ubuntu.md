@@ -363,13 +363,13 @@ $ make -j 128 all && sudo make install
 ```sh
 #%Module1.0
 ##
-## OpenMPI for NVIDIA compiler 25.5
+## OpenMPI for NVIDIA compiler 25.7
 
 proc ModulesHelp { } {
-        puts stderr "OpenMPI 5.0.6 for NVIDIA compiler 25.5\n"
+        puts stderr "OpenMPI 5.0.6 for NVIDIA compiler 25.7\n"
 }
 
-module-whatis   "OpenMPI 5.0.6 for NVIDIA compiler 25.5"
+module-whatis   "OpenMPI 5.0.6 for NVIDIA compiler 25.7"
 
 set pkg_root    /opt/openmpi
 set ver         5.0.6

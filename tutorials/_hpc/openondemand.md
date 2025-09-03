@@ -1,6 +1,7 @@
 ---
 title: "Installation procedure for OpenOnDemand on OCI HPC Cluster"
-order: "399"
+excerpt: "This article introduces the installation procedure for OpenOnDemand, an open-source solution enabling such functionality."
+order: "9999"
 layout: single
 header:
   overlay_filter: rgba(34, 66, 55, 0.7)
