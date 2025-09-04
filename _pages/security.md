@@ -115,6 +115,9 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 # Oracle Data Safe
 
++ **[Oracle Data SafeをBaseDBに設定する](/ocitutorials/security/datasafe-basedb/)**  
+   本チュートリアルでは、Data SafeをBaseDBに設定する手順を紹介しています。
+
 + **[Oracle Data Safeチュートリアルまとめ](/ocitutorials/security/datasafe-tutorial/)**  
    本チュートリアルは外部のページで、Data Safeの有効化から、各種機能の使い方についてまとめています。   
 
@@ -132,3 +135,7 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 + **[Vulnerability Scanning Serviceを設定する](https://speakerdeck.com/oracle4engineer/vulnerability-scanning-serviceshe-ding-cao-zuo-gaido)**  
    本チュートリアルは外部のページで、Vulnerability Scanning Serviceの設定手順を紹介しています。
+
+
+# Data Safe
++ **[]()
