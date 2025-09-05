@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-09-04T17:45:05+09:00">
+  <meta property="article:published_time" content="2025-09-05T14:46:14+09:00">
 
 
 
@@ -322,7 +322,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Oracle Functionsを利用したORDSでのデータベースアクセス">
     <meta itemprop="description" content="Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。このハンズオンでは、Oracle FunctionsからORDS(Oracle REST Data Services)という仕組みを利用してATPに接続し、データを取得する方法について説明します。">
-    <meta itemprop="datePublished" content="2025-09-04T17:45:05+09:00">
+    <meta itemprop="datePublished" content="2025-09-05T14:46:14+09:00">
     
 
     <div class="page__inner-wrap">
@@ -385,19 +385,17 @@ ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.ora
 <p>以下項目を入力して、「Autonomous Databaseの作成」をクリックします。</p>
 
 <ul>
-  <li>コンパートメント：使用するコンパートメントを選択。</li>
-  <li>表示名：表示名を入力。今回は、<code class="language-plaintext highlighter-rouge">Workshop ATP</code>。</li>
-  <li>データベース名：今回は、<code class="language-plaintext highlighter-rouge">WORKSHOPATP</code>。</li>
+  <li>コンパートメント：使用するコンパートメントを選択</li>
+  <li>表示名：表示名を入力。今回は、<code class="language-plaintext highlighter-rouge">Workshop ATP</code></li>
+  <li>データベース名：今回は、<code class="language-plaintext highlighter-rouge">WORKSHOPATP</code></li>
   <li>ワークロード・タイプの選択：トランザクション処理</li>
-  <li>デプロイメント・タイプ：共有インフラストラクチャ</li>
   <li>データベース・バージョンの選択：<code class="language-plaintext highlighter-rouge">19c</code></li>
-  <li>OCPU数：<code class="language-plaintext highlighter-rouge">1</code></li>
-  <li>ストレージ(TB)：<code class="language-plaintext highlighter-rouge">1</code></li>
-  <li>自動スケーリング：チェックをオフ。</li>
-  <li>パスワード：パスワードを入力。</li>
-  <li>パスワードの確認：再度パスワードを入力。</li>
+  <li>ECPU数：<code class="language-plaintext highlighter-rouge">2</code></li>
+  <li>ストレージ(GB)：<code class="language-plaintext highlighter-rouge">20</code></li>
+  <li>自動スケーリング：チェックをオフ</li>
+  <li>パスワード：パスワードを入力</li>
+  <li>パスワードの確認：再度パスワードを入力</li>
   <li>ネットワーク・アクセスの選択：すべての場所からのセキュア・アクセス</li>
-  <li>ライセンス・タイプの選択：ライセンス込みを選択。</li>
 </ul>
 
 <p><img src="create-atp-02.png" alt="image-20200409152332743" /></p>
@@ -406,7 +404,7 @@ ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.ora
 
 <p>しばらくすると、「利用可能」のステータスになります。</p>
 
-<p>次に、Autonomous Databaseの詳細の画面で、「DB接続」をクリックします。</p>
+<p>次に、Autonomous Databaseの詳細の画面で、「データベース接続」をクリックします。</p>
 
 <p><img src="download-wallet-01.png" alt="image-20200409153818272" /></p>
 
@@ -422,15 +420,9 @@ ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.ora
 
 <h3 id="2-2ordsサービスのベースurlの取得">2-2.ORDSサービスのベースURLの取得</h3>
 
-<p>Autonomous Databaseの詳細の画面で、「サービス・コンソール」をクリックします。</p>
+<p>Autonomous Databaseの詳細の画面で、「ツール構成」をクリックします。</p>
 
-<p><img src="active-ords-01.png" alt="image-20200409153534491" /></p>
-
-<p>「開発」をクリックします。</p>
-
-<p><img src="active-ords-02.png" alt="image-20200409153625460" /></p>
-
-<p>「RESTfulサービスとSODA」の枠にある「URLのコピー」をクリックして、コピーされたURLをメモ帳に書き留めてください。<br />
+<p>「Webアクセス(ORDS)」の枠にある「パブリック・アクセスURL」の「コピー」をクリックして、コピーされたURLをメモ帳に書き留めてください。<br />
 これはORDSサービスのベースURL(<code class="language-plaintext highlighter-rouge">ords_base_url</code>)です。<br />
 この値は後続の手順で使用するので、テキストエディタなどに保存しておきます。</p>
 
@@ -438,22 +430,7 @@ ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.ora
 
 <h3 id="2-3ordsサービスの有効化">2-3.ORDSサービスの有効化</h3>
 
-<p>Autonomous Databaseの詳細の画面で、「サービス・コンソール」をクリックします。</p>
-
-<p><img src="active-ords-01.png" alt="" /></p>
-
-<p>「開発」をクリックします。</p>
-
-<p><img src="active-ords-02.png" alt="" /></p>
-
-<p>「データベース・アクション」をクリックします。</p>
-
-<p><img src="active-ords-03-02.png" alt="" /></p>
-
-<p>ユーザー名とパスワードを入力して、「ログイン」をクリックします。<br />
-ユーザ名は<code class="language-plaintext highlighter-rouge">admin</code>、パスワードは<a href="#1-1atpのプロビジョニング">1-1.ATPのプロビジョニング</a>で設定したパスワードです。</p>
-
-<p>[開発]メニューの[SQL]をクリックします。</p>
+<p>Autonomous Databaseの詳細の画面で、「データベース・アクション」「SQL」をクリックします。</p>
 
 <p><img src="active-ords-03-03.png" alt="" /></p>
 
@@ -730,7 +707,7 @@ ORDS(Oracle REST Data Services)の詳細については<a href="https://docs.ora
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-04T17:45:05+09:00">September 4, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-05T14:46:14+09:00">September 5, 2025</time></p>
 
       </footer>
 
