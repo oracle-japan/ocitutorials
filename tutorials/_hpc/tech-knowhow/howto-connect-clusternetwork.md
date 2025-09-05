@@ -169,7 +169,7 @@ $ sudo diff /etc/oracle-cloud-agent/plugins/oci-hpc/oci-hpc-configure/rdma_netwo
 $
 ```
 
-ネットワークインターフェース設定ファイル（**/etc/sysconfig/network-scripts/ifcfg-rdma0**）を削除後、 **OCA** サービスとネットワークインターフェースを再起動します。
+以下コマンドを当該インスタンスのopcユーザで実行し、ネットワークインターフェース設定ファイルを削除して **OCA** サービスとネットワークインターフェースを再起動します。
 
 ```sh
 $ sudo rm /etc/sysconfig/network-scripts/ifcfg-rdma0

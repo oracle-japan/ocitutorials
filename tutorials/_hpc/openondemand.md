@@ -30,7 +30,7 @@ These features provide intuitive and secure access to HPC clusters, which previo
 An HPC Cluster is a Terraform+Ansible-based script that enables quick deployment of HPC workloads on OCI.  
 OCI provides "Resource Manager," a Terraform-as-a-Service, allowing easy deployment via a web-based wizard.
 
-https://github.com/oracle-quickstart/oci-hpc
+**[https://github.com/oracle-quickstart/oci-hpc](https://github.com/oracle-quickstart/oci-hpc)**
 
 ***
 # Deployment Steps
@@ -38,7 +38,7 @@ https://github.com/oracle-quickstart/oci-hpc
 ## Configure the HPC Cluster
 Follow this reference:
 
-https://qiita.com/itokazu/items/63d2e3cebdcdda5afce0
+**[https://qiita.com/itokazu/items/63d2e3cebdcdda5afce0](https://qiita.com/itokazu/items/63d2e3cebdcdda5afce0)**
 
 ## Access the Login Node via SSH
 
@@ -146,7 +146,7 @@ The HPC Cluster includes an LDAP server.
 
 Register users in LDAP:
 
-https://qiita.com/itokazu/items/25ace87c5c6851f1c11f
+**[https://qiita.com/itokazu/items/25ace87c5c6851f1c11f](https://qiita.com/itokazu/items/25ace87c5c6851f1c11f)**
 
 ## Update VCN Security List  
 
