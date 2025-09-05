@@ -58,9 +58,9 @@ header:
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
 - イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
-- **OpenMPI** ： 5.0.6
-- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.4
-- **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.17.0
+- **OpenMPI** ： 5.0.8
+- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
+- **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
 
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
@@ -75,27 +75,26 @@ header:
 
 ## 1-0. 概要
 
-本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** 、 **OpenUCX** 、及びRPMパッケージ等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
+本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
 
 以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。
 
-## 1-1.  OpenMPI前提ソフトウェア・RPMパッケージインストール
+## 1-1.  OpenMPI前提ソフトウェアインストール
 
-## 1-1-0. 概要
+### 1-1-0. 概要
 
-本章は、 **OpenMPI** の前提となるソフトウェアやRPMパッケージをインストールします。
+本章は、 **OpenMPI** の前提となる以下のソフトウェアをインストールします。
 
-## 1-1-1. 前提RPMパッケージインストール
+1. **[libevent](https://libevent.org/)**
+2. **[hwloc](https://www.open-mpi.org/projects/hwloc/)**
+3. **OpenPMIx**
+4. **OpenUCX**
+5. **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）
+6. **[PRRTE](https://github.com/openpmix/prrte)**
 
-以下コマンドをopcユーザで実行し、前提RPMパッケージをインストールします。  
+### 1-1-1. libeventインストール
 
-```sh
-$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
-```
-
-## 1-1-2. libeventインストール
-
-以下コマンドをopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **libevent** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -105,65 +104,72 @@ $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
 $ make -j 36 && sudo make install
 ```
 
-## 1-1-3. hwlocインストール
+### 1-1-2. hwlocインストール
 
 以下コマンドをopcユーザで実行し、 **hwloc** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
-$ tar -xvf ./hwloc-2.11.2.tar.gz
-$ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
+$ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
+$ tar -xvf ./hwloc-2.12.2.tar.gz
+$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
 $ make -j 36 && sudo make install
 ```
 
-## 1-1-4. OpenPMIxインストール
+### 1-1-3. OpenPMIxインストール
 
 以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-$ tar -xvf ./pmix-5.0.4.tar.gz
-$ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
+$ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
+$ tar -xvf ./pmix-5.0.8.tar.gz
+$ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
 $ make -j 36 && sudo make install
 ```
 
-## 1-1-5. XPMEMインストール
+### 1-1-4. XPMEMインストール
 
-以下コマンドをopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && git clone https://github.com/hpc/xpmem.git
+$ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 36 && sudo make install
+$ make -j 128 && sudo make install
 ```
 
-## 1-1-6. OpenUCXインストール
+次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
+
+```sh
+$ sudo modprobe -r xpmem
+$ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
+$ sudo depmod -a
+$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
+$ sudo modprobe xpmem
+```
+
+### 1-1-4. OpenUCXインストール
 
 以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
-$ tar -xvf ./ucx-1.17.0.tar.gz
-$ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx --with-knem=/opt/knem-1.1.4.90mlnx3 --with-xpmem=/opt/xpmem
+$ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
+$ tar -xvf ./ucx-1.19.0.tar.gz
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem
 $ make -j 36 && sudo make install
 ```
 
-ここでは、 **KNEM** と **XPMEM** を **OpenUCX** から利用出来るようにビルドしています。  
-なお **OpenUCX** から利用する **KNEM** は、 **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれるもの（ **/opt/knem-1.1.4.90mlnx3** ）を使用します。
+### 1-1-5. UCCインストール
 
-## 1-1-7. Unified Collective Communicationインストール
-
-以下コマンドをopcユーザで実行し、 **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **UCC** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
-$ tar -xvf ./v1.3.0.tar.gz
-$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
+$ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
+$ tar -xvf ./v1.5.0.tar.gz
+$ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
 $ make -j 36 && sudo make install
 ```
 
@@ -173,9 +179,9 @@ $ make -j 36 && sudo make install
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
-$ tar -xvf ./openmpi-5.0.6.tar.gz
-$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
+$ cd ~/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
+$ tar -xvf ./openmpi-5.0.8.tar.gz
+$ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
 $ make -j 36 all && sudo make install
 ```
 
@@ -183,31 +189,69 @@ $ make -j 36 all && sudo make install
 
 ## 1-3. セットアップ
 
-本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な環境のセットアップを行います。  
-ここでは、このユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
-このユーザのホームディレクトリが共有されていない場合は、 **OpenMPI** を実行する全てのノードでこれを実行します。
+### 1-3-0. 概要
 
-以下コマンド実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
+本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な以下の環境設定を行います。
+
+1. **Environment modules** への **OpenMPI** 用モジュール登録
+2. ホストリストファイル作成
+3. パスフレーズ無しSSHアクセスのための設定
+
+### 1-3-1. Environment modulesへのOpenMPI用モジュール登録
+
+以下のファイルを **/usr/share/Modules/modulefiles/openmpi** で作成します。  
+このファイルは、 **Environment modules** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定が可能になります
 
 ```sh
-$ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
+#%Module1.0
+##
+## OpenMPI for NVIDIA compiler 25.7
+
+proc ModulesHelp { } {
+        puts stderr "OpenMPI 5.0.8 for GNU compiler\n"
+}
+
+module-whatis   "OpenMPI 5.0.8 for GNU compiler"
+
+set pkg_root    /opt/openmpi
+set ver         5.0.8
+
+setenv MPI_ROOT $pkg_root
+setenv MPICC    mpicc
+setenv MPICXX   mpicxx
+setenv MPIFC    mpif90
+
+prepend-path PATH               $pkg_root/bin:/opt/ucx/bin
+prepend-path LD_LIBRARY_PATH    $pkg_root/lib
+prepend-path LIBRARY_PATH       $pkg_root/lib
+prepend-path CPATH              $pkg_root/include
+prepend-path C_INCLUDE_PATH     $pkg_root/include
+prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
+prepend-path MANPATH            $pkg_root/share/man
 ```
 
-次に、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。（※2）
+### 1-3-2. ホストリストファイル作成
 
-※2）ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために作成しますが、 **Slurm** 環境では必要ありません。
+**OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
+このユーザのホームディレクトリが共有されていない場合は、 **OpenMPI** を実行する全てのノードでこれを実行します。
 
-次に以下コマンドを実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るように設定します。（※3）  
+**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
+
+なお、ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために作成しますが、 **Slurm** 環境では必要ありません。
+
+### 1-3-3. パスフレーズ無しSSHアクセスのための設定
+
+**OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、MPIプログラムを実行する全てのノード間でパスフレーズ無しでSSHアクセス出来るように設定します。  
 このユーザのホームディレクトリが共有されていない場合は、1ノードで以下の手順を実行し、作成した **id_rsa** 、 **authorized_keys** 、 及び **known_hosts** の3個のファイルをパーミッションを維持して **OpenMPI** を実行する全てのノードの同じディレクトリに配置します。
 
 ```sh
-$ cd ~ && mkdir .ssh; chmod 700 .ssh
+$ cd ~ && mkdir .ssh && chmod 700 .ssh
 $ ssh-keygen -t rsa -N "" -f .ssh/id_rsa
-$ cd .ssh; cat ./id_rsa.pub >> ./authorized_keys; chmod 600 ./authorized_keys
+$ cd .ssh && cat ./id_rsa.pub >> ./authorized_keys && chmod 600 ./authorized_keys
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname :; done
 ```
 
-※3）ここで実施するパスフレーズ無しのSSHアクセスのための手順は、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **PMIx** を使用する **Slurm** 環境では必要ありません。
+なお、ここで実施するパスフレーズ無しのSSHアクセスのための手順は、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **PMIx** を使用する **Slurm** 環境では必要ありません。
 
 ***
 # 2. 稼働確認
@@ -222,77 +266,80 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 
 ## 2-2. NAS Parallel Benchmarks実行
 
-以下コマンドを全てのノードの **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
+**OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
 $ cd ~ && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 $ tar -xvf ./NPB3.4.3-MZ.tar.gz
 $ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def
+$ module load openmpi
 $ make bt-mz CLASS=C
 ```
 
-次に、以下コマンドを **OpenMPI** を利用するユーザで何れか1ノードで実行し、 **NAS Parallel Benchmarks** を実行、その結果を確認します。
+次に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** を実行、その結果を確認します。
 
 ```sh
 $ mpirun -n 36 -N 18 --hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_2:1 --bind-to none ./bin/bt-mz.C.x
+[inst-xsyjo-x9-ol905:253761] SET OMP_NUM_THREADS=2
+[inst-xsyjo-x9-ol905:253761] SET UCX_NET_DEVICES=mlx5_2:1
 
 
-NAS Parallel Benchmarks (NPB3.4-MZ MPI+OpenMP) - BT-MZ Benchmark
+ NAS Parallel Benchmarks (NPB3.4-MZ MPI+OpenMP) - BT-MZ Benchmark
 
-Number of zones:  16 x  16
-Total mesh size:   480 x   320 x  28
-Iterations: 200    dt:   0.000100
-Number of active processes:     36
+ Number of zones:  16 x  16
+ Total mesh size:   480 x   320 x  28
+ Iterations: 200    dt:   0.000100
+ Number of active processes:     36
 
-Use the default load factors
-Total number of threads:     72  (  2.0 threads/process)
+ Use the default load factors
+ Total number of threads:     72  (  2.0 threads/process)
 
-Calculated speedup =     70.51
+ Calculated speedup =     70.51
 
-Time step    1
-Time step   20
-Time step   40
-Time step   60
-Time step   80
-Time step  100
-Time step  120
-Time step  140
-Time step  160
-Time step  180
-Time step  200
-Verification being performed for class C
-accuracy setting for epsilon =  0.1000000000000E-07
-Comparison of RMS-norms of residual
-        1 0.3457703287806E+07 0.3457703287806E+07 0.1089509278487E-12
-        2 0.3213621375929E+06 0.3213621375929E+06 0.1320422658492E-12
-        3 0.7002579656870E+06 0.7002579656870E+06 0.1512841667693E-13
-        4 0.4517459627471E+06 0.4517459627471E+06 0.2280652586031E-13
-        5 0.2818715870791E+07 0.2818715870791E+07 0.1486830094937E-14
-Comparison of RMS-norms of solution error
-        1 0.2059106993570E+06 0.2059106993570E+06 0.1540627820550E-12
-        2 0.1680761129461E+05 0.1680761129461E+05 0.2136344671269E-12
-        3 0.4080731640795E+05 0.4080731640795E+05 0.3102425585186E-13
-        4 0.2836541076778E+05 0.2836541076778E+05 0.1026032398931E-12
-        5 0.2136807610771E+06 0.2136807610771E+06 0.2333146948798E-12
-Verification Successful
+ Time step    1
+ Time step   20
+ Time step   40
+ Time step   60
+ Time step   80
+ Time step  100
+ Time step  120
+ Time step  140
+ Time step  160
+ Time step  180
+ Time step  200
+ Verification being performed for class C
+ accuracy setting for epsilon =  0.1000000000000E-07
+ Comparison of RMS-norms of residual
+           1 0.3457703287806E+07 0.3457703287806E+07 0.1089509278487E-12
+           2 0.3213621375929E+06 0.3213621375929E+06 0.1320422658492E-12
+           3 0.7002579656870E+06 0.7002579656870E+06 0.1512841667693E-13
+           4 0.4517459627471E+06 0.4517459627471E+06 0.2280652586031E-13
+           5 0.2818715870791E+07 0.2818715870791E+07 0.1486830094937E-14
+ Comparison of RMS-norms of solution error
+           1 0.2059106993570E+06 0.2059106993570E+06 0.1540627820550E-12
+           2 0.1680761129461E+05 0.1680761129461E+05 0.2136344671269E-12
+           3 0.4080731640795E+05 0.4080731640795E+05 0.3102425585186E-13
+           4 0.2836541076778E+05 0.2836541076778E+05 0.1026032398931E-12
+           5 0.2136807610771E+06 0.2136807610771E+06 0.2333146948798E-12
+ Verification Successful
 
 
-BT-MZ Benchmark Completed.
-Class           =                        C
-Size            =            480x  320x 28
-Iterations      =                      200
-Time in seconds =                     7.82
-Total processes =                       36
-Total threads   =                       72
-Mop/s total     =                310414.25
-Mop/s/thread    =                  4311.31
-Operation type  =           floating point
-Verification    =               SUCCESSFUL
-Version         =                    3.4.3
-Compile date    =              10 Dec 2024
+ BT-MZ Benchmark Completed.
+ Class           =                        C
+ Size            =            480x  320x 28
+ Iterations      =                      200
+ Time in seconds =                     7.67
+ Total processes =                       36
+ Total threads   =                       72
+ Mop/s total     =                316523.02
+ Mop/s/thread    =                  4396.15
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.4.3
+ Compile date    =              04 Sep 2025
 
-Compile options:
+ Compile options:
     FC           = mpif90
     FLINK        = $(FC)
     F_LIB        = (none)
@@ -302,10 +349,10 @@ Compile options:
     RAND         = (none)
 
 
-Please send all errors/feedbacks to:
+ Please send all errors/feedbacks to:
 
-NPB Development Team
-npb@nas.nasa.gov
+ NPB Development Team
+ npb@nas.nasa.gov
 
 
 $ 

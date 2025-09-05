@@ -53,12 +53,13 @@ header:
 - ノード間接続 ： **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** （※9）
 - OS： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※10）
 - **OpenMPI** ： 5.0.6（※11）
+- **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** ： 1.17.0（※11）
 - **Intel MPI Benchmarks** ： 2021.7（※12）
 
 ※8）**SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
 ※9）本テクニカルTipsの2ノード以上の計測は、 **クラスタ・ネットワーク** の同一リーフスイッチに接続するインスタンスを使用して行っています。同一リーフスイッチに接続するインスタンス間のノード間接続に於ける効果は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法](/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/)** を参照してください。  
 ※10）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-※11） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。  
+※11） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** と **OpenUCX** です。  
 ※12） **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** に従って構築された **Intel MPI Benchmarks** です。
 
 また **Intel MPI Benchmarks** の計測は、 **numactl** コマンドを介して以下の実行時オプションを指定して起動します。

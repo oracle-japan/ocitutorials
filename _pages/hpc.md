@@ -99,7 +99,7 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
     構築するHPC/GPUクラスタは、以下のクラスタ管理機能を利用可能とするか、これらを含まない基礎インフラストラクチャのみを構築するかを選択する事が可能です。
 
-    - ユーザ統合管理（LDAP)
+    - ユーザ統合管理（LDAP）
     - ファイル共有ストレージ（NFS）
     - 計算/GPUノードのリソース管理・ジョブ管理（ **Slurm** ） 
 
@@ -228,19 +228,21 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 本章は、HPC/GPUクラスタの基礎性能を計測するデファクトスタンダードな以下の標準ベンチマークを、HPC/機械学習ワークロード向けシェイプや **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** を使用して実行する方法を解説します。
 
-- **HPL**
-- **STREAM**
-- **Intel MPI Benchmarks**
-- **NCCL Tests**
+- **[HPL](https://www.netlib.org/benchmark/hpl/)**
+- **[STREAM](https://www.cs.virginia.edu/stream/)**
+- **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)**
+- **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)**
+- **[NCCL Tests](https://github.com/NVIDIA/nccl-tests)**
 
 各ベンチマークの実行方法は、下表のコンテンツ列のリンクをクリックしてください。
 
-| 名称                                                                                                                         | 対象シェイプ                                                                                                                                                                                                          | 対象OS | コンテンツ |
-| :------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--: | :---: |
-| **[HPL](https://www.netlib.org/benchmark/hpl/)**                                                                           | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**          | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux**     |**[ここ](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e6/)**       |
-| **[STREAM](https://www.cs.virginia.edu/stream/)**                                                                          | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256** |**Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux**       |**[ここ](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e6/)**       |
-| **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** | **BM.Optimized3.36**                                                                                                                                                    |**Oracle LInux**     | **[ここ](/ocitutorials/hpc/benchmark/run-imb/)**       |
-| **[NCCL Tests](https://github.com/NVIDIA/nccl-tests)**                                                                     | **BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.H100.8**                                                            | **Oracle LInux**<br>**Ubuntu**<br> **Oracle LInux**      |**[ここ](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-h100/)**       |
+| 名称                                                                                                                         | 対象シェイプ                                                                                | 対象OS                                                      | コンテンツ                                                                                                                                                                            |
+| :------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: | :-------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **HPL**                                                                           | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**              | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux** | **[ここ](/ocitutorials/hpc/benchmark/run-hpl/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-hpl-e6/)**                         |
+| **STREAM**                                                                          | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**              | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux** | **[ここ](/ocitutorials/hpc/benchmark/run-stream/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e5/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-stream-e6/)**                |
+| **Intel MPI Benchmarks** | **BM.Optimized3.36**                                                                  | **Oracle LInux**                                          | **[ここ](/ocitutorials/hpc/benchmark/run-imb/)**                                                                                                                                   |
+| **OSU Micro-Benchmarks**                                                 | **BM.Optimized3.36**                                                                  | **Oracle LInux**                                          | **[ここ](/ocitutorials/hpc/benchmark/run-omb-hpc/)**                                                                                                                               |
+| **NCCL Tests**                                                                     | **BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.H100.8** | **Oracle LInux**<br>**Ubuntu**<br> **Oracle LInux**       | **[ここ](/ocitutorials/hpc/benchmark/run-nccltests/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)**<br>**[ここ](/ocitutorials/hpc/benchmark/run-nccltests-h100/)** |
 
 ## 2-2. パフォーマンス関連Tips集
 
