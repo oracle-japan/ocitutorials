@@ -37,7 +37,7 @@
 
 
 
-  <meta property="article:published_time" content="2025-09-05T14:46:14+09:00">
+  <meta property="article:published_time" content="2025-09-05T16:33:32+09:00">
 
 
 
@@ -311,6 +311,8 @@
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-imb/" class="active">Intel MPI Benchmarks実行方法</a></li></p>
         
+          <p></p><li><a href="/ocitutorials/hpc/benchmark/run-omb-hpc/">OSU Micro-Benchmarks実行方法</a></li></p>
+        
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></li></p>
         
           <p></p><li><a href="/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/">NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）</a></li></p>
@@ -416,7 +418,7 @@
   <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
     <meta itemprop="headline" content="Intel MPI Benchmarks実行方法">
     <meta itemprop="description" content="本ドキュメントは、HPCワークロードの実行に最適な、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでHPCワークロード向けベアメタルインスタンスをノード間接続するHPCクラスタで、標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。">
-    <meta itemprop="datePublished" content="2025-09-05T14:46:14+09:00">
+    <meta itemprop="datePublished" content="2025-09-05T16:33:32+09:00">
     
 
     <div class="page__inner-wrap">
@@ -427,7 +429,7 @@
           <aside class="sidebar__right sticky">
             <nav class="toc">
               <header><h4 class="nav__title"><i class="fas fa-file-alt"></i> 目次</h4></header>
-              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-openmpiインストール">1-1. OpenMPIインストール</a></li><li><a href="#1-2-intel-mpi-benchmarksインストール">1-2. Intel MPI Benchmarksインストール</a></li><li><a href="#1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</a></li><li><a href="#1-3-0-概要">1-3-0. 概要</a></li><li><a href="#1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</a></li><li><a href="#1-3-2-2ノード間のpingpong">1-3-2. 2ノード間のPingPong</a></li><li><a href="#1-3-3-4ノード間のallreduce">1-3-3. 4ノード間のAllreduce</a></li></ul></li><li><a href="#2-intel-mpi-libraryでintel-mpi-benchmarksを実行する場合">2. Intel MPI LibraryでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-oneapi-hpc-toolkitインストール">2-1. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#2-2-ホストリストファイル作成">2-2. ホストリストファイル作成</a></li><li><a href="#2-3-intel-mpi-benchmarks実行">2-3. Intel MPI Benchmarks実行</a></li></ul></li></ul>
+              <ul class="toc__menu"><li><a href="#0-概要">0. 概要</a></li><li><a href="#1-openmpiでintel-mpi-benchmarksを実行する場合">1. OpenMPIでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#1-0-概要">1-0. 概要</a></li><li><a href="#1-1-openmpiインストール">1-1. OpenMPIインストール</a></li><li><a href="#1-2-intel-mpi-benchmarksインストール">1-2. Intel MPI Benchmarksインストール</a></li><li><a href="#1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</a></li><li><a href="#1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</a></li><li><a href="#1-3-2-2ノード間のpingpong">1-3-2. 2ノード間のPingPong</a></li><li><a href="#1-3-3-4ノード間のallreduce">1-3-3. 4ノード間のAllreduce</a></li></ul></li><li><a href="#2-intel-mpi-libraryでintel-mpi-benchmarksを実行する場合">2. Intel MPI LibraryでIntel MPI Benchmarksを実行する場合</a><ul><li><a href="#2-0-概要">2-0. 概要</a></li><li><a href="#2-1-intel-oneapi-hpc-toolkitインストール">2-1. Intel oneAPI HPC Toolkitインストール</a></li><li><a href="#2-2-ホストリストファイル作成">2-2. ホストリストファイル作成</a></li><li><a href="#2-3-intel-mpi-benchmarks実行">2-3. Intel MPI Benchmarks実行</a></li></ul></li></ul>
             </nav>
           </aside>
         
@@ -444,32 +446,32 @@
   <li>4ノード間のAllreduce</li>
 </ol>
 
-<p>本ドキュメントで <strong>Intel MPI Benchmarks</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 4インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcクラスタ">HPCクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
+<p>本ドキュメントで <strong>Intel MPI Benchmarks</strong> を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ <strong><a href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized">BM.Optimized3.36</a></strong> 4インスタンスを <strong><a href="/ocitutorials/hpc/#5-1-クラスタネットワーク">クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a href="/ocitutorials/hpc/#1-oci-hpcチュートリアル集">OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a href="/ocitutorials/hpc/#1-1-hpcgpuクラスタ">HPC/GPUクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
 
 <p>本ドキュメントは、以下の環境で <strong>Intel MPI Benchmarks</strong> PingPongを実行し、以下の性能が出ています。</p>
 
 <p>[実行環境]</p>
 <ul>
   <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
-  <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
-  <li><strong>OpenMPI</strong> ： 5.0.6（※2）</li>
+  <li>OS ： <strong>Oracle Linux</strong> 9.5ベースのHPC <strong><a href="/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ">クラスタネットワーキングイメージ</a></strong> （※1）</li>
+  <li><strong>OpenMPI</strong> ： 5.0.8（※2）</li>
   <li><strong>Intel MPI Library</strong> ： 2021.3.0</li>
-  <li><strong>Intel MPI Benchmarks</strong> ： 2021.7</li>
+  <li><strong>Intel MPI Benchmarks</strong> ： 2021.10</li>
 </ul>
 
-<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br />
+<p>※1）<strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/">クラスタネットワーキングイメージの選び方</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧">1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.13</strong> です。<br />
 ※2） <strong><a href="/ocitutorials/hpc/#3-oci-hpcテクニカルtips集">OCI HPCテクニカルTips集</a></strong> の <strong><a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
 
 <p>[実行結果（ <strong>OpenMPI</strong> ）]</p>
 <ul>
   <li>レイテンシ: 1.66 usec</li>
-  <li>帯域幅（256 MiBメッセージサイズ）: 12,225 MB/s</li>
+  <li>帯域幅（256 MiBメッセージサイズ）: 12,211 MB/s</li>
 </ul>
 
 <p>[実行結果（ <strong>Intel MPI Library</strong> ）]</p>
 <ul>
-  <li>レイテンシ: 1.60 usec</li>
-  <li>帯域幅（256 MiBメッセージサイズ）: 12,277 MB/s</li>
+  <li>レイテンシ: 1.68 usec</li>
+  <li>帯域幅（256 MiBメッセージサイズ）: 12,236 MB/s</li>
 </ul>
 
 <hr />
@@ -477,8 +479,7 @@
 
 <h2 id="1-0-概要">1-0. 概要</h2>
 
-<p>本章は、 <strong>OpenMPI</strong> を使用して <strong>Intel MPI Benchmarks</strong> を実行する方法を解説します。<br />
-具体的には、以下の作業を実施します。</p>
+<p>本章は、 <strong>OpenMPI</strong> を使用して <strong>Intel MPI Benchmarks</strong> を実行する方法を、以下の順に解説します。</p>
 
 <ol>
   <li><strong>OpenMPI</strong> インストール</li>
@@ -492,48 +493,40 @@
 
 <h2 id="1-2-intel-mpi-benchmarksインストール">1-2. Intel MPI Benchmarksインストール</h2>
 
-<p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行する全てのノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> をインストールします。<br />
+<p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行する全てのノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> を <strong>/opt/openmpi/tests/imb</strong> ディレクトリにインストールします。<br />
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
-<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.7.tar.gz
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">CC</span><span class="o">=</span>/opt/openmpi/bin/mpicc<span class="p">;</span> <span class="nb">export </span><span class="nv">CXX</span><span class="o">=</span>/opt/openmpi/bin/mpicxx<span class="p">;</span> <span class="nb">cd </span>mpi-benchmarks-IMB-v2021.7 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 36 all
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span><span class="nb">hostname</span><span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.10.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvf</span> ./IMB-v2021.10.tar.gz
+<span class="nv">$ </span>module load openmpi
+<span class="nv">$ </span><span class="nb">cd </span>mpi-benchmarks-IMB-v2021.10 <span class="o">&amp;&amp;</span> make <span class="nt">-j</span> 36 <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx all
 <span class="nv">$ </span><span class="nb">sudo mkdir</span> <span class="nt">-p</span> /opt/openmpi/tests/imb <span class="o">&amp;&amp;</span> <span class="nb">sudo cp</span> ./IMB<span class="k">*</span> /opt/openmpi/tests/imb/
 </code></pre></div></div>
 
 <h2 id="1-3-intel-mpi-benchmarks実行">1-3. Intel MPI Benchmarks実行</h2>
-
-<h2 id="1-3-0-概要">1-3-0. 概要</h2>
-
-<p>本章は、以下3種類の <strong>Intel MPI Benchmarks</strong> 実行方法を解説します。</p>
-
-<ol>
-  <li>1ノード内全コアを使用するAlltoall</li>
-  <li>2ノード間のPingPong</li>
-  <li>4ノード間のAllreduce</li>
-</ol>
 
 <h2 id="1-3-1-1ノード内全コアを使用するalltoall">1-3-1. 1ノード内全コアを使用するAlltoall</h2>
 
 <p>以下コマンドを対象ノードで <strong>Intel MPI Benchmarks</strong> 実行ユーザで実行します。<br />
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ32 MiBで計測しています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 25:25 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> 36 alltoall
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>module load openmpi
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 36 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 25:25 <span class="nt">-mem</span> 2.3G <span class="nt">-off_cache</span> 39,64 <span class="nt">-npmin</span> 36 alltoall
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Date                  : Fri Dec 13 16:41:35 2024</span>
+<span class="c"># Date                  : Fri Sep  5 14:50:38 2025</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-553.8.1.el8_10.x86_64</span>
-<span class="c"># Version               : #1 SMP Tue Jul 2 05:18:08 PDT 2024</span>
+<span class="c"># Release               : 4.18.0-553.54.1.el8_10.x86_64</span>
+<span class="c"># Version               : #1 SMP Wed May 28 02:12:15 PDT 2025</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
 
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.6/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall </span>
+<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   33554432</span>
@@ -553,8 +546,8 @@
 <span class="c"># #processes = 36 </span>
 <span class="c">#----------------------------------------------------------------</span>
        <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
-            0         1000         0.03         0.05         0.03
-     33554432            1    368774.69    377145.91    373427.99
+            0         1000         0.03         0.03         0.03
+     33554432            1    365159.73    375007.98    370325.94
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
@@ -565,24 +558,26 @@
 <h2 id="1-3-2-2ノード間のpingpong">1-3-2. 2ノード間のPingPong</h2>
 
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
-ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは <strong>1.66 usec</strong> ）、帯域幅は256 MiBメッセージの帯域幅（ <strong>12,225.03 MB/s</strong> ）を以ってその結果とします。</p>
+ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは <strong>1.68 usec</strong> ）、帯域幅は256 MiBメッセージの帯域幅（ <strong>12,235.56 MB/s</strong> ）を以ってその結果とします。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>module load openmpi
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 2 <span class="nt">-N</span> 1 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 pingpong
+<span class="o">[</span>inst-ztgl1-x9-ol810:211103] SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Date                  : Thu Jun 20 11:35:05 2024</span>
+<span class="c"># Date                  : Fri Sep  5 14:51:28 2025</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-513.11.0.1.el8_9.x86_64</span>
-<span class="c"># Version               : #1 SMP Thu Jan 11 11:30:45 PST 2024</span>
+<span class="c"># Release               : 4.18.0-553.54.1.el8_10.x86_64</span>
+<span class="c"># Version               : #1 SMP Wed May 28 02:12:15 PDT 2025</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
 
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 pingpong </span>
+<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -603,7 +598,7 @@
 <span class="c">#---------------------------------------------------</span>
        <span class="c">#bytes #repetitions      t[usec]   Mbytes/sec</span>
             0         1000         1.66         0.00
-    268435456            1     21957.85     12225.03
+    268435456            1     21983.36     12210.85
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
@@ -616,22 +611,24 @@
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br />
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 <span class="nt">-npmin</span> 144 allreduce
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>module load openmpi
+<span class="nv">$ </span>mpirun <span class="nt">-n</span> 144 <span class="nt">-N</span> 36 <span class="nt">-hostfile</span> ~/hostlist.txt <span class="nt">-x</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 <span class="nt">-msglog</span> 28:28 <span class="nt">-npmin</span> 144 allreduce
+<span class="o">[</span>inst-ztgl1-x9-ol810:215912] SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c">#    Intel(R) MPI Benchmarks 2021.7, MPI-1 part</span>
+<span class="c">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
 <span class="c">#----------------------------------------------------------------</span>
-<span class="c"># Date                  : Thu Jun 20 11:40:32 2024</span>
+<span class="c"># Date                  : Fri Sep  5 15:12:34 2025</span>
 <span class="c"># Machine               : x86_64</span>
 <span class="c"># System                : Linux</span>
-<span class="c"># Release               : 4.18.0-513.11.0.1.el8_9.x86_64</span>
-<span class="c"># Version               : #1 SMP Thu Jan 11 11:30:45 PST 2024</span>
+<span class="c"># Release               : 4.18.0-553.54.1.el8_10.x86_64</span>
+<span class="c"># Version               : #1 SMP Wed May 28 02:12:15 PDT 2025</span>
 <span class="c"># MPI Version           : 3.1</span>
 <span class="c"># MPI Thread Environment: </span>
 
 
 <span class="c"># Calling sequence was: </span>
 
-<span class="c"># /opt/openmpi-5.0.3/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce </span>
+<span class="c"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce </span>
 
 <span class="c"># Minimum message length in bytes:   0</span>
 <span class="c"># Maximum message length in bytes:   268435456</span>
@@ -651,8 +648,8 @@
 <span class="c"># #processes = 144 </span>
 <span class="c">#----------------------------------------------------------------</span>
        <span class="c">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
-            0         1000         0.03         0.04         0.03
-    268435456            1    307115.36    326712.51    319229.75
+            0         1000         0.03         0.03         0.03
+    268435456            1    403874.11    433311.53    422165.51
 
 
 <span class="c"># All processes entering MPI_Finalize</span>
@@ -822,7 +819,7 @@
 
         
 
-  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-05T14:46:14+09:00">September 5, 2025</time></p>
+  <p class="page__date"><strong><i class="fas fa-fw fa-calendar-alt" aria-hidden="true"></i> 更新日時:</strong> <time class="dt-published" datetime="2025-09-05T16:33:32+09:00">September 5, 2025</time></p>
 
       </footer>
 
@@ -853,7 +850,7 @@
       <a href="/ocitutorials/hpc/benchmark/run-stream-e6/" class="pagination--pager" title="STREAM実行方法（BM.Standard.E6.256編）">前へ</a>
     
     
-      <a href="/ocitutorials/hpc/benchmark/run-nccltests/" class="pagination--pager" title="NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）">次へ</a>
+      <a href="/ocitutorials/hpc/benchmark/run-omb-hpc/" class="pagination--pager" title="OSU Micro-Benchmarks実行方法">次へ</a>
     
   </nav>
 

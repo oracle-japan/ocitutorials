@@ -1266,9 +1266,15 @@ var store = [{
         "teaser": null
       },{
         "title": "Intel MPI Benchmarks実行方法",
-        "excerpt":"0. 概要 本ドキュメントで解説する Intel MPI Benchmarks の実行は、 GitHub から提供される Intel MPI Benchmarks を OpenMPI で実行する方法と、 Intel oneAPI HPC Toolkit に含まれる Intel MPI Benchmarks と Intel MPI Library を使用する方法を解説します。 Intel MPI Benchmarks の実行は、以下3種類を解説します。 1ノード内全コアを使用するAlltoall 2ノード間のPingPong 4ノード間のAllreduce 本ドキュメントで Intel MPI Benchmarks を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 4インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ HPCクラスタ のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。 本ドキュメントは、以下の環境で...","categories": [],
+        "excerpt":"0. 概要 本ドキュメントで解説する Intel MPI Benchmarks の実行は、 GitHub から提供される Intel MPI Benchmarks を OpenMPI で実行する方法と、 Intel oneAPI HPC Toolkit に含まれる Intel MPI Benchmarks と Intel MPI Library を使用する方法を解説します。 Intel MPI Benchmarks の実行は、以下3種類を解説します。 1ノード内全コアを使用するAlltoall 2ノード間のPingPong 4ノード間のAllreduce 本ドキュメントで Intel MPI Benchmarks を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 4インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ HPC/GPUクラスタ のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。 本ドキュメントは、以下の環境で...","categories": [],
         "tags": [],
         "url": "/ocitutorials/hpc/benchmark/run-imb/",
+        "teaser": null
+      },{
+        "title": "OSU Micro-Benchmarks実行方法",
+        "excerpt":"0. 概要 本ドキュメントで解説する OSU Micro-Benchmarks の実行は、 OpenMPI でこれをコンパイルして作成したバイナリを使用し、以下3種類を解説します。 1ノード内全コアを使用するAlltoall 2ノード間のレイテンシ 2ノード間の帯域幅 4ノード間のAllreduce 本ドキュメントで OSU Micro-Benchmarks を実行するHPCクラスタは、HPCワークロード向けベアメタルシェイプ BM.Optimized3.36 4インスタンスを クラスタ・ネットワーク で接続した構成とし、 OCI HPCチュートリアル集 のカテゴリ HPC/GPUクラスタ のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。 本ドキュメントは、以下の環境で OSU Micro-Benchmarks を実行し、以下の性能が出ています。 [実行環境] シェイプ : BM.Optimized3.36 （搭載コア数36） OS ： Oracle Linux 8.10ベースのHPC クラスタネットワーキングイメージ （※1） OpenMPI ： 5.0.8（※2） OSU Micro-Benchmarks ： 7.5.1 ※1）OCI HPCテクニカルTips集...","categories": [],
+        "tags": [],
+        "url": "/ocitutorials/hpc/benchmark/run-omb-hpc/",
         "teaser": null
       },{
         "title": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）",
