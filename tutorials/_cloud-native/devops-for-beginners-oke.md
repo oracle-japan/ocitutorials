@@ -1186,26 +1186,14 @@ steps:
         timeoutInSeconds: 40
         runAs: root
   - type: Command
-    name: "Docker Build"
+    name: "Podman Build"
     command: |
-      docker build -t handson_image .
+      podman build -t handson_image .
     onFailure:
       - type: Command
         command: |
-          echo "Failured docker build"
+          echo "Failured podman build"
         timeoutInSeconds: 60
-        runAs: root
-  - type: Command
-    name: "Trivy Image Scan"
-    timeoutInSeconds: 180
-    command: |
-      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0
-      trivy image handson_image
-    onFailure:
-      - type: Command
-        command: |
-          echo "Trivy Scan Error"
-        timeoutInSeconds: 40
         runAs: root
 
 outputArtifacts:
@@ -1242,48 +1230,22 @@ outputArtifacts:
 
 ```yaml
   - type: Command
-    name: "Docker Build"
+    name: "Podman Build"
     command: |
-      docker build -t handson_image .
+      podman build -t handson_image .
     onFailure:
       - type: Command
         command: |
-          echo "Failured docker build"
+          echo "Failured podman build"
         timeoutInSeconds: 60
         runAs: root
 ```
 
 の部分で定義しています。
 
-このステップでは、`docker build`コマンドによるコンテナイメージのビルドをおこなっています。  
+このステップでは、`podman build`コマンドによるコンテナイメージのビルドをおこなっています。  
 
-最後のステップは、
-
-```yaml
-  - type: Command
-    name: "Trivy Image Scan"
-    timeoutInSeconds: 180
-    command: |
-      curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0
-      trivy image handson_image
-    onFailure:
-      - type: Command
-        command: |
-          echo "Trivy Scan Error"
-        timeoutInSeconds: 40
-        runAs: root
-```
-
-の部分で定義しています。  
-
-このステップでは、`trivy`というコンテナイメージの脆弱性スキャンを行うプロダクトを利用し、ビルドしたコンテナイメージの脆弱性をチェックしています。  
-
-**trivyについて**  
-trivyはオープンソースで開発されているコンテナイメージの脆弱性診断ツールです。  
-詳細は[こちら](https://github.com/aquasecurity/trivy)をご確認ください。  
-{: .notice--info}
-
-また、2つ目のビルドステップ(コンテナイメージのビルドを行うステップ)でビルドされた成果物(コンテナイメージ)を
+最後に、2つ目のビルドステップ(コンテナイメージのビルドを行うステップ)でビルドされた成果物(コンテナイメージ)を
 
 ```yaml
 outputArtifacts:
