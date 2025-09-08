@@ -1476,26 +1476,14 @@ kubernetes   ClusterIP      10.96.0.1     &lt;none&gt;           443/TCP        
         <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">40</span>
         <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
   <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Docker</span><span class="nv"> </span><span class="s">Build"</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Podman</span><span class="nv"> </span><span class="s">Build"</span>
     <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-      <span class="s">docker build -t handson_image .</span>
+      <span class="s">podman build -t handson_image .</span>
     <span class="na">onFailure</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
         <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-          <span class="s">echo "Failured docker build"</span>
+          <span class="s">echo "Failured podman build"</span>
         <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">60</span>
-        <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
-  <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Trivy</span><span class="nv"> </span><span class="s">Image</span><span class="nv"> </span><span class="s">Scan"</span>
-    <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">180</span>
-    <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-      <span class="s">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0</span>
-      <span class="s">trivy image handson_image</span>
-    <span class="na">onFailure</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-        <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-          <span class="s">echo "Trivy Scan Error"</span>
-        <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">40</span>
         <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
 
 <span class="na">outputArtifacts</span><span class="pi">:</span>
@@ -1530,46 +1518,22 @@ kubernetes   ClusterIP      10.96.0.1     &lt;none&gt;           443/TCP        
 <p>次のステップは、</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Docker</span><span class="nv"> </span><span class="s">Build"</span>
+    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Podman</span><span class="nv"> </span><span class="s">Build"</span>
     <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-      <span class="s">docker build -t handson_image .</span>
+      <span class="s">podman build -t handson_image .</span>
     <span class="na">onFailure</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
         <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-          <span class="s">echo "Failured docker build"</span>
+          <span class="s">echo "Failured podman build"</span>
         <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">60</span>
         <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
 </code></pre></div></div>
 
 <p>の部分で定義しています。</p>
 
-<p>このステップでは、<code class="language-plaintext highlighter-rouge">docker build</code>コマンドによるコンテナイメージのビルドをおこなっています。</p>
+<p>このステップでは、<code class="language-plaintext highlighter-rouge">podman build</code>コマンドによるコンテナイメージのビルドをおこなっています。</p>
 
-<p>最後のステップは、</p>
-
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-    <span class="na">name</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Trivy</span><span class="nv"> </span><span class="s">Image</span><span class="nv"> </span><span class="s">Scan"</span>
-    <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">180</span>
-    <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-      <span class="s">curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.21.0</span>
-      <span class="s">trivy image handson_image</span>
-    <span class="na">onFailure</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">type</span><span class="pi">:</span> <span class="s">Command</span>
-        <span class="na">command</span><span class="pi">:</span> <span class="pi">|</span>
-          <span class="s">echo "Trivy Scan Error"</span>
-        <span class="na">timeoutInSeconds</span><span class="pi">:</span> <span class="m">40</span>
-        <span class="na">runAs</span><span class="pi">:</span> <span class="s">root</span>
-</code></pre></div></div>
-
-<p>の部分で定義しています。</p>
-
-<p>このステップでは、<code class="language-plaintext highlighter-rouge">trivy</code>というコンテナイメージの脆弱性スキャンを行うプロダクトを利用し、ビルドしたコンテナイメージの脆弱性をチェックしています。</p>
-
-<p class="notice--info"><strong>trivyについて</strong><br />
-trivyはオープンソースで開発されているコンテナイメージの脆弱性診断ツールです。<br />
-詳細は<a href="https://github.com/aquasecurity/trivy">こちら</a>をご確認ください。</p>
-
-<p>また、2つ目のビルドステップ(コンテナイメージのビルドを行うステップ)でビルドされた成果物(コンテナイメージ)を</p>
+<p>最後に、2つ目のビルドステップ(コンテナイメージのビルドを行うステップ)でビルドされた成果物(コンテナイメージ)を</p>
 
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">outputArtifacts</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">handson_image</span>
