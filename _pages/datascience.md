@@ -25,7 +25,7 @@ toc: true
 OCIの提供するAI Servicesの基本的な操作などをステップバイステップで学習することを目的としています。
 
 ## 初級編
-
+- **[OCI Generative AI Service Bacic](https://github.com/kenkensonson/oci-dd2025-genai-hol01/blob/main/README.md)** OCI Generative AI Serviceのコンソール操作およびAPIコールの基本的なコードを学習します。
 - **[Anomaly Detection ハンズオン](/ocitutorials/datascience/anomaly-detection-for-beginner/)** OCIのコンソールからAnomaly Detectionサービスを使うことで、サービスの基本的な機能を学習します。
 - **[Vision ハンズオン](/ocitutorials/datascience/vision-for-beginner/)** OCIのコンソールからVisionサービスを使うことで、サービスの基本的な機能を学習します。
 
