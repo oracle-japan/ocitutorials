@@ -1,0 +1,275 @@
+/* Global customization */
+
+:root {
+  --code-max-height: 60rem;
+  --header-font-family: "Oracle Sans","Roboto","Segoe UI","Helvetica Neue","Lucida Grande",Arial,sans-serif;
+  --body-font-family: "Oracle Sans","Roboto","Segoe UI","Helvetica Neue","Lucida Grande",Arial,sans-serif;
+  --code-font-family: Consolas,Liberation Mono,monospace,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;
+}
+
+/* Light mode theming */
+:root,
+:root[color-theme="light"] {
+  --header-background: #2a2f2f;
+  --header-font-color: #fbf9f8;
+
+  --body-background: #fbf9f8;
+  --body-font-color: #2a2f2f;
+
+  --mark-color: #f0cc72;
+
+  --button-background: #86b596;
+  --button-border-color: #4ec58a;
+
+  --link-color: #1b5376;
+  --link-color-visited: #c54e8a;
+
+  --code-background: #f5f4f2;
+  --code-accent-color: #e3e7eb;
+  --code-accent-color-lite: #eff1f3;
+  --code-font-color: #2a2f2f;
+  --code-border-color: #e4e1dd;
+
+  --code-copy-background: #ffffff;
+  --code-copy-font-color: #6b7784;
+  --code-copy-border-color: #e4e1dd;
+  --code-copy-success-color: #99d14f;
+
+  --accent-color: #dde3eb;
+  --accent-color-lite: #f8f9fa;
+
+  --control-icons: #b2bac1;
+
+  --footer-background: #2a2f2f;
+  --footer-font-color: #ffffff;
+  --footer-link-color: #c05745;
+  --footer-link-color-visited: #c05745;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --header-background: #2a2f2f;
+    --header-font-color: #fbf9f8;
+
+    --body-background: #fbf9f8;
+    --body-font-color: #2a2f2f;
+
+    --mark-color: #f0cc72;
+
+    --button-background: #86b596;
+    --button-border-color: #4ec58a;
+
+    --link-color: #518169;
+    --link-color-visited: #c54e8a;
+
+    --code-background: #f5f6f8;
+    --code-accent-color: #e3e7eb;
+    --code-accent-color-lite: #eff1f3;
+    --code-font-color: #2a2f2f;
+
+    --code-copy-background: #f5f6f8;
+    --code-copy-font-color: #6b7784;
+    --code-copy-border-color: #adb4bc;
+    --code-copy-success-color: #00c853;
+
+    --accent-color: #e9ecef;
+    --accent-color-lite: #e6eaec;
+
+    --control-icons: #b2bac1;
+
+    --footer-background: #2a2f2f;
+    --footer-font-color: #ffffff;
+    --footer-link-color: #c05745;
+    --footer-link-color-visited: #c05745;
+  }
+}
+
+/* ----------------------------- */
+/* -- メニューバー */
+/* ----------------------------- */
+
+/*----- メニューバー目次 */
+@media (min-width: 41rem) {
+  html, body {
+    overflow-x: visible;
+  }
+}
+.gdoc-nav nav {
+  position: sticky;
+  top: 0;
+	width: 12rem;
+	padding: 1rem 0 1rem 0;
+  max-height: calc(100vh - 2rem); /*上下padding分の2remを引いている*/
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.gdoc-nav h1 {
+  margin-bottom: 0.6em;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-bottom: 1px solid #162b3c;
+  padding-bottom: .3em;
+}
+.gdoc-nav {
+    flex: 0 0 15rem;
+}
+@media screen and (max-width: 41rem) {
+	.gdoc-nav {
+		margin-left: -15rem;
+		font-size: 16px
+	}
+}
+
+/*----- 共通設定 */
+.gdoc-nav ul {
+  list-style: none;
+  margin: 0 0 0 -1.2em;
+  padding: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.gdoc-nav li {
+  margin: .5em 0;
+  padding-left: 1.4em;
+}
+/*------- h1見出し */
+.gdoc-nav ul > li {
+  margin-left: 0;
+  font-size: .9em;
+}
+/*------- h2見出し */
+.gdoc-nav ul ul > li {
+  margin-left: .9em;
+  font-size: .88em;
+}
+/*------- h3見出し */
+.gdoc-nav ul ul ul > li {
+  margin-left: .8em;
+  font-size: .86em;
+}
+/*------- h4以降 */
+.gdoc-nav ul ul ul ul > li {
+  font-size: .8em;
+}
+.gdoc-nav--toc {
+  /* background-color: var(--body-background); */
+  /* padding: 0.5rem 1rem 1rem 1rem; */
+  border-radius: 0.4rem;
+}
+
+
+/* ----------------------------- */
+/* -- wrapper */
+/* ----------------------------- */
+div.wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	color: var(--body-font-color);
+	background-image: url('/ocitutorials/img/background/oc-background.png');
+  background-repeat: repeat;
+  background-attachment: scroll;
+	font-weight: normal
+}
+div.wrapper.is_home {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	color: var(--body-font-color);
+  background-image: none;
+	background-color: var(--body-background);
+	font-weight: normal
+}
+
+/* ----------------------------- */
+/* -- コンテンツデザイン */
+/* ----------------------------- */
+
+/*----- テーブル */
+.table-wrap {
+  display: table;
+	overflow: auto;
+	margin: 1rem 0;
+  font-size: 0.8rem;
+  background-color: #ffffff;
+  border-left: 2px solid #8f8f8f;
+  border-right: 2px solid #8f8f8f;
+}
+.table-wrap>table {
+	margin: 0 !important
+}
+
+/* ----------------------------- */
+/* -- トップページ */
+/* ----------------------------- */
+
+/*----- 見出し1 */
+.top-page-title {
+  text-align: center;
+  padding: 2rem 3rem;
+  color: #fbf9f8;
+}
+@media screen and (max-width: 41rem) {
+  .top-page-title {
+    padding: 1rem;
+  }
+}
+
+/*----- 見出し2 */
+.gdoc-toppage-header2 {
+  padding: .8rem;
+  border-left: 8px solid #89B2B0;
+  background: #f4f4f4;
+  margin: 1rem 0;
+}
+
+/* ----------------------------- */
+/* -- カードリスト */
+/* ----------------------------- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  padding: 0rem;   
+}
+.card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  background-color: #ffffff;
+  height: 100%;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+}
+.card-image img {
+  width: 100%;
+  height: 130px;
+  display: block;
+}
+.card-content {
+  padding: 1rem;
+}
+.card-content h2 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+.card-content p {
+  color: var(--body-font-color);
+  font-size: .75rem;
+  line-height: 1.4;
+}
+.card-tags {
+  margin: .5rem 0;
+}
+.card-tags .tag {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #333;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.3rem;
+  border-radius: 4px;
+}
