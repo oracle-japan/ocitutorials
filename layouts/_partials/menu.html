@@ -1,0 +1,154 @@
+<nav>
+  <!-- 検索窓 -->
+  <!-- {{ partial "search" . }} -->
+  <!------------------>
+
+  <!-- ナビゲーション -->
+  <!-- <section class="gdoc-nav--main">
+    <h3>{{ i18n "nav_navigation" }}</h3>
+    {{ if .Site.Params.geekdocMenuBundle }}
+      {{ partial "menu-bundle" (dict "current" . "source" .Site.Data.menu.main.main) }}
+    {{ else }}
+      {{ partial "menu-filetree" . }}
+    {{ end }}
+  </section> -->
+  <!------------------>
+
+  <!-- 目次セクション -->
+  {{ if ne .Type "tags-search" }}
+  <section class="gdoc-nav--toc">
+    <h1>&nbsp;{{ i18n "nav_toc" }}</h1>
+    {{ if .TableOfContents }}
+    {{- with .TableOfContents }}
+    {{- $toc := . -}}
+    {{- $toc = replaceRE `<nav id="TableOfContents">\s*<ul>\s*<li>\s*<ul>` `<ul>` $toc -}}
+              {{- $toc = replaceRE `</ul>\s*</li>\s*</ul>\s*</nav>` `</ul>` $toc -}}
+    <!-- <nav>を剥がす -->
+    {{- $toc = replaceRE `(?s)^<nav[^>]*>(.*?)
+</nav>$` `$1` $toc -}}
+<!------------------->
+{{- $toc | safeHTML -}}
+{{ end }}
+{{ end }}
+</section>
+{{ end }}
+<!------------------>
+
+<!-- タグフィルター（tags-searchページ専用） -->
+{{ if eq .Type "tags-search" }}
+<section class="gdoc-nav--tags">
+  <h1>タグで絞り込む</h1>
+  <div id="tag-filters">
+    <label><input type="checkbox" value="all" checked>すべて</label>
+    {{ $allTags := slice }}
+    {{ range .Site.RegularPages }}
+    {{ range .Params.tags }}
+    {{ $allTags = $allTags | append . }}
+    {{ end }}
+    {{ end }}
+    {{ $uniqueTags := $allTags | uniq | sort }}
+    {{ range $uniqueTags }}
+    <label><input type="checkbox" class="tag-checkbox" value="{{ . }}">{{ . }}</label>
+    {{ end }}
+  </div>
+</section>
+{{ else if and (in (slice "posts" "tags") .Section) (default false .Site.Params.geekdocTagsToMenu) }}
+<!-- 通常のタグセクション -->
+<section class="gdoc-nav--tags">
+  <h1>{{ i18n "nav_tags" }}</h1>
+  <ul class="gdoc-nav__list">
+    {{ $currentPage := .RelPermalink }}
+    {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+    {{ with $.Site.GetPage (printf "/tags/%s" $name) }}
+    <li>
+      <a class="gdoc-nav__entry{{- if eq $currentPage .RelPermalink }}
+                  {{- printf " is-active" }} {{- end }}" href="{{ .RelPermalink }}">
+        {{ partial "utils/title" . }}
+      </a>
+    </li>
+    {{ end }}
+    {{ end }}
+  </ul>
+</section>
+{{ end }}
+
+<section class="gdoc-nav--more">
+  {{ if .Site.Data.menu.more.more }}
+  <h3>{{ i18n "nav_more" }}</h3>
+  {{ partial "menu-bundle" (dict "current" . "source" .Site.Data.menu.more.more) }}
+  {{ end }}
+</section>
+</nav>
+
+<!-- tags-searchページ専用のスタイルとスクリプト -->
+{{ if eq .Type "tags-search" }}
+<style>
+  #tag-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  #tag-filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  #tag-filters input[type="checkbox"] {
+    margin: 0;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const checkboxes = document.querySelectorAll(".tag-checkbox");
+    const allCheckbox = document.querySelector("input[value='all']");
+    const cards = document.querySelectorAll(".article-card");
+
+    const filterCards = () => {
+      const selectedTags = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value.toLowerCase());
+
+      cards.forEach(card => {
+        let tags = [];
+        try {
+          tags = JSON.parse(card.dataset.tags.replace(/'/g, '"')).map(tag => tag.toLowerCase());
+        } catch (e) {
+          tags = [];
+        }
+
+        if (selectedTags.length === 0) {
+          card.style.display = "flex";
+          return;
+        }
+
+        // Show card only if it matches ANY of the selected tags
+        const matchAny = selectedTags.some(tag => tags.includes(tag));
+        card.style.display = matchAny ? "flex" : "none";
+      });
+    };
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener("change", () => {
+        allCheckbox.checked = false;
+        filterCards();
+      });
+    });
+
+    allCheckbox.addEventListener("change", () => {
+      if (allCheckbox.checked) {
+        checkboxes.forEach(cb => cb.checked = false);
+        cards.forEach(card => card.style.display = "flex");
+      }
+    });
+
+    // Trigger initial filter
+    filterCards();
+  });
+</script>
+{{ end }}

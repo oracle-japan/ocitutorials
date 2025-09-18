@@ -1,0 +1,23 @@
+{{ $size := default "regular" .size | lower }}
+{{ if not (in (slice "regular" "large") $size) }}
+  {{ $size = "regular" }}
+{{ end }}
+
+{{ $ref := "" }}
+{{ if .href }}
+  {{ $ref = .href }}
+{{ end }}
+{{ if .relref }}
+  {{ $ref = relref .relref }}
+{{ end }}
+
+{{ $class := "" }}
+{{ if .class }}
+  {{ $class = .class }}
+{{ end }}
+
+<span class="gdoc-button gdoc-button--{{ $size }}{{ if $class }} {{ $class }}{{ end }}">
+  <a class="gdoc-button__link"{{ if $ref }} href="{{ $ref }}"{{ end }}>
+    {{ .inner }}
+  </a>
+</span>

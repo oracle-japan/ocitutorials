@@ -1,0 +1,11 @@
+{{- $type := default "note" (.Get "type") }}
+{{- $icon := .Get "icon" }}
+{{- $title := default ($type | title) (.Get "title") }}
+
+
+<blockquote class="gdoc-hint {{ $type | lower }}">
+  <div class="gdoc-hint__title flex align-center">
+    <span>{{ $title }}</span>
+  </div>
+  <div class="gdoc-hint__text">{{ .Inner | $.Page.RenderString }}</div>
+</blockquote>

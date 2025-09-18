@@ -1,29 +1,27 @@
-name: Build and deploy Jekyll site to GitHub Pages
-
+name: Build and deploy Hugo site to GitHub Pages
 on:
   push:
     branches:
-      - master
-
+      - master  # 本番はmainブランチだけに限定
 jobs:
-  github-pages:
-    runs-on: ubuntu-24.04
+  deploy:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
-      - name: bundle install
-        run: |
-          bundle config set path 'vendor/bundle'
-          bundle install
-      - name: Jekyll Build
-        run: JEKYLL_ENV=production bundle exec jekyll build
+          submodules: true
+          fetch-depth: 0
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.148.2'
+          extended: true
+      - name: Build
+        run: hugo --config hugo.toml
+        working-directory: ./
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
-          allow_empty_commit: true
-          enable_jekyll: true
+          publish_dir: "public"
+          publish_branch: gh-pages
