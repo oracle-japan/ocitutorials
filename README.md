@@ -1,4 +1,4 @@
-# ocitutorials-geekdocs
+<!-- # ocitutorials-geekdocs
 
 OCIチュートリアルの更新プロジェクト用のリポジトリです。test
 
@@ -126,4 +126,4 @@ hugo server
 コマンドを実行すると以下のリンクにフォワーディングされるので、ブラウザでアクセスしてテストサイトを確認する。
 ```
 http://127.0.0.1:1313/ocitutorials/
-```
+``` -->
