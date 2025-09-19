@@ -1,0 +1,51 @@
+name: Auto PR on Push
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  raise_pull_request:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Check if PR exists for this branch
+        id: check_pr
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Branch: $BRANCH_NAME"
+
+          PRS=$(curl -s -H "Authorization: token ${{ secrets.AUTO_PR_CREATE_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
+
+          MATCHING_PR=$(echo "$PRS" | jq -r --arg branch "$BRANCH_NAME" '.[] | select(.head.ref == $branch) | .number')
+
+          if [ -n "$MATCHING_PR" ]; then
+            echo "Found PR: #$MATCHING_PR"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "pr_number=$MATCHING_PR" >> $GITHUB_OUTPUT
+          else
+            echo "No PR found for branch $BRANCH_NAME"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create a pull request
+        uses: actions/github-script@v7
+        if: steps.check_pr.outputs.exists == 'false'
+        with:
+          github-token: ${{ secrets.AUTO_PR_CREATE_TOKEN }}
+          script: |
+            const headRef = '${{ github.ref_name }}'
+            const createParams = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              base: 'master',
+              head: headRef,
+              title: `${headRef.substring(0,1).toUpperCase()}${headRef.substring(1)}`
+            }
+            const { data } = await github.rest.pulls.create(createParams)
+            return data
