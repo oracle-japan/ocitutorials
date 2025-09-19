@@ -1,0 +1,93 @@
+name: Delete Cloudflare Preview on PR close
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  delete-preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Collect commit SHAs for PR
+        id: commits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          commits=$(gh api repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}/commits --paginate --jq '.[].sha')
+          merge_sha="${{ github.event.pull_request.merge_commit_sha }}"
+          all_shas="$commits"
+          if [ -n "$merge_sha" ] && [ "$merge_sha" != "null" ]; then
+            all_shas="$all_shas"$'\n'"$merge_sha"
+          fi
+          printf "%s\n" "$all_shas" > shas.txt
+          echo "sha_file=shas.txt" >> $GITHUB_OUTPUT
+
+      - name: Delete Cloudflare Preview Deployment
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SHA_FILE: ${{ steps.commits.outputs.sha_file }}
+        run: |
+          python <<EOF
+          import os, requests
+
+          account_id = os.environ["CF_ACCOUNT_ID"]
+          project_name = os.environ["CF_PROJECT_NAME"]
+          pr_number = os.environ["PR_NUMBER"]
+
+          with open(os.environ["SHA_FILE"]) as f:
+              sha_list = {line.strip() for line in f if line.strip()}
+
+          base_url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/{project_name}"
+          headers = {
+              "Authorization": f"Bearer {os.environ['CF_API_TOKEN']}",
+              "Content-Type": "application/json"
+          }
+
+          deleted = False
+          page = 1
+
+          while True:
+              list_url = f"{base_url}/deployments?env=preview&page={page}"
+              res = requests.get(list_url, headers=headers)
+              data = res.json()
+              deployments = data.get("result", [])
+              if not deployments:
+                  break
+
+              for dep in deployments:
+                  if dep.get("environment") != "preview":
+                      continue
+                  meta = dep.get("deployment_trigger", {}).get("metadata", {})
+                  pr_num = str(meta.get("pull_request_number", ""))
+                  commit = meta.get("commit_hash", "")
+
+                  if pr_num == pr_number or commit in sha_list:
+                      dep_id = dep["id"]
+                      del_url = f"{base_url}/deployments/{dep_id}?force=true"
+                      del_res = requests.delete(del_url, headers=headers)
+                      print(f"Deleted deployment {dep_id} (PR={pr_num}, commit={commit}): {del_res.status_code}")
+                      deleted = True
+
+              if page >= data.get("result_info", {}).get("total_pages", 1):
+                  break
+              page += 1
+
+          if not deleted:
+              print(f"No preview deployments found for PR #{pr_number}")
+          EOF
