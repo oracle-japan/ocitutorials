@@ -24,18 +24,12 @@ SELECT AIについては[111: SELECT AIを試してみよう](https://oracle-jap
 + [101:Always Freeで23aiのADBインスタンスを作成してみよう](/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/)の記事を参考に、Oracle Database 23aiの準備が完了していること。
 
 + OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。
-  
-  ※2025/01時点で、利用可能なリージョンは以下です。
-  - サンパウロ(GRU)
-  - フランクフルト(FRA)
-  - 大阪(KIX)
-  - ロンドン(LHR)
-  - シカゴ(ORD)
-  
-  最新のリージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm)をご参照ください。
+
+  ※リージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm)をご参照ください。
+
   SELECT AIではデフォルトでシカゴリージョンのOCI GenAIサービスを使用しますが、本チュートリアルでは大阪リージョンのOCI GenAIサービスを使用しますので、大阪リージョンがサブスクライブされていることが前提となります。
   
-  本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm)から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。
+  本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm)から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-v4.0、テキスト生成モデルにcohere.command-a-03-2025を使用します。これらが最新になっているか上記リンクよりご確認ください。
 
   - OCI アカウントのAPI署名キーの生成は完了であること
   <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)をご参照ください。
@@ -174,12 +168,10 @@ DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、プロファイ�
 - **provider**：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）
 - **credential_name**：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）
 - **vector_index_name**：MY_INDEX（任意）
-- **embedding_model**：cohere.embed-multilingual-v3.0（デフォルトだとembedding_modelはcohereのenglishモデルになってしまうので、multilingualを明示的に指定）
+- **embedding_model**：cohere.embed-v4.0
 - **temperature**：0（任意）
-- **comments**：true（任意）
-- **oci_apiformat**：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）
 - **region** : ap-osaka-1(指定しない場合はus-chicago-1となります。大阪リージョンがサブスクライブされていない場合エラーとなります。)
-- **model**：cohere.command-r-plus-08-2024（プロバイダーをOCIとし、モデルを指定しない場合は、meta.llama-3.1-70b-instructが使用されます）
+- **model**：cohere.command-a-03-2025
 
 ```sql
 BEGIN
@@ -188,12 +180,10 @@ BEGIN
         attributes   =>'{"provider": "oci",
           "credential_name": "OCI_GENAI_CRED",
           "vector_index_name": "MY_INDEX",
-          "embedding_model": "cohere.embed-multilingual-v3.0",
+          "embedding_model": "cohere.embed-v4.0",
           "temperature": 0,
-          "comments": true,
-          "oci_apiformat": "COHERE",
           "region": "ap-osaka-1",
-          "model": "cohere.command-r-plus-08-2024"
+          "model": "cohere.command-a-03-2025"
         }');
 end;
 /
@@ -206,10 +196,10 @@ DBMS_CLOUD_AI.CREATE_VECTOR_INDEXプロシージャを使用して、ベクト�
 - **location**：先程作成したオブジェクトストレージのURI
 - **object_storage_credential_name**：OBS_CRED（先ほど作成したオブジェクトストレージのクレデンシャル）
 - **profile_name**：OCIGENAI_ORACLE（先程作成したプロファイル名）
-- **vector_dimension**：1024（Embedding Modelは、Cohere multilingualを使うので、dimensionは1024に設定）
+- **vector_dimension**：1536
 - **vector_distance_metric**：cosine
 - **chunk_overlap**：128
-- **chunk_size**：400(Embedding Modelは、Cohere multilingualを使うので、chunk_sizeはそのトークン数上限である512以下に設定)
+- **chunk_size**：400
 - **refresh_rate**：1（ベクトル索引を更新する間隔。本チュートリアルでは1分毎に索引を更新するように設定します）
 
 ```sql
@@ -220,7 +210,7 @@ BEGIN
                           "location": "https://objectstorage.ap-tokyo-1.oraclecloud.com/n/xxxxxxxxx/b/xxxxxxxxxx/o/",
                           "object_storage_credential_name": "OBS_CRED",
                           "profile_name": "OCIGENAI_ORACLE",
-                          "vector_dimension": 1024,
+                          "vector_dimension": 1536,
                           "vector_distance_metric": "cosine",
                           "chunk_overlap":128,
                           "chunk_size":400,
@@ -242,7 +232,7 @@ EXEC DBMS_CLOUD_AI.SET_PROFILE('OCIGENAI_ORACLE');
 # 4. SELECT AI with RAGを試してみる
 早速SELECT AI with RAGを試してみたいと思います。
 
-1.　先ずはnarrateオプションを付けて、「OraBoosterとは」と質問してみます。
+1.　先ずはnarrateというアクション・キーワードを付けて、「OraBoosterとは」と質問してみます。
 
   ```sql
   SELECT AI narrate OraBoosterとは;
@@ -270,9 +260,9 @@ EXEC DBMS_CLOUD_AI.SET_PROFILE('OCIGENAI_ORACLE');
 
 <br>
 
-2.　次に、chatオプションを付けて「OraBoosterとは」と質問してみます。
+2.　次に、chatというアクション・キーワードを付けて「OraBoosterとは」と質問してみます。
     
-  chatオプションを付けると、RAGを使用せずに一般的なAIチャット（データベースへの問合せは行わず、LLMから直接レスポンスを生成する）として回答を生成します。
+  chatというアクション・キーワードを付けると、RAGを使用せずに一般的なAIチャット（データベースへの問合せは行わず、LLMから直接レスポンスを生成する）として回答を生成します。
 
   ```sql
   SELECT AI chat OraBoosterとは;
@@ -344,12 +334,22 @@ rocket.txtファイルをアップロードした時と同じように、作成�
 
 5.　CSVファイルをアップロードしてから1分以上経過したら、ベクトル索引が自動更新されているか確認してみます。
 
-RAGを使用して、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。
+再度、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。
+今回は[DBMS_CLOUD_AI.GENERATE()](https://docs.oracle.com/en-us/iaas/autonomous-database-serverless/doc/dbms-cloud-ai-package.html#GUID-7B438E87-0E9A-4318-BA01-3BE1A5851229)を使用して質問します。
+
+- **prompt**：自然言語の問い合わせ
+- **profile_name**：作成したAIプロファイル
+- **action**：使用するアクション・キーワード
 
   ```sql
-  SELECT AI narrate AetherFlowsの電力消費量はどの程度ですか？;
+  SELECT DBMS_CLOUD_AI.GENERATE(prompt     => 'AetherFlowsの電力消費量はどの程度ですか？',
+                              profile_name => 'OCIGENAI_ORACLE',
+                              action       => 'narrate')
+  FROM dual;
+  ```
+  上記クエリを実行すると、以下のレスポンスが返ってきます。
 
-
+  ```sql
   RESPONSE
   --------------------------------------------------------------------------------
   "AetherFlowsは省エネ設計を採用しており、1日24時間稼働しても電気代はおよそ200円程度です。自動オン/オフ機能を活用することで、電力をさらに節約できます。
@@ -364,12 +364,19 @@ RAGを使用して、「AetherFlowsの電力消費量はどの程度ですか」
 
 6.　最後に、RAGを使用しないでLLMが学習済みの情報のみを使って回答を生成してもらいます。
 
-chatオプションを付けて、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。
+アクション・キーワードとしてchatを付けて、「AetherFlowsの電力消費量はどの程度ですか」と質問してみます。
+
 
   ```sql
-  SELECT AI chat AetherFlowsの電力消費量はどの程度ですか？;
+  SELECT DBMS_CLOUD_AI.GENERATE(prompt     => 'AetherFlowsの電力消費量はどの程度ですか？',
+                              profile_name => 'OCIGENAI_ORACLE',
+                              action       => 'chat')
+  FROM dual;
+  ```
 
+  上記クエリを実行すると、以下のレスポンスが返ってきます。
 
+  ```sql
   RESPONSE
   --------------------------------------------------------------------------------
   "AetherFlows の電力消費量は、使用方法や構成によって異なります。 AetherFlows は、データセンターやクラウド環境で一般的に使用されるサーバーやネットワーク機器と同じ種類のハードウェア上で実行されるソフトウェア フレームワークです。
@@ -387,4 +394,5 @@ LLMが一見それらしい回答を生成してくれましたが、AetherFlows
 
 
 SELECT AI機能にRAGを組み合わせると、回答を生成するのに使用したソースを教えてくれるだけでなく、ハルシネーションを防ぐこともできました。以上で、**SELECT AI with RAGを試してみよう**は終了です。
+
 <BR>
