@@ -4,7 +4,7 @@ description: "Oracleサポート、カスタマーサクセスサービス(CSS)�
 weight: 010
 images:
 - "support-service/img1mos.png"
-aliases: "/ocitutorials/support-service/tips-support-cust-success/"
+aliases: "/support-service/tips-support-cust-success/"
 ---
 
 <a id="anchor0"></a>
