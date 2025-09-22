@@ -4,6 +4,7 @@ description: "Oracle AI Vector Searchを学ぶチュートリアルです。Alwa
 tags: 
   - データベース
   - AIと機械学習
+geekdocNav: false
 ---
 
 **チュートリアル一覧に[もどる](/ocitutorials/)**
