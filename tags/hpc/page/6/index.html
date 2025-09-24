@@ -1341,37 +1341,47 @@ table, th, td {
 <p>本ドキュメントで解説する <strong><a
   class="gdoc-markdown__link"
   href="https://mvapich.cse.ohio-state.edu/benchmarks/"
->OSU Micro-Benchmarks</a></strong> の実行は、 <strong><a
+>OSU Micro-Benchmarks</a></strong> は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 <strong><a
   class="gdoc-markdown__link"
   href="https://www.open-mpi.org/"
->OpenMPI</a></strong> でこれをコンパイルして作成したバイナリを使用し、以下3種類を解説します。</p>
+>OpenMPI</a></strong> でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。</p>
 <ol>
 <li>1ノード内全コアを使用するAlltoall</li>
 <li>2ノード間のレイテンシ</li>
 <li>2ノード間の帯域幅</li>
 <li>4ノード間のAllreduce</li>
 </ol>
-<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するHPCクラスタは、第3世代 <strong>Intel Xeon</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a
+<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するHPCクラスタは、計算ノードに第3世代 <strong>Intel Xeon</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
->BM.Optimized3.36</a></strong> 4インスタンスを <strong><a
+>BM.Optimized3.36</a></strong> を使用してこれを <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a
+>クラスタ・ネットワーク</a></strong> で接続し、 <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#1-1-hpcgpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
 >HPC/GPUクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
-<p>本ドキュメントは、以下の環境で <strong>OSU Micro-Benchmarks</strong> を実行し、以下の性能が出ています。</p>
-<p>[実行環境]</p>
+<p>本ドキュメントは、以下の実行環境で <strong>OSU Micro-Benchmarks</strong> を実行し、</p>
 <ul>
+<li>計算ノード
+<ul>
+<li>ノード数： 2 / 4</li>
 <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
 <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> （※1）</li>
+</ul>
+</li>
+<li>ノード間接続インターコネクト
+<ul>
+<li><strong>クラスタ・ネットワーク</strong></li>
+<li>リンク速度： 100 Gbps</li>
+</ul>
+</li>
 <li><strong>OpenMPI</strong> ： 5.0.8（※2）</li>
 <li><strong>OSU Micro-Benchmarks</strong> ： 7.5.1</li>
 </ul>
@@ -1412,11 +1422,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-24T11:38:51&#43;09:00">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 24, 2025
     </time>
   </span>
 </span>
@@ -1466,8 +1476,7 @@ table, th, td {
       </header>
 
       <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+        <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -1479,58 +1488,56 @@ table, th, td {
 <p>本ドキュメントで解説する <strong><a
   class="gdoc-markdown__link"
   href="https://mvapich.cse.ohio-state.edu/benchmarks/"
->OSU Micro-Benchmarks</a></strong> の実行は、 <strong><a
+>OSU Micro-Benchmarks</a></strong> は、GPUクラスタのノード間接続インターコネクトを介するGPUデバイスメモリ間MPI通信性能の評価を念頭に、 <strong><a
   class="gdoc-markdown__link"
   href="https://www.open-mpi.org/"
->OpenMPI</a></strong> でこれをコンパイルして作成したバイナリを使用し、以下3種類を解説します。</p>
+>OpenMPI</a></strong> でコンパイルしたバイナリを使用して以下5種類の性能指標を計測する実行方法を解説します。</p>
 <ol>
 <li>ノード内GPUデバイスメモリ間レイテンシ</li>
 <li>ノード内GPUデバイスメモリ間帯域幅</li>
 <li>2ノードに跨るGPUデバイスメモリ間レイテンシ</li>
 <li>2ノードに跨るGPUデバイスメモリ間帯域幅</li>
+<li>ノード内8個のGPUを使用するNCCL Allreduce通信性能</li>
 <li>2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能</li>
 </ol>
-<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するGPUクラスタは、8枚の <strong>NVIDIA A100</strong> GPUを搭載するベア・メタル・シェイプ <strong><a
+<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するGPUクラスタは、GPUノードに8枚の <strong>NVIDIA A100</strong> GPUを搭載するベア・メタル・シェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> 2インスタンスを <strong><a
+>BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を使用してこれを <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a
+>クラスタ・ネットワーク</a></strong> で接続しており、 <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
->OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a
+>OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-1-hpcgpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
->HPC/GPUクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
-<p>本ドキュメントは、以下の環境で <strong>OSU Micro-Benchmarks</strong> を実行し、以下の性能が出ています。</p>
-<p>[実行環境]</p>
+  href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/"
+>GPUクラスタを構築する(Ubuntu OS編)</a></strong> のチュートリアルに従い予め構築しておきます。</p>
+<p>本ドキュメントは、以下の実行環境で <strong>OSU Micro-Benchmarks</strong> を実行し、</p>
 <ul>
-<li>シェイプ : <strong>BM.GPU4.8</strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
+<li>GPUノード
+<ul>
+<li>ノード数： 2</li>
+<li>シェイプ : <strong>BM.GPU4.8</strong> （ <strong>NVIDIA A100</strong> GPU x 8）</li>
+<li>OS ： <strong>Ubuntu</strong> 24.04（ <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
-<li><strong>OpenMPI</strong> ： 5.0.8（※2）</li>
+  href="/ocitutorials/hpc/#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>プラットフォーム・イメージ</a></strong> - <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm"
+>Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> ）</li>
+</ul>
+</li>
+<li>ノード間接続インターコネクト
+<ul>
+<li><strong>クラスタ・ネットワーク</strong></li>
+<li>リンク速度・数： 100 Gbps x 16</li>
+</ul>
+</li>
+<li><strong>OpenMPI</strong> ： 5.0.8</li>
 <li><strong>OSU Micro-Benchmarks</strong> ： 7.5.1</li>
 </ul>
-<p>※1）<strong><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/"
->クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。<br>
-※2） <strong><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/"
->UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
+<p>以下の性能が出ています。</p>
       </section>
 
       <div class="gdoc-post__readmore">
@@ -1551,11 +1558,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-24T11:38:51&#43;09:00">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 24, 2025
     </time>
   </span>
 </span>

@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-09-24T11:38:51+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "444",
+      "wordCount" : "450",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-09-24T11:38:51.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-09-24T11:38:51+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -403,8 +403,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-09-24T11:38:51&#43;09:00">
+            Sep 24, 2025
         </time>
     
 </span>
@@ -432,37 +432,47 @@
 <p>本ドキュメントで解説する <strong><a
   class="gdoc-markdown__link"
   href="https://mvapich.cse.ohio-state.edu/benchmarks/"
->OSU Micro-Benchmarks</a></strong> の実行は、 <strong><a
+>OSU Micro-Benchmarks</a></strong> は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 <strong><a
   class="gdoc-markdown__link"
   href="https://www.open-mpi.org/"
->OpenMPI</a></strong> でこれをコンパイルして作成したバイナリを使用し、以下3種類を解説します。</p>
+>OpenMPI</a></strong> でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。</p>
 <ol>
 <li>1ノード内全コアを使用するAlltoall</li>
 <li>2ノード間のレイテンシ</li>
 <li>2ノード間の帯域幅</li>
 <li>4ノード間のAllreduce</li>
 </ol>
-<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するHPCクラスタは、第3世代 <strong>Intel Xeon</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a
+<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するHPCクラスタは、計算ノードに第3世代 <strong>Intel Xeon</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
->BM.Optimized3.36</a></strong> 4インスタンスを <strong><a
+>BM.Optimized3.36</a></strong> を使用してこれを <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> で接続した構成とし、 <strong><a
+>クラスタ・ネットワーク</a></strong> で接続し、 <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#1-1-hpcgpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
 >HPC/GPUクラスタ</a></strong> のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。</p>
-<p>本ドキュメントは、以下の環境で <strong>OSU Micro-Benchmarks</strong> を実行し、以下の性能が出ています。</p>
-<p>[実行環境]</p>
+<p>本ドキュメントは、以下の実行環境で <strong>OSU Micro-Benchmarks</strong> を実行し、</p>
 <ul>
+<li>計算ノード
+<ul>
+<li>ノード数： 2 / 4</li>
 <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
 <li>OS ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> （※1）</li>
+</ul>
+</li>
+<li>ノード間接続インターコネクト
+<ul>
+<li><strong>クラスタ・ネットワーク</strong></li>
+<li>リンク速度： 100 Gbps</li>
+</ul>
+</li>
 <li><strong>OpenMPI</strong> ： 5.0.8（※2）</li>
 <li><strong>OSU Micro-Benchmarks</strong> ： 7.5.1</li>
 </ul>
@@ -483,12 +493,12 @@
   class="gdoc-markdown__link"
   href="/ocitutorials/hpc/tech-knowhow/build-openmpi/"
 >Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
-<p>[実行結果]</p>
+<p>以下の性能が出ています。</p>
 <ul>
 <li>レイテンシ: 1.67 usec</li>
 <li>帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s</li>
 </ul>
-<p>以降では、 <strong>OSU Micro-Benchmarks</strong> の実行方法を以下の順に解説します。</p>
+<p>以降では、以下の順に解説します。</p>
 <ol>
 <li><strong>OpenMPI</strong> インストール</li>
 <li><strong>OSU Micro-Benchmarks</strong> インストール</li>
