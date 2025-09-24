@@ -26,11 +26,11 @@ table, th, td {
 2. **クラスタ・ネットワーク** のデプロイに伴ってデプロイされている
 3. **クラスタ・ネットワーク** 接続に必要な以下ソフトウェアがインストールされている
     1. **[Mellanox OFED](https://docs.nvidia.com/networking/display/mlnxofedv24100700)** / **[NVIDIA DOCA](https://docs.nvidia.com/doca/sdk/index.html)**
-    2. WPAサプリカント（※1）
+    2. **[wpa_supplicant](https://en.wikipedia.org/wiki/Wpa_supplicant)**（※1）
     3. 802.1X認証関連ユーティリティソフトウェア
     4. **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
 
-    ※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
+    ※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアが **wpa_supplicant** です。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
 
 [接続処理]
 

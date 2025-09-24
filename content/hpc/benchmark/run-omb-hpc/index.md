@@ -11,31 +11,36 @@ params:
 ***
 # 0. 概要
 
-本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** の実行は、 **[OpenMPI](https://www.open-mpi.org/)** でこれをコンパイルして作成したバイナリを使用し、以下3種類を解説します。
+本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。
 
 1. 1ノード内全コアを使用するAlltoall
 2. 2ノード間のレイテンシ
 3. 2ノード間の帯域幅
 4. 4ノード間のAllreduce
 
-本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 4インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](/ocitutorials/hpc/#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
+本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、計算ノードに第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用してこれを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](/ocitutorials/hpc/#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
 
-本ドキュメントは、以下の環境で **OSU Micro-Benchmarks** を実行し、以下の性能が出ています。
+本ドキュメントは、以下の実行環境で **OSU Micro-Benchmarks** を実行し、
 
-[実行環境]
-- シェイプ : **BM.Optimized3.36** （搭載コア数36）
-- OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- 計算ノード
+  - ノード数： 2 / 4
+  - シェイプ : **BM.Optimized3.36** （搭載コア数36）
+  - OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- ノード間接続インターコネクト
+  - **クラスタ・ネットワーク**
+  - リンク速度： 100 Gbps
 - **OpenMPI** ： 5.0.8（※2）
 - **OSU Micro-Benchmarks** ： 7.5.1
 
 ※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
 ※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
-[実行結果]
+以下の性能が出ています。
+
 - レイテンシ: 1.67 usec
 - 帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s
 
-以降では、 **OSU Micro-Benchmarks** の実行方法を以下の順に解説します。
+以降では、以下の順に解説します。
 
 1. **OpenMPI** インストール
 2. **OSU Micro-Benchmarks** インストール

@@ -115,8 +115,7 @@ $
 $ cd ~/nccl-tests
 $ module purge
 $ module load nvhpc openmpi
-$ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x NCCL_IGNORE_CPU_AFFINITY=1 -x LD_LIBRARY_PATH ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
-[inst-li3ob-ao-ub24:23019] SET NCCL_IGNORE_CPU_AFFINITY=1
+$ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x LD_LIBRARY_PATH ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
 # Collective test starting: all_reduce_perf
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0
 #

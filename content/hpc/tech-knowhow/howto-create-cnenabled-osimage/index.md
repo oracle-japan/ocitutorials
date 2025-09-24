@@ -21,11 +21,11 @@ params:
 2. **クラスタ・ネットワーク** の作成に伴って作成されている
 3. **クラスタ・ネットワーク** 接続に必要な以下ソフトウェアがインストールされている
     1. **[Mellanox OFED](https://docs.nvidia.com/networking/display/mlnxofedv24100700)** / **[NVIDIA DOCA](https://docs.nvidia.com/doca/sdk/index.html)**
-    2. WPAサプリカント（※1）
+    2. **[wpa_supplicant](https://en.wikipedia.org/wiki/Wpa_supplicant)**（※1）
     3. 802.1X認証関連ユーティリティソフトウェア
     4. **クラスタ・ネットワーク** 設定ユーティリティソフトウェア
 
-※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアがWPAサプリカントです。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
+※1）**クラスタ・ネットワーク** は、インスタンスが接続する際802.1X認証を要求しますが、この処理を行うクライアントソフトウェアが **wpa_supplicant** です。802.1X認証の仕組みは、 **[ここ](https://www.infraexpert.com/study/wireless14.html)** のサイトが参考になります。
 
 [接続処理]
 
@@ -109,8 +109,8 @@ params:
 
 - **カスタム・イメージ** 取得用計算/GPUノードへのログインと事前準備
 - **Mellanox OFED** / **NVIDIA DOCA** ダウンロード・インストール
-- WPAサプリカントインストール・ **OCA** HPC関連プラグイン有効化（OSが **Ubuntu** の場合）
-- WPAサプリカント・oci-cn-authインストール（OSが **Ubuntu** 以外の場合）
+- **wpa_supplicant** インストール・ **OCA** HPC関連プラグイン有効化（OSが **Ubuntu** の場合）
+- **wpa_supplicant** ・oci-cn-authインストール（OSが **Ubuntu** 以外の場合）
 
 なお本章の作業は、2台の計算/GPUノードの何れにも実施します。
 
@@ -179,9 +179,9 @@ $ cd /mnt/iso && sudo ./mlnxofedinstall --without-fw-update -q
 $ sudo shutdown -r now
 ```
 
-### 2-1-3.  WPAサプリカント・oci-cn-authインストール
+### 2-1-3. wpa_supplicant・oci-cn-authインストール
 
-以下コマンドを計算ノードのrockyユーザで実行し、WPAサプリカントとoci-cn-authをインストールします。
+以下コマンドを計算ノードのrockyユーザで実行し、 **wpa_supplicant** とoci-cn-authをインストールします。
 
 ```sh
 $ sudo dnf install -y wpa_supplicant ruby rpm-build python3-psutil python3-pyOpenSSL git
@@ -331,11 +331,11 @@ $ sudo apt-get -y install doca-all
 次に、OCIコンソールから計算/GPUノードを再起動します。  
 この再起動は、 **BM.GPU4.8** の場合でSSHログインできるまでに20分程度かかります。
 
-### 2-3-3. WPAサプリカントインストール・OCA HPC関連プラグイン有効化
+### 2-3-3. wpa_supplicantインストール・OCA HPC関連プラグイン有効化
 
-本章は、WPAサプリカントのインストールと **OCA** HPC関連プラグインの有効化を実施し、 **[0. 概要](#0-概要)** で説明した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に必要な接続処理を実施します。
+本章は、 **wpa_supplicant** のインストールと **OCA** HPC関連プラグインの有効化を実施し、 **[0. 概要](#0-概要)** で説明した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に必要な接続処理を実施します。
 
-以下コマンドを計算/GPUノードのubuntuユーザで実行し、WPAサプリカントと **OCA** HPC関連プラグインの前提条件ソフトウェアをインストールします。
+以下コマンドを計算/GPUノードのubuntuユーザで実行し、 **wpa_supplicant** と **OCA** HPC関連プラグインの前提条件ソフトウェアをインストールします。
 
 ```sh
 $ sudo apt-get install -y wpasupplicant mstflint ifupdown
@@ -514,7 +514,7 @@ $
 
 ### 3-3-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpc関連プラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェースは、先の **[2-3-3. wpa_supplicantインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpa_supplicantインストールoca-hpc関連プラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
 この作業は、2台の計算ノードの何れにも実施します。
 
 以下コマンドを計算ノードのubuntuユーザで実行し、 **クラスタ・ネットワーク** 接続用のネットワークインターフェースにIPアドレスが設定されていることを確認します。
@@ -554,7 +554,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi
 
 ### 3-4-1. クラスタ・ネットワーク接続用ネットワークインターフェース作成
 
-**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16ポートのネットワークインターフェースは、先の **[2-3-3 WPAサプリカントインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpaサプリカントインストールoca-hpc関連プラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
+**[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用の16ポートのネットワークインターフェースは、先の **[2-3-3. wpa_supplicantインストール・OCA HPC関連プラグイン有効化](#2-3-3-wpa_supplicantインストールoca-hpc関連プラグイン有効化)** により既に作成されているため、ここではその確認のみ行います。  
 この作業は、2台のGPUノードの何れにも実施します。
 
 以下コマンドをGPUノードのubuntuユーザで実行し、
