@@ -47,17 +47,17 @@ table, th, td {
 | :-------------: | :-------------------------------------------------------------------------: | :--------------------------: | :------------: | :------------------------: | :----------------------------------------------------------: |
 | Slurm<br>マネージャ  | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5）         | 1              | プライベート                     | **slurmctld** と **slurmdbd** が稼働するSlurm管理ノード                 |
 | Slurm<br>クライアント | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5） | 1              | プライベート                     | アプリケーション開発用フロントエンドノード<br>**Slurm** にジョブを投入するジョブサブミッションクライアント |
-| 計算ノード           | **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**<br>対応ベアメタルシェイプ<br>（※2） | **Oracle Linux** 8.10<br>（※5） | 2ノード以上<br>（※2） | プライベート<br> **クラスタ・ネットワーク** | **slurmd** が稼働するジョブ実行ノード                                     |
+| 計算ノード           | **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)**<br>対応ベアメタルシェイプ<br>（※2） | **Oracle Linux** 8.10<br>（※5） | 2ノード以上<br>（※2） | プライベート<br> **クラスタ・ネットワーク** | **slurmd** が稼働するジョブ実行ノード                                     |
 | NFSサーバ          | -<br>（※3）                                                                   | -                            | 1              | プライベート                     | ジョブ投入ユーザのホームディレクトリをNFSでサービス<br>（※4）                              |
 
 ![画面ショット](architecture_diagram.png)
 
-※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
-※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
+※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
-※5）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
+※5）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
-計算ノードの構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
+計算ノードの構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** が参考になります。
 
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
@@ -245,7 +245,7 @@ $
 
 ## 2-3. OpenMPIインストール
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、Slurmクライアントと全ての計算ノードに **OpenMPI** をインストールします。  
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、Slurmクライアントと全ての計算ノードに **OpenMPI** をインストールします。  
 これにより、これらのノードに **OpenPMIx** と **OpenUCX** もインストールされます。
 
 ## 2-4. OpenPMIxインストール
@@ -490,7 +490,7 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 $ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 ```
 
-ここで設定している環境変数 **UCX_NET_DEVICES** は、 **Slurm** から実行する **OpenMPI** のジョブがそのノード間通信を  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するNIC（RDMAリンク名 **mlx5_2/1** ）を介して行うことを指示しています。  
+ここで設定している環境変数 **UCX_NET_DEVICES** は、 **Slurm** から実行する **OpenMPI** のジョブがそのノード間通信を  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するNIC（RDMAリンク名 **mlx5_2/1** ）を介して行うことを指示しています。  
 またこの環境変数は、 **OpenPMIx** がMPIプロセス制御に **OpenUCX** を使用することも指示しているため、 **srun** でジョブを実行する際に設定する必要があります。
 
 ***

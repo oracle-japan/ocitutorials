@@ -17,7 +17,7 @@ params:
 
 これに対して **BM.DenseIO.E5.128** のNVMe SSDローカルディスクを使用するストレージサービスは、 **ブロック・ボリューム** を使用する場合と比較し、以下の点を考慮する必要があります。（※1）
 
-※1）この比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
+※1）この比較詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 1. NVMe SSDローカルディスク上のデータ保護を自身で行う必要がある
 2. ベア・メタル・インスタンスの故障でNVMe SSDローカルディスク上のデータを消失するリスクがある
@@ -29,7 +29,7 @@ params:
 2. NVMe SSDローカルディスク上のファイルを定期的に他の長期保存ストレージにバックアップ（対象を短期保存データに限定）（※2）
 3. **2.** のアプローチでバックアップの後ファイルを削除して空き容量を確保
 
-※2）このバックアップ環境の構築は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する](/ocitutorials/hpc/spinup-backup-server/)** を参照してください。
+※2）このバックアップ環境の構築は、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する](../spinup-backup-server/)** を参照してください。
 
 以下構成の短期保存データの格納を目的とするNFSでサービスする高速なファイル共有ストレージ（以降”DenceIO NFSサーバ”と呼称）を構築します。
 
@@ -56,7 +56,7 @@ params:
    - ノード数 ： 8
 - **IOR** / **mdtest** 実行時MPIプロセス数 ： 128（ノード当たり16）
 
-この **IOR** と **mdtest** の検証結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。
+この **IOR** と **mdtest** の検証結果は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](../tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。
 
 **所要時間 :** 約1時間
 
@@ -132,14 +132,14 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 $
 ```
 
-次に、以降作成するNFSサーバの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算ノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
+次に、以降作成するNFSサーバの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[計算ノードの効果的な名前解決方法](../tech-knowhow/compute-name-resolution/)** の手順を実施します。
 
 ***
 # 2. 計算/GPUノード作成
 
 本章は、DenceIO NFSサーバのNFSクライアントとなる計算/GPUノードを作成します。
 
-この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** カテゴリや **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** カテゴリの各チュートリアルを参照してください。
+この構築手順は、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[HPCクラスタ](../#1-1-hpcクラスタ)** カテゴリや **[機械学習環境](../#1-2-機械学習環境)** カテゴリの各チュートリアルを参照してください。
 
 ***
 # 3. DenceIO NFSサーバ環境構築

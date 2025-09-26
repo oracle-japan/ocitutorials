@@ -126,14 +126,14 @@ $
 
 本チュートリアルは、GPUノードに **BM.GPU4.8** を使用しますが、 **BM.GPU3.8 / BM.GPU.A100-v2.8** の場合で手順が異なる箇所は、その旨明記します。
 
-GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
+GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](../#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
 
 1. **cloud-init** 設定ファイル（ **cloud-config** ）作成
 2. GPUノード作成
 
 ## 2-1. cloud-init設定ファイル作成
 
-本章は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を作成します。
+本章は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を作成します。
 
 本チュートリアルは、 **cloud-init** を以下の目的で使用します。
 
@@ -249,7 +249,7 @@ OCIコンソールにログインし、GPUノードをデプロイするリー�
 
 	![画面ショット](console_page10.png)
 
-	- **cloud-initスクリプト** ：先に作成した **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を選択（ **参照** ボタンでファイルを選択）  
+	- **cloud-initスクリプト** ：先に作成した **[cloud-init](../#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を選択（ **参照** ボタンでファイルを選択）  
 
 	![画面ショット](console_page11.png)
 
@@ -277,7 +277,7 @@ $ ssh -oStrictHostKeyChecking=accept-new 10.0.1.76
 
 ## 3.2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であってもその処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
+**[cloud-init](../#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であってもその処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
 ```sh

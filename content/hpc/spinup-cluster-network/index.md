@@ -11,10 +11,10 @@ params:
 ***
 # 0. 概要
 
-このチュートリアルは、HPCワークロードの実行に最適な、 **Intel Ice Lake** プロセッサを搭載する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** で検証します。
+このチュートリアルは、HPCワークロードの実行に最適な、 **Intel Ice Lake** プロセッサを搭載する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** で検証します。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照ください。
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](../#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](../spinup-hpc-cluster)** を参照ください。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -34,8 +34,8 @@ params:
 本章は、計算ノードをTCP接続する **仮想クラウド・ネットワーク** と、インターネットから直接アクセス出来ないプライベートサブネットに接続する計算ノードにログインする際の踏み台となるBastionノードを、HPCクラスタ作成前に予め用意します。
 
 なおこの **仮想クラウド・ネットワーク** は、既存のものを使用することが可能です。  
-ただしこの場合、計算ノードが接続するサブネットは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に使用する **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている必要があります。  
-この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
+ただしこの場合、計算ノードが接続するサブネットは、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続に使用する **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている必要があります。  
+この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](../tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
 
 ## 1-1. 仮想クラウド・ネットワーク作成
 
@@ -62,14 +62,14 @@ params:
 Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で **仮想クラウド・ネットワーク** を作成した **コンパートメント** とパブリックサブネットを指定して作成します。  
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
-- **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **シェイプ** ： **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** （任意のコア数・メモリ容量）
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※1）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
 次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。  
-先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 作成手順で指定します。
+先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 作成手順で指定します。
 
 ```sh
 $ ssh-keygen
@@ -98,9 +98,9 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0TDo4QJPbXNRq/c5wrc+rGU/dLZdUziHPIQ7t/Wn+
 $
 ```
 
-次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの効果的な名前解決方法](/ocitutorials/hpc/tech-knowhow/compute-name-resolution/)** の手順を実施します。
+次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの効果的な名前解決方法](../tech-knowhow/compute-name-resolution/)** の手順を実施します。
 
-次に、以降作成する計算ノードで実施する手順を **[pdsh](https://github.com/chaos/pdsh)** を使用して効率よく進めるため、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/)** の **[1. pdshインストール・セットアップ](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ)** の手順を実施し、 **pdsh** をインストール・セットアップします。  
+次に、以降作成する計算ノードで実施する手順を **[pdsh](https://github.com/chaos/pdsh)** を使用して効率よく進めるため、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../tech-knowhow/cluster-with-pdsh/)** の **[1. pdshインストール・セットアップ](../tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ)** の手順を実施し、 **pdsh** をインストール・セットアップします。  
 なおこの手順は、該当する手順を全ての計算ノードで実施する場合、必要ありません。
 
 ***
@@ -108,11 +108,11 @@ $
 
 ## 2-0. 概要
 
-本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を作成することでHPCクラスタを作成します。
+本章は、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** を作成することでHPCクラスタを作成します。
 
-**クラスタ・ネットワーク** は、作成時に指定する **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** に基づいて使用するシェイプを決定し、作成時に指定するノード数のインスタンスをデプロイ、これを **クラスタ・ネットワーク** に接続します。
+**クラスタ・ネットワーク** は、作成時に指定する **[インスタンス構成](../#5-7-インスタンス構成)** に基づいて使用するシェイプを決定し、作成時に指定するノード数のインスタンスをデプロイ、これを **クラスタ・ネットワーク** に接続します。
 
-計算ノードに使用する **BM.Optimized3.36** に装備されるNVMeローカルディスクは、OS起動時点でファイルシステムが作成されていないため、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** でこの作成を行います。
+計算ノードに使用する **BM.Optimized3.36** に装備されるNVMeローカルディスクは、OS起動時点でファイルシステムが作成されていないため、 **[cloud-init](../#5-11-cloud-init)** でこの作成を行います。
 
 以上よりHPCクラスタの作成は、以下の手順を経て行います。
 
@@ -120,11 +120,11 @@ $
 - インスタンス構成作成
 - クラスタ・ネットワーク作成
 
-なお計算ノードのOSは、 **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用します。
+なお計算ノードのOSは、 **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** を使用します。
 
 ## 2-1. cloud-config作成
 
-本チュートリアルは、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** を以下の目的で使用します。
+本チュートリアルは、 **[cloud-init](../#5-11-cloud-init)** を以下の目的で使用します。
 
 - タイムゾーンをJSTに変更
 - NVMe SSDローカルディスク領域ファイルシステム作成
@@ -166,7 +166,7 @@ OCIコンソールにログインし、HPCクラスタをデプロイする **�
 
 1. **インスタンス構成情報** フィールド
 
-    - **名前** ： **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** に付与する名前
+    - **名前** ： **[インスタンス構成](../#5-7-インスタンス構成)** に付与する名前
     - **コンパートメントに作成** ：**インスタンス構成** を作成する **コンパートメント**
 
     ![画面ショット](console_page03.png)
@@ -190,7 +190,7 @@ OCIコンソールにログインし、HPCクラスタをデプロイする **�
 
     ![画面ショット](console_page08.png)
 
-    ※2）このイメージは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+    ※2）このイメージは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
     - **Shape** ：**BM.Optimized3.36**  
         （**Change Shape** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.Optimized3.36** を選択し **シェイプの選択** ボタンをクリック。）
@@ -214,7 +214,7 @@ OCIコンソールにログインし、HPCクラスタをデプロイする **�
 
     ![画面ショット](console_page11.png)
 
-    - **cloud-initスクリプト** ：先に作成した **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル（cloud-config）を選択  
+    - **cloud-initスクリプト** ：先に作成した **[cloud-init](../#5-11-cloud-init)** 設定ファイル（cloud-config）を選択  
     （ **参照** ボタンでファイルを選択）  
 
     ![画面ショット](console_page12.png)
@@ -258,9 +258,9 @@ OCIコンソールにログインし、HPCクラスタをデプロイする **�
 
 5. **インスタンス・プールの構成** フィールド
 
-    - **インスタンス・プール名** ：作成される **[インスタンス・プール](/ocitutorials/hpc/#5-8-インスタンスプール)** に付与する名前（※3）
+    - **インスタンス・プール名** ：作成される **[インスタンス・プール](../#5-8-インスタンスプール)** に付与する名前（※3）
     - **インスタンス数** ：デプロイする計算ノードのノード数
-    - **インスタンス構成** ：先に作成した **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)**
+    - **インスタンス構成** ：先に作成した **[インスタンス構成](../#5-7-インスタンス構成)**
 
     ![画面ショット](console_page18.png)
 
@@ -282,11 +282,11 @@ OCIコンソールにログインし、HPCクラスタをデプロイする **�
 本章は、以下のステップでデプロイされた計算ノードの環境を確認します。
 
 - 計算ノードログイン
-- **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 完了確認
+- **[cloud-init](../#5-11-cloud-init)** 完了確認
 - タイムゾーン確認
 - NVMeローカルディスクファイルシステム確認
 - ファイアーウォール停止確認
-- **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用ネットワークインターフェース確認
+- **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続用ネットワークインターフェース確認
 
 ## 3-1. 計算ノードログイン
 
@@ -306,7 +306,7 @@ $ ssh inst-ijeeq-x9
 
 ## 3-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。  
+**[cloud-init](../#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。  
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
 ```sh
@@ -361,9 +361,9 @@ $
 
 ## 3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認
 
-以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続用のネットワークインターフェース（ **rdma0** ）に **10.224.0.0/12** のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）
+以下コマンドをBastionノードのopcユーザで実行し、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続用のネットワークインターフェース（ **rdma0** ）に **10.224.0.0/12** のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）
 
-※4）このデフォルトのネットワークアドレスを変更する方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-4. ネットワークアドレスのデフォルトからの変更](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-4-ネットワークアドレスのデフォルトからの変更)** を参照してください。
+※4）このデフォルトのネットワークアドレスを変更する方法は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-4. ネットワークアドレスのデフォルトからの変更](../tech-knowhow/howto-connect-clusternetwork/#1-4-ネットワークアドレスのデフォルトからの変更)** を参照してください。
 
 ```sh
 $ pdsh -g all 'ifconfig rdma0' | dshbak -c
@@ -399,7 +399,7 @@ $
 
 ## 4-0. MPIプログラム実行（2ノード編）概要
 
-本章は、計算ノードのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **Intel MPI Benchmark** を使用し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。
+本章は、計算ノードのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **Intel MPI Benchmark** を使用し、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。
 
 **OpenMPI** を計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）から **OpenMPI** 実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。
 
@@ -428,7 +428,7 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/.ssh/known_hosts $
 ```
 
 次に、以下コマンドをBastionノードのopcユーザで実行し、後の **Intel MPI Benchmark** Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。  
-なお、ホスト名リストを作成していない場合は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
+なお、ホスト名リストを作成していない場合は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](../tech-knowhow/compute-host-list/)** を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 **hostlist.txt** で配置します。
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; scp -p ~/hostlist.txt $hname:~/; done
@@ -464,14 +464,14 @@ OCIコンソールにログインし、計算ノードをデプロイしたリ�
 
 本章は、 **Intel MPI Benchmark** のPing-Pongを実行します。
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、2ノードを使用するPing-Pongを実行します。
+**[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmark実行方法](../benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarksを実行する場合](../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、2ノードを使用するPing-Pongを実行します。
 
 ***
 # 5. 計算ノード追加
 
-本章は、作成した **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードを2ノード追加して4ノードに拡張します。
+本章は、作成した **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続する計算ノードを2ノード追加して4ノードに拡張します。
 
-この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[2. ノード数を増やす](/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-ノード数を増やす)** の手順に従い、計算ノードを2ノードから4ノードに拡張します。
+この手順は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](../tech-knowhow/cluster-resize/)** の **[2. ノード数を増やす](../tech-knowhow/cluster-resize/#2-ノード数を増やす)** の手順に従い、計算ノードを2ノードから4ノードに拡張します。
 
 ***
 # 6. MPIプログラム実行（4ノード編）
@@ -490,21 +490,21 @@ OCIコンソールにログインし、計算ノードをデプロイしたリ�
 
 本章は、 **Intel MPI Benchmark** のAll-Reduceを実行します。
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmark実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、4ノードを使用するAll-Reduceを実行します。
+**[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmark実行方法](../benchmark/run-imb/)** の **[OpenMPIでIntel MPI Benchmarksを実行する場合](../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、4ノードを使用するAll-Reduceを実行します。
 
 ***
 # 7. 計算ノード入れ替え
 
 本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。
 
-この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](/ocitutorials/hpc/tech-knowhow/cluster-resize/)** の **[3. ノードを置き換える](/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-ノードを置き換える)** の手順を実施します。
+この手順は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードの追加・削除・入れ替え方法](../tech-knowhow/cluster-resize/)** の **[3. ノードを置き換える](../tech-knowhow/cluster-resize/#3-ノードを置き換える)** の手順を実施します。
 
 再度 **[6. MPIプログラム実行（4ノード編）](#6-mpiプログラム実行4ノード編)** に従い **Intel MPI Benchmarks** を実行、インターコネクト性能が十分出ていることを確認します。
 
 ***
 # 8. クラスタ・ネットワークの終了
 
-本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。
+本章は、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** を終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。
 
 OCIコンソールメニューから **コンピュート** → **クラスタ・ネットワーク** を選択し、表示される以下画面で作成した **クラスタ・ネットワーク** の **終了** メニューをクリックします。
 

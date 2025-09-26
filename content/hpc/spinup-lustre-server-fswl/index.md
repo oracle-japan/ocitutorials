@@ -28,9 +28,9 @@ table, th, td {
 ※1）**パフォーマンス層** に関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/overview.htm#concepts)** を参照してください。
 
 これに対しマネージドNFSサービスの **[ファイル・ストレージ](https://www.oracle.com/jp/cloud/storage/file-storage/)** は、 **File Storage with Lustre** と同等の可用性・運用性を持つファイル共有ストレージをより低い価格帯から構築することが出来ますが、 **File Storage with Lustre** を採用することで、HPCワークロードのスクラッチ領域や機械学習ワークロードのチェックポイント領域等の高いスループットが要求されるファイル共有ストレージを構築することが可能です。  
-**ファイル・ストレージ** と **File Storage with Lustre** の比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
+**ファイル・ストレージ** と **File Storage with Lustre** の比較詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
-以上を踏まえて本チュートリアルは、 **File Storage with Lustre** でファイル共有ストレージを構築、HPCワークロードを実行するHPCクラスタからのアクセスを想定して **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードをLustreクライアントとして構築する手順と、機械学習ワークロードを実行する機械学習環境からのアクセスを想定してコンテナからファイル共有ストレージ領域にアクセスするGPUノードをLustreクライアントとして構築する手順を解説します。
+以上を踏まえて本チュートリアルは、 **File Storage with Lustre** でファイル共有ストレージを構築、HPCワークロードを実行するHPCクラスタからのアクセスを想定して **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続する計算ノードをLustreクライアントとして構築する手順と、機械学習ワークロードを実行する機械学習環境からのアクセスを想定してコンテナからファイル共有ストレージ領域にアクセスするGPUノードをLustreクライアントとして構築する手順を解説します。
 
 本チュートリアルで構築するファイル共有ストレージ環境の構成を以下に示します。
 
@@ -43,14 +43,14 @@ table, th, td {
 [計算ノード]
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）
+- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※2）
 
-※2）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※2）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
 [GPUノード]
 
 - シェイプ： **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
-- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-02-28-0.htm)**
+- イメージ： **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-02-28-0.htm)**
 - NVIDIA GPUドライバ： 570.133.20
 - **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** ： 1.17.5
 - コンテナランタイム： **[containerd](https://github.com/containerd/containerd/tree/main)** 2.0.3
@@ -117,7 +117,7 @@ Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japa
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **シェイプ** ： **VM.Standard.E5.Flex**
-- **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**
+- **イメージ** ： **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**
 - **サブネット** ： 先に作成したパブリックサブネット
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
@@ -228,14 +228,14 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 
 本章は、Lustreクライアントの構築方法を以下2通りのケースに分けて解説します。
 
-1. **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノード
+1. **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続する計算ノード
 2. コンテナを実行するGPUノード
 
 ## 3-1. クラスタ・ネットワークに接続する計算ノード
 
 ### 3-1-0. 概要
 
-本章は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する計算ノードにLustreクライアントを構築する方法を、以下の順に解説します。
+本章は、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続する計算ノードにLustreクライアントを構築する方法を、以下の順に解説します。
 
 1. インスタンス作成
 2. Lustreクライアント用RPMパッケージビルド
@@ -244,14 +244,14 @@ OCIコンソールにログインし、 **File Storage with Lustre** を作成�
 
 ### 3-1-1. インスタンス作成
 
-Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の **[2. HPCクラスタ作成](/ocitutorials/hpc/spinup-cluster-network/#2-hpcクラスタ作成)** と **[3. 計算ノード確認](/ocitutorials/hpc/spinup-cluster-network/#3-計算ノード確認)** の手順に従い、以下属性のインスタンスを作成します。
+Lustreクライアントとする計算ノードのインスタンスは、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../spinup-cluster-network/)** の **[2. HPCクラスタ作成](../spinup-cluster-network/#2-hpcクラスタ作成)** と **[3. 計算ノード確認](../spinup-cluster-network/#3-計算ノード確認)** の手順に従い、以下属性のインスタンスを作成します。
 
 - **シェイプ** ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※6）
+- **イメージ** ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※6）
 - **サブネット** ： 先に作成したLustreクライアント接続用プライベートサブネット
 - **SSHキーの追加** ：先にBastionノードで作成したSSH鍵ペアの公開鍵
 
-※6）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
+※6）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
 
 ### 3-1-2. Lustreクライアント用RPMパッケージビルド
 
@@ -340,10 +340,10 @@ $
 
 ### 3-2-1. インスタンス作成
 
-LustreクライアントとするGPUノードのインスタンスは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[GPUインスタンスで分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)** の **[2. GPUノード作成](/ocitutorials/hpc/spinup-ml-instance-cntnd/#2-gpuノード作成)** と **[3. GPUノード確認](/ocitutorials/hpc/spinup-ml-instance-cntnd/#3-gpuノード確認)** の手順に従い、以下属性のインスタンスを作成します。
+LustreクライアントとするGPUノードのインスタンスは、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[GPUインスタンスで分散機械学習環境を構築する](../spinup-ml-instance-cntnd/)** の **[2. GPUノード作成](../spinup-ml-instance-cntnd/#2-gpuノード作成)** と **[3. GPUノード確認](../spinup-ml-instance-cntnd/#3-gpuノード確認)** の手順に従い、以下属性のインスタンスを作成します。
 
 - **シェイプ** ： **BM.GPU4.8**
-- **イメージ** ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**（※7）
+- **イメージ** ： **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **Oracle-Linux-8.10-2025.02.28-0**（※7）
 - **サブネット** ： 先に作成したLustreクライアント接続用プライベートサブネット
 
 ※7） **プラットフォーム・イメージ** **[Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm)** は、インストールされているNVIDIA GPUドライバが  **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）用ではないため、このイメージで作成後に **RHCK** 用のNVIDIA GPUドライバをインストールします。サポートされるLustreクライアントのイメージに関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/lustre/file-system-connect.htm#clients)** を参照してください。
@@ -497,7 +497,7 @@ $ sudo umount /mnt/lustre
 
 ### 3-2-6. コンテナ環境構築
 
-コンテナ環境は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[GPUインスタンスで分散機械学習環境を構築する](/ocitutorials/hpc/spinup-ml-instance-cntnd/)** の **[4. コンテナ環境構築](/ocitutorials/hpc/spinup-ml-instance-cntnd/#4-コンテナ環境構築)** の手順に従い構築します。  
+コンテナ環境は、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[GPUインスタンスで分散機械学習環境を構築する](../spinup-ml-instance-cntnd/)** の **[4. コンテナ環境構築](../spinup-ml-instance-cntnd/#4-コンテナ環境構築)** の手順に従い構築します。  
 この際、ファイル共有領域にアクセスするコンテナはroot権限で実行する必要があるため、一般ユーザ権限で **containerd** 上にコンテナを実行するために必要な手順は実施する必要がありません。
 
 ### 3-2-7. コンテナ起動

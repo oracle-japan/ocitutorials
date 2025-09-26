@@ -11,7 +11,7 @@ params:
 ***
 # 0. 概要
 
-本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用し、これらを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続するGPUクラスタ、あるいは単一のGPUインスタンスで実施します。  
+本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用し、これらを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続するGPUクラスタ、あるいは単一のGPUインスタンスで実施します。  
 
 このGPUクラスタ/インスタンスは、OSを **Ubuntu** とし、 **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** を使用して **NCCL Tests** をコンパイル・実行します。
 
@@ -29,11 +29,11 @@ params:
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8
 - ノード間接続 ： **クラスタ・ネットワーク** （100Gbps x 16 /ノード）
 
-※1） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。  
+※1） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。  
 
 以下の性能が出ています。
 
-- 通信タイプ： **All-Reduce**
+- 通信タイプ： AllReduce
 - メッセージサイズ： 10 GiB
 - 帯域（busbw）
     - 1ノード8GPU： **232 GB/s** 
@@ -44,9 +44,9 @@ params:
 
 本章は、 **NCCL Tests** を実行するGPUクラスタ/インスタンスを構築します。
 
-単一ノードで **NCCL Tests** を実行するGPUインスタンスの構築は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法](/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/)** の手順に従い実施します。
+単一ノードで **NCCL Tests** を実行するGPUインスタンスの構築は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法](../../tech-knowhow/gpu-with-ubuntu/)** の手順に従い実施します。
 
-複数ノードに跨る **NCCL Tests** を実行するGPUクラスタの構築は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/)** の手順に従い実施します。
+複数ノードに跨る **NCCL Tests** を実行するGPUクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** の手順に従い実施します。
 
 ***
 # 2. NCCL Testsコンパイル
@@ -75,7 +75,7 @@ $ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/
 
 ## 3-1. 1ノード8GPU
 
-以下コマンドをGPUノードの **NCCL Tests** 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する **NCCL** の **All-Reduce** 通信性能を計測します。
+以下コマンドをGPUノードの **NCCL Tests** 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する **NCCL** のAllReduce通信性能を計測します。
 
 ```sh
 $ cd ~/`hostname`/nccl-tests
@@ -109,7 +109,7 @@ $
 
 ## 3-2. 2ノード16GPU
 
-以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する **NCCL** のAll-Reduce通信性能を計測します。
+以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する **NCCL** のAllReduce通信性能を計測します。
 
 ```sh
 $ cd ~/nccl-tests

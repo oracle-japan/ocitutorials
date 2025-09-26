@@ -11,16 +11,16 @@ params:
 ***
 # 0. 概要
 
-本パフォーマンス関連Tipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **[OpenFOAM](https://www.openfoam.com/)** を実行する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。
+本パフォーマンス関連Tipsは、 **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **[OpenFOAM](https://www.openfoam.com/)** を実行する際、CFD解析フローのコストパフォーマンスを最大化するという観点で、以下のTipsを解説します。
 
 1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法
 2. スケーラビリティーを考慮した最適なノード間並列実行方法
 3. NVMe SSDローカルディスクをストレージ領域に活用する方法
 
-本パフォーマンス関連Tipsの性能計測は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** を使用し、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** に従って構築された **[Slurm](https://slurm.schedmd.com/)** 環境でバッチジョブとして計測しています。  
-また、 **NUMA nodes per socket** （以降 **NPS** と呼称）に **NPS1** と **NPS2** を指定して実行する計測は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム運用Tips](/ocitutorials/hpc/tech-knowhow/slurm-tips/)** の **[3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御](/ocitutorials/hpc/tech-knowhow/slurm-tips/#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御)** に従って構築した **Slurm** 環境で行っています。
+本パフォーマンス関連Tipsの性能計測は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** を使用し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築された **[Slurm](https://slurm.schedmd.com/)** 環境でバッチジョブとして計測しています。  
+また、 **NUMA nodes per socket** （以降 **NPS** と呼称）に **NPS1** と **NPS2** を指定して実行する計測は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム運用Tips](../../tech-knowhow/slurm-tips/)** の **[3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御](../../tech-knowhow/slurm-tips/#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御)** に従って構築した **Slurm** 環境で行っています。
 
-計算ノードに使用する **BM.Optimized3.36** は、 **OpenFOAM** がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化しています。
+計算ノードに使用する **BM.Optimized3.36** は、 **OpenFOAM** がメモリ帯域幅依存でハイパースレッディングによる効果は期待できないため、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化しています。
 
 ***
 # 1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法
@@ -40,14 +40,14 @@ params:
 
 - シェイプ ： **BM.Optimized3.36**
 - BIOS設定 ： **SMT** 無効化、 **NPS1** or **NPS2** （※1）
-- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）
+- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
 - **OpenFOAM** ： v2312
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.3
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※1）**SMT** ・ **NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
+※1）**SMT** ・ **NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
+※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。
 
@@ -58,7 +58,7 @@ params:
 
 本章は、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルを使用し、 **NPS** とMPIプロセス数を指定して実行する方法を解説します。
 
-この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
+この方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](../../tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
 
 ジョブスクリプトに指定する **Slurm** のオプションは、以下のように指定します。
 
@@ -107,7 +107,7 @@ params:
 
 ## 2-0. 概要
 
-本Tipsは、 **OpenFOAM** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を跨いでノード間並列実行する場合、ノード数を1・2・4・8と増加させた場合にスケーラビリティーがどのように変化してコストパフォーマンスが何ノードで最大になるかという観点で、性能計測とその考察を行います。
+本Tipsは、 **OpenFOAM** を **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を跨いでノード間並列実行する場合、ノード数を1・2・4・8と増加させた場合にスケーラビリティーがどのように変化してコストパフォーマンスが何ノードで最大になるかという観点で、性能計測とその考察を行います。
 
 また、 **[1. メモリ帯域の有効利用を考慮した最適なノード内並列実行方法](#1-メモリ帯域の有効利用を考慮した最適なノード内並列実行方法)** の結果から、 **NPS** 設定は **NPS2** を使用し、ノード当たりのMPIプロセス数は32と36（性能差が3パーセント程度だったため）を使用します。
 
@@ -119,15 +119,15 @@ params:
 
 - シェイプ ： **BM.Optimized3.36**
 - BIOS設定 ： **SMT** 無効化、 **NPS2** （※3）
-- ノード間接続 ：  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**
-- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※4）
+- ノード間接続 ：  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)**
+- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※4）
 - **OpenFOAM** ： v2312
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.3
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 1,000タイムステップ（デフォルト）
 
-※3）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※4） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
+※3）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
+※4） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、ソルバー部分に着目すると、以下のことが判明しています。
 
@@ -137,7 +137,7 @@ params:
 
 本章は、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルを使用し、ノード数を指定して実行する方法を解説します。
 
-この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
+この方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](../../tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
 
 ジョブスクリプトに指定する **Slurm** のオプションは、以下のように指定します。
 
@@ -227,16 +227,16 @@ params:
 
 - シェイプ ： **BM.Optimized3.36**
 - BIOS設定 ： **SMT** 無効化、 **NPS2** （※5）
-- ノード間接続 ：  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)**
+- ノード間接続 ：  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)**
 - 比較対象の共有ストレージ ： **ファイル・ストレージ** （NFS）
-- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※6）
+- OS ： **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※6）
 - **OpenFOAM** ： v2312
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.3
 - 解析対象モデル ： **[OpenFOAM HPC Benchmark Suite](https://develop.openfoam.com/committees/hpc)** の **[HPC_Motorbike](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike)** の **[Small](https://develop.openfoam.com/committees/hpc/-/tree/develop/incompressible/simpleFoam/HPC_motorbike/Small/v1912)** モデル
 - 計算結果の出力頻度（ **writeInterval** ） ： 10タイムステップ（デフォルト値：1,000タイムステップ）
 
-※5）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※6） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
+※5）**SMT** ・ **NPS** を指定したインスタンスの作成方法は、、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
+※6） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
 
 この結果、以下のことが判明しています。
 
@@ -246,7 +246,7 @@ params:
 
 本章は、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルを使用し、NVMe SSDローカルディスクをストレージ領域に活用して実行する方法を解説します。
 
-この方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](/ocitutorials/hpc/tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](/ocitutorials/hpc/tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
+この方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[4. CFD解析フロー実行](../../tech-knowhow/install-openfoam//#4-cfd解析フロー実行)** を参照し、ここで解説しているチュートリアル付属のオートバイ走行時乱流シミュレーションモデルのバッチ実行の方法を参考に、 **OpenFOAM HPC Benchmark Suite** の **HPC_Motorbike** の **Small** モデルにこれを適用します。
 
 この際、 **OpenFOAM** の設定ファイル **system/controlDict** の **writeInterval** を **10** に変更します。  
 この値がデフォルト値 **1,000** のままの場合、計算結果を出力しないため、NVMe SSDローカルディスクの効果を得ることが出来ません。

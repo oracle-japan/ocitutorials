@@ -11,17 +11,17 @@ params:
 ***
 # 0. 概要
 
-本チュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンスの **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
-この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
+本チュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンスの **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
+この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster)** を参照してください。
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](../#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(スタティッククラスタ自動構築編)](../spinup-hpc-cluster)** を参照してください。
 
 本チュートリアルで作成するHPCクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
 
 -  **VCN** と関連するネットワークリソース作成
 - Bastionノード作成
-- 計算ノード用 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** 作成
+- 計算ノード用 **[インスタンス構成](../#5-7-インスタンス構成)** 作成
 - **クラスタ・ネットワーク** と計算ノード作成
 - HPCクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布
 - 計算ノードの全ホスト名を記載したホストリストファイル作成
@@ -41,13 +41,13 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 - パブリックサブネット・プライベートサブネット間で **セキュリティ・リスト** によりアクセスが制限されていない（Bastionノードパブリック接続の場合）
 - プライベートサブネットが **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPC関連プラグインの動作条件を満たしている（※2）
 
-※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
+※2）この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットの動作条件充足確認](../tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットの動作条件充足確認)** を参照してください。
 
 ![システム構成図（パブリック）](architecture_diagram.png)
 
 ![システム構成図（プライベート）](architecture_diagram_private.png)
 
-Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル(以降 **cloud-config** と呼称します。)を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
+Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル(以降 **cloud-config** と呼称します。)を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
 - ホームディレクトリ領域のNFSエクスポート
@@ -74,12 +74,12 @@ Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 ## 1-0. 概要
 
 本章は、HPCクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。  
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](../#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
 
 1. **リソース・マネージャ** を使用する方法
 
-    - **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** 作成
-    - **[スタック](/ocitutorials/hpc/#5-3-スタック)** 作成
+    - **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)** 作成
+    - **[スタック](../#5-3-スタック)** 作成
 
 2. **Terraform** CLIを使用する方法
 
@@ -92,7 +92,7 @@ Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 1-1-1. 構成ソース・プロバイダ作成
 
-**構成ソース・プロバイダ** の作成は、 **[ここ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を参照してください。
+**構成ソース・プロバイダ** の作成は、 **[ここ](../#5-14-構成ソースプロバイダ)** を参照してください。
 
 ### 1-1-2. スタック作成
 
@@ -106,7 +106,7 @@ OCIコンソールにログインし、HPCクラスタを構築するリージ�
 
 - **Terraformの構成のオリジン :** ソース・コード制御システム
 - **ソースコード管理タイプ :** **GitHub**
-- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
+- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)**
 - **リポジトリ :** **tutorial_cn_rm**
 - **ブランチ :** **master**
 - **名前 :** スタックに付与する名前（任意）
@@ -186,8 +186,8 @@ runcmd:
 ```
 
 ※6）計算ノードに **BM.Optimized3.36** を使用する場合の **NPS** / **SMT** 設定値で、 **BM.HPC.E5.144** の場合は指定することが出来ません。  
- **NPS** / **SMT** 設定値の詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
-※7）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
+ **NPS** / **SMT** 設定値の詳細は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
+※7）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 次に、表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -203,7 +203,7 @@ runcmd:
 
 ### 1-2-1. Terraform実行環境構築
 
-本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用してHPCクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
+本章は、 **[Terraform](../#5-12-terraform)** CLIを使用してHPCクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
 この実行環境は、インターネットに接続された **Linux** ・ **Windows** ・ **Mac** の何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。
 
 - OCI上の **Linux** が稼働するVMインスタンス
@@ -222,11 +222,11 @@ runcmd:
 
 ### 1-2-2. Terraformスクリプト概要
 
-本チュートリアルで使用するHPCクラスタ構築用の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
+本チュートリアルで使用するHPCクラスタ構築用の **[Terraform](../#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
 
 | ファイル名            | 用途                                                                                                         |
 | ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| cn.tf            | **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** の定義 |
+| cn.tf            | **[インスタンス構成](../#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** の定義 |
 | outputs.tf       | 作成したリソース情報の出力                                                                                              |
 | terraform.tfvars | **Terraform** スクリプト内で使用する変数値の定義                                                                            |
 | variables.tf     | **Terraform** スクリプト内で使用する変数の型の定義                                                                           |
@@ -241,7 +241,7 @@ runcmd:
 
 ### 1-2-3. Terraformスクリプト作成
 
-**[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
+**[Terraform](../#5-12-terraform)** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
 
 **[https://github.com/fwiw6430/tutorial_cn](https://github.com/fwiw6430/tutorial_cn)**
 
@@ -291,8 +291,8 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ![画面ショット](console_page01.png)
 
-※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
-※10）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
+※10）詳細は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
 ※11）例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
 ※12）既存の **VCN** を使用する場合のみコメントを外して指定します。  
 ※13）OCIコンソール上で当該 **VCN** ・サブネットの詳細画面を表示して確認します。  
@@ -303,9 +303,9 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ## 2-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、HPCクラスタを構築します。
+本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、HPCクラスタを構築します。
 
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 2-1. リソース・マネージャを使用する方法
 
@@ -411,7 +411,7 @@ $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 
 ## 3-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
+**[cloud-init](../#5-11-cloud-init)** は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname "sudo cloud-init status"; done
@@ -467,7 +467,7 @@ $
 
 ## 3-5. 計算ノードクラスタ・ネットワーク接続用ネットワークインターフェース設定確認
 
-以下コマンドをBastionノードのopcユーザで実行し、計算ノードが **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続するためのネットワークインターフェース（ **rdma0** ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。  
+以下コマンドをBastionノードのopcユーザで実行し、計算ノードが **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続するためのネットワークインターフェース（ **rdma0** ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。  
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e ens300f0np0 -e ens800f0np0 -e eth0 -e rdma0 | grep inet"; done
@@ -483,7 +483,7 @@ $
 ***
 # 4. MPIプログラム実行
 
-本章は、計算ノードの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** を使用し、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。  
+本章は、計算ノードの **HPC[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** を使用し、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。  
 ここでは、 **Intel MPI Benchmarks** のPing-Pongを実行します。
 
 
@@ -498,9 +498,9 @@ $ /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x
 
 ## 5-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、HPCクラスタを削除します。
+本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、HPCクラスタを削除します。
 
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](../#5-12-terraform)** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 5-1. リソース・マネージャを使用する方法
 

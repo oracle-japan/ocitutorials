@@ -18,22 +18,22 @@ params:
 3. 2ノード間の帯域幅
 4. 4ノード間のAllreduce
 
-本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、計算ノードに第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用してこれを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](/ocitutorials/hpc/#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
+本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、計算ノードに第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用してこれを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](../../#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
 
 本ドキュメントは、以下の実行環境で **OSU Micro-Benchmarks** を実行し、
 
 - 計算ノード
   - ノード数： 2 / 4
   - シェイプ : **BM.Optimized3.36** （搭載コア数36）
-  - OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+  - OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - ノード間接続インターコネクト
   - **クラスタ・ネットワーク**
   - リンク速度： 100 Gbps
 - **OpenMPI** ： 5.0.8（※2）
 - **OSU Micro-Benchmarks** ： 7.5.1
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-※2） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
+※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 以下の性能が出ています。
 
@@ -42,17 +42,17 @@ params:
 
 以降では、以下の順に解説します。
 
-1. **OpenMPI** インストール
-2. **OSU Micro-Benchmarks** インストール
-3. **OSU Micro-Benchmarks** 実行
+1. **[OpenMPIインストール](#1-openmpiインストール)**
+2. **[OSU Micro-Benchmarksインストール・セットアップ](#2-osu-micro-benchmarksインストールセットアップ)**
+3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
 
 ***
 # 1. OpenMPIインストール  
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
 ***
-# 2. OSU Micro-Benchmarksインストール
+# 2. OSU Micro-Benchmarksインストール・セットアップ
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -65,6 +65,26 @@ $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt
 $ make -j 36 && sudo make install
 ```
 
+次に、以下のファイルを **/usr/share/Modules/modulefiles/omb** で作成します。  
+このファイルは、 **Environment modules** にモジュール名 **omb** を登録し、これをロードすることで **OSU Micro-Benchmarks** 利用環境の設定が可能になります
+
+```sh
+#%Module1.0
+##
+## OSU Micro-Benchmarks for OpenMPI
+
+proc ModulesHelp { } {
+        puts stderr "OSU Micro-Benchmarks for OpenMPI\n"
+}
+
+module-whatis   "OSU Micro-Benchmarks for OpenMPI"
+
+set pkg_root    /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
+set ver         7.5.1
+
+prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
+```
+
 ***
 # 3. OSU Micro-Benchmarks実行
 
@@ -74,8 +94,8 @@ $ make -j 36 && sudo make install
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ1バイト～64 MiBで計測しています。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 36 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/collective/osu_alltoall -x 10 -i 10 -m 1:67108864
+$ module load openmpi omb
+$ mpirun -n 36 osu_alltoall -x 10 -i 10 -m 1:67108864
 # OSU MPI All-to-All Personalized Exchange Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
@@ -115,8 +135,8 @@ $
 この出力は、2ノード間のメッセージサイズ1バイトの片道所要時間で、この結果（ここでは **1.67 usec** ）を2ノード間のレイテンシとします。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_latency -x 1000 -i 10000 -m 1:1
+$ module load openmpi omb
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_latency -x 1000 -i 10000 -m 1:1
 [inst-xsyjo-x9-ol905:263038] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Latency Test v7.5
@@ -132,8 +152,8 @@ $
 この出力は、2ノード間のメッセージサイズ256 MiBの帯域幅で、この結果（ここでは **12,254,16 MB/s** ）を2ノード間の帯域幅とします。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw -x 10 -i 10 -m 268435456:268435456
+$ module load openmpi omb
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_bw -x 10 -i 10 -m 268435456:268435456
 [inst-xsyjo-x9-ol905:263198] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Bandwidth Test v7.5
@@ -149,8 +169,8 @@ $
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ4バイト～256 MiBで計測しています。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/collective/osu_allreduce -x 10 -i 10 -m 4:268435456
+$ module load openmpi omb
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_allreduce -x 10 -i 10 -m 4:268435456
 [inst-ztgl1-x9-ol810:227754] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Allreduce Latency Test v7.5

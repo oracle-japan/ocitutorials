@@ -11,9 +11,9 @@ params:
 ***
 # 0. 概要
 
-複数の計算ノードを  **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
+複数の計算ノードを  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
 
-※1）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
+※1）この詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../../tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
 ※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux** 9.5です。
 
 ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
@@ -25,7 +25,7 @@ params:
 
 以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 **プラットフォーム・イメージ** で提供される最新の **Oracle Linux** 上に **[AMD Optimizing C/C++ and Fortran Compilers](https://www.amd.com/en/developer/aocc.html)** （以降 **AOCC** と呼称します。）、 **[OpenMPI](https://www.open-mpi.org/)** 、及び **[Slurm](https://slurm.schedmd.com/)** をインストールし、 **BM.Standard.E6.256** のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。
 
-なお本テクニカルTipsは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の手順に従い予め **Slurm** 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降"計算ノード"と呼称します。）をこの **Slurm** 環境に組み込みます。
+なお本テクニカルTipsは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** の手順に従い予め **Slurm** 環境が構築されていることを前提に、単一ノードのHPCワークロードを実行するインスタンス（以降"計算ノード"と呼称します。）をこの **Slurm** 環境に組み込みます。
 
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
@@ -60,7 +60,7 @@ params:
 計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
-- イメージ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.04.16-0**
+- イメージ： **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.04.16-0**
 - シェイプ： **BM.Standard.E6.256**
 
 ## 1-2. AOCCインストール
@@ -308,7 +308,7 @@ PartitionName=e6 Nodes=inst-e6 Default=YES MaxTime=INFINITE State=UP
 
 ここでは、本テクニカルTipsで使用する **BM.Standard.E6.256** に搭載する2個の第5世代 **AMD EPYC** プロセッサが32個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効（※6）としたホスト名が **inst-e6** の **BM.Standard.E6.256** 1ノードを、パーティション名 **e6** に割り当てています。
 
-※6） **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※6） **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
 
 次に、この **slurm.conf** を計算ノード、Slurmマネージャ、及びSlurmクライアントの **/opt/slurm/etc** に配置します。
 
@@ -356,7 +356,7 @@ $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -f
 $ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.out
 ```
 
-**BM.Standard.E6.256** 上で実行する **STREAM** については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[STREAM実行方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/run-stream-e6/)** も合わせて参照してください。
+**BM.Standard.E6.256** 上で実行する **STREAM** については、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[STREAM実行方法（BM.Standard.E6.256編）](../../benchmark/run-stream-e6/)** も合わせて参照してください。
 
 ## 2-2. OpenMPI・Slurm稼働確認
 
@@ -376,7 +376,7 @@ srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-
 ```
 
 このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから4 MiBまでで計測しています。  
-**BM.Standard.E6.256** 上で実行する **Intel MPI Benchmarks** のMPI集合通信性能については、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](/ocitutorials/hpc/benchmark/openmpi-perftune-e6/)** も合わせて参照してください。
+**BM.Standard.E6.256** 上で実行する **Intel MPI Benchmarks** のMPI集合通信性能については、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）](../../benchmark/openmpi-perftune-e6/)** も合わせて参照してください。
 
 次に、以下コマンドをSlurmクライアントの **OpenMPI** と **Slurm** を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。
 

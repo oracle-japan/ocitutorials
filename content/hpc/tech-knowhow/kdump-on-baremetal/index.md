@@ -19,7 +19,7 @@ params:
 
 ![画面ショット](architecture_diagram.png)
 
-また本テクニカルTipsは、カーネルダンプクライアントが計算ノードの場合とシステム管理サーバの場合を想定し、HPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** と **[プラットフォーム・イメージ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/images.htm)** として提供される **Oracle Linux** を対象のOSイメージとして取り上げ、それぞれの手順を解説します。  
+また本テクニカルTipsは、カーネルダンプクライアントが計算ノードの場合とシステム管理サーバの場合を想定し、HPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** と **[プラットフォーム・イメージ](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/images.htm)** として提供される **Oracle Linux** を対象のOSイメージとして取り上げ、それぞれの手順を解説します。  
 これは、両者の使用するカーネルが以下の点で異なり、カーネルダンプクライアントとしてのセットアップ手順に違いが出るためです。
 
 - kdumpカーネル専用メモリ領域必要サイズ（Mellanox OFEDカーネルモジュール有無による）
@@ -33,7 +33,7 @@ params:
 | カーネルダンプクライアント<br>（計算ノードを想定）     | **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** | HPC **クラスタネットワーキングイメージ** 8.8<br>（※1）                |
 | カーネルダンプクライアント<br>（システム管理サーバを想定） | **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** | **Oracle Linux** 8.9 UEKカーネル<br>（**プラットフォーム・イメージ**） |
 
-※1）詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照下さい。
+※1）詳細は、**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照下さい。
 
 ここでカーネルダンプのトリガーは、 **仮想マシン・インスタンス** ではOCIコンソールから **[診断中断の送信](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/sendingdiagnosticinterrupt.htm)** （Send diagnostic Interrupt）により行いますが、この方法はベアメタルインスタンスでサポートされていません。  
 このため、本テクニカルTipsで使用しているsysfs仮想ファイルシステムへの書き込みによるカーネルダンプのトリガーが使用できないカーネルハングのような状況でのカーネルダンプ取得を想定し、以下のようなカーネルパニックを引き起こす条件を指定するカーネルパラメータを予め適切に設定します。
@@ -112,7 +112,7 @@ $
 # 2. カーネルダンプクライアントセットアップ
 
 本章は、カーネルダンプクライアントのセットアップ手順を解説します。  
-この際、システム管理サーバを想定する **プラットフォーム・イメージ** として提供される **Oracle Linux** を使用するカーネルダンプクライアントに対し、計算ノードを想定するHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** を使用するカーネルダンプクライアントでは追加の手順が必要となるため、適用する手順を自身のカーネルダンプクライアントタイプに合わせて選択します。  
+この際、システム管理サーバを想定する **プラットフォーム・イメージ** として提供される **Oracle Linux** を使用するカーネルダンプクライアントに対し、計算ノードを想定するHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** を使用するカーネルダンプクライアントでは追加の手順が必要となるため、適用する手順を自身のカーネルダンプクライアントタイプに合わせて選択します。  
 なおカーネルダンプクライアント用のインスタンスは、既にデプロイされているものとします。
 
 
@@ -152,7 +152,7 @@ $
     ```
 
 3. カーネルダンプ設定ファイル変更（計算ノード）  
-カーネルダンプクライアントで、kdump設定ファイルを以下のように修正し、HPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** に設定されているkdumpカーネルの起動を妨げるカーネルパラメータを除外します。
+カーネルダンプクライアントで、kdump設定ファイルを以下のように修正し、HPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** に設定されているkdumpカーネルの起動を妨げるカーネルパラメータを除外します。
 
     ```sh
     $ sudo diff /etc/sysconfig/kdump_org /etc/sysconfig/kdump
