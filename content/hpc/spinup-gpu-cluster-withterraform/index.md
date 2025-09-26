@@ -13,17 +13,17 @@ table, th, td {
 }
 </style>
 
-このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用）を **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを活用して自動構築し、Dockerコンテナ上で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** のGPU間通信性能を **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。  
-この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
+このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用）を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、Dockerコンテナ上で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** のGPU間通信性能を **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。  
+この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](/ocitutorials/hpc/#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withstack)** を参照してください。
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](../#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](../spinup-gpu-cluster-withstack)** を参照してください。
 
 本チュートリアルで作成するGPUクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
 
 -  **VCN** と関連するネットワークリソース作成
 - Bastionノード作成
-- GPUノード用 **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** 作成
+- GPUノード用 **[インスタンス構成](../#5-7-インスタンス構成)** 作成
 - **クラスタ・ネットワーク** とGPUノード作成
 - GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布
 - GPUノードの全ホスト名を記載したホストリストファイル（ **/home/opc/hostlist.txt** ）作成
@@ -43,13 +43,13 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 - パブリックサブネット・プライベートサブネット間で **セキュリティ・リスト** によりアクセスが制限されていない（Bastionノードパブリック接続の場合）
 - プライベートサブネットが **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** HPCプラグインの動作条件を満たしている（※2）
 
-※2）この詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
+※2）この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](../tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
 
-![システム構成図（パブリック）](/ocitutorials/hpc/spinup-cluster-network/architecture_diagram.png)
+![システム構成図（パブリック）](../spinup-cluster-network/architecture_diagram.png)
 
-![システム構成図（プライベート）](/ocitutorials/hpc/spinup-cluster-network/architecture_diagram_private.png)
+![システム構成図（プライベート）](../spinup-cluster-network/architecture_diagram_private.png)
 
-Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
+Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
 - ホームディレクトリ領域のNFSエクスポート
@@ -76,12 +76,12 @@ Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 ## 0-0. 概要
 
 本章は、GPUクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。  
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](../#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
 
 1. **リソース・マネージャ** を使用する方法
 
-    - **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** 作成
-    - **[スタック](/ocitutorials/hpc/#5-3-スタック)** 作成
+    - **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)** 作成
+    - **[スタック](../#5-3-スタック)** 作成
 
 2. **Terraform** CLIを使用する方法
 
@@ -94,13 +94,13 @@ Bastionノード作成は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)*
 
 ### 0-1-1. 構成ソース・プロバイダ作成
 
-本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を作成します。
+本章は、ひな型となる **[Terraform](../#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)** を作成します。
 
-**構成ソース・プロバイダ** の作成は、 **[ここ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を参照してください。
+**構成ソース・プロバイダ** の作成は、 **[ここ](../#5-14-構成ソースプロバイダ)** を参照してください。
 
 ### 0-1-2. スタック作成
 
-本章は、GPUクラスタを構築するための **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** 用 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
+本章は、GPUクラスタを構築するための **[リソース・マネージャ](../#5-2-リソースマネージャ)** 用 **[スタック](../#5-3-スタック)** を作成します。
 
 OCIコンソールにログインし、GPUクラスタを構築するリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
@@ -112,7 +112,7 @@ OCIコンソールにログインし、GPUクラスタを構築するリージ�
 
 - **Terraformの構成のオリジン :** ソース・コード制御システム
 - **ソースコード管理タイプ :** **GitHub**
-- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
+- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)**
 - **リポジトリ :** **tutorial_cn_rm**
 - **ブランチ :** **master**
 - **名前 :** スタックに付与する名前（任意）
@@ -142,7 +142,7 @@ OCIコンソールにログインし、GPUクラスタを構築するリージ�
     - **Node count :** GPUノードのノード数（デフォルト：2）
     - **Image OCID :** GPUノードのイメージOCID（※4）
     - **Boot volume size :** GPUノードのブートボリュームサイズ（200GB以上）
-    - **cloud-config :** GPUノードの **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※5）
+    - **cloud-config :** GPUノードの **[cloud-init](../#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※5）
     - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※6）
     - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) （※6）
 
@@ -190,9 +190,9 @@ runcmd:
     - mount /home
 ```
 
-※6）詳細は、 **[パフォーマンス関連Tips集](/ocitutorials/hpc/#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※6）詳細は、 **[パフォーマンス関連Tips集](../#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。
 
-※7）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
+※7）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 次に、表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
 
@@ -208,7 +208,7 @@ runcmd:
 
 ### 0-2-1. Terraform実行環境構築
 
-本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** CLIを使用してGPUクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
+本章は、 **[Terraform](../#5-12-terraform)** CLIを使用してGPUクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
 この実行環境は、インターネットに接続された **Linux** ・ **Windows** ・ **Mac** の何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。
 
 - OCI上の **Linux** が稼働するVMインスタンス
@@ -227,11 +227,11 @@ runcmd:
 
 ### 0-2-2. Terraformスクリプト概要
 
-本チュートリアルで使用するGPUクラスタ構築用の **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
+本チュートリアルで使用するGPUクラスタ構築用の **[Terraform](../#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
 
 | ファイル名            | 用途                                                                                                         |
 | ---------------- | ---------------------------------------------------------------------------------------------------------- |
-| cn.tf            | **[インスタンス構成](/ocitutorials/hpc/#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** の定義 |
+| cn.tf            | **[インスタンス構成](../#5-7-インスタンス構成)** と **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** の定義 |
 | outputs.tf       | 作成したリソース情報の出力                                                                                              |
 | terraform.tfvars | **Terraform** スクリプト内で使用する変数値の定義                                                                                 |
 | variables.tf     | **Terraform** スクリプト内で使用する変数の型の定義                                                                                |
@@ -241,12 +241,12 @@ runcmd:
 
 これらのうち自身の環境に合わせて修正する箇所は、基本的に **terraform.tfvars** と **provider.tf** に集約しています。
 
-また、これらのファイルと同じディレクトリに **user_data** ディレクトリが存在し、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を格納しています。  
+また、これらのファイルと同じディレクトリに **user_data** ディレクトリが存在し、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を格納しています。  
 この **cloud-config** を修正することで、構築するGPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。
 
 ### 0-2-3. Terraformスクリプト作成
 
-**[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
+**[Terraform](../#5-12-terraform)** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
 
 **[https://github.com/fwiw6430/tutorial_cn](https://github.com/fwiw6430/tutorial_cn)**
 
@@ -296,8 +296,8 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ![画面ショット](console_page01.png)
 
-※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
-※10）詳細は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
+※10）詳細は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
 ※11）例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
 ※12）既存の **VCN** を使用する場合のみコメントを外して指定します。  
 ※13）OCIコンソール上で当該 **VCN** ・サブネットの詳細画面を表示して確認します。
@@ -307,9 +307,9 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ## 1-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、GPUクラスタを構築します。
+本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、GPUクラスタを構築します。
 
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 1-1. リソース・マネージャを使用する方法
 
@@ -409,7 +409,7 @@ $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 
 ## 2-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
+**[cloud-init](../#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh  -oStrictHostKeyChecking=accept-new $hname "sudo cloud-init status"; done
@@ -476,7 +476,7 @@ $
 
 ## 2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認
 
-以下コマンドをBastionノードのopcユーザで実行し、GPUノードの **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。  
+以下コマンドをBastionノードのopcユーザで実行し、GPUノードの **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。  
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e eth0 -e rdma | grep inet"; done
@@ -643,15 +643,15 @@ $
 
 本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、Dockerコンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
 
-この **NCCL Tests** 実行方法は、 **[標準ベンチマーク実行方法](/ocitutorials/hpc/#2-1-標準ベンチマーク実行方法)** の **[NCCL Tests実行方法](/ocitutorials/hpc/benchmark/run-nccltests/)** を参照してください。
+この **NCCL Tests** 実行方法は、 **[標準ベンチマーク実行方法](../#2-1-標準ベンチマーク実行方法)** の **[NCCL Tests実行方法](../benchmark/run-nccltests/)** を参照してください。
 
 ***
 # 5. GPUクラスタ削除
 
 ## 5-0. 概要
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** / **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを使用し、GPUクラスタを削除します。  
-この手順は、構築手法に **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
+本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、GPUクラスタを削除します。  
+この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
 ## 5-1. リソース・マネージャを使用する方法
 
@@ -677,7 +677,7 @@ $
 
 ## 5-2. Terraform CLIの場合
 
-本章は、 **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、GPUクラスタを削除します。
+本章は、 **[Terraform](../#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、GPUクラスタを削除します。
 
 **Terraform** 実行環境の **tutorial_cn** ディレクトリで以下コマンドを実行し、削除が正常に完了したことをメッセージから確認します。
 

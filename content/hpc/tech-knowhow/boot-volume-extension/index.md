@@ -28,7 +28,7 @@ Bastionノードで使用するコマンドラインインターフェースは�
 
 以降の章は、以上のステップに沿って具体的な手順を解説します。
 
-**pdsh** の詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/)** を参照ください。
+**pdsh** の詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../../tech-knowhow/cluster-with-pdsh/)** を参照ください。
 
 ***
 # 1. Bastionノード事前準備
@@ -38,7 +38,7 @@ Bastionノードで使用するコマンドラインインターフェースは�
 
 1. **OCI CLI** をOCI公式マニュアルの **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/API/SDKDocs/cliinstall.htm)** の手順に従ってインストール・セットアップします。
 
-2. **pdsh** を  **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/)** の **[ここ](/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ)** の手順に従ってインストール・セットアップします。
+2. **pdsh** を  **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../../tech-knowhow/cluster-with-pdsh/)** の **[ここ](../../tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ)** の手順に従ってインストール・セットアップします。
 
 ***
 # 2. ブート・ボリューム拡張

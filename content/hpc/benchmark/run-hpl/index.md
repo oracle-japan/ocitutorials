@@ -19,7 +19,7 @@ table, th, td {
 本ドキュメントで解説する **[HPL](https://www.netlib.org/benchmark/hpl/)** の実行は、 **[Intel oneAPI Math Kernel Library for Linux](https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.html#gs.jwmn3t)** に含まれる **HPL** の実装である **[Intel Distribution for LINPACK Benchmark](https://www.intel.com/content/www/us/en/docs/onemkl/developer-guide-linux/2023-1/intel-distribution-for-linpack-benchmark.html)** を、 **[Intel MPI Library](https://www.intel.com/content/www/us/en/developer/tools/oneapi/mpi-library.html#gs.jwmodq)** と共に使用します。  
 なお、 **Intel oneAPI Math Kernel Library for Linux** と **Intel MPI Library** は、 **[Intel oneAPI HPC Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html#gs.jwmpak)** に含まれているものを使用します。
 
-**HPL** を実行するHPCクラスタは、計算ノードに **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、 **HPL** の性能向上を目的に **NUMA nodes per socket** （以降 **NPS** と呼称します。）が **2** （以降 **NPS2** と呼称します。）で **Simultanious Multi Threading** （以降 **SMT** と呼称します。）が無効となるようBIOSで設定、2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とします。
+**HPL** を実行するHPCクラスタは、計算ノードに **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、 **HPL** の性能向上を目的に **NUMA nodes per socket** （以降 **NPS** と呼称します。）が **2** （以降 **NPS2** と呼称します。）で **Simultanious Multi Threading** （以降 **SMT** と呼称します。）が無効となるようBIOSで設定、2インスタンスを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続した構成とします。
 
 以上より、本ドキュメントで解説する **HPL** 実行は、以下の手順を経て行います。
 
@@ -48,12 +48,12 @@ table, th, td {
 ***
 # 1. HPCクラスタ構築
 
-本章は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](/ocitutorials/hpc/#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、HPCクラスタを構築します。  
-この際、 **NPS** を **NPS2** とし **SMT** を無効化するようBIOSを設定した（※1）2ノードの **BM.Optimized3.36** を計算ノードに使用し、そのOSに **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）を使用します。
+本章は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[HPCクラスタ](../../#1-1-hpcクラスタ)** のチュートリアルの手順に従う等により、HPCクラスタを構築します。  
+この際、 **NPS** を **NPS2** とし **SMT** を無効化するようBIOSを設定した（※1）2ノードの **BM.Optimized3.36** を計算ノードに使用し、そのOSに **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）を使用します。
 
-※1）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※1）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
-※2）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
 ***
 # 2. Intel oneAPI HPC Toolkitインストール
@@ -111,7 +111,7 @@ $ chmod 755 ./runme_intel64_dynamic ./runme_intel64_prv
 
 本章は、先に設定した **HPL** と **MPI** の実行パラメータを使用し、 **HPL** を実行します。
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、 **HPL** を実行する全ての計算ノードのホスト名を記載したホストリストファイルを、 **HPL** 実行ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](../../tech-knowhow/compute-host-list/)** の手順に従い、 **HPL** を実行する全ての計算ノードのホスト名を記載したホストリストファイルを、 **HPL** 実行ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
 
 次に、 **/etc/fstab** ファイルのスワップ領域を指定する行を以下のようにコメントとし、以降のOS再起動でスワップ領域が無効化されるようにします。
 

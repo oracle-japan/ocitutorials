@@ -13,18 +13,18 @@ params:
 
 HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれをサービスすることが一般的ですが、このファイル共有ストレージをコストパフォーマンス優先で選定する場合、 **ベア・メタル・インスタンス** とストレージサービスで構築する方法（以降"ベア・メタル・インスタンスNFSサーバ"と呼称）を採用することになり、ストレージに **ブロック・ボリューム** を使用しこれをベア・メタル・インスタンスにアタッチする方法（以降"ブロック・ボリュームNFSサーバ”と呼称）と、 **ベア・メタル・インスタンス** にNVMe SSDドライブを搭載するDenceIOシェイプを使用する方法（以降”DenceIO NFSサーバ”と呼称）があります。（※1）
 
-※1）ベア・メタル・インスタンスNFSサーバの詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
+※1）ベア・メタル・インスタンスNFSサーバの詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 このベア・メタル・インスタンスNFSサーバは、NFSのマネージドサービスである **ファイル・ストレージ** の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を用意する必要があります。（※2）
 
-※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと **ファイル・ストレージ** の比較は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-2 可用性による比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-2-可用性による比較)** を参照してください。
+※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと **ファイル・ストレージ** の比較は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** の **[2-2 可用性による比較](../tech-knowhow/howto-configure-sharedstorage/#2-2-可用性による比較)** を参照してください。
 
 以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。
 
-ここで構築するバックアップ環境は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[0. 概要](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#0-概要)** に記載のバックアップ環境 **No. 3** と **No. 4** から選択して構築することとし、採用したいバックアップ格納ストレージが **オブジェクト・ストレージ** （**No.3**）と **ブロック・ボリューム** の **より低いコスト** （**No.4**）（**ブロック・ボリューム** の **パフォーマンス・レベル** が最低のサービスで、 **ブロック・ボリューム** の中では最も容量単価が安価です。関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Block/Concepts/blockvolumeperformance.htm)** を参照してください。以降" **BVLC** "と呼称します。）のどちらを採用するかにより決定します。
+ここで構築するバックアップ環境は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](../tech-knowhow/howto-choose-osbackuptool/)** の **[0. 概要](../tech-knowhow/howto-choose-osbackuptool/#0-概要)** に記載のバックアップ環境 **No. 3** と **No. 4** から選択して構築することとし、採用したいバックアップ格納ストレージが **オブジェクト・ストレージ** （**No.3**）と **ブロック・ボリューム** の **より低いコスト** （**No.4**）（**ブロック・ボリューム** の **パフォーマンス・レベル** が最低のサービスで、 **ブロック・ボリューム** の中では最も容量単価が安価です。関連する **OCI** 公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/Content/Block/Concepts/blockvolumeperformance.htm)** を参照してください。以降" **BVLC** "と呼称します。）のどちらを採用するかにより決定します。
 
 バックアップサーバは、ファイル共有ストレージ領域をNFSマウントし、バックアップ環境 **No.3** の場合は **[Rclone](https://rclone.org/)** を使用して **オブジェクト・ストレージ** に、バックアップ環境 **No.4** の場合は **rsync** を使用して **BVLC** 上に作成したPOSIXファイルシステムに、それぞれ差分バックアップします。  
-バックアップ環境 **No.3** で、 **Rclone** の **オブジェクト・ストレージ** へのアクセスは、バックアップサーバを **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証に組み込むことでIAM認証・認可を付与します。  
+バックアップ環境 **No.3** で、 **Rclone** の **オブジェクト・ストレージ** へのアクセスは、バックアップサーバを **[インスタンス・プリンシパル](../#5-15-インスタンスプリンシパル)** 認証に組み込むことでIAM認証・認可を付与します。  
 またバックアップサーバに使用するシェイプは、メタデータ性能が要求される小さなファイルのバックアップやサイズの大きなファイルを **マルチパート・アップロード** する際に **Rclone** がマルチスレッドを活用してデータ転送を行う事を考慮し、コア数の十分な **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#vm-standard)** の32コア・384GBメモリを使用します。  
 また、本チュートリアルで使用する各ソフトウェアのバージョンを以下に示します。
 
@@ -46,20 +46,20 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 バックアップ環境 **No.4** でバックアップ格納ストレージに使用する **ブロック・ボリューム** は、 **パフォーマンス・レベル** に容量単価が最も安価な **より低いコスト** を使用し、1 TB以上のボリュームを基本単位として15ボリュームをLinuxの論理ボリューム機能で各ボリュームにストライピングを掛けつつ1ファイルシステムに構成します。  
 
-![論理ボリュームディスク構成図](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/lv_configuration.png)
+![論理ボリュームディスク構成図](../tech-knowhow/howto-configure-sharedstorage/lv_configuration.png)
 
 総容量が15 TBより大きなバックアップ格納ストレージが必要な場合は、単一 **ブロック・ボリューム** サイズを1 TBより大きくすることで、性能を維持したままその総容量を増やすことが可能です。  
 例えば100 TBの総容量が必要な場合は、ボリューム・サイズを7 TBとすることで、7 TB x 15 = 105 TBの総容量を実現することが出来ます。
 
 また本チュートリアルは、構築したバックアップ環境でバックアップとリストアの性能をスループットとメタデータ性能の観点で検証します。  
-この結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[3. バックアップ・リストア性能](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#3-バックアップリストア性能)** を参照してください。
+この結果は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](../tech-knowhow/howto-choose-osbackuptool/)** の **[3. バックアップ・リストア性能](../tech-knowhow/howto-choose-osbackuptool/#3-バックアップリストア性能)** を参照してください。
 
 **所要時間 :** 約2時間
 
 **前提条件 :** バックアップ環境を収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :**
-- 本チュートリアルに従って取得するバックアップ環境 **No.3** のバックアップは、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/)** の **[2. バックアップ・リストア時の制約事項](/ocitutorials/hpc/tech-knowhow/howto-choose-osbackuptool/#2-バックアップリストア時の制約事項)** に記載の制限を受けます。
+- 本チュートリアルに従って取得するバックアップ環境 **No.3** のバックアップは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[ファイル共有ストレージ向けバックアップ環境の最適な構築手法](../tech-knowhow/howto-choose-osbackuptool/)** の **[2. バックアップ・リストア時の制約事項](../tech-knowhow/howto-choose-osbackuptool/#2-バックアップリストア時の制約事項)** に記載の制限を受けます。
 
 ***
 # 1. バックアップ環境構築
@@ -68,7 +68,7 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 本章は、バックアップサーバを中心とするバックアップ環境の構築手順を、バックアップ環境 **No.3** とバックアップ環境 **No.4** の場合に分けて解説します。
 
-なお、バックアップ対象領域をNFSでサービスするベア・メタル・インスタンスNFSサーバは、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** や **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の手順に従い予め構築されているものとします。
+なお、バックアップ対象領域をNFSでサービスするベア・メタル・インスタンスNFSサーバは、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[ブロック・ボリュームでファイル共有ストレージを構築する](../spinup-nfs-server/)** や **[短期保存データ用高速ファイル共有ストレージを構築する](../spinup-nfs-server-nvme/)** の手順に従い予め構築されているものとします。
 
 ## 1-1. バックアップ環境No.3構築手順
 
@@ -76,7 +76,7 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 バックアップ環境 **No.3** は、バックアップ格納ストレージに **オブジェクト・ストレージ** を使用し、 **Rclone** でこの領域にアクセスするため、以下のステップを経て構築を行います。
 
-- **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定
+- **[インスタンス・プリンシパル](../#5-15-インスタンスプリンシパル)** 認証関連設定
 - **バケット** 作成
 - バックアップサーバ用インスタンス作成
 - NFSクライアント設定
@@ -84,7 +84,7 @@ HPC/GPUクラスタを運用する際必須となるファイル共有ストレ�
 
 ### 1-1-1. インスタンス・プリンシパル認証関連設定
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](/ocitutorials/hpc/tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い、**[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証関連設定を実施します。  
+**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[オンデマンドクラスタ実現のためのインスタンス・プリンシパル認証設定方法](../tech-knowhow/instance-principal-auth/)** の **[1. インスタンス・プリンシパル認証設定](../tech-knowhow/instance-principal-auth/#1-インスタンスプリンシパル認証設定)** の手順に従い、**[インスタンス・プリンシパル](../#5-15-インスタンスプリンシパル)** 認証関連設定を実施します。  
 この際、このテクニカルTips中でクラスタ管理ノードと呼称している箇所は、バックアップサーバと読みかえて下さい。  
 また、このテクニカルTipsで設定しているIAMポリシーは、本チュートリアルでは以下のみが必要です。
 
@@ -105,10 +105,10 @@ allow dynamic-group dynamicgroup_name to manage all-resources in compartment com
 
 ### 1-1-4. NFSクライアント設定
 
-ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
+ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
 
-- ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
-- DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
+- ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](../spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io../spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
+- DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](../spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io../spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
 
 ### 1-1-5. Rcloneインストール・セットアップ
 
@@ -166,7 +166,7 @@ Choose a number from below, or type in your own value.
 Storage> 38
 ```
 
-次に、以下のプロンプトが表示されたら **3** を入力し、認証方法に **[インスタンス・プリンシパル](/ocitutorials/hpc/#5-15-インスタンスプリンシパル)** 認証を指定します。
+次に、以下のプロンプトが表示されたら **3** を入力し、認証方法に **[インスタンス・プリンシパル](../#5-15-インスタンスプリンシパル)** 認証を指定します。
 
 ```sh
 Option provider.
@@ -339,10 +339,10 @@ $ sudo mount /mnt/bv
 
 ### 1-2-4. NFSクライアント設定
 
-ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
+ファイル共有ストレージがブロック・ボリュームNFSサーバかDenceIO NFSサーバのどちらかに合わせて、 **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の以下の手順に従い、ベア・メタル・インスタンスNFSサーバのエクスポートしている領域をバックアップサーバの **/mnt/nfs** にマウントします。
 
-- ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
-- DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](/ocitutorials/hpc/spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io/ocitutorials/hpc/spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
+- ブロック・ボリュームNFSサーバ： **[ブロック・ボリュームでファイル共有ストレージを構築する](../spinup-nfs-server/)** の **[4. NFSクライアント設定](https://oracle-japan.github.io../spinup-nfs-server/#4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E8%A8%AD%E5%AE%9A)**
+- DenceIO NFSサーバ： **[短期保存データ用高速ファイル共有ストレージを構築する](../spinup-nfs-server-nvme/)** の **[3-4. NFSクライアントでのファイルシステムマウント](https://oracle-japan.github.io../spinup-nfs-server-nvme/#3-4-nfs%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%AE%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E3%83%9E%E3%82%A6%E3%83%B3%E3%83%88)**
 
 ***
 # 2. バックアップ・リストア実行

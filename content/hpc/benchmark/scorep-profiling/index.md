@@ -83,7 +83,7 @@ params:
 
 各ソフトウェアは、以下のバージョンを前提とします。
 
-- 計算ノードOS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※2）
+- 計算ノードOS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
 - BastionノードOS ： **Oracle Linux** 8.10ベースのHPC **クラスタネットワーキングイメージ** （※2）
 - **[OpenMPI](https://www.open-mpi.org/)** ：5.0.6（※3）
 - **PAPI** ：7.1.0
@@ -91,10 +91,10 @@ params:
 - **Scalasca** ：2.6.2
 - **CubeGUI** ：4.9
 
-※2）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-※3） **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
+※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
+※3） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
-本プロファイリング関連Tipsで使用するプロファイリング環境は、プロファイリング対象の並列アプリケーションを **Score-P** や **Scalasca** と共に実行する計算ノードに **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で相互接続する2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、計算ノードで採取したプロファイリングのデータを **CubeGUI** で解析するBastionノードに1ノードの **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
+本プロファイリング関連Tipsで使用するプロファイリング環境は、プロファイリング対象の並列アプリケーションを **Score-P** や **Scalasca** と共に実行する計算ノードに **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で相互接続する2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用し、計算ノードで採取したプロファイリングのデータを **CubeGUI** で解析するBastionノードに1ノードの **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** を使用します。  
 ここで **CubeGUI** がX11ベースのアプリケーションのため、この操作画面を表示するXサーバの稼働する **CubeGUI** 操作端末を用意します。
 
 ![システム構成図](architecture_diagram.png)
@@ -114,7 +114,7 @@ params:
 
 本章は、本プロファイリング関連Tipsで使用するHPCクラスタを構築します。
 
-この構築は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** の手順に従い実施します。
+この構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従い実施します。
 
 この際、計算ノードとBastionノードを以下のように構成します。
 
@@ -123,7 +123,7 @@ params:
 - Bastionノード **ブート・ボリューム** サイズ ： 200GB以上（インストールするソフトウェアの容量確保のため）
 - Bastionノードコア数 ： 8コア（ **CubeGUI** のコンパイル高速化のため）
 
-※4）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。  
+※4）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
 
 また計算ノードは、プロファイリング利用ユーザのホームディレクトリをNFSで共有します。
 
@@ -133,8 +133,8 @@ params:
 
 この方法は、以下コンテンツのインストール・セットアップの章を参考に、この順番で実行します。
 
-1. **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)**  
-2. **[PAPIでHPCアプリケーションをプロファイリング](/ocitutorials/hpc/benchmark/papi-profiling/)**
+1. **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)**  
+2. **[PAPIでHPCアプリケーションをプロファイリング](../../benchmark/papi-profiling/)**
 
 なお本章の作業は、全ての計算ノードで実施します。
 

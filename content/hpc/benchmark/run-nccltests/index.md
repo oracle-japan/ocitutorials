@@ -13,7 +13,7 @@ params:
 
 本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、GPUクラスタ上に **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたコンテナ実行環境で **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 2インスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
+本ドキュメントで **NCCL Tests** を実行するGPUクラスタは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 2インスタンスを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続した構成とし、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用してコンテナからGPUが利用可能な環境を予め用意します。
 
 以上より、本ドキュメントで解説する **NCCL Tests** の実行は、以下の手順を経て行います。
 
@@ -24,7 +24,7 @@ params:
 本ドキュメントでは、以下の環境で **NCCL Tests** の **All-Reduce** 通信性能をコンテナ環境から計測し、10 GiBのメッセージサイズで **219 GB/s** の帯域（busbw）性能が出ています。
 
 - シェイプ ： **BM.GPU4.8**
-- OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- OS ： **Oracle Linux** 8.9ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - コンテナランタイム ： **Docker Community Edition** 26.1.3
 - **NVIDIA Container Toolkit** ： 1.15.0
 - コンテナ ： **TensorFlow NGC Container** 24.06-tf2-py3
@@ -34,7 +34,7 @@ params:
 - GPU数 ： **NVIDIA A100 40GB/80GB** x 16
 - ノード間接続 ： **クラスタ・ネットワーク** （100Gbps x 16 /ノード）
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.7** です。  
 ※2）使用するコンテナに含まれるものを使用します。
 
 ***
@@ -83,7 +83,7 @@ $ sudo tar -xvf /tmp/TF.tar -C /
 - 全てのGPUノードの **firewalld** 停止
 - GPUノードが接続するサブネットのセキュリティーリストのイングレス・ルールに同サブネットからのアクセスを全て許可
 
-なお、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](/ocitutorials/hpc/#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-gpu-cluster-withterraform/)** の手順に従って構築されたGPUクラスタは、既にこの設定が適用されているため、改めて実施する必要はありません。
+なお、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** や **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従って構築されたGPUクラスタは、既にこの設定が適用されているため、改めて実施する必要はありません。
 
 ## 1-3. コンテナ起動
 

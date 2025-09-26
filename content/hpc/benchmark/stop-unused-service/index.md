@@ -19,9 +19,9 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
 
 これらの調査を経て停止するサービスを特定したら、対象のサービスを停止し、HPCワークロードを実行します。
 
-本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ  **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** と **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）を使用するインスタンスを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** と共にデプロイするHPCクラスタを想定し、この計算ノードとしてのインスタンス上で不要サービスを停止することで、高並列時のスケーラビリティ向上を目的とするOSレベルのパフォーマンスチューニングを適用する方法を解説します。
+本パフォーマンス関連Tipsは、HPCワークロード向けベアメタルシェイプ  **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** と **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）を使用するインスタンスを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** と共にデプロイするHPCクラスタを想定し、この計算ノードとしてのインスタンス上で不要サービスを停止することで、高並列時のスケーラビリティ向上を目的とするOSレベルのパフォーマンスチューニングを適用する方法を解説します。
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
 以降の章は、本チューニングの趣旨に沿って以下の順に解説します。
 
@@ -42,11 +42,11 @@ HPCワークロードの高並列実行に於けるスケーラビリティは�
 ***
 # 1. 調査用HPCクラスタ構築
 
-本章は、 **BM.Optimized3.36** と **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）でデプロイする2ノードの計算ノードを **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で接続する、不要サービスの特定とその効果確認に使用する調査用HPCクラスタを構築します。
+本章は、 **BM.Optimized3.36** と **Oracle Linux** 8ベースの **HPC[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）でデプロイする2ノードの計算ノードを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続する、不要サービスの特定とその効果確認に使用する調査用HPCクラスタを構築します。
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。
 
-この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** か **[HPCクラスタを構築する(基礎インフラ自動構築編)](/ocitutorials/hpc/spinup-hpc-cluster-withterraform/)** の手順に従い実施します。
+この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** か **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** の手順に従い実施します。
 
 ***
 # 2. 不要サービス特定
@@ -340,6 +340,6 @@ $
 ***
 # 5. プロダクション用HPCクラスタ構築
 
-本章は、不要サービスを停止した調査用HPCクラスタの計算ノードのうちの1ノードで **[カスタム・イメージ](/ocitutorials/hpc/#5-6-カスタムイメージ)** を取得し、これを元に必要なノード数の計算ノードを持つ、不要サービスが停止されているプロダクション用のHPCクラスタを構築します。
+本章は、不要サービスを停止した調査用HPCクラスタの計算ノードのうちの1ノードで **[カスタム・イメージ](../../#5-6-カスタムイメージ)** を取得し、これを元に必要なノード数の計算ノードを持つ、不要サービスが停止されているプロダクション用のHPCクラスタを構築します。
 
-この手順は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法](/ocitutorials/hpc/tech-knowhow/compute-os-customization)** の **[2. カスタム・イメージを使用したOSカスタマイズ](/ocitutorials/hpc/tech-knowhow/compute-os-customization/#2-カスタムイメージを使用したosカスタマイズ)** の手順に従います。  
+この手順は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法](../../tech-knowhow/compute-os-customization)** の **[2. カスタム・イメージを使用したOSカスタマイズ](../../tech-knowhow/compute-os-customization/#2-カスタムイメージを使用したosカスタマイズ)** の手順に従います。  

@@ -41,7 +41,7 @@ $ numactl --localalloc a.out
 
 また使用する **BM.Standard.E5.192** は、 **Simultanious Multi Threading** （以降 **SMT** と呼称します。）を無効化（デフォルトは有効です。）しています。（※1）
 
-※1）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+※1）**NPS** と **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
 以下は、 **BM.Standard.E5.192** のスペックです。
 
@@ -123,7 +123,7 @@ $ numactl --localalloc a.out
 
 ## 1-0. 概要
 
-本章は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** に従って構築された **OpenMPI** に含まれる **PRRTE** を使用し、 **[0-2. コア割当てパターン](#0-2-コア割当てパターン)** に記載のコア割当てを実現する方法を解説します。
+本章は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](../../tech-knowhow/build-oraclelinux-hpcenv/)** に従って構築された **OpenMPI** に含まれる **PRRTE** を使用し、 **[0-2. コア割当てパターン](#0-2-コア割当てパターン)** に記載のコア割当てを実現する方法を解説します。
 
 以降で解説するコア割当て方法は、以下の **mpirun** コマンドオプションと **GNUコンパイラ** 環境変数を組合せて実現します。
 
@@ -185,7 +185,7 @@ $ mpirun -n 24 --bind-to core --map-by ppr:1:l3cache:PE=8 -x OMP_NUM_THREAD=8 -x
 
 ## 2-0. 概要
 
-本章は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** と **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** に従って構築された **BM.Standard.E5.192** を計算ノードとする **Slurm** ジョブスケジューラ環境で、 **[0-2. コア割当てパターン](#0-2-コア割当てパターン)** に記載のコア割当てを実現する方法を解説します。
+本章は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** と **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](../../tech-knowhow/build-oraclelinux-hpcenv/)** に従って構築された **BM.Standard.E5.192** を計算ノードとする **Slurm** ジョブスケジューラ環境で、 **[0-2. コア割当てパターン](#0-2-コア割当てパターン)** に記載のコア割当てを実現する方法を解説します。
 
 以降で解説するコア割当て方法は、以下の **srun** コマンドオプションと **GNUコンパイラ** 環境変数を組合せて実現します。
 

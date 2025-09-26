@@ -18,10 +18,10 @@ params:
 また、ベア・メタル・シェイプ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** は、200 GbpsのTCP/IP接続用ポートを1個搭載し、全二重通信の2系統のラインをそれぞれiSCSI接続の **ブロック・ボリューム** アクセス用途とNFSクライアントへのNFSサービス用途にフル活用することで、10GB/sを超えるスループットを持つコストパフォーマンスの高いNFSサーバ用インスタンスとして利用することが可能です。
 
 OCIは、NFSのマネージドサービスである **ファイル・ストレージ** も提供していますが、本チュートリアルのように **ブロック・ボリューム** とベア・メタル・シェイプ **BM.Standard.E6.256** を使用してNFSでサービスするファイル共有ストレージ（以降ブロック・ボリュームNFSサーバと呼称）を構築することで、 **ファイル・ストレージ** よりも格段にコストパフォーマンスを引き上げることが出来ます。  
-**ファイル・ストレージ** とブロック・ボリュームNFSサーバの比較詳細は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
+**ファイル・ストレージ** とブロック・ボリュームNFSサーバの比較詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
-本チュートリアルは、 **GitHub** のパブリックレポジトリ（ **[tutorial_bvnfs_e6](https://github.com/fwiw6430/tutorial_bvnfs_e6)** ）から公開されている **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **[リソース・マネージャ](/ocitutorials/hpc/#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の **Deployment target** 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する **IOR** と **mdtest** で検証します。  
-この **IOR** と **mdtest** の検証結果は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](/ocitutorials/hpc/tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。
+本チュートリアルは、 **GitHub** のパブリックレポジトリ（ **[tutorial_bvnfs_e6](https://github.com/fwiw6430/tutorial_bvnfs_e6)** ）から公開されている **[Terraform](../#5-12-terraform)** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用し、以下構成のNFSでサービスするファイル共有ストレージを自動構築（図中の **Deployment target** 範囲）した後、NFSファイルシステム性能をNFSクライアントから実行する **IOR** と **mdtest** で検証します。  
+この **IOR** と **mdtest** の検証結果は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../tech-knowhow/howto-configure-sharedstorage/)** の **[2-1. コストパフォーマンスによる比較](../tech-knowhow/howto-configure-sharedstorage/#2-1-コストパフォーマンスによる比較)** を参照してください。
 
 ![システム構成図](architecture_diagram.png)
 
@@ -61,7 +61,7 @@ OCIは、NFSのマネージドサービスである **ファイル・ストレ�
   - **/mnt/bv** をworld writableでエクスポート
 - **Oracle Linux** のカーネルを **RedHat Compatible Kernel** （以降 **RHCK** と呼称します。）に変更
 
-またこの **スタック** は、 **[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がNFSサーバの作成時に以下の処理を行います。
+またこの **スタック** は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がNFSサーバの作成時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
 - **firewalld** 停止
@@ -80,19 +80,19 @@ OCIは、NFSのマネージドサービスである **ファイル・ストレ�
 
 本章は、ブロック・ボリュームNFSサーバを構築するにあたり事前に必要な以下リソースを作成します。
 
-- **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
+- **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)**
 - **IAMポリシー**
-- **[スタック](/ocitutorials/hpc/#5-3-スタック)**
+- **[スタック](../#5-3-スタック)**
 
 ## 1-1. 構成ソース・プロバイダ作成
 
-本章は、ひな型となる **[Terraform](/ocitutorials/hpc/#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を作成します。
+本章は、ひな型となる **[Terraform](../#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)** を作成します。
 
-**構成ソース・プロバイダ** の作成は、 **[ここ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)** を参照してください。
+**構成ソース・プロバイダ** の作成は、 **[ここ](../#5-14-構成ソースプロバイダ)** を参照してください。
 
 ## 1-2. IAMポリシー作成
 
-本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** からブロック・ボリュームNFSサーバを作成するために必要な **IAMポリシー** を作成します。
+本章は、 **[スタック](../#5-3-スタック)** からブロック・ボリュームNFSサーバを作成するために必要な **IAMポリシー** を作成します。
 
 OCIコンソールにログインし、 **アイデンティティとセキュリティ** → **ポリシー** とメニューを辿ります。
 
@@ -121,7 +121,7 @@ allow group group_name to manage all-resources in compartment compartment_name
 
 ## 1-3. スタック作成
 
-本章は、ブロック・ボリュームNFSサーバを構築するための **[スタック](/ocitutorials/hpc/#5-3-スタック)** を作成します。
+本章は、ブロック・ボリュームNFSサーバを構築するための **[スタック](../#5-3-スタック)** を作成します。
 
 OCIコンソールにログインし、ブロック・ボリュームNFSサーバを作成するリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
@@ -133,7 +133,7 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
 
 - **Terraformの構成のオリジン :** ソース・コード制御システム
 - **ソースコード管理タイプ :** **GitHub**
-- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](/ocitutorials/hpc/#5-14-構成ソースプロバイダ)**
+- **構成ソース・プロバイダ :** 先に作成した **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)**
 - **リポジトリ :** **tutorial_bvnfs_e6**
 - **ブランチ :** **master**
 - **名前 :** スタックに付与する名前（任意）
@@ -171,7 +171,7 @@ OCIコンソールにログインし、ブロック・ボリュームNFSサー�
 ***
 # 2.ブロック・ボリュームNFSサーバ構築
 
-本章は、先に作成した **[スタック](/ocitutorials/hpc/#5-3-スタック)** を使用し、ブロック・ボリュームNFSサーバを構築します。
+本章は、先に作成した **[スタック](../#5-3-スタック)** を使用し、ブロック・ボリュームNFSサーバを構築します。
 
 以下 **スタックの詳細** 画面で、 **適用** ボタンをクリックします。
 
@@ -214,7 +214,7 @@ NFSサーバは、プライベートサブネットに接続されているた�
 
 ## 3-2. cloud-init完了確認
 
-**[cloud-init](/ocitutorials/hpc/#5-11-cloud-init)** は、NFSサーバが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをNFSサーバのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
+**[cloud-init](../#5-11-cloud-init)** は、NFSサーバが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをNFSサーバのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
 $ cloud-init status
@@ -316,7 +316,7 @@ $ sudo mount /mnt/nfs
 NFSクライアントとして使用する以下のインスタンスを作成します。
 
 - シェイプ ： **VM.Standard.E6.Flex** （100コア、1.1TBメモリ）
-- OS ： **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
+- OS ： **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
 - インスタンス数 ：4
 - 接続サブネット ：プライベートサブネット
 
@@ -324,7 +324,7 @@ NFSクライアントとして使用する以下のインスタンスを作成�
 
 ## 5-2. OpenMPIインストール
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/)** に従い、4ノードのNFSクライアントに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](../tech-knowhow/build-oraclelinux-hpcenv/)** に従い、4ノードのNFSクライアントに **OpenMPI** をインストールします。
 
 次に、NFSクライアントのうちのどれか1ノードにopcユーザでSSHログインし、以下のように4ノードのNFSクライアントのホスト名を含むファイルを **/mnt/nfs/io500** ディレクトリに作成、これを使用してOpenMPIの稼働確認を行います。
 
@@ -463,7 +463,7 @@ $ /mnt/nfs/io500/io500_easy.sh 256 64
 ***
 # 6. スタックの破棄
 
-本章は、 **[スタック](/ocitutorials/hpc/#5-3-スタック)** を破棄することで、構築したブロック・ボリュームNFSサーバ環境を削除します。
+本章は、 **[スタック](../#5-3-スタック)** を破棄することで、構築したブロック・ボリュームNFSサーバ環境を削除します。
 
 以降の手順を実施すると、本チュートリアルで作成したOCI上のリソースをすべて削除することになるため、 **ブロック・ボリューム上に作成したファイルが全て消失** します。
 

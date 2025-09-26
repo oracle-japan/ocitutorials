@@ -33,7 +33,7 @@ params:
 - Fortranコンパイラ： **[GNU Fortran](https://gcc.gnu.org/fortran/)** 8.5.0
 
 なお、本テクニカルTipsで使用するインスタンスは、シェイプを **BM.Optimized3.36** 、OSを **Oracle Linux** 8.9として予めデプロイしておきますが、この手順は **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** を参照してください。  
-またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化しておきますが、BIOS設定でこれを適用する場合は **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](/ocitutorials/hpc/benchmark/bios-setting/)** を参照してください。
+またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化しておきますが、BIOS設定でこれを適用する場合は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
 ***
 # 1. BLAS・OpenBLASインストール・セットアップ

@@ -39,9 +39,9 @@ params:
 
 **[OpenMPI](https://www.open-mpi.org/)** を使用する並列アプリケーションを **ホットスポット** となるMPI通信関数にフォーカスしてチューニングし、その性能を向上させる手順を解説します。  
 
-本手順は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** で相互接続する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を計算ノードとするHPCクラスタ環境で実行することを前提とし、 **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)** （以降 **NPB** と呼称します。）の **FT Class D** をプロファイリング・チューニング対象の並列アプリケーションに使用します。
+本手順は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で相互接続する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を計算ノードとするHPCクラスタ環境で実行することを前提とし、 **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)** （以降 **NPB** と呼称します。）の **FT Class D** をプロファイリング・チューニング対象の並列アプリケーションに使用します。
 
-またMPI通信関数のチューニング手法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** で得られた結果を元に検討します。
+またMPI通信関数のチューニング手法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** で得られた結果を元に検討します。
 
 以降では、以下の順に解説します。
 
@@ -54,11 +54,11 @@ params:
 
 本章は、本プロファイリング・チューニング関連Tipsで使用する環境を構築します。
 
-この構築は、 **[OCI HPCプロファイリング関連Tips集](/ocitutorials/hpc/#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](/ocitutorials/hpc/benchmark/scorep-profiling/)** の **[1. プロファイリング環境構築](/ocitutorials/hpc/benchmark/scorep-profiling/#1-プロファイリング環境構築)** の手順に従い実施します。
+この構築は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の **[1. プロファイリング環境構築](../../benchmark/scorep-profiling/#1-プロファイリング環境構築)** の手順に従い実施します。
 
-本プロファイリング・チューニング関連Tipsは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** の同一リーフスイッチに接続する8ノードの計算ノードを使用しているため、その他の構成では以降のプロファイリング・チューニングの結果が異なります。（※3）
+本プロファイリング・チューニング関連Tipsは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** の同一リーフスイッチに接続する8ノードの計算ノードを使用しているため、その他の構成では以降のプロファイリング・チューニングの結果が異なります。（※3）
 
-※3）**クラスタ・ネットワーク** の同一リーフスイッチに接続するインスタンス間のノード間接続に於ける効果は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法](/ocitutorials/hpc/benchmark/topology-aware-cn-tuning/)** を参照してください。
+※3）**クラスタ・ネットワーク** の同一リーフスイッチに接続するインスタンス間のノード間接続に於ける効果は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法](../../benchmark/topology-aware-cn-tuning/)** を参照してください。
 
 ***
 # 2. プロファイリング
@@ -76,7 +76,7 @@ params:
 - プロファイリングオーバーヘッド対象個所を除外してプロファイリング取得
 - プロファイリング情報から **ホットスポット** を特定
 
-※4）プロセス分割方法にブロック分割を使用する場合の実行方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/cpu-binding/)** を参照してください。  
+※4）プロセス分割方法にブロック分割を使用する場合の実行方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。  
 ※5）以降では、 **NPB** の **FT Class D** の出力の **Time in seconds** を  **所要時間** として扱います。
 
 ## 2-1. プロファイリング手順
@@ -120,7 +120,7 @@ $
 
 以上より、 **asis** とプロファイリング取得時の  **所要時間** に大きな差が無い（32.41秒と32.74秒）ことが確認できました。  
 もし両者に大きな差がある場合は、プロファイリングのオーバーヘッドの原因を調査し、プロファイリング対象を限定するフィルタを作成し、これを使用してプロファイリングのオーバーヘッドを排除します。  
-この手順は、 **[OCI HPCプロファイリング関連Tips集](/ocitutorials/hpc/#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](/ocitutorials/hpc/benchmark/scorep-profiling/)** の **[2-1. 事前準備](/ocitutorials/hpc/benchmark/scorep-profiling/#2-1-事前準備)** を参照してください。
+この手順は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の **[2-1. 事前準備](../../benchmark/scorep-profiling/#2-1-事前準備)** を参照してください。
 
 
 次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング情報を作成します。
@@ -275,7 +275,7 @@ $ cube path_to_dir/scorep_ft_256_sum_def/profile.cubex
 - ノード当たりプロセス数： 32
 - メッセージサイズ： 525 KB
 
-ここで、 **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/openmpi-perftune/)** の当該箇所である **[4-3-1. Alltoall](/ocitutorials/hpc/benchmark/openmpi-perftune/#4-3-1-alltoall)** に於いて、最後に記載されている以下グラフの512 KBメッセージサイズ部分を確認し、
+ここで、 **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** の当該箇所である **[4-3-1. Alltoall](../../benchmark/openmpi-perftune/#4-3-1-alltoall)** に於いて、最後に記載されている以下グラフの512 KBメッセージサイズ部分を確認し、
 
 ![Alltoall 8 node 32 ppn](ata_08_32_step3.png)
 
@@ -288,7 +288,7 @@ $ cube path_to_dir/scorep_ft_256_sum_def/profile.cubex
 - プロセス配置： サイクリック分割（※5）
 - coll_hcoll_enable： 0
 
-※5）プロセス分割方法にサイクリック分割を使用する場合の実行方法は、 **[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](/ocitutorials/hpc/benchmark/cpu-binding/)** を参照してください。
+※5）プロセス分割方法にサイクリック分割を使用する場合の実行方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。
 
 次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、チューニング手法適用時のプロファイリングを取得します。  
 この実行により、カレントディレクトリにディレクトリ **scorep_ft_256_sum** が作成され、ここに取得したプロファイリングデータが格納されます。

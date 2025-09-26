@@ -13,7 +13,7 @@ params:
 ***
 # 0. 概要
 
-GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている **Ubuntu** もこれに含まれます。  
+GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている **Ubuntu** もこれに含まれます。  
 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンス作成後に自身でインストール・セットアップする必要があります。
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** : NVIDIA製GPUドライバソフトウェア
@@ -40,7 +40,7 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 - **NVIDIA HPC SDK** ： 25.7
 - CUDA-aware MPIライブラリ ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8
 
-※2） **[プラットフォーム・イメージ](/ocitutorials/hpc/#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。
+※2） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。
 
 ***
 # 1. GPUインスタンス作成
@@ -519,4 +519,4 @@ $
 
 ## 4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](/ocitutorials/hpc/benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** を搭載する **BM.GPU4.8** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。
+**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](../../benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](../../benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](../../benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** を搭載する **BM.GPU4.8** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。

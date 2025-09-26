@@ -29,7 +29,7 @@ params:
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のパスフレーズ無しSSHアクセス設定が不要
 
-※3）この詳細は、**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** の **[0. 概要](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#0-概要)** を参照してください。
+※3）この詳細は、**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** の **[0. 概要](../../tech-knowhow/setup-slurm-cluster/#0-概要)** を参照してください。
 
 また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、 **OpenMPI** から利用可能な以下のノード内・ノード間通信手段を提供します。
 
@@ -46,7 +46,7 @@ params:
     - Dynamically Connected (DC)
 - TCP
 
-特に **UCX** を使用するノード間通信は、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。
+特に **UCX** を使用するノード間通信は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。
 
 以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **No. 1.** の動作モードで実行すること、通信フレームワークに **UCX** を使用することを想定し、このための **OpenMPI** の構築方法を解説、構築した **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
 
@@ -56,25 +56,25 @@ params:
 本テクニカルTipsは、以下の環境を前提とします。
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](/ocitutorials/hpc/#5-13-クラスタネットワーキングイメージ)** （※1）
+- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **OpenMPI** ： 5.0.8
 - **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
 - **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
 
 
-※1）**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
 
-またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
-この構築手順は、 **[OCI HPCチュートリアル集](/ocitutorials/hpc/#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](/ocitutorials/hpc/spinup-cluster-network/)** が参考になります。
+またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
+この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** が参考になります。
 
-なお、ここで構築する **OpenMPI** と連携する **Slurm** の構築方法は、 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/)** を参照してください。  
+なお、ここで構築する **OpenMPI** と連携する **Slurm** の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** を参照してください。  
 
 ***
 # 1. インストール・セットアップ
 
 ## 1-0. 概要
 
-本章は、予めデプロイしている **[クラスタ・ネットワーク](/ocitutorials/hpc/#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
+本章は、予めデプロイしている **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
 
 以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。
 
@@ -234,7 +234,7 @@ prepend-path MANPATH            $pkg_root/share/man
 **OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下の手順を何れか1ノードで **OpenMPI** を利用するユーザで実施します。  
 このユーザのホームディレクトリが共有されていない場合は、 **OpenMPI** を実行する全てのノードでこれを実行します。
 
-**[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](/ocitutorials/hpc/tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノードのホスト名リスト作成方法](../../tech-knowhow/compute-host-list/)** の手順に従い、MPIプログラムを実行する全てのホスト名を記載したホストリストファイルを当該ユーザのホームディレクトリ直下に **hostlist.txt** として作成します。
 
 なお、ここで作成するホストリストファイルは、 **OpenMPI** 単独で稼働確認を行うために作成しますが、 **Slurm** 環境では必要ありません。
 
@@ -261,7 +261,7 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 
 ## 2-1. Intel MPI Benchmarks実行
 
-**[OCI HPCパフォーマンス関連情報](/ocitutorials/hpc/#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](/ocitutorials/hpc/benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](/ocitutorials/hpc/benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **Intel MPI Benchmarks** を実行してその結果が想定される性能となっていることを確認します。
+**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **Intel MPI Benchmarks** を実行してその結果が想定される性能となっていることを確認します。
 
 ## 2-2. NAS Parallel Benchmarks実行
 
