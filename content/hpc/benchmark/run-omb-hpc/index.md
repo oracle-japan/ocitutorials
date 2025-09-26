@@ -43,7 +43,7 @@ params:
 以降では、以下の順に解説します。
 
 1. **OpenMPI** インストール
-2. **OSU Micro-Benchmarks** インストール
+2. **OSU Micro-Benchmarks** インストール・セットアップ
 3. **OSU Micro-Benchmarks** 実行
 
 ***
@@ -52,7 +52,7 @@ params:
 **[OCI HPCテクニカルTips集](/ocitutorials/hpc/#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](/ocitutorials/hpc/tech-knowhow/build-openmpi/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
 ***
-# 2. OSU Micro-Benchmarksインストール
+# 2. OSU Micro-Benchmarksインストール・セットアップ
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -65,6 +65,26 @@ $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt
 $ make -j 36 && sudo make install
 ```
 
+次に、以下のファイルを **/usr/share/Modules/modulefiles/omb** で作成します。  
+このファイルは、 **Environment modules** にモジュール名 **omb** を登録し、これをロードすることで **OSU Micro-Benchmarks** 利用環境の設定が可能になります
+
+```sh
+#%Module1.0
+##
+## OSU Micro-Benchmarks for OpenMPI
+
+proc ModulesHelp { } {
+        puts stderr "OSU Micro-Benchmarks for OpenMPI\n"
+}
+
+module-whatis   "OSU Micro-Benchmarks for OpenMPI"
+
+set pkg_root    /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
+set ver         7.5.1
+
+prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
+```
+
 ***
 # 3. OSU Micro-Benchmarks実行
 
@@ -74,8 +94,8 @@ $ make -j 36 && sudo make install
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ1バイト～64 MiBで計測しています。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 36 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/collective/osu_alltoall -x 10 -i 10 -m 1:67108864
+$ module load openmpi omb
+$ mpirun -n 36 osu_alltoall -x 10 -i 10 -m 1:67108864
 # OSU MPI All-to-All Personalized Exchange Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
@@ -115,8 +135,8 @@ $
 この出力は、2ノード間のメッセージサイズ1バイトの片道所要時間で、この結果（ここでは **1.67 usec** ）を2ノード間のレイテンシとします。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_latency -x 1000 -i 10000 -m 1:1
+$ module load openmpi omb
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_latency -x 1000 -i 10000 -m 1:1
 [inst-xsyjo-x9-ol905:263038] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Latency Test v7.5
@@ -132,8 +152,8 @@ $
 この出力は、2ノード間のメッセージサイズ256 MiBの帯域幅で、この結果（ここでは **12,254,16 MB/s** ）を2ノード間の帯域幅とします。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw -x 10 -i 10 -m 268435456:268435456
+$ module load openmpi omb
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_bw -x 10 -i 10 -m 268435456:268435456
 [inst-xsyjo-x9-ol905:263198] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Bandwidth Test v7.5
@@ -149,8 +169,8 @@ $
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ4バイト～256 MiBで計測しています。
 
 ```sh
-$ module load openmpi
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks/mpi/collective/osu_allreduce -x 10 -i 10 -m 4:268435456
+$ module load openmpi omb
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_allreduce -x 10 -i 10 -m 4:268435456
 [inst-ztgl1-x9-ol810:227754] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Allreduce Latency Test v7.5

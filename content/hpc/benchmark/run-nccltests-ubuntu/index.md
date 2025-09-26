@@ -33,7 +33,7 @@ params:
 
 以下の性能が出ています。
 
-- 通信タイプ： **All-Reduce**
+- 通信タイプ： AllReduce
 - メッセージサイズ： 10 GiB
 - 帯域（busbw）
     - 1ノード8GPU： **232 GB/s** 
@@ -75,7 +75,7 @@ $ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/
 
 ## 3-1. 1ノード8GPU
 
-以下コマンドをGPUノードの **NCCL Tests** 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する **NCCL** の **All-Reduce** 通信性能を計測します。
+以下コマンドをGPUノードの **NCCL Tests** 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する **NCCL** のAllReduce通信性能を計測します。
 
 ```sh
 $ cd ~/`hostname`/nccl-tests
@@ -109,7 +109,7 @@ $
 
 ## 3-2. 2ノード16GPU
 
-以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する **NCCL** のAll-Reduce通信性能を計測します。
+以下コマンドをGPUクラスタ内の何れかのGPUノードの **NCCL Tests** 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する **NCCL** のAllReduce通信性能を計測します。
 
 ```sh
 $ cd ~/nccl-tests
