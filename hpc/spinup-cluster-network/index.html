@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-09-26T16:31:44+09:00"
     />
 
 
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-09-26T16:31:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -439,8 +439,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-09-26T16:31:44&#43;09:00">
+            Sep 26, 2025
         </time>
     
 </span>
@@ -470,7 +470,7 @@
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> を <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/intel/mpi-benchmarks"
@@ -478,13 +478,13 @@
 <p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br>
 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
+  href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
 >HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
+  href="../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-hpc-cluster"
+  href="../spinup-hpc-cluster"
 >HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照ください。</p>
 <p><img
   src="architecture_diagram.png"
@@ -518,20 +518,20 @@
 <p>なおこの <strong>仮想クラウド・ネットワーク</strong> は、既存のものを使用することが可能です。<br>
 ただしこの場合、計算ノードが接続するサブネットは、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 接続に使用する <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm"
 >Oracle Cloud Agent</a></strong> HPCプラグインの動作条件を満たしている必要があります。<br>
 この詳細は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/"
+  href="../tech-knowhow/howto-connect-clusternetwork/"
 >クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-2-%e6%8e%a5%e7%b6%9a%e3%82%b5%e3%83%96%e3%83%8d%e3%83%83%e3%83%88%e3%81%ae%e5%8b%95%e4%bd%9c%e6%9d%a1%e4%bb%b6%e5%85%85%e8%b6%b3%e7%a2%ba%e8%aa%8d"
+  href="../tech-knowhow/howto-connect-clusternetwork/#1-2-%e6%8e%a5%e7%b6%9a%e3%82%b5%e3%83%96%e3%83%8d%e3%83%83%e3%83%88%e3%81%ae%e5%8b%95%e4%bd%9c%e6%9d%a1%e4%bb%b6%e5%85%85%e8%b6%b3%e7%a2%ba%e8%aa%8d"
 >1-2. 接続サブネットの動作条件充足確認</a></strong> を参照してください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-1-仮想クラウドネットワーク作成"
@@ -586,7 +586,7 @@ Bastionノードの作成は、 <strong><a
 <ul>
 <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> （※1）</li>
 <li><strong>シェイプ</strong> ： <strong><a
   class="gdoc-markdown__link"
@@ -596,18 +596,18 @@ Bastionノードの作成は、 <strong><a
 </ul>
 <p>※1）<strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/"
+  href="../tech-knowhow/osimage-for-cluster/"
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+  href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
 >1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
 <p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。<br>
 先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 作成手順で指定します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh-keygen
 </span></span><span class="line"><span class="cl">Generating public/private rsa key pair.
@@ -635,23 +635,23 @@ Bastionノードの作成は、 <strong><a
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>次に、以降作成する計算ノードの名前解決をインスタンス名で行うため、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/compute-name-resolution/"
+  href="../tech-knowhow/compute-name-resolution/"
 >計算/GPUノードの効果的な名前解決方法</a></strong> の手順を実施します。</p>
 <p>次に、以降作成する計算ノードで実施する手順を <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/chaos/pdsh"
 >pdsh</a></strong> を使用して効率よく進めるため、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/"
+  href="../tech-knowhow/cluster-with-pdsh/"
 >pdshで効率的にクラスタ管理オペレーションを実行</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-with-pdsh/#1-pdsh%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+  href="../tech-knowhow/cluster-with-pdsh/#1-pdsh%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >1. pdshインストール・セットアップ</a></strong> の手順を実施し、 <strong>pdsh</strong> をインストール・セットアップします。<br>
 なおこの手順は、該当する手順を全ての計算ノードで実施する場合、必要ありません。</p>
 <hr>
@@ -675,15 +675,15 @@ Bastionノードの作成は、 <strong><a
 </div>
 <p>本章は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> を作成することでHPCクラスタを作成します。</p>
 <p><strong>クラスタ・ネットワーク</strong> は、作成時に指定する <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
+  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong> に基づいて使用するシェイプを決定し、作成時に指定するノード数のインスタンスをデプロイ、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
 <p>計算ノードに使用する <strong>BM.Optimized3.36</strong> に装備されるNVMeローカルディスクは、OS起動時点でファイルシステムが作成されていないため、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> でこの作成を行います。</p>
 <p>以上よりHPCクラスタの作成は、以下の手順を経て行います。</p>
 <ul>
@@ -693,7 +693,7 @@ Bastionノードの作成は、 <strong><a
 </ul>
 <p>なお計算ノードのOSは、 <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> を使用します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-1-cloud-config作成"
@@ -706,7 +706,7 @@ Bastionノードの作成は、 <strong><a
 </div>
 <p>本チュートリアルは、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> を以下の目的で使用します。</p>
 <ul>
 <li>タイムゾーンをJSTに変更</li>
@@ -756,7 +756,7 @@ Bastionノードの作成は、 <strong><a
 <ul>
 <li><strong>名前</strong> ： <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
+  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong> に付与する名前</li>
 <li><strong>コンパートメントに作成</strong> ：<strong>インスタンス構成</strong> を作成する <strong>コンパートメント</strong></li>
 </ul>
@@ -803,13 +803,13 @@ Bastionノードの作成は、 <strong><a
 /></p>
 <p>※2）このイメージは、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/"
+  href="../tech-knowhow/osimage-for-cluster/"
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+  href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
 >1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
 <ul>
 <li><strong>Shape</strong> ：<strong>BM.Optimized3.36</strong><br>
@@ -854,7 +854,7 @@ Bastionノードの作成は、 <strong><a
 <ul>
 <li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> 設定ファイル（cloud-config）を選択<br>
 （ <strong>参照</strong> ボタンでファイルを選択）</li>
 </ul>
@@ -937,12 +937,12 @@ Bastionノードの作成は、 <strong><a
 <ul>
 <li><strong>インスタンス・プール名</strong> ：作成される <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
+  href="../#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
 >インスタンス・プール</a></strong> に付与する名前（※3）</li>
 <li><strong>インスタンス数</strong> ：デプロイする計算ノードのノード数</li>
 <li><strong>インスタンス構成</strong> ：先に作成した <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
+  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong></li>
 </ul>
 <p><img
@@ -986,14 +986,14 @@ Bastionノードの作成は、 <strong><a
 <li>計算ノードログイン</li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> 完了確認</li>
 <li>タイムゾーン確認</li>
 <li>NVMeローカルディスクファイルシステム確認</li>
 <li>ファイアーウォール停止確認</li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 接続用ネットワークインターフェース確認</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -1027,7 +1027,7 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br>
 ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo cloud-init status&#39;</span> <span class="p">|</span> dshbak -c
@@ -1097,17 +1097,17 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ <strong>rdma0</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）</p>
 <p>※4）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/"
+  href="../tech-knowhow/howto-connect-clusternetwork/"
 >クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/howto-connect-clusternetwork/#1-4-%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%83%89%e3%83%ac%e3%82%b9%e3%81%ae%e3%83%87%e3%83%95%e3%82%a9%e3%83%ab%e3%83%88%e3%81%8b%e3%82%89%e3%81%ae%e5%a4%89%e6%9b%b4"
+  href="../tech-knowhow/howto-connect-clusternetwork/#1-4-%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%83%89%e3%83%ac%e3%82%b9%e3%81%ae%e3%83%87%e3%83%95%e3%82%a9%e3%83%ab%e3%83%88%e3%81%8b%e3%82%89%e3%81%ae%e5%a4%89%e6%9b%b4"
 >1-4. ネットワークアドレスのデフォルトからの変更</a></strong> を参照してください。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;ifconfig rdma0&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
@@ -1156,13 +1156,13 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p>本章は、計算ノードのHPC <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> に含まれる <strong><a
   class="gdoc-markdown__link"
   href="https://www.open-mpi.org/"
 >OpenMPI</a></strong> と <strong>Intel MPI Benchmark</strong> を使用し、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
 <p><strong>OpenMPI</strong> を計算ノード間で実行するためには、mpirunを実行する計算ノード（いわゆるヘッドノード）から <strong>OpenMPI</strong> 実行に参加する他の全ての計算ノードに対して、パスフレーズ無しでSSH接続できる必要があります。</p>
 <p>また <strong>OpenMPI</strong> の実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。</p>
@@ -1189,10 +1189,10 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </span></span></code></pre></div><p>次に、以下コマンドをBastionノードのopcユーザで実行し、後の <strong>Intel MPI Benchmark</strong> Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。<br>
 なお、ホスト名リストを作成していない場合は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/compute-host-list/"
+  href="../tech-knowhow/compute-host-list/"
 >計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp -p ~/hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
@@ -1248,13 +1248,13 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>本章は、 <strong>Intel MPI Benchmark</strong> のPing-Pongを実行します。</p>
 <p><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
 >OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/benchmark/run-imb/"
+  href="../benchmark/run-imb/"
 >Intel MPI Benchmark実行方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
+  href="../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
 >OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、2ノードを使用するPing-Pongを実行します。</p>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -1268,17 +1268,17 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p>本章は、作成した <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> に接続する計算ノードを2ノード追加して4ノードに拡張します。</p>
 <p>この手順は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-resize/"
+  href="../tech-knowhow/cluster-resize/"
 >計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#2-%e3%83%8e%e3%83%bc%e3%83%89%e6%95%b0%e3%82%92%e5%a2%97%e3%82%84%e3%81%99"
+  href="../tech-knowhow/cluster-resize/#2-%e3%83%8e%e3%83%bc%e3%83%89%e6%95%b0%e3%82%92%e5%a2%97%e3%82%84%e3%81%99"
 >2. ノード数を増やす</a></strong> の手順に従い、計算ノードを2ノードから4ノードに拡張します。</p>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -1326,13 +1326,13 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>本章は、 <strong>Intel MPI Benchmark</strong> のAll-Reduceを実行します。</p>
 <p><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
 >OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/benchmark/run-imb/"
+  href="../benchmark/run-imb/"
 >Intel MPI Benchmark実行方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
+  href="../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
 >OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、4ノードを使用するAll-Reduceを実行します。</p>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -1347,13 +1347,13 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>本章は、構築した4ノードクラスタのうち1ノードにハードウェア障害等が発生した場合を想定し、この計算ノードを新たな計算ノードに入れ替えます。</p>
 <p>この手順は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-resize/"
+  href="../tech-knowhow/cluster-resize/"
 >計算/GPUノードの追加・削除・入れ替え方法</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/cluster-resize/#3-%e3%83%8e%e3%83%bc%e3%83%89%e3%82%92%e7%bd%ae%e3%81%8d%e6%8f%9b%e3%81%88%e3%82%8b"
+  href="../tech-knowhow/cluster-resize/#3-%e3%83%8e%e3%83%bc%e3%83%89%e3%82%92%e7%bd%ae%e3%81%8d%e6%8f%9b%e3%81%88%e3%82%8b"
 >3. ノードを置き換える</a></strong> の手順を実施します。</p>
 <p>再度 <strong><a
   class="gdoc-markdown__link"
@@ -1371,7 +1371,7 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p>本章は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> を終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。</p>
 <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で作成した <strong>クラスタ・ネットワーク</strong> の <strong>終了</strong> メニューをクリックします。</p>
 <p><img

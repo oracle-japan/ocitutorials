@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-24T11:38:51+09:00"
+      content="2025-09-26T16:31:44+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU4.8\/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "754",
+      "wordCount" : "752",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-24T11:38:51.00Z",
+      "dateModified": "2025-09-26T16:31:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-24T11:38:51+09:00">
+    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -402,8 +402,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-24T11:38:51&#43;09:00">
-            Sep 24, 2025
+        <time datetime="2025-09-26T16:31:44&#43;09:00">
+            Sep 26, 2025
         </time>
     
 </span>
@@ -436,7 +436,7 @@
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
 >BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を使用し、これらを <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> で接続するGPUクラスタ、あるいは単一のGPUインスタンスで実施します。</p>
 <p>このGPUクラスタ/インスタンスは、OSを <strong>Ubuntu</strong> とし、 <strong><a
   class="gdoc-markdown__link"
@@ -473,14 +473,14 @@
 </ul>
 <p>※1） <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+  href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >プラットフォーム・イメージ</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm"
 >Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> です。</p>
 <p>以下の性能が出ています。</p>
 <ul>
-<li>通信タイプ： <strong>All-Reduce</strong></li>
+<li>通信タイプ： AllReduce</li>
 <li>メッセージサイズ： 10 GiB</li>
 <li>帯域（busbw）
 <ul>
@@ -502,17 +502,17 @@
 <p>本章は、 <strong>NCCL Tests</strong> を実行するGPUクラスタ/インスタンスを構築します。</p>
 <p>単一ノードで <strong>NCCL Tests</strong> を実行するGPUインスタンスの構築は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/"
+  href="../../tech-knowhow/gpu-with-ubuntu/"
 >UbuntuをOSとするHPC/機械学習ワークロード向けGPUノード構築方法</a></strong> の手順に従い実施します。</p>
 <p>複数ノードに跨る <strong>NCCL Tests</strong> を実行するGPUクラスタの構築は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
+  href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-gpu-cluster-withubuntu/"
+  href="../../spinup-gpu-cluster-withubuntu/"
 >GPUクラスタを構築する(Ubuntu OS編)</a></strong> の手順に従い実施します。</p>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -570,7 +570,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドをGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。</p>
+<p>以下コマンドをGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、GPUノード内の8枚のGPUを使用する <strong>NCCL</strong> のAllReduce通信性能を計測します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span>/nccl-tests
 </span></span><span class="line"><span class="cl">$ module purge
 </span></span><span class="line"><span class="cl">$ module load nvhpc openmpi
@@ -607,7 +607,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドをGPUクラスタ内の何れかのGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する <strong>NCCL</strong> のAll-Reduce通信性能を計測します。</p>
+<p>以下コマンドをGPUクラスタ内の何れかのGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、2ノードに跨る16枚のGPUを使用する <strong>NCCL</strong> のAllReduce通信性能を計測します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/nccl-tests
 </span></span><span class="line"><span class="cl">$ module purge
 </span></span><span class="line"><span class="cl">$ module load nvhpc openmpi

@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-09-26T16:31:44+09:00"
     />
 
 
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-09-26T16:31:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -402,8 +402,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-09-26T16:31:44&#43;09:00">
+            Sep 26, 2025
         </time>
     
 </span>
@@ -420,7 +420,7 @@
 
     <p><strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 対応シェイプの <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
@@ -441,7 +441,7 @@
 </div>
 <p><strong>BM.Optimized3.36</strong> や <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> がDHCPに対応していないため、その接続インターフェースに静的にIPアドレスを割当てる必要があります。<br>
 また <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> は、 <strong>クラスタ・ネットワーク</strong> に接続するポートを16ポート有し、これらを <strong><a
   class="gdoc-markdown__link"
@@ -450,7 +450,7 @@
 <p>ここでDHCPが利用できない <strong>クラスタ・ネットワーク</strong> で、複数ノードに亘ってIPアドレスの重複が起こらないようにネットワークインターフェースを設定するには、どのようにうすればよいでしょうか。</p>
 <p>この課題に対処するため、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+  href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> は、systemdのサービス <strong>oci-rdma-configure</strong> を用意しています。<br>
 このサービスは、起動されると <strong>クラスタ・ネットワーク</strong> に接続するポートのネットワークインターフェース設定を/etc/sysconfig/network-scripts/ifcfg-<em>ifname</em> ファイルに作成し、ネットワークインターフェースを起動します。<br>
 ここで各ポートに割り振られるIPアドレスは、インスタンスを仮想クラウド・ネットワークのサブネット（24ビットのネットマスクを想定）にTCP/IPで接続する際に使用するポートにDHCPで割り振られるIPアドレスの4フィールド目（ここでは&quot;x&quot;と仮定）を使用し、以下のように静的にIPアドレスを割当てることで、アドレス重複を回避します。</p>
@@ -553,13 +553,13 @@
 また、このネットワークインターフェースに割り当てるネットワークアドレスを、デフォルトから変更する方法を解説します。</p>
 <p>なお 、ここで解説するネットワークインターフェース作成手順は、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
+  href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-1-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
+  href="../../#1-1-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
 >HPCクラスタ</a></strong> で紹介するHPCクラスタ構築手順や <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#1-2-%e6%a9%9f%e6%a2%b0%e5%ad%a6%e7%bf%92%e7%92%b0%e5%a2%83"
+  href="../../#1-2-%e6%a9%9f%e6%a2%b0%e5%ad%a6%e7%bf%92%e7%92%b0%e5%a2%83"
 >機械学習環境</a></strong> で紹介するGPUクラスタ構築手順に含まれるため、これらチュートリアルの手順に従ってHPC/GPUクラスタを構築する場合は、改めて実施する必要はありません。</p>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -582,7 +582,7 @@
 </div>
 <p><strong>BM.Optimized3.36</strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> に接続するポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&gt; systemctl start oci-rdma-configure
 </span></span><span class="line"><span class="cl">&gt; ifconfig ens300f0
@@ -615,7 +615,7 @@
 </div>
 <p><strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> に接続する16個のポートは、以下の手順を該当するノードのrootで実行し、ネットワークインターフェースを作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&gt; systemctl start oci-rdma-configure
 </span></span><span class="line"><span class="cl">&gt; ifconfig -a <span class="p">|</span> grep -A1 enp
@@ -685,7 +685,7 @@
 </div>
 <p><strong>oci-rdma-configure</strong> を使用した <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 接続ポートのネットワークインターフェース作成は、その設定ファイルである <strong>/etc/oci-hpc/rdma-network.conf</strong> をもとに行われ、使用するネットワークアドレスをこの設定ファイル中の変数 <strong>rdma_network</strong> の値から読み取ります。<br>
 そこでデフォルトの192.168.0.0からアドレスを変更するには、以下の手順を該当するノードのrootで実行します。（この例は <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> の場合）</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&gt; diff /etc/oci-hpc/rdma-network.conf_org /etc/oci-hpc/rdma-network.conf

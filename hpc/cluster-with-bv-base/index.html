@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-09-26T16:31:44+09:00"
     />
 
 
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-09-26T16:31:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -400,8 +400,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-09-26T16:31:44&#43;09:00">
+            Sep 26, 2025
         </time>
     
 </span>
@@ -421,26 +421,26 @@
 <p>OCIは、NFSのマネージドサービスとしてファイル・ストレージを提供しており、ファイルサーバ構築の必要無く簡単に利用できるため、HPC/GPUクラスタ用ユーザホームディレクトリの有力な候補です。<br>
 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
+  href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
 >HPCクラスタスタック</a></strong> は、ファイル・ストレージの構築・セットアップを行う機能を持っており、ファイル・ストレージをユーザホームディレクトリに利用するHPC/GPUクラスタを自動構築することが出来ます。</p>
 <p>これに対し、OCIのブロックストレージサービスであるブロック・ボリュームを使用してNFSサーバを構築し、この領域をユーザホームディレクトリとして使用することも可能です。<br>
 この手法は、ファイル・ストレージを使用する場合と比較して構築の手間がかかりますが、価格性能比の圧倒的に高いブロック・ボリュームの特徴を利用して、コストパフォーマンスを大幅に高めることが可能です。<br>
 ファイル・ストレージとブロック・ボリュームを使用したNFSサーバの価格と性能の比較は、チュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-nfs-server/"
+  href="../spinup-nfs-server/"
 >ブロック・ボリュームでNFSサーバを構築する</a></strong> 前段の比較表を参照ください。</p>
 <p>このチュートリアルは、チュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-nfs-server/"
+  href="../spinup-nfs-server/"
 >ブロック・ボリュームでNFSサーバを構築する</a></strong> でブロック・ボリュームをアタッチしたベアメタルインスタンス <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> をNFSサーバとするファイル共有ストレージを構築し、チュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-cluster-network/"
+  href="../spinup-cluster-network/"
 >HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-gpu-cluster/"
+  href="../spinup-gpu-cluster/"
 >GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> で基礎インフラとして構築するHPC/GPUクラスタのファイル共有ストレージとして利用する、コストパフォーマンスの優れたクラスタシステムを構築します。</p>
 <p><strong>所要時間 :</strong> 約2時間</p>
 <hr>
@@ -455,13 +455,13 @@
 </div>
 <p>本チュートリアルは、チュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-nfs-server/"
+  href="../spinup-nfs-server/"
 >ブロック・ボリュームでNFSサーバを構築する</a></strong> とチュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-cluster-network/"
+  href="../spinup-cluster-network/"
 >HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> かチュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-gpu-cluster/"
+  href="../spinup-gpu-cluster/"
 >GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> を組み合わせて、以下のシステムを構築します。<br>
 この図中、左下の一点鎖線で囲まれたリソースを <strong>HPC/GPUクラスタを構築する(基礎インフラ手動構築編)</strong> で構築し、それ以外のリソースを <strong>ブロック・ボリュームでNFSサーバを構築する</strong> で構築します。</p>
 <p><img
@@ -502,11 +502,11 @@
 </div>
 <p>本章は、チュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-nfs-server/"
+  href="../spinup-nfs-server/"
 >ブロック・ボリュームでNFSサーバを構築する</a></strong> の0章から4章までを実施し、NFSサーバを構築します。</p>
 <p>この際、 <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-nfs-server/#1-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af%e3%81%ae%e4%bd%9c%e6%88%90"
+  href="../spinup-nfs-server/#1-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af%e3%81%ae%e4%bd%9c%e6%88%90"
 >1. スタックの作成</a></strong> のステップ <strong>5.4 NFS Client Instance Configuration - Optional</strong> フィールドで指定するNFSクライアント用インスタンスのシェイプとノード数は、このインスタンスが環境確認用途で最小限のリソースで十分であることから、以下に変更します。</p>
 <ul>
 <li>
@@ -538,7 +538,7 @@
 <p>Bastionノードのopcユーザで以下コマンドを実行し、計算/GPUノードにSSHログインする際使用するSSH秘密鍵に対応する公開鍵を確認します。<br>
 この公開鍵は、後に構築するHPC/GPUクラスタに紐づける <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
+  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong> 作成時に使用します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&gt; ssh-keygen -y -f ~/.ssh/id_rsa
 </span></span></code></pre></div></li>
@@ -547,7 +547,7 @@
 <p>NFSクライアントのopcユーザで以下コマンドを実行し、この出力を保存します。<br>
 ここで確認したNFSサーバマウント設定は、後に構築するHPC/GPUクラスタに紐づける <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> 設定ファイル（cloud-config）を作成する際に使用します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&gt; grep <span class="nv">vers</span><span class="o">=</span><span class="m">3</span> /etc/fstab <span class="p">|</span> sed <span class="s1">&#39;s/\/mnt\/nfs /\/mnt\/home /g&#39;</span>
 </span></span><span class="line"><span class="cl">10.0.6.xxx:/mnt/nfsshare/exports /mnt/home nfs <span class="nv">vers</span><span class="o">=</span>3,defaults,noatime,nodiratime,bg,timeo<span class="o">=</span>100,ac,actimeo<span class="o">=</span>120,nocto,rsize<span class="o">=</span>1048576,wsize<span class="o">=</span>1048576,nolock,local_lock<span class="o">=</span>none,proto<span class="o">=</span>tcp,sec<span class="o">=</span>sys,_netdev <span class="m">0</span> <span class="m">0</span>
@@ -565,10 +565,10 @@
 </div>
 <p>本章は、HPCクラスタの場合はチュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-cluster-network/"
+  href="../spinup-cluster-network/"
 >HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の1章から3章、GPUクラスタの場合はチュートリアル <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/spinup-gpu-cluster/"
+  href="../spinup-gpu-cluster/"
 >GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> の1章から2章と3章か4章を実施し、HPC/GPUクラスタを構築します。</p>
 <p>この際、以下3点をチュートリアルの手順から変更します。</p>
 <ol>
@@ -576,7 +576,7 @@
 <p>cloud-config修正</p>
 <p><strong>1.1 cloud-config作成</strong> で作成する <strong><a
   class="gdoc-markdown__link"
-  href="/ocitutorials/hpc/#5-11-cloud-init"
+  href="../#5-11-cloud-init"
 >cloud-init</a></strong> 設定ファイル（cloud-config）で、先に保存したNFSマウント設定を/etc/fstabに書き込みマウントする処理を <strong>runmcd</strong> 領域に追加します。</p>
 <p>以下は、この処理を追加したHPCクラスタ用（BM.Optimized3.36用）とGPUクラスタ用（BM.GPU4.8/BM.GPU.GM4.8用）のcloud-configで、NFSサーバIPアドレスの4フィールド目（xxx）の値を自身の環境に合わせて修正します。</p>
 <p>[HPCクラスタ用]</p>
