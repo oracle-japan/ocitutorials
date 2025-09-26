@@ -43,7 +43,7 @@
 <meta property="article:section" content="Cloud Native" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-09-26T15:49:59+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Oracle Cloud Infrastructure(OCI) DevOps事前準備",
       "description": "OCI DevOpsを利用するための事前準備を行います。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "366",
+      "wordCount" : "421",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-09-26T15:49:59.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="cloud-native">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-09-26T15:49:59+09:00">
     <meta property="article:tag" content="運用管理・監視">
     <meta property="article:tag" content="アプリケーション開発">
     <meta property="article:tag" content="初期設定">
@@ -312,8 +312,7 @@
     <h1>&nbsp;目次</h1>
     <ul>
         <li><a href="#前提条件">前提条件</a></li>
-        <li><a href="#事前準備の流れ">事前準備の流れ</a></li>
-        <li><a href="#1oci-notifications-セットアップ">1.OCI Notifications セットアップ</a>
+        <li><a href="#事前準備の流れ">事前準備の流れ</a>
           <ul>
             <li><a href="#1-1-トピックとサブスクリプションの設定">1-1 トピックとサブスクリプションの設定</a>
               <ul>
@@ -327,8 +326,8 @@
           <ul>
             <li><a href="#2-1-動的グループとポリシーの作成">2-1 動的グループとポリシーの作成</a>
               <ul>
-                <li><a href="#2-1-1-oci-devopsで利用する動的グループ">2-1-1 OCI DevOpsで利用する動的グループ</a></li>
-                <li><a href="#2-1-2-oci-devopsで利用するポリシー">2-1-2 OCI DevOpsで利用するポリシー</a></li>
+                <li><a href="#2-1-1-oci-devops-で利用する動的グループ">2-1-1 OCI DevOps で利用する動的グループ</a></li>
+                <li><a href="#2-1-2-oci-devops-で利用するポリシー">2-1-2 OCI DevOps で利用するポリシー</a></li>
               </ul>
             </li>
             <li><a href="#2-2-動的グループとポリシーの設定">2-2 動的グループとポリシーの設定</a></li>
@@ -423,8 +422,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-09-26T15:49:59&#43;09:00">
+            Sep 26, 2025
         </time>
     
 </span>
@@ -449,8 +448,8 @@
     
 </div>
 
-    <p>OCI DevOpsは、OCI上にCI/CD環境を構築するマネージドサービスです。<br>
-ここでは、OCI DevOpsを利用するための事前準備を行います。　　</p>
+    <p>OCI DevOps は、OCI 上に CI/CD 環境を構築するマネージドサービスです。<br>
+ここでは、OCI DevOps を利用するための事前準備を行います。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="前提条件"
     >
@@ -463,7 +462,7 @@
 <ul>
 <li>クラウド環境
 <ul>
-<li>Oracle Cloudのアカウント（Free Trial）を取得済みであること</li>
+<li>Oracle Cloud のアカウント（Free Trial）を取得済みであること</li>
 </ul>
 </li>
 </ul>
@@ -485,17 +484,10 @@
 </li>
 <li>
 <p>3.プロジェクトの作成</p>
+<p>1.OCI Notifications セットアップ</p>
 </li>
 </ul>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1oci-notifications-セットアップ"
-    >
-        1.OCI Notifications セットアップ
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/#1oci-notifications-セットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.OCI Notifications セットアップ" aria-label="アンカー先: 1.OCI Notifications セットアップ" href="#1oci-notifications-%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
+<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="1-1-トピックとサブスクリプションの設定"
     >
@@ -505,8 +497,8 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCI DevOpsでは、OCI Notificationsサービスの「トピック」と「サブスクリプション」の設定が必要となります。<br>
-この設定をしておくことで、登録したメールアドレスにOCI DevOpsから通知を受け取ることができます。</p>
+<p>OCI DevOps では、OCI Notifications サービスの「トピック」と「サブスクリプション」の設定が必要となります。<br>
+この設定をしておくことで、登録したメールアドレスに OCI DevOps から通知を受け取ることができます。</p>
 
 
 
@@ -514,7 +506,7 @@
   <div class="gdoc-hint__title flex align-center">
     <span>OCI Notificationsについて</span>
   </div>
-  <div class="gdoc-hint__text">OCI Notificationsは、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。   本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にもSlack/SMS/PagerDutyなどに通知を行うことができます。  また詳細は<a
+  <div class="gdoc-hint__text">OCI Notifications は、安全、高信頼性、低レイテンシおよび永続的にメッセージを配信するためのサービスです。 本ハンズオンでは、電子メールアドレスに対して配信を行いますが、他にも Slack/SMS/PagerDuty などに通知を行うことができます。 また詳細は<a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Notification/Concepts/notificationoverview.htm"
 >こちら</a>のページをご確認ください。</div>
@@ -548,7 +540,7 @@
   <div class="gdoc-hint__title flex align-center">
     <span>トピックの名前について</span>
   </div>
-  <div class="gdoc-hint__text">トピックの名前はテナンシで一意になります。   集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oci-devops-handson-01</code>や<code>handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
+  <div class="gdoc-hint__text">トピックの名前はテナンシで一意になります。 集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oci-devops-handson-01</code>や<code>handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
 </blockquote>
 
 <p>「名前」に「oci-devops-handson」と入力します。</p>
@@ -641,7 +633,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここでは、OCI DevOpsを利用するための動的グループとポリシーの作成を行います。</p>
+<p>ここでは、OCI DevOps を利用するための動的グループとポリシーの作成を行います。</p>
 
 
 
@@ -649,31 +641,52 @@
   <div class="gdoc-hint__title flex align-center">
     <span>動的グループとポリシーについて</span>
   </div>
-  <div class="gdoc-hint__text">Oracle Cloud Infrastrctureには動的グループという考え方があります。   動的グループの詳細は<a
+  <div class="gdoc-hint__text">Oracle Cloud Infrastrcture には動的グループという考え方があります。 動的グループの詳細は<a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm"
->こちら</a>のページをご確認ください。   また、設定した動的グループは、ポリシーを利用することにより、OCI上のリソースやインスタンスを主体とした操作を実現できます。   ポリシーの詳細は<a
+>こちら</a>のページをご確認ください。 また、設定した動的グループは、ポリシーを利用することにより、OCI 上のリソースやインスタンスを主体とした操作を実現できます。 ポリシーの詳細は<a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Concepts/policygetstarted.htm#Getting_Started_with_Policies"
 >こちら</a>のページをご確認ください。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="2-1-1-oci-devopsで利用する動的グループ"
+    <h4 id="2-1-1-oci-devops-で利用する動的グループ"
     >
-        2-1-1 OCI DevOpsで利用する動的グループ
+        2-1-1 OCI DevOps で利用する動的グループ
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/#2-1-1-oci-devopsで利用する動的グループ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1-1 OCI DevOpsで利用する動的グループ" aria-label="アンカー先: 2-1-1 OCI DevOpsで利用する動的グループ" href="#2-1-1-oci-devops%e3%81%a7%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e5%8b%95%e7%9a%84%e3%82%b0%e3%83%ab%e3%83%bc%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/#2-1-1-oci-devops-で利用する動的グループ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1-1 OCI DevOps で利用する動的グループ" aria-label="アンカー先: 2-1-1 OCI DevOps で利用する動的グループ" href="#2-1-1-oci-devops-%e3%81%a7%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e5%8b%95%e7%9a%84%e3%82%b0%e3%83%ab%e3%83%bc%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCI DevOpsを利用する上で、必要となる動的グループを作成します。<br>
-OCI DevOpsで設定する動的グループは以下となります。</p>
-<p>動的グループ|ルール|説明|
--|-
-OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsrepository’, resource.compartment.id = ‘コンパートメントOCID’}|OCI DevOpsのコード・リポジトリを利用するために必要な動的グループ
-OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsbuildpipeline’, resource.compartment.id = ‘コンパートメントOCID’}|ビルド・パイプラインを利用するために必要な動的グループ
-OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resource.compartment.id = ‘コンパートメントOCID’}|デプロイメント・パイプラインを利用するために必要な動的グループ</p>
+<p>OCI DevOps を利用する上で、必要となる動的グループを作成します。<br>
+OCI DevOps で設定する動的グループは以下となります。</p>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th>動的グループ</th>
+          <th>ルール</th>
+          <th>説明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>OCI_DevOps_Dynamic_Group</td>
+          <td>All {resource.type = ‘devopsrepository’, resource.compartment.id = ‘コンパートメント OCID’}</td>
+          <td>OCI DevOps のコード・リポジトリを利用するために必要な動的グループ</td>
+      </tr>
+      <tr>
+          <td>OCI_DevOps_Dynamic_Group</td>
+          <td>All {resource.type = ‘devopsbuildpipeline’, resource.compartment.id = ‘コンパートメント OCID’}</td>
+          <td>ビルド・パイプラインを利用するために必要な動的グループ</td>
+      </tr>
+      <tr>
+          <td>OCI_DevOps_Dynamic_Group</td>
+          <td>All {resource.type = ‘devopsdeploypipeline’, resource.compartment.id = ‘コンパートメント OCID’}</td>
+          <td>デプロイメント・パイプラインを利用するために必要な動的グループ</td>
+      </tr>
+  </tbody>
+</table> </div>
 
 
 
@@ -681,7 +694,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   <div class="gdoc-hint__title flex align-center">
     <span>コンパートメントについて</span>
   </div>
-  <div class="gdoc-hint__text">Oracle Cloud Infrastrctureにはコンパートメントという考え方があります。 コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCIコンソール上に表示されるリソースのフィルタとしても機能します。 コンパートメントの詳細は<a
+  <div class="gdoc-hint__text">Oracle Cloud Infrastrcture にはコンパートメントという考え方があります。 コンパートメントは、クラウド・リソース(インスタンス、仮想クラウド・ネットワーク、ブロック・ボリュームなど)を分類整理する論理的な区画で、この単位でアクセス制御を行うことができます。また、OCI コンソール上に表示されるリソースのフィルタとしても機能します。 コンパートメントの詳細は<a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingcompartments.htm"
 >こちら</a>のページをご確認ください。</div>
@@ -694,19 +707,19 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   <div class="gdoc-hint__title flex align-center">
     <span>動的グループの名前について</span>
   </div>
-  <div class="gdoc-hint__text">動的グループの名前はテナンシで一意になります。   集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>OCI_DevOps_Dynamic_Group_01</code>や<code>OCI_DevOps_Dynamic_Group_tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
+  <div class="gdoc-hint__text">動的グループの名前はテナンシで一意になります。 集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>OCI_DevOps_Dynamic_Group_01</code>や<code>OCI_DevOps_Dynamic_Group_tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="2-1-2-oci-devopsで利用するポリシー"
+    <h4 id="2-1-2-oci-devops-で利用するポリシー"
     >
-        2-1-2 OCI DevOpsで利用するポリシー
+        2-1-2 OCI DevOps で利用するポリシー
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/#2-1-2-oci-devopsで利用するポリシー" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1-2 OCI DevOpsで利用するポリシー" aria-label="アンカー先: 2-1-2 OCI DevOpsで利用するポリシー" href="#2-1-2-oci-devops%e3%81%a7%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/devops-for-commons/#2-1-2-oci-devops-で利用するポリシー" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1-2 OCI DevOps で利用するポリシー" aria-label="アンカー先: 2-1-2 OCI DevOps で利用するポリシー" href="#2-1-2-oci-devops-%e3%81%a7%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCI DevOpsを利用する上で、必要となるポリシーを作成します。
+<p>OCI DevOps を利用する上で、必要となるポリシーを作成します。
 ポリシーは以下となります。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -717,16 +730,16 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   </thead>
   <tbody>
       <tr>
-          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id コンパートメントOCID</td>
-          <td>OCI DevOpsの各機能を利用するために必要なポリシー</td>
+          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage devops-family in compartment id コンパートメント OCID</td>
+          <td>OCI DevOps の各機能を利用するために必要なポリシー</td>
       </tr>
       <tr>
-          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id コンパートメントOCID</td>
-          <td>OCI DevOpsがOCIRやアーティファクト・レジストリを管理するために必要なポリシー</td>
+          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to manage all-artifacts in compartment id コンパートメント OCID</td>
+          <td>OCI DevOps が OCIR やアーティファクト・レジストリを管理するために必要なポリシー</td>
       </tr>
       <tr>
-          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id コンパートメントOCID</td>
-          <td>OCI DevOpsがOCI Notificationsサービスを利用するために必要なポリシー</td>
+          <td>Allow dynamic-group OCI_DevOps_Dynamic_Group to use ons-topics in compartment id コンパートメント OCID</td>
+          <td>OCI DevOps が OCI Notifications サービスを利用するために必要なポリシー</td>
       </tr>
   </tbody>
 </table> </div>
@@ -737,7 +750,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   <div class="gdoc-hint__title flex align-center">
     <span>本ハンズオンでの動的グループについて</span>
   </div>
-  <div class="gdoc-hint__text">今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。   本来は、各サービスのタイプを指定して動的グループを作成することになります。</div>
+  <div class="gdoc-hint__text">今回は、簡易的にハンズオンを実施するために、コンパートメント内の全てのリソースやインスタンスを動的グループとして含める設定を行なっています。 本来は、各サービスのタイプを指定して動的グループを作成することになります。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -751,7 +764,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
 </div>
 <p>今回のハンズオンでは、スクリプトを利用して、動的グループとポリシーを設定します。<br>
 サンプルコードをダウンロードします。</p>
-<p>上部メニューの「Cloud　Shell」アイコンをクリックして、Cloud Shellを起動します。</p>
+<p>上部メニューの「Cloud 　 Shell」アイコンをクリックして、Cloud Shell を起動します。</p>
 <p><img
   src="1-028.png"
   alt=""
@@ -765,7 +778,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
 /></p>
 <p>起動後、以下コマンドを実行します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">wget https://raw.githubusercontent.com/oracle-japan/devops-commons-script/master/common_prepare.sh
-</span></span></code></pre></div><p><em><strong>コマンド結果</strong></em></p>
+</span></span></code></pre></div><p><strong><em>コマンド結果</em></strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">--2022-04-05 00:55:37--  https://raw.githubusercontent.com/oracle-japan/devops-commons-script/master/common_prepare.sh
 </span></span><span class="line"><span class="cl">Resolving raw.githubusercontent.com <span class="o">(</span>raw.githubusercontent.com<span class="o">)</span>... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
 </span></span><span class="line"><span class="cl">Connecting to raw.githubusercontent.com <span class="o">(</span>raw.githubusercontent.com<span class="o">)</span><span class="p">|</span>185.199.109.133<span class="p">|</span>:443... connected.
@@ -773,13 +786,13 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
 </span></span><span class="line"><span class="cl">Length: <span class="m">1195</span> <span class="o">(</span>1.2K<span class="o">)</span> <span class="o">[</span>text/plain<span class="o">]</span>
 </span></span><span class="line"><span class="cl">Saving to: ‘common_prepare.sh.1’
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">100%<span class="o">[==============================================================================================================================================================================================================================================</span>&gt;<span class="o">]</span> 1,195       --.-K/s   in 0s      
+</span></span><span class="line"><span class="cl">100%<span class="o">[==============================================================================================================================================================================================================================================</span>&gt;<span class="o">]</span> 1,195       --.-K/s   in 0s
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">2022-04-05 00:55:37 <span class="o">(</span>66.7 MB/s<span class="o">)</span> - ‘common_prepare.sh’ saved <span class="o">[</span>1195/1195<span class="o">]</span>
 </span></span></code></pre></div><p>ダウンロードしたスクリプトを実行します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">chmod +x ./common_prepare.sh
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">sh ./common_prepare.sh
-</span></span></code></pre></div><p><em><strong>コマンド結果</strong></em></p>
+</span></span></code></pre></div><p><strong><em>コマンド結果</em></strong></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">ocid1.tenancy.oc1..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 </span></span><span class="line"><span class="cl"><span class="o">{</span>
 </span></span><span class="line"><span class="cl">  <span class="s2">&#34;data&#34;</span>: <span class="o">{</span>
@@ -836,7 +849,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここでは、OCI DevOpsインスタンスを作成し、プロジェクトを作成します。</p>
+<p>ここでは、OCI DevOps インスタンスを作成し、プロジェクトを作成します。</p>
 <p><img
   src="1-127.png"
   alt=""
@@ -851,14 +864,14 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCI DevOpsは、プロジェクト単位で管理する仕組みです。最初にプロジェクトを作成します。</p>
+<p>OCI DevOps は、プロジェクト単位で管理する仕組みです。最初にプロジェクトを作成します。</p>
 <p>左上にあるハンバーガーメニューから「開発者サービス」-「プロジェクト」を選択します。</p>
 <p><img
   src="1-032.png"
   alt=""
   
 /></p>
-<p>「DevOpsプロジェクトの作成」ボタンをクリックします。</p>
+<p>「DevOps プロジェクトの作成」ボタンをクリックします。</p>
 <p><img
   src="1-033.png"
   alt=""
@@ -877,7 +890,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   <div class="gdoc-hint__title flex align-center">
     <span>プロジェクト名について</span>
   </div>
-  <div class="gdoc-hint__text">プロジェクト名はテナンシで一意になります。   集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oci-devops-handson-01</code>や<code>oci-devops-handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
+  <div class="gdoc-hint__text">プロジェクト名はテナンシで一意になります。 集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oci-devops-handson-01</code>や<code>oci-devops-handson-tn</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
 </blockquote>
 
 <p>「トピック」が「oci-devops-handson」であることを確認します。</p>
@@ -892,7 +905,7 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
   alt=""
   
 /></p>
-<p>「DevOpsプロジェクトの作成」ボタンをクリックします。</p>
+<p>「DevOps プロジェクトの作成」ボタンをクリックします。</p>
 <p><img
   src="1-037.png"
   alt=""
@@ -932,15 +945,15 @@ OCI_DevOps_Dynamic_Group|All {resource.type = ‘devopsdeploypipeline’, resour
 <p><a
   class="gdoc-markdown__link"
   href="../devops-for-beginners-compute/"
->初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Compute編-</a></p>
+>初級編 - Oracle Cloud Infrastructure(OCI) DevOps ことはじめ-Compute 編-</a></p>
 <p><a
   class="gdoc-markdown__link"
   href="../devops-for-beginners-oke/"
->初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-OKE編-</a></p>
+>初級編 - Oracle Cloud Infrastructure(OCI) DevOps ことはじめ-OKE 編-</a></p>
 <p><a
   class="gdoc-markdown__link"
   href="../devops-for-beginners-functions/"
->初級編 - Oracle Cloud Infrastructure(OCI) DevOpsことはじめ-Oracle Functions編-</a></p>
+>初級編 - Oracle Cloud Infrastructure(OCI) DevOps ことはじめ-Oracle Functions 編-</a></p>
 
   </article>
 
