@@ -42,9 +42,9 @@ params:
 
 以降では、以下の順に解説します。
 
-1. **OpenMPI** インストール
-2. **OSU Micro-Benchmarks** インストール・セットアップ
-3. **OSU Micro-Benchmarks** 実行
+1. **[OpenMPIインストール](#1-openmpiインストール)**
+2. **[OSU Micro-Benchmarksインストール・セットアップ](#2-osu-micro-benchmarksインストールセットアップ)**
+3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
 
 ***
 # 1. OpenMPIインストール  
