@@ -44,15 +44,14 @@ params:
 
 以降では、以下の順に解説します。
 
-1. **OSU Micro-Benchmarks** インストール・セットアップ
-2. **OSU Micro-Benchmarks** 実行
+1. **[OSU Micro-Benchmarksインストール・セットアップ](#1-osu-micro-benchmarksインストールセットアップ)**
+2. **[OSU Micro-Benchmarks実行](#2-osu-micro-benchmarks実行)**
 
 # 1. OSU Micro-Benchmarksインストール・セットアップ
 
 本章は、 **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** と **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** （ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる）を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **Environment modules** にモジュール名 **omb** を登録します。
 
-以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行し、 **OSU Micro-Benchmarks** をビルドします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行します。
 
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
@@ -60,7 +59,6 @@ $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
 $ module purge
 $ module load nvhpc openmpi
 $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
-$
 ```
 
 次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。
@@ -72,7 +70,8 @@ $ diff libtool_org libtool
 $
 ```
 
-次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
+次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ make -j 128 && sudo make install
@@ -104,7 +103,7 @@ prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
 ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ1バイトでのレイテンシを計測しています。  
-使用するGPUが0番と1番となるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
 
 ```sh
 $ module load nvhpc openmpi omb
@@ -121,7 +120,7 @@ $
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
 ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ256 MiBバイトでの帯域幅を計測しています。  
-使用するGPUが0番と1番となるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
 
 ```sh
 $ module load nvhpc openmpi omb
@@ -138,7 +137,7 @@ $
 
 以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
 ここでは、2ノードの0番GPU間のメッセージサイズ1バイトでのレイテンシを計測しています。  
-使用するGPUが0番となるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+使用するGPUが0番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
 
 ```sh
 $ module load nvhpc openmpi omb
@@ -156,7 +155,7 @@ $
 
 以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
 ここでは、2ノードの0番GPU間のメッセージサイズ256 MiBバイトでの帯域幅を計測しています。  
-使用するGPUが0番となるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+使用するGPUが0番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
 
 ```sh
 $ module load nvhpc openmpi omb
