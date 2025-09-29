@@ -1196,28 +1196,41 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
       </header>
 
       <section class="gdoc-markdown">
-        <p>Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理を高速化できるMySQL Database Services(MDS)専用のクエリー・アクセラレーターが使用できます。HeatWaveもMDSと同じく、Always Freeの対象ではないため使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
-<p>このチュートリアルでは、コンソール画面からHeatWaveを構成し、MySQLクライアントからサンプルデータベースを構成してHeatWaveを利用する手順を説明します。</p>
+        <p>Oracle Cloud Infrastructure(OCI) では、HeatWaveクラスタというデータ分析処理を高速化できるMySQL HeatWave専用のクエリー・アクセラレーターが使用できます。HeatWaveクラスタもMySQL HeatWaveと同じく、Always Freeの対象です。トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+<p>このチュートリアルでは、コンソール画面からHeatWaveクラスタ付きのMySQL HeatWaveのDBシステムを構成し、MySQLクライアントからサンプルデータベースを構成してHeatWaveクラスタの持つ性能を確認する手順を説明します。</p>
+<hr>
+<p><strong>2025年9月追記</strong> <br>
+本チュートリアル作成当初のサービス仕様に沿った手順のため <a
+  class="gdoc-markdown__link"
+  href="#anchor3"
+>MySQL HeatWaveのDBシステム作成完了後</a>に、改めて<a
+  class="gdoc-markdown__link"
+  href="#anchor4"
+>HeatWaveクラスタを作成する</a>手順となっています。現在は<a
+  class="gdoc-markdown__link"
+  href="#anchor3"
+>MySQL HeatWaveのDBシステム作成時</a>の<strong>ハードウェアの構成</strong>の項目で、デフォルトでHeatWaveクラスタを作成する設定となっています。</p>
+<hr>
 <p><strong>所要時間 :</strong> 約40分 (約25分の待ち時間含む)</p>
 <p><strong>前提条件 :</strong></p>
 <ol>
 <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../getting-started/"
->OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a>を完了していること</li>
+  href="../../beginners/getting-started/"
+>OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-vcn/"
->クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a>を完了していること</li>
+  href="../../beginners/creating-vcn/"
+>クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="https://community.oracle.com/tech/welcome/discussion/4474256/"
->インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a>を完了していること</li>
+  href="../../beginners/creating-compute-instance/"
+>インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/"
->クラウドでMySQL Databaseを使う(その9)</a>を完了していること</li>
+>クラウドでMySQLデータベースを使う(その9)</a>を完了していること</li>
 </ol>
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります</p>
 <p><strong>目次：</strong></p>
@@ -1225,7 +1238,7 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor1"
->1. MySQL HeatWaveとは?</a></li>
+>1. HeatWaveクラスタとは?</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor2"
@@ -1233,11 +1246,11 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor3"
->3. MySQL HeatWaveの構成(HeatWave用MDSの構成)</a></li>
+>3. MySQL HeatWaveの構成(HeatWave用DBシステムの構成)</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor4"
->4. MySQL HeatWaveの構成(HeatWaveノードの追加)</a></li>
+>4. HeatWaveクラスタの追加</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor5"
@@ -1249,7 +1262,7 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor7"
->7. HeatWaveの確認</a></li>
+>7. HeatWaveクラスタの確認</a></li>
 </ul>
 <br>
 <p><a id="anchor1"></a></p>
@@ -1273,11 +1286,11 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-29T02:53:47Z">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 29, 2025
     </time>
   </span>
 </span>
@@ -1428,28 +1441,28 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/mysql/creating-mds-ha/">その11 - クラウドでMySQL Databaseを高可用性構成で使う</a>
+          <a href="/ocitutorials/mysql/creating-mds-ha/">その11 - クラウドでMySQLデータベースを高可用性構成で使う</a>
         </h1>
       </header>
 
       <section class="gdoc-markdown">
-        <p>Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
-<p>このチュートリアルでは、コンソール画面から高可用性構成を有効化したMDSを作成し、コンピュート・インスタンスにMySQLクライアントをインストールして、MDSの高可用性動作を確認する手順を説明します。</p>
+        <p>Oracle Cloud Infrastructure では、MySQL HeatWaveが利用できます。MySQL HeatWaveはAlways Freeの対象となっていますが、このチュートリアルで解説する高可用性構成は対象外となります。トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+<p>このチュートリアルでは、コンソール画面から高可用性構成を有効化したMySQL HeatWaveのDBシステムを作成し、コンピュート・インスタンスにMySQLクライアントをインストールして、MySQL HeatWaveの高可用性動作を確認する手順を説明します。</p>
 <p><strong>所要時間 :</strong> 約30分 (約15分の待ち時間含む)</p>
 <p><strong>前提条件 :</strong></p>
 <ol>
 <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../getting-started/"
+  href="../../beginners/getting-started/"
 >OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-vcn/"
+  href="../../beginners/creating-vcn/"
 >クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-compute-instance/"
+  href="../../beginners/creating-compute-instance/"
 >インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を完了していること</li>
 </ol>
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。<br>
@@ -1469,7 +1482,7 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor3"
->3. 高可用性構成を有効化したMDSの作成</a></li>
+>3. 高可用性構成を有効化したMySQL HeatWaveの作成</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor4"
@@ -1481,7 +1494,7 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor6"
->6. 作成したMDSで高可用性が実現できることを確認</a>
+>6. 作成したMySQL HeatWaveで高可用性が実現できることを確認</a>
 <br></li>
 </ul>
 <p><a id="anchor1"></a></p>
@@ -1505,11 +1518,11 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-29T02:53:47Z">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 29, 2025
     </time>
   </span>
 </span>
@@ -1521,6 +1534,10 @@ ORDSはデフォルトでATPに組み込まれている仕組みです。</p>
 
 
 
+  
+    
+    
+    
   
     
     

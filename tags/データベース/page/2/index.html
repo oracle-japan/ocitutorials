@@ -491,28 +491,31 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/mysql/creating-mds-readreplica/">その12 - MySQL Database Serviceでリードレプリカを構成する</a>
+          <a href="/ocitutorials/mysql/creating-mds-readreplica/">その12 - MySQL HeatWaveでリードレプリカを構成する</a>
         </h1>
       </header>
 
       <section class="gdoc-markdown">
-        <p>Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
-<p>このチュートリアルでは、参照処理の負荷分散を実現できるリードレプリカを構成し、動きを確認します。リードレプリカもエンドポイントもマネージドで提供されているため、簡単に利用できるのが特徴です。</p>
+        <p>Oracle Cloud Infrastructure では、MySQL HeatWaveが利用できます。MySQL HeatWaveはAlways Freeの対象となっています。トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+<p>このチュートリアルでは、参照処理の負荷分散を実現できるリードレプリカ(<a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/read-replica.html"
+>コンソールやドキュメントでの名称は「読取りレプリカ」</a>)を構成し、動きを確認します。リードレプリカもエンドポイントもマネージドで提供されているため、簡単に利用できるのが特徴です。</p>
 <p><strong>所要時間 :</strong> 約50分 (約30分の待ち時間含む)</p>
 <p><strong>前提条件 :</strong></p>
 <ol>
 <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../getting-started/"
+  href="../../beginners/getting-started/"
 >OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-vcn/"
+  href="../../beginners/creating-vcn/"
 >クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-compute-instance/"
+  href="../../beginners/creating-compute-instance/"
 >インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を完了していること</li>
 </ol>
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
@@ -530,7 +533,7 @@
 <li><a
   class="gdoc-markdown__link"
   href="#anchor3"
->3. MDSの作成(ソースとなるMDS)</a></li>
+>3. MySQL HeatWaveの作成(ソースとなるMySQL HeatWave)</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor4"
@@ -570,11 +573,11 @@
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-29T02:53:47Z">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 29, 2025
     </time>
   </span>
 </span>
@@ -602,28 +605,28 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/mysql/creating-mds-channel/">その13 - MySQL Database Serviceでレプリケーションを使用する</a>
+          <a href="/ocitutorials/mysql/creating-mds-channel/">その13 - MySQL HeatWaveでレプリケーションを使用する</a>
         </h1>
       </header>
 
       <section class="gdoc-markdown">
-        <p>Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
-<p>このチュートリアルでは、MDSからMDSへのレプリケーションを構成することで、MDSでのレプリケーションの構成方法を確認します。MDSはソースにもレプリカにもなれますが、マネージドサービスであるが故の注意事項や制限事項もあるため、それらについても説明します。</p>
+        <p>Oracle Cloud Infrastructure では、MySQL HeatWaveが利用できます。MySQL HeatWaveはAlways Freeの対象となっています。トライアルアカウント作成時に付与されるクレジットでも使用可能です。</p>
+<p>このチュートリアルでは、MySQL HeatWaveのノードから別のノードへのレプリケーションを構成することで、MySQL HeatWaveでのレプリケーションの構成方法を確認します。MySQL HeatWaveはソースにもレプリカにもなれますが、マネージドサービスであるが故の注意事項や制限事項もあるため、それらについても説明します。</p>
 <p><strong>所要時間 :</strong> 約50分 (約20分の待ち時間含む)</p>
 <p><strong>前提条件 :</strong></p>
 <ol>
 <li>Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../getting-started/"
+  href="../../beginners/getting-started/"
 >OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-vcn/"
+  href="../../beginners/creating-vcn/"
 >クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)</a> を完了していること</li>
 <li><a
   class="gdoc-markdown__link"
-  href="../creating-compute-instance/"
+  href="../../beginners/creating-compute-instance/"
 >インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)</a> を完了していること</li>
 </ol>
 <p><strong>注意 :</strong> チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
@@ -641,15 +644,15 @@
 <li><a
   class="gdoc-markdown__link"
   href="#anchor3"
->3. MDSの作成(ソース用のMDS、レプリカ用のMDS)</a></li>
+>3. MySQL HeatWaveの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor4"
->4. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)</a></li>
+>4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor5"
->5. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート</a></li>
+>5. ソース用MySQL HeatWaveのデータをダンプし、レプリカ用MySQL HeatWaveへインポート</a></li>
 <li><a
   class="gdoc-markdown__link"
   href="#anchor6"
@@ -689,11 +692,11 @@
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
+    <time datetime="2025-09-29T02:53:47Z">
       
         更新日時
       
-      Sep 18, 2025
+      Sep 29, 2025
     </time>
   </span>
 </span>
