@@ -1,6 +1,6 @@
 ---
 title: "その10 - MySQLで高速分析を体験する"
-description: "OCIではMySQLベースのデータウェアハウスサービスであるHeatWaveが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！"
+description: "OCIではMySQLベースのデータウェアハウスのサービスであるMySQL HeatWaveのクエリ高速化エンジンが使えます！MySQLからレプリケーションでデータ連携もできるため、ETLを使わずにデータウェアハウスを構築することもできます！性能もコストパフォーマンスも非常に高いサービスなので、是非試してみて下さい！"
 weight: "100"
 images:
 - "mysql/creating-mds/MySQLLogo_teaser.png"
@@ -9,50 +9,58 @@ tags:
 aliases: "/beginners/creating-heatwave/"
 #link: https://oracle-japan.github.io/ocitutorials/beginners/creating-heatwave/
 ---
-Oracle Cloud Infrastructure(OCI) では、HeatWaveというデータ分析処理を高速化できるMySQL Database Services(MDS)専用のクエリー・アクセラレーターが使用できます。HeatWaveもMDSと同じく、Always Freeの対象ではないため使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。
+Oracle Cloud Infrastructure(OCI) では、HeatWaveクラスタというデータ分析処理を高速化できるMySQL HeatWave専用のクエリー・アクセラレーターが使用できます。HeatWaveクラスタもMySQL HeatWaveと同じく、Always Freeの対象です。トライアルアカウント作成時に付与されるクレジットでも使用可能です。
 
-このチュートリアルでは、コンソール画面からHeatWaveを構成し、MySQLクライアントからサンプルデータベースを構成してHeatWaveを利用する手順を説明します。
+このチュートリアルでは、コンソール画面からHeatWaveクラスタ付きのMySQL HeatWaveのDBシステムを構成し、MySQLクライアントからサンプルデータベースを構成してHeatWaveクラスタの持つ性能を確認する手順を説明します。
+
+---
+**2025年9月追記** <br>
+本チュートリアル作成当初のサービス仕様に沿った手順のため [MySQL HeatWaveのDBシステム作成完了後](#anchor3)に、改めて[HeatWaveクラスタを作成する](#anchor4)手順となっています。現在は[MySQL HeatWaveのDBシステム作成時](#anchor3)の**ハードウェアの構成**の項目で、デフォルトでHeatWaveクラスタを作成する設定となっています。
+
+---
 
 **所要時間 :** 約40分 (約25分の待ち時間含む)
 
 **前提条件 :**
 
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること
-2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../getting-started/)を完了していること
-3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../creating-vcn/)を完了していること
-4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)を完了していること
-5. [クラウドでMySQL Databaseを使う(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)を完了していること
+2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../../beginners/getting-started/) を完了していること
+3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../../beginners/creating-vcn/) を完了していること
+4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../../beginners/creating-compute-instance/) を完了していること
+5. [クラウドでMySQLデータベースを使う(その9)](https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/)を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります
 
 **目次：**
 
-- [1. MySQL HeatWaveとは?](#anchor1)
+- [1. HeatWaveクラスタとは?](#anchor1)
 - [2. MySQL HeatWave構成時の注意事項](#anchor2)
-- [3. MySQL HeatWaveの構成(HeatWave用MDSの構成)](#anchor3)
-- [4. MySQL HeatWaveの構成(HeatWaveノードの追加)](#anchor4)
+- [3. MySQL HeatWaveの構成(HeatWave用DBシステムの構成)](#anchor3)
+- [4. HeatWaveクラスタの追加](#anchor4)
 - [5. サンプルデータベースの構築](#anchor5)
 - [6. HeatWaveへのデータロード](#anchor6)
-- [7. HeatWaveの確認](#anchor7)
+- [7. HeatWaveクラスタの確認](#anchor7)
 
 <br>
 
 <a id="anchor1"></a>
 
-# 1. MySQL HeatWaveとは?
+# 1. HeatWaveクラスタとは?
 
-MySQL HeatWaveとはMySQL Database Serviceの拡張機能で、検索処理を高速化できるクエリーアクセラレーターです。HeatWaveノードはデータ分析/集計に向いたカラムナー(列指向)データベースとして実装されており、インメモリで超並列処理を実現し、分析系のSQLも高速に実行できます。MySQL 8.0ベースのサービスとなっていますので、今までMySQLで実行していたSQLをそのまま使えます。また、レプリケーションを構成してオンプレミス環境や他社クラウド環境にあるMySQL 5.7、8.0からETLを使わずにMySQL HeatWaveにデータを連携し、最新のデータを分析するリアルタイムデータ分析環境を構築することもできます。
+MySQLクラスタとはMySQL HeatWaveの拡張機能で、検索処理を高速化できるクエリーアクセラレーターです。HeatWaveクラスタは複数のHeatWaveノードから構成されます。HeatWaveノードはデータ分析/集計に向いたカラムナー(列指向)データベースとして実装されており、インメモリで超並列処理を実現し、分析系のSQLも高速に実行できます。
+
+基本的には今までMySQLで実行していたSQLをそのまま使えます。また、レプリケーションを構成してオンプレミス環境や他社クラウド環境にあるMySQL サーバーからETLを使わずにMySQL HeatWaveにデータを連携し、最新のデータを分析するリアルタイムデータ分析環境を構築することもできます。
 <br>
-
-
 
 <a id="anchor2"></a>
 
 # 2. MySQL HeatWave構成時の注意事項
+<!--
+MySQL HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい[^1]。-->
 
-MySQL HeatWaveを構成する前に、使用する環境のサービスリミットを確認し、後述する最小構成を満たしていることを確認して下さい。サービスリミットが最小構成を満たしてい無い場合は、事前にサービスリミットの引上げ申請を出して下さい[^1]。
+本チュートリアルで構成するMySQL HeatWaveの構成図は以下のようになります。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL HeatWaveのDBシステム、すなわちMySQLサーバーになります。
 
-本チュートリアルで構成するMySQL HeatWaveの構成図は以下のようになります。HeatWaveを使用する時は、HeatWave専用のMySQL Database Serviceを構成し、そこにHeatWaveノードを追加します。HeatWaveノードはバックグラウンドで動作するため、アプリケーションからの接続先はMySQL Database Serviceになります。また、HeatWaveをデータ分析用途(OLAP)で使う場合の標準的なシェイプであるHeatWave.512GBの場合、HeatWaveノードの最小台数は1台、最大台数は64台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約1,000GBのデータを保持できます。
+また、HeatWaveクラスタをデータ分析用途(OLAP)で使う場合の標準的なシェイプであるHeatWave.512GBの場合、HeatWaveノードの最小台数は1台、最大台数は64台となっています。HeatWaveノードではインメモリでデータを保持し、1台あたり約800GBのデータを保持できます。
 <br>
 (データによってデータの圧縮率も変わってくるため、実際に保持できるデータ量はそれぞれのデータに依存します)
 
@@ -61,6 +69,7 @@ MySQL HeatWaveを構成する前に、使用する環境のサービスリミッ
 </div>
 <br>
 
+<!--
 ## サービスリミットの確認＆引上げリクエスト送信方法
 
 1. コンソール左上のメニューをクリックしてメニューを表示し、一番下までスクロールします。**ガバナンス** → **制限、割当ておよび使用状況** をクリックします。
@@ -70,7 +79,7 @@ MySQL HeatWaveを構成する前に、使用する環境のサービスリミッ
     </div>
     <br>
 
-2. サービスは **MySQL** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で **MySQL Database for HeatWave VM.Standard.E3 Nodes Count** が1以上、 **MySQL HeatWave VM.Standard.E3 Nodes Count** が2以上になっていることを確認します。
+2. サービスは **MySQL HeatWave** 、スコープは **XXXX:AP-TOKYO-1-AD-1** を選択します(東京リージョンを使用している場合)。"XXXX"部分は固有の文字列になります。表示された画面で **MySQL Database for HeatWave VM.Standard.E3 Nodes Count** が1以上、 **MySQL HeatWave VM.Standard.E3 Nodes Count** が2以上になっていることを確認します。
 
     <div align="center">
     <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
@@ -83,15 +92,22 @@ MySQL HeatWaveを構成する前に、使用する環境のサービスリミッ
     <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
     </div>
     <br>
+-->
 
 <a id="anchor3"></a>
 
-# 3. MySQL HeatWaveの構成(HeatWave用MDSの構成)
+# 3. MySQL HeatWaveの構成(HeatWave用DBシステムの構成)
 
-HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を構成し、そこにHeatWaveのノードを追加します。そのため、まずはHeatWave専用のシェイプを選択してMDSを構成します。
+---
+**2025年9月追記** <br>
+本チュートリアル作成当初のサービス仕様に沿った手順のため [MySQL HeatWaveのDBシステム作成完了後](#anchor3)に、改めて[HeatWaveクラスタを作成する](#anchor4)手順となっています。下記は旧来の手順となっていますが、[MySQL HeatWaveのDBシステム作成時](#anchor3)の**ハードウェアの構成**の項目でデフォルトで選択されている「**HeatWaveクラスタの有効化**」をそのままとし、DBシステム作成と同時にHeatWaveクラスタを作成する手順が推奨されます。
+
+---
+
+HeatWaveクラスタを構成する時は、MySQL HeatWaveのDBシステムを構成し、そこにHeatWaveのノードを追加します。
 <br>
 
-1. コンソールメニューから **データベース** → **MySQL** → **DBシステム** を選択します。
+1. コンソールメニューから **データベース** → **MySQL HeatWave** → **DBシステム** を選択します。
     <div align="center">
     <img width="700" alt="img5.png" src="img5.png" style="border: 1px black solid;">
     </div>
@@ -103,10 +119,13 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     </div>
     <br>
 
-3. 立ち上がった **MySQL DBシステムの作成** ウィンドウの **① DBシステム情報** のステップで、以下の項目を入力します。また、 **シェイプの変更** をクリックして表示されたウインドウから **MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** をクリックします。その後元のウインドウに戻って **次** ボタンを押します。
+3. 立ち上がった **DBシステムの作成** ウィンドウの **テンプレート**は「**開発またはテスト**」を選択、 **① DBシステム情報** のステップで、以下の項目を入力します。**ハードウェアの構成**の**シェイプ選択**ではデフォルトで選択されているMySQL.2を使用します。<br>
+
+    ⚠️**注意**: スクリーンショットではOCPUのシェイプである**MySQL.HeatWave.VM.Standard.E3**を使用していますが、2026年3月13日以降、すべてのOCPUシェイプが使用できなくなります。シェイプを変更する場合はECPUのシェイプを選択してください。Always Freeで利用可能なMySQL.Freeを含めた全てのECPUのシェイプがHeatWaveクラスターをサポートしています。<br>
+    ⚠️**注意**: このチュートリアルの手順通り、DBシステム作成後に別途HeatWaveクラスタを作成する場合は、**ハードウェアの構成**の**HeatWaveクラスタの有効化**の選択を外してください。<br>
 
     - **名前** - 任意の名前を入力します。ここでは「HeatWave」と入力しています。
-    - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
+    - **説明** - このDBシステムの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
     - **データ・ストレージ・サイズ(GB)** - データ用のストレージサイズを入力します。ここでは1000GB確保するために「1000」と入力しています。
 
     <div align="center">
@@ -141,7 +160,7 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
     </div>
     <br>
 
-6. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
+6. DBシステムが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
     <div align="center">
     <img width="700" alt="img12.png" src="img12.png" style="border: 1px black solid;">
     <img width="700" alt="img13.png" src="img13.png" style="border: 1px black solid;">
@@ -156,21 +175,25 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
 
 <a id="anchor4"></a>
 
-# 4. MySQL　HeatWaveの構成(HeatWaveノードの追加)
+# 4. HeatWaveクラスタの追加
 
-1. HeatWave用のMDSにHeatWaveノードを追加します。HeatWave用のMDSを選択した状態で左下のメニューより **HeatWave** をクックします。その後、**HeatWaveクラスタの追加** をボタンを押します。
+1. MySQL HeatWaveのDBシステムにHeatWaveクラスタを追加します。画面上部の**HeatWaveクラスタの追加** をボタンを押します。
     <div align="center">
     <img width="700" alt="img15.png" src="img15.png" style="border: 1px black solid;">
     </div>
     <br>
 
-2. **シェイプの変更** ボタンを押します。表示されたウインドウでHeatWave用のシェイプである**MySQL.HeatWave.VM.Standard.E3** を選択し、**シェイプの選択** ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、**HeatWaveクラスタの追加** ボタンをクリックします。
-(既にMDSにデータをロードしている状態であればここで **ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることもできます。今回はノード数は2にして次に進みます)
+2. **シェイプの選択** ボタンを押します。表示されたウインドウでHeatWaveノード用のシェイプである**HeatWave.32GB** を選択し、**シェイプの選択** ボタンを押します。元のウインドに戻ってシェイプが変更されていることを確認し、**HeatWaveクラスタの追加** ボタンをクリックします。
+(既にMySQL HeatWaveにデータをロードしている状態であればここで **ノード数の見積もり** ボタンを押すことで必要なHeatWaveノード数を見積もることもできます。今回はノード数は1にして次に進みます)
    
     <div align="center">
     <img width="700" alt="img16.png" src="img16.png" style="border: 1px black solid;">
-    <br>
-    <br>
+    <br><br>
+    </div>
+
+    ⚠️**注意**: スクリーンショットではOCPUのシェイプである**MySQL.HeatWave.VM.Standard.E3**を使用していますが、2026年3月13日以降、すべてのOCPUシェイプが使用できなくなります。シェイプを変更する場合はECPUのシェイプである**HeatWave.32GB**または**HeatWave.512GB**を選択してください。
+
+    <div align="center">
     <img width="700" alt="img17.png" src="img17.png" style="border: 1px black solid;">
     <br>
     <br>
@@ -189,10 +212,10 @@ HeatWaveを構成する時は、HeatWave専用のMySQL Database Service(MDS)を�
 
 # 5. サンプルデータベースの構築
 
-MDSにサンプルデータベースを構築し、HeatWaveノードへデータをロードします。サンプルデータベースは事前に準備してあるTPC-H用のデータを使って構築します。
+MySQL HeatWaveにサンプルデータベースを構築し、HeatWaveノードへデータをロードします。サンプルデータベースは事前に準備してあるTPC-H用のデータを使って構築します。
 (TPC-H用のデータをMySQLにロードできるダンプファイルの形式で用意しているので、そのデータをロードしてサンプルデータベースを構築します。TPC-Hは小売業の売り上げを模した汎用的なデータ分析系のベンチマークで、22本のデータ分析/集計系のSQLが用意されています)
 
-1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してハンズオン用のファイルをダウンロードし、解凍します。解凍後に存在するtpch_dumpフォルダの中に、MySQLにロードできるダンプファイルの形式でTPC-H用データが格納されています。
+1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行してハンズオン用のファイルをダウンロードし、解凍します。解凍後に存在する`tpch_dump`フォルダの中に、MySQLにロードできるダンプファイルの形式でTPC-H用データが格納されています。
 
     実行コマンド(コピー＆ペースト用)
     ```
@@ -208,8 +231,7 @@ MDSにサンプルデータベースを構築し、HeatWaveノードへデータ
     ```
     $  cd /home/opc
     $  wget https://objectstorage.ap-osaka-1.oraclecloud.com/p/seAq8Kgd4TyUqlv5M5qObMJwvsluhCPyOuHOn1L_t4HQYUle2DV-KdFeK44MS7yQ/n/idazzjlcjqzj/b/workshop/o/heatwave_workshop.zip
-e_workshop.zip
- ll--2023-05-19 05:08:55--  https://objectstorage.ap-osaka-1.oraclecloud.com/p/seAq8Kgd4TyUqlv5M5qObMJwvsluhCPyOuHOn1L_t4HQYUle2DV-KdFeK44MS7yQ/n/idazzjlcjqzj/b/workshop/o/heatwave_workshop.zip
+    e_workshop.zip
     <略>
     heatwave_workshop.zip  100%[=========================>] 332.24M  39.3MB/s    in 6.9s    
 
@@ -230,10 +252,10 @@ e_workshop.zip
     ```
     <br>
 
-2. MySQL Shellを使ってMDSに接続し、MySQL Shellのロードダンプユーティリティを使用してMDSにTHP-H用のデータをロードします。実際にデータをロードする前に、予行演習オプション(dryRun: true)を指定してエラーが出ないことを確認してから、(dryRun: false)に変えてデータをロードします。
+2. MySQL Shellを使ってMySQL HeatWaveに接続し、MySQL Shellのロードダンプユーティリティを使用してTHP-H用のデータをロードします。実際にデータをロードする前に、予行演習オプション(`dryRun: true`)を指定してエラーが出ないことを確認してから、(`dryRun: false`)に変えてデータをロードします。
 
-    実行コマンド例(コピー＆ペースト用)：MDSへの接続<br>
-    ※パスワード、ホストの(MDSの)IPアドレスは環境に合わせて要修正
+    実行コマンド例(コピー＆ペースト用)：MySQL HeatWaveへの接続<br>
+    ※パスワード、ホストの(MySQL HeatWaveの)IPアドレスは環境に合わせて要修正
     ```
     mysqlsh --user=root --password=Oracle.123 --host=<mysql_private_ip_address> --port=3306 --js
     ```
@@ -298,7 +320,7 @@ e_workshop.zip
     ```
     <br>
 
-3. mysqlコマンドラインクライアントでMDSに接続し、tpchデータベース内にテーブルが作成されていることを確認します。
+3. `mysql`コマンドラインクライアントでMySQL HeatWaveに接続し、`tpch`データベース内にテーブルが作成されていることを確認します。
 
     実行コマンド例(コピー＆ペースト用)
     ```
@@ -354,7 +376,7 @@ e_workshop.zip
     ```
     <br>
 
-4. 以下のSQLを実行してMDSでの実行時間を確認しておきます。このSQLはTPC-Hベンチマークの1つ目のSQLです。この例では、8.49秒かかりました。
+4. 以下のSQLを実行してMySQL HeatWaveでの実行時間を確認しておきます。このSQLはTPC-Hベンチマークの1つ目のSQLです。この例では、8.49秒かかりました。
 
     実行コマンド(コピー＆ペースト用)
     ```
@@ -411,13 +433,13 @@ e_workshop.zip
 
 <a id="anchor6"></a>
 
-# 6. HeatWaveへのデータロード
+# 6. HeatWaveクラスタへのデータロード
 
-HeatWaveを使用する時には、事前に対象テーブルのデータをMDSからHeatWaveにロードする必要があります。HeatWaveにデータをロードした後は、MDSでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時にのみ行う必要があります。
-(HeatWaveノードを再起動した時は、バックグラウンド処理でオブジェクトストレージ上に保存しているHeatWaveフォーマットのデータを自動的にロードするため、手動での再ロードは不要です。また、MDSからHeatWaveにロードするよりも高速にデータをロードできます)
+HeatWaveクラスタを使用する時には、事前に対象テーブルのデータをMySQL HeatWaveのDBシステムからHeatWaveクラスタにロードする必要があります。HeatWaveクラスタにデータをロードした後は、MySQL HeatWaveのDBシステムでデータを変更すると自動的に変更が伝搬されるため、この作業は新しくテーブルを作成した時や初回のデータロード時に**のみ**行う必要があります。
+(HeatWaveノードを再起動した時は、バックグラウンド処理でオブジェクトストレージ上に保存しているHeatWaveフォーマットのデータを自動的にロードするため、手動での再ロードは不要です。また、MySQL HeatWaveのDBシステムからHeatWaveにロードするよりも高速にデータをロードできます)
 <br>
 
-1. ALTER TABLE文を使い、tpchデータベース内のテーブルに対して**SECONDARY_ENGINE=RAPID** を定義します[^2]。
+1. `ALTER TABLE`文を使い、`tpch`データベース内のテーブルに対して`SECONDARY_ENGINE=RAPID` を定義します[^2]。
 
     実行コマンド(コピー＆ペースト用)
     ```
@@ -445,7 +467,7 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
     ```
     <br>
 
-2. **ALTER TABLE テーブル名 SECONDARY_LOAD;** を実行し、データをHeatWaveノードにロードします。
+2. `ALTER TABLE テーブル名 SECONDARY_LOAD;` を実行し、データをHeatWaveノードにロードします。
 
     実行コマンド(コピー＆ペースト用)
     ```
@@ -481,9 +503,9 @@ HeatWaveを使用する時には、事前に対象テーブルのデータをMDS
 
 <a id="anchor7"></a>
 
-# 7. HeatWaveの確認
+# 7. HeatWaveクラスタの確認
 
-先ほど実行したSQLを再度実行して、HeatWaveでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約65倍高速化されています。この例で検索している対象のデータ量は約900MBとそれほど大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
+先ほど実行したSQLを再度実行して、HeatWaveクラスタでの実行時間を確認します。この例では、0.13秒で実行出来ていますので、約65倍高速化されています。この例で検索している対象のデータ量は約900MBとそれほど大きくありませんが、この程度のデータ量でも顕著に性能が向上しています。
 
 実行コマンド(コピー＆ペースト用)
 ```
@@ -538,7 +560,7 @@ mysql> SELECT
 ```
 <br>
 
-なお、HeatWaveが使われるSQLかどうかは、EXPLAINで実行計画を取ることで確認出来ます。HeatWaveを使用する場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
+なお、HeatWaveクラスタが使われるSQLかどうかは、`EXPLAIN`で実行計画を取ることで確認出来ます。HeatWaveクラスタが使用される場合は **Extra列** に **Using secondary engine RAPID** と表示されます。
 
 実行コマンド(コピー＆ペースト用)
 ```
@@ -590,13 +612,13 @@ mysql> EXPLAIN SELECT
 ```
 <br>
 
-また、オプティマイザヒントを使うことで、HeatWaveを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
+また、オプティマイザヒントを使うことで、HeatWaveクラスタを使うかどうかを明示的に指定することもできます。ヒント句は以下の3種類あります。
 
-* SET_VAR(use_secondary_engine=ON) : HeatWaveを使う。HeatWaveが使えない場合(HeatWaveノードの停止時、HeatWaveにデータをロードしていない場合など)や、オプティマイザがHeatWaveを使わない方が効率的と判断した場合はMDSで処理する。
-* SET_VAR(use_secondary_engine=OFF) : HeatWaveを使わない。
-* SET_VAR(use_secondary_engine=FORCED) : 強制的にHeatWaveを使う。HeatWaveが使えない場合はSQLがエラーになる。<br>
+* `SET_VAR(use_secondary_engine=ON)` : HeatWaveクラスタを使う。HeatWaveクラスタが使えない場合(HeatWaveノードの停止時、HeatWaveクラスタにデータをロードしていない場合など)や、オプティマイザがHeatWaveクラスタを使わない方が効率的と判断した場合はMySQLサーバーで処理する。
+* `SET_VAR(use_secondary_engine=OFF)` : HeatWaveクラスタを使わない。
+* `SET_VAR(use_secondary_engine=FORCED)` : 強制的にHeatWaveクラスタを使う。HeatWaveクラスタが使えない場合はSQLがエラーになる。<br>
 
-ヒント句は以下のように、**SELECT** 句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("Unresolved name 'XXXXX' for SET_VAR hint" という警告は発生します)
+ヒント句は以下のように、`SELECT`句の後にSQL文のコメントとして埋め込んで使用します。SQL文の文法的にはコメントになっているため、スペルミスをするなどでヒント句の指定を間違ってもSQLとしてはエラーにならないので注意して下さい。("`Unresolved name 'XXXXX' for SET_VAR hint`" という警告は発生します)
 
 ```
 SELECT /*+ SET_VAR(use_secondary_engine=ON) */ l_returnflag, l_linestatus, <略>
@@ -607,7 +629,7 @@ SELECT /*+ SET_VAR(use_secondary_engine=FORCED) */ l_returnflag, l_linestatus, <
 
 これで、この章の作業は終了です。
 
-この章ではHeatWaveを構成し、サンプルデータベースを構築してMDSと性能比較をしました。サンプルデータベースの分析/集計対象データは約900MBとそれほど大きなサイズではありません。また、HeatWaveノードも1ノードで構成していますが、それでも約65倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析/集計対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります[^3]。是非、分析/集計業務で使用しているデータを対象にしてテストしてみて下さい。
+この章ではHeatWaveクラスタを構成し、サンプルデータベースを構築してMySQLサーバーで処理を行った場合とのと性能比較をしました。サンプルデータベースの分析/集計対象データは約900MBとそれほど大きなサイズではありません。また、512GBのメモリを搭載したシェイプのHeatWaveノードも1ノードで構成していますが、それでも約65倍の性能向上が確認出来ています。HeatWaveノードの数を増やすとより性能を向上させられますし、分析/集計対象のデータ量が増えたりSQLが複雑になるとより性能差が出る可能性もあります[^3]。是非、分析/集計業務で使用しているデータを対象にしてテストしてみて下さい。
 
 
 [^1]: HeatWaveのデフォルトサービスリミットは以前は0に設定されていました。新しくアカウントを作成した場合はデフォルトサービスリミットが変更されていて最初から使える状態になっていると思われますが、念のため使用している環境でサービスリミットが後述する最小構成を満たしていることを確認して下さい。
