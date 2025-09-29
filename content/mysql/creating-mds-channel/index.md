@@ -1,6 +1,6 @@
 ---
-title: "その13 - MySQL Database Serviceでレプリケーションを使用する"
-description: "MySQL Database ServiceではMySQLのレプリケーション機能も使用できます。レプリケーション(チャネル)フィルターを活用することでAmazon RDSなど他社製のMySQLマネージドサービスからレプリケーションすることもできます。レプリケーションの構成方法を確認してみましょう！"
+title: "その13 - MySQL HeatWaveでレプリケーションを使用する"
+description: "MySQL HeatWaveではMySQLのレプリケーション機能も使用できます。レプリケーション(チャネル)フィルターを活用することでAmazon RDSなど他社製のMySQLマネージドサービスからレプリケーションすることもできます。レプリケーションの構成方法を確認してみましょう！"
 weight: "130"
 images:
 - "mysql/creating-mds-readreplica/MySQLLogo_teaser.png"
@@ -9,18 +9,18 @@ tags:
 aliases: "/beginners/creating-mds-channel/"
 #link: https://oracle-japan.github.io/ocitutorials/beginners/creating-mds-readreplica/
 ---
-Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。
+Oracle Cloud Infrastructure では、MySQL HeatWaveが利用できます。MySQL HeatWaveはAlways Freeの対象となっています。トライアルアカウント作成時に付与されるクレジットでも使用可能です。
 
-このチュートリアルでは、MDSからMDSへのレプリケーションを構成することで、MDSでのレプリケーションの構成方法を確認します。MDSはソースにもレプリカにもなれますが、マネージドサービスであるが故の注意事項や制限事項もあるため、それらについても説明します。
+このチュートリアルでは、MySQL HeatWaveのノードから別のノードへのレプリケーションを構成することで、MySQL HeatWaveでのレプリケーションの構成方法を確認します。MySQL HeatWaveはソースにもレプリカにもなれますが、マネージドサービスであるが故の注意事項や制限事項もあるため、それらについても説明します。
 
 **所要時間 :** 約50分 (約20分の待ち時間含む)
 
 **前提条件 :**
 
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること
-2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../getting-started/) を完了していること
-3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../creating-vcn/) を完了していること
-4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../creating-compute-instance/) を完了していること
+2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../../beginners/getting-started/) を完了していること
+3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../../beginners/creating-vcn/) を完了していること
+4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../../beginners/creating-compute-instance/) を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
 <br>
@@ -29,9 +29,9 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 
 - [1. レプリケーションとは?](#anchor1)
 - [2. 本チュートリアルで作成する構成の構成図](#anchor2)
-- [3. MDSの作成(ソース用のMDS、レプリカ用のMDS)](#anchor3)
-- [4. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)](#anchor4)
-- [5. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート](#anchor5)
+- [3. MySQL HeatWaveの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)](#anchor3)
+- [4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)](#anchor4)
+- [5. ソース用MySQL HeatWaveのデータをダンプし、レプリカ用MySQL HeatWaveへインポート](#anchor5)
 - [6. レプリケーションチャンネルの設定](#anchor6)
 - [7. レプリケーションの動作確認](#anchor7)
 - [8. レプリケーションフィルター(チャネルフィルター)の設定＆動作確認](#anchor8)
@@ -43,18 +43,18 @@ Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用でき�
 
 # 1. レプリケーションとは?
 
-レプリケーションはMySQLで非常に人気が高い機能で、ソースサーバーでの更新内容をレプリカサーバーに伝播できます。レプリケーションは主に高可用性や負荷分散を実現するために利用されます。
+レプリケーションはMySQLで非常に人気が高い機能で、ソースサーバーでの更新内容をレプリカサーバーに伝播できます。レプリケーションは主に高可用性や負荷分散、災害対策を実現するために利用されます。
 
-MDSは、レプリケーションを利用してソースになることもレプリカになることもできます。MDSがソースになる場合のレプリケーションを[アウトバウンドレプリケーション](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/outbound-replication.html)、MDSがレプリカになる場合のレプリケーションを[インバウンドレプリケーション](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/inbound-replication.html)と言います。それぞれの詳細についてはドキュメントを参照して下さい。
+MySQL HeatWaveは、レプリケーションを利用してソースになることもレプリカになることもできます。MySQL HeatWaveがソースになる場合のレプリケーションを[アウトバウンドレプリケーション](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/outbound-replication.html)、MySQL HeatWaveがレプリカになる場合のレプリケーションを[インバウンドレプリケーション](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/inbound-replication.html)と言います。それぞれの詳細についてはドキュメントを参照して下さい。
 
 なお、インバウンドレプリケーションでは、以下の制限事項があります。
 
   - 行ベースレプリケーションのみサポート
   - 非同期レプリケーションのみサポート
   - シングルソースレプリケーションのみサポート
-  - mysqlスキーマに対する更新処理はレプリケーションできない
+  - `mysql`スキーマに対する更新処理はレプリケーションできない
 
-また、HA構成のMDSではインバウンドレプリケーションを構成できませんが、シングル構成のMDSでインバウンドレプリケーションを構成後、そのMDSをHA構成に変更することでHA構成のMDSでもインバウンドレプリケーションを使用できます。
+また、HA構成のMySQL HeatWaveではインバウンドレプリケーションを構成できませんが、シングル構成のMySQL HeatWaveでインバウンドレプリケーションを構成後、そのMySQL HeatWaveをHA構成に変更することでHA構成のMySQL HeatWaveでもインバウンドレプリケーションを使用できます。
 <br>
 <br>
 
@@ -71,22 +71,23 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 <a id="anchor3"></a>
 
-# 3. MDSの作成(ソース用のMDS、レプリカ用のMDS)
+# 3. MySQL HeatWaveの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)
+⚠️**注意**: DBシステム作成時に**ハードウェアの構成**での「**HeatWaveクラスタの有効化**」はオフにしておいてください。
 
-1. ソース用のMDSを作成します。[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の手順に従って「Source」という名前でソース用のMDSを作成します。「2. MDSの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMDSの確認」まで実行し、worldデータベース、world_xデータベースも作成しておきます。
+1. ソース用のMySQL HeatWaveのDBシステムを作成します。[クラウドでMySQLデータベースを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の手順に従って「**Source**」という名前でソース用のMySQL HeatWaveを作成します。「2. MySQL HeatWaveのDBシステムの作成」だけでなく、「3. セキュリティリストの修正(イングレス・ルールの追加)」、「4. MySQLクライアントのインストール」、「5. 作成したMySQL HeatWaveのDBシステムの確認」まで実行し、`world`データベース、`world_x`データベースも作成しておきます。
 
-2. レプリカ用のMDSを作成します。[クラウドでMySQL Databaseを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の「2. MDSの作成」の手順に従って「Replica」という名前でレプリカ用のMDSを作成します。
-(「2. MDSの作成」より後の手順は実行不要です)
+2. レプリカ用のMySQL HeatWaveのDBシステムを作成します。[クラウドでMySQLデータベースを使う - Oracle Cloud Infrastructureを使ってみよう(その9)](../creating-mds/) の「2. MySQL HeatWaveのDBシステムの作成」の手順に従って「**Replica**」という名前でレプリカ用のMySQL HeatWaveを作成します。
+(「2. MySQL HeatWaveのDBシステムの作成」」より後の手順は実行不要です)
 
 <br>
 
 <a id="anchor4"></a>
 
-# 4. レプリケーション用ユーザーの作成(ソース用のMDS、レプリカ用のMDS)
+# 4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)
 
-1. レプリケーション用のユーザーを作成し、REPLICATION SLAVE権限を付与します。以下の操作は、ソース用のMDS、レプリカ用のMDSの両方で実行します。
+1. レプリケーション用のユーザーを作成し、`REPLICATION SLAVE`権限を付与します。以下の操作は、ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWaveの両方で実行します。
 
-    実行コマンド例(コピー＆ペースト用：Source 及び Replica で実行)
+    実行コマンド例(コピー＆ペースト用：**Source** 及び **Replica** で実行)
     ```
     CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
     ```
@@ -95,7 +96,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     GRANT REPLICATION SLAVE on *.* to 'rpl'@'%';
     ```
 
-    実行例 (Source 及び Replica で実行)
+    実行例 (**Source** 及び **Replica** で実行)
     ```
     mysql> CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
     Query OK, 0 rows affected (0.00 sec)
@@ -107,11 +108,11 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 <a id="anchor5"></a>
 
-# 5. ソース用MDSのデータをダンプし、レプリカ用MDSへインポート
+# 5. ソース用MySQL HeatWaveのデータをダンプし、レプリカ用MySQL HeatWaveへインポート
 
 レプリケーションを構成する前に、ソース用のDBとレプリカ用のDBを同じ状態にします。このチュートリアルでは、ソース用DBのデータを[MySQL Shellのデータダンプユーリティティ](https://dev.mysql.com/doc/mysql-shell/8.0/ja/mysql-shell-utilities-dump-instance-schema.html)を使用してダンプし、それをレプリカ用DBにインポートします。
 
-1. ソース用のMDSにMySQL Shellを使用して接続し、インスタンスダンプユーリティティを使用してデータをダンプします。MDSにデータをインポートするためには、MDSとの互換性を確保したダンプファイルを取得する必要があるため、ocimdsオプションをtrueにしてデータをダンプします。また、dryRunオプションをtrueにすることでダンプは取得せずにMDSとの互換性チェックの結果を表示できるため、まずはこれらのオプションをtrueにしてインスタンスダンプユーティリティを実行します。
+1. ソース用のMySQL HeatWaveにMySQL Shellから接続し、インスタンスダンプユーリティティを使用してデータをダンプします。MySQL HeatWaveにデータをインポートするためには、MySQL HeatWaveとの互換性を確保したダンプファイルを取得する必要があるため、`ocimds`オプションを`true`にしてデータをダンプします。また、`dryRun`オプションを`true`にすることでダンプは取得せずにMySQL HeatWaveとの互換性チェックの結果を表示できるため、まずはこれらのオプションを`true`にしてインスタンスダンプユーティリティを実行します。
 
     実行コマンド例(コピー＆ペースト用)
     ```
@@ -122,7 +123,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     util.dumpInstance("/home/opc/mds", {dryRun: true, ocimds: true})
     ```
 
-    実行例：MySQL Shellを使ってソースのMDSに接続
+    実行例：MySQL Shellを使ってソースのMySQL HeatWaveに接続
     ```
     [opc@testvm1 ~]$ mysqlsh -u root -p -h Source.sub01311142371.tutorialvcn.oraclevcn.com
     MySQL Shell 8.0.32
@@ -139,7 +140,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     No default schema selected; type \use <schema> to set one.
     ```
 
-    実行例：インスタンスダンプユーティリティを実行 (Source で実行)
+    実行例：インスタンスダンプユーティリティを実行 (**Source** で実行)
     ```
      JS > util.dumpInstance("/home/opc/mds", {dryRun: true, ocimds: true})
     dryRun enabled, no locks will be acquired and no files will be created.
@@ -164,18 +165,18 @@ MDSは、レプリケーションを利用してソースになることもレ�
     Util.dumpInstance: While 'Validating MDS compatibility': Compatibility issues were found (MYSQLSH 52004)
     ```
 
-    ERRORが4つ出力されていますが、いずれもMDSでユーザーに付与できない権限が付与されたユーザーが存在することが原因です。本チュートリアルにの手順では、ユーザー情報はインポートする必要がないため、表示されているメッセージ「fix this with 'strip_restricted_grants' compatibility option」に従い、compatibilityに'strip_restricted_grants'を指定して回避します。
+    `ERROR`が4つ出力されていますが、いずれもMySQL HeatWaveでユーザーに付与できない権限が付与されたユーザーが存在することが原因です。本チュートリアルにの手順では、ユーザー情報はインポートする必要がないため、表示されているメッセージ「`fix this with 'strip_restricted_grants' compatibility option`」に従い、`compatibility`に'`strip_restricted_grants`'を指定して回避します。
     <br>
 
-2. 先ほど実行したコマンドにcompatibilityオプションを追加し、'strip_restricted_grants'を指定します。また、dryRunオプションをfalseにして実行します。
+2. 先ほど実行したコマンドに`compatibility`オプションを追加し、'`strip_restricted_grants`'を指定します。また、`dryRun`オプションを`false`にして実行します。
 
-    実行コマンド(コピー＆ペースト用：Source で実行)
+    実行コマンド(コピー＆ペースト用：**Source** で実行)
     ```
     util.dumpInstance("/home/opc/mds", {ocimds: true, compatibility: ["strip_restricted_grants"]})
     \quit
     ```
 
-    実行例 (Source で実行)
+    実行例 (**Source** で実行)
     ```
      JS > util.dumpInstance("/home/opc/mds", {ocimds: true, compatibility: ["strip_restricted_grants"]})
     Acquiring global read lock
@@ -223,7 +224,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 3. "/home/opc/mds"配下にダンプされたファイルが出力されていることを確認後、ダンプロードユーティリティをレプリカサーバーで実行するために、MySQL Shellを使ってレプリカサーバーに接続します。
 
-    実行コマンド例(コピー＆ペースト用：TestVM1 で実行)
+    実行コマンド例(コピー＆ペースト用：**TestVM1** で実行)
     ```
     ls mds
     ```
@@ -232,7 +233,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     mysqlsh -u root -p -h Replica.sub01311142371.tutorialvcn.oraclevcn.com
     ```
 
-    実行例 (TestVM1 で実行)
+    実行例 (**TestVM1** で実行)
     ```
     [opc@testvm1 ~]$ ls mds
     @.done.json                           world_x@city@@0.tsv.zst
@@ -271,14 +272,14 @@ MDSは、レプリケーションを利用してソースになることもレ�
     ```
     <br>
 
-4. ダンプロードユーティリティを使って、レプリカサーバーにデータをインポートします。今回の手順ではユーザー情報はインポートする必要がないため、loadUsersオプションはfalseに設定して実行します。また、ダンプ取得時のソースサーバーのGTIDをレプリカサーバーに設定するためにupdateGtidSetオプションを"append"にして実行します。
+4. ダンプロードユーティリティを使って、レプリカサーバーにデータをインポートします。今回の手順ではユーザー情報はインポートする必要がないため、`loadUsers`オプションは`false`に設定して実行します。また、ダンプ取得時のソースサーバーのGTIDをレプリカサーバーに設定するために`updateGtidSet`オプションを"`append`"にして実行します。
 
-    実行コマンド(コピー＆ペースト用：Replica で実行)
+    実行コマンド(コピー＆ペースト用：**Replica** で実行)
     ```
     util.loadDump("/home/opc/mds", {loadUsers: false, updateGtidSet: "append"});
     ```
 
-    実行例 (Replica で実行)
+    実行例 (**Replica** で実行)
     ```
      JS > util.loadDump("/home/opc/mds", {loadUsers: false, updateGtidSet: "append"});
     Loading DDL and Data from '/home/opc/mds' using 4 threads.
@@ -301,7 +302,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 5. MySQL ShellをSQLモードに変更し、レプリカサーバーにデータがインポートされたことを確認します。
 
-    実行コマンド(コピー＆ペースト用：Replica で実行)
+    実行コマンド(コピー＆ペースト用：**Replica** で実行)
     ```
     \sql
     ```
@@ -326,7 +327,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     SHOW TABLES;
     ```
 
-    実行例 (Replica で実行)
+    実行例 (**Replica** で実行)
     ```
      JS > \sql
     Switching to SQL mode... Commands end with ;
@@ -375,7 +376,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 # 6. レプリケーションチャンネルの設定
 
-1. コンソールからレプリカ用のMDS(Replica)の詳細にアクセス後、左下の**チャネル**をクリックします。その後、**チャネルの作成**をクリックします。
+1. コンソールからレプリカ用のMySQL HeatWave(**Replica**)のDBシステムの詳細にアクセス後、左下の**チャネル**をクリックします。その後、**チャネルの作成**をクリックします。
 
     <div align="center">
     <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
@@ -390,9 +391,9 @@ MDSは、レプリケーションを利用してソースになることもレ�
 2. 表示された「チャネルの作成」画面で、以下の項目を入力後、「チャネルの作成」をクリックします。
 
     - **名前** - 任意の名前を入力します。ここでは「TestChannel」と入力しています。
-    - **ホスト名** - ソースのMDSのホスト名(内部FQDN)もしくはプライベートIPアドレスを入力します。
-    - **ユーザー名** - ソースのMDSに作成したレプリケーション用ユーザー名を入力します。ここでは「rpl」を入力しています。
-    - **パスワード**、**パスワードの確認** - ソースのMDSに作成したレプリケーション用ユーザーのパスワードを入力します。
+    - **ホスト名** - ソースのMySQL HeatWaveのホスト名(内部FQDN)もしくはプライベートIPアドレスを入力します。
+    - **ユーザー名** - ソースのMySQL HeatWaveに作成したレプリケーション用ユーザー名を入力します。ここでは「rpl」を入力しています。
+    - **パスワード**、**パスワードの確認** - ソースのMySQL HeatWaveに作成したレプリケーション用ユーザーのパスワードを入力します。
 
     <div align="center">
     <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
@@ -424,11 +425,11 @@ MDSは、レプリケーションを利用してソースになることもレ�
 <a id="anchor7"></a>
 
 # 7. レプリケーションの動作確認
-ソース用のMDSで更新処理を実行し、レプリカ用のMDSに反映されることを確認します。
+ソース用のMySQL HeatWaveで更新処理を実行し、レプリカ用のMySQL HeatWaveに反映されることを確認します。
 
-1. ソース用のMDSにmysqlコマンドラインクライアントを使用して接続し、testデータベース、test.testテーブルを作成し、データをINSERTします。その後、レプリカ用のMDSでtest.testテーブルが存在することを確認し、INSERTされたデータがSELECTできることを確認します。以下の実行例ではそれぞれのMDSでの操作をまとめて掲載していますが、コンソールを2つ開いてそれぞれSourceとReplicaに接続し、1ステップずつ実行することで、各ステップ毎にリードレプリカに処理内容がレプリケーションされていることが確認できます。
+1. ソース用のMySQL HeatWaveに`mysql`コマンドラインクライアントから接続し、`test`データベース、`test.test`テーブルを作成し、データを追加します。その後、レプリカ用のMySQL HeatWaveで`test.test`テーブルが存在することを確認し、追加されたデータが参照できることを確認します。以下の実行例ではそれぞれのMySQL HeatWaveでの操作をまとめて掲載していますが、コンソールを2つ開いてそれぞれ**Source**と**Replica**に接続し、1ステップずつ実行することで、各ステップ毎にリードレプリカに処理内容がレプリケーションされていることが確認できます。
 
-    実行コマンド(コピー＆ペースト用：Source で実行)
+    実行コマンド(コピー＆ペースト用：**Source** で実行)
     ```
     CREATE DATABASE rpl;
     ```
@@ -445,7 +446,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     SELECT * FROM rpl.test;
     ```
 
-    実行コマンド(コピー＆ペースト用：Replica で実行)
+    実行コマンド(コピー＆ペースト用：**Replica** で実行)
     ```
     SHOW DATABASES;
     ```
@@ -463,7 +464,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     ```
     <br>
 
-    実行例 (Source で実行)
+    実行例 (**Source** で実行)
     ```
     mysql> CREATE DATABASE rpl;
     Query OK, 1 row affected (0.01 sec)
@@ -527,7 +528,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
 # 8. レプリケーションフィルター(チャネルフィルター)の設定
 レプリケーションフィルター(チャネルフィルター)を設定し、特定のデータベース/テーブルのみレプリケーションできることを確認します。まずはレプリケーションフィルターを設定します。
 
-1. コンソールからレプリカ用のMDS(Replica)の詳細にアクセス後、左下の**チャネル**をクリックします。その後、**TestChannel**をクリックします。
+1. コンソールからレプリカ用のMySQL HeatWave(**Replica**)のDBシステムの詳細にアクセス後、左下の**チャネル**をクリックします。その後、**TestChannel**をクリックします。
 
     <div align="center">
     <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
@@ -583,11 +584,11 @@ MDSは、レプリケーションを利用してソースになることもレ�
 <a id="anchor9"></a>
 
 # 9. レプリケーションフィルター(チャネルフィルター)の動作確認
-上記ステップで設定したレプリケーションフィルター(チャネルフィルター)の動作を確認します。REPLICATE_DO_DATABASEにworldデータベースを指定しているため、worldデータベースに対する更新のみがレプリケーションされることを確認します。
+上記ステップで設定したレプリケーションフィルター(チャネルフィルター)の動作を確認します。`REPLICATE_DO_DATABASE`に`world`データベースを指定しているため、`world`データベースに対する更新のみがレプリケーションされることを確認します。
 
-1. ソース用のMDS(Source)に接続してrpl.testテーブルを更新し、その更新内容がレプリカ用のMDS(Replica)に伝播されないことを確認します。
+1. ソース用のMySQL HeatWave(**Source**)に接続して`rpl.test`テーブルを更新し、その更新内容がレプリカ用のMySQL HeatWave(**Replica**)に伝播されないことを確認します。
 
-    実行コマンド(コピー＆ペースト用：Source で実行)
+    実行コマンド(コピー＆ペースト用：**Source** で実行)
     ```
     UPDATE rpl.test SET col1='FILTER' WHERE id=1;
     ```
@@ -596,13 +597,13 @@ MDSは、レプリケーションを利用してソースになることもレ�
     SELECT * FROM rpl.test;
     ```
 
-    実行コマンド(コピー＆ペースト用：Replica で実行)
+    実行コマンド(コピー＆ペースト用：**Replica** で実行)
     ```
     SELECT * FROM rpl.test;
     ```
     <br>
 
-    実行例(Source で実行)
+    実行例(**Source** で実行)
     ```
     mysql> UPDATE rpl.test SET col1='FILTER' WHERE id=1;
     Query OK, 1 row affected (0.00 sec)
@@ -617,7 +618,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     1 row in set (0.00 sec)
     ```
 
-    実行例(Replica で実行)
+    実行例(**Replica** で実行)
     ```
     mysql> SELECT * FROM rpl.test;
     +----+------+
@@ -629,9 +630,9 @@ MDSは、レプリケーションを利用してソースになることもレ�
     ```
     <br>
 
-2. ソース用のMDS(Source)に接続してworld.cityテーブルを更新し、その更新内容がレプリカ用のMDS(Replica)に伝播されることを確認します。
+2. ソース用のMySQL HeatWave(**Source**)に接続して`world.city`テーブルを更新し、その更新内容がレプリカ用のMySQL HeatWave(**Replica**)に伝播されることを確認します。
 
-    実行コマンド(コピー＆ペースト用：Source で実行)
+    実行コマンド(コピー＆ペースト用：**Source** で実行)
     ```
     SELECT * FROM world.city WHERE ID=1538;
     ```
@@ -644,7 +645,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     SELECT * FROM world.city WHERE ID=1538;
     ```
 
-    実行コマンド(コピー＆ペースト用：Replica で実行)
+    実行コマンド(コピー＆ペースト用：**Replica** で実行)
     ```
     SELECT * FROM world.city WHERE ID=1538;
     ```
@@ -654,7 +655,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     ```
     <br>
 
-    実行例(Source で実行)
+    実行例(**Source** で実行)
     ```
     mysql> SELECT * FROM world.city WHERE ID=1538;
     +------+------+-------------+----------+------------+
@@ -677,7 +678,7 @@ MDSは、レプリケーションを利用してソースになることもレ�
     1 row in set (0.00 sec)
     ```
 
-    実行例(Replica で実行)
+    実行例(**Replica** で実行)
     ```
     mysql> SELECT * FROM world.city WHERE ID=1538;
     +------+------+-------------+----------+------------+
@@ -700,12 +701,12 @@ MDSは、レプリケーションを利用してソースになることもレ�
 
 これで、この章の作業は終了です。
 
-この章では、MDS同士でレプリケーションを構成し、ソースのMDSでの更新内容がレプリカのMDSに反映されることを確認しました。また、レプリケーション(チャネル)フィルターを活用してレプリケーション対象DBを限定し、特定のDBに対してのみレプリケーションできることも確認しました。(テーブルを限定するなど、他にも指定できるフィルタリングルールがあります)
+この章では、MySQL HeatWave同士でレプリケーションを構成し、ソースのMySQL HeatWaveでの更新内容がレプリカのMySQL HeatWaveに反映されることを確認しました。また、レプリケーション(チャネル)フィルターを活用してレプリケーション対象DBを限定し、特定のDBに対してのみレプリケーションできることも確認しました。(テーブルを限定するなど、他にも指定できるフィルタリングルールがあります)
 
-MDS同士のレプリケーションはリードレプリカの制限事項を回避するために使用することもできますが、レプリカ側のMDSを参照専用に設定できないことに注意して下さい。<br>
-(MDSでは、RESET MASTER文を実行できないなど、マネージドサービスであることに依存した制限事項が他にもいくつかあります)
+MySQL HeatWave同士のレプリケーションはリードレプリカの制限事項を回避するために使用することもできますが、レプリカ側のMySQL HeatWaveを参照専用に設定できないことに注意して下さい。<br>
+(MySQL HeatWaveでは、`RESET MASTER`文を実行できないなど、マネージドサービスであることに依存した制限事項が他にもいくつかあります)
 
-他にも、インバウンドレプリケーションを構成して、オンプレミス環境や他社製のMySQLマネージドサービスからレプリケーションを構成し、MySQL HeatWaveを活用して高速にデータを分析することもできます。<br>
-(MySQL HeatWaveについては、[MySQLで高速分析を体験する - Oracle Cloud Infrastructureを使ってみよう(その10)](../getting-started/)を参照して下さい)
+他にも、インバウンドレプリケーションを構成して、オンプレミス環境や他社製のMySQLマネージドサービスからレプリケーションを構成し、HeatWaveクラスタを活用して高速にデータを分析することもできます。<br>
+(HeatWaveクラスタについては、[MySQL HeatWaveで高速分析を体験する - Oracle Cloud Infrastructureを使ってみよう(その10)](../creating-HeatWave/)を参照して下さい)
 
-このようにレプリケーション機能は色々な活用方法があります。MDSのレプリケーション機能も是非活用して下さい。
+このようにレプリケーション機能は色々な活用方法があります。MySQL HeatWaveのレプリケーション機能も是非活用して下さい。

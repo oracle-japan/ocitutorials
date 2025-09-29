@@ -9,48 +9,48 @@ tags:
 aliases: "/beginners/creating-mds/"
 #link: https://oracle-japan.github.io/ocitutorials/beginners/creating-mds/
 ---
-Oracle Cloud Infrastructure では、MySQL Database Service(MDS)が利用できます。MDSはAlways Freeの対象ではないため、使用するためにはクレジットが必要ですが、トライアルアカウント作成時に付与されるクレジットでも使用可能です。
+Oracle Cloud Infrastructureでは、MySQL HeatWaveが利用できます。MySQL HeatWaveはAlways Freeの対象となっています。トライアルアカウント作成時に付与されるクレジットでも使用可能です。
 
-このチュートリアルでは、コンソール画面からMDSのサービスを1つ作成し、コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールして、クライアントからMDSへ接続する手順を説明します。
+このチュートリアルでは、コンソール画面からMySQL HeatWaveのDBシステムを1つ作成し、コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールして、クライアントからMySQL HeatWaveへ接続する手順を説明します。
 
 **所要時間 :** 約25分 (約15分の待ち時間含む)
 
 **前提条件 :**
 
 1. Oracle Cloud Infrastructure の環境(無料トライアルでも可) と、管理権限を持つユーザーアカウントがあること
-2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../getting-started/) を完了していること
-3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../creating-vcn/) を完了していること
-4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../creating-compute-instance/) を完了していること
+2. [OCIコンソールにアクセスして基本を理解する - Oracle Cloud Infrastructureを使ってみよう(その1)](../../beginners/getting-started/) を完了していること
+3. [クラウドに仮想ネットワーク(VCN)を作る - Oracle Cloud Infrastructureを使ってみよう(その2)](../../beginners/creating-vcn/) を完了していること
+4. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](../../beginners/creating-compute-instance/) を完了していること
 
 **注意 :** チュートリアル内の画面ショットについては Oracle Cloud Infrastructure の現在のコンソール画面と異なっている場合があります。
 <br>
 
 **目次：**
 
-- [1. MySQL Database Service(MDS)とは?](#anchor1)
-- [2. MDSの作成](#anchor2)
+- [1. MySQL HeatWaveとは?](#anchor1)
+- [2. MySQL HeatWaveのDBシステムの作成](#anchor2)
 - [3. セキュリティリストの修正(イングレス・ルールの追加)](#anchor3)
 - [4. MySQLクライアント、MySQL Shellのインストール](#anchor4)
-- [5. 作成したMDSの確認](#anchor5)
+- [5. 作成したMySQL HeatWaveのDBシステムの確認](#anchor5)
 <br>
 <br>
 
 <a id="anchor1"></a>
 
-# 1. MySQL Database Service(MDS)とは?
+# 1. MySQL HeatWaveとは?
 
-MySQL Database Service(MDS)は、MySQL開発チームによるMySQLのマネージドサービスです。オンプレミスのMySQLと100%の互換性があり、MySQL開発ベンダーであるオラクル社からのサポートも受けられます。
+MySQL HeatWaveは、MySQL開発チームによるMySQLのマネージドサービスです。オンプレミスのMySQLと互換性があり、MySQL開発ベンダーであるオラクル社からのサポートも受けられます。
 
-MDSではセキュリティの観点から、パブリックIPアドレスを持てない仕様になっています。そのため、このチュートリアルでは、別途コンピュート・インスタンスにMySQLクライアントをインストールして、コンピュート・インスタンス上のクライアントからMDSへ接続する手順まで説明します。
+MySQL HeatWaveではセキュリティの観点から、パブリックIPアドレスを持てない仕様になっています。そのため、このチュートリアルでは、別途コンピュート・インスタンスにMySQLクライアントをインストールして、コンピュート・インスタンス上のクライアントからMySQL HeatWaveへ接続する手順まで説明します。
 <br>
 
 <a id="anchor2"></a>
 
-# 2. MDSの作成
+# 2. MySQL HeatWaveのDBシステムの作成
 
-MDSを作成します。本チュートリアルではデフォルトの構成でMDSを作成していますが、シェイプやストレージサイズ、バックアップ設定などをカスタマイズすることも可能です。
+MySQL HeatWaveのDBシステムを作成します。本チュートリアルではデフォルトの構成でMySQL HeatWaveを作成していますが、シェイプやストレージサイズ、バックアップ設定などをカスタマイズすることも可能です。
 
-1. コンソールメニューから **データベース** → **MySQL** → **DBシステム** を選択します。
+1. コンソールメニューから **データベース** → **MySQL HeatWave** → **DBシステム** を選択します。
     <div align="center">
     <img width="700" alt="img1.png" src="img1.png" style="border: 1px black solid;">
     </div>
@@ -62,16 +62,16 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     </div>
     <br>
 
-    ※ MySQL Database Serviceを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。必要なポリシーは **前提条件** 部分で説明されているように、ポリシー・ビルダー・テンプレートを使用して作成できます。なお、Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。
+    ※ MySQL HeatWaveを利用するためにはOCIユーザーに適切なポリシーを設定する必要があります。必要なポリシーは **前提条件** 部分で説明されているように、ポリシー・ビルダー・テンプレートを使用して作成できます。なお、Administratorsグループに所属するユーザーはこれらのポリシーも満たしているため、本チュートリアルでは、このポリシーの設定手順は割愛しています。
     <div align="center">
     <img width="700" alt="img3.png" src="img3.png" style="border: 1px black solid;">
     </div>
     <br>
 
-3. 立ち上がった **DBシステムの作成** ウィンドウで「Development or testing(開発もしくはテスト)」を選択した後で、以下の項目を入力します。なお、「本番」と「Development or testing(開発もしくはテスト)」では、デフォルトで設定される値に違いがあります。詳細は、各項目にマウスオーバーすることで表示されます。
+3. 立ち上がった **DBシステムの作成** ウィンドウで「開発またはテスト」を選択した後で、以下の項目を入力します。なお、「本番」と「開発またはテスト」では、デフォルトで設定される値に違いがあります。詳細は、各項目にマウスオーバーすることで表示されます。
 
     - **名前** - 任意の名前を入力します。ここでは「TestMDS」と入力しています。
-    - **説明** - このMDSの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
+    - **説明** - このMySQL HeatWaveの説明を入力します。ここでは「ハンズオン用」と入力しています。(入力は任意です)
 
     <div align="center">
     <img width="700" alt="img4.png" src="img4.png" style="border: 1px black solid;">
@@ -99,41 +99,47 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
     
     また、以下の項目は必要に応じて変更します。
     
-    - **「スタンドアロン」、「高可用性」、「HeatWave」** - MDSを1台のみで構成する場合は「スタンドアロン」を選択します。MDSを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3台のMDSが構成されます。<br> 「HeatWave」については、「[その10 - MySQLで高速分析を体験する](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)」を参考にして下さい。
+    - **「スタンドアロン」、「高可用性」** - MySQL HeatWaveを1台のみで構成する場合は「スタンドアロン」を選択します。MySQL HeatWaveを高可用性構成で構成する場合は「高可用性」を選択します。「高可用性」を選択した場合、グループ・レプリケーションによる高可用性構成が組まれるため、内部的には3つのインスタンスのMySQL HeatWaveが構成されます。<br> <!--「HeatWave」については、「[その10 - MySQLで高速分析を体験する](https://oracle-japan.github.io/ocitutorials/beginners/creating-HeatWave/)」を参考にして下さい。 -->
     - **配置の構成** - 可用性ドメイン(AD)、フォルト・ドメイン(FD)を指定できます。<br>(現時点で東京リージョン、大阪リージョンは、ADが1つだけであるため、AD2、AD3は選択できません)
-    - **ハードウェアの構成** - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。サポートされているシェイプについては、[こちら](https://docs.oracle.com/en-us/iaas/mysql-database/doc/supported-shapes.html)のドキュメントを参照して下さい。また、「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。
-    - **Configure backup plan(バックアップの構成)**
-      - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMDSのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されていますが、1日〜35日の間で任意の日数に変更できます。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。<br>
-      MDSのバックアップの詳細については[こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/backing-db-system.html)のドキュメントを参照して下さい。
-      - 「ポイント・イン・タイム・リストアを有効にします」にチェックが入っていない場合は、障害発生時にバックアップ取得時点にしか復旧できません(バックアップのリストアしかできません)。バックアップ取得以降に更新されたデータを復元する必要がある場合は、チェックをつけたままにして下さい。
-      - 「Select backup window」にチェックを入れることで、自動バックアップの取得時間帯を指定できます。時間はUTCで指定することに注意して下さい。
+    - **ハードウェアの構成** - 使用するシェイプや構成を選択できます。 <br>
+      - ⚠️「**HeatWaveクラスタの有効化**」をオンにしておくと、[OCIチュートリアル その10の5.の項目から](https://oracle-japan.github.io/ocitutorials/mysql/creating-HeatWave/#5-サンプルデータベースの構築)で解説しているHeatWaveクラスタを使用した分析処理の高速化が可能です。<br>
+      ここではチェックを外して**オフ**にしておいてください。<br>なお[OCIチュートリアル その10](https://oracle-japan.github.io/ocitutorials/mysql/creating-HeatWave/)の情報は古いため後日更新予定です。　<br>
+      - 「シェイプの変更」をクリックして、より高スペックなシェイプを選択できます。サポートされているシェイプについては、[こちら](https://docs.oracle.com/en-us/iaas/mysql-database/doc/supported-shapes.html)のドキュメントを参照して下さい。<br>
+          ⚠️**注意**: スクリーンショットではOCPUのシェイプであるMySQL.VM.Standard.E3.1.8GBを使用していますが、2026年3月13日以降、すべてのOCPUシェイプが使用できなくなります。シェイプを変更する場合はECPUのシェイプを選択してください。<br>
+      - 「データ・ストレージ・サイズ(GB)」部分でストレージサイズを変更できます。ストレージサイズは後から拡張もできます。
+    - **バックアップ・プランの構成**
+      - 「自動バックアップの有効化」にチェックが入っている場合、1日に1回自動的にMySQL HeatWaveのバックアップが取得されます。バックアップは、バックアップウインドウで設定した時間に取得されます。デフォルトの自動バックアップ保持期間は7日に設定されていますが、1日〜35日の間で任意の日数に変更できます。また、自動バックアップ以外に、任意のタイミングで手動でバックアップを取得することもできます。<br>
+      MySQL HeatWaveのバックアップの詳細については[こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/backing-db-system.html)のドキュメントを参照して下さい。
+      - 「ポイント・イン・タイム・理科b李を有効にします」にチェックが入っていない場合は、障害発生時にバックアップ取得時点にしか復旧できません(バックアップのリストアしかできません)。バックアップ取得以降に更新されたデータを復元する必要がある場合は、チェックをつけたままにして下さい。
+      - 「バックアップ・ウィンドウの選択」にチェックを入れることで、自動バックアップの取得時間帯を指定できます。時間はUTCで指定することに注意して下さい。
  
     <br>
     以下は「拡張オプションの表示」をクリック後に表示されるメニューです。<br>
-    拡張オプションの詳細については[こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/advanced-options.html)のドキュメントを参照して下さい。
+
+    拡張オプションの詳細については [こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/advanced-options.html) のドキュメントを参照して下さい。
 
     - **削除プラン**
-      - 「削除保護」にチェックを入れると、この設定を変更するまでMDSを削除できなくなります(コンソール上から「削除」のメニューがグレーアウトされます)。
-      - 「自動バックアップの保持」にチェックを入れると、このMDSを削除する時にそれまでに取得されていた自動バックアップを保持できます。チェックを入れていない場合は、MDS削除時に紐づいている自動バックアップは削除されます。
-      - 「最終バックアップが必要」にチェックを入れると、このMDSを削除する時に自動的にバックアップが取得されます。
+      - 「削除保護」にチェックを入れると、この設定を変更するまでMySQL HeatWaveを削除できなくなります(コンソール上から「削除」のメニューがグレーアウトされます)。
+      - 「自動バックアップの保持」にチェックを入れると、このMySQL HeatWaveを削除する時にそれまでに取得されていた自動バックアップを保持できます。チェックを入れていない場合は、MySQL HeatWave削除時に紐づいている自動バックアップは削除されます。
+      - 「最終バックアップが必要」にチェックを入れると、このMySQL HeatWaveを削除する時に自動的にバックアップが取得されます。
     - **構成**
-      - 「構成の選択」をクリックすることで、任意の構成を適用できます。事前に[構成](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/configuration-db-system.html#GUID-3EFF43B9-C85A-457D-BB43-300C8DD5FEDB)を作成することで、MDSで変更可能なパラメータを変更できます。
-      - 「MySQLバージョンを選択」から、任意のMySQLのマイナーバージョンを選択できます。(コンソール上に3バージョン以上表示されている場合がありますが) 現在のMDSでは、最新2マイナーバージョンのみがサポートされ、サポート対象外になったMDSは自動アップグレードされる仕様になっているため、ご注意下さい。MDSの自動アップグレードについては[こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/mysql-server-upgrades.html)を参照下さい。
+      - 「構成の選択」をクリックすることで、任意の構成を適用できます。事前に[構成](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/configuration-db-system.html#GUID-3EFF43B9-C85A-457D-BB43-300C8DD5FEDB)を作成することで、MySQL HeatWaveで変更可能なパラメータを変更できます。
+      - 「MySQLバージョンを選択」から、任意のMySQLのマイナーバージョンを選択できます。(コンソール上に3バージョン以上表示されている場合がありますが) 現在のMySQL HeatWaveでは、最新2マイナーバージョンのみがサポートされ、サポート対象外になったMySQL HeatWaveは自動アップグレードされる仕様になっているため、ご注意下さい。MySQL HeatWaveの自動アップグレードについては[こちら](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/mysql-server-upgrades.html)を参照下さい。
     - **クラッシュ・リカバリ** - 「クラッシュ・リカバリの有効化」のチェックを外すことで、クラッシュ・リカバリを無効化でき、書き込み処理のパフォーマンスを向上できます。クラッシュ・リカバリを無効化すると耐障害性が下がるため、このチェックは通常運用時には外してはいけません。大量データをロードする場合などに一時的に設定を変更することを想定した機能です。
-    - **管理** - メンテナンス・ウインドウの開始時間を任意の時間に設定できます。MDSでは、週に1回メンテナンス・ウインドウで設定された時間帯に[メンテナンスが行われる可能性があります](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/maintenance.html)。時間はUTCで指定することに注意して下さい。
+    - **管理** - メンテナンス・ウインドウの開始時間を任意の時間に設定できます。MySQL HeatWaveでは、週に1回メンテナンス・ウインドウで設定された時間帯に[メンテナンスが行われる可能性があります](https://docs.oracle.com/ja-jp/iaas/mysql-database/doc/maintenance.html)。時間はUTCで指定することに注意して下さい。
     - **ネットワーキング**
       - IPアドレス：任意のIPアドレスを設定可能です。
       - MySQLポート：MySQLサーバーとの通信に使用するポートをデフォルトの3306から任意のポートに変更できます。
       - MySQL Xプロトコル・ポート：MySQLサーバーとXプロトコルを使用して通信する時に使用するポートをデフォルトの33060から任意のポートに変更できます。
-    - **Data import**
-      - 「PAR source URL」に適切なURLを指定することで、MDS作成後に自動的に高速にデータをロードできます。この機能を使用すると、クラッシュ・リカバリが無効化された状態でデータがロードされるため、通常よりも高速にデータをロードできます。<br> 
+    - **データのインポート**
+      - 「PARソースURL」に適切なURLを指定することで、MySQL HeatWave作成後に自動的に高速にデータをロードできます。この機能を使用すると、クラッシュ・リカバリが無効化された状態でデータがロードされるため、通常よりも高速にデータをロードできます。<br> 
       この機能を使用する場合は、事前に[MySQL Shellのダンプユーティリティ](https://dev.mysql.com/doc/mysql-shell/8.0/ja/mysql-shell-utilities-dump-instance-schema.html)を使用して取得したダンプデータをOCIのオブジェクトストレージに配置する必要があります。そして、「既存のバケットに対するPAR URLを作成するには、ここをクリックします。」をクリックし、そのオブジェクト・ストレージ・バケットを指定してPAR URLを作成します。
     - **タグ** - 任意のタグを設定できます。タグをつけることで、コストトラッキング等に活用できます。
     <br>
     <br>
     <br>
 
-4. MDSが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
+4. MySQL HeatWaveのDBシステムが**作成中**になるのでしばらく待ちます。概ね15分程度で作成が完了しステータスが**アクティブ**に変わります。
     <div align="center">
     <img width="700" alt="img7.png" src="img7.png" style="border: 1px black solid;">
     <img width="700" alt="img8.png" src="img8.png" style="border: 1px black solid;">
@@ -150,7 +156,7 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 # 3. セキュリティリストの修正(イングレス・ルールの追加)
 
-このチュートリアルで作成したMDSと通信するためには、TCP/IPによる3306ポートに対する通信を許可する必要があります。そのため、セキュリティリストのイングレス・ルールに設定を追加します。
+このチュートリアルで作成したMySQL HeatWaveのDBシステムと通信するためには、TCP/IPによる3306ポートに対する通信を許可する必要があります。そのため、セキュリティリストのイングレス・ルールに設定を追加します。
 <br>
 
 1. コンソールメニューから **ネットワーキング** → **仮想クラウドネットワーク** を選択し、作成済みのVCNを選択します。本チュートリアルでは**TutorialVCN** です。またこれ以降はVCNが **TutorialVCN** である前提で説明を記述しています。
@@ -204,17 +210,17 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 # 4. MySQLクライアント、MySQL Shellのインストール
 
-コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。(本チュートリアルを実行するだけであればMySQL Shellのインストールは必須ではありませんが、MDSへのデータ移行時などでMySQL Shellが便利なので、合わせてインストールしておきます)
+コンピュート・インスタンスにMySQLクライアントとMySQL Shellをインストールします。MySQLチームが提供しているyumの公式リポジトリをセットアップした後で、yumでインストールします。(本チュートリアルを実行するだけであればMySQL Shellのインストールは必須ではありませんが、MySQL HeatWaveへのデータ移行時などでMySQL Shellが便利なので、合わせてインストールしておきます)
 <br>
 
-1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://community.oracle.com/tech/welcome/discussion/4474256/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。
+1. [インスタンスを作成する - Oracle Cloud Infrastructureを使ってみよう(その3)](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)で作成したコンピュート・インスタンスに接続し、以下のコマンドを実行します。これにより、MySQLチームが提供しているyumの公式リポジトリがセットアップされます。
 
     ```
     sudo yum install https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
     ```
     <br>
 
-2. RHEL8系のOSの場合、デフォルトで有効になっているMySQLモジュールを無効化する必要があるため、以下のコマンドを実行します。詳細な説明は[こちらのドキュメント](https://dev.mysql.com/doc/refman/8.0/en/linux-installation-yum-repo.html#yum-repo-disabling-mysql)を参照して下さい。
+2. RHEL8系のOSの場合、デフォルトで有効になっているMySQLモジュールを無効化する必要があるため、以下のコマンドを実行します。詳細な説明は[こちらのドキュメント](https://dev.mysql.com/doc/refman/8.4/en/linux-installation-yum-repo.html#yum-repo-disabling-mysql)を参照して下さい。
 
     ```
     sudo yum module disable mysql
@@ -237,11 +243,11 @@ MDSを作成します。本チュートリアルではデフォルトの構成�
 
 <a id="anchor5"></a>
 
-# 5. 作成したMDSの確認
+# 5. 作成したMySQL HeatWaveのDBシステムの確認
 
-MDSにサンプルデータベースとしてworldデータベース、world_xデータベースを構築し、SQLを実行することで、MySQLサーバーが構築できていることを確認します。
+MySQL HeatWaveにサンプルデータベースとして`world`データベース、`world_x`データベースを構築し、SQLを実行することで、MySQLサーバーが構築できていることを確認します。
 
-1. 以下のコマンドを実行してworldデータベース、world_xデータベースを構築するためのSQLスクリプトをダウンロードして解凍します。
+1. 以下のコマンドを実行して`world`データベース、`world_x`データベースを構築するためのSQLスクリプトをダウンロードして解凍します。
 
     ```
     wget https://downloads.mysql.com/docs/world-db.zip
@@ -251,8 +257,8 @@ MDSにサンプルデータベースとしてworldデータベース、world_x�
     ```
     <br>
 
-2. ダウンロードされたworldフォルダ内、world_xフォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。mysqlコマンドラインクライアントを使ってMDSへ接続し、sourceコマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMDSの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
-(“-u”オプションでユーザー名を、”-h”オプションでホスト名を指定します)
+2. ダウンロードされた`world`フォルダ内、`world_x`フォルダ内のSQLスクリプトを実行してサンプルデータベースを構築します。`mysql`コマンドラインクライアントを使ってMySQL HeatWaveへ接続し、`source`コマンドを使ってSQLスクリプトを実行します。実行例は以下の通りです。ユーザー名はMySQL HeatWaveの管理者ユーザー名に、ホスト名は確認したホスト名に置き換えて下さい。<br>
+(“`-u`”オプションでユーザー名を、”`-h`”オプションでDBシステムのホスト名を指定します)
 
 
     実行コマンド例(コピー＆ペースト用)
@@ -311,8 +317,7 @@ MDSにサンプルデータベースとしてworldデータベース、world_x�
     Copyright (c) 2000, 2023, Oracle and/or its affiliates.
 
     Oracle is a registered trademark of Oracle Corporation and/or its
-    affiliates. Other names may be trademarks of their respective
-owners.
+    affiliates. Other names may be trademarks of their respective owners.
 
     Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
@@ -394,6 +399,6 @@ owners.
 
 これで、この章の作業は終了です。
 
-この章では、**TestMDS** というMySQL Database Serviceを1つ作成し、コンピュート・インスタンスから接続確認をしました。MDSの構成は変更していませんが、用途に応じて構成を変更したり、シェイプやバックアップ設定なども変更できます。
+この章では、**TestMDS** というMySQL HeatWaveのDBシステムを1つ作成し、コンピュート・インスタンスから接続確認をしました。MySQL HeatWaveの構成は変更していませんが、用途に応じて構成を変更したり、シェイプやバックアップ設定なども変更できます。
 
-MDSの構成変更やシェイプの変更、バックアップ設定の変更なども是非試してみて下さい。
+MySQL HeatWaveの構成変更やシェイプの変更、バックアップ設定の変更なども是非試してみて下さい。
