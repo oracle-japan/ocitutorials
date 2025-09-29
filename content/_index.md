@@ -62,8 +62,8 @@ Oracle Database関連サービスのチュートリアル
 
 ---
 
-<h3> {{< icon-oci "mysql" >}} &nbsp;<a href="./mysql">MySQL Database Service編</a></h3>
-Oracle MySQLチームが開発、管理およびサポートするOCI上で提供されるMySQL Database Serviceを学習できます。
+<h3> {{< icon-oci "mysql" >}} &nbsp;<a href="./mysql">MySQL HeatWave編</a></h3>
+オラクルMySQLチームが開発、管理およびサポートする、MySQLサーバーに分析処理の高速化、機械学習の自動化、生成AIの実行基盤を統合したMySQL HeatWaveを学習できます。
 
 <--->
 
