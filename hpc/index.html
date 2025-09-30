@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-24T11:38:51+09:00"
+      content="2025-09-30T18:47:12+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "OCI HPCポータル",
       "description": "OCIを活用してHPC\/機械学習ワークロードを実行する際の有益な情報を技術面にフォーカスしてお届けする、OCI HPCポータルです。ベアメタルインスタンス、GPUインスタンス、クラスタ・ネットワーク等のリソースをリソース・マネージャ、Terraform、Ansibleを駆使して効率的に構築するチュートリアル集、パフォーマンス関連情報、テクニカルTips集、関連情報リンク集等をお届けします。チュートリアルで構築するHPCクラスタは、NFS、Lustre、LDAP、Slurm、OpenMPI等、システム運用・利用に欠かせないソフトウェアが使えます。またGPUクラスタは、NVIDIA Container Toolkit、Docker、containerdやEnrootのコンテナランタイム等、大規模な分散機械学習ワークロード実行に必須のソフトウェアが使えます。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "2316",
+      "wordCount" : "2335",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-24T11:38:51.00Z",
+      "dateModified": "2025-09-30T18:47:12.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -446,7 +446,6 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-oci-hpcポータルとは"
     >
@@ -505,7 +504,6 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
   class="gdoc-markdown__link"
   href="https://github.com/oracle-japan/ocitutorials/issues"
 >ここ</a></strong> からIssue登録でご連絡ください。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-oci-hpcチュートリアル集"
     >
@@ -1154,7 +1152,6 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 </table> </div>
 <p>※14）ファイル共有ストレージは、 <strong>ブロック・ボリューム</strong> NFSサーバが提供します。<br>
 ※15）GPUクラスタが対象です。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-oci-hpcパフォーマンス関連情報"
     >
@@ -1571,7 +1568,6 @@ HPCアプリケーションのパフォーマンス解析やチューニング�
 >2-2. パフォーマンス関連Tips集</a></strong> にも同一のものが掲載されています。</p>
 </li>
 </ul>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-oci-hpcテクニカルtips集"
     >
@@ -1868,6 +1864,18 @@ HPC/機械学習ワークロードを実行する環境を構築する際に必�
 >Grafana</a></strong> を統合したメトリック監視は、 <strong>Grafana</strong> の多彩な機能を活用できる点で有力な選択肢です。<br>
 本テクニカルTipsは、 <strong>OCIモニタリング</strong> と <strong>Grafana</strong> を使用してHPC/GPUクラスタのメトリックを効率的に監視する方法を解説します。</p>
 </li>
+<li>
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="tech-knowhow/customimage-copy/"
+>カスタム・イメージのリージョン間コピーに使用するOCI CLIコマンド</a></strong><br>
+HPC/GPUクラスタの構築は、同じイメージを持つ計算/GPUノードを複製する必要があるため、これらのノードに適用するカスタマイズを含んだ <strong><a
+  class="gdoc-markdown__link"
+  href="#5-6-%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>カスタム・イメージ</a></strong> を使用して効率的にHPC/GPUクラスタを構築することが一般的です。<br>
+この <strong>カスタム・イメージ</strong> は、他のリージョンにコピーしてこれを元にHPC/GPUクラスタを構築することで、HPC/機械学習ワークロードの実行環境を異なるリージョンに移動・複製する作業工数を大幅に削減することが可能になります。ただこの <strong>カスタム・イメージ</strong> のリージョン間コピーは、複数のステップを経て行う必要があるため、OCIコンソールから行うよりも <strong>OCI CLI</strong> を使用する方法が効率的で、シェルスクリプトを使用する自動化も可能になります。<br>
+本テクニカルTipsは、 <strong>カスタム・イメージ</strong> のリージョン間コピーを念頭に、関連する <strong>OCI CLI</strong> コマンドを解説します。</p>
+</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-4-機械学習"
@@ -2050,7 +2058,6 @@ HPC/機械学習ワークロードを実行する環境を構築する際に必�
 >サイト間VPN</a></strong> を使用してIPSecのトンネルモードでオンプレミスと <strong>OCI</strong> を拠点間接続し、 <strong>OCI</strong> 側プライベートサブネットに接続する計算ノード相当のインスタンスとオンプレミス側プライベートサブネットに接続するライセンスサーバ相当のインスタンスの疎通を可能とするための手順を解説します。</p>
 </li>
 </ul>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-oci-hpc関連情報リンク集"
     >
@@ -2165,7 +2172,6 @@ HPC/GPUクラスタと共に使用するストレージに関連する情報を�
 >Terraform</a></strong> と <strong>Ansible</strong> で自動構築するスクリプト群を提供し、トップページの構築手順に従うことでその構築作業を大幅に簡素化します。</p>
 </li>
 </ul>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-oci-hpc用語集"
     >
@@ -4378,6 +4384,39 @@ HPC/GPUクラスタと共に使用するストレージに関連する情報を�
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

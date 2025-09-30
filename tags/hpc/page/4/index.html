@@ -491,6 +491,154 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>パブリッククラウドに於けるOCIの優位性である <strong>ベアメタル・シェイプ</strong> は、HPC/GPUクラスタの計算/GPUノード用途や、 <strong>ブロック・ボリューム</strong> で構築する共有ストレージのNFSサーバ等の高い処理能力を要求されるシステム管理サーバ用途として使用されます。<br>
+ここで <strong>ベアメタル・シェイプ</strong> を使用する計算/GPUノードやシステム管理サーバ（以降&quot;カーネルダンプクライアント&quot;と呼称）は、 <strong>ブート・ボリューム</strong> をiSCSI接続するため、Linuxカーネルのメモリ領域ダンプ取得を担うkdumpカーネルがデフォルト出力先のルートファイルシステムにカーネルダンプを書き込むことが出来ません。</p>
+<p>これに対しkdumpは、ネットワークを介して他のノード（以降&quot;カーネルダンプサーバ&quot;と呼称）にカーネルダンプを書き込む機能を有しており、本テクニカルTipsではこのうちNFSを取り上げてカーネルダンプをカーネルダンプサーバに取得する方法を解説します。<br>
+この方法は、HPC/GPUクラスタのようにカーネルダンプクライアントのノード数が多くなる環境では、カーネルダンプサーバ上でカーネルダンプクライアントが接続するサブネットに対してNFSエクスポートするだけで済み、鍵管理の必要なSSHと比較して容易に環境の構築が可能です。</p>
+<p><img
+  src="architecture_diagram.png"
+  alt="画面ショット"
+  
+/></p>
+<p>また本テクニカルTipsは、カーネルダンプクライアントが計算ノードの場合とシステム管理サーバの場合を想定し、HPC <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> と <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/images.htm"
+>プラットフォーム・イメージ</a></strong> として提供される <strong>Oracle Linux</strong> を対象のOSイメージとして取り上げ、それぞれの手順を解説します。<br>
+これは、両者の使用するカーネルが以下の点で異なり、カーネルダンプクライアントとしてのセットアップ手順に違いが出るためです。</p>
+<ul>
+<li>kdumpカーネル専用メモリ領域必要サイズ（Mellanox OFEDカーネルモジュール有無による）</li>
+<li>kdumpカーネルの起動を妨げるカーネルブートパラメータの有無</li>
+</ul>
+<p>下表は、本テクニカルTipsで取り上げる各ノードタイプ毎のシェイプとOSイメージを示します。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">ノードタイプ</th>
+          <th style="text-align: center">シェイプ</th>
+          <th style="text-align: center">OSイメージ</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">カーネルダンプサーバ</td>
+          <td style="text-align: center">任意のシェイプ</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 8.9<br>（<strong>プラットフォーム・イメージ</strong>）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">カーネルダンプクライアント<br>（計算ノードを想定）</td>
+          <td style="text-align: center"><strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
+>BM.Optimized3.36</a></strong></td>
+          <td style="text-align: center">HPC <strong>クラスタネットワーキングイメージ</strong> 8.8<br>（※1）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">カーネルダンプクライアント<br>（システム管理サーバを想定）</td>
+          <td style="text-align: center"><strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
+>BM.Optimized3.36</a></strong></td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 8.9 UEKカーネル<br>（<strong>プラットフォーム・イメージ</strong>）</td>
+      </tr>
+  </tbody>
+</table>
+<p>※1）詳細は、<strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/osimage-for-cluster/"
+>クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+>1. クラスタネットワーキングイメージ一覧</a></strong> を参照下さい。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-26T16:31:44&#43;09:00">
+      
+        更新日時
+      
+      Sep 26, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 4 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/hpc/tech-knowhow/site-to-site-vpn/">サイト間VPNによるOCIとの拠点間接続方法</a>
         </h1>
       </header>
@@ -1605,139 +1753,6 @@ table, th, td {
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 11 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/">GPUクラスタを構築する(スタティッククラスタ自動構築編)</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-概要"
-    >
-        0. 概要
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withstack/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>本チュートリアルは、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-5-%e3%83%9e%e3%83%bc%e3%82%b1%e3%83%83%e3%83%88%e3%83%97%e3%83%ac%e3%82%a4%e3%82%b9"
->マーケットプレイス</a></strong> から無償で利用可能な <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
->HPCクラスタスタック</a></strong> を利用し、以下構成のGPUクラスタを構築、複数ノードに跨るGPU間の通信性能を <strong><a
-  class="gdoc-markdown__link"
-  href="https://developer.nvidia.com/nccl"
->NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a
-  class="gdoc-markdown__link"
-  href="https://github.com/nvidia/nccl-tests"
->NCCL Tests</a></strong> で検証後、分散機械学習のサンプルプログラムを実行します。</p>
-<p>[GPUノード]</p>
-<ul>
-<li>シェイプ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
-<li>インターコネクト ： <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
-</ul>
-<p>[Bastionノード]</p>
-<ul>
-<li>シェイプ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Standard.E4.Flex</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong>クラスタネットワーキングイメージ</strong> （※1）</li>
-</ul>
-<p>[ソフトウェア]</p>
-<ul>
-<li>コンテナランタイム ： <strong>Enroot</strong></li>
-<li>ジョブスケジューラ ： <strong>Slurm</strong> + <strong>Pyxis</strong></li>
-<li>コンテナ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow"
->TensorFlow NGC Container</a></strong> 24.06-tf2-py3 from <strong><a
-  class="gdoc-markdown__link"
-  href="https://catalog.ngc.nvidia.com/"
->NGC Catalog</a></strong></li>
-</ul>
-<p>[クラスタ管理]</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/spinup-gpu-cluster-withstack/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T16:31:44&#43;09:00">
-      
-        更新日時
-      
-      Sep 26, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 10 分かかります</span>
 </span>
 
 
@@ -3361,6 +3376,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
