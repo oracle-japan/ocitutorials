@@ -35,6 +35,20 @@ LoadBalancer や証明書サービスなどをはじめとした各 OCI サー�
 
 <br>
 
+<h2 class="gdoc-toppage-header2"> ユースケース別チュートリアル</h2>
+
+{{< columns >}}
+
+<h3> 1.&nbsp;<a href="./oci-in-practice">サービス連携編</a></h3>
+
+サービス連携チュートリアルです。
+ユースケース別にサービスを連携して利用する方法を学習できます。
+
+<--->
+{{< /columns >}}
+
+<br>
+
 <h2 class="gdoc-toppage-header2"> サービス別チュートリアル一覧 </h2>
 
 {{< columns >}}
