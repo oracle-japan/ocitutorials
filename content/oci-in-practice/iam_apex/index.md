@@ -13,21 +13,27 @@ params:
 ---
 
 <br/>
-# <span style="color: brown; ">■ APEXをセキュアに使おう</span>
 
-どの Oracle Database サービス上にも構築できるローコード・アプリケーション開発ツールの Oracle APEX。
-用件によっては、アプリケーションの安全性を気にされることもあるかもしれません。
-Oracle Database、こと自律型データベースである Autonomous Database には、デフォルトでさまざまなセキュリティ機能が施されており、Oracle APEX においても不正なアクセスを防ぐ方法は用意されています。
-しかし、APEX や OCI のセキュリティ機能を活用して、APEX を安全な方法でアクセス可能にする方法をご紹介します。
+## APEX をセキュアに使おう
 
-- **「APEX をセキュアに使おう」チュートリアルは[こちら](https://speakerdeck.com/oracle4engineer/identity-domain-for-apex-apps/)**
-  <br/>
+どの Oracle Database サービス上にも構築できるローコード・アプリケーション開発ツールの Oracle APEX。<br>
+しかし、用件によってはアプリケーションの安全性を気にされることもあるかもしれません。<br>
 
-### 上記チュートリアルで構成している構成のメリット
+Oracle Database、こと自律型データベースである Autonomous Database には、デフォルトでさまざまなセキュリティ機能が施されており、Oracle APEX においても不正なアクセスを防ぐ方法は用意されています。<br>
+APEX や OCI のセキュリティ機能を活用して、APEX を安全な方法でアクセス可能にする方法をご紹介します。<br>
+
+### 設定手順
+
+**「APEX をセキュアに使おう」セットアップ手順は以下の資料からご確認いただけます。**
+
+<iframe class="speakerdeck-iframe" style="border: 0px; background: rgba(0, 0, 0, 0.1) padding-box; margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" frameborder="0" src="https://speakerdeck.com/player/6c9055d46f574bb0bc32216f37dcd653" title="OCI IAM Identity Domain_APEXアプリケーションとの認証連携/Identity Domain for APEX Apps" allowfullscreen="true" data-ratio="1.7777777777777777"></iframe>
+
+{{< hint type=note title="上記チュートリアルで構成している構成のメリット" >}}
 
 - データベースをプライベート・エンドポイントに配置することで、データベースへのアクセスそのものに制限をかけられる
 - 社外からシステムアクセスする際の悪意のあるユーザーからの攻撃(サイバー攻撃)への対策 ​ ができる
-
 - Identity Domains の認証管理機能により APEX アプリケーションに対し、二要素認証を実現
+
+{{< /hint >}}
 
 <br/>
