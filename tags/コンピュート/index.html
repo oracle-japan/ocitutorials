@@ -491,6 +491,161 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/oci-in-practice/om_compute/">ユースケースに合わせてクラウド・インフラの監視をセットアップしよう - OCI Compute Service編</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>OCI のネイティブサービスであるモニタリングとロギングを利用して、コンピュート・インスタンスと BaseDB の監視を行っていきます。
+ここでは、少し実践的なユースケースをベースにしてサービスの利用方法を解説をします。<br>
+コンピュート・インスタンスの監視を解説し、モニタリングとロギングの基礎的な利用法を復習してから、BaseDB に応用していきます。<br>
+モニタリングとロギングのサービスを解説するリソースとしては、以下も参考にしてみてください。<br></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="実践的なコンピュートインスタンスの監視"
+    >
+        実践的なコンピュート・インスタンスの監視
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/#実践的なコンピュートインスタンスの監視" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 実践的なコンピュート・インスタンスの監視" aria-label="アンカー先: 実践的なコンピュート・インスタンスの監視" href="#%e5%ae%9f%e8%b7%b5%e7%9a%84%e3%81%aa%e3%82%b3%e3%83%b3%e3%83%94%e3%83%a5%e3%83%bc%e3%83%88%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e7%9b%a3%e8%a6%96">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p><strong>モニタリング</strong>と<strong>ロギング</strong>サービスを活用することで、コンピュート・インスタンスの状態を監視できます。
+異常や不正な動作をいち早く検知し、アラームと通知サービスを利用して発報も可能です。</p>
+<ul>
+<li>
+<p><strong>モニタリング（メトリック監視）</strong>: CPU やメモリ、OS 設定状態などの動作異常を把握</p>
+</li>
+<li>
+<p><strong>ログ監視</strong>: ユーザー操作やイベントを検出</p>
+</li>
+</ul>
+<p>これらを組み合わせることで、システム障害やセキュリティインシデントの早期検知に繋がります。</p>
+<p>以下に、コンピュート・インスタンスの監視における応用的なユースケースを紹介します。
+このチュートリアルでは、ユースケース 1~3 の内容をステップバイステップで解説します。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="a-モニタリングによるコンピュートインスタンスの監視例"
+    >
+        A. モニタリングによるコンピュート・インスタンスの監視例
+    </h3>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/#a-モニタリングによるコンピュートインスタンスの監視例" class="gdoc-page__anchor clip flex align-center" title="アンカー先: A. モニタリングによるコンピュート・インスタンスの監視例" aria-label="アンカー先: A. モニタリングによるコンピュート・インスタンスの監視例" href="#a-%e3%83%a2%e3%83%8b%e3%82%bf%e3%83%aa%e3%83%b3%e3%82%b0%e3%81%ab%e3%82%88%e3%82%8b%e3%82%b3%e3%83%b3%e3%83%94%e3%83%a5%e3%83%bc%e3%83%88%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e7%9b%a3%e8%a6%96%e4%be%8b">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>
+<p><strong>サービス・メトリックの利用例</strong></p>
+<ul>
+<li>CPU 使用率が極端に高い状態を検知
+<ul>
+<li>OCI チュートリアル応用編 <a
+  class="gdoc-markdown__link"
+  href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/"
+>『モニタリング機能で OCI のリソースを監視する』</a> を参照してください</li>
+</ul>
+</li>
+<li>メモリ使用率のメトリックが欠損した場合、OS がハングしていることを検知（ユースケース 1）</li>
+</ul>
+</li>
+<li>
+<p><strong>カスタム・メトリックの利用例</strong></p>
+<ul>
+<li>OS のファイアウォール（FW）無効化状態を検知（ユースケース 2）</li>
+</ul>
+</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="b-ロギングによるコンピュートインスタンスの監視例"
+    >
+        B. ロギングによるコンピュート・インスタンスの監視例
+    </h3>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/#b-ロギングによるコンピュートインスタンスの監視例" class="gdoc-page__anchor clip flex align-center" title="アンカー先: B. ロギングによるコンピュート・インスタンスの監視例" aria-label="アンカー先: B. ロギングによるコンピュート・インスタンスの監視例" href="#b-%e3%83%ad%e3%82%ae%e3%83%b3%e3%82%b0%e3%81%ab%e3%82%88%e3%82%8b%e3%82%b3%e3%83%b3%e3%83%94%e3%83%a5%e3%83%bc%e3%83%88%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e7%9b%a3%e8%a6%96%e4%be%8b">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>Windows Server にユーザーがログインしたことを検知（ユースケース 3）</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="前提条件"
+    >
+        前提条件
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/#前提条件" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 前提条件" aria-label="アンカー先: 前提条件" href="#%e5%89%8d%e6%8f%90%e6%9d%a1%e4%bb%b6">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<ul>
+<li>VCN のサブネット内に、以下を用意する
+<ul>
+<li>Oracle Linux 8 プラットフォーム・イメージから作成したコンピュート・インスタンス</li>
+<li>Windows Server 2022 Standard コンピュート・インスタンス</li>
+</ul>
+</li>
+<li>コンピュート・インスタンスに SSH/RDP 接続するためのゲートウェイ</li>
+<li>モニタリング、ロギングサービスが存在する Oracle Service Network (OSN) へのゲートウェイ(例えばサービスゲートウェイ)</li>
+<li>後半で利用する BaseDatabase</li>
+</ul>
+<p><img
+  src="architecture.png"
+  alt="構成図"
+  
+/></p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/oci-in-practice/om_compute/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-10-01T20:51:45&#43;09:00">
+      
+        更新日時
+      
+      Oct 1, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 3 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/intermediates/autoscaling/">インスタンスのオートスケーリングを設定する</a>
         </h1>
       </header>
@@ -1601,128 +1756,6 @@ Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compart
       </footer>
     </article>
   
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/adb/adb204-setup-VM/">204: 開発者向け仮想マシンのセットアップ方法</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p><a id="anchor0"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="はじめに"
-    >
-        はじめに
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb204-setup-VM/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>後続のチュートリアルで利用する開発環境をセットアップしましょう。</p>
-<p>Oracle Cloud Infrastructure（OCI） では様々な仮想マシンイメージを提供しています。
-本ページではその中から、開発者向けのLinux仮想マシンである <strong><code>Oracle Linux Cloud Developer イメージ</code></strong> をセットアップする手順を記載しています。</p>
-<p>**<code>Oracle Linux Cloud Developer イメージ</code>**は、Python、Node.js、Goといった言語や、Oracle Instant Clientなどの各種接続ドライバ、Oracle Cloud Infrastructure CLI(OCI CLI)といった各種ツールがプリインストールされており、アプリケーション開発は勿論、各種検証作業を実施する際にとても便利です。</p>
-<p>尚、Oracle Linux Cloud Developer イメージの詳細については <a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/oracle-linux/developer/index.htm#x86-components"
->こちら</a> を参照ください。<br>
-またOracle Cloud Infrastructureに仮想マシン作成する手順詳細に関しては本チュートリアル 入門編の <a
-  class="gdoc-markdown__link"
-  href="../../beginners/creating-compute-instance/"
->その3 - インスタンスを作成する</a> の手順も併せてご確認ください。</p>
-<br>
-<p><strong>前提条件</strong></p>
-<ul>
-<li>ADBインスタンスが構成済みであること
-<br>※ADBインタンスを作成方法については、<a
-  class="gdoc-markdown__link"
-  href="../adb101-provisioning"
->101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
-<li>ADBインスタンスのクレデンシャル・ウォレットがダウンロード済みであること
-<br>※クレデンシャルウォレットのダウンロード方法については、<a
-  class="gdoc-markdown__link"
-  href="../adb104-connect-using-wallet"
->104: ウォレットを利用してADBに接続してみよう</a> の、<a
-  class="gdoc-markdown__link"
-  href="../adb104-connect-using-wallet#anchor1"
->1. クレデンシャル・ウォレットのダウンロード</a> をご確認ください。</li>
-</ul>
-<br>
-<p><strong>目次</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor1"
->1. 仮想マシンの作成</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor2"
->2. 仮想マシンへのアクセス</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3"
->3. 後続のハンズオンで利用するサンプルスクリプト一式を仮想マシン上に配置</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor4"
->4. ADBに接続するための設定ファイルの編集</a></li>
-</ul>
-<br>
-<p><strong>所要時間 :</strong> 約30分</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/adb/adb204-setup-VM/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
   
 
 
@@ -1730,8 +1763,13 @@ Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compart
   <div class="gdoc-paging__item gdoc-paging__item--prev">
     
   </div>
-  <div class="gdoc-paging__state">1/1</div>
+  <div class="gdoc-paging__state">1/2</div>
   <div class="gdoc-paging__item gdoc-paging__item--next">
+    
+      <a class="flex-inline align-center fake-link no-wrap" href="/ocitutorials/tags/%E3%82%B3%E3%83%B3%E3%83%94%E3%83%A5%E3%83%BC%E3%83%88/page/2/">
+        次
+        <i class="gdoc-icon">gdoc_keyboard_arrow_right</i>
+      </a>
     
   </div>
 </nav>
@@ -11166,6 +11204,135 @@ Allow group &lt;グループ名&gt; to manage bastion-session in tenancy/compart
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

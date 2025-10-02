@@ -491,6 +491,262 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/cloud-native/oke-observability-for-advances/">Oracle Container Engine for Kubernetes(OKE)でサンプルマイクロサービスアプリケーションをデプロイしてOCIのオブザバビリティサービスを利用してみよう</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>このハンズオンでは、Oracle Container Engine for Kubernetes（以下OKE）上に、マイクロサービスアプリケーションをデプロイします。そして、OCIのObservabilityサービスを利用して、モニタリング、ロギング、トレーシングを実践的に学びます。</p>
+<p>OCIのObservabilityサービスとして、以下を利用します。</p>
+<p><em><strong>モニタリング</strong></em></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/devops/monitoring/"
+>Oracle Cloud Infrastructure Monitoring</a>
+: メトリックおよびアラーム機能を使用してクラウド・リソースを積極的および受動的にモニター可能なフルマネージドサービスです。</li>
+</ul>
+<p><em><strong>ロギング</strong></em></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/devops/logging/"
+>Oracle Cloud Infrastructure Logging</a>
+: 監査ログ、サービス・ログ、カスタム・ログに対応した、スケーラビリティの高いフルマネージド型のロギングサービスです。</li>
+</ul>
+<p><em><strong>トレーシング</strong></em></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/manageability/application-performance-monitoring/"
+>Oracle Cloud Infrastructure Application Performance Monitoring</a>
+: アプリケーションをモニターし、パフォーマンスの問題を診断するための包括的な機能セットが組み込まれたフルマネージドサービスです。</li>
+</ul>
+
+
+
+<blockquote class="gdoc-hint note">
+  <div class="gdoc-hint__title flex align-center">
+    <span>Oracle Cloud Observability and Management Platformについて</span>
+  </div>
+  <div class="gdoc-hint__text">このハンズオンで利用するサービスは、<a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/manageability/"
+>Oracle Cloud Observability and Management Platform(以下、O&amp;M)</a>を構成するコンポーネントの一部です。 O&amp;Mには、このハンズオンで利用するサービスの他にも、オンプレミスおよびマルチクラウド環境からすべてのログ・データを監視、集計、インデックス作成、分析可能な<a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/manageability/logging-analytics/"
+>Logging Analytics</a>、Oracle Enterprise Managerの主要な機能をクラウドサービスとして提供する<a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/jp/manageability/database-management/"
+>Database Management</a>などがあります。</div>
+</blockquote>
+
+<p>ハンズオンの流れは以下となります。</p>
+<hr>
+<ol>
+<li>
+<p>OKEクラスタ構築とOCIRセットアップ</p>
+<ol>
+<li>OCIダッシュボードからOKEクラスタの構築</li>
+<li>Cloud Shellを利用してクラスタを操作</li>
+<li>OCIRのセットアップ</li>
+</ol>
+</li>
+<li>
+<p>Application Performance Monitoring</p>
+<ol>
+<li>サンプルアプリケーションの概要説明</li>
+<li>サンプルアプリケーションとAPM連携設定</li>
+<li>APMドメインの作成</li>
+<li>サンプルアプリケーションへのAPM設定(ブラウザ側)とコンテナイメージ作成</li>
+<li>サンプルアプリケーションへのAPM設定(サーバサイド側)</li>
+<li>OCI APMでのトレーシング</li>
+<li>OCI APMでのアプリケーションサーバのメトリクス監視</li>
+<li>OCI APMでのリアルユーザモニタリング(RUM)</li>
+<li>OCI APMでの可用性モニタリング(Availability Monitoring)</li>
+</ol>
+</li>
+<li>
+<p>Logging</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/cloud-native/oke-observability-for-advances/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 9 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/management/logging_datadog/">OCIのログをDataDogで監視する</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>このチュートリアルでは、DataDogにOCIのログを転送するための、オーバーヘッドが低く拡張性の高いソリューションを構成する方法をご紹介します。オブジェク・トストレージにファイルをアップロードした際に生成される書き込みログが、サービス・コネクタとファンクションを経由してDataDogに転送され、ダッシュボードに表示されるまでの流れをステップ・バイ・ステップで説明します。</p>
+<p>ソリューションの全体像は以下になります。</p>
+<p><img
+  src="native.jpeg"
+  alt="画面ショット"
+  
+/></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="前提条件"
+    >
+        前提条件
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/logging_datadog/#前提条件" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 前提条件" aria-label="アンカー先: 前提条件" href="#%e5%89%8d%e6%8f%90%e6%9d%a1%e4%bb%b6">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>OCI</p>
+<ul>
+<li>OCIのアカウントを取得済みであること。無料アカウントにサインアップするには、<a
+  class="gdoc-markdown__link"
+  href="https://www.oracle.com/cloud/free/"
+>OCI Cloud Free Tier</a>を参照してください。</li>
+</ul>
+<p>DataDog</p>
+<ul>
+<li>Datadogのアカウントを取得済みであること。14日間の無料トライアルが利用できます。<a
+  class="gdoc-markdown__link"
+  href="https://www.datadoghq.com/ja/"
+>DataDog 無料トライアル</a>にアクセスしてください。</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="1-事前準備"
+    >
+        1. 事前準備
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/logging_datadog/#1-事前準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. 事前準備" aria-label="アンカー先: 1. 事前準備" href="#1-%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>事前準備として以下を実施します。</p>
+<ul>
+<li>IAMポリシーの作成</li>
+<li>トークンの生成</li>
+<li>VCNの作成</li>
+<li>バケットの作成</li>
+<li>リポジトリの作成</li>
+<li>サンプルコードのダウンロード</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="1-1-iamポリシーの作成"
+    >
+        1-1. IAMポリシーの作成
+    </h3>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/logging_datadog/#1-1-iamポリシーの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1. IAMポリシーの作成" aria-label="アンカー先: 1-1. IAMポリシーの作成" href="#1-1-iam%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc%e3%81%ae%e4%bd%9c%e6%88%90">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>ファンクションに関するポリシーを設定します。
+<a
+  class="gdoc-markdown__link"
+  href="https://oracle-japan.github.io/ocitutorials/cloud-native/functions-for-beginners/"
+>Oracle Functions ハンズオン</a>の「事前準備」の項目を参考にしてください。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/management/logging_datadog/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/management/stack_monitoring_onboarding/">Stack Monitoring オンボーディング</a>
         </h1>
       </header>
@@ -1429,203 +1685,6 @@ allow dynamic-group &lt;your dynamic-group-name&gt; to use metrics in tenancy / 
       </footer>
     </article>
   
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/management/dbcs_operations_insights/">OCIのBase Database ServiceでOperations Insightsを有効化する</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p>OCI Observability &amp; Managementのサービスの1つ、Operations Insightsでは、Oracle Databaseのデータを長期保存し、機械学習による分析でリソースの需要分析と将来値の予測、パフォーマンス問題を検出することができます。Operations Insightsを利用することで、リソース配分の最適化によるコストの削減、パフォーマンスの向上などを図ることが可能です。
-この章では、OCIのBase Database Service（以下BaseDB）でOperations Insightsを有効化する手順をご紹介します。Operations Insightsを有効化するためにエージェントなどをインストールする必要はなく、OCIコンソールからの操作で有効化することができます。</p>
-<p><strong>所要時間 :</strong> 約20分</p>
-<p><strong>前提条件 :</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="/ocitutorials/database/dbcs101-create-db"
->101: Oracle CloudでOracle Databaseを使おう（BaseDB）</a>を通じて、BaseDBインスタンスの作成が完了していること</li>
-</ul>
-<p><strong>注意 :</strong></p>
-<ul>
-<li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
-</ul>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-iamポリシーの作成"
-    >
-        1. IAMポリシーの作成
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/dbcs_operations_insights/#1-iamポリシーの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. IAMポリシーの作成" aria-label="アンカー先: 1. IAMポリシーの作成" href="#1-iam%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc%e3%81%ae%e4%bd%9c%e6%88%90">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>Operations Insightsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。
-以下のポリシーをテナンシで作成してください。</p>
-<p>※この章では、ユーザーにOperations Insightsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。<a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/operations-insights/doc/get-started-operations-insights.html#OOPSI-GUID-E72645F2-03F8-44CF-ACA1-FF57F3AA298D"
->ドキュメント</a> を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。</p>
-<pre tabindex="0"><code>allow group &lt;IAMグループ名&gt; to manage opsi-family in tenancy
-allow group &lt;IAMグループ名&gt; to use database-family in tenancy
-allow group &lt;IAMグループ名&gt; to manage virtual-network-family in tenancy
-allow group &lt;IAMグループ名&gt; to manage secret-family in tenancy
-allow service operations-insights to read secret-family in tenancy/compartment &lt;Vaultを作成するコンパートメント名&gt;
-</code></pre><div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="2-dbユーザーの権限設定"
-    >
-        2. DBユーザーの権限設定
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/dbcs_operations_insights/#2-dbユーザーの権限設定" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. DBユーザーの権限設定" aria-label="アンカー先: 2. DBユーザーの権限設定" href="#2-db%e3%83%a6%e3%83%bc%e3%82%b6%e3%83%bc%e3%81%ae%e6%a8%a9%e9%99%90%e8%a8%ad%e5%ae%9a">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>Operations Insightsを有効化するには、Operations InsightsがBaseDBにアクセスできること、および情報の取得のために必要な権限をDatabaseユーザーに付与する必要があります。
-今回はBaseDBの監視に使用されるDBSNMPユーザーに必要な権限を付与します。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/management/dbcs_operations_insights/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/management/audit-log-analytics/">OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p>OCI Observability&amp;Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。
-Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit&hellip;)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。
-この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。</p>
-<p><strong>所要時間 :</strong> 約20分</p>
-<p><strong>前提条件 :</strong></p>
-<ul>
-<li>Logging Analyticsが有効化されていること</li>
-</ul>
-<ul>
-<li>OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
-<img
-  src="audit-loganalytics27.png"
-  alt="画面キャプチャ27"
-  
-/></li>
-</ul>
-<p><strong>注意 :</strong></p>
-<p>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-iamポリシーの作成"
-    >
-        1. IAMポリシーの作成
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/audit-log-analytics/#1-iamポリシーの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. IAMポリシーの作成" aria-label="アンカー先: 1. IAMポリシーの作成" href="#1-iam%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc%e3%81%ae%e4%bd%9c%e6%88%90">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。
-以下のポリシーをテナンシで作成してください。</p>
-<p>※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。<a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html#GUID-EEB0A32F-9D33-4CF6-9FE7-F254C92BB2C0"
->ドキュメント</a> を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。</p>
-<p>※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。</p>
-<p>1-1. Loggingサービスを利用するためのポリシー</p>
-<pre tabindex="0"><code>allow group &lt;IAMグループ名&gt; to MANAGE logging-family in tenancy/compartment &lt;コンパートメント名&gt;
-allow group &lt;IAMグループ名&gt; to READ audit-events in tenancy/compartment&lt;コンパートメント名&gt;
-</code></pre><p>1-2. Logging Analyticsサービスへのポリシー</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/management/audit-log-analytics/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 1 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
   
 
 
@@ -1638,7 +1697,7 @@ allow group &lt;IAMグループ名&gt; to READ audit-events in tenancy/compartme
       </a>
     
   </div>
-  <div class="gdoc-paging__state">2/3</div>
+  <div class="gdoc-paging__state">2/4</div>
   <div class="gdoc-paging__item gdoc-paging__item--next">
     
       <a class="flex-inline align-center fake-link no-wrap" href="/ocitutorials/tags/%E9%81%8B%E7%94%A8%E7%AE%A1%E7%90%86%E7%9B%A3%E8%A6%96/page/3/">
@@ -11079,6 +11138,135 @@ allow group &lt;IAMグループ名&gt; to READ audit-events in tenancy/compartme
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

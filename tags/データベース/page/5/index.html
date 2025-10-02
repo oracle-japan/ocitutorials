@@ -491,6 +491,153 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p><a id="anchor0"></a></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="はじめに"
+    >
+        はじめに
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>この章はまずAutonomous Database(ADB) のツールである Database Actions の機能の中から、データ分析、データ・インサイト、カタログの機能を確認します。<br>
+Database Actions を使う前に、セキュリティを高めるため、実務と同じように、データベース管理者とは別の新しいユーザー（スキーマ）を作り、そのユーザーから Database Actions を使います。</p>
+<p><strong>前提条件</strong></p>
+<ul>
+<li>ADBインスタンスが構成済みであること
+<br>※ADBインタンスの作成方法については、<a
+  class="gdoc-markdown__link"
+  href="../adb101-provisioning"
+>101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+<li>以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Days_Months.xlsx"
+>Days_Months.xlsx</a>
++ <a
+  class="gdoc-markdown__link"
+  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Devices.xlsx"
+>Devices.xlsx</a>
++ <a
+  class="gdoc-markdown__link"
+  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Countries.csv"
+>Countries.csv</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/dwcsprod/b/MovieStream/o/Movie_Sales_2020.csv"
+>Movie_Sales_2020.csv</a> <br>
+<br></li>
+</ul>
+</li>
+</ul>
+<p><strong>目次</strong></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor1"
+>1. 分析用のデータベース・ユーザーを作成しよう</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor2"
+>2. ワークショップで使うデータを準備しよう</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3"
+>3. Database Actionsで操作してみよう</a>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-1"
+>3-1. データ分析してみよう </a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-2"
+>3-2. データインサイトを生成しよう</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-3"
+>3-3. カタログを使ってみよう</a></li>
+</ul>
+</li>
+</ul>
+<br>
+**所要時間 :** 約50分
+<p><a id="anchor1"></a>
+<br></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="1-分析用のデータベースユーザーを作成しようdatabase-actions"
+    >
+        1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#1-分析用のデータベースユーザーを作成しようdatabase-actions" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)" aria-label="アンカー先: 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)" href="#1-%e5%88%86%e6%9e%90%e7%94%a8%e3%81%ae%e3%83%87%e3%83%bc%e3%82%bf%e3%83%99%e3%83%bc%e3%82%b9%e3%83%a6%e3%83%bc%e3%82%b6%e3%83%bc%e3%82%92%e4%bd%9c%e6%88%90%e3%81%97%e3%82%88%e3%81%86database-actions">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、Database Actions を操作するデータベース・ユーザーを作成します。<br>
+<br>ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/adb/adb217-use-database-actions/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/adb/adb218-refreshable-clone/">218 : リフレッシュ可能クローンを活用しよう</a>
         </h1>
       </header>
@@ -1647,104 +1794,6 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/adb/adb306-database-migration-online/">306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p><a id="anchor0"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="はじめに"
-    >
-        はじめに
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb306-database-migration-online/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p><strong>Oracle Cloud Infrastructure Database Migration Service (DMS)</strong> は、オンプレミスまたはOCI上のOracle DatabaseからAutonomous Databaseに移行する際に利用できるマネージド・サービスです。エンタープライズ向けの強力なオラクル・ツール(Zero Downtime Migration、GoldenGate、Data Pump)をベースとしています。</p>
-<p>DMSでは下記の2つの論理的移行が可能です。</p>
-<ul>
-<li><strong>オフライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されます。移行中のソース・データベースへの変更はコピーされないため、移行中はアプリケーションをオフラインのままにする必要があります。</li>
-<li><strong>オンライン移行</strong> - ソース・データベースのポイント・イン・タイム・コピーがターゲット・データベースに作成されるのに加え、内部的にOracle GoldenGateによるレプリケーションを利用しているため、移行中のソース・データベースへの変更も全てコピーされます。そのため、アプリケーションをオンラインのまま移行を行うことが可能で、移行に伴うアプリケーションのダウンタイムを極小化することができます。</li>
-</ul>
-<p>DMSに関するチュートリアルは<a
-  class="gdoc-markdown__link"
-  href="../adb304-database-migration-prep"
->304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>、<a
-  class="gdoc-markdown__link"
-  href="../adb305-database-migration-offline"
->305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>、<a
-  class="gdoc-markdown__link"
-  href="../adb306-database-migration-online"
->306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>の計3章を含めた3部構成となっています。
-DMSを使用してBaseDBで作成したソース・データベースからADBのターゲット・データベースにデータ移行を行います。</p>
-<p><a
-  class="gdoc-markdown__link"
-  href="../adb305-database-migration-offline"
->305 : OCI Database Migration Serviceを使用したデータベースのオフライン移行</a>または<a
-  class="gdoc-markdown__link"
-  href="../adb306-database-migration-online"
->306 : OCI Database Migration Serviceを使用したデータベースのオンライン移行</a>を実施する前に必ず<a
-  class="gdoc-markdown__link"
-  href="../adb304-database-migration-prep"
->304 : OCI Database Migration Serviceを使用したデータベース移行の前準備</a>を実施するようにしてください。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/adb/adb306-database-migration-online/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 5 分かかります</span>
 </span>
 
 
@@ -11219,6 +11268,135 @@ DMSを使用してBaseDBで作成したソース・データベースからADB�
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

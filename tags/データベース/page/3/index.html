@@ -491,6 +491,141 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p><a id="anchor0"></a></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="はじめに"
+    >
+        はじめに
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Autonomous Database への接続には、<a
+  class="gdoc-markdown__link"
+  href="../adb104-connect-using-wallet/"
+>104: クレデンシャル・ウォレットを利用して接続してみよう</a>でご紹介した通り、ウォレットファイルを利用した証明書認証・SSL暗号化接続がデフォルトになっています。
+しかし特定の条件下では、このウォレットを利用しないでセキュアに接続することが可能です。
+本章では、ADBにおけるネットワーク・アクセスの種類とウォレットを利用しない接続方式について確認していきます。
+<br></p>
+<p><strong>前提条件</strong></p>
+<ul>
+<li>ADBインスタンスが構成済みであること
+<br>※ADBインタンスの作成方法については、<a
+  class="gdoc-markdown__link"
+  href="../adb101-provisioning"
+>101:ADBインスタンスを作成してみよう</a>を参照ください。
+<br></li>
+</ul>
+<p><strong>目次</strong></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor1"
+>1. ADBにおけるネットワーク・アクセスの種類</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor2"
+>2. TLS接続の前提条件</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3"
+>3. TLS接続</a>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-1"
+>3-1. 仮想マシン作成</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-2"
+>3-2. ACLの定義</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-3"
+>3-3. DB接続文字列の確認</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor3-4"
+>3-4. ADB接続</a></li>
+</ul>
+</li>
+</ul>
+<br>
+<p><strong>所要時間 :</strong> 約30分</p>
+<br>
+<p><a id="anchor1"></a></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="1-adbにけるネットワークアクセスの種類"
+    >
+        1. ADBにけるネットワーク・アクセスの種類
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/#1-adbにけるネットワークアクセスの種類" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. ADBにけるネットワーク・アクセスの種類" aria-label="アンカー先: 1. ADBにけるネットワーク・アクセスの種類" href="#1-adb%e3%81%ab%e3%81%91%e3%82%8b%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%82%af%e3%82%bb%e3%82%b9%e3%81%ae%e7%a8%ae%e9%a1%9e">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>ADBでは、プロビジョニング時に以下の3つの中からネットワーク・アクセス・タイプを選択することができます。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/adb/adb108-walletless/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 1 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/adb/adb109-private-endpoint/">109: プライベート・エンドポイントのADBを作成してみよう</a>
         </h1>
       </header>
@@ -1655,142 +1790,6 @@ OCIで仮想マシンを作成する場合は、こちらの<a
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 3 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p>Pythonとは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。（ウィキペディアより引用）</p>
-<p>PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジュールを利用します。</p>
-<p>尚、Python言語自体の使い方を説明するものではありません。</p>
-<p><strong>所要時間 :</strong> 約10分</p>
-<p><strong>前提条件 :</strong></p>
-<ol>
-<li>ADBインスタンスが構成済みであること
-<br>※ADBインタンスを作成方法については、本ハンズオンガイドの <a
-  class="gdoc-markdown__link"
-  href="../adb101-provisioning"
->101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
-<li>開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること</li>
-<li>仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="../adb-data/labs.zip"
->labs.zip をダウンロード</a>
-<br>アップロード方法については <a
-  class="gdoc-markdown__link"
-  href="../adb204-setup-VM#anchor3"
->こちら</a> をご確認ください。</li>
-</ul>
-</li>
-</ol>
-<p><strong>目次</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor1"
->1. ADBに接続してみよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor2"
->2. ADB上のデータを操作してみよう</a></li>
-</ul>
-<br>
-<p><a id="anchor1"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-adbに接続してみよう"
-    >
-        1. ADBに接続してみよう
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb207-appdev-python/#1-adbに接続してみよう" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. ADBに接続してみよう" aria-label="アンカー先: 1. ADBに接続してみよう" href="#1-adb%e3%81%ab%e6%8e%a5%e7%b6%9a%e3%81%97%e3%81%a6%e3%81%bf%e3%82%88%e3%81%86">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>まずPythonでADBに接続し、ADBのバージョンを確認してみます。</p>
-<p>尚、事前にこちらを実施し、SQL*plusで接続できていることを前提に記載しています。</p>
-<ol>
-<li>
-<p>Tera Termを利用してopcユーザで仮想マシンにログインします。</p>
-</li>
-<li>
-<p>oracleユーザにスイッチします。一旦rootユーザに切り替えてから、oracleユーザに切り替えます。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">-- rootユーザにスイッチ
-</span></span><span class="line"><span class="cl">sudo -s
-</span></span><span class="line"><span class="cl">-- oracleユーザにスイッチ
-</span></span><span class="line"><span class="cl">sudo su - oracle
-</span></span></code></pre></div><p><img
-  src="img1_2.png"
-  alt="img1_2.png"
-  
-/></p>
-</li>
-<li>
-<p>ADBへの接続情報をOS環境変数として設定します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORAUSER</span><span class="o">=</span>admin
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORAPASS</span><span class="o">=</span>Welcome12345#
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORATNS</span><span class="o">=</span>atp01_low
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">WALLETPASS</span><span class="o">=</span>Welcome12345#
-</span></span></code></pre></div></li>
-<li>
-<p>サンプルスクリプトが配置されているディレクトリに移動します。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/adb/adb207-appdev-python/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
 </span>
 
 
@@ -11265,6 +11264,135 @@ OCIで仮想マシンを作成する場合は、こちらの<a
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

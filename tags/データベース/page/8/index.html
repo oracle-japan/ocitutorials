@@ -491,6 +491,139 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/">106 : Oracle Database 23aiとLangChainでRAGを構成してみよう</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="ragの構成とシナリオ"
+    >
+        RAGの構成とシナリオ
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/#ragの構成とシナリオ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: RAGの構成とシナリオ" aria-label="アンカー先: RAGの構成とシナリオ" href="#rag%e3%81%ae%e6%a7%8b%e6%88%90%e3%81%a8%e3%82%b7%e3%83%8a%e3%83%aa%e3%82%aa">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="ragの構成"
+    >
+        RAGの構成
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/#ragの構成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: RAGの構成" aria-label="アンカー先: RAGの構成" href="#rag%e3%81%ae%e6%a7%8b%e6%88%90">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本チュートリアルはLangChainを使ったRAG構成をステップバイステップで実装する内容となっています。</p>
+<p><img
+  src="1.png"
+  alt="image.png"
+  
+/></p>
+<p>構成に利用するサービスは以下の通りです。</p>
+<ul>
+<li>
+<p>テキスト生成モデル：OCI Generative AI(cohere.command-r-plus-08-2024)</p>
+<p>※2025/01時点で、利用可能なリージョンは以下です。</p>
+<ul>
+<li>サンパウロ(GRU)</li>
+<li>フランクフルト(FRA)</li>
+<li>大阪(KIX)</li>
+<li>ロンドン(LHR)</li>
+<li>シカゴ(ORD)</li>
+</ul>
+<p>最新のリージョン一覧は<a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm"
+>こちら</a>をご参照ください。</p>
+</li>
+<li>
+<p>ドキュメントデータのベクトル化に利用するモデル : Oracle Cloud Generative AI Service(cohere.embed-multilingual-v3.0)</p>
+</li>
+<li>
+<p>ベクトルデータベース: Oracle Database 23ai Free(OCI Computeにインストール)、Base Database Service、Autonomous Database(Always Free)</p>
+</li>
+</ul>
+<p>本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を<a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm"
+>こちら</a>から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-multilingual-v3.0、テキスト生成モデルにcohere.command-r-plus-08-2024を使用します。これらが最新になっているか上記リンクよりご確認ください。</p>
+<p>※LangChainって何？という方は<a
+  class="gdoc-markdown__link"
+  href="https://qiita.com/ksonoda/items/ba6d7b913fc744db3d79#langchain"
+>こちらの記事</a> をご参照ください。</p>
+<p>また、本チュートリアルではAI Vector Searchの以下のチュートリアルを実施済みであることが前提となっています。</p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector103-basics/"
+>103 : Oracle AI Vector Searchの基本操作を試してみよう</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="https://oracle-japan.github.io/ocitutorials/ai-vector-search/ai-vector104-file-to-embedding/"
+>104 :ファイル→テキスト→チャンク→ベクトルへの変換およびベクトル検索を使おう</a></li>
+</ul>
+<p>本チュートリアルでは、OCI GenAIサービスにAPIコールするためのクレデンシャル情報が必要です。
+<a
+  class="gdoc-markdown__link"
+  href="https://oracle-japan.github.io/ocitutorials/adb/adb501-ocicli/"
+>501: OCICLIを利用したインスタンス操作</a>を参照して、APIキーを事前に作成してください。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/ai-vector-search/ai-vector106-23ai-langchain-rag/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 5 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/ai-vector-search/ai-vector107-rag-chat-history/">107 : 会話履歴保持の仕組みを取り入れたRAGの実装をしてみよう</a>
         </h1>
       </header>
@@ -10665,6 +10798,135 @@ Oracle AI Vector Searchを使用すると、ビジネス・データにベクト
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

@@ -491,6 +491,142 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/adb/adb207-appdev-python/">207: PythonによるADB上でのアプリ開発</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>Pythonとは、汎用のプログラミング言語である。コードがシンプルで扱いやすく設計されており、C言語などに比べて、さまざまなプログラムを分かりやすく、少ないコード行数で書けるといった特徴がある。（ウィキペディアより引用）</p>
+<p>PythonでAutonomous Databaseを利用する際には、cx_Oracleというモジュールを利用します。</p>
+<p>尚、Python言語自体の使い方を説明するものではありません。</p>
+<p><strong>所要時間 :</strong> 約10分</p>
+<p><strong>前提条件 :</strong></p>
+<ol>
+<li>ADBインスタンスが構成済みであること
+<br>※ADBインタンスを作成方法については、本ハンズオンガイドの <a
+  class="gdoc-markdown__link"
+  href="../adb101-provisioning"
+>101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
+<li>開発用の仮想マシンが構成済みであり、仮想マシンからADBインスタンスへのアクセスが可能であること</li>
+<li>仮想マシンのoracleユーザのホームディレクトリ配下にlabsフォルダをアップロード済みであること
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="../adb-data/labs.zip"
+>labs.zip をダウンロード</a>
+<br>アップロード方法については <a
+  class="gdoc-markdown__link"
+  href="../adb204-setup-VM#anchor3"
+>こちら</a> をご確認ください。</li>
+</ul>
+</li>
+</ol>
+<p><strong>目次</strong></p>
+<ul>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor1"
+>1. ADBに接続してみよう</a></li>
+<li><a
+  class="gdoc-markdown__link"
+  href="#anchor2"
+>2. ADB上のデータを操作してみよう</a></li>
+</ul>
+<br>
+<p><a id="anchor1"></a></p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="1-adbに接続してみよう"
+    >
+        1. ADBに接続してみよう
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb207-appdev-python/#1-adbに接続してみよう" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. ADBに接続してみよう" aria-label="アンカー先: 1. ADBに接続してみよう" href="#1-adb%e3%81%ab%e6%8e%a5%e7%b6%9a%e3%81%97%e3%81%a6%e3%81%bf%e3%82%88%e3%81%86">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>まずPythonでADBに接続し、ADBのバージョンを確認してみます。</p>
+<p>尚、事前にこちらを実施し、SQL*plusで接続できていることを前提に記載しています。</p>
+<ol>
+<li>
+<p>Tera Termを利用してopcユーザで仮想マシンにログインします。</p>
+</li>
+<li>
+<p>oracleユーザにスイッチします。一旦rootユーザに切り替えてから、oracleユーザに切り替えます。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">-- rootユーザにスイッチ
+</span></span><span class="line"><span class="cl">sudo -s
+</span></span><span class="line"><span class="cl">-- oracleユーザにスイッチ
+</span></span><span class="line"><span class="cl">sudo su - oracle
+</span></span></code></pre></div><p><img
+  src="img1_2.png"
+  alt="img1_2.png"
+  
+/></p>
+</li>
+<li>
+<p>ADBへの接続情報をOS環境変数として設定します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">TNS_ADMIN</span><span class="o">=</span>/home/oracle/labs/wallets
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORAUSER</span><span class="o">=</span>admin
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORAPASS</span><span class="o">=</span>Welcome12345#
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ORATNS</span><span class="o">=</span>atp01_low
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">WALLETPASS</span><span class="o">=</span>Welcome12345#
+</span></span></code></pre></div></li>
+<li>
+<p>サンプルスクリプトが配置されているディレクトリに移動します。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/adb/adb207-appdev-python/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/adb/adb208-oml-notebook/">208: Oracle Machine Learningで機械学習をしよう</a>
         </h1>
       </header>
@@ -1688,153 +1824,6 @@ SPAを利用すると、システム変更前後のSQLワークロードの実�
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 4 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/adb/adb217-use-database-actions/">217: Database Actions を使ってみよう</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p><a id="anchor0"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="はじめに"
-    >
-        はじめに
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>この章はまずAutonomous Database(ADB) のツールである Database Actions の機能の中から、データ分析、データ・インサイト、カタログの機能を確認します。<br>
-Database Actions を使う前に、セキュリティを高めるため、実務と同じように、データベース管理者とは別の新しいユーザー（スキーマ）を作り、そのユーザーから Database Actions を使います。</p>
-<p><strong>前提条件</strong></p>
-<ul>
-<li>ADBインスタンスが構成済みであること
-<br>※ADBインタンスの作成方法については、<a
-  class="gdoc-markdown__link"
-  href="../adb101-provisioning"
->101:ADBインスタンスを作成してみよう</a> を参照ください。</li>
-<li>以下にリンクされている売上実績サンプルデータのファイルをダウンロードしていること
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Days_Months.xlsx"
->Days_Months.xlsx</a>
-+ <a
-  class="gdoc-markdown__link"
-  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Devices.xlsx"
->Devices.xlsx</a>
-+ <a
-  class="gdoc-markdown__link"
-  href="https://objectstorage.us-phoenix-1.oraclecloud.com/n/dwcsprod/b/MovieStream-QTEAM-Download/o/Countries.csv"
->Countries.csv</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="https://objectstorage.ap-tokyo-1.oraclecloud.com/n/dwcsprod/b/MovieStream/o/Movie_Sales_2020.csv"
->Movie_Sales_2020.csv</a> <br>
-<br></li>
-</ul>
-</li>
-</ul>
-<p><strong>目次</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor1"
->1. 分析用のデータベース・ユーザーを作成しよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor2"
->2. ワークショップで使うデータを準備しよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3"
->3. Database Actionsで操作してみよう</a>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-1"
->3-1. データ分析してみよう </a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-2"
->3-2. データインサイトを生成しよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-3"
->3-3. カタログを使ってみよう</a></li>
-</ul>
-</li>
-</ul>
-<br>
-**所要時間 :** 約50分
-<p><a id="anchor1"></a>
-<br></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-分析用のデータベースユーザーを作成しようdatabase-actions"
-    >
-        1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb217-use-database-actions/#1-分析用のデータベースユーザーを作成しようdatabase-actions" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)" aria-label="アンカー先: 1. 分析用のデータベース・ユーザーを作成しよう(Database Actions)" href="#1-%e5%88%86%e6%9e%90%e7%94%a8%e3%81%ae%e3%83%87%e3%83%bc%e3%82%bf%e3%83%99%e3%83%bc%e3%82%b9%e3%83%a6%e3%83%bc%e3%82%b6%e3%83%bc%e3%82%92%e4%bd%9c%e6%88%90%e3%81%97%e3%82%88%e3%81%86database-actions">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>ADBインスタンスを作成すると、デフォルトでADMINユーザが作成されていますが、Database Actions を操作するデータベース・ユーザーを作成します。<br>
-<br>ここではADBにおけるデータベース・ユーザーの作成してみます。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/adb/adb217-use-database-actions/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 2 分かかります</span>
 </span>
 
 
@@ -11309,6 +11298,135 @@ Database Actions を使う前に、セキュリティを高めるため、実務
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     

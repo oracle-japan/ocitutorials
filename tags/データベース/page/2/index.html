@@ -491,6 +491,124 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/security/vault-basedatabase/">Vaultサービスを使ってBase Databaseをユーザー管理の暗号鍵で暗号化する</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>OCI Vaultはユーザーがセキュアに暗号鍵や、パスワードなどの”シークレット”を管理、運用できる鍵管理サービスです。</p>
+<p>通常、OCIのオブジェクト・ストレージやブート・ボリュームなどのストレージサービスは、デフォルトでオラクルが管理する暗号鍵で暗号化されます。
+OCI Vaultサービスを使用すると、ストレージサービスの暗号化に使用する暗号鍵を、オラクル管理の暗号鍵からユーザー管理の暗号鍵に変更することができます。</p>
+<p>また、OCI Vaultサービスを利用するメリットとして、OCI IAMや監査ログによるアクセス管理、FIPS 140-2 Security Level 3の要件への対応、ユーザーによる暗号鍵のローテーションやバックアップを実施することができる、などが挙げられます。</p>
+<p>OCI Vaultサービスで管理できる暗号鍵の暗号化アルゴリズムなどの詳細は<a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/KeyManagement/Concepts/keyoverview.htm"
+>ドキュメント</a>をご参照ください。</p>
+<p>本チュートリアルでは、Vaultサービスでユーザー管理の暗号鍵を使用してBase Databaseを暗号化する手順を紹介します。</p>
+<p><strong>所要時間 :</strong> 約20分</p>
+<p><strong>前提条件 :</strong></p>
+<ul>
+<li>OpenSSLをクライアント端末、もしくは任意のLinuxの環境にインストールしていること（本チュートリアルではデフォルトでOpenSSLがインストールされているCloud Shellを使用します）</li>
+<li>OCIチュートリアル「<a
+  class="gdoc-markdown__link"
+  href="../vault-setup/"
+>Vaultを作成し 顧客管理の鍵をインポートする</a>」を参考にVaultと暗号鍵を作成し、インポートしていること。マスター暗号キーはAESを指定します。</li>
+</ul>
+<p><strong>注意 :</strong></p>
+<ul>
+<li>※チュートリアル内の画面ショットについてはOracle Cloud Infrastructureの現在のコンソール画面と異なっている場合があります。</li>
+</ul>
+<br>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="1-vaultの準備"
+    >
+        1. Vaultの準備
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/security/vault-basedatabase/#1-vaultの準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. Vaultの準備" aria-label="アンカー先: 1. Vaultの準備" href="#1-vault%e3%81%ae%e6%ba%96%e5%82%99">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>OCIチュートリアル「<a
+  class="gdoc-markdown__link"
+  href="../vault-setup/"
+>Vaultを作成し 顧客管理の鍵をインポートする</a>」を参考にVaultと暗号鍵を作成し、インポートしてください。前述のチュートリアル記事通り、マスター暗号化キーはAESを指定して作成してください。</p>
+<br>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="2-base-databaseインスタンスの作成"
+    >
+        2. Base Databaseインスタンスの作成
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/security/vault-basedatabase/#2-base-databaseインスタンスの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. Base Databaseインスタンスの作成" aria-label="アンカー先: 2. Base Databaseインスタンスの作成" href="#2-base-database%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e4%bd%9c%e6%88%90">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>OCIコンソール　→ Oracle Database → Oracleベース・データベース・サービス　→　「DBシステムの作成」ボタンをクリックします。
+　
+<img
+  src="vault-basedatabase01.png"
+  alt="画面ショット1"
+  
+/></p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/security/vault-basedatabase/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-18T15:06:24&#43;09:00">
+      
+        更新日時
+      
+      Sep 18, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 1 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/mysql/creating-mds-readreplica/">その12 - MySQL HeatWaveでリードレプリカを構成する</a>
         </h1>
       </header>
@@ -1548,141 +1666,6 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
             class="flex-inline align-center fake-link"
             title="全投稿を閲覧"
             href="/ocitutorials/adb/adb107-machine-learning/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-18T15:06:24&#43;09:00">
-      
-        更新日時
-      
-      Sep 18, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 1 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-    
-  
-    
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/adb/adb108-walletless/">108: 接続文字列を利用して接続してみよう</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <p><a id="anchor0"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="はじめに"
-    >
-        はじめに
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/#はじめに" class="gdoc-page__anchor clip flex align-center" title="アンカー先: はじめに" aria-label="アンカー先: はじめに" href="#%e3%81%af%e3%81%98%e3%82%81%e3%81%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>Autonomous Database への接続には、<a
-  class="gdoc-markdown__link"
-  href="../adb104-connect-using-wallet/"
->104: クレデンシャル・ウォレットを利用して接続してみよう</a>でご紹介した通り、ウォレットファイルを利用した証明書認証・SSL暗号化接続がデフォルトになっています。
-しかし特定の条件下では、このウォレットを利用しないでセキュアに接続することが可能です。
-本章では、ADBにおけるネットワーク・アクセスの種類とウォレットを利用しない接続方式について確認していきます。
-<br></p>
-<p><strong>前提条件</strong></p>
-<ul>
-<li>ADBインスタンスが構成済みであること
-<br>※ADBインタンスの作成方法については、<a
-  class="gdoc-markdown__link"
-  href="../adb101-provisioning"
->101:ADBインスタンスを作成してみよう</a>を参照ください。
-<br></li>
-</ul>
-<p><strong>目次</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor1"
->1. ADBにおけるネットワーク・アクセスの種類</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor2"
->2. TLS接続の前提条件</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3"
->3. TLS接続</a>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-1"
->3-1. 仮想マシン作成</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-2"
->3-2. ACLの定義</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-3"
->3-3. DB接続文字列の確認</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3-4"
->3-4. ADB接続</a></li>
-</ul>
-</li>
-</ul>
-<br>
-<p><strong>所要時間 :</strong> 約30分</p>
-<br>
-<p><a id="anchor1"></a></p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-adbにけるネットワークアクセスの種類"
-    >
-        1. ADBにけるネットワーク・アクセスの種類
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/adb/adb108-walletless/#1-adbにけるネットワークアクセスの種類" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. ADBにけるネットワーク・アクセスの種類" aria-label="アンカー先: 1. ADBにけるネットワーク・アクセスの種類" href="#1-adb%e3%81%ab%e3%81%91%e3%82%8b%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%82%af%e3%82%bb%e3%82%b9%e3%81%ae%e7%a8%ae%e9%a1%9e">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>ADBでは、プロビジョニング時に以下の3つの中からネットワーク・アクセス・タイプを選択することができます。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/adb/adb108-walletless/"
           >
             全投稿を閲覧
             <i class="gdoc-icon">gdoc_arrow_right_alt</i>
@@ -11181,6 +11164,135 @@ Autonomous Database上でAPEXを利用すると、バックアップや可用性
         
 
         
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+
+        
+        
+          
+  
+  
+
+  
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+
         
       
     
