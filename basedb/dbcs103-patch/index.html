@@ -43,7 +43,7 @@
 <meta property="article:section" content="Basedb" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-10-06T22:03:13+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "103: パッチを適用しよう",
       "description": "Database と Grid Infrastructureに対するパッチ適用方法についてご紹介します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/basedb/dbcs103-patch/img11.png",
-      "wordCount" : "141",
+      "wordCount" : "152",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -75,7 +75,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-10-06T22:03:13.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -165,7 +165,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="basedb">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-10-06T22:03:13+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/basedb/dbcs103-patch/img11.png">
 
 
@@ -311,7 +311,7 @@
     <li><a href="#はじめに">はじめに</a></li>
     <li><a href="#1-現在のバージョンを確認しよう">1. 現在のバージョンを確認しよう</a></li>
     <li><a href="#2-grid-infrastructure-にパッチを適用しよう">2. Grid Infrastructure にパッチを適用しよう</a></li>
-    <li><a href="#3-database-にパッチを適用しよう">3. Database にパッチを適用しよう</a></li>
+    <li><a href="#3-oracle-database-にパッチを適用しよう">3. Oracle Database にパッチを適用しよう</a></li>
     <li><a href="#まとめ">まとめ</a></li>
   </ul>
 
@@ -397,8 +397,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-10-06T22:03:13&#43;09:00">
+            Oct 6, 2025
         </time>
     
 </span>
@@ -413,43 +413,23 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Oracle Base Database Service(BaseDB)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
-ここでは、DatabaseとGrid Infrastructureに対するそれぞれのパッチ適用方法についてご紹介します。</p>
+<p>Oracle Base Database Service(BaseDB)では、OS 以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
+ここでは、<strong>Grid Infrastructure</strong>と<strong>Oracle Database</strong>に対するそれぞれのパッチ適用方法についてご紹介します。</p>
 <br>
-<p><strong>前提条件 :</strong></p>
+<p><strong>前提条件</strong></p>
 <ul>
 <li>
 <p><a
   class="gdoc-markdown__link"
   href="../dbcs101-create-db"
->Oracle CloudでOracle Databaseを使おう</a> を通じて Oracle Database の作成が完了していること</p>
+>Oracle Cloud で Oracle Database を使おう</a> を通じて Oracle Database の作成が完了していること</p>
 </li>
 <li>
-<p>パッチ適用対象の Oracle Database に対して最新RU/RURが適用されていないこと</p>
+<p>パッチ適用対象の Oracle Database に対して最新 RU/RUR が適用されていないこと</p>
 </li>
 </ul>
-<br>
 <p><strong>注意</strong> チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。</p>
-<br>
-<p><strong>目次</strong></p>
-<ul>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor1"
->1. 現在のバージョンを確認しよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor2"
->2. Grid Infrastructure にパッチを適用しよう</a></li>
-<li><a
-  class="gdoc-markdown__link"
-  href="#anchor3"
->3. Database にパッチを適用しよう</a></li>
-</ul>
-<br>
-**所要時間 :** 約15分
-<p><a id="anchor1"></a>
-<br></p>
+<p><strong>所要時間:</strong> 約 15 分</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-現在のバージョンを確認しよう"
     >
@@ -459,30 +439,45 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>まずは、コンソール上で作成済みの Database と Grid Infrastructure のバージョンを確認していきましょう。</p>
-<br>
-<ol>
-<li>
-<p>コンソールメニューから <strong>Oracle Database → Oracle Base Database</strong> を選択し、対象のDBシステムを選択します。<br>
-<strong>DBシステムの詳細</strong> ページの <strong>DBシステム・バージョン</strong> が Grid Infrastructure のバージョンを指します。<br></p>
- <div align="center">
- <img width="700" alt="DBSystem_version_20231110.png" src="DBSystem_version_20231110.png" style="border: 1px black solid;">
- </div>
- 今回はバージョンは 19.20.0.0.0です。
- <br>
-</li>
-<li>
-<p>画面中央の <strong>データベース</strong> に一覧表示されている <strong>名前</strong> を選択します。<br>
-<strong>データベース詳細</strong> ページの <strong>データベースのバージョン</strong> が Database のバージョンを指します。
+<p>まずは、コンソール上で作成済みの Grid Infrastructure と Oracle Database のバージョンを確認していきましょう。
 <br></p>
- <div align="center">
- <img width="700" alt="DB_version_20231110.png" src="DB_vsersion_20231110.png" style="border: 1px black solid;">
- </div>
- 今回はバージョンは 19.20.0.0.0です。
- <br>
+<ol>
+<li>ナビゲーション・メニューから <strong>Oracle Database → Oracle Base Database Service</strong> を選択します。<br></li>
+</ol>
+<p><img
+  src="basedb103-1.png"
+  alt="image.png"
+  
+/></p>
+<ol start="2">
+<li>DB システムの一覧から対象の DB システムを選択し、<strong>DB システムの詳細</strong> ページに移動します。 <br></li>
+</ol>
+<p><img
+  src="basedb103-2.png"
+  alt="image.png"
+  
+/></p>
+<ol start="3">
+<li>DB システムの詳細ページの左下のセクションにある<strong>バージョン</strong>の<strong>DB システム・バージョン</strong> から<strong>Grid Infrastructure</strong>のバージョンを確認できます。</li>
+</ol>
+<p><img
+  src="basedb103-3.png"
+  alt="image.png"
+  
+/></p>
+<br>
+<ol start="4">
+<li>
+<p>次に<strong>データベースのバージョン</strong>を確認しましょう。 DB システムの詳細画面から「<strong>データベース</strong>」タブを開き、一覧表示されているデータベースの名前からバージョンを確認したいデータベースの名前を選択します。すると、<strong>データベース詳細</strong> ページに遷移します。<br></p>
+<p><strong>データベース詳細</strong> ページの左下<strong>バージョン</strong>セクションの<strong>データベースのバージョン</strong> から Oracle Database のバージョンを確認できます。
+<br></p>
 </li>
 </ol>
-<p><a id="anchor2"></a>
+<p><img
+  src="basedb103-3.png"
+  alt="image.png"
+  
+/>
 <br></p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-grid-infrastructure-にパッチを適用しよう"
@@ -493,107 +488,171 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p><strong>DBシステムの詳細</strong> ページで、バージョン「使用可能な最新パッチ」の <strong>表示</strong> を選択すると、適用可能なパッチリストが表示されます。
-今回は 19.21.0.0.0 を適用してみます。</p>
+<p><strong>Grid Infrastructure</strong> の更新をしてみましょう。データベースの更新をする前に Grid Infrastructure の更新をすることが推奨されます。</p>
 <ol>
-<li><strong>DBシステムの詳細</strong> ページで、バージョン「使用可能な最新パッチ」の <strong>表示</strong> を選択します
-<br>
- <div align="center">
- <img width="700" alt="DBSystem_view_20231110.png.png" src="DBSystem_view_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
- 「更新」ページに遷移すると、適用可能なパッチリストが表示されます。
-</li>
+<li><strong>DB システムの詳細</strong> ページで、「<strong>更新</strong>」のタブをを選択すると、適用可能な更新が表示されます。</li>
 </ol>
-<br>
-    <div align="center">
-    <img width="700" alt="DBSystem_latest_20231110.png" src="DBSystem_latest_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-<ol>
-<li>
-<p>適用したいパッチの右の <strong>…</strong> をクリックして、<strong>『事前チェック』</strong> をしてみましょう。この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。<strong>事前チェックの確認</strong> 画面で『<strong>事前チェックの実行</strong>』をクリックします。
-<br></p>
- <div align="center">
- <img width="700" alt="DBSystem_precheck_20231110.png" src="DBSystem_precheck_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
-</li>
-<li>
-<p>事前チェックで問題がなければ、『<strong>適用</strong>』をしてみましょう。<strong>パッチの適用</strong> 画面で『<strong>パッチの適用</strong>』をクリックします。<br>
-なお、Real Application Clusters で2ノード構成になっている場合は、ローリングで一台ずつ適用されます。
-<br/></p>
- <div align="center">
- <img width="700" alt="DBSystem_apply_20231110.png" src="DBSystem_apply_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
- 適用が完了すると DBシステムのステータスが「使用可能」になり、**DBシステム・バージョン**が 19.21.0.0.0 に変わっている事が確認できます。
- <br>
- <div align="center">
- <img width="700" alt="DBSystem_newver_20231110.png" src="DBSystem_newver_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
-</li>
+<p><img
+  src="basedb103-5.png"
+  alt="image.png"
+  
+/></p>
+<ol start="2">
+<li>適用したい更新の右端の「・・・」を展開すると、「<strong>事前チェック</strong>」を選択できます。</br>
+この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。</li>
 </ol>
-<p><a id="anchor3"></a>
+<p><img
+  src="basedb103-6.png"
+  alt="image.png"
+  
+/></p>
+<p><strong>事前チェックの確認</strong> 画面で「<strong>事前チェックの実行</strong>」をクリックすると事前チェックが開始されます。</p>
+<p><img
+  src="basedb103-7.png"
+  alt="image.png"
+  
+/></p>
+<p>事前チェック中は「<strong>状態</strong>」が「<strong>チェック中</strong>」となります。</p>
+<p><img
+  src="basedb103-8.png"
+  alt="image.png"
+  
+/></p>
+<p>チェックで問題がなければ、「<strong>状態</strong>」が<strong>使用可能</strong>になり、事前チェックを実施した日時が入力されます。</p>
+<p><img
+  src="basedb103-9.png"
+  alt="image.png"
+  
+/></p>
+<ol start="3">
+<li>事前チェックが成功したら、「<strong>適用</strong>」をしてみましょう。<br>
+適用したい更新の右端の「・・・」を展開し、「<strong>パッチの適用</strong>」をクリックします。<br>
+なお、Real Application Clusters で 2 ノード構成になっている場合は、ローリングで一台ずつ適用されます。<br></li>
+</ol>
+<p><img
+  src="basedb103-10.png"
+  alt="image.png"
+  
+/></p>
+<p>更新の適用中は「<strong>状態</strong>」が「<strong>適用中</strong>」となります。</p>
+<p><img
+  src="basedb103-11.png"
+  alt="image.png"
+  
+/></p>
+<p>適用作業の進捗状況は「<strong>作業リクエスト</strong>」のタブから適用作業の進捗状況を見ることができます。</br>
+より詳しい状況を確認したい場合は、「<strong>操作</strong>」の名前から詳細ページに遷移できます。</p>
+<p><img
+  src="basedb103-12.png"
+  alt="image.png"
+  
+/></p>
+<p>適用が完了すると DB システムの「<strong>操作</strong>」ステータス「<strong>成功</strong>」になります。</br>
+DB システムも「使用可能」になり、<strong>DB システム・バージョン</strong>が適用した更新のバージョンに変わっている事が確認できます。</p>
+<p><img
+  src="basedb103-13.png"
+  alt="image.png"
+  
+/></p>
+<p>なお、DB システムに対する操作の履歴は「<strong>変更履歴</strong>」から確認できます。</p>
+<p><img
+  src="basedb103-14.png"
+  alt="image.png"
+  
+/>
 <br></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="3-database-にパッチを適用しよう"
+    <h1 id="3-oracle-database-にパッチを適用しよう"
     >
-        3. Database にパッチを適用しよう
+        3. Oracle Database にパッチを適用しよう
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/basedb/dbcs103-patch/#3-database-にパッチを適用しよう" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. Database にパッチを適用しよう" aria-label="アンカー先: 3. Database にパッチを適用しよう" href="#3-database-%e3%81%ab%e3%83%91%e3%83%83%e3%83%81%e3%82%92%e9%81%a9%e7%94%a8%e3%81%97%e3%82%88%e3%81%86">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/basedb/dbcs103-patch/#3-oracle-database-にパッチを適用しよう" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. Oracle Database にパッチを適用しよう" aria-label="アンカー先: 3. Oracle Database にパッチを適用しよう" href="#3-oracle-database-%e3%81%ab%e3%83%91%e3%83%83%e3%83%81%e3%82%92%e9%81%a9%e7%94%a8%e3%81%97%e3%82%88%e3%81%86">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>続いて、Database にパッチを適用していきましょう。
-今回は 19.21.0.0.0 を適用してみます。</p>
+<p>続いて、<strong>Oracle Database</strong> にパッチを適用していきましょう。</p>
 <ol>
-<li><strong>データベース詳細</strong> ページで、バージョン「データベースのバージョン」の <strong>表示</strong> を選択します
-<br>
- <div align="center">
- <img width="700" alt="DB_view_20231110.png" src="DB_view_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
-     「更新」ページに画面遷移すると、適用可能なパッチリストが表示されます。
-</li>
+<li><strong>DB システムの詳細</strong>の「<strong>データベース</strong>」タブから更新したいデータベースの名前を選択し、<strong>データベースの詳細画面</strong>に遷移します。</li>
 </ol>
-<br>
-    <div align="center">
-    <img width="700" alt="DB_latest_20231110.png" src="DB_latest_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-<ol>
-<li>
-<p>適用したいパッチの右の <strong>…</strong> をクリックして、<strong>『事前チェック』</strong> をしてみましょう。この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。<strong>事前チェックの確認</strong> 画面で『<strong>事前チェックの実行</strong>』をクリックします。
-<br></p>
- <div align="center">
- <img width="700" alt="DB_precheck_20231110.png" src="DB_precheck_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
-</li>
-<li>
-<p>事前チェックで問題がなければ、『<strong>適用</strong>』をしてみましょう。<strong>確認</strong> 画面で『<strong>送信</strong>』をクリックします。<br>
-Real Application Clusters で2ノード構成になっている場合、Grid Infrastructure と同様にローリングで一台ずつ適用されます。
-<br></p>
- <div align="center">
- <img width="700" alt="DB_apply_20231110.png" src="DB_apply_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
- 適用が完了すると DBシステムのステータスが「使用可能」になり、**データベースのバージョン**が 19.21.0.0.0 に変わっている事が確認できます。
- <br>
- <div align="center">
- <img width="700" alt="DB_newver_20231110.png" src="DB_newver_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
- DBシステムとデータベースに適用されたパッチは更新の**更新履歴**から確認できます。パッチ適用に失敗した場合はSRをあげることを推奨しています。
- <br>
- <div align="center">
- <img width="700" alt="DBSystem_record_20231110.png" src="DBSystem_record_20231110.png" style="border: 1px black solid;">
- </div>
- <br>
-</li>
+<p><img
+  src="basedb103-15.png"
+  alt="image.png"
+  
+/></p>
+<ol start="2">
+<li><strong>データベースの詳細画面</strong>の左下の「<strong>バージョン</strong>」セクションの<strong>データベースのバージョン</strong>から現在のバージョンを確認できます。</li>
 </ol>
+<p><img
+  src="basedb103-16.png"
+  alt="image.png"
+  
+/></p>
+<ol start="3">
+<li><strong>データベースの詳細画面</strong> で、<strong>更新</strong>のタブをを選択すると、適用可能な更新が表示されます。</li>
+</ol>
+<p><img
+  src="basedb103-17.png"
+  alt="image.png"
+  
+/></p>
+<ol start="4">
+<li>適用したい更新の右端の「・・・」を展開すると、「<strong>事前チェック</strong>」を選択できます。</br>
+この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。</li>
+</ol>
+<p><img
+  src="basedb103-18.png"
+  alt="image.png"
+  
+/></p>
+<p><strong>事前チェックの確認</strong> 画面で「<strong>事前チェックの実行</strong>」をクリックします。</p>
+<p><img
+  src="basedb103-19.png"
+  alt="image.png"
+  
+/></p>
+<p>事前チェック中は「<strong>状態</strong>」が「<strong>チェック中</strong>」となります。</p>
+<p><img
+  src="basedb103-20.png"
+  alt="image.png"
+  
+/></p>
+<p>チェックで問題がなければ、「<strong>状態</strong>」が<strong>使用可能</strong>になり、事前チェックを実施した日時が入力されます。</p>
+<p><img
+  src="basedb103-21.png"
+  alt="image.png"
+  
+/></p>
+<ol start="3">
+<li>事前チェックが成功したら、<strong>適用</strong>をしてみましょう。 適用したい更新の右端の「・・・」を展開し、「<strong>データベース・ホーム更新の適用</strong>」をクリックし、更新を適用します。</br></li>
+</ol>
+<p><img
+  src="basedb103-22.png"
+  alt="image.png"
+  
+/></p>
+<p>「<strong>確認</strong>」画面から「<strong>適用</strong>」をクリックし、適用を開始します。</br>
+なお、Real Application Clusters で 2 ノード構成になっている場合は、ローリングで一台ずつ適用されます。</br></p>
+<p><img
+  src="basedb103-23.png"
+  alt="image.png"
+  
+/></p>
+<p>更新の適用中は「<strong>状態</strong>」が「<strong>適用中</strong>」となります。</p>
+<p>適用の進捗状況は「<strong>作業リクエスト</strong>」のタブから適用作業の進捗状況を見ることができます。</br>
+より詳しい状況を確認したい場合は、「<strong>操作</strong>」の名前から詳細ページに遷移できます。</br></p>
+<p><img
+  src="basedb103-24.png"
+  alt="image.png"
+  
+/></p>
+<p>適用が完了すると DB システムの「<strong>操作</strong>」ステータス<strong>成功</strong>になります。
+DB システムも「使用可能」になり、<strong>DB システム・バージョン</strong>が適用した更新のバージョンに変わっている事が確認できます。</p>
+<p>なお、データベースに対する操作の履歴は「<strong>変更履歴</strong>」から確認できます。</p>
+<p><img
+  src="basedb103-25.png"
+  alt="image.png"
+  
+/></p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="まとめ"
     >
@@ -603,11 +662,10 @@ Real Application Clusters で2ノード構成になっている場合、Grid Inf
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>BaseDBはパッチ適用のタイミングや適用するか否かの判断をユーザー側でできるという柔軟度はあります。<br>ただし、古いパッチのまま使い続けることはセキュリティ面や既知の不具合などのリスクや、環境の再作成が必要になった場合に古いイメージで新規作成ができないなどのリスクが考えられます。<br>その為、パッチを適用しない(塩漬け)でいいというわけではありませんので、定期的なパッチ適用を行っていただければ幸いです。</p>
+<p>BaseDB はパッチ適用のタイミングや適用するか否かの判断をユーザー側でできるという柔軟度はあります。<br>ただし、古いパッチのまま使い続けることはセキュリティ面や既知の不具合などのリスクや、環境の再作成が必要になった場合に古いイメージで新規作成ができないなどのリスクが考えられます。<br>その為、パッチを適用しない(塩漬け)でいいというわけではありませんので、定期的なパッチ適用を行っていただければ幸いです。</p>
 <br>
 以上で、この章の作業は完了です。
-<br>
-[ページトップへ戻る](#anchor0)
+
   </article>
 
 

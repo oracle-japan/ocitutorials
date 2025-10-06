@@ -43,7 +43,7 @@
 <meta property="article:section" content="Exadbd" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-10-06T22:03:13+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "106 : スケーリングしよう",
       "description": "ExaDB-D上でOCPU数またはインフラストラクチャ(データベース・サーバー、ストレージ・サーバー)をスケーリングする手順について紹介します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d105-backup-restore/teaser.png",
-      "wordCount" : "373",
+      "wordCount" : "378",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -75,7 +75,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-10-06T22:03:13.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -165,7 +165,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="exadbd">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-10-06T22:03:13+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d105-backup-restore/teaser.png">
 
 
@@ -402,8 +402,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-10-06T22:03:13&#43;09:00">
+            Oct 6, 2025
         </time>
     
 </span>
@@ -418,7 +418,10 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p><strong>Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)</strong> のスケーリングの対象は、2 種類あります。１つは、割り当てられている H/W リソース内で利用可能な、OCPU 数のスケール・アップ/ダウン。データベースや仮想マシンを再起動することなく、処理を継続したままオンラインで変更可能です。また、VM クラスタ全体に対しての変更になります。そのため、例えばノード毎に CPU コア数を変えることはできないので、仮想マシン数の倍数が指定可能になります。もう１つは、インフラストラクチャー部分のデータベース・サーバーとストレージ・サーバーのスケール・アップ(ダウンは不可)。こちらは、X8M 以降のモデルで可能で、CPU・メモリ・ストレージなど H/W 的に割り当てられている専有リソースを増やしたい場合に、オンラインで追加が可能です。</p>
+<p>Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure（ExaDB-D）では、2 種類のスケーリングが可能です。</p>
+<p>1 つ目は、割り当て済みのハードウェアリソース内で OCPU 数をスケールアップ／ダウンできる機能です。これにより、データベースや仮想マシンを再起動することなく、オンラインで処理を継続したまま、OCPU 数を増減できます。この変更は VM クラスタ全体に適用され、ノードごとに個別の CPU コア数を設定することはできません。そのため、仮想マシンの数に応じた倍数で指定します。</p>
+<p>2 つ目は、インフラストラクチャ部分のデータベースサーバーやストレージサーバーのスケールアップです（ダウンは不可）。この機能は X8M 以降のモデルで利用でき、CPU・メモリ・ストレージなどの専有リソースを必要に応じてオンラインで追加可能です。</p>
+<p>このように、ExaDB-D では運用中でも柔軟かつ拡張性の高いスケーリングが実現できます。</p>
 <p><strong>前提条件 :</strong></p>
 <ul>
 <li><a
@@ -443,78 +446,83 @@
 </div>
 <p>まずはコンソール上の操作での OCPU スケーリングからです。</p>
 <ol>
-<li>
-<p>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</p>
+<li>ナビゲーション・メニューから <strong>Oracle Database</strong> → <strong>Oracle Exadata Database Service on Dedicated Infrastructure</strong> に移動します。</li>
+</ol>
 <p><img
-  src="2022-07-21-15-15-09.png"
-  alt=""
+  src="exadbd106-01.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</p>
+<ol>
+<li>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</li>
+</ol>
 <p><img
-  src="2022-11-15-16-30-05.png"
-  alt=""
+  src="exadbd106-02.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</p>
+<ol>
+<li>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</li>
+</ol>
 <p><img
-  src="2022-11-15-16-32-47.png"
-  alt=""
+  src="exadbd106-03.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>スケーリングしたい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</p>
+<ol>
+<li>スケーリングしたい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</li>
+</ol>
 <p><img
-  src="2022-07-05-17-14-07.png"
-  alt=""
+  src="exadbd106-04.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタ情報</strong>で<strong>有効な OCPU</strong>を確認します。表示されている値は現在有効なクラスタ内の仮想マシンに割り当てられたすべての OCPU の合計です。(本ガイドでは 4OCPU(各 2OCPU の VM が 2 ノード・クラスタ構成で有効な OCPU は 4OCPU))</p>
+<ol>
+<li><strong>VM クラスタ情報</strong>で<strong>有効な OCPU</strong>を確認します。表示されている値は現在有効なクラスタ内の仮想マシンに割り当てられたすべての OCPU の合計です。(本ガイドでは 4OCPU(各 2OCPU の VM が 2 ノード・クラスタ構成で有効な OCPU は 4OCPU))</li>
+</ol>
 <p><img
-  src="2022-11-01-17-04-43.png"
-  alt=""
+  src="exadbd106-05.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>をクリックします。</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-17-05-08.png"
-  alt=""
+  src="exadbd106-06.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>VM 当たりの OCPU 数</strong>で現在の OCPU 数から変更したい OCPU 数を指定します。(本ガイドでは 4OCPU(VM あたり 4OCPU)を指定)</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>VM 当たりの OCPU 数</strong>で現在の OCPU 数から変更したい OCPU 数を指定します。(本ガイドでは 4OCPU(VM あたり 4OCPU)を指定)</li>
+</ol>
 <p><img
-  src="2023-04-01-00-33-16.png"
-  alt=""
+  src="exadbd106-07.png"
+  alt="image.png"
   
 /></p>
-<p>設定後、<strong>変更の保存</strong>をクリックします。</p>
+<p>設定後、<strong>変更の保存</strong>をクリックします。
+作業の進捗は「<strong>作業リクエスト</strong>」タブから確認できます。</p>
 <p><img
-  src="2023-04-01-00-36-40.png"
-  alt=""
+  src="exadbd106-08.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>ステータスが<strong>更新中</strong>から<strong>使用可能</strong>になり、<strong>VM クラスタ情報</strong>の<strong>有効な OCPU</strong>が指定した値に変更されているか確認します。(本ガイドでは仮想マシン当たり 4OCPU と指定したため、<strong>有効な OCPU</strong>の値は 8OCPU(各 4OCPU の VM が 2 ノード・クラスタ構成で有効な OCPU は 8OCPU))</p>
+<ol>
+<li>ステータスが<strong>更新中</strong>から<strong>使用可能</strong>になりました。</li>
+</ol>
 <p><img
-  src="2022-11-01-17-06-20.png"
-  alt=""
+  src="exadbd106-09.png"
+  alt="image.png"
+  
+/></p>
+<p><strong>VM クラスタ情報</strong>の<strong>有効な OCPU</strong>が指定した値に変更されているか確認します。(本ガイドでは仮想マシン当たり 4OCPU と指定したため、<strong>有効な OCPU</strong>の値は 8OCPU(各 4OCPU の VM が 2 ノード・クラスタ構成で有効な OCPU は 8OCPU))</p>
+<p><img
+  src="exadbd106-10.png"
+  alt="image.png"
   
 /></p>
 <p>なお、オンラインでのスケーリングなので、ステータスがスケーリング進行中でもサービスの使用は可能です。</p>
-</li>
-</ol>
 <BR>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-cli-での-ocpu-のスケーリング"
@@ -536,8 +544,8 @@
 <pre tabindex="0"><code>oci db cloud-vm-cluster get --cloud-vm-cluster-id &lt;スケーリングしたいVMクラスタのOCID&gt; --query &#39;data.{&#34;1.Name&#34;:&#34;display-name&#34;,&#34;2.shape&#34;:&#34;shape&#34;,&#34;3.cpu-core-count&#34;: &#34;cpu-core-count&#34;}&#39;
 </code></pre><p>※VM クラスタの OCID は<strong>Exadata VM クラスタの詳細</strong>の<strong>VM クラスタ情報</strong>から確認できます。
 <img
-  src="2022-11-01-17-08-08.png"
-  alt=""
+  src="exadbd106-11.png"
+  alt="image.png"
   
 /></p>
 <p>実行結果例：</p>
@@ -552,18 +560,20 @@
 <p>OCI CLI でスケール・アップを実行します。以下のコマンドを実行します。(本ガイドでは CPU コア数を 8(各 4OCPU の VM が 2 ノード・クラスタ構成で有効な OCPU は 8OCPU)に変更するように実行します。)</p>
 <pre tabindex="0"><code>oci db cloud-vm-cluster update --cpu-core-count 8 --cloud-vm-cluster-id &lt;スケーリングしたいVMクラスタのOCID&gt;
 </code></pre><p>コンソール画面でスケーリングをした VM クラスタのステータスが<strong>更新中</strong>に切り替わっていることを確認します。</p>
+</li>
+</ol>
 <p><img
-  src="2022-11-01-17-08-33.png"
-  alt=""
+  src="exadbd106-12.png"
+  alt="image.png"
   
 /></p>
 <p>約 3 分後に<strong>使用可能</strong>に切り替わります。</p>
 <p><img
-  src="2022-11-01-17-08-52.png"
-  alt=""
+  src="exadbd106-13.png"
+  alt="image.png"
   
 /></p>
-</li>
+<ol start="3">
 <li>
 <p>現在の CPU コア数を確認します。以下のコマンドを実行します。</p>
 <pre tabindex="0"><code>oci db cloud-vm-cluster get --cloud-vm-cluster-id &lt;VMクラスタのOCID&gt; --query &#39;data.{&#34;1.Name&#34;:&#34;display-name&#34;,&#34;2.shape&#34;:&#34;shape&#34;,&#34;3.cpu-core-count&#34;: &#34;cpu-core-count&#34;}&#39;
@@ -597,38 +607,30 @@
     </a>
 </div>
 <ol>
-<li>
-<p>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</p>
+<li>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</li>
+</ol>
 <p><img
-  src="2022-07-21-15-15-09.png"
-  alt=""
+  src="exadbd106-14.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>Exadata インフラストラクチャ</strong>をクリックします。</p>
+<ol>
+<li><strong>Exadata インフラストラクチャ</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-32-41.png"
-  alt=""
+  src="exadbd106-15.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>スケーリングする Exadata インフラストラクチャの表示名をクリックします。</p>
+<ol>
+<li>スケーリングする Exadata インフラストラクチャの表示名をクリックし、<strong>インフラストラクチャのスケーリング</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-34-10.png"
-  alt=""
+  src="exadbd106-16.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>インフラストラクチャのスケーリング</strong>をクリックします。</p>
-<p><img
-  src="2022-11-01-11-34-24.png"
-  alt=""
-  
-/></p>
-</li>
+<ol>
 <li>
 <p><strong>Exadata Infrastructure のスケーリング</strong>ダイアログで以下のように設定します。</p>
 <ul>
@@ -636,55 +638,55 @@
 <li><strong>データベース・サーバー</strong> - データベース・サーバーの合計台数を入力します。一回のスケーリング操作で追加できるのは最大 4 台までです。（本ガイドでは、3 台とします。）</li>
 </ul>
 <p>設定後、<strong>スケール</strong>をクリックします。</p>
+</li>
+</ol>
 <p><img
-  src="2022-11-01-11-35-34.png"
-  alt=""
+  src="exadbd106-17.png"
+  alt="image.png"
   
 /></p>
 <p>Exadata インフラストラクチャの状態が<strong>更新中</strong>となります。</p>
 <p><img
-  src="2022-11-01-11-38-43.png"
-  alt=""
+  src="exadbd106-18.png"
+  alt="image.png"
   
 /></p>
 <p>3 分ほど経過すると、Exadata インフラストラクチャの状態が<strong>使用可能</strong>となり、<strong>Exadata インフラストラクチャの情報</strong>にある<strong>DB サーバー</strong>の情報が反映されていることを確認します。</p>
 <p><img
-  src="2022-11-01-11-40-17.png"
-  alt=""
+  src="exadbd106-19.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>容量を追加したい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</p>
+<ol>
+<li>容量を追加したい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-41-55.png"
-  alt=""
+  src="exadbd106-20.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>をクリックします。</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-52-43.png"
-  alt=""
+  src="exadbd106-21.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-53-39.png"
-  alt=""
+  src="exadbd106-22.png"
+  alt="image.png"
   
 /></p>
 <p>VM クラスタの<strong>作業リクエスト</strong>の<strong>Scale Cloud VM Cluster Compute</strong>の状態が<strong>成功</strong>となったら完了です。(完了まで 5 時間程かかります。※環境によって異なるため、参考値です)</p>
 <p><img
-  src="2022-11-01-11-54-24.png"
-  alt=""
+  src="exadbd106-23.png"
+  alt="image.png"
   
 /></p>
-</li>
-</ol>
 <p><a id="anchor3-2"></a></p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="ストレージサーバーの追加"
@@ -696,38 +698,30 @@
     </a>
 </div>
 <ol>
-<li>
-<p>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</p>
+<li>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</li>
+</ol>
 <p><img
-  src="2022-07-21-15-15-09.png"
-  alt=""
+  src="exadbd106-14.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>Exadata インフラストラクチャ</strong>をクリックします。</p>
+<ol>
+<li><strong>Exadata インフラストラクチャ</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-32-41.png"
-  alt=""
+  src="exadbd106-15.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>スケーリングする Exadata インフラストラクチャの表示名をクリックします。</p>
+<ol>
+<li>スケーリングする Exadata インフラストラクチャの表示名をクリックし、<strong>インフラストラクチャのスケーリング</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-11-34-10.png"
-  alt=""
+  src="exadbd106-16.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>インフラストラクチャのスケーリング</strong>をクリックします。</p>
-<p><img
-  src="2022-11-01-11-34-24.png"
-  alt=""
-  
-/></p>
-</li>
+<ol>
 <li>
 <p><strong>Exadata Infrastructure のスケーリング</strong>ダイアログで以下のように設定します。</p>
 <ul>
@@ -735,55 +729,55 @@
 <li><strong>ストレージ・サーバー</strong> - ストレージ・サーバーの合計台数を入力します。一回のスケーリング操作で追加できるのは最大 6 台までです。（本ガイドでは、4 台とします。）</li>
 </ul>
 <p>設定後、<strong>スケール</strong>をクリックします。</p>
+</li>
+</ol>
 <p><img
-  src="2022-11-01-11-56-56.png"
-  alt=""
+  src="exadbd106-17.png"
+  alt="image.png"
   
 /></p>
 <p>Exadata インフラストラクチャの状態が<strong>更新中</strong>となります。</p>
 <p><img
-  src="2022-11-01-11-57-23.png"
-  alt=""
+  src="exadbd106-24.png"
+  alt="image.png"
   
 /></p>
 <p>3 分ほど経過すると、Exadata インフラストラクチャの状態が<strong>使用可能</strong>となり、<strong>Exadata インフラストラクチャの情報</strong>にある<strong>DB サーバー</strong>の情報が反映されていることを確認します。</p>
 <p><img
-  src="2022-11-01-11-58-59.png"
-  alt=""
+  src="exadbd106-25.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>容量を追加したい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</p>
+<ol>
+<li>容量を追加したい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-12-00-55.png"
-  alt=""
+  src="exadbd106-26.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>をクリックします。</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-12-01-42.png"
-  alt=""
+  src="exadbd106-27.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</p>
+<ol>
+<li><strong>VM クラスタのスケーリング</strong>ダイアログの<strong>容量を追加</strong>にチェックを付け、現在のリソースとスケーリング後のリソースを確認し、<strong>更新</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-11-01-12-02-22.png"
-  alt=""
+  src="exadbd106-28.png"
+  alt="image.png"
   
 /></p>
 <p>VM クラスタの<strong>作業リクエスト</strong>の<strong>Scale Cloud VM Cluster Storage</strong>の状態が<strong>成功</strong>となったら完了です。(完了まで 1 時間程かかります。※環境によって異なるため、参考値です)
 <img
-  src="2022-11-01-14-46-31.png"
-  alt=""
+  src="exadbd106-29.png"
+  alt="image.png"
   
 /></p>
-</li>
-</ol>
 <br>
 以上で、この章の作業は完了です。
 <p><a id="anchor11"></a></p>

@@ -43,7 +43,7 @@
 <meta property="article:section" content="Exadbd" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-10-06T22:03:13+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "105 : バックアップからリストアしよう",
       "description": "ExaDB-D上で取得したバックアップからリストアする手順について紹介します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d104-backup-restore/teaser.png",
-      "wordCount" : "164",
+      "wordCount" : "163",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -75,7 +75,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-10-06T22:03:13.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -165,7 +165,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="exadbd">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-10-06T22:03:13+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/exadbd/exadb-d104-backup-restore/teaser.png">
 
 
@@ -397,8 +397,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-10-06T22:03:13&#43;09:00">
+            Oct 6, 2025
         </time>
     
 </span>
@@ -413,9 +413,8 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p><strong>Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)</strong> では、自動バックアップ機能やオンデマンドバックアップにて取得したバックアップを利用する事で、最新時点や Point in Time Recovery(PITR)の任意の時点まで復旧ができます。
-また、バックアップ元のデータベースに対してリストアするだけでなく、別 DB システム上にリストアする事も可能です。
-ここでは、OCI コンソールからリストアする手順についてご紹介します。</p>
+<p>Oracle Exadata Database Service on Dedicated Infrastructure（ExaDB-D）では、自動バックアップやオンデマンドバックアップ機能を活用することで、<strong>最新の状態や任意の過去時点（Point in Time Recovery：PITR）<strong>まで</strong>データベースを簡単に復旧</strong>できます。また、バックアップは元のデータベースだけでなく、<strong>他の DB システムへのリストアも可能</strong>です。</p>
+<p>このチュートリアルでは、OCI コンソールを使ってバックアップからデータベースをリストアする具体的な手順をご紹介します。</p>
 <p><strong>前提条件 :</strong></p>
 <ul>
 <li>
@@ -432,7 +431,6 @@
 </li>
 </ul>
 <p><strong>所要時間 :</strong> 約 1 時間　※環境によって異なるため、参考値です</p>
-<BR>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-バックアップ元のデータベースに対してリストア"
     >
@@ -460,72 +458,70 @@ SCN を使用してデータベースをリストアします。<br>
 </li>
 </ul>
 <ol>
-<li>
-<p>OCI コンソール・メニューから <strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong> に移動します。</p>
+<li>ナビゲーション・メニューから <strong>Oracle Database</strong> → <strong>Oracle Exadata Database Service on Dedicated Infrastructure</strong> に移動します。</li>
+</ol>
 <p><img
-  src="2022-07-21-15-15-09.png"
-  alt=""
+  src="exadbd105-01.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</p>
+<ol>
+<li>利用したいコンパートメントを<strong>リスト範囲</strong>の<strong>コンパートメント</strong>から選択します。</li>
+</ol>
 <p><img
-  src="2022-11-15-16-30-05.png"
-  alt=""
+  src="exadbd105-02.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</p>
+<ol>
+<li>利用したいリージョンを右上のリージョンの折りたたみメニューをクリックして、<strong>リージョン</strong>の一覧から選択します。</li>
+</ol>
 <p><img
-  src="2022-11-15-16-32-47.png"
-  alt=""
+  src="exadbd105-03.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>リストアしたい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</p>
+<ol>
+<li>リストアしたい<strong>Exadata VM クラスタ</strong>の表示名をクリックします。</li>
+</ol>
 <p><img
-  src="2022-07-05-17-14-07.png"
-  alt=""
+  src="exadbd105-04.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>データベース</strong>の一覧から対象のデータベースの名前をクリックします。</p>
+<ol>
+<li><strong>データベース</strong>の一覧から対象のデータベースの名前をクリックします。</li>
+</ol>
 <p><img
-  src="2022-09-28-17-08-55.png"
-  alt=""
+  src="exadbd105-05.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p>画面上部から<strong>リストア</strong>ボタンをクリックします。</p>
+<ol>
+<li>画面上部から<strong>リストア</strong>ボタンをクリックします。</li>
+</ol>
 <p><img
-  src="2022-09-28-17-09-23.png"
-  alt=""
+  src="exadbd105-06.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>データベースのリストア</strong>ダイアログで、リストア方法を選択します。(本ガイドでは、<strong>最新にリストア</strong>を選択します。)</p>
+<ol>
+<li><strong>データベースのリストア</strong>ダイアログで、リストア方法を選択します。(本ガイドでは、<strong>最新にリストア</strong>を選択します。)</li>
+</ol>
 <p><img
-  src="2022-09-28-17-09-48.png"
-  alt=""
+  src="exadbd105-07.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>データベースのリストア</strong>ボタンをクリックします。</p>
+<ol>
+<li><strong>データベースのリストア</strong>ボタンをクリックします。</li>
+</ol>
 <p><img
-  src="2022-09-28-17-10-08.png"
-  alt=""
+  src="exadbd105-08.png"
+  alt="image.png"
   
 /></p>
 <p>リストア作業が完了するとステータスが<strong>更新中</strong>から<strong>使用可能</strong>に変わります</p>
-</li>
-</ol>
 <BR>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-バックアップから新規データベースとしてリストア"
@@ -538,36 +534,31 @@ SCN を使用してデータベースをリストアします。<br>
 </div>
 <p>続いて、取得したバックアップを利用して新規データベースとしてリストアする手順を紹介します。</p>
 <ol>
-<li>
-<p>対象のデータベースの<strong>データベース詳細</strong>ぺージの<strong>バックアップ</strong>をクリックします。</p>
-</li>
-<li>
-<p>リストア対象のバックアップの右側にあるアクション・アイコン(3 つのドット)から、<strong>データベース作成</strong>をクリックします。</p>
+<li>対象のデータベースの<strong>データベース詳細</strong>ぺージの<strong>バックアップ</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-09-28-17-40-44.png"
-  alt=""
+  src="exadbd105-09.png"
+  alt="image.png"
   
 /></p>
-</li>
+<ol>
+<li>リストア対象のバックアップの右側にあるアクション・アイコン(3 つのドット)から、<strong>データベース作成</strong>をクリックします。</li>
 </ol>
-<p><a id="anchor1"></a></p>
-<ol start="3">
-<li>
-<p><strong>バックアップからのデータベースの作成</strong>ダイアログに以下の情報を入力します。</p>
+<p><img
+  src="exadbd105-10.png"
+  alt="image.png"
+  
+/></p>
+<ol start="2">
+<li><strong>バックアップからのデータベースの作成</strong>ダイアログに以下の情報を入力します。</li>
+</ol>
 <ul>
 <li><strong>DB システムの構成</strong>
 <ul>
 <li><strong>[コンパートメント名]の VM クラスタの選択</strong> - リストア先の VM クラスタを選択します。</li>
-<li><strong>データベース・ホームの構成</strong> - <strong>既存のデータベース・ホームの選択</strong>か<strong>新規データベース・ホームの作成</strong>を選択します。<strong>新規データベース・ホームの作成</strong>を選択の場合、任意の<strong>データベース・ホームの表示名</strong>と<strong>データベース・イメージ</strong>を選択します。</li>
+<li><strong>データベース・ホームの構成</strong> - <strong>既存のデータベース・ホームの選択</strong>か<strong>新規データベース・ホームの作成</strong>を選択します。<strong>新規データベース・ホームの作成</strong>を選択の場合、任意の<strong>データベース・ホームの表示名</strong>と<strong>データベース・イメージ</strong>を選択します</li>
 </ul>
 </li>
-</ul>
-<p><img
-  src="2022-09-28-17-43-21.png"
-  alt=""
-  
-/></p>
-<ul>
 <li><strong>データベースの構成</strong>
 <ul>
 <li><strong>データベース名</strong> - 任意</li>
@@ -579,18 +570,11 @@ SCN を使用してデータベースをリストアします。<br>
 <li><strong>ソース・データベースの TDE ウォレットまたは RMAN パスワードを入力してください</strong> - リストア対象のデータベースの TDE ウォレットまたは RMAN パスワードを入力します。</li>
 </ul>
 <p><img
-  src="2022-09-28-17-45-27.png"
-  alt=""
+  src="exadbd105-11.png"
+  alt="image.png"
   
 /></p>
-<p>設定後、<strong>データベースの作成</strong>をクリックします。</p>
-<p><img
-  src="2022-09-28-17-45-55.png"
-  alt=""
-  
-/></p>
-</li>
-</ol>
+<p>設定後、<strong>作成</strong>をクリックします。</p>
 <p>データベースの作成がバックエンドで開始します。作業が完了するとステータスが<strong>更新中</strong>から<strong>使用可能</strong>に変わります。</p>
 <BR>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -603,27 +587,35 @@ SCN を使用してデータベースをリストアします。<br>
     </a>
 </div>
 <ol>
-<li>
-<p>コンソールメニューから<strong>Oracle Database</strong> → <strong>Oracle Public Cloud 上の Exadata</strong>を選択し、<strong>スタンドアロン・バックアップ</strong>をクリックします。</p>
-</li>
-<li>
-<p>リストア対象のバックアップの右側にあるアクション・アイコン(3 つのドット)から、<strong>データベース作成</strong>をクリックします。</p>
+<li>ナビゲーション・メニューから <strong>Oracle Database</strong> → <strong>Oracle Exadata Database Service on Dedicated Infrastructure</strong> に移動し、<strong>スタンドアロン・バックアップ</strong>をクリックします。</li>
+</ol>
 <p><img
-  src="2022-09-28-17-55-00.png"
-  alt=""
+  src="exadbd105-12.png"
+  alt="image.png"
   
 /></p>
-</li>
-<li>
-<p><strong>バックアップからのデータベースの作成</strong>ダイアログに情報を入力します。設定方法は<a
+<p><img
+  src="exadbd105-13.png"
+  alt="image.png"
+  
+/></p>
+<ol>
+<li>リストア対象のバックアップの右側にあるアクション・アイコン(3 つのドット)から、<strong>データベース作成</strong>をクリックします。</li>
+</ol>
+<p><img
+  src="exadbd105-14.png"
+  alt="image.png"
+  
+/>
+<br></p>
+<ol>
+<li><strong>バックアップからのデータベースの作成</strong>ダイアログに情報を入力します。設定方法は<a
   class="gdoc-markdown__link"
   href="#anchor1"
->2. バックアップから新規データベースとしてリストアの 3.</a>と同様です。</p>
-</li>
+>2. バックアップから新規データベースとしてリストアの 3.</a>と同様です。
+データベースの作成がバックエンドで開始します。作業が完了するとステータスが<strong>更新中</strong>から<strong>使用可能</strong>に変わります。</li>
 </ol>
-<p>データベースの作成がバックエンドで開始します。作業が完了するとステータスが<strong>更新中</strong>から<strong>使用可能</strong>に変わります。</p>
-<br>
-以上で、この章の作業は完了です。
+<p>以上で、この章の作業は完了です。</p>
 <p><a id="anchor11"></a></p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="参考資料"
