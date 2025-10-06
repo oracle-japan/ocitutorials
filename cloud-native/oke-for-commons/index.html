@@ -43,7 +43,7 @@
 <meta property="article:section" content="Cloud Native" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-10-06T12:43:44+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Oracle Container Engine for Kubernetes(OKE)をプロビジョニングしよう",
       "description": "Oracle Cloud Infrastructure (OCI) の管理コンソールを利用し、OKEクラスターを作成します。まずはここから始めましょう。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "481",
+      "wordCount" : "710",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-10-06T12:43:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="cloud-native">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-10-06T12:43:44+09:00">
     <meta property="article:tag" content="コンテナ">
     <meta property="article:tag" content="初期設定">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
@@ -312,24 +312,24 @@
     <ul>
         <li><a href="#前提条件">前提条件</a></li>
         <li><a href="#ハンズオン環境のイメージ">ハンズオン環境のイメージ</a></li>
-        <li><a href="#1okeクラスターのプロビジョニング">1.OKEクラスターのプロビジョニング</a></li>
-        <li><a href="#2cli実行環境cloud-shellの準備">2.CLI実行環境(Cloud Shell)の準備</a></li>
-        <li><a href="#3kubectlのセットアップ">3.kubectlのセットアップ</a></li>
-        <li><a href="#4オプションcli実行環境vmインスタンスの作成">4.【オプション】CLI実行環境(VMインスタンス)の作成</a>
+        <li><a href="#1oke-クラスターのプロビジョニング">1.OKE クラスターのプロビジョニング</a></li>
+        <li><a href="#2cli-実行環境cloud-shellの準備">2.CLI 実行環境(Cloud Shell)の準備</a></li>
+        <li><a href="#3kubectl-のセットアップ">3.kubectl のセットアップ</a></li>
+        <li><a href="#4オプションcli-実行環境vm-インスタンスの作成">4.【オプション】CLI 実行環境(VM インスタンス)の作成</a>
           <ul>
-            <li><a href="#4-1-ociコンソールにアクセスする">4-1. OCIコンソールにアクセスする</a></li>
-            <li><a href="#4-2-resource-managerを利用して環境を構築する">4-2. Resource Managerを利用して環境を構築する</a>
+            <li><a href="#4-1-oci-コンソールにアクセスする">4-1. OCI コンソールにアクセスする</a></li>
+            <li><a href="#4-2-resource-manager-を利用して環境を構築する">4-2. Resource Manager を利用して環境を構築する</a>
               <ul>
                 <li><a href="#4-2-1-スタックの作成">4-2-1. スタックの作成</a></li>
                 <li><a href="#4-2-2-ジョブの実行">4-2-2. ジョブの実行</a></li>
               </ul>
             </li>
-            <li><a href="#4-3-cli実行環境にログインする">4-3. CLI実行環境にログインする</a></li>
-            <li><a href="#4-4-oci-cliのセットアップ">4-4. OCI CLIのセットアップ</a>
+            <li><a href="#4-3-cli-実行環境にログインする">4-3. CLI 実行環境にログインする</a></li>
+            <li><a href="#4-4-oci-cli-のセットアップ">4-4. OCI CLI のセットアップ</a>
               <ul>
-                <li><a href="#4-4-1-テナンシのocidの確認">4-4-1. テナンシのOCIDの確認</a></li>
-                <li><a href="#4-4-2-ユーザーのocidの確認">4-4-2. ユーザーのOCIDの確認</a></li>
-                <li><a href="#4-4-3-oci-cliのセットアップ">4-4-3. OCI CLIのセットアップ</a></li>
+                <li><a href="#4-4-1-テナンシの-ocid-の確認">4-4-1. テナンシの OCID の確認</a></li>
+                <li><a href="#4-4-2-ユーザーの-ocid-の確認">4-4-2. ユーザーの OCID の確認</a></li>
+                <li><a href="#4-4-3-oci-cli-のセットアップ">4-4-3. OCI CLI のセットアップ</a></li>
               </ul>
             </li>
           </ul>
@@ -418,8 +418,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-10-06T12:43:44&#43;09:00">
+            Oct 6, 2025
         </time>
     
 </span>
@@ -439,8 +439,8 @@
     
 </div>
 
-    <p>マネージドKubernetesサービスであるOralce Container Engine for Kubernetes(OKE)を中心とした、コンテナ・ネイティブなサービス群です。</p>
-<p>Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。この共通手順では、OCIやOKEを操作するためCLI実行環境の構築（Resource Managerを使用）と、OKEを使ってKubernetesクラスターをプロビジョニングするまでの手順を記します。</p>
+    <p>マネージド Kubernetes サービスである Oralce Container Engine for Kubernetes(OKE)を中心とした、コンテナ・ネイティブなサービス群です。</p>
+<p>Oracle Container Engine for Kubernetes（以下 OKE）は、Oracle のマネージド Kubernetes サービスです。この共通手順では、OCI や OKE を操作するため CLI 実行環境の構築（Resource Manager を使用）と、OKE を使って Kubernetes クラスターをプロビジョニングするまでの手順を記します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="前提条件"
     >
@@ -453,7 +453,7 @@
 <ul>
 <li>クラウド環境
 <ul>
-<li>Oracle Cloudのアカウントを取得済みであること</li>
+<li>Oracle Cloud のアカウントを取得済みであること</li>
 </ul>
 </li>
 </ul>
@@ -472,39 +472,44 @@
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1okeクラスターのプロビジョニング"
+    <h2 id="1oke-クラスターのプロビジョニング"
     >
-        1.OKEクラスターのプロビジョニング
+        1.OKE クラスターのプロビジョニング
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#1okeクラスターのプロビジョニング" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.OKEクラスターのプロビジョニング" aria-label="アンカー先: 1.OKEクラスターのプロビジョニング" href="#1oke%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%bc%e3%81%ae%e3%83%97%e3%83%ad%e3%83%93%e3%82%b8%e3%83%a7%e3%83%8b%e3%83%b3%e3%82%b0">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#1oke-クラスターのプロビジョニング" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.OKE クラスターのプロビジョニング" aria-label="アンカー先: 1.OKE クラスターのプロビジョニング" href="#1oke-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%bc%e3%81%ae%e3%83%97%e3%83%ad%e3%83%93%e3%82%b8%e3%83%a7%e3%83%8b%e3%83%b3%e3%82%b0">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここでは、OKEクラスターのプロビジョニングを行います。ここでの手順を実施することにより、OKEのコントロールプレーンとKubernetesクラスターの構築が同時に行われます。</p>
+<p>ここでは、OKE クラスターのプロビジョニングを行います。ここでの手順を実施することにより、OKE のコントロールプレーンと Kubernetes クラスターの構築が同時に行われます。</p>
 <p><img
   src="02-01-01.png"
   alt=""
   
 /></p>
-<p>はじめに、OCIコンソール画面左上のハンバーガーメニューを展開し、<code>開発者サービス</code>⇒<code>Kubernetes Clusters (OKE)</code>を選択します。</p>
+<p>はじめに、OCI コンソール画面左上のハンバーガーメニューを展開し、<code>開発者サービス</code>⇒<code>Kubernetesクラスタ (OKE)</code>を選択します。</p>
 <p><img
-  src="02-02.png"
-  alt=""
+  src="image.png"
+  alt="alt text"
   
 /></p>
 <p>クラスタ一覧画面で、<code>クラスタの作成</code>をクリックします。</p>
 <p><img
-  src="02-03.png"
-  alt=""
+  src="image-1.png"
+  alt="alt text"
   
 /></p>
-<p>次のダイアログで<code>クイック作成</code>を選択し、<code>ワークフローの起動</code>をクリックします。</p>
+<p>次のダイアログで<code>クイック作成</code>を選択し、<code>続行</code>をクリックします。</p>
 <p><img
-  src="02-03-2.png"
-  alt=""
+  src="image-2.png"
+  alt="alt text"
   
 /></p>
 <p>次のダイアログで、任意の名前を入力し、バージョンを選択します。ここではデフォルトのまま進めていきます。</p>
+<p><img
+  src="image-3.png"
+  alt="alt text"
+  
+/></p>
 <p><code>Kubernetes APIエンドポイント</code>には今回はデフォルトの<code>パブリック・エンドポイント</code>を選択します。</p>
 
 
@@ -513,11 +518,11 @@
   <div class="gdoc-hint__title flex align-center">
     <span>Kubernetes APIエンドポイントについて</span>
   </div>
-  <div class="gdoc-hint__text">管理者は、クラスタのKubernetes APIエンドポイントを、プライベート・サブネットまたはパブリック・サブネットに構成することができます。   VCNルーティングとファイアウォール・ルールを使うことで、Kubernetes APIエンドポイントへのアクセスを制御し、オンプレミスもしくは同一VCN上に構築した踏み台サーバからのみアクセス可能にすることができます。</div>
+  <div class="gdoc-hint__text">管理者は、クラスタの Kubernetes API エンドポイントを、プライベート・サブネットまたはパブリック・サブネットに構成することができます。 VCN ルーティングとファイアウォール・ルールを使うことで、Kubernetes API エンドポイントへのアクセスを制御し、オンプレミスもしくは同一 VCN 上に構築した踏み台サーバからのみアクセス可能にすることができます。</div>
 </blockquote>
 
 <p><code>Kubernetesワーカー・ノード</code>には今回<code>プライベート</code>を選択します。これは、
-ワークロードに応じて、ワーカーノードにパブリックIPを付与する必要がある場合は、<code>パブリック</code>を選択してください。</p>
+ワークロードに応じて、ワーカーノードにパブリック IP を付与する必要がある場合は、<code>パブリック</code>を選択してください。</p>
 
 
 
@@ -525,12 +530,17 @@
   <div class="gdoc-hint__title flex align-center">
     <span>Kubernetesワーカー・ノードについて</span>
   </div>
-  <div class="gdoc-hint__text">プライベートかパブリックによって、ワーカーノードに付与されるIPアドレスの種類が変わります。   プライベートは、ワーカーノードがプライベートIPのみを付与された状態でプロビジョニングを行います。   ワーカーノードにパブリックIPを付与する必要がある場合は、<code>パブリック</code>を選択してください。</div>
+  <div class="gdoc-hint__text">プライベートかパブリックによって、ワーカーノードに付与される IP アドレスの種類が変わります。 プライベートは、ワーカーノードがプライベート IP のみを付与された状態でプロビジョニングを行います。 ワーカーノードにパブリック IP を付与する必要がある場合は、<code>パブリック</code>を選択してください。</div>
 </blockquote>
 
 <p><code>シェイプ</code>には、今回<code>VM.Standard.E3.Flex</code>を選択します。
-このシェイプは、OCPUとメモリ(RAM)を柔軟に変更することができるようになっています。<br>
-今回は、1oCPU/16GBで作成します。</p>
+このシェイプは、OCPU とメモリ(RAM)を柔軟に変更することができるようになっています。<br>
+今回は、1oCPU/16GB で作成します。
+<img
+  src="image-5.png"
+  alt="alt text"
+  
+/></p>
 
 
 
@@ -538,10 +548,15 @@
   <div class="gdoc-hint__title flex align-center">
     <span>シェイプについて</span>
   </div>
-  <div class="gdoc-hint__text">OKEでは、VM、ベアメタル、GPU、HPCなどの様々なシェイプをご利用頂くことができます。   また、プロセッサ・アーキテクチャとしても、Intel/AMD/ARMベースのインスタンスから選択頂くことができます。   ワークロードに応じて、適切なシェイプを選択してください。</div>
+  <div class="gdoc-hint__text">OKE では、VM、ベアメタル、GPU、HPC などの様々なシェイプをご利用頂くことができます。 また、プロセッサ・アーキテクチャとしても、Intel/AMD/ARM ベースのインスタンスから選択頂くことができます。 ワークロードに応じて、適切なシェイプを選択してください。</div>
 </blockquote>
 
-<p>ノードの数はワーカーノードの数を指定します。デフォルトで「3」が指定されていますが、本ハンズオンでは最小構成である「1」に変更してください。</p>
+<p>ノードの数はワーカーノードの数を指定します。デフォルトで「3」が指定されていますが、本ハンズオンでは最小構成である「1」に変更してください。<br>
+<img
+  src="image-4.png"
+  alt="alt text"
+  
+/></p>
 
 
 
@@ -549,16 +564,17 @@
   <div class="gdoc-hint__title flex align-center">
     <span>ノード数について</span>
   </div>
-  <div class="gdoc-hint__text">ノードはリージョン内の可用性ドメイン全体（または、東京リージョンなど単一可用性ドメインの場合、その可用性ドメイン内の障害ドメイン全体）に可能な限り均等に分散されます。   実運用の際は可用性を考慮し、適切なノード数を指定してください。</div>
+  <div class="gdoc-hint__text">ノードはリージョン内の可用性ドメイン全体（または、東京リージョンなど単一可用性ドメインの場合、その可用性ドメイン内の障害ドメイン全体）に可能な限り均等に分散されます。 実運用の際は可用性を考慮し、適切なノード数を指定してください。</div>
 </blockquote>
 
 <p>そして、ダイアログの下まで移動し<code>次</code>をクリックします。</p>
+<p>次のダイアログは入力内容を確認し、<code>クラスタの作成</code>をクリックします。</p>
+<p>クリックすると「基本的なクラスタの確認」が表示されるので、<code>基本的なクラスタを作成</code>にチェックを入れて、<code>続行</code>をクリックします。</p>
 <p><img
-  src="02-03-1.png"
-  alt=""
+  src="image-6.png"
+  alt="alt text"
   
 /></p>
-<p>次のダイアログは入力内容を確認し、「基本的なクラスタの確認」では、<code>基本的なクラスタを作成</code>にチェックを入れて、<code>クラスタの作成</code>をクリックします。</p>
 
 
 
@@ -566,29 +582,19 @@
   <div class="gdoc-hint__title flex align-center">
     <span>拡張クラスタについて</span>
   </div>
-  <div class="gdoc-hint__text">拡張クラスタは、基本クラスタで提供される機能に加えて、Virtual Nodes、アドオン機能、WorkloadIdentity、SLA等の機能を利用できます。クラスタごとに課金が発生します。 詳細は<a
+  <div class="gdoc-hint__text">拡張クラスタは、基本クラスタで提供される機能に加えて、Virtual Nodes、アドオン機能、WorkloadIdentity、SLA 等の機能を利用できます。クラスタごとに課金が発生します。 詳細は<a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/ContEng/Tasks/contengcomparingenhancedwithbasicclusters_topic.htm"
 >こちら</a>を参照してください。</div>
 </blockquote>
 
+<p>デフォルトの設定では、クラスタが必要とするネットワークリソース等の構成が自動的に行われます。途中経過がダイアログに表示されますので、左下に「タスクが完了しました」というメッセージが表示されるまで待った後、<code>閉じる</code>ボタンをクリックします。</p>
 <p><img
-  src="02-03-3.png"
-  alt=""
+  src="image-7.png"
+  alt="alt text"
   
 /></p>
-<p><img
-  src="02-04.png"
-  alt=""
-  
-/></p>
-<p>デフォルトの設定では、クラスタが必要とするネットワークリソース等の構成が自動的に行われます。途中経過がダイアログに表示されますので、「クラスタと関連ネットワーク・リソースが作成されました」というメッセージが表示されるまで待った後、<code>Close</code>ボタンをクリックします。</p>
-<p><img
-  src="02-05.png"
-  alt=""
-  
-/></p>
-<p>クラスタの詳細画面表示されたら、<code>クラスタ・ステータス</code>に表示される内容を確認してください。この時点では<code>作成中</code>と表示されますが、プロビジョニングが完了すると<code>アクティブ</code>となります（完了までにはおおよそ5～10分程度かかります）。</p>
+<p>クラスタの詳細画面表示されたら、<code>クラスタ・ステータス</code>に表示される内容を確認してください。この時点では<code>作成中</code>と表示されますが、プロビジョニングが完了すると<code>アクティブ</code>となります（完了までにはおおよそ 5 ～ 10 分程度かかります）。</p>
 
 
 
@@ -596,27 +602,27 @@
   <div class="gdoc-hint__title flex align-center">
     <span>この後の進め方について</span>
   </div>
-  <div class="gdoc-hint__text">クラスタが完成するまでの間に次章「3 . CLI実行環境(Cloud Shell)の準備」の手順を進めてください。</div>
+  <div class="gdoc-hint__text">クラスタが完成するまでの間に次章「3 . CLI 実行環境(Cloud Shell)の準備」の手順を進めてください。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2cli実行環境cloud-shellの準備"
+    <h2 id="2cli-実行環境cloud-shellの準備"
     >
-        2.CLI実行環境(Cloud Shell)の準備
+        2.CLI 実行環境(Cloud Shell)の準備
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#2cli実行環境cloud-shellの準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.CLI実行環境(Cloud Shell)の準備" aria-label="アンカー先: 2.CLI実行環境(Cloud Shell)の準備" href="#2cli%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83cloud-shell%e3%81%ae%e6%ba%96%e5%82%99">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#2cli-実行環境cloud-shellの準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.CLI 実行環境(Cloud Shell)の準備" aria-label="アンカー先: 2.CLI 実行環境(Cloud Shell)の準備" href="#2cli-%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83cloud-shell%e3%81%ae%e6%ba%96%e5%82%99">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>つぎにOKEクラスターなどのCLIを実行するための環境を準備します。</p>
+<p>つぎに OKE クラスターなどの CLI を実行するための環境を準備します。</p>
 <p><img
   src="01-01-02.png"
   alt=""
   
 /></p>
-<p>本ハンズオンではOKEクラスターを操作するいくつかのCLIを実行するための環境としてCloud Shellと呼ばれるサービスを使用します。
-Cloud ShellはOracle CloudコンソールからアクセスできるWebブラウザベースのコンソールです。
-Cloud Shellには、OCI CLIをはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
+<p>本ハンズオンでは OKE クラスターを操作するいくつかの CLI を実行するための環境として Cloud Shell と呼ばれるサービスを使用します。
+Cloud Shell は Oracle Cloud コンソールからアクセスできる Web ブラウザベースのコンソールです。
+Cloud Shell には、OCI CLI をはじめとして、次のようないくつかの便利なツールおよびユーティリティの現在のバージョンがインストールされています。
 詳細は、<a
   class="gdoc-markdown__link"
   href="https://docs.cloud.oracle.com/ja-jp/iaas/Content/API/Concepts/cloudshellintro.htm"
@@ -635,7 +641,7 @@ Cloud Shellには、OCI CLIをはじめとして、次のようないくつか�
           <td>Java</td>
       </tr>
       <tr>
-          <td>Python (2および3)</td>
+          <td>Python (2 および 3)</td>
       </tr>
       <tr>
           <td>SQL Plus</td>
@@ -667,22 +673,17 @@ Cloud Shellには、OCI CLIをはじめとして、次のようないくつか�
   <div class="gdoc-hint__title flex align-center">
     <span>Cloud Shellついて</span>
   </div>
-  <div class="gdoc-hint__text">Cloud Shellは開発専用ではなく、一時的にOCIコマンドを実行したい場合などライトなご利用を想定したサービスであるため、実運用時はCLI実行環境を別途ご用意ください。</div>
+  <div class="gdoc-hint__text">Cloud Shell は開発専用ではなく、一時的に OCI コマンドを実行したい場合などライトなご利用を想定したサービスであるため、実運用時は CLI 実行環境を別途ご用意ください。</div>
 </blockquote>
 
-<p>OCIコンソール上で右上にあるターミナルのアイコンをクリックします。</p>
+<p>OCI コンソール上で右上にあるターミナルのアイコンをクリックし、<code>Cloud Shell</code>をクリックします。</p>
 <p><img
-  src="01-02-01.png"
-  alt=""
+  src="image-8.png"
+  alt="alt text"
   
 /></p>
-<p>しばらく待つと、Cloud Shellが起動します。</p>
-<p><img
-  src="01-02-02.png"
-  alt=""
-  
-/></p>
-<p>Cloud Shell は、ARM(aarch64)とX86_64のアーキテクチャを選択できます。こちらのチュートリアルは、X86_64をベースに構成されています。そのため、アーキテクチャのタイプを確認します。もし、ARM(aarch64)が選択されている場合は、X86_64に変更して、Cloud Shell を再起動します。</p>
+<p>しばらく待つと、Cloud Shell が起動します。</p>
+<p>Cloud Shell は、ARM(aarch64)と X86_64 のアーキテクチャを選択できます。こちらのチュートリアルは、X86_64 をベースに構成されています。そのため、アーキテクチャのタイプを確認します。もし、ARM(aarch64)が選択されている場合は、X86_64 に変更して、Cloud Shell を再起動します。</p>
 <p>最初に、「アクション」-「アーキテクチャ」選択します。</p>
 <p><img
   src="01-02-03.png"
@@ -703,19 +704,19 @@ Cloud Shellには、OCI CLIをはじめとして、次のようないくつか�
   
 /></p>
 <p>Cloud Shell の操作に入ります。<br>
-Cloud Shellは、必要なCLIはデフォルトでインストール済みです。<br>
+Cloud Shell は、必要な CLI はデフォルトでインストール済みです。<br>
 例えば以下のようなコマンドを実行できます。</p>
 <pre tabindex="0"><code>kubectl version --client
-</code></pre><p>以下のような結果となれば、kubectlは正常にインストールされています。</p>
+</code></pre><p>以下のような結果となれば、kubectl は正常にインストールされています。</p>
 <pre tabindex="0"><code>Client Version: vX.XX.X
-</code></pre><p>上記は、kubectl（Kubernetesの管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。</p>
+</code></pre><p>上記は、kubectl（Kubernetes の管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。</p>
 <p>以上で、準備作業は完了です。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="3kubectlのセットアップ"
+    <h2 id="3kubectl-のセットアップ"
     >
-        3.kubectlのセットアップ
+        3.kubectl のセットアップ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#3kubectlのセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.kubectlのセットアップ" aria-label="アンカー先: 3.kubectlのセットアップ" href="#3kubectl%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#3kubectl-のセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.kubectl のセットアップ" aria-label="アンカー先: 3.kubectl のセットアップ" href="#3kubectl-%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -724,17 +725,17 @@ Cloud Shellは、必要なCLIはデフォルトでインストール済みです
   alt=""
   
 /></p>
-<p>次に、kubectlのセットアップを行って実際にクラスターにアクセスしてみます。</p>
-<p>OCIコンソール画面左上のハンバーガーメニューを展開し、<code>開発者サービス</code>⇒<code>Kubernetes Clusters (OKE)</code>を選択します。</p>
+<p>次に、kubectl のセットアップを行って実際にクラスターにアクセスしてみます。</p>
+<p>OCI コンソール画面左上のハンバーガーメニューを展開し、<code>開発者サービス</code>⇒<code>Kubernetes Clusters (OKE)</code>を選択します。</p>
 <p><img
-  src="02-02.png"
+  src="image.png"
   alt=""
   
 /></p>
 <p>先の手順で作成しておいた<code>cluster1</code>の名前をクリックします。</p>
 <p><img
-  src="03-08.png"
-  alt=""
+  src="image-9.png"
+  alt="alt text"
   
 /></p>
 
@@ -744,35 +745,31 @@ Cloud Shellは、必要なCLIはデフォルトでインストール済みです
   <div class="gdoc-hint__title flex align-center">
     <span>ここからの手順について</span>
   </div>
-  <div class="gdoc-hint__text">ここからの手順を進めるには、OKEクラスターのプロビジョニングが完了している必要があります。   クラスターの詳細画面で、<code>クラスタ・ステータス</code>が<code>アクティブ</code>となっていることを確認してください。まだ<code>作成中</code>だった場合には、ステータスが変わるまで少しお待ち下さい。</div>
+  <div class="gdoc-hint__text">ここからの手順を進めるには、OKE クラスターのプロビジョニングが完了している必要があります。 クラスターの詳細画面で、<code>クラスタ・ステータス</code>が<code>アクティブ</code>となっていることを確認してください。まだ<code>作成中</code>だった場合には、ステータスが変わるまで少しお待ち下さい。</div>
 </blockquote>
 
-<p>クラスターの詳細画面で、<code>クラスタへのアクセス</code>をクリックします。</p>
+<p>クラスターの詳細画面で、画面右上の<code>アクション</code>をクリックし、表示される選択肢の中から<code>クラスタへのアクセス</code>をクリックします。</p>
 <p><img
-  src="03-09.png"
-  alt=""
+  src="image-10.png"
+  alt="alt text"
   
 /></p>
 <p>「自分のクラスタへのアクセス」というダイアログが表示されます。<br>
-OKEへのアクセス方法は「Cloud Shellアクセス」と「ローカル・アクセス」の2種類が存在します。<br>
-今回はCLI環境としてCloud Shellを利用するので、「Cloud Shellアクセス」でアクセスを行います。<br>
-ダイアログ上部の「Cloud Shellアクセス」をクリックします。</p>
-<p>表示されたダイアログの中にkubetctlの設定ファイルを取得するためのコマンドが表示されます。</p>
+OKE へのアクセス方法は「Cloud Shell アクセス」と「ローカル・アクセス」の 2 種類が存在します。<br>
+今回は CLI 環境として Cloud Shell を利用するので、「Cloud Shell アクセス」でアクセスを行います。<br>
+ダイアログ上部の「Cloud Shell アクセス」をクリックします。</p>
+<p>表示されたダイアログの中に kubetctl の設定ファイルを取得するためのコマンドが表示されます。</p>
 <p><img
-  src="03-12-01.png"
-  alt=""
+  src="image-11.png"
+  alt="alt text"
   
 /></p>
-<p>まず<img
-  src="03-17.png"
-  alt=""
-  
-/>Cloud Shellを起動します。
+<p>まず Cloud Shell を起動します。
 既に起動している場合は本手順は必要ありません。
-Cloud Shellの起動はダイアログに表示されている「Cloud Shellの起動」をクリックするか、<a
+Cloud Shell の起動はダイアログに表示されている「Cloud Shell の起動」をクリックするか、<a
   class="gdoc-markdown__link"
   href="#3-1-cloud-shell%e3%82%92%e8%b5%b7%e5%8b%95%e3%81%99%e3%82%8b"
->3-1. Cloud Shellを起動する</a>を参照してください。</p>
+>3-1. Cloud Shell を起動する</a>を参照してください。</p>
 
 
 
@@ -783,12 +780,8 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
   <div class="gdoc-hint__text">別途クライアント環境を作成された方は作成した環境にログインし、ホームディレクトリ(<code>/home/opc</code>)からコマンドを実行してください。また、コマンドは「ローカル・アクセス」のコマンドを実行してください。</div>
 </blockquote>
 
-<p>次に<img
-  src="03-18.png"
-  alt=""
-  
-/>のコマンドですが、こちらはOCI CLIの設定ファイル取得用のコマンドを実行しています。<br>
-右端の「コピー」をクリックしてコピーし、Cloud Shellにペーストして実行します。<br>
+<p>次にアクセス・コマンドですが、こちらは OCI CLI の設定ファイル取得用のコマンドを実行しています。<br>
+右端の「コピー」をクリックしてコピーし、Cloud Shell にペーストして実行します。<br>
 （以下の例はダミーの値で埋めたものですので、実際のコマンドはダイアログからコピーしてください）</p>
 <pre><code>oci ce cluster create-kubeconfig --cluster-id ocid1.cluster.oc1.iad.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx --file $HOME/.kube/config --region ap-tokyo-1  --token-version 2.0.0  --kube-endpoint PUBLIC_ENDPOINT
 </code></pre>
@@ -799,54 +792,54 @@ Cloud Shellの起動はダイアログに表示されている「Cloud Shellの�
   <div class="gdoc-hint__title flex align-center">
     <span>kubectlコマンドについて</span>
   </div>
-  <div class="gdoc-hint__text">kubectlコマンドはデフォルトで<code>$HOME/.kube/config</code>というパスのファイルを読み込む仕様になっています。   詳細は、kubectlコマンドに関する<a
+  <div class="gdoc-hint__text">kubectl コマンドはデフォルトで<code>$HOME/.kube/config</code>というパスのファイルを読み込む仕様になっています。 詳細は、kubectl コマンドに関する<a
   class="gdoc-markdown__link"
   href="https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/#set-the-kubeconfig-environment-variable"
 >公式ドキュメントの記載</a>を参照ください。</div>
 </blockquote>
 
-<p>最後に、以下のコマンドを実行して、kubectlの動作確認をしてみます。</p>
+<p>最後に、以下のコマンドを実行して、kubectl の動作確認をしてみます。</p>
 <pre><code>kubectl get nodes
 </code></pre>
 <p>以下のような実行結果になれば、正常にクラスターにアクセスできています。</p>
 <pre><code>NAME        STATUS   ROLES   AGE   VERSION
 10.0.10.2   Ready    node    20s   v1.21.5
 </code></pre>
-<p>以上で、OKEでKubernetesクラスターをプロビジョニングし、利用を開始するまでの手順は完了です。<br>
+<p>以上で、OKE で Kubernetes クラスターをプロビジョニングし、利用を開始するまでの手順は完了です。<br>
 この後はそれぞれ実施するハンズオンの手順に従ってください。</p>
 <p><a
   class="gdoc-markdown__link"
   href="../oke-for-beginners/"
->初級編 - OKEでアプリケーションを動かしてみよう</a></p>
+>初級編 - OKE でアプリケーションを動かしてみよう</a></p>
 <p><a
   class="gdoc-markdown__link"
   href="../oke-for-intermediates/"
->中級編 - OKEでサンプルアプリケーションのデプロイとCI/CDを体験してみよう</a></p>
+>中級編 - OKE でサンプルアプリケーションのデプロイと CI/CD を体験してみよう</a></p>
 <p><a
   class="gdoc-markdown__link"
   href="../oke-for-advances/"
->上級編 - OKEでサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></p>
+>上級編 - OKE でサンプルマイクロサービスアプリケーションをデプロイしてオブザバビリティツールを利用してみよう</a></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="4オプションcli実行環境vmインスタンスの作成"
+    <h2 id="4オプションcli-実行環境vm-インスタンスの作成"
     >
-        4.【オプション】CLI実行環境(VMインスタンス)の作成
+        4.【オプション】CLI 実行環境(VM インスタンス)の作成
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4オプションcli実行環境vmインスタンスの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4.【オプション】CLI実行環境(VMインスタンス)の作成" aria-label="アンカー先: 4.【オプション】CLI実行環境(VMインスタンス)の作成" href="#4%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3cli%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83vm%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4オプションcli-実行環境vm-インスタンスの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4.【オプション】CLI 実行環境(VM インスタンス)の作成" aria-label="アンカー先: 4.【オプション】CLI 実行環境(VM インスタンス)の作成" href="#4%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3cli-%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83vm-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%81%ae%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>手順5はオプションになっており、ハンズオン実施にあたっては基本的に不要な手順になります。<br>
-OKEを操作するためのクライアントを、Cloud ShellではなくVMインスタンスで作成したい方やOracle Cloud Infrastructure上のマネージドTerraformサービスである<code>Resource Manager</code>に興味がある方は是非参考にしてください。</p>
+<p>手順 5 はオプションになっており、ハンズオン実施にあたっては基本的に不要な手順になります。<br>
+OKE を操作するためのクライアントを、Cloud Shell ではなく VM インスタンスで作成したい方や Oracle Cloud Infrastructure 上のマネージド Terraform サービスである<code>Resource Manager</code>に興味がある方は是非参考にしてください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="4-1-ociコンソールにアクセスする"
+    <h3 id="4-1-oci-コンソールにアクセスする"
     >
-        4-1. OCIコンソールにアクセスする
+        4-1. OCI コンソールにアクセスする
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-1-ociコンソールにアクセスする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-1. OCIコンソールにアクセスする" aria-label="アンカー先: 4-1. OCIコンソールにアクセスする" href="#4-1-oci%e3%82%b3%e3%83%b3%e3%82%bd%e3%83%bc%e3%83%ab%e3%81%ab%e3%82%a2%e3%82%af%e3%82%bb%e3%82%b9%e3%81%99%e3%82%8b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-1-oci-コンソールにアクセスする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-1. OCI コンソールにアクセスする" aria-label="アンカー先: 4-1. OCI コンソールにアクセスする" href="#4-1-oci-%e3%82%b3%e3%83%b3%e3%82%bd%e3%83%bc%e3%83%ab%e3%81%ab%e3%82%a2%e3%82%af%e3%82%bb%e3%82%b9%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIコンソールにブラウザからアクセスします。お持ちのクラウドアカウントを使って<a
+<p>OCI コンソールにブラウザからアクセスします。お持ちのクラウドアカウントを使って<a
   class="gdoc-markdown__link"
   href="https://cloud.oracle.com/ja_JP/home"
 >サインイン</a>します。</p>
@@ -856,21 +849,21 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   
 /></p>
 <ul>
-<li>1．Sign Inをクリックします</li>
+<li>1．Sign In をクリックします</li>
 <li>2．クラウドアカウント名（テナント名）を入力します</li>
 <li>3．「Next」をクリックします</li>
 <li>4．クラウドユーザー名とパスワードを入力して「サイン・イン」をクリックします</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="4-2-resource-managerを利用して環境を構築する"
+    <h3 id="4-2-resource-manager-を利用して環境を構築する"
     >
-        4-2. Resource Managerを利用して環境を構築する
+        4-2. Resource Manager を利用して環境を構築する
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-2-resource-managerを利用して環境を構築する" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-2. Resource Managerを利用して環境を構築する" aria-label="アンカー先: 4-2. Resource Managerを利用して環境を構築する" href="#4-2-resource-manager%e3%82%92%e5%88%a9%e7%94%a8%e3%81%97%e3%81%a6%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-2-resource-manager-を利用して環境を構築する" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-2. Resource Manager を利用して環境を構築する" aria-label="アンカー先: 4-2. Resource Manager を利用して環境を構築する" href="#4-2-resource-manager-%e3%82%92%e5%88%a9%e7%94%a8%e3%81%97%e3%81%a6%e7%92%b0%e5%a2%83%e3%82%92%e6%a7%8b%e7%af%89%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本節での作業は、OCIのResource Managerと呼ばれるサービスを使って実施します。手作業でVMインスタンスの作成、CLIのインストール、ポリシーの設定などを行うこともできますが、Resource Managerを利用することでこれらの手順を自動化・省力化することが可能です。</p>
+<p>本節での作業は、OCI の Resource Manager と呼ばれるサービスを使って実施します。手作業で VM インスタンスの作成、CLI のインストール、ポリシーの設定などを行うこともできますが、Resource Manager を利用することでこれらの手順を自動化・省力化することが可能です。</p>
 
 
 
@@ -881,7 +874,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   <div class="gdoc-hint__text"><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/cd/E97706_01/Content/ResourceManager/Concepts/resourcemanager.htm"
->Resource Manager</a>は、テキストで記述した構成情報に基づいて、Oracle Cloud上の複数のリソースをまとめて作成/変更/削除することができる、構成管理サービスです。   Resource ManagerではTerraformの形式で構成情報を記述します。</div>
+>Resource Manager</a>は、テキストで記述した構成情報に基づいて、Oracle Cloud 上の複数のリソースをまとめて作成/変更/削除することができる、構成管理サービスです。 Resource Manager では Terraform の形式で構成情報を記述します。</div>
 </blockquote>
 
 <p><img
@@ -898,7 +891,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Resource Managerを利用するには、構成情報を記述したテキストファイルを作成し、それらをzipアーカイブにまとめておく必要があります。Resource Managerアーカイブは既に作成済みです。<br>
+<p>Resource Manager を利用するには、構成情報を記述したテキストファイルを作成し、それらを zip アーカイブにまとめておく必要があります。Resource Manager アーカイブは既に作成済みです。<br>
 <a
   class="gdoc-markdown__link"
   href="https://github.com/oracle-japan/oke-handson-prerequisites/releases/tag/v1.4"
@@ -921,8 +914,8 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>スタックはリソース・マネージャ サービスによって管理されるTerraformコマンドの実行環境です。ここでResource Managerアーカイブをアップロードしてスタックを作成することで、アップロードされたTerraformテンプレートの実行環境がクラウド上に構成されます。</p>
-<p>スタックの作成画面で、<code>マイ構成</code>を選択し、<code>.zipファイルをここにドロップします または 参照</code>と表示された領域にダウンロードしたResource Managerアーカイブをドロップし、下部にある<code>TERRAFORMのバージョン</code>を<code>1.0.x</code>に変更します。<br>
+<p>スタックはリソース・マネージャ サービスによって管理される Terraform コマンドの実行環境です。ここで Resource Manager アーカイブをアップロードしてスタックを作成することで、アップロードされた Terraform テンプレートの実行環境がクラウド上に構成されます。</p>
+<p>スタックの作成画面で、<code>マイ構成</code>を選択し、<code>.zipファイルをここにドロップします または 参照</code>と表示された領域にダウンロードした Resource Manager アーカイブをドロップし、下部にある<code>TERRAFORMのバージョン</code>を<code>1.0.x</code>に変更します。<br>
 その後<code>次</code>をクリックします。</p>
 <p><img
   src="01-07.png"
@@ -934,7 +927,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>Resource Managerが自動的に各環境毎の<code>TENANCY_OCID</code>と<code>COMPARTMENT_OCID</code>と<code>Region</code>の変数に適切な値を投入します。変数が投入されていることを確認し、<code>次</code>をクリックします。</p>
+<p>Resource Manager が自動的に各環境毎の<code>TENANCY_OCID</code>と<code>COMPARTMENT_OCID</code>と<code>Region</code>の変数に適切な値を投入します。変数が投入されていることを確認し、<code>次</code>をクリックします。</p>
 <p><img
   src="01-08.png"
   alt=""
@@ -947,7 +940,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   <div class="gdoc-hint__title flex align-center">
     <span>リージョンについて</span>
   </div>
-  <div class="gdoc-hint__text">Oracle Cloud Infrastructureは、北米、東京を含む多数のデータセンターを利用可能です。ここではアカウント作成時に設定されたホームリージョンのまま、手順を進めていきます。   <a
+  <div class="gdoc-hint__text">Oracle Cloud Infrastructure は、北米、東京を含む多数のデータセンターを利用可能です。ここではアカウント作成時に設定されたホームリージョンのまま、手順を進めていきます。 <a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/cd/E97706_01/Content/General/Concepts/regions.htm"
 >リージョンと可用性ドメイン</a></div>
@@ -987,8 +980,8 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>これで、クライアント環境の構成とOKEクラスターの作成に必要なジョブが開始されます。</p>
-<p>ジョブの完了には数分程度かかりますが、その間、ログに表示される内容を確認してみてください。Resource Managerはクラウドの環境内でTerraformを実行しており、その結果として標準出力に出力される内容がログに表示されます。</p>
+<p>これで、クライアント環境の構成と OKE クラスターの作成に必要なジョブが開始されます。</p>
+<p>ジョブの完了には数分程度かかりますが、その間、ログに表示される内容を確認してみてください。Resource Manager はクラウドの環境内で Terraform を実行しており、その結果として標準出力に出力される内容がログに表示されます。</p>
 <p><img
   src="01-13.png"
   alt=""
@@ -1001,21 +994,21 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="4-3-cli実行環境にログインする"
+    <h3 id="4-3-cli-実行環境にログインする"
     >
-        4-3. CLI実行環境にログインする
+        4-3. CLI 実行環境にログインする
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-3-cli実行環境にログインする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-3. CLI実行環境にログインする" aria-label="アンカー先: 4-3. CLI実行環境にログインする" href="#4-3-cli%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83%e3%81%ab%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3%e3%81%99%e3%82%8b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-3-cli-実行環境にログインする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-3. CLI 実行環境にログインする" aria-label="アンカー先: 4-3. CLI 実行環境にログインする" href="#4-3-cli-%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83%e3%81%ab%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ジョブの実行が完了したら、実際にCLIの実行環境に接続してみましょう。画面左下にある<code>出力</code>をクリックしてください。</p>
+<p>ジョブの実行が完了したら、実際に CLI の実行環境に接続してみましょう。画面左下にある<code>出力</code>をクリックしてください。</p>
 <p><img
   src="01-15.png"
   alt=""
   
 /></p>
-<p>ここでは、ジョブを実行した結果作られたリソースに関連する情報を、確認することができます。ここまで正常に完了していれば、<code>oke-client</code>と<code>private_key_pem</code>という情報が表示されているはずです。これらは、それぞれCLI実行環境のIPアドレスとSSH秘密鍵です。</p>
+<p>ここでは、ジョブを実行した結果作られたリソースに関連する情報を、確認することができます。ここまで正常に完了していれば、<code>oke-client</code>と<code>private_key_pem</code>という情報が表示されているはずです。これらは、それぞれ CLI 実行環境の IP アドレスと SSH 秘密鍵です。</p>
 <p><img
   src="01-16.png"
   alt=""
@@ -1028,7 +1021,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>次に、デスクトップにあるTera Termのショートカットアイコンをダブルクリックし、Tera Termを起動します。「Tera Term: 新しい接続」というダイアログが表示されたら、<code>ホスト</code>に上の手順で控えたIPアドレスを入力し、<code>OK</code>をクリックします。</p>
+<p>次に、デスクトップにある Tera Term のショートカットアイコンをダブルクリックし、Tera Term を起動します。「Tera Term: 新しい接続」というダイアログが表示されたら、<code>ホスト</code>に上の手順で控えた IP アドレスを入力し、<code>OK</code>をクリックします。</p>
 <p><img
   src="01-18.png"
   alt=""
@@ -1040,7 +1033,7 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>「SSH認証」というダイアログが表示されたら、以下のように値を設定して<code>OK</code>をクリックします。</p>
+<p>「SSH 認証」というダイアログが表示されたら、以下のように値を設定して<code>OK</code>をクリックします。</p>
 <div class="table-wrap"> <table>
   <thead>
       <tr>
@@ -1068,43 +1061,43 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   alt=""
   
 /></p>
-<p>CLI実行環境への接続が成功すると、以下のようなコンソール出力が表示されます。</p>
+<p>CLI 実行環境への接続が成功すると、以下のようなコンソール出力が表示されます。</p>
 <pre><code>Last login: Fri Aug  2 04:21:15 2019 from 156.151.8.3
 [opc@oke-client ~]$
 </code></pre>
-<p>必要なCLIはこの時点でインストール済みですので、例えば以下のようなコマンドを実行することが可能です。</p>
+<p>必要な CLI はこの時点でインストール済みですので、例えば以下のようなコマンドを実行することが可能です。</p>
 <pre tabindex="0"><code>kubectl version --client --short
-</code></pre><p>以下のような結果となれば、kubectlは正常にインストールされています。</p>
+</code></pre><p>以下のような結果となれば、kubectl は正常にインストールされています。</p>
 <pre tabindex="0"><code>Client Version: vX.XX.X
-</code></pre><p>上記は、kubectl（Kubernetesの管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。</p>
-<p>以上で、CLI実行環境の作成は完了です。</p>
+</code></pre><p>上記は、kubectl（Kubernetes の管理用のコマンドラインツール）の、バージョン情報を表示するコマンドとその結果です。</p>
+<p>以上で、CLI 実行環境の作成は完了です。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="4-4-oci-cliのセットアップ"
+    <h3 id="4-4-oci-cli-のセットアップ"
     >
-        4-4. OCI CLIのセットアップ
+        4-4. OCI CLI のセットアップ
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-oci-cliのセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4. OCI CLIのセットアップ" aria-label="アンカー先: 4-4. OCI CLIのセットアップ" href="#4-4-oci-cli%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-oci-cli-のセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4. OCI CLI のセットアップ" aria-label="アンカー先: 4-4. OCI CLI のセットアップ" href="#4-4-oci-cli-%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OKEクラスターを利用するためのOCI CLI環境をセットアップします。</p>
+<p>OKE クラスターを利用するための OCI CLI 環境をセットアップします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="4-4-1-テナンシのocidの確認"
+    <h4 id="4-4-1-テナンシの-ocid-の確認"
     >
-        4-4-1. テナンシのOCIDの確認
+        4-4-1. テナンシの OCID の確認
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-1-テナンシのocidの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-1. テナンシのOCIDの確認" aria-label="アンカー先: 4-4-1. テナンシのOCIDの確認" href="#4-4-1-%e3%83%86%e3%83%8a%e3%83%b3%e3%82%b7%e3%81%aeocid%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-1-テナンシの-ocid-の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-1. テナンシの OCID の確認" aria-label="アンカー先: 4-4-1. テナンシの OCID の確認" href="#4-4-1-%e3%83%86%e3%83%8a%e3%83%b3%e3%82%b7%e3%81%ae-ocid-%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCI CLIのセットアップでは、CLIをどのテナンシのユーザーアカウントとして実行するかを設定するために、テナンシ、ユーザーのOCID（識別子）が必要になります。はじめに、このテナンシのOCIDを取得しておきます。</p>
-<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code>テナンシ:&lt;テナンシ名&gt;</code>をクリックします。</p>
+<p>OCI CLI のセットアップでは、CLI をどのテナンシのユーザーアカウントとして実行するかを設定するために、テナンシ、ユーザーの OCID（識別子）が必要になります。はじめに、このテナンシの OCID を取得しておきます。</p>
+<p>OCI コンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code>テナンシ:&lt;テナンシ名&gt;</code>をクリックします。</p>
 <p><img
   src="03-01-1.png"
   alt=""
   
 /></p>
-<p>テナンシ情報<code>OCID</code>の右側にある<code>コピー</code>をクリックすると、テナンシOCIDがクリップボードにコピーされます。</p>
+<p>テナンシ情報<code>OCID</code>の右側にある<code>コピー</code>をクリックすると、テナンシ OCID がクリップボードにコピーされます。</p>
 <p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
 <p><img
   src="03-01-2.png"
@@ -1112,22 +1105,22 @@ OKEを操作するためのクライアントを、Cloud ShellではなくVMイ�
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="4-4-2-ユーザーのocidの確認"
+    <h4 id="4-4-2-ユーザーの-ocid-の確認"
     >
-        4-4-2. ユーザーのOCIDの確認
+        4-4-2. ユーザーの OCID の確認
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-2-ユーザーのocidの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-2. ユーザーのOCIDの確認" aria-label="アンカー先: 4-4-2. ユーザーのOCIDの確認" href="#4-4-2-%e3%83%a6%e3%83%bc%e3%82%b6%e3%83%bc%e3%81%aeocid%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-2-ユーザーの-ocid-の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-2. ユーザーの OCID の確認" aria-label="アンカー先: 4-4-2. ユーザーの OCID の確認" href="#4-4-2-%e3%83%a6%e3%83%bc%e3%82%b6%e3%83%bc%e3%81%ae-ocid-%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>次にテナンシのOCIDを取得しておきます。
-OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code>ユーザ名</code>(oracleidentitycloudservice/&lt;ユーザ名&gt;)をクリックします。</p>
+<p>次にテナンシの OCID を取得しておきます。
+OCI コンソール画面右上の人型のアイコンをクリックし、展開したプロファイルから<code>ユーザ名</code>(oracleidentitycloudservice/&lt;ユーザ名&gt;)をクリックします。</p>
 <p><img
   src="03-02.png"
   alt=""
   
 /></p>
-<p>ユーザ情報が表示されますので、<code>OCID</code>の右側にある<code>コピー</code>をクリックすると、ユーザOCIDがクリップボードにコピーされます。</p>
+<p>ユーザ情報が表示されますので、<code>OCID</code>の右側にある<code>コピー</code>をクリックすると、ユーザ OCID がクリップボードにコピーされます。</p>
 <p><img
   src="03-03.png"
   alt=""
@@ -1135,19 +1128,19 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
 /></p>
 <p>この値は後の手順で利用しますので、テキストエディタにペーストするなどして控えておいてください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="4-4-3-oci-cliのセットアップ"
+    <h4 id="4-4-3-oci-cli-のセットアップ"
     >
-        4-4-3. OCI CLIのセットアップ
+        4-4-3. OCI CLI のセットアップ
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-3-oci-cliのセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-3. OCI CLIのセットアップ" aria-label="アンカー先: 4-4-3. OCI CLIのセットアップ" href="#4-4-3-oci-cli%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-commons/#4-4-3-oci-cli-のセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4-3. OCI CLI のセットアップ" aria-label="アンカー先: 4-4-3. OCI CLI のセットアップ" href="#4-4-3-oci-cli-%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>それでは、OCI CLIのセットアップを行います。
+<p>それでは、OCI CLI のセットアップを行います。
 <a
   class="gdoc-markdown__link"
   href="#3-1-cloud-shell%e3%82%92%e8%b5%b7%e5%8b%95%e3%81%99%e3%82%8b"
->Cloud Shellを起動</a>し、以下
+>Cloud Shell を起動</a>し、以下
 のコマンドを実行してください。</p>
 <pre><code>oci setup config
 </code></pre>
@@ -1176,15 +1169,15 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
       </tr>
       <tr>
           <td>Enter a user OCID</td>
-          <td>先の手順で確認したユーザーのOCIDを入力</td>
+          <td>先の手順で確認したユーザーの OCID を入力</td>
       </tr>
       <tr>
           <td>Enter a tenancy OCID</td>
-          <td>先の手順で確認したテナンシのOCIDを入力</td>
+          <td>先の手順で確認したテナンシの OCID を入力</td>
       </tr>
       <tr>
           <td>Enter a region by index or name(e.g. 1: ap-chiyoda-1, 2: ap-chuncheon-1, 3: ap-hyderabad-1, 4: ap-melbourne-1, 5: ap-mumbai-1, 6: ap-osaka-1, 7: ap-seoul-1, 8: ap-sydney-1, 9: ap-tokyo-1, 10: ca-montreal-1, 11: ca-toronto-1, 12: eu-amsterdam-1, 13: eu-frankfurt-1, &hellip;)</td>
-          <td>CLI実行環境の作成時に指定したリージョン(数字でもOK)を入力</td>
+          <td>CLI 実行環境の作成時に指定したリージョン(数字でも OK)を入力</td>
       </tr>
       <tr>
           <td>Do you want to generate a new RSA key pair? (If you decline you will be asked to supply the path to an existing key.) [Y/n]</td>
@@ -1204,9 +1197,9 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
       </tr>
   </tbody>
 </table> </div>
-<p>CLIからOracle Cloud環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめOracle Cloud上のユーザーアカウントに設定しておく必要があります。</p>
-<p>上記のOCI CLIのセットアップの中で鍵ペアが作成されていますので、公開鍵をユーザーアカウントに設定していきます。</p>
-<p>まず、Tera Termで以下のコマンドを実行し、公開鍵を表示しておきます。</p>
+<p>CLI から Oracle Cloud 環境の操作をおこなう際は、コマンドの実行の度に認証が行われます。この認証のための鍵はあらかじめ Oracle Cloud 上のユーザーアカウントに設定しておく必要があります。</p>
+<p>上記の OCI CLI のセットアップの中で鍵ペアが作成されていますので、公開鍵をユーザーアカウントに設定していきます。</p>
+<p>まず、Tera Term で以下のコマンドを実行し、公開鍵を表示しておきます。</p>
 <pre><code>cat ~/.oci/oci_api_key_public.pem
 </code></pre>
 <p>続いてコンソールに移り、ユーザー詳細画面へ遷移します。</p>
@@ -1228,14 +1221,14 @@ OCIコンソール画面右上の人型のアイコンをクリックし、展�
   
 /></p>
 <p>「公開キーの追加」ダイアログの入力欄が表示されます。<br>
-今回は、<code>公開キーの貼付け</code>をクリックし、先ほとTera Termに表示した公開鍵をペーストし、<code>追加</code>ボタンをクリックします（<code>-----BEGIN PUBLIC KEY-----</code>と<code>-----END PUBLIC KEY-----</code>の行も含めてペーストします）。<br>
+今回は、<code>公開キーの貼付け</code>をクリックし、先ほと Tera Term に表示した公開鍵をペーストし、<code>追加</code>ボタンをクリックします（<code>-----BEGIN PUBLIC KEY-----</code>と<code>-----END PUBLIC KEY-----</code>の行も含めてペーストします）。<br>
 公開キーをファイルで登録したい場合には、<code>公開キー・ファイルの選択</code>をクリックし、公開キーを登録します。</p>
 <p><img
   src="03-16.png"
   alt=""
   
 /></p>
-<p>以上でOCI CLIのセットアップは完了です。</p>
+<p>以上で OCI CLI のセットアップは完了です。</p>
 
   </article>
 

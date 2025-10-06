@@ -43,7 +43,7 @@
 <meta property="article:section" content="Cloud Native" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-10-06T12:43:44+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Oracle Container Engine for Kubernetes(OKE)でKubernetesを動かしてみよう",
       "description": "Oracle Container Engine for Kubernetes(OKE)は、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドKubernetsサービスです。こちらのハンズオンでは、Kubernetes自体の特徴や使い方を含めて、OKEを触って頂けるコンテンツになっています。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png",
-      "wordCount" : "1066",
+      "wordCount" : "1399",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-10-06T12:43:44.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="cloud-native">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-10-06T12:43:44+09:00">
     <meta property="article:tag" content="コンテナ">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/img/hero/Infrastructure_1.png">
 
@@ -309,27 +309,26 @@
   <section class="gdoc-nav--toc">
     <h1>&nbsp;目次</h1>
     <ul>
-        <li><a href="#前提条件">前提条件</a></li>
-        <li><a href="#1コンテナイメージの作成">1.コンテナイメージの作成</a>
+        <li><a href="#前提条件">前提条件</a>
           <ul>
-            <li><a href="#11-ソースコードをcloneする">1.1. ソースコードをCloneする</a></li>
+            <li><a href="#11-ソースコードを-clone-する">1.1. ソースコードを Clone する</a></li>
             <li><a href="#12-コンテナイメージを作る">1.2. コンテナイメージを作る</a></li>
           </ul>
         </li>
-        <li><a href="#2ocirへのプッシュとokeへのデプロイ">2.OCIRへのプッシュとOKEへのデプロイ</a>
+        <li><a href="#2ocir-へのプッシュと-oke-へのデプロイ">2.OCIR へのプッシュと OKE へのデプロイ</a>
           <ul>
-            <li><a href="#21-ocirを利用するための事前準備">2.1. OCIRを利用するための事前準備</a></li>
-            <li><a href="#22-ocirにリポジトリを作成">2.2. OCIRにリポジトリを作成</a></li>
-            <li><a href="#23-ocirにコンテナイメージをプッシュする">2.3. OCIRにコンテナイメージをプッシュする</a></li>
-            <li><a href="#24-okeへのデプロイ">2.4. OKEへのデプロイ</a></li>
+            <li><a href="#21-ocir-を利用するための事前準備">2.1. OCIR を利用するための事前準備</a></li>
+            <li><a href="#22-ocir-にリポジトリを作成">2.2. OCIR にリポジトリを作成</a></li>
+            <li><a href="#23-ocir-にコンテナイメージをプッシュする">2.3. OCIR にコンテナイメージをプッシュする</a></li>
+            <li><a href="#24-oke-へのデプロイ">2.4. OKE へのデプロイ</a></li>
           </ul>
         </li>
-        <li><a href="#3kubernetes上のオブジェクトの確認">3.Kubernetes上のオブジェクトの確認</a>
+        <li><a href="#3kubernetes-上のオブジェクトの確認">3.Kubernetes 上のオブジェクトの確認</a>
           <ul>
-            <li><a href="#31-deploymentオブジェクトの確認">3.1. Deploymentオブジェクトの確認</a></li>
-            <li><a href="#32-podの標準出力の表示">3.2. Podの標準出力の表示</a>
+            <li><a href="#31-deployment-オブジェクトの確認">3.1. Deployment オブジェクトの確認</a></li>
+            <li><a href="#32-pod-の標準出力の表示">3.2. Pod の標準出力の表示</a>
               <ul>
-                <li><a href="#321-podの環境変数の確認">3.2.1. Podの環境変数の確認</a></li>
+                <li><a href="#321-pod-の環境変数の確認">3.2.1. Pod の環境変数の確認</a></li>
               </ul>
             </li>
           </ul>
@@ -337,11 +336,11 @@
         <li><a href="#4アプリケーションのスケーリング">4.アプリケーションのスケーリング</a>
           <ul>
             <li><a href="#41-スケールアウト">4.1. スケールアウト</a></li>
-            <li><a href="#42-serviceによるルーティングの様子の確認">4.2. Serviceによるルーティングの様子の確認</a></li>
+            <li><a href="#42-service-によるルーティングの様子の確認">4.2. Service によるルーティングの様子の確認</a></li>
             <li><a href="#43-スケールイン">4.3. スケールイン</a></li>
           </ul>
         </li>
-        <li><a href="#5podの自動復旧">5.Podの自動復旧</a></li>
+        <li><a href="#5pod-の自動復旧">5.Pod の自動復旧</a></li>
       </ul>
 
 </section>
@@ -426,8 +425,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-10-06T12:43:44&#43;09:00">
+            Oct 6, 2025
         </time>
     
 </span>
@@ -442,14 +441,22 @@
     
 </div>
 
-    <p>Oracle Container Engine for Kubernetes（以下OKE）は、OracleのマネージドKubernetesサービスです。<br>
-このハンズオンでは、OKEにサンプルアプリケーションをデプロイするプロセスを通して、Kubernetesそのものの基本的な操作方法や特徴を学ぶことができます。</p>
+    <p>Oracle Container Engine for Kubernetes（以下 OKE）は、Oracle のマネージド Kubernetes サービスです。<br>
+このハンズオンでは、OKE にサンプルアプリケーションをデプロイするプロセスを通して、Kubernetes そのものの基本的な操作方法や特徴を学ぶことができます。</p>
 <p>このカテゴリには以下のサービスが含まれます。</p>
 <ul>
-<li>Oracle Container Engine for Kubernetes (OKE):
-:   フルマネージドなKuberentesクラスターを提供するクラウドサービスです。</li>
-<li>Oracle Cloud Infrastructure Registry (OCIR):
-:   フルマネージドなDocker v2標準対応のコンテナレジストリを提供するサービスです。</li>
+<li>
+<dl>
+<dt>Oracle Container Engine for Kubernetes (OKE):</dt>
+<dd>フルマネージドな Kuberentes クラスターを提供するクラウドサービスです。</dd>
+</dl>
+</li>
+<li>
+<dl>
+<dt>Oracle Cloud Infrastructure Registry (OCIR):</dt>
+<dd>フルマネージドな Docker v2 標準対応のコンテナレジストリを提供するサービスです。</dd>
+</dl>
+</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="前提条件"
@@ -461,51 +468,43 @@
     </a>
 </div>
 <ul>
-<li>クラウド環境
-<ul>
-<li>Oracle Cloudのアカウントを取得済みであること</li>
-<li><a
+<li>
+<p>クラウド環境
+_ Oracle Cloud のアカウントを取得済みであること
+_ <a
   class="gdoc-markdown__link"
   href="/ocitutorials/cloud-native/oke-for-commons/"
->OKEハンズオン事前準備</a>を実施済みであること</li>
-</ul>
+>OKE ハンズオン事前準備</a>を実施済みであること</p>
+<p>1.コンテナイメージの作成</p>
 </li>
 </ul>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1コンテナイメージの作成"
-    >
-        1.コンテナイメージの作成
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#1コンテナイメージの作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.コンテナイメージの作成" aria-label="アンカー先: 1.コンテナイメージの作成" href="#1%e3%82%b3%e3%83%b3%e3%83%86%e3%83%8a%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e3%81%ae%e4%bd%9c%e6%88%90">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
+<hr>
 <p>ここでは、サンプルアプリケーションが動作するコンテナイメージを作成します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="11-ソースコードをcloneする"
+    <h3 id="11-ソースコードを-clone-する"
     >
-        1.1. ソースコードをCloneする
+        1.1. ソースコードを Clone する
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#11-ソースコードをcloneする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.1. ソースコードをCloneする" aria-label="アンカー先: 1.1. ソースコードをCloneする" href="#11-%e3%82%bd%e3%83%bc%e3%82%b9%e3%82%b3%e3%83%bc%e3%83%89%e3%82%92clone%e3%81%99%e3%82%8b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#11-ソースコードを-clone-する" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1.1. ソースコードを Clone する" aria-label="アンカー先: 1.1. ソースコードを Clone する" href="#11-%e3%82%bd%e3%83%bc%e3%82%b9%e3%82%b3%e3%83%bc%e3%83%89%e3%82%92-clone-%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>今回利用するサンプルアプリケーションは、oracle-japanのGitHubアカウント配下のリポジトリとして作成してあります。</p>
+<p>今回利用するサンプルアプリケーションは、oracle-japan の GitHub アカウント配下のリポジトリとして作成してあります。</p>
 <p><a
   class="gdoc-markdown__link"
   href="https://github.com/oracle-japan/cowweb-for-wercker-demo"
 >サンプルアプリケーションのリポジトリ</a>にアクセスして、<code>Code</code>ボタンをクリックします。</p>
-<p>ソースコードを取得する方法は2つあります。一つはgitのクライアントでCloneする方法、もう一つはZIPファイル形式でダウンロードする方法です。ここでは前者の手順を行いますので、展開した吹き出し型のダイアログで、URLの文字列の右側にあるクリップボード型のアイコンをクリックします。</p>
-<p>これにより、クリップボードにURLがコピーされます。</p>
+<p>ソースコードを取得する方法は 2 つあります。一つは git のクライアントで Clone する方法、もう一つは ZIP ファイル形式でダウンロードする方法です。ここでは前者の手順を行いますので、展開した吹き出し型のダイアログで、URL の文字列の右側にあるクリップボード型のアイコンをクリックします。</p>
+<p>これにより、クリップボードに URL がコピーされます。</p>
 <p><img
   src="2.3.PNG"
   alt=""
   
 /></p>
-<p>Cloud ShellまたはLinuxのコンソールから、以下のコマンドを実行してソースコードをCloneします。</p>
+<p>Cloud Shell または Linux のコンソールから、以下のコマンドを実行してソースコードを Clone します。</p>
 <pre><code>git clone [コピーしたリポジトリのURL]
 </code></pre>
-<p>続いて、Cloneしてできたディレクトリをカレントディレクトリにしておきます。</p>
+<p>続いて、Clone してできたディレクトリをカレントディレクトリにしておきます。</p>
 <pre><code>cd cowweb-for-wercker-demo
 </code></pre>
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -517,8 +516,8 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>コンテナイメージは、Dockerfileと呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。</p>
-<p>サンプルアプリケーションのコードには作成済みのDockerfileが含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。</p>
+<p>コンテナイメージは、Dockerfile と呼ばれるコンテナの構成を記述したファイルによって、その内容が定義されます。</p>
+<p>サンプルアプリケーションのコードには作成済みの Dockerfile が含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。</p>
 <pre><code>cat Dockerfile
 </code></pre>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-dockerfile" data-lang="dockerfile"><span class="line"><span class="cl"><span class="c"># 1st stage, build the app</span><span class="err">
@@ -550,26 +549,36 @@
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">CMD</span> <span class="p">[</span><span class="s2">&#34;java&#34;</span><span class="p">,</span> <span class="s2">&#34;-jar&#34;</span><span class="p">,</span> <span class="s2">&#34;cowweb-helidon.jar&#34;</span><span class="p">]</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="k">EXPOSE</span><span class="s"> 8080</span><span class="err">
-</span></span></span></code></pre></div><p>Dockerfileの内容を見ると、FROMで始まる行が2つあることがわかります。最初のFROMから始まる数行は、jdkがインストールされたコンテナイメージ内にサンプルアプリケーションのコードをコピーし、さらに<code>mvn package</code>を実行してアプリをビルドしています。</p>
-<p>次のFROMから続く一連の処理は、jdkがインストールされたコンテナイメージを基に、アプリの実行ユーザーの作成、ビルドしてできたjarファイルのコピー、コンテナ起動時に実行するコマンドの設定などを行っています。</p>
-<p>それではこのDockerfileを使ってコンテナイメージを作成します。以下のコマンドを実行してください。</p>
+</span></span></span></code></pre></div><p>Dockerfile の内容を見ると、FROM で始まる行が 2 つあることがわかります。最初の FROM から始まる数行は、jdk がインストールされたコンテナイメージ内にサンプルアプリケーションのコードをコピーし、さらに<code>mvn package</code>を実行してアプリをビルドしています。</p>
+<p>次の FROM から続く一連の処理は、jdk がインストールされたコンテナイメージを基に、アプリの実行ユーザーの作成、ビルドしてできた jar ファイルのコピー、コンテナ起動時に実行するコマンドの設定などを行っています。</p>
+<p>それではこの Dockerfile を使ってコンテナイメージを作成します。以下のコマンドを実行してください。</p>
 <pre><code>docker image build -t [リポジトリ名]/cowweb:v1.0 .
 </code></pre>
+
+
+
+<blockquote class="gdoc-hint important">
+  <div class="gdoc-hint__title flex align-center">
+    <span>コンテナイメージを取得するレジストリの選択</span>
+  </div>
+  <div class="gdoc-hint__text"><code>docker image build</code>コマンドを実行した際に、<code>container-registry.oracle.com</code>と<code>docker.io</code>のどちらからイメージをダウンロードするかを選択するよう求められる場合があります。この場合は、<code>docker.io</code>を選択するようにしてください。</div>
+</blockquote>
+
 <p>このコマンドにおいて<code>リポジトリ名</code>には任意の文字列を指定できますが、通常はプロジェクト名やユーザー名などを小文字にしたものを指定します。例えば、以下のようなコマンドになります。</p>
 <pre><code>docker image build -t oke-handson/cowweb:v1.0 .
 </code></pre>
 <p>以下のように、<code>Successfully tagged</code>のメッセージで処理が終了していれば、イメージのビルドは完了です。</p>
 <pre tabindex="0"><code>Sending build context to Docker daemon  128.5kB
 Step 1/13 : FROM maven:3.8.4-openjdk-17-slim as build
-Trying to pull repository docker.io/library/maven ... 
+Trying to pull repository docker.io/library/maven ...
 3.8.4-openjdk-17-slim: Pulling from docker.io/library/maven
-f7a1c6dad281: Pull complete 
-ea8366d5a4a5: Pull complete 
-bff4abe573cd: Pull complete 
-3f92e41bef06: Pull complete 
-6581ea1ec5a5: Pull complete 
-de879b0c951f: Pull complete 
-ac1236d673e3: Pull complete 
+f7a1c6dad281: Pull complete
+ea8366d5a4a5: Pull complete
+bff4abe573cd: Pull complete
+3f92e41bef06: Pull complete
+6581ea1ec5a5: Pull complete
+de879b0c951f: Pull complete
+ac1236d673e3: Pull complete
 Digest: sha256:150deb7b386bad685dcf0c781b9b9023a25896087b637c069a50c8019cab86f8
 Status: Downloaded newer image for maven:3.8.4-openjdk-17-slim
  ---&gt; 849a2a2d4242
@@ -611,85 +620,85 @@ oke-handson/cowweb   v1.0                    a328bfaffb52        4 minutes ago  
 openjdk              17-jdk-slim             37cb44321d04        4 months ago        408MB
 maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago        425MB
 </code></pre><p><code>oke-handson/cowweb</code>の名前のイメージが作成されていることがわかります。</p>
-<p>アプリケーションのコンテナイメージは、ソースコードのビルドにはmavenがインストールされたコンテナを利用し、アプリケーションの実行環境にはopenjdkがインストールされたコンテナを利用しています。このため、mavenやopenjdkといった名前のついたイメージも表示されます。</p>
+<p>アプリケーションのコンテナイメージは、ソースコードのビルドには maven がインストールされたコンテナを利用し、アプリケーションの実行環境には openjdk がインストールされたコンテナを利用しています。このため、maven や openjdk といった名前のついたイメージも表示されます。</p>
 <p>これらのコンテナは、アプリケーションのコンテナイメージの作成時に、自動的にダウンロードされて利用されています。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2ocirへのプッシュとokeへのデプロイ"
+    <h2 id="2ocir-へのプッシュと-oke-へのデプロイ"
     >
-        2.OCIRへのプッシュとOKEへのデプロイ
+        2.OCIR へのプッシュと OKE へのデプロイ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#2ocirへのプッシュとokeへのデプロイ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.OCIRへのプッシュとOKEへのデプロイ" aria-label="アンカー先: 2.OCIRへのプッシュとOKEへのデプロイ" href="#2ocir%e3%81%b8%e3%81%ae%e3%83%97%e3%83%83%e3%82%b7%e3%83%a5%e3%81%a8oke%e3%81%b8%e3%81%ae%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#2ocir-へのプッシュと-oke-へのデプロイ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.OCIR へのプッシュと OKE へのデプロイ" aria-label="アンカー先: 2.OCIR へのプッシュと OKE へのデプロイ" href="#2ocir-%e3%81%b8%e3%81%ae%e3%83%97%e3%83%83%e3%82%b7%e3%83%a5%e3%81%a8-oke-%e3%81%b8%e3%81%ae%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="21-ocirを利用するための事前準備"
+    <h3 id="21-ocir-を利用するための事前準備"
     >
-        2.1. OCIRを利用するための事前準備
+        2.1. OCIR を利用するための事前準備
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#21-ocirを利用するための事前準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.1. OCIRを利用するための事前準備" aria-label="アンカー先: 2.1. OCIRを利用するための事前準備" href="#21-ocir%e3%82%92%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e3%81%9f%e3%82%81%e3%81%ae%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#21-ocir-を利用するための事前準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.1. OCIR を利用するための事前準備" aria-label="アンカー先: 2.1. OCIR を利用するための事前準備" href="#21-ocir-%e3%82%92%e5%88%a9%e7%94%a8%e3%81%99%e3%82%8b%e3%81%9f%e3%82%81%e3%81%ae%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIRはOracleが提供するコンテナレジストリのマネージドサービスです。ここでは、1.3.で作成したコンテナイメージをOCIRにプッシュ（アップロード）します。</p>
-<p>OCIRにdockerコマンドからアクセスするため、OCIのユーザーアカウントに必要な設定をしていきます。</p>
-<p>OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(oracleidentitycloudservice/&lt;ユーザ名&gt;)をクリックします。</p>
+<p>OCIR は Oracle が提供するコンテナレジストリのマネージドサービスです。ここでは、1.3.で作成したコンテナイメージを OCIR にプッシュ（アップロード）します。</p>
+<p>OCIR に docker コマンドからアクセスするため、OCI のユーザーアカウントに必要な設定をしていきます。</p>
+<p>OCI コンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからユーザ名(oracleidentitycloudservice/&lt;ユーザ名&gt;)をクリックします。</p>
 <p><img
-  src="3.2-1.png"
-  alt=""
+  src="image-1.png"
+  alt="alt text"
   
 /></p>
-<p>下にスクロールした左側にある<code>認証トークン</code>をクリックして、トークンの作成画面に遷移します。</p>
+<p>タブの中にある<code>トークンおよびキー</code>をクリックして、トークンの作成画面に遷移します。</p>
 <p><img
-  src="3.3.png"
-  alt=""
+  src="image-2.png"
+  alt="alt text"
   
 /></p>
 <p><code>トークンの生成</code>ボタンをクリックします。</p>
 <p><img
-  src="3.4.png"
-  alt=""
+  src="image-3.png"
+  alt="alt text"
   
 /></p>
 <p>[Geterate Token]ダイアログで、トークンの用途を説明する情報（任意の文字列）を入力し、<code>トークンの生成</code>ボタンをクリックします。</p>
 <p><img
-  src="3.5.png"
-  alt=""
+  src="image-4.png"
+  alt="alt text"
   
 /></p>
-<p>ダイアログに生成したトークンが表示されます。<code>Copy</code>という文字列をクリックするとクリップボードにこのトークンがコピーされます。そして<code>閉じる</code>をクリックします。</p>
+<p>ダイアログに生成したトークンが表示されます。右側の３点ドットクリックして表示されるメニューの中から、<code>コピー</code>をクリックするとトークンの内容がクリップボードに保存されます。その後、<code>閉じる</code>をクリックします。</p>
 <p><img
-  src="3.6.png"
-  alt=""
+  src="image-5.png"
+  alt="alt text"
   
 /></p>
 <p>このトークンはあとの手順で利用するため、テキストエディタ等にペーストするなどして控えておいてください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="22-ocirにリポジトリを作成"
+    <h3 id="22-ocir-にリポジトリを作成"
     >
-        2.2. OCIRにリポジトリを作成
+        2.2. OCIR にリポジトリを作成
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#22-ocirにリポジトリを作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.2. OCIRにリポジトリを作成" aria-label="アンカー先: 2.2. OCIRにリポジトリを作成" href="#22-ocir%e3%81%ab%e3%83%aa%e3%83%9d%e3%82%b8%e3%83%88%e3%83%aa%e3%82%92%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#22-ocir-にリポジトリを作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.2. OCIR にリポジトリを作成" aria-label="アンカー先: 2.2. OCIR にリポジトリを作成" href="#22-ocir-%e3%81%ab%e3%83%aa%e3%83%9d%e3%82%b8%e3%83%88%e3%83%aa%e3%82%92%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIRにビルドしたコンテナイメージを格納するリポジトリを作成します。<br>
+<p>OCIR にビルドしたコンテナイメージを格納するリポジトリを作成します。<br>
 ハンバーガーメニューから、「開発者サービス」-「コンテナ・レジストリ」を選択します。</p>
 <p><img
-  src="2.2-1.png"
-  alt=""
+  src="image-6.png"
+  alt="alt text"
   
 /></p>
 <p>左メニューにあるコンパートメントのプルダウンメニューから対象のコンパートメントを選択します。</p>
 <p><img
-  src="2.2-2.png"
-  alt=""
+  src="image-9.png"
+  alt="alt text"
   
 /></p>
 <p>「リポジトリの作成」ボタンをクリックします。</p>
 <p><img
-  src="2.2-3.png"
-  alt=""
+  src="image-8.png"
+  alt="alt text"
   
 /></p>
 <p>以下の設定を行い、「リポジトリの作成」ボタンをクリックします。</p>
@@ -705,31 +714,31 @@ maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago   
   <div class="gdoc-hint__title flex align-center">
     <span>リポジトリ名について</span>
   </div>
-  <div class="gdoc-hint__text">OCIRのリポジトリ名はテナンシで一意になります。   集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oke-handson-01/cowweb</code>や<code>oke-handson-tn/cowweb</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
+  <div class="gdoc-hint__text">OCIR のリポジトリ名はテナンシで一意になります。 集合ハンズオンなど複数人で同一環境を共有されている皆様は、<code>oke-handson-01/cowweb</code>や<code>oke-handson-tn/cowweb</code>などの名前のイニシャルを付与し、名前が重複しないようにしてください。</div>
 </blockquote>
 
 <p><img
-  src="2.2-4.png"
-  alt=""
+  src="image-11.png"
+  alt="alt text"
   
 /></p>
 <p>リストに作成したリポジトリがあることを確認します。</p>
 <p><img
-  src="2.2-5.png"
-  alt=""
+  src="image-12.png"
+  alt="alt text"
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="23-ocirにコンテナイメージをプッシュする"
+    <h3 id="23-ocir-にコンテナイメージをプッシュする"
     >
-        2.3. OCIRにコンテナイメージをプッシュする
+        2.3. OCIR にコンテナイメージをプッシュする
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#23-ocirにコンテナイメージをプッシュする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.3. OCIRにコンテナイメージをプッシュする" aria-label="アンカー先: 2.3. OCIRにコンテナイメージをプッシュする" href="#23-ocir%e3%81%ab%e3%82%b3%e3%83%b3%e3%83%86%e3%83%8a%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e3%82%92%e3%83%97%e3%83%83%e3%82%b7%e3%83%a5%e3%81%99%e3%82%8b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#23-ocir-にコンテナイメージをプッシュする" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.3. OCIR にコンテナイメージをプッシュする" aria-label="アンカー先: 2.3. OCIR にコンテナイメージをプッシュする" href="#23-ocir-%e3%81%ab%e3%82%b3%e3%83%b3%e3%83%86%e3%83%8a%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e3%82%92%e3%83%97%e3%83%83%e3%82%b7%e3%83%a5%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>それでは、コンテナイメージをOCIRにプッシュします。</p>
-<p>まず、<code>docker login</code>コマンドでOCIRにログインします。ログイン先のレジストリを指定するにあたり、ホストされているデータセンターリージョンに合わせて適切なリージョンコードを指定する必要があります。</p>
+<p>それでは、コンテナイメージを OCIR にプッシュします。</p>
+<p>まず、<code>docker login</code>コマンドで OCIR にログインします。ログイン先のレジストリを指定するにあたり、ホストされているデータセンターリージョンに合わせて適切なリージョンコードを指定する必要があります。</p>
 <p>ご自身の環境に合わせて、下表から適切なリージョンコードを見つけてください。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -829,17 +838,17 @@ maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago   
       </tr>
   </tbody>
 </table> </div>
-<p>次に、OCIRにログインするためにオブジェクト・ストレージ・ネームスペースを確認します。</p>
-<p>オブジェクト・ストレージ・ネームスペースは、OCIコンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからテナンシ:&lt;テナンシ名&gt;から確認します。</p>
+<p>次に、OCIR にログインするためにオブジェクト・ストレージ・ネームスペースを確認します。</p>
+<p>オブジェクト・ストレージ・ネームスペースは、OCI コンソール画面右上の人型のアイコンをクリックし、展開したプロファイルからテナンシ:&lt;テナンシ名&gt;から確認します。</p>
 <p><img
-  src="3.6-0.png"
-  alt=""
+  src="image-13.png"
+  alt="alt text"
   
 /></p>
-<p>テナンシ情報のオブジェクト・ストレージ設定からオブジェクト・ストレージ・ネームスペースの値を確認します。OCIRへのアクセスする際に使用するため、値をテキストファイルにコピー＆ペーストするなどして控えておいてください。</p>
+<p>テナンシ情報のオブジェクト・ストレージ設定からオブジェクト・ストレージ・ネームスペースの値を確認します。OCIR へのアクセスする際に使用するため、値をテキストファイルにコピー＆ペーストするなどして控えておいてください。</p>
 <p><img
-  src="3.6-1.png"
-  alt=""
+  src="image-14.png"
+  alt="alt text"
   
 /></p>
 
@@ -849,10 +858,10 @@ maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago   
   <div class="gdoc-hint__title flex align-center">
     <span>オブジェクト・ストレージ・ネームスペースについて</span>
   </div>
-  <div class="gdoc-hint__text">オブジェクト・ストレージ・ネームスペースはテナントに対し1つ割り当てられます。リージョン内のすべてのコンパートメントにまたがり使用されます。任意の文字列が設定され、変更することはできません。</div>
+  <div class="gdoc-hint__text">オブジェクト・ストレージ・ネームスペースはテナントに対し 1 つ割り当てられます。リージョン内のすべてのコンパートメントにまたがり使用されます。任意の文字列が設定され、変更することはできません。</div>
 </blockquote>
 
-<p>次に、以下のコマンドでOCIRにログインします。</p>
+<p>次に、以下のコマンドで OCIR にログインします。</p>
 <pre><code>docker login [リージョンコード].ocir.io
 </code></pre>
 <p>例えば、東京リージョン(nrt)をご利用の場合は、以下のコマンドでログインします。</p>
@@ -873,22 +882,22 @@ maven                3.8.4-openjdk-17-slim   849a2a2d4242        5 months ago   
   <div class="gdoc-hint__title flex align-center">
     <span>パスワードについて</span>
   </div>
-  <div class="gdoc-hint__text">ここで入力するパスワードはOCIコンソールにログインする際のパスワードとは異なるのでご注意ください</div>
+  <div class="gdoc-hint__text">ここで入力するパスワードは OCI コンソールにログインする際のパスワードとは異なるのでご注意ください</div>
 </blockquote>
 
 <p>以下のように<code>Login Succeeded</code>というメッセージが表示されれば、ログイン成功です。</p>
 <pre tabindex="0"><code>Username: nrzftilbveen/Handson-001
 Password:
 Login Succeeded
-</code></pre><p>続いて、OCIRの形式に合わせてコンテナイメージのタグを更新します。<code>docker tag</code>コマンドを実行してくさい。</p>
+</code></pre><p>続いて、OCIR の形式に合わせてコンテナイメージのタグを更新します。<code>docker tag</code>コマンドを実行してくさい。</p>
 <pre><code>docker image tag [リポジトリ名]/cowweb:v1.0 [リージョンコード].ocir.io/オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 </code></pre>
 <p>[リージョンコード]と[オブジェクト・ストレージ・ネームスペース]は、これまでの手順で指定したものと同じものを指定します。リポジトリ名には<code>docker build</code>のときにしてしたものと同じ文字列を指定してください。</p>
 <p>例えば、以下のように指定します。</p>
 <pre><code>docker image tag oke-handson/cowweb:v1.0 nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 </code></pre>
-<p>この操作によって、コンテナイメージにプッシュ先のレジストリを指定する情報を追加しています。これを行わない場合、コンテナイメージはデフォルトのレジストリが指定されたものとみなされ、Docker社が提供するDocker Hubというレジストリが利用されてしまいます。</p>
-<p>これで準備が整いましたので、実際にOCIRにイメージをプッシュします。以下のコマンドを実行してください。</p>
+<p>この操作によって、コンテナイメージにプッシュ先のレジストリを指定する情報を追加しています。これを行わない場合、コンテナイメージはデフォルトのレジストリが指定されたものとみなされ、Docker 社が提供する Docker Hub というレジストリが利用されてしまいます。</p>
+<p>これで準備が整いましたので、実際に OCIR にイメージをプッシュします。以下のコマンドを実行してください。</p>
 <pre><code>docker image push [リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 </code></pre>
 <p>例えば、以下のように指定します。</p>
@@ -918,32 +927,32 @@ v1.0: digest: sha256:5769c194f3861f71c9fd43eb763813676aaba0b41acf453fb6a09a1af75
 </div>
 </blockquote>
 
-<p>それでは、OCIRにコンテナが保存されていることを確認してみましょう。OCIコンソールの画面で左上のメニューを展開し、<code>開発者サービス</code>－<code>コンテナ・レジストリ</code>をクリックします。</p>
+<p>それでは、OCIR にコンテナが保存されていることを確認してみましょう。OCI コンソールの画面で左上のメニューを展開し、<code>開発者サービス</code>－<code>コンテナ・レジストリ</code>をクリックします。</p>
 <p><img
-  src="3.7.png"
-  alt=""
+  src="image-6.png"
+  alt="alt text"
   
 /></p>
 <p>リポジトリの一覧が表示されます。この中に、指定した名前のコンテナがあることを確認してください。</p>
 <p><img
-  src="3.8-2.png"
-  alt=""
+  src="image-15.png"
+  alt="alt text"
   
 /></p>
 <p>これでレジストリへのコンテナイメージの格納は完了しました。
-以上で、OCIRへのコンテナイメージの格納は完了です。</p>
+以上で、OCIR へのコンテナイメージの格納は完了です。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="24-okeへのデプロイ"
+    <h3 id="24-oke-へのデプロイ"
     >
-        2.4. OKEへのデプロイ
+        2.4. OKE へのデプロイ
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#24-okeへのデプロイ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.4. OKEへのデプロイ" aria-label="アンカー先: 2.4. OKEへのデプロイ" href="#24-oke%e3%81%b8%e3%81%ae%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#24-oke-へのデプロイ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2.4. OKE へのデプロイ" aria-label="アンカー先: 2.4. OKE へのデプロイ" href="#24-oke-%e3%81%b8%e3%81%ae%e3%83%87%e3%83%97%e3%83%ad%e3%82%a4">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>それでは、いよいよOKEクラスターにアプリケーションのコンテナをデプロイします。</p>
-<p>OKEを始めとして、Kubernetesのクラスターにコンテナをデプロイするには、クラスター上の配置情報をmanifestと呼ばれるファイルに記述しておく必要があります。</p>
-<p>サンプルアプリケーションのコードには作成済みのmanifestファイルが含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。</p>
+<p>それでは、いよいよ OKE クラスターにアプリケーションのコンテナをデプロイします。</p>
+<p>OKE を始めとして、Kubernetes のクラスターにコンテナをデプロイするには、クラスター上の配置情報を manifest と呼ばれるファイルに記述しておく必要があります。</p>
+<p>サンプルアプリケーションのコードには作成済みの manifest ファイルが含まれていますので、その内容を確認してみます。以下のコマンドを実行してください。</p>
 <pre tabindex="0"><code>cat ./kubernetes/cowweb.yaml
 </code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">kind: Deployment
 </span></span><span class="line"><span class="cl">apiVersion: apps/v1
@@ -968,7 +977,7 @@ v1.0: digest: sha256:5769c194f3861f71c9fd43eb763813676aaba0b41acf453fb6a09a1af75
 </span></span><span class="line"><span class="cl">            - name: api
 </span></span><span class="line"><span class="cl">              containerPort: <span class="m">8080</span>
 </span></span><span class="line"><span class="cl">    ...（以下略）...
-</span></span></code></pre></div><p>このファイルによって、サンプルアプリケーションのコンテナが、クラスター上にどのように配置されるかが定義されています。例えば、6行目にある<code>replicas:2</code>という記述は、このコンテナが、2つ立ち上げられて冗長構成を取るということを意味しています。</p>
+</span></span></code></pre></div><p>このファイルによって、サンプルアプリケーションのコンテナが、クラスター上にどのように配置されるかが定義されています。例えば、6 行目にある<code>replicas:2</code>という記述は、このコンテナが、2 つ立ち上げられて冗長構成を取るということを意味しています。</p>
 
 
 
@@ -976,16 +985,16 @@ v1.0: digest: sha256:5769c194f3861f71c9fd43eb763813676aaba0b41acf453fb6a09a1af75
   <div class="gdoc-hint__title flex align-center">
     <span>サンプルアプリについて</span>
   </div>
-  <div class="gdoc-hint__text">実際にKubernetes上でコンテナが動作する際には、Podと言われる管理単位に内包される形で実行されます。上記のmanifestでは、サンプルアプリのコンテナを内包するPodが、2つデプロイされることになります。</div>
+  <div class="gdoc-hint__text">実際に Kubernetes 上でコンテナが動作する際には、Pod と言われる管理単位に内包される形で実行されます。上記の manifest では、サンプルアプリのコンテナを内包する Pod が、2 つデプロイされることになります。</div>
 </blockquote>
 
-<p>22行目には、実際にクラスター上で動かすコンテナイメージが指定されています。現在の記述内容は、ご自身環境に合わせた記述にはなっていませんので、この部分を正しい値に修正してください。具体的には、2.2.で<code>docker image push</code>コマンドを実行する際に指定した文字列と同じ内容に修正してください。</p>
+<p>22 行目には、実際にクラスター上で動かすコンテナイメージが指定されています。現在の記述内容は、ご自身環境に合わせた記述にはなっていませんので、この部分を正しい値に修正してください。具体的には、2.2.で<code>docker image push</code>コマンドを実行する際に指定した文字列と同じ内容に修正してください。</p>
 <pre><code>[リージョンコード].ocir.io/[オブジェクト・ストレージ・ネームスペース]/[リポジトリ名]/cowweb:v1.0
 </code></pre>
 <p>例えば、以下のような文字列となります。</p>
 <pre><code>nrt.ocir.io/nrzftilbveen/oke-handson/cowweb:v1.0
 </code></pre>
-<p>次に、cowweb-service.yamlというmanifestファイルの内容を確認してみます。</p>
+<p>次に、cowweb-service.yaml という manifest ファイルの内容を確認してみます。</p>
 <pre tabindex="0"><code>cat ./kubernetes/cowweb-service.yaml
 </code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">kind: Service
 </span></span><span class="line"><span class="cl">apiVersion: v1
@@ -1006,21 +1015,21 @@ v1.0: digest: sha256:5769c194f3861f71c9fd43eb763813676aaba0b41acf453fb6a09a1af75
 </span></span><span class="line"><span class="cl">    - port: <span class="m">80</span>
 </span></span><span class="line"><span class="cl">      targetPort: <span class="m">8080</span>
 </span></span><span class="line"><span class="cl">      name: http
-</span></span></code></pre></div><p>このmanifestファイルは、クラスターに対するリクエストのトラフィックを受け付ける際のルールを定義しています。<code>type: LoadBalancer</code>という記述は、クラスターがホストされているクラウドサービスのロードバランサーを自動プロビジョニングし、そのLBに来たトラフィックをコンテナに届けるという意味です。</p>
-<p>それでは、Kubernetes上でサンプルアプリケーションのコンテナを動かしてみます。まずは、クラスターを区画に分けて管理するための領域である、namespaceを作成します。以下のコマンドで、namespace名は任意の文字列を指定できます。<br>
-今回は&quot;handson&quot;というnamespace名で作成します。</p>
+</span></span></code></pre></div><p>この manifest ファイルは、クラスターに対するリクエストのトラフィックを受け付ける際のルールを定義しています。<code>type: LoadBalancer</code>という記述は、クラスターがホストされているクラウドサービスのロードバランサーを自動プロビジョニングし、その LB に来たトラフィックをコンテナに届けるという意味です。</p>
+<p>それでは、Kubernetes 上でサンプルアプリケーションのコンテナを動かしてみます。まずは、クラスターを区画に分けて管理するための領域である、namespace を作成します。以下のコマンドで、namespace 名は任意の文字列を指定できます。<br>
+今回は&quot;handson&quot;という namespace 名で作成します。</p>
 <pre><code>kubectl create namespace handson
 </code></pre>
-<p>デフォルトのNamespaceを上記で作成したものに変更しておきます。これを行うと、以降、kubectlの実行の度にNamespaceを指定する必要がなくなります。</p>
+<p>デフォルトの Namespace を上記で作成したものに変更しておきます。これを行うと、以降、kubectl の実行の度に Namespace を指定する必要がなくなります。</p>
 <pre><code>kubectl config set-context $(kubectl config current-context) --namespace=handson
 </code></pre>
-<p>次に、manifestファイルをクラスターに適用し、PodやServiceをクラスター内に作成します。</p>
+<p>次に、manifest ファイルをクラスターに適用し、Pod や Service をクラスター内に作成します。</p>
 <pre tabindex="0"><code>kubectl apply -f ./kubernetes/cowweb.yaml
 </code></pre><pre tabindex="0"><code>kubectl apply -f ./kubernetes/cowweb-service.yaml
 </code></pre><p>以下のコマンドを実行して、リソースの構成が完了しているかどうかを確認することができます。</p>
 <pre><code>kubectl get pod,service
 </code></pre>
-<p>すべてのPodのSTATUSがRunnigであることと、cowwebという名前のServiceがあることが確認できれば、リソースの作成は完了です（ServiceのEXTERNAL-IPは、ロードバランサーが実際に作成されるまで表示されません。その場合は少し時間を置いて上記コマンドを再実行してください）。</p>
+<p>すべての Pod の STATUS が Runnig であることと、cowweb という名前の Service があることが確認できれば、リソースの作成は完了です（Service の EXTERNAL-IP は、ロードバランサーが実際に作成されるまで表示されません。その場合は少し時間を置いて上記コマンドを再実行してください）。</p>
 <pre tabindex="0"><code>NAME                          READY   STATUS    RESTARTS   AGE
 pod/cowweb-695c65b665-sgcdk   1/1     Running   0          17s
 pod/cowweb-695c65b665-vh825   1/1     Running   0          17s
@@ -1034,7 +1043,7 @@ service/cowweb       LoadBalancer   10.96.229.191   130.***.***.***   80:30975/T
   <div class="gdoc-hint__title flex align-center">
     <span>集合ハンズオン時のロードバランサーのシェイプについて</span>
   </div>
-  <div class="gdoc-hint__text"><p>集合ハンズオンなどで、一つのクラウド環境を複数のユーザーで共有している場合、利用可能なロードバランサー数の上限に達して正常にServiceが作成できない場合があります。<br>
+  <div class="gdoc-hint__text"><p>集合ハンズオンなどで、一つのクラウド環境を複数のユーザーで共有している場合、利用可能なロードバランサー数の上限に達して正常に Service が作成できない場合があります。<br>
 そのような場合は、ロードバランサーのシェイプ（対応可能なトラフィック量）を変更して、サービスの作成を行ってみてください。
 具体的には以下のコマンドを実行します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># 作ってしまったServiceを削除</span>
@@ -1050,10 +1059,10 @@ service/cowweb       LoadBalancer   10.96.229.191   130.***.***.***   80:30975/T
   <div class="gdoc-hint__title flex align-center">
     <span>サンプルアプリについて</span>
   </div>
-  <div class="gdoc-hint__text">実際にKubernetes上でコンテナが動作する際には、Podと言われる管理単位に内包される形で実行されます。上記のmanifestでは、サンプルアプリのコンテナを内包するPodが、2つデプロイされることになります。</div>
+  <div class="gdoc-hint__text">実際に Kubernetes 上でコンテナが動作する際には、Pod と言われる管理単位に内包される形で実行されます。上記の manifest では、サンプルアプリのコンテナを内包する Pod が、2 つデプロイされることになります。</div>
 </blockquote>
 
-<p>上の例では、IPアドレス130.<em><strong>.</strong></em>.***の80番ポートでロードバランサーが公開されておりここにリクエストを送信すると、アプリケーションにアクセスできることを意味しています。このIPアドレスをテキストエディタ等に控えておいてください。</p>
+<p>上の例では、IP アドレス 130.<strong><em>.</em></strong>.***の 80 番ポートでロードバランサーが公開されておりここにリクエストを送信すると、アプリケーションにアクセスできることを意味しています。この IP アドレスをテキストエディタ等に控えておいてください。</p>
 <p>これでクラスターへのデプロイは完了しましたので、実際に動作確認してみます。以下のコマンドを実行してください。</p>
 <pre><code>curl &quot;http://[ロードバランサーのIP]/cowsay/say&quot;
 </code></pre>
@@ -1066,35 +1075,35 @@ service/cowweb       LoadBalancer   10.96.229.191   130.***.***.***   80:30975/T
             (__)\       )\/\
                 ||--WWW |
                 ||     ||
-</code></pre><p>おめでとうございます。これで、OKEクラスターで実際にアプリケーションを動かすことができました！</p>
+</code></pre><p>おめでとうございます。これで、OKE クラスターで実際にアプリケーションを動かすことができました！</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="3kubernetes上のオブジェクトの確認"
+    <h2 id="3kubernetes-上のオブジェクトの確認"
     >
-        3.Kubernetes上のオブジェクトの確認
+        3.Kubernetes 上のオブジェクトの確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#3kubernetes上のオブジェクトの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.Kubernetes上のオブジェクトの確認" aria-label="アンカー先: 3.Kubernetes上のオブジェクトの確認" href="#3kubernetes%e4%b8%8a%e3%81%ae%e3%82%aa%e3%83%96%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#3kubernetes-上のオブジェクトの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.Kubernetes 上のオブジェクトの確認" aria-label="アンカー先: 3.Kubernetes 上のオブジェクトの確認" href="#3kubernetes-%e4%b8%8a%e3%81%ae%e3%82%aa%e3%83%96%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここからは、先ほどデプロイしたサンプルアプリケーションを利用してKubernetes上のオブジェクトを確認しながら、Kubernetesの基本的な特徴をみていきます。<br>
-まずは、Depoymentからです。</p>
+<p>ここからは、先ほどデプロイしたサンプルアプリケーションを利用して Kubernetes 上のオブジェクトを確認しながら、Kubernetes の基本的な特徴をみていきます。<br>
+まずは、Depoyment からです。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="31-deploymentオブジェクトの確認"
+    <h3 id="31-deployment-オブジェクトの確認"
     >
-        3.1. Deploymentオブジェクトの確認
+        3.1. Deployment オブジェクトの確認
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#31-deploymentオブジェクトの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.1. Deploymentオブジェクトの確認" aria-label="アンカー先: 3.1. Deploymentオブジェクトの確認" href="#31-deployment%e3%82%aa%e3%83%96%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#31-deployment-オブジェクトの確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.1. Deployment オブジェクトの確認" aria-label="アンカー先: 3.1. Deployment オブジェクトの確認" href="#31-deployment-%e3%82%aa%e3%83%96%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Deploymentは、Podのレプリカ数（冗長構成でのPodの数）や、Podが内包するコンテナの指定など、動作させたいコンテナに関連する構成情報を定義するオブジェクトです。<br>
-ここまでの手順で、Deploymentオブジェクトをクラスター上に作成済みであり、その事によって、サンプルアプリケーションがクラスタで動作しています。</p>
-<p>では、Deploymentオブジェクトの情報を確認してみましょう。クラスターに存在するDeploymentの一覧を取得するには以下のコマンドを実行します。</p>
+<p>Deployment は、Pod のレプリカ数（冗長構成での Pod の数）や、Pod が内包するコンテナの指定など、動作させたいコンテナに関連する構成情報を定義するオブジェクトです。<br>
+ここまでの手順で、Deployment オブジェクトをクラスター上に作成済みであり、その事によって、サンプルアプリケーションがクラスタで動作しています。</p>
+<p>では、Deployment オブジェクトの情報を確認してみましょう。クラスターに存在する Deployment の一覧を取得するには以下のコマンドを実行します。</p>
 <pre tabindex="0"><code>kubectl get deployments
 </code></pre><pre tabindex="0"><code>NAME     READY   UP-TO-DATE   AVAILABLE   AGE
 cowweb   2/2     2            2           3m53s
-</code></pre><p>先に作成したcowwebという名前のDeploymentがあることがわかります。DESISRED, CURRENTなどの値が2となっているのは、2つのPodを動かすように指定しており、その指定通りにPodが可動していることを表しています。</p>
-<p>このDeploymentの情報をもっと詳しく調べるには、以下のコマンドを実行します。</p>
+</code></pre><p>先に作成した cowweb という名前の Deployment があることがわかります。DESISRED, CURRENT などの値が 2 となっているのは、2 つの Pod を動かすように指定しており、その指定通りに Pod が可動していることを表しています。</p>
+<p>この Deployment の情報をもっと詳しく調べるには、以下のコマンドを実行します。</p>
 <pre tabindex="0"><code>kubectl describe deployments/cowweb
 </code></pre><pre tabindex="0"><code>Name:               cowweb
 Namespace:          handson-030
@@ -1107,23 +1116,23 @@ Events:
   Type    Reason             Age   From                   Messag
   ----    ------             ----  ----                   ------
   Normal  ScalingReplicaSet  23m   deployment-controller  Scaled up replica set cowweb-57885b669c to 2
-</code></pre><p>このDeploymentに関する様々な情報が表示されますが、特によく参照するのは、最後のEvents以下に表示される内容です。</p>
-<p>これは、このPodにまつわって発生した過去のイベントが記録されているもので、Podが正常に起動しなかったときなど、特にトラブルシュートの場面で手がかりとなる情報を得るのに役立ちます。</p>
+</code></pre><p>この Deployment に関する様々な情報が表示されますが、特によく参照するのは、最後の Events 以下に表示される内容です。</p>
+<p>これは、この Pod にまつわって発生した過去のイベントが記録されているもので、Pod が正常に起動しなかったときなど、特にトラブルシュートの場面で手がかりとなる情報を得るのに役立ちます。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="32-podの標準出力の表示"
+    <h3 id="32-pod-の標準出力の表示"
     >
-        3.2. Podの標準出力の表示
+        3.2. Pod の標準出力の表示
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#32-podの標準出力の表示" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2. Podの標準出力の表示" aria-label="アンカー先: 3.2. Podの標準出力の表示" href="#32-pod%e3%81%ae%e6%a8%99%e6%ba%96%e5%87%ba%e5%8a%9b%e3%81%ae%e8%a1%a8%e7%a4%ba">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#32-pod-の標準出力の表示" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2. Pod の標準出力の表示" aria-label="アンカー先: 3.2. Pod の標準出力の表示" href="#32-pod-%e3%81%ae%e6%a8%99%e6%ba%96%e5%87%ba%e5%8a%9b%e3%81%ae%e8%a1%a8%e7%a4%ba">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここからは、Podオブジェクトについてみていきます。<br>
-まず、Podの情報を標準出力を表示するなどして確認してみます。<br>
-Kubernetes上で動作するアプリケーションの動作状況を確認する上で最もシンプルな方法は、Podの標準出力確認することです。Podの標準出力を表示するには、以下のコマンドを実行します。</p>
+<p>ここからは、Pod オブジェクトについてみていきます。<br>
+まず、Pod の情報を標準出力を表示するなどして確認してみます。<br>
+Kubernetes 上で動作するアプリケーションの動作状況を確認する上で最もシンプルな方法は、Pod の標準出力確認することです。Pod の標準出力を表示するには、以下のコマンドを実行します。</p>
 <pre><code>kubectl logs [Pod名]
 </code></pre>
-<p>ここで指定するPod名は、Podの一覧を表示して表示される2つのPodのうちのどちらかを指定してください。</p>
+<p>ここで指定する Pod 名は、Pod の一覧を表示して表示される 2 つの Pod のうちのどちらかを指定してください。</p>
 <pre tabindex="0"><code>kubectl get pods
 </code></pre><pre tabindex="0"><code>NAME                      READY   STATUS    RESTARTS   AGE
 cowweb-57885b669c-9dzg4   1/1     Running   0          43m
@@ -1140,7 +1149,7 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          43m
 2022.08.25 05:09:49 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-4,5,server]: I&#39;m working...
 
 2022.08.25 05:09:54 INFO com.oracle.jp.cowweb.CowsayResource Thread[helidon-server-1,5,server]: I&#39;m working...
-</code></pre><p>これが、Podの標準出力の内容を表示した結果です。Kubernetesはクラスター内で動作するコンテナに対して、定期的に死活確認を行っています。このサンプルアプリケーションでは、死活監視のリクエストが来たときに上記のようなログを出力するように実装してあります。</p>
+</code></pre><p>これが、Pod の標準出力の内容を表示した結果です。Kubernetes はクラスター内で動作するコンテナに対して、定期的に死活確認を行っています。このサンプルアプリケーションでは、死活監視のリクエストが来たときに上記のようなログを出力するように実装してあります。</p>
 
 
 
@@ -1148,35 +1157,35 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          43m
   <div class="gdoc-hint__title flex align-center">
     <span>コンテナアプリケーションの死活監視について</span>
   </div>
-  <div class="gdoc-hint__text"><p>コンテナの死活監視の機能はlivenessProbeと呼ばれます。<br>
-死活確認の手段としては、以下の3通りの方法がサポートされています。</p>
+  <div class="gdoc-hint__text"><p>コンテナの死活監視の機能は livenessProbe と呼ばれます。<br>
+死活確認の手段としては、以下の 3 通りの方法がサポートされています。</p>
 <ol>
-<li>特定のエンドポイントにHTTP GETリクエストを送信する</li>
+<li>特定のエンドポイントに HTTP GET リクエストを送信する</li>
 <li>所定のコマンドを実行する</li>
-<li>TCP Socketのコネクションの生成を行う</li>
+<li>TCP Socket のコネクションの生成を行う</li>
 </ol>
-<p>また、Podの起動時にも、コンテナの起動状態をチェックするために同様の確認が行われます。<br>
-サポートされるチェックの手段はlivenessProbeと同じですが、こちらはreadinessProbeと呼ばれます。</p>
+<p>また、Pod の起動時にも、コンテナの起動状態をチェックするために同様の確認が行われます。<br>
+サポートされるチェックの手段は livenessProbe と同じですが、こちらは readinessProbe と呼ばれます。</p>
 </div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h4 id="321-podの環境変数の確認"
+    <h4 id="321-pod-の環境変数の確認"
     >
-        3.2.1. Podの環境変数の確認
+        3.2.1. Pod の環境変数の確認
     </h4>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#321-podの環境変数の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2.1. Podの環境変数の確認" aria-label="アンカー先: 3.2.1. Podの環境変数の確認" href="#321-pod%e3%81%ae%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#321-pod-の環境変数の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2.1. Pod の環境変数の確認" aria-label="アンカー先: 3.2.1. Pod の環境変数の確認" href="#321-pod-%e3%81%ae%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Podに設定されている環境変数を確認するには、Pod内にアクセスして<code>env</code>コマンドを実行する必要があります。</p>
-<p>まず、Pod内から任意のコマンドを実行するには<code>kubectl exec</code>コマンドを用います。</p>
+<p>Pod に設定されている環境変数を確認するには、Pod 内にアクセスして<code>env</code>コマンドを実行する必要があります。</p>
+<p>まず、Pod 内から任意のコマンドを実行するには<code>kubectl exec</code>コマンドを用います。</p>
 <pre><code>kubectl exec [Pod名] -- [実行したいコマンド]
 </code></pre>
-<p>[実行したいコマンド]に<code>env</code>を当てはめて実行すると、指定したPod内でそれが呼び出され、環境変数を出力することができます。</p>
+<p>[実行したいコマンド]に<code>env</code>を当てはめて実行すると、指定した Pod 内でそれが呼び出され、環境変数を出力することができます。</p>
 <pre><code>kubectl exec [Pod名] -- env
 </code></pre>
-<p><code>kubectl exec</code>を利用すると、Podのシェルに入ることも可能です。</p>
+<p><code>kubectl exec</code>を利用すると、Pod のシェルに入ることも可能です。</p>
 <pre><code>kubectl exec -it [Pod名] -- /bin/sh
 </code></pre>
 
@@ -1186,7 +1195,7 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          43m
   <div class="gdoc-hint__title flex align-center">
     <span>kubectl exec コマンドについて</span>
   </div>
-  <div class="gdoc-hint__text"><code>kubectl exec</code>を利用すると、任意のコンテナをクラスター内に立ち上げて、そのコンテナのシェルを利用することができます。このテクニックはトラブルシューティングの場面で有用です。 例えば、クラスターで動作するアプリに期待通りにアクセス出来ないような状況において、クラスター内からcurlを実行して疎通確認を行うことで、問題の切り分けに役立てるといったことが可能です。</div>
+  <div class="gdoc-hint__text"><code>kubectl exec</code>を利用すると、任意のコンテナをクラスター内に立ち上げて、そのコンテナのシェルを利用することができます。このテクニックはトラブルシューティングの場面で有用です。 例えば、クラスターで動作するアプリに期待通りにアクセス出来ないような状況において、クラスター内から curl を実行して疎通確認を行うことで、問題の切り分けに役立てるといったことが可能です。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
@@ -1198,7 +1207,7 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          43m
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>ここでは、Deploymentに対してレプリカの数を指定することによって、Podのスケールアウト/インを試してみます。</p>
+<p>ここでは、Deployment に対してレプリカの数を指定することによって、Pod のスケールアウト/インを試してみます。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="41-スケールアウト"
     >
@@ -1208,33 +1217,33 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          43m
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Deploymentに対してレプリカの数を指定することによって、そのDeploymentが管理するPodの数を増減することができます。</p>
-<p>レプリカの数を変更するには、<code>kubectl scale</code>コマンドを使用します。以下のように実行することで、cowwebのPodを管理するDeploymentに対して、レプリカ数を4にするよう指示します。</p>
+<p>Deployment に対してレプリカの数を指定することによって、その Deployment が管理する Pod の数を増減することができます。</p>
+<p>レプリカの数を変更するには、<code>kubectl scale</code>コマンドを使用します。以下のように実行することで、cowweb の Pod を管理する Deployment に対して、レプリカ数を 4 にするよう指示します。</p>
 <pre><code>kubectl scale deployments/cowweb --replicas=4
 </code></pre>
-<p>Podの一覧を表示してみます。</p>
+<p>Pod の一覧を表示してみます。</p>
 <pre><code>kubectl get pods
 </code></pre>
-<p>すると、4つのPodが構成されていることがわかります。</p>
+<p>すると、4 つの Pod が構成されていることがわかります。</p>
 <pre><code>NAME                      READY   STATUS    RESTARTS   AGE
 cowweb-57885b669c-4h5l4   0/1     Running   0          7s
 cowweb-57885b669c-9dzg4   1/1     Running   0          1h
 cowweb-57885b669c-hxvpz   0/1     Running   0          7s
 cowweb-57885b669c-r7l4g   1/1     Running   0          1h
 </code></pre>
-<p>上の例では、一部のPodは起動中の状態です。少し時間が経過すると全てのPodのSTATUSがRunningになります。</p>
+<p>上の例では、一部の Pod は起動中の状態です。少し時間が経過すると全ての Pod の STATUS が Running になります。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="42-serviceによるルーティングの様子の確認"
+    <h3 id="42-service-によるルーティングの様子の確認"
     >
-        4.2. Serviceによるルーティングの様子の確認
+        4.2. Service によるルーティングの様子の確認
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#42-serviceによるルーティングの様子の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4.2. Serviceによるルーティングの様子の確認" aria-label="アンカー先: 4.2. Serviceによるルーティングの様子の確認" href="#42-service%e3%81%ab%e3%82%88%e3%82%8b%e3%83%ab%e3%83%bc%e3%83%86%e3%82%a3%e3%83%b3%e3%82%b0%e3%81%ae%e6%a7%98%e5%ad%90%e3%81%ae%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#42-service-によるルーティングの様子の確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4.2. Service によるルーティングの様子の確認" aria-label="アンカー先: 4.2. Service によるルーティングの様子の確認" href="#42-service-%e3%81%ab%e3%82%88%e3%82%8b%e3%83%ab%e3%83%bc%e3%83%86%e3%82%a3%e3%83%b3%e3%82%b0%e3%81%ae%e6%a7%98%e5%ad%90%e3%81%ae%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>この時点で、クラスターには4つのcowwebのPodがデプロイされている状態です。この状態で、Podに対するアクセスが負荷分散される様子を確認してみましょう。</p>
-<p>cowwebには、環境変数の変数名を指定することで、その値を答えてくれる仕掛けがしてあります。これを利用してPodのホスト名を応答させることで、負荷分散の動きを見てみます。</p>
-<p>動作確認で実行したcurlコマンドのURLに<code>?say=HOSTNAME</code>というクエリを追加して、以下のようなコマンドを実行してみてください。</p>
+<p>この時点で、クラスターには 4 つの cowweb の Pod がデプロイされている状態です。この状態で、Pod に対するアクセスが負荷分散される様子を確認してみましょう。</p>
+<p>cowweb には、環境変数の変数名を指定することで、その値を答えてくれる仕掛けがしてあります。これを利用して Pod のホスト名を応答させることで、負荷分散の動きを見てみます。</p>
+<p>動作確認で実行した curl コマンドの URL に<code>?say=HOSTNAME</code>というクエリを追加して、以下のようなコマンドを実行してみてください。</p>
 <pre><code>curl &quot;http://[ロードバランサーのIP]/cowsay/say?say=HOSTNAME&quot;
 </code></pre>
 <p>このコマンドを何度か繰り返すと、その度に異なるホスト名が返ってくることがわかります。</p>
@@ -1263,12 +1272,12 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          1h
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Pod数を縮小することも当然ながら可能です。スケールアウトで行ったように、<code>kubectl scale</code>コマンドでレプリカ数を指定して減らすことが可能です。</p>
-<p>他の方法として、Deploymentのmanifestファイルで現在より少ないreplica数を記述しておき、そのmanifestをクラスターに適用することで同様のことが可能になります。</p>
-<p>最初にサンプルアプリケーションをデプロイしたときに利用したmanifestファイルには、レプリカ数に2を指定してありますので、これを適用することで4-&gt;2にスケールインしてみます。</p>
+<p>Pod 数を縮小することも当然ながら可能です。スケールアウトで行ったように、<code>kubectl scale</code>コマンドでレプリカ数を指定して減らすことが可能です。</p>
+<p>他の方法として、Deployment の manifest ファイルで現在より少ない replica 数を記述しておき、その manifest をクラスターに適用することで同様のことが可能になります。</p>
+<p>最初にサンプルアプリケーションをデプロイしたときに利用した manifest ファイルには、レプリカ数に 2 を指定してありますので、これを適用することで 4-&gt;2 にスケールインしてみます。</p>
 <pre><code>kubectl apply -f ./kubernetes/cowweb.yaml
 </code></pre>
-<p>Podの一覧を表示すると、2個に減っていることがわかります。</p>
+<p>Pod の一覧を表示すると、2 個に減っていることがわかります。</p>
 <pre tabindex="0"><code>kubectl get pods
 </code></pre><pre tabindex="0"><code>NAME                      READY   STATUS    RESTARTS   AGE
 cowweb-57885b669c-9dzg4   1/1     Running   0          1h
@@ -1280,31 +1289,31 @@ cowweb-57885b669c-r7l4g   1/1     Running   0          1h
   <div class="gdoc-hint__title flex align-center">
     <span>スケールイン/アウトについて</span>
   </div>
-  <div class="gdoc-hint__text">現実の場面では、スケールアウト・インのような運用操作は、全てmanifestを編集してそれを適用するオペレーションとすることをおすすめします。manifestをソースコード管理システムで管理することによって、クラスターの構成変更をコードとして追跡可能になるためです。</div>
+  <div class="gdoc-hint__text">現実の場面では、スケールアウト・インのような運用操作は、全て manifest を編集してそれを適用するオペレーションとすることをおすすめします。manifest をソースコード管理システムで管理することによって、クラスターの構成変更をコードとして追跡可能になるためです。</div>
 </blockquote>
 
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="5podの自動復旧"
+    <h2 id="5pod-の自動復旧"
     >
-        5.Podの自動復旧
+        5.Pod の自動復旧
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#5podの自動復旧" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5.Podの自動復旧" aria-label="アンカー先: 5.Podの自動復旧" href="#5pod%e3%81%ae%e8%87%aa%e5%8b%95%e5%be%a9%e6%97%a7">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/cloud-native/oke-for-beginners/#5pod-の自動復旧" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5.Pod の自動復旧" aria-label="アンカー先: 5.Pod の自動復旧" href="#5pod-%e3%81%ae%e8%87%aa%e5%8b%95%e5%be%a9%e6%97%a7">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Kubernetesには、障害が発生してPodがダウンしたときに、自動的に新たなPodを立ち上げ直す機能が備わっています。</p>
-<p>Podを削除することによって障害に相当する状況を作り、自動復旧される様子を確認してみましょう。</p>
-<p>Podを削除するには、以下のコマンドを実行します。</p>
+<p>Kubernetes には、障害が発生して Pod がダウンしたときに、自動的に新たな Pod を立ち上げ直す機能が備わっています。</p>
+<p>Pod を削除することによって障害に相当する状況を作り、自動復旧される様子を確認してみましょう。</p>
+<p>Pod を削除するには、以下のコマンドを実行します。</p>
 <pre><code>kubectl delete [Pod名]
 </code></pre>
-<p>例えばこのようなコマンドとなります（実際のPod名は、<code>kubectl get pods</code>コマンドで確認してください）。</p>
+<p>例えばこのようなコマンドとなります（実際の Pod 名は、<code>kubectl get pods</code>コマンドで確認してください）。</p>
 <pre><code>kubectl delete pod cowweb-57885b669c-9dzg4
 </code></pre>
-<p>この後すぐにPodの一覧を表示すると、削除したPodのPod名はなく、新しい名前のPodが起動していることがわかります。</p>
+<p>この後すぐに Pod の一覧を表示すると、削除した Pod の Pod 名はなく、新しい名前の Pod が起動していることがわかります。</p>
 <pre tabindex="0"><code>NAME                      READY   STATUS    RESTARTS   AGE
 cowweb-57885b669c-5mgrb   0/1     Running   0          7s    &lt;- 新たに起動したPod
 cowweb-57885b669c-r7l4g   1/1     Running   0          1h
-</code></pre><p>DeploymentオブジェクトによってPod数を2個に指定されています。Podが削除されて1つになると、Kubernnetesは指定された数との差分を検知して自動的にPodを立ち上げてくれます。</p>
+</code></pre><p>Deployment オブジェクトによって Pod 数を 2 個に指定されています。Pod が削除されて 1 つになると、Kubernnetes は指定された数との差分を検知して自動的に Pod を立ち上げてくれます。</p>
 <p>以上で本チュートリアルは終了です。</p>
 
   </article>
