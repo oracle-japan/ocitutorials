@@ -3,168 +3,169 @@ title: "103: パッチを適用しよう"
 description: "Database と Grid Infrastructureに対するパッチ適用方法についてご紹介します。"
 order: "1_103"
 
-
 images:
-- "basedb/dbcs103-patch/img11.png"
+  - "basedb/dbcs103-patch/img11.png"
 header:
   overlay_image: "/basedb/dbcs103-patch/img11.png"
   overlay_filter: rgba(34, 66, 55, 0.7)
-  
 #link: https://community.oracle.com/tech/welcome/discussion/4474283/
 ---
 
 <a id="anchor0"></a>
 
 # はじめに
-Oracle Base Database Service(BaseDB)では、OS以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
-ここでは、DatabaseとGrid Infrastructureに対するそれぞれのパッチ適用方法についてご紹介します。
+
+Oracle Base Database Service(BaseDB)では、OS 以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
+ここでは、**Grid Infrastructure**と**Oracle Database**に対するそれぞれのパッチ適用方法についてご紹介します。
 
 <br>
 
-**前提条件 :**
-+ [Oracle CloudでOracle Databaseを使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+**前提条件**
 
-+ パッチ適用対象の Oracle Database に対して最新RU/RURが適用されていないこと
+- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
 
-<br>
+- パッチ適用対象の Oracle Database に対して最新 RU/RUR が適用されていないこと
 
 **注意** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 
-<br>
-
-**目次**
-
-- [1. 現在のバージョンを確認しよう](#anchor1)
-- [2. Grid Infrastructure にパッチを適用しよう](#anchor2)
-- [3. Database にパッチを適用しよう](#anchor3)
-
-<br>
-**所要時間 :** 約15分
-
-<a id="anchor1"></a>
-<br>
+**所要時間:** 約 15 分
 
 # 1. 現在のバージョンを確認しよう
 
-まずは、コンソール上で作成済みの Database と Grid Infrastructure のバージョンを確認していきましょう。
+まずは、コンソール上で作成済みの Grid Infrastructure と Oracle Database のバージョンを確認していきましょう。
+<br>
+
+1. ナビゲーション・メニューから **Oracle Database → Oracle Base Database Service** を選択します。<br>
+
+![image.png](basedb103-1.png)
+
+2. DB システムの一覧から対象の DB システムを選択し、**DB システムの詳細** ページに移動します。 <br>
+
+![image.png](basedb103-2.png)
+
+3. DB システムの詳細ページの左下のセクションにある**バージョン**の**DB システム・バージョン** から**Grid Infrastructure**のバージョンを確認できます。
+
+![image.png](basedb103-3.png)
 
 <br>
 
-1. コンソールメニューから **Oracle Database → Oracle Base Database** を選択し、対象のDBシステムを選択します。<br>
-**DBシステムの詳細** ページの **DBシステム・バージョン** が Grid Infrastructure のバージョンを指します。<br>
-    <div align="center">
-    <img width="700" alt="DBSystem_version_20231110.png" src="DBSystem_version_20231110.png" style="border: 1px black solid;">
-    </div>
-    今回はバージョンは 19.20.0.0.0です。
-    <br>
+4. 次に**データベースのバージョン**を確認しましょう。 DB システムの詳細画面から「**データベース**」タブを開き、一覧表示されているデータベースの名前からバージョンを確認したいデータベースの名前を選択します。すると、**データベース詳細** ページに遷移します。<br>
 
+   **データベース詳細** ページの左下**バージョン**セクションの**データベースのバージョン** から Oracle Database のバージョンを確認できます。
+   <br>
 
-1. 画面中央の **データベース** に一覧表示されている **名前** を選択します。<br>
-**データベース詳細** ページの **データベースのバージョン** が Database のバージョンを指します。
-<br>
-    <div align="center">
-    <img width="700" alt="DB_version_20231110.png" src="DB_vsersion_20231110.png" style="border: 1px black solid;">
-    </div>
-    今回はバージョンは 19.20.0.0.0です。
-    <br>
-
-
-<a id="anchor2"></a>
+![image.png](basedb103-3.png)
 <br>
 
 # 2. Grid Infrastructure にパッチを適用しよう
 
-**DBシステムの詳細** ページで、バージョン「使用可能な最新パッチ」の **表示** を選択すると、適用可能なパッチリストが表示されます。
-今回は 19.21.0.0.0 を適用してみます。
+**Grid Infrastructure** の更新をしてみましょう。データベースの更新をする前に Grid Infrastructure の更新をすることが推奨されます。
 
-1. **DBシステムの詳細** ページで、バージョン「使用可能な最新パッチ」の **表示** を選択します
+1. **DB システムの詳細** ページで、「**更新**」のタブをを選択すると、適用可能な更新が表示されます。
+
+![image.png](basedb103-5.png)
+
+2. 適用したい更新の右端の「・・・」を展開すると、「**事前チェック**」を選択できます。</br>
+   この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。
+
+![image.png](basedb103-6.png)
+
+**事前チェックの確認** 画面で「**事前チェックの実行**」をクリックすると事前チェックが開始されます。
+
+![image.png](basedb103-7.png)
+
+事前チェック中は「**状態**」が「**チェック中**」となります。
+
+![image.png](basedb103-8.png)
+
+チェックで問題がなければ、「**状態**」が**使用可能**になり、事前チェックを実施した日時が入力されます。
+
+![image.png](basedb103-9.png)
+
+3. 事前チェックが成功したら、「**適用**」をしてみましょう。<br>
+   適用したい更新の右端の「・・・」を展開し、「**パッチの適用**」をクリックします。<br>
+   なお、Real Application Clusters で 2 ノード構成になっている場合は、ローリングで一台ずつ適用されます。<br>
+
+![image.png](basedb103-10.png)
+
+更新の適用中は「**状態**」が「**適用中**」となります。
+
+![image.png](basedb103-11.png)
+
+適用作業の進捗状況は「**作業リクエスト**」のタブから適用作業の進捗状況を見ることができます。</br>
+より詳しい状況を確認したい場合は、「**操作**」の名前から詳細ページに遷移できます。
+
+![image.png](basedb103-12.png)
+
+適用が完了すると DB システムの「**操作**」ステータス「**成功**」になります。</br>
+DB システムも「使用可能」になり、**DB システム・バージョン**が適用した更新のバージョンに変わっている事が確認できます。
+
+![image.png](basedb103-13.png)
+
+なお、DB システムに対する操作の履歴は「**変更履歴**」から確認できます。
+
+![image.png](basedb103-14.png)
 <br>
-    <div align="center">
-    <img width="700" alt="DBSystem_view_20231110.png.png" src="DBSystem_view_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-    「更新」ページに遷移すると、適用可能なパッチリストが表示されます。
-<br>
-    <div align="center">
-    <img width="700" alt="DBSystem_latest_20231110.png" src="DBSystem_latest_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
 
-1. 適用したいパッチの右の **…** をクリックして、**『事前チェック』** をしてみましょう。この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。**事前チェックの確認** 画面で『**事前チェックの実行**』をクリックします。
-<br>
-    <div align="center">
-    <img width="700" alt="DBSystem_precheck_20231110.png" src="DBSystem_precheck_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
+# 3. Oracle Database にパッチを適用しよう
 
-1. 事前チェックで問題がなければ、『**適用**』をしてみましょう。**パッチの適用** 画面で『**パッチの適用**』をクリックします。<br>
-なお、Real Application Clusters で2ノード構成になっている場合は、ローリングで一台ずつ適用されます。
-    <br/>
-    <div align="center">
-    <img width="700" alt="DBSystem_apply_20231110.png" src="DBSystem_apply_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-    適用が完了すると DBシステムのステータスが「使用可能」になり、**DBシステム・バージョン**が 19.21.0.0.0 に変わっている事が確認できます。
-    <br>
-    <div align="center">
-    <img width="700" alt="DBSystem_newver_20231110.png" src="DBSystem_newver_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
+続いて、**Oracle Database** にパッチを適用していきましょう。
 
-<a id="anchor3"></a>
-<br>
+1. **DB システムの詳細**の「**データベース**」タブから更新したいデータベースの名前を選択し、**データベースの詳細画面**に遷移します。
 
-# 3. Database にパッチを適用しよう
+![image.png](basedb103-15.png)
 
-続いて、Database にパッチを適用していきましょう。
-今回は 19.21.0.0.0 を適用してみます。
+2. **データベースの詳細画面**の左下の「**バージョン**」セクションの**データベースのバージョン**から現在のバージョンを確認できます。
 
-1. **データベース詳細** ページで、バージョン「データベースのバージョン」の **表示** を選択します
-<br>
-    <div align="center">
-    <img width="700" alt="DB_view_20231110.png" src="DB_view_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-        「更新」ページに画面遷移すると、適用可能なパッチリストが表示されます。
-<br>
-    <div align="center">
-    <img width="700" alt="DB_latest_20231110.png" src="DB_latest_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
+![image.png](basedb103-16.png)
 
-1. 適用したいパッチの右の **…** をクリックして、**『事前チェック』** をしてみましょう。この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。**事前チェックの確認** 画面で『**事前チェックの実行**』をクリックします。
-<br>
-    <div align="center">
-    <img width="700" alt="DB_precheck_20231110.png" src="DB_precheck_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
+3. **データベースの詳細画面** で、**更新**のタブをを選択すると、適用可能な更新が表示されます。
 
-1. 事前チェックで問題がなければ、『**適用**』をしてみましょう。**確認** 画面で『**送信**』をクリックします。<br>
-Real Application Clusters で2ノード構成になっている場合、Grid Infrastructure と同様にローリングで一台ずつ適用されます。
-    <br>
-    <div align="center">
-    <img width="700" alt="DB_apply_20231110.png" src="DB_apply_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-    適用が完了すると DBシステムのステータスが「使用可能」になり、**データベースのバージョン**が 19.21.0.0.0 に変わっている事が確認できます。
-    <br>
-    <div align="center">
-    <img width="700" alt="DB_newver_20231110.png" src="DB_newver_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
-    DBシステムとデータベースに適用されたパッチは更新の**更新履歴**から確認できます。パッチ適用に失敗した場合はSRをあげることを推奨しています。
-    <br>
-    <div align="center">
-    <img width="700" alt="DBSystem_record_20231110.png" src="DBSystem_record_20231110.png" style="border: 1px black solid;">
-    </div>
-    <br>
+![image.png](basedb103-17.png)
+
+4. 適用したい更新の右端の「・・・」を展開すると、「**事前チェック**」を選択できます。</br>
+   この環境に適用できるかどうか(コンフリクトなど)をチェックが走ります。
+
+![image.png](basedb103-18.png)
+
+**事前チェックの確認** 画面で「**事前チェックの実行**」をクリックします。
+
+![image.png](basedb103-19.png)
+
+事前チェック中は「**状態**」が「**チェック中**」となります。
+
+![image.png](basedb103-20.png)
+
+チェックで問題がなければ、「**状態**」が**使用可能**になり、事前チェックを実施した日時が入力されます。
+
+![image.png](basedb103-21.png)
+
+3. 事前チェックが成功したら、**適用**をしてみましょう。 適用したい更新の右端の「・・・」を展開し、「**データベース・ホーム更新の適用**」をクリックし、更新を適用します。</br>
+
+![image.png](basedb103-22.png)
+
+「**確認**」画面から「**適用**」をクリックし、適用を開始します。</br>
+なお、Real Application Clusters で 2 ノード構成になっている場合は、ローリングで一台ずつ適用されます。</br>
+
+![image.png](basedb103-23.png)
+
+更新の適用中は「**状態**」が「**適用中**」となります。
+
+適用の進捗状況は「**作業リクエスト**」のタブから適用作業の進捗状況を見ることができます。</br>
+より詳しい状況を確認したい場合は、「**操作**」の名前から詳細ページに遷移できます。</br>
+
+![image.png](basedb103-24.png)
+
+適用が完了すると DB システムの「**操作**」ステータス**成功**になります。
+DB システムも「使用可能」になり、**DB システム・バージョン**が適用した更新のバージョンに変わっている事が確認できます。
+
+なお、データベースに対する操作の履歴は「**変更履歴**」から確認できます。
+
+![image.png](basedb103-25.png)
 
 # まとめ
 
-BaseDBはパッチ適用のタイミングや適用するか否かの判断をユーザー側でできるという柔軟度はあります。<br>ただし、古いパッチのまま使い続けることはセキュリティ面や既知の不具合などのリスクや、環境の再作成が必要になった場合に古いイメージで新規作成ができないなどのリスクが考えられます。<br>その為、パッチを適用しない(塩漬け)でいいというわけではありませんので、定期的なパッチ適用を行っていただければ幸いです。
+BaseDB はパッチ適用のタイミングや適用するか否かの判断をユーザー側でできるという柔軟度はあります。<br>ただし、古いパッチのまま使い続けることはセキュリティ面や既知の不具合などのリスクや、環境の再作成が必要になった場合に古いイメージで新規作成ができないなどのリスクが考えられます。<br>その為、パッチを適用しない(塩漬け)でいいというわけではありませんので、定期的なパッチ適用を行っていただければ幸いです。
 
 <br>
 以上で、この章の作業は完了です。
-
-<br>
-[ページトップへ戻る](#anchor0)
