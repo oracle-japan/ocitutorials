@@ -8,7 +8,6 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。
@@ -46,12 +45,10 @@ params:
 2. **[OSU Micro-Benchmarksインストール・セットアップ](#2-osu-micro-benchmarksインストールセットアップ)**
 3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
 
-***
 # 1. OpenMPIインストール  
 
 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
-***
 # 2. OSU Micro-Benchmarksインストール・セットアップ
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
@@ -77,15 +74,14 @@ proc ModulesHelp { } {
         puts stderr "OSU Micro-Benchmarks for OpenMPI\n"
 }
 
-module-whatis   "OSU Micro-Benchmarks for OpenMPI"
+module-whatis "OSU Micro-Benchmarks for OpenMPI"
 
-set pkg_root    /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
-set ver         7.5.1
+set pkg_root  /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
+set ver       7.5.1
 
-prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
+prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
 ```
 
-***
 # 3. OSU Micro-Benchmarks実行
 
 ## 3-1. 1ノード内全コアを使用するAlltoall

@@ -12,12 +12,12 @@ params:
 
 本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、GPUクラスタのノード間接続インターコネクトを介するGPUデバイスメモリ間MPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下5種類の性能指標を計測する実行方法を解説します。
 
-1. ノード内GPUデバイスメモリ間レイテンシ
-2. ノード内GPUデバイスメモリ間帯域幅
-3. 2ノードに跨るGPUデバイスメモリ間レイテンシ
-4. 2ノードに跨るGPUデバイスメモリ間帯域幅
-5. ノード内8個のGPUを使用するNCCL Allreduce通信性能
-6. 2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能
+1. **[ノード内GPUデバイスメモリ間レイテンシ](#2-1-ノード内gpuデバイスメモリ間レイテンシ)**
+2. **[ノード内GPUデバイスメモリ間帯域幅](#2-2-ノード内gpuデバイスメモリ間帯域幅)**
+3. **[2ノードに跨るGPUデバイスメモリ間レイテンシ](#2-3-2ノードに跨るgpuデバイスメモリ間レイテンシ)**
+4. **[2ノードに跨るGPUデバイスメモリ間帯域幅](#2-4-2ノードに跨るgpuデバイスメモリ間帯域幅)**
+5. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-5-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
+6. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#2-6-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
 
 本ドキュメントで **OSU Micro-Benchmarks** を実行するGPUクラスタは、GPUノードに8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用してこれを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続しており、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** のチュートリアルに従い予め構築しておきます。
 
@@ -89,12 +89,12 @@ proc ModulesHelp { } {
         puts stderr "OSU Micro-Benchmarks for OpenMPI\n"
 }
 
-module-whatis   "OSU Micro-Benchmarks for OpenMPI"
+module-whatis "OSU Micro-Benchmarks for OpenMPI"
 
-set pkg_root    /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
-set ver         7.5.1
+set pkg_root  /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
+set ver       7.5.1
 
-prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup:$pkg_root/xccl/collective:$pkg_root/xccl/pt2pt
+prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup:$pkg_root/xccl/collective:$pkg_root/xccl/pt2pt
 ```
 
 # 2. OSU Micro-Benchmarks実行

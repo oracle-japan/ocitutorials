@@ -8,7 +8,6 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 本チュートリアルは、8枚の **NVIDIA A100** GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **Ubuntu** を組み合わせたGPUノードを **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するGPUクラスタを構築し、以下のGPUアプリケーション開発環境ソフトウェアのインストール・セットアップと
@@ -21,7 +20,7 @@ params:
 
 以下の **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストール・セットアップを行い、
 
-- **[Mellanox OFED](https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/)** ： **クラスタ・ネットワーク** 接続NIC（**NVIDIA Mellanox ConnectX**）ドライバーソフトウェア
+- **[NVIDIA DOCA](https://docs.nvidia.com/doca/sdk/index.html)** ： **クラスタ・ネットワーク** 接続NIC（**NVIDIA Mellanox ConnectX**）ドライバーソフトウェア
 - WPAサプリカント： **クラスタ・ネットワーク** 接続時の802.1X認証クライアントソフトウェア
 - **[Oracle Cloud Agent](https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm)** （以降 **OCA** と呼称）HPC関連プラグイン： **クラスタ・ネットワーク** 接続用エージェントソフトウェア
 
@@ -75,7 +74,6 @@ params:
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
-***
 # 1. カスタム・イメージ取得用GPUクラスタ構築
 
 本章は、GPUアプリケーション開発環境ソフトウェアと **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続に必要なソフトウェアをインストールした **[カスタム・イメージ](../#5-6-カスタムイメージ)** を取得するための2ノードのGPUクラスタを構築します。
@@ -100,28 +98,24 @@ params:
 - **OCA** 有効化のスキップ  
 **[2-2. インスタンス構成作成](../spinup-gpu-cluster/#2-2-インスタンス構成作成)** の **9. Oracle Cloudエージェント フィールド** で有効化している **OCA** の **Compute HPC RDMA Auto-Configuration** と **Compute HPC RDMA Authentication** のHPC関連プラグインは、のちの手順で有効化を行うため、ここでは有効化を行いません。
 
-***
 # 2. クラスタ・ネットワーク接続用ソフトウェアインストール
 
 本章は、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続するためのソフトウェアをインストールします。
 
 このインストールは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-create-cnenabled-osimage/)** の **[2. クラスタ・ネットワーク接続用ソフトウェアインストール](../tech-knowhow/howto-create-cnenabled-osimage/#2-クラスタネットワーク接続用ソフトウェアインストール)** の手順を **BM.GPU4.8** と **Ubuntu** 24.04の場合で実施します。
 
-***
 # 3. クラスタ・ネットワーク接続・確認
 
 本章は、GPUノードの **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** への接続に必要な設定とその接続確認を実施します。
 
 この接続・確認は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-create-cnenabled-osimage/)** の **[3. クラスタ・ネットワーク接続・確認](../tech-knowhow/howto-create-cnenabled-osimage/#3-クラスタネットワーク接続確認)** の手順を **BM.GPU4.8** と **Ubuntu** 24.04の場合で実施します。
 
-***
 # 4. GPUアプリケーション開発環境ソフトウェア環境構築
 
 本章は、GPUノードにGPUアプリケーション開発環境ソフトウェアをインストール・セットアップします。
 
 このGPUアプリケーション開発環境ソフトウェアのインストール・セットアップは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../tech-knowhow/gpu-with-ubuntu/)** の **[2. NVIDIA GPU関連ソフトウェアインストール](../tech-knowhow/gpu-with-ubuntu/#2-nvidia-gpu関連ソフトウェアインストール)** と **[3. OpenMPIインストール・セットアップ](../tech-knowhow/gpu-with-ubuntu/#3-openmpiインストールセットアップ)** と **[4. 動作確認](../tech-knowhow/gpu-with-ubuntu/#4-動作確認)** を2台のGPUノードの何れにも実施します。
 
-***
 # 5. ノードを跨るデバイスメモリ間通信GPUアプリケーション動作確認
 
 ## 5-0. 概要
@@ -178,12 +172,11 @@ main:
          76, #pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */
              Generating reduction(+:sum)
 mpicc -O3 -acc -Minfo=accel  -gpu=cc80  main.o   -o run 
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_4:1 -x UCX_TLS=rc,cuda_copy,gdr_copy -x LD_LIBRARY_PATH ./run
-[inst-wyzi7-ao-ub24:43105] SET UCX_NET_DEVICES=mlx5_4:1
-[inst-wyzi7-ao-ub24:43105] SET UCX_TLS=rc,cuda_copy,gdr_copy
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_4:1 -x LD_LIBRARY_PATH ./run
+[inst-v6xda-ao-ub24:18886] SET UCX_NET_DEVICES=mlx5_4:1
 num of GPUs = 8
-Rank 1: hostname = inst-li3ob-ao-ub24, GPU num = 1
-Rank 0: hostname = inst-wyzi7-ao-ub24, GPU num = 0
+Rank 1: hostname = inst-s08bb-ao-ub24, GPU num = 1
+Rank 0: hostname = inst-v6xda-ao-ub24, GPU num = 0
 mean = 30.00
 Time =    0.008 [sec]
 $
@@ -193,15 +186,12 @@ $
 
 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](../benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](../benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](../benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、2ノード16GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、期待される性能が出ることを確認します。
 
-
-***
 # 6. カスタム・イメージ取得
 
 本章は、 **[カスタム・イメージ](../#5-6-カスタムイメージ)** 取得用2ノードGPUクラスタのGPUノードのうちどちらか一台で、 **カスタム・イメージ** を取得します。
 
 この **カスタム・イメージ** 取得は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク未対応OSイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-create-cnenabled-osimage/)** の **[4. カスタム・イメージ取得](../tech-knowhow/howto-create-cnenabled-osimage/#4-カスタムイメージ取得)** を **BM.GPU4.8** と **Ubuntu** の組合わせで実施します。
 
-***
 # 7. 本運用GPUクラスタ構築
 
 ## 7-0. 概要
@@ -230,7 +220,6 @@ $
 
 この **クラスタ・ネットワーク** 作成は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-create-cnenabled-osimage/)** の **[7. クラスタ・ネットワーク作成](../tech-knowhow/howto-create-cnenabled-osimage/#7-クラスタネットワーク作成)** を **BM.GPU4.8** と **Ubuntu** の組合わせで実施します。
 
-***
 # 8. カスタム・イメージ取得用GPUクラスタ削除
 
 本章は、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** を終了することで、カスタム・イメージ取得用として作成した **クラスタ・ネットワーク** とGPUノードを削除します。

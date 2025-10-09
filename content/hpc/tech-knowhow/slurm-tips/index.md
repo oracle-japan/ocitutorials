@@ -1,31 +1,29 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム運用Tips"
 description: "オープンソースのSlurmは、HPC/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、構築するHPC/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。"
-weight: "355"
+weight: "354"
 tags:
 - hpc
 params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
-本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を **[Slurm](https://slurm.schedmd.com/)** で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。
+本テクニカルTipsは、HPC/GPUクラスタのリソース管理・ジョブ管理を **[Slurm](https://slurm.schedmd.com/)** で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。
 
-1. **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** セットアップ方法
-2. メンテナンスを考慮した計算/GPUノードの **[ステータス](https://slurm.schedmd.com/scontrol.html#OPT_State_2)** 変更方法
-3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御
-4. 複数ジョブによる計算/GPUノード共有方法
+1. **[Prolog/Epilogセットアップ方法](#1-prologepilogセットアップ方法)**
+2. **[メンテナンスを考慮した計算/GPUノードのステータス変更方法](#2-メンテナンスを考慮した計算gpuノードのステータス変更方法)**
+3. **[ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御](#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御)**
+4. **[複数ジョブによる計算/GPUノード共有方法](#4-複数ジョブによる計算gpuノード共有方法)**
 
 これらのTipsは、全て **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境を前提に記載します。
 
-***
 # 1. Prolog/Epilogセットアップ方法
 
 ## 1-0. 概要
 
-本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。
+本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能である **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** をセットアップする方法を解説します。
 
 ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。
 
@@ -60,7 +58,7 @@ log_file=/var/log/slurm/clean_memory.log
 
 ## 1-1. セットアップ手順
 
-Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **/opt/slurm/etc/slurm.conf** に以下の記述を追加します。
+Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **slurm.conf** に以下の記述を追加します。
 
 ```sh
 PrologFlags=Alloc
@@ -148,14 +146,13 @@ Swap:         7.6Gi          0B       7.6Gi
 $
 ```
 
-***
 # 2. メンテナンスを考慮した計算/GPUノードのステータス変更方法
 
 ## 2-0. 概要
 
 HPC/GPUクラスタは、運用中に計算/GPUノードでハードウェア障害が発生したりソフトウェアのアップデートを行う必要が生じると、当該ノードへのジョブ割り当てを一時的に停止するオフライン化を実施する必要が生じます。
 
-**Slurm** は、 **Slurmd** が動作する計算/GPUノードのステータスに **DRAIN** フラグが存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。  
+**Slurm** は、 **Slurmd** が動作する計算/GPUノードの **[ステータス](https://slurm.schedmd.com/scontrol.html#OPT_State_2)** に **DRAIN** フラグが存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。  
 この **DRAIN** フラグが付与されると、既に実行中のジョブに影響を与えることなく以降のジョブを受け付けない状態になります。  
 具体的には、以下のステップでこれを実施します。
 
@@ -233,7 +230,6 @@ NodeName=inst-xxxxx-x9 Arch=x86_64 CoresPerSocket=18
 $
 ```
 
-***
 # 3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御
 
 ## 3-0. 概要
@@ -282,7 +278,7 @@ PartitionName=smte Nodes=inst-eeeee-x9,inst-fffff-x9 MaxTime=INFINITE State=UP
 
 ※3）**slurm.conf** 中の **Socket** は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
 
-## 3.2. slurm.conf修正の反映
+## 3-2. slurm.conf修正の反映
 
 本章は、先に修正した **slurm.conf** を反映します。
 
@@ -306,7 +302,6 @@ smte         up   infinite      2   idle inst-eeeee-x9,inst-fffff-x9
 $
 ```
 
-***
 # 4. 複数ジョブによる計算/GPUノード共有方法
 
 ## 4-0. 概要
@@ -330,12 +325,13 @@ $
 - パーティション **large** に投入されたジョブは実行中ジョブの総使用ノード数が2ノードを超えない範囲で先着順にノード占有実行
 - パーティション **small** に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500GBを超えない範囲で先着順にノード共有実行（※4）
 
-※4）ジョブ投入時は、使用するメモリ量を **--mem=xxxxM** オプションで指定する必要があります。  
-以下は、使用するメモリ量を100,000 MBに指定してジョブを **small** パーティションに投入しています。
+※4）ジョブ投入時は、以下のように使用するメモリ量を **--mem=xxxxM** オプションで指定する必要があります。
 
 ```sh
 $ srun -p small -n 4 --mem=100000M ./a.out
 ```
+
+この運用は、CPU、メモリ、GPU等のリソース単位のジョブ割り当て（複数ジョブのノード共有）を可能にする、 **[Consumable Trackable Resource Plugin](https://slurm.schedmd.com/cons_tres.html#using_cons_tres)** をリソース選択アルゴリズムに使用し、その上でノード占有ジョブ用のパーティションを排他ジョブ用として宣言することで、これを実現します。
 
 ## 4-1. slurm.conf修正
 
@@ -353,9 +349,9 @@ PartitionName=small Nodes=inst-ccccc-x9 MaxTime=INFINITE State=UP
 :
 ```
 
-この設定は、リソース選択アルゴリズムを指定する **SelectType** 行にノード共有ジョブを可能にする **select/cons_tres** を指定し、パーティション **large** に **OverSubscribe=Exclusive** を指定することでノード占有パーティションを宣言しています。
+この設定は、 **SelectType** 行に **select/cons_tres** を指定することでリソース選択アルゴリズムを **Consumable Trackable Resource Plugin** に指定し、 **OverSubscribe=Exclusive** を指定することでパーティション **large** をノード占有パーティションとして宣言しています。
 
-## 4.2. slurm.conf修正の反映
+## 4-2. slurm.conf修正の反映
 
 本章は、先に修正した **slurm.conf** を反映します。
 
