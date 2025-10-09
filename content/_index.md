@@ -5,16 +5,6 @@ geekdocAlign: left
 geekdocAnchor: false
 ---
 
-<h2 class="gdoc-toppage-header2"> 準備 - Oracle Cloud の無料トライアルを申し込む </h2>
-
-- [Oracle Cloud 無料トライアルを申し込む](https://www.oracle.com/jp/cloud/free/)  
-  Oracle Cloud のほとんどのサービスが利用できるトライアル環境を取得することができます。このチュートリアルの内容を試すのに必要になりますので、まずは取得してみましょう。
-  ※認証のために SMS が受け取れる電話とクレジット・カードが必要です(希望しない限り課金はされませんのでご安心を!!)
-- [Oracle Cloud 無料トライアル サインアップガイド](https://faq.oracle.co.jp/app/answers/detail/a_id/6492)
-- [Oracle Cloud 無料トライアルに関するよくある質問(FAQ)](https://www.oracle.com/jp/cloud/free/faq/)
-
-<br>
-
 <h2 class="gdoc-toppage-header2"> OCIを触ってみよう</h2>
 
 {{< columns >}}
@@ -22,16 +12,26 @@ geekdocAnchor: false
 <h3> 1.&nbsp;<a href="./beginners">OCI入門編</a></h3>
 
 OCI の入門編チュートリアルです。
-OCI コンソールの基本的な操作方法やネットワーク、ストレージなどの基本的なサービスについてを学習できます。
+無料トライアル環境の取得から、OCI コンソールの操作、コア・サービスの基本的なリソース作成まで学習できます。
 
 <--->
 
 <h3> 2.&nbsp;<a href="./intermediates">OCI応用編</a></h3>
 
 OCI の応用編チュートリアルです。
-LoadBalancer や証明書サービスなどをはじめとした各 OCI サービスの応用的な使い方を学習できます。
+主にネットワークやコンピュート、ストレージなどの IaaS に関連する OCI のコア・サービスの応用的な使い方を学習できます。
+
 
 {{< /columns >}}
+
+<br>
+
+<h2 class="gdoc-toppage-header2"> ユースケース別チュートリアル</h2>
+
+<h3> {{< icon-oci "oci-in-practice" >}}&nbsp;<a href="./oci-in-practice">サービス連携編</a></h3>
+
+サービス連携チュートリアルです。
+ユースケース別にサービスを連携して利用する方法を学習できます。
 
 <br>
 
