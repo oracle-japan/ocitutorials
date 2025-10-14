@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-09T17:02:48+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法",
       "description": "HPC\/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC\/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1425",
+      "wordCount" : "1456",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-09T17:02:48.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -417,8 +417,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-09T17:02:48&#43;09:00">
+            Oct 9, 2025
         </time>
     
 </span>
@@ -434,7 +434,6 @@
 </div>
 
     <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -469,7 +468,7 @@
 <li>CUDA-aware MPIライブラリ： <strong>CUDA IPC</strong> / <strong>GPUDirect RDMA</strong> 対応のデバイスメモリアドレッシング可能なMPIライブラリ</li>
 </ul>
 <p>※1）<strong>NVSwitch</strong> を搭載するシェイプの場合のみインストールします。</p>
-<p>本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、GPUシェイプ <strong><a
+<p>本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の <strong>NVIDIA A100</strong> GPUを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
 >BM.GPU4.8</a></strong> を例に解説します。</p>
@@ -504,7 +503,6 @@
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm"
 >Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> です。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-gpuインスタンス作成"
     >
@@ -514,7 +512,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Ubuntu</strong> をOSとする <strong>BM.GPU4.8</strong> を作成します。</p>
+<p>本章は、 <strong>Ubuntu</strong> をOSとしシェイプに <strong>BM.GPU4.8</strong> を使用するGPUインスタンスを作成します。</p>
 <p>OCIコンソールにログインし、GPUインスタンスを作成する <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿ります。</p>
 <p>次に、表示される以下画面で、<strong>インスタンスの作成</strong> ボタンをクリックします。</p>
 <p><img
@@ -582,10 +580,15 @@
 </span></span><span class="line"><span class="cl">Executing: /usr/lib/systemd/systemd-sysv-install disable unattended-upgrades
 </span></span><span class="line"><span class="cl">Removed <span class="s2">&#34;/etc/systemd/system/multi-user.target.wants/unattended-upgrades.service&#34;</span>.
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、apparmorサービスを永続的に停止します。</p>
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>iptables</strong> を永続的に停止します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo iptables -P INPUT ACCEPT
+</span></span><span class="line"><span class="cl">$ sudo iptables -P OUTPUT ACCEPT
+</span></span><span class="line"><span class="cl">$ sudo iptables -P FORWARD ACCEPT
+</span></span><span class="line"><span class="cl">$ sudo iptables -F
+</span></span><span class="line"><span class="cl">$ sudo systemctl disable --now iptables
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>AppArmor</strong> を永続的に停止します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl disable --now apparmor
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-nvidia-gpu関連ソフトウェアインストール"
     >
         2. NVIDIA GPU関連ソフトウェアインストール
@@ -646,8 +649,7 @@
 </span></span><span class="line"><span class="cl">$ sudo apt update
 </span></span><span class="line"><span class="cl">$ sudo apt install -y nvhpc-25-7-cuda-multi environment-modules
 </span></span><span class="line"><span class="cl">$ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/modules/modulefiles/nvhpc
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-openmpiインストールセットアップ"
     >
         3. OpenMPIインストール・セットアップ
@@ -831,8 +833,7 @@
 </span></span><span class="line"><span class="cl">prepend-path C_INCLUDE_PATH     <span class="nv">$pkg_root</span>/include
 </span></span><span class="line"><span class="cl">prepend-path CPLUS_INCLUDE_PATH <span class="nv">$pkg_root</span>/include
 </span></span><span class="line"><span class="cl">prepend-path MANPATH            <span class="nv">$pkg_root</span>/share/man
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-動作確認"
     >
         4. 動作確認
@@ -993,14 +994,13 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 </span></span><span class="line"><span class="cl">         76, <span class="c1">#pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */</span>
 </span></span><span class="line"><span class="cl">             Generating reduction<span class="o">(</span>+:sum<span class="o">)</span>
 </span></span><span class="line"><span class="cl">mpicc -O3 -acc -Minfo<span class="o">=</span>accel  -gpu<span class="o">=</span>cc80  main.o   -o run
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1 -x <span class="nv">UCX_TLS</span><span class="o">=</span>rc,cuda_copy,gdr_copy ./run
-</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-wyzi7-ao-ub24:41287<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1
-</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-wyzi7-ao-ub24:41287<span class="o">]</span> SET <span class="nv">UCX_TLS</span><span class="o">=</span>rc,cuda_copy,gdr_copy
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1 ./run
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-v6xda-ao-ub24:17765<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1
 </span></span><span class="line"><span class="cl">num of <span class="nv">GPUs</span> <span class="o">=</span> <span class="m">8</span>
-</span></span><span class="line"><span class="cl">Rank 0: <span class="nv">hostname</span> <span class="o">=</span> inst-wyzi7-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">0</span>
-</span></span><span class="line"><span class="cl">Rank 1: <span class="nv">hostname</span> <span class="o">=</span> inst-wyzi7-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Rank 0: <span class="nv">hostname</span> <span class="o">=</span> inst-v6xda-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank 1: <span class="nv">hostname</span> <span class="o">=</span> inst-v6xda-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">1</span>
 </span></span><span class="line"><span class="cl"><span class="nv">mean</span> <span class="o">=</span> 30.00
-</span></span><span class="line"><span class="cl"><span class="nv">Time</span> <span class="o">=</span>    0.008 <span class="o">[</span>sec<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Time</span> <span class="o">=</span>    0.007 <span class="o">[</span>sec<span class="o">]</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="4-4-nccl-testsによるnvidia-fabric-manager動作確認"
@@ -3273,6 +3273,39 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         

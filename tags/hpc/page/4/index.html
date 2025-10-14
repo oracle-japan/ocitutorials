@@ -491,6 +491,128 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>複数の計算ノードを  <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタは、その計算ノードに <strong>クラスタ・ネットワーク</strong> 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> を使用することが一般的です（※1）が、このベースとなるOSの <strong>Oracle Linux</strong> のバージョンは、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>プラットフォーム・イメージ</a></strong> として提供される <strong>Oracle Linux</strong> の最新バージョンより古くなります。（※2）</p>
+<p>※1）この詳細は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/howto-connect-clusternetwork/"
+>クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> を参照してください。<br>
+※2）2025年3月時点の最新の <strong>クラスタネットワーキングイメージ</strong> がそのベースOSに <strong>Oracle Linux</strong> 8.10を使用しているのに対し、 <strong>プラットフォーム・イメージ</strong> の最新は <strong>Oracle Linux</strong> 9.5です。</p>
+<p>ここで実行するワークロードが単一ノードに収まる場合は、 <strong>クラスタ・ネットワーク</strong> に接続する必要がなくなり、 <strong>プラットフォーム・イメージ</strong> から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard"
+>BM.Standard.E6.256</a></strong> で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。</p>
+<ul>
+<li>CPU： <strong>AMD EPYC</strong> 9755ベース x 2（256コア）</li>
+<li>メモリ： DDR5 3.072 TB</li>
+<li>理論性能： 11.0592 TFLOPS（ベース動作周波数2.7 GHz時）</li>
+<li>メモリ帯域： 1,228.8 GB/s</li>
+</ul>
+<p>以上を踏まえて本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、 <strong>プラットフォーム・イメージ</strong> で提供される最新の <strong>Oracle Linux</strong> 上に <strong><a
+  class="gdoc-markdown__link"
+  href="https://www.amd.com/en/developer/aocc.html"
+>AMD Optimizing C/C++ and Fortran Compilers</a></strong> （以降 <strong>AOCC</strong> と呼称します。）、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://www.open-mpi.org/"
+>OpenMPI</a></strong> 、及び <strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/"
+>Slurm</a></strong> をインストールし、 <strong>BM.Standard.E6.256</strong> のような高価なリソースをバッチジョブで有効利用するためのHPCワークロード実行環境を構築する手順を解説します。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-10-09T17:02:48&#43;09:00">
+      
+        更新日時
+      
+      Oct 9, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 7 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/hpc/tech-knowhow/kdump-on-baremetal/">ベアメタルインスタンスのカーネルダンプ取得方法</a>
         </h1>
       </header>
@@ -1600,135 +1722,6 @@ table, th, td {
             class="flex-inline align-center fake-link"
             title="全投稿を閲覧"
             href="/ocitutorials/hpc/spinup-gpu-cluster/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T16:31:44&#43;09:00">
-      
-        更新日時
-      
-      Sep 26, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 11 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <style>
-table, th, td {
-    font-size: 80%;
-}
-</style>
-<p>このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8</a></strong> を使用）を <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-12-terraform"
->Terraform</a></strong> スクリプトを活用して自動構築し、Dockerコンテナ上で <strong><a
-  class="gdoc-markdown__link"
-  href="https://developer.nvidia.com/nccl"
->NCCL（NVIDIA Collective Communication Library）</a></strong> のGPU間通信性能を <strong><a
-  class="gdoc-markdown__link"
-  href="https://github.com/nvidia/nccl-tests"
->NCCL Tests</a></strong> で検証します。<br>
-この自動構築は、 <strong>Terraform</strong> スクリプトを <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-2-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3"
->リソース・マネージャ</a></strong> に読み込ませて作成する <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-3-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
->スタック</a></strong> を使用する方法と、 <strong>Terraform</strong> 実行環境を用意して <strong>Terraform</strong> CLIを使用する方法から選択することが出来ます。</p>
-<p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br>
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
->HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a
-  class="gdoc-markdown__link"
-  href="../spinup-gpu-cluster-withstack"
->GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照してください。</p>
-<p>本チュートリアルで作成するGPUクラスタ構築用の <strong>Terraform</strong> スクリプトは、そのひな型が <strong>GitHub</strong> のパブリックレポジトリから公開されており、適用すると以下の処理を行います。</p>
-<ul>
-<li><strong>VCN</strong> と関連するネットワークリソース作成</li>
-<li>Bastionノード作成</li>
-<li>GPUノード用 <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
->インスタンス構成</a></strong> 作成</li>
-<li><strong>クラスタ・ネットワーク</strong> とGPUノード作成</li>
-<li>GPUクラスタ内のノード間SSHアクセスに使用するSSH鍵ペア作成・配布</li>
-<li>GPUノードの全ホスト名を記載したホストリストファイル（ <strong>/home/opc/hostlist.txt</strong> ）作成</li>
-<li>作成したBastionノード・GPUノードのホスト名・IPアドレス出力</li>
-</ul>
-<p>Bastionノードは、接続するサブネットをパブリックとプライベートから選択することが可能（※1）で、以下のBastionノードへのログイン方法に合わせて選択します。</p>
-<ul>
-<li>インターネット経由ログイン -&gt; パブリックサブネット接続</li>
-<li>拠点間接続経由ログイン &gt; プライベートサブネット接続</li>
-</ul>
-<p>※1）構築方法に <strong>Terraform</strong> CLIを採用する場合は、パブリックサブネット接続のみ選択可能です。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/"
           >
             全投稿を閲覧
             <i class="gdoc-icon">gdoc_arrow_right_alt</i>
@@ -3376,6 +3369,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

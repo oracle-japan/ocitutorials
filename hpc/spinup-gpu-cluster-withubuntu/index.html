@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-09T17:02:48+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "GPUクラスタを構築する(Ubuntu OS編)",
       "description": "UbuntuをOSとするGPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでUbuntuのベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "681",
+      "wordCount" : "676",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-09T17:02:48.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -416,8 +416,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-09T17:02:48&#43;09:00">
+            Oct 9, 2025
         </time>
     
 </span>
@@ -432,8 +432,7 @@
     
 </div>
 
-    <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -472,8 +471,8 @@
 <ul>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="https://network.nvidia.com/products/infiniband-drivers/linux/mlnx_ofed/"
->Mellanox OFED</a></strong> ： <strong>クラスタ・ネットワーク</strong> 接続NIC（<strong>NVIDIA Mellanox ConnectX</strong>）ドライバーソフトウェア</li>
+  href="https://docs.nvidia.com/doca/sdk/index.html"
+>NVIDIA DOCA</a></strong> ： <strong>クラスタ・ネットワーク</strong> 接続NIC（<strong>NVIDIA Mellanox ConnectX</strong>）ドライバーソフトウェア</li>
 <li>WPAサプリカント： <strong>クラスタ・ネットワーク</strong> 接続時の802.1X認証クライアントソフトウェア</li>
 <li><strong><a
   class="gdoc-markdown__link"
@@ -579,7 +578,6 @@
 <p><strong>所要時間 :</strong> 約5時間</p>
 <p><strong>前提条件 :</strong> GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-カスタムイメージ取得用gpuクラスタ構築"
     >
@@ -647,7 +645,6 @@
 >2-2. インスタンス構成作成</a></strong> の <strong>9. Oracle Cloudエージェント フィールド</strong> で有効化している <strong>OCA</strong> の <strong>Compute HPC RDMA Auto-Configuration</strong> と <strong>Compute HPC RDMA Authentication</strong> のHPC関連プラグインは、のちの手順で有効化を行うため、ここでは有効化を行いません。</p>
 </li>
 </ul>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-クラスタネットワーク接続用ソフトウェアインストール"
     >
@@ -671,7 +668,6 @@
   class="gdoc-markdown__link"
   href="../tech-knowhow/howto-create-cnenabled-osimage/#2-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e6%8e%a5%e7%b6%9a%e7%94%a8%e3%82%bd%e3%83%95%e3%83%88%e3%82%a6%e3%82%a7%e3%82%a2%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
 >2. クラスタ・ネットワーク接続用ソフトウェアインストール</a></strong> の手順を <strong>BM.GPU4.8</strong> と <strong>Ubuntu</strong> 24.04の場合で実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-クラスタネットワーク接続確認"
     >
@@ -695,7 +691,6 @@
   class="gdoc-markdown__link"
   href="../tech-knowhow/howto-create-cnenabled-osimage/#3-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e6%8e%a5%e7%b6%9a%e7%a2%ba%e8%aa%8d"
 >3. クラスタ・ネットワーク接続・確認</a></strong> の手順を <strong>BM.GPU4.8</strong> と <strong>Ubuntu</strong> 24.04の場合で実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-gpuアプリケーション開発環境ソフトウェア環境構築"
     >
@@ -722,7 +717,6 @@
   class="gdoc-markdown__link"
   href="../tech-knowhow/gpu-with-ubuntu/#4-%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
 >4. 動作確認</a></strong> を2台のGPUノードの何れにも実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-ノードを跨るデバイスメモリ間通信gpuアプリケーション動作確認"
     >
@@ -803,12 +797,11 @@
 </span></span><span class="line"><span class="cl">         76, <span class="c1">#pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */</span>
 </span></span><span class="line"><span class="cl">             Generating reduction<span class="o">(</span>+:sum<span class="o">)</span>
 </span></span><span class="line"><span class="cl">mpicc -O3 -acc -Minfo<span class="o">=</span>accel  -gpu<span class="o">=</span>cc80  main.o   -o run 
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1 -x <span class="nv">UCX_TLS</span><span class="o">=</span>rc,cuda_copy,gdr_copy -x LD_LIBRARY_PATH ./run
-</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-wyzi7-ao-ub24:43105<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1
-</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-wyzi7-ao-ub24:43105<span class="o">]</span> SET <span class="nv">UCX_TLS</span><span class="o">=</span>rc,cuda_copy,gdr_copy
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1 -x LD_LIBRARY_PATH ./run
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-v6xda-ao-ub24:18886<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_4:1
 </span></span><span class="line"><span class="cl">num of <span class="nv">GPUs</span> <span class="o">=</span> <span class="m">8</span>
-</span></span><span class="line"><span class="cl">Rank 1: <span class="nv">hostname</span> <span class="o">=</span> inst-li3ob-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">1</span>
-</span></span><span class="line"><span class="cl">Rank 0: <span class="nv">hostname</span> <span class="o">=</span> inst-wyzi7-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank 1: <span class="nv">hostname</span> <span class="o">=</span> inst-s08bb-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Rank 0: <span class="nv">hostname</span> <span class="o">=</span> inst-v6xda-ao-ub24, GPU <span class="nv">num</span> <span class="o">=</span> <span class="m">0</span>
 </span></span><span class="line"><span class="cl"><span class="nv">mean</span> <span class="o">=</span> 30.00
 </span></span><span class="line"><span class="cl"><span class="nv">Time</span> <span class="o">=</span>    0.008 <span class="o">[</span>sec<span class="o">]</span>
 </span></span><span class="line"><span class="cl">$
@@ -834,7 +827,6 @@
   class="gdoc-markdown__link"
   href="../benchmark/run-nccltests-ubuntu/#3-nccl-tests%e5%ae%9f%e8%a1%8c"
 >3. NCCL Tests実行</a></strong> の手順に従い、2ノード16GPUの <strong>NCCL</strong>  <strong>All-Reduce</strong> 通信性能を <strong>NCCL Tests</strong> で計測し、期待される性能が出ることを確認します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="6-カスタムイメージ取得"
     >
@@ -858,7 +850,6 @@
   class="gdoc-markdown__link"
   href="../tech-knowhow/howto-create-cnenabled-osimage/#4-%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e5%8f%96%e5%be%97"
 >4. カスタム・イメージ取得</a></strong> を <strong>BM.GPU4.8</strong> と <strong>Ubuntu</strong> の組合わせで実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="7-本運用gpuクラスタ構築"
     >
@@ -964,7 +955,6 @@
   class="gdoc-markdown__link"
   href="../tech-knowhow/howto-create-cnenabled-osimage/#7-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e4%bd%9c%e6%88%90"
 >7. クラスタ・ネットワーク作成</a></strong> を <strong>BM.GPU4.8</strong> と <strong>Ubuntu</strong> の組合わせで実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="8-カスタムイメージ取得用gpuクラスタ削除"
     >
@@ -2562,6 +2552,39 @@
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

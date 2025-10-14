@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-09T17:02:48+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム運用Tips",
       "description": "オープンソースのSlurmは、HPC\/GPUクラスタのリソース管理・ジョブ管理をコストパフォーマンス良く運用するためのジョブスケジューラとして、現在有力な選択肢です。本テクニカルTipsは、構築するHPC\/GPUクラスタのリソース管理・ジョブ管理をSlurmで効果的に運用するための様々なテクニカルTipsをご紹介します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "875",
+      "wordCount" : "883",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-09T17:02:48.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -329,14 +329,14 @@
       <ul>
         <li><a href="#3-0-概要">3-0. 概要</a></li>
         <li><a href="#3-1-slurmconf修正">3-1. slurm.conf修正</a></li>
-        <li><a href="#32-slurmconf修正の反映">3.2. slurm.conf修正の反映</a></li>
+        <li><a href="#3-2-slurmconf修正の反映">3-2. slurm.conf修正の反映</a></li>
       </ul>
     </li>
     <li><a href="#4-複数ジョブによる計算gpuノード共有方法">4. 複数ジョブによる計算/GPUノード共有方法</a>
       <ul>
         <li><a href="#4-0-概要">4-0. 概要</a></li>
         <li><a href="#4-1-slurmconf修正">4-1. slurm.conf修正</a></li>
-        <li><a href="#42-slurmconf修正の反映">4.2. slurm.conf修正の反映</a></li>
+        <li><a href="#4-2-slurmconf修正の反映">4-2. slurm.conf修正の反映</a></li>
       </ul>
 
 </section>
@@ -421,8 +421,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-09T17:02:48&#43;09:00">
+            Oct 9, 2025
         </time>
     
 </span>
@@ -437,8 +437,7 @@
     
 </div>
 
-    <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -447,21 +446,27 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本テクニカルTipsは、OCI上に構築するHPC/GPUクラスタのリソース管理・ジョブ管理を <strong><a
+<p>本テクニカルTipsは、HPC/GPUクラスタのリソース管理・ジョブ管理を <strong><a
   class="gdoc-markdown__link"
   href="https://slurm.schedmd.com/"
 >Slurm</a></strong> で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。</p>
 <ol>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="https://slurm.schedmd.com/prolog_epilog.html"
->Prolog/Epilog</a></strong> セットアップ方法</li>
-<li>メンテナンスを考慮した計算/GPUノードの <strong><a
+  href="#1-prologepilog%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97%e6%96%b9%e6%b3%95"
+>Prolog/Epilogセットアップ方法</a></strong></li>
+<li><strong><a
   class="gdoc-markdown__link"
-  href="https://slurm.schedmd.com/scontrol.html#OPT_State_2"
->ステータス</a></strong> 変更方法</li>
-<li>ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</li>
-<li>複数ジョブによる計算/GPUノード共有方法</li>
+  href="#2-%e3%83%a1%e3%83%b3%e3%83%86%e3%83%8a%e3%83%b3%e3%82%b9%e3%82%92%e8%80%83%e6%85%ae%e3%81%97%e3%81%9f%e8%a8%88%e7%ae%97gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%81%ae%e3%82%b9%e3%83%86%e3%83%bc%e3%82%bf%e3%82%b9%e5%a4%89%e6%9b%b4%e6%96%b9%e6%b3%95"
+>メンテナンスを考慮した計算/GPUノードのステータス変更方法</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-%e3%83%98%e3%83%86%e3%83%ad%e3%82%b8%e3%83%8b%e3%82%a2%e3%82%b9%e7%92%b0%e5%a2%83%e4%b8%8b%e3%81%ae%e3%83%91%e3%83%bc%e3%83%86%e3%82%a3%e3%82%b7%e3%83%a7%e3%83%b3%e3%82%92%e4%bd%bf%e3%81%a3%e3%81%9f%e8%a8%88%e7%ae%97gpu%e3%83%8e%e3%83%bc%e3%83%89%e5%89%b2%e3%82%8a%e5%bd%93%e3%81%a6%e5%88%b6%e5%be%a1"
+>ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#4-%e8%a4%87%e6%95%b0%e3%82%b8%e3%83%a7%e3%83%96%e3%81%ab%e3%82%88%e3%82%8b%e8%a8%88%e7%ae%97gpu%e3%83%8e%e3%83%bc%e3%83%89%e5%85%b1%e6%9c%89%e6%96%b9%e6%b3%95"
+>複数ジョブによる計算/GPUノード共有方法</a></strong></li>
 </ol>
 <p>これらのTipsは、全て <strong><a
   class="gdoc-markdown__link"
@@ -470,7 +475,6 @@
   class="gdoc-markdown__link"
   href="../../tech-knowhow/setup-slurm-cluster/"
 >Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> に従って構築された <strong>Slurm</strong> 環境を前提に記載します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-prologepilogセットアップ方法"
     >
@@ -489,7 +493,10 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本Tipsは、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能であるProlog/Epilogをセットアップする方法を解説します。</p>
+<p>本Tipsは、ジョブ実行の前後で <strong>Slurm</strong> が自動的にスクリプトを実行する機能である <strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/prolog_epilog.html"
+>Prolog/Epilog</a></strong> をセットアップする方法を解説します。</p>
 <p>ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。</p>
 <p>[Prolog]</p>
 <p>以下のスクリプトを使用し、直前に走っていたジョブの残したLinuxカーネルのキャシュをジョブ実行前に開放します。</p>
@@ -519,7 +526,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの <strong>/opt/slurm/etc/slurm.conf</strong> に以下の記述を追加します。</p>
+<p>Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの <strong>slurm.conf</strong> に以下の記述を追加します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PrologFlags</span><span class="o">=</span>Alloc
 </span></span><span class="line"><span class="cl"><span class="nv">Prolog</span><span class="o">=</span>/opt/slurm/etc/scripts/prolog.d/*
 </span></span><span class="line"><span class="cl"><span class="nv">Epilog</span><span class="o">=</span>/opt/slurm/etc/scripts/epilog.d/*
@@ -582,8 +589,7 @@
 </span></span><span class="line"><span class="cl">Mem:          503Gi       6.3Gi       496Gi        29Mi       353Mi       494Gi
 </span></span><span class="line"><span class="cl">Swap:         7.6Gi          0B       7.6Gi
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-メンテナンスを考慮した計算gpuノードのステータス変更方法"
     >
         2. メンテナンスを考慮した計算/GPUノードのステータス変更方法
@@ -602,7 +608,10 @@
     </a>
 </div>
 <p>HPC/GPUクラスタは、運用中に計算/GPUノードでハードウェア障害が発生したりソフトウェアのアップデートを行う必要が生じると、当該ノードへのジョブ割り当てを一時的に停止するオフライン化を実施する必要が生じます。</p>
-<p><strong>Slurm</strong> は、 <strong>Slurmd</strong> が動作する計算/GPUノードのステータスに <strong>DRAIN</strong> フラグが存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。<br>
+<p><strong>Slurm</strong> は、 <strong>Slurmd</strong> が動作する計算/GPUノードの <strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/scontrol.html#OPT_State_2"
+>ステータス</a></strong> に <strong>DRAIN</strong> フラグが存在し、これを管理者が明示的に切り替えることで、この運用要件を実現することが可能です。<br>
 この <strong>DRAIN</strong> フラグが付与されると、既に実行中のジョブに影響を与えることなく以降のジョブを受け付けない状態になります。<br>
 具体的には、以下のステップでこれを実施します。</p>
 <ul>
@@ -666,8 +675,7 @@
 </span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-xxxxx-x9 <span class="nv">Arch</span><span class="o">=</span>x86_64 <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">18</span> 
 </span></span><span class="line"><span class="cl">   <span class="nv">State</span><span class="o">=</span>IDLE <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">Weight</span><span class="o">=</span><span class="m">1</span> <span class="nv">Owner</span><span class="o">=</span>N/A <span class="nv">MCS_label</span><span class="o">=</span>N/A
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御"
     >
         3. ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御
@@ -769,11 +777,11 @@
 </span></span></code></pre></div><p>この設定は、 <strong>BM.Optimized3.36</strong> がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 <strong>NPS1</strong> と <strong>NPS2</strong> と <strong>SMT</strong> 有効・無効の計算ノードを異なるリソース定義の <strong>NodeName</strong> フィールドで定義しています。（※3）</p>
 <p>※3）<strong>slurm.conf</strong> 中の <strong>Socket</strong> は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 <strong>NPS2</strong> の場合は <strong>Socket</strong> がノード当たり4個として定義します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="32-slurmconf修正の反映"
+    <h2 id="3-2-slurmconf修正の反映"
     >
-        3.2. slurm.conf修正の反映
+        3-2. slurm.conf修正の反映
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/slurm-tips/#32-slurmconf修正の反映" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2. slurm.conf修正の反映" aria-label="アンカー先: 3.2. slurm.conf修正の反映" href="#32-slurmconf%e4%bf%ae%e6%ad%a3%e3%81%ae%e5%8f%8d%e6%98%a0">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/slurm-tips/#3-2-slurmconf修正の反映" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-2. slurm.conf修正の反映" aria-label="アンカー先: 3-2. slurm.conf修正の反映" href="#3-2-slurmconf%e4%bf%ae%e6%ad%a3%e3%81%ae%e5%8f%8d%e6%98%a0">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -789,8 +797,7 @@
 </span></span><span class="line"><span class="cl">nps2         up   infinite      <span class="m">2</span>   idle inst-ccccc-x9,inst-ddddd-x9
 </span></span><span class="line"><span class="cl">smte         up   infinite      <span class="m">2</span>   idle inst-eeeee-x9,inst-fffff-x9
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-複数ジョブによる計算gpuノード共有方法"
     >
         4. 複数ジョブによる計算/GPUノード共有方法
@@ -846,10 +853,13 @@
 <li>パーティション <strong>large</strong> に投入されたジョブは実行中ジョブの総使用ノード数が2ノードを超えない範囲で先着順にノード占有実行</li>
 <li>パーティション <strong>small</strong> に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500GBを超えない範囲で先着順にノード共有実行（※4）</li>
 </ul>
-<p>※4）ジョブ投入時は、使用するメモリ量を <strong>&ndash;mem=xxxxM</strong> オプションで指定する必要があります。<br>
-以下は、使用するメモリ量を100,000 MBに指定してジョブを <strong>small</strong> パーティションに投入しています。</p>
+<p>※4）ジョブ投入時は、以下のように使用するメモリ量を <strong>&ndash;mem=xxxxM</strong> オプションで指定する必要があります。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p small -n <span class="m">4</span> --mem<span class="o">=</span>100000M ./a.out
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><p>この運用は、CPU、メモリ、GPU等のリソース単位のジョブ割り当て（複数ジョブのノード共有）を可能にする、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/cons_tres.html#using_cons_tres"
+>Consumable Trackable Resource Plugin</a></strong> をリソース選択アルゴリズムに使用し、その上でノード占有ジョブ用のパーティションを排他ジョブ用として宣言することで、これを実現します。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="4-1-slurmconf修正"
     >
         4-1. slurm.conf修正
@@ -867,13 +877,13 @@
 </span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>large <span class="nv">Nodes</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP <span class="nv">OverSubscribe</span><span class="o">=</span>Exclusive
 </span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>small <span class="nv">Nodes</span><span class="o">=</span>inst-ccccc-x9 <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </span></span><span class="line"><span class="cl">:
-</span></span></code></pre></div><p>この設定は、リソース選択アルゴリズムを指定する <strong>SelectType</strong> 行にノード共有ジョブを可能にする <strong>select/cons_tres</strong> を指定し、パーティション <strong>large</strong> に <strong>OverSubscribe=Exclusive</strong> を指定することでノード占有パーティションを宣言しています。</p>
+</span></span></code></pre></div><p>この設定は、 <strong>SelectType</strong> 行に <strong>select/cons_tres</strong> を指定することでリソース選択アルゴリズムを <strong>Consumable Trackable Resource Plugin</strong> に指定し、 <strong>OverSubscribe=Exclusive</strong> を指定することでパーティション <strong>large</strong> をノード占有パーティションとして宣言しています。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="42-slurmconf修正の反映"
+    <h2 id="4-2-slurmconf修正の反映"
     >
-        4.2. slurm.conf修正の反映
+        4-2. slurm.conf修正の反映
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/slurm-tips/#42-slurmconf修正の反映" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4.2. slurm.conf修正の反映" aria-label="アンカー先: 4.2. slurm.conf修正の反映" href="#42-slurmconf%e4%bf%ae%e6%ad%a3%e3%81%ae%e5%8f%8d%e6%98%a0">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/slurm-tips/#4-2-slurmconf修正の反映" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-2. slurm.conf修正の反映" aria-label="アンカー先: 4-2. slurm.conf修正の反映" href="#4-2-slurmconf%e4%bf%ae%e6%ad%a3%e3%81%ae%e5%8f%8d%e6%98%a0">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -3234,39 +3244,6 @@
         
 
         
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
           
           
         
@@ -3305,6 +3282,72 @@
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -12375,11 +12418,11 @@
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/install-openfoam/"
-      title="OpenFOAMインストール・利用方法"
+      href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/"
+      title="Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      OpenFOAMインストール・利用方法
+      Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)
     </a>
   
 </span>
@@ -12387,10 +12430,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/"
-      title="Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法"
+      href="/ocitutorials/hpc/tech-knowhow/install-blas/"
+      title="線形代数演算ライブラリインストール・利用方法"
     >
-      Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法
+      線形代数演算ライブラリインストール・利用方法
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

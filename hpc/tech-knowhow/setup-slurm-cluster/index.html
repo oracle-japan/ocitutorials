@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-09T17:02:48+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法",
       "description": "HPC\/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC\/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC\/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC\/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1377",
+      "wordCount" : "1375",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-09T17:02:48.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -412,8 +412,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-09T17:02:48&#43;09:00">
+            Oct 9, 2025
         </time>
     
 </span>
@@ -433,7 +433,6 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -478,9 +477,8 @@ table, th, td {
   href="https://openucx.org/"
 >UCX</a></strong> を取り込んだ <strong>Slurm</strong> 環境を構築し、初期化処理時間の効果を検証すべく、 <strong><a
   class="gdoc-markdown__link"
-  href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html"
+  href="https://github.com/intel/mpi-benchmarks"
 >Intel MPI Benchmarks</a></strong> PingPongのレイテンシに着目して比較・検証を実施します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-前提システム"
     >
@@ -512,7 +510,7 @@ table, th, td {
           <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
-          <td style="text-align: center"><strong>slurmctld</strong> と <strong>slurmdbd</strong> が稼働するSlurm管理ノード</td>
+          <td style="text-align: center">・ <strong>slurmctld</strong> と <strong>slurmdbd</strong> が<br>稼働するSlurm管理ノード</td>
       </tr>
       <tr>
           <td style="text-align: center">Slurm<br>クライアント</td>
@@ -520,18 +518,18 @@ table, th, td {
           <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
-          <td style="text-align: center">アプリケーション開発用フロントエンドノード<br><strong>Slurm</strong> にジョブを投入するジョブサブミッションクライアント</td>
+          <td style="text-align: center">・アプリケーション開発用<br>フロントエンドノード<br>・ <strong>Slurm</strong> にジョブを投入する<br>ジョブサブミッションクライアント</td>
       </tr>
       <tr>
           <td style="text-align: center">計算ノード</td>
           <td style="text-align: center"><strong><a
   class="gdoc-markdown__link"
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong><br>対応ベアメタルシェイプ<br>（※2）</td>
+>クラスタ・ネットワーク</a></strong> 対応<br>ベアメタルシェイプ（※2）</td>
           <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
           <td style="text-align: center">2ノード以上<br>（※2）</td>
           <td style="text-align: center">プライベート<br> <strong>クラスタ・ネットワーク</strong></td>
-          <td style="text-align: center"><strong>slurmd</strong> が稼働するジョブ実行ノード</td>
+          <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
       </tr>
       <tr>
           <td style="text-align: center">NFSサーバ</td>
@@ -539,7 +537,7 @@ table, th, td {
           <td style="text-align: center">-</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
-          <td style="text-align: center">ジョブ投入ユーザのホームディレクトリをNFSでサービス<br>（※4）</td>
+          <td style="text-align: center">・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）</td>
       </tr>
   </tbody>
 </table> </div>
@@ -611,7 +609,6 @@ table, th, td {
   </tbody>
 </table> </div>
 <p>また、各サブシステムのセキュリティーに関するOS設定は、 <strong>firewalld</strong> を停止し、 <strong>SELinux</strong> をDisabledにします。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-環境構築"
     >
@@ -633,7 +630,7 @@ table, th, td {
 <p>本章は、既にデプロイされている <strong><a
   class="gdoc-markdown__link"
   href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
->1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築する手順を解説します。</p>
+>1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築します。</p>
 <p><strong>Slurm</strong> のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。</p>
 <p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
 <ul>
@@ -657,16 +654,46 @@ table, th, td {
 >MariaDB</a></strong> を使用します。</p>
 <p>以上より、本章で解説する環境構築は、以下の手順に沿って行います。</p>
 <ol>
-<li><strong>munge</strong> インストール・セットアップ</li>
-<li><strong>MariaDB</strong> インストール・セットアップ</li>
-<li><strong>OpenMPI</strong> インストール</li>
-<li><strong>OpenPMIx</strong> インストール</li>
-<li><strong>OpenUCX</strong> インストール</li>
-<li><strong>Slurm</strong> RPMパッケージ作成</li>
-<li><strong>Slurm</strong> RPMパッケージインストール・セットアップ</li>
-<li><strong>Slurm</strong> 設定ファイル作成</li>
-<li><strong>Slurm</strong> サービス起動</li>
-<li><strong>Slurm</strong> 利用に必要な環境変数設定</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-1-munge-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>mungeインストール・セットアップ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-2-mariadb-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>MariaDBインストール・セットアップ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-3-openmpi%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>OpenMPIインストール</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-4-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>OpenPMIxインストール</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-5-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>OpenUCXインストール</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
+>Slurm RPMパッケージ作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>Slurm RPMパッケージインストール・セットアップ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
+>Slurm設定ファイル作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
+>Slurmサービス起動</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-10-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a"
+>Slurm利用に必要な環境変数設定</a></strong></li>
 </ol>
 <p>なお、各ソフトウェアと <strong>Slurm</strong> サービスは、以下のサブシステムにインストールします。</p>
 <div class="table-wrap"> <table>
@@ -746,8 +773,8 @@ table, th, td {
 </div>
 <p>本章は、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードに <strong>munge</strong> をインストール・セットアップします。</p>
 <p>以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
-<pre tabindex="0"><code>$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
-</code></pre><p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u <span class="m">5001</span> munge
+</span></span></code></pre></div><p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol8_codeready_builder
 </span></span><span class="line"><span class="cl">$ sudo dnf install -y munge munge-libs munge-devel
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>munge</strong> キーファイル（ <strong>munge.key</strong> ）を作成します。</p>
@@ -1077,7 +1104,6 @@ table, th, td {
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> に接続するNIC（RDMAリンク名 <strong>mlx5_2/1</strong> ）を介して行うことを指示しています。<br>
 またこの環境変数は、 <strong>OpenPMIx</strong> がMPIプロセス制御に <strong>OpenUCX</strong> を使用することも指示しているため、 <strong>srun</strong> でジョブを実行する際に設定する必要があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-稼働確認"
     >
@@ -3449,6 +3475,39 @@ table, th, td {
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -12630,10 +12689,10 @@ table, th, td {
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/install-blas/"
-      title="線形代数演算ライブラリインストール・利用方法"
+      href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/"
+      title="Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)"
     >
-      線形代数演算ライブラリインストール・利用方法
+      Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

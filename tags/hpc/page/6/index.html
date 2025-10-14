@@ -491,6 +491,142 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/cluster-with-bv-base/">ブロック・ボリュームNFSサーバと基礎インフラ編HPC/GPUクラスタを組み合わせる</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <p>HPCクラスタやGPUクラスタは、そのフロントエンドとなるBastionノードを含む全てのノードで利用できるファイル共有ストレージが運用上必須です。<br>
+代表的なファイル共有ストレージの用途は、ユーザホームディレクトリですが、この領域は通常高いパフォーマンスより安定したサービスの提供が重視されるため、NFSがその有力な候補です。</p>
+<p>OCIは、NFSのマネージドサービスとしてファイル・ストレージを提供しており、ファイルサーバ構築の必要無く簡単に利用できるため、HPC/GPUクラスタ用ユーザホームディレクトリの有力な候補です。<br>
+<strong><a
+  class="gdoc-markdown__link"
+  href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
+>HPCクラスタスタック</a></strong> は、ファイル・ストレージの構築・セットアップを行う機能を持っており、ファイル・ストレージをユーザホームディレクトリに利用するHPC/GPUクラスタを自動構築することが出来ます。</p>
+<p>これに対し、OCIのブロックストレージサービスであるブロック・ボリュームを使用してNFSサーバを構築し、この領域をユーザホームディレクトリとして使用することも可能です。<br>
+この手法は、ファイル・ストレージを使用する場合と比較して構築の手間がかかりますが、価格性能比の圧倒的に高いブロック・ボリュームの特徴を利用して、コストパフォーマンスを大幅に高めることが可能です。<br>
+ファイル・ストレージとブロック・ボリュームを使用したNFSサーバの価格と性能の比較は、チュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-nfs-server/"
+>ブロック・ボリュームでNFSサーバを構築する</a></strong> 前段の比較表を参照ください。</p>
+<p>このチュートリアルは、チュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-nfs-server/"
+>ブロック・ボリュームでNFSサーバを構築する</a></strong> でブロック・ボリュームをアタッチしたベアメタルインスタンス <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
+>BM.Optimized3.36</a></strong> をNFSサーバとするファイル共有ストレージを構築し、チュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-cluster-network/"
+>HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> や <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-gpu-cluster/"
+>GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> で基礎インフラとして構築するHPC/GPUクラスタのファイル共有ストレージとして利用する、コストパフォーマンスの優れたクラスタシステムを構築します。</p>
+<p><strong>所要時間 :</strong> 約2時間</p>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/cluster-with-bv-base/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本チュートリアルは、チュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-nfs-server/"
+>ブロック・ボリュームでNFSサーバを構築する</a></strong> とチュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-cluster-network/"
+>HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> かチュートリアル <strong><a
+  class="gdoc-markdown__link"
+  href="../spinup-gpu-cluster/"
+>GPUクラスタを構築する(基礎インフラ手動構築編)</a></strong> を組み合わせて、以下のシステムを構築します。<br>
+この図中、左下の一点鎖線で囲まれたリソースを <strong>HPC/GPUクラスタを構築する(基礎インフラ手動構築編)</strong> で構築し、それ以外のリソースを <strong>ブロック・ボリュームでNFSサーバを構築する</strong> で構築します。</p>
+<p><img
+  src="architecture_diagram.png"
+  alt="システム構成図"
+  
+/></p>
+<p>[<strong>ブロック・ボリュームでNFSサーバを構築する</strong> がデプロイするリソース]</p>
+<ul>
+<li>VCNと関連するネットワークリソース</li>
+<li>ブロック・ボリューム</li>
+<li>NFSサーバ用インスタンス</li>
+<li>Bastionノード</li>
+<li>NFSクライアント用インスタンス</li>
+</ul>
+<p>[<strong>HPC/GPUクラスタを構築する(基礎インフラ手動構築編)</strong> がデプロイするリソース]</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/cluster-with-bv-base/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-26T16:31:44&#43;09:00">
+      
+        更新日時
+      
+      Sep 26, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 3 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/hpc/cluster-with-bv-stack/">ブロック・ボリュームNFSサーバと自動構築編HPC/GPUクラスタを組み合わせる</a>
         </h1>
       </header>
@@ -1481,8 +1617,7 @@ table, th, td {
       </header>
 
       <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+        <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -1575,147 +1710,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T17:08:43&#43;09:00">
+    <time datetime="2025-10-09T17:02:48&#43;09:00">
       
         更新日時
       
-      Sep 26, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 3 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/benchmark/run-omb-gpu/">OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-概要"
-    >
-        0. 概要
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-gpu/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>本ドキュメントで解説する <strong><a
-  class="gdoc-markdown__link"
-  href="https://mvapich.cse.ohio-state.edu/benchmarks/"
->OSU Micro-Benchmarks</a></strong> は、GPUクラスタのノード間接続インターコネクトを介するGPUデバイスメモリ間MPI通信性能の評価を念頭に、 <strong><a
-  class="gdoc-markdown__link"
-  href="https://www.open-mpi.org/"
->OpenMPI</a></strong> でコンパイルしたバイナリを使用して以下5種類の性能指標を計測する実行方法を解説します。</p>
-<ol>
-<li>ノード内GPUデバイスメモリ間レイテンシ</li>
-<li>ノード内GPUデバイスメモリ間帯域幅</li>
-<li>2ノードに跨るGPUデバイスメモリ間レイテンシ</li>
-<li>2ノードに跨るGPUデバイスメモリ間帯域幅</li>
-<li>ノード内8個のGPUを使用するNCCL Allreduce通信性能</li>
-<li>2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能</li>
-</ol>
-<p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するGPUクラスタは、GPUノードに8枚の <strong>NVIDIA A100</strong> GPUを搭載するベア・メタル・シェイプ <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を使用してこれを <strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> で接続しており、 <strong><a
-  class="gdoc-markdown__link"
-  href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
->OCI HPCチュートリアル集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../../spinup-gpu-cluster-withubuntu/"
->GPUクラスタを構築する(Ubuntu OS編)</a></strong> のチュートリアルに従い予め構築しておきます。</p>
-<p>本ドキュメントは、以下の実行環境で <strong>OSU Micro-Benchmarks</strong> を実行し、</p>
-<ul>
-<li>GPUノード
-<ul>
-<li>ノード数： 2</li>
-<li>シェイプ : <strong>BM.GPU4.8</strong> （ <strong>NVIDIA A100 40GB SXM</strong> x 8）</li>
-<li>OS ： <strong>Ubuntu</strong> 24.04（ <strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->プラットフォーム・イメージ</a></strong> - <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm"
->Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> ）</li>
-</ul>
-</li>
-<li>ノード間接続インターコネクト
-<ul>
-<li><strong>クラスタ・ネットワーク</strong></li>
-<li>リンク速度・数： 100 Gbps x 16</li>
-</ul>
-</li>
-<li><strong>OpenMPI</strong> ： 5.0.8</li>
-<li><strong>OSU Micro-Benchmarks</strong> ： 7.5.1</li>
-</ul>
-<p>2 GPU間のレイテンシと帯域幅に関して以下の性能が出ています。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/benchmark/run-omb-gpu/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T17:05:16&#43;09:00">
-      
-        更新日時
-      
-      Sep 26, 2025
+      Oct 9, 2025
     </time>
   </span>
 </span>
@@ -3346,6 +3345,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
