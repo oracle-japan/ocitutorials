@@ -1,7 +1,7 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム構築方法"
 description: "HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。"
-weight: "352"
+weight: "353"
 tags:
 - hpc
 params:
@@ -43,9 +43,9 @@ table, th, td {
 
 | サブシステム          | 使用するシェイプ                                                                    | OS                           | ノード数           | 接続<br>サブネット                | 役割                                                           |
 | :-------------: | :-------------------------------------------------------------------------: | :--------------------------: | :------------: | :------------------------: | :----------------------------------------------------------: |
-| Slurm<br>マネージャ  | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5）         | 1              | プライベート                     | ・ **slurmctld** と **slurmdbd** が<br>稼働するSlurm管理ノード                 |
-| Slurm<br>クライアント | 任意の仮想マシン<br>                                                            | **Oracle Linux** 8.10<br>（※5） | 1              | プライベート                     | ・アプリケーション開発用<br>フロントエンドノード<br>・ **Slurm** にジョブを投入する<br>ジョブサブミッションクライアント |
-| 計算ノード           | **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 対応<br>ベアメタルシェイプ（※2） | **Oracle Linux** 8.10<br>（※5） | 2ノード以上<br>（※2） | プライベート<br> **クラスタ・ネットワーク** | ・ **slurmd** が稼働するジョブ実行ノード                                     |
+| Slurm<br>マネージャ  | 任意の仮想マシン<br>                                                            | **Oracle Linux** 9.5<br>（※5）         | 1              | プライベート                     | ・ **slurmctld** と **slurmdbd** が<br>稼働するSlurm管理ノード                 |
+| Slurm<br>クライアント | 任意の仮想マシン<br>                                                            | **Oracle Linux** 9.5<br>（※5） | 1              | プライベート                     | ・アプリケーション開発用<br>フロントエンドノード<br>・ **Slurm** にジョブを投入する<br>ジョブサブミッションクライアント |
+| 計算ノード           | **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 対応<br>ベアメタルシェイプ（※2） | **Oracle Linux** 9.5<br>（※5） | 2ノード以上<br>（※2） | プライベート<br> **クラスタ・ネットワーク** | ・ **slurmd** が稼働するジョブ実行ノード                                     |
 | NFSサーバ          | -<br>（※3）                                                                   | -                            | 1              | プライベート                     | ・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）                              |
 
 ![画面ショット](architecture_diagram.png)
@@ -53,9 +53,13 @@ table, th, td {
 ※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
 ※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
-※5）**Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
+※5）**Oracle Linux** 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
-計算ノードの構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** が参考になります。
+Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の手順に従い、 **OpenMPI** をインストールします。
+
+計算ノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPCクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の手順に従い、 **OpenMPI** を計算ノードにインストールします。
+
+またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** をインストールします。
 
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
@@ -71,16 +75,16 @@ table, th, td {
 # 2. 環境構築
 
 ## 2-0. 概要
-本章は、既にデプロイされている **[1. 前提システム](#1-前提システム)** で解説したシステム上で、 **Slurm** 環境を構築します。
+
+本章は、既に作成されている **[1. 前提システム](#1-前提システム)** で解説したシステム上で、 **Slurm** 環境を構築します。
 
 **Slurm** のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。
 
-本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
+本テクニカルTipsは、各ソフトウェアに以下を使用します。
 
-- **Slurm** ： 24.11.0
-- **OpenMPI** ： 5.0.6
-- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.4
-- **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.17.0
+- **Slurm** ： 25.05.3
+- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
+- **UCX** ： **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
 
 また、 **Slurm** のプロセス間通信の認証に **[munge](https://dun.github.io/munge/)** 、ジョブのアカウンティング情報格納用RDBMSに **[MariaDB](https://mariadb.org/)** を使用します。
 
@@ -88,14 +92,13 @@ table, th, td {
 
 1. **[mungeインストール・セットアップ](#2-1-munge-インストールセットアップ)**
 2. **[MariaDBインストール・セットアップ](#2-2-mariadb-インストールセットアップ)**
-3. **[OpenMPIインストール](#2-3-openmpiインストール)**
-4. **[OpenPMIxインストール](#2-4-openpmixインストール)**
-5. **[OpenUCXインストール](#2-5-openucxインストール)**
-6. **[Slurm RPMパッケージ作成](#2-6-slurm-rpmパッケージ作成)**
-7. **[Slurm RPMパッケージインストール・セットアップ](#2-7-slurm-rpmパッケージインストールセットアップ)**
-8. **[Slurm設定ファイル作成](#2-8-slurm設定ファイル作成)**
-9. **[Slurmサービス起動](#2-9-slurmサービス起動)**
-10. **[Slurm利用に必要な環境変数設定](#2-10-slurm利用に必要な環境変数設定)**
+3. **[OpenPMIxインストール](#2-3-openpmixインストール)**
+4. **[OpenUCXインストール](#2-4-openucxインストール)**
+5. **[Slurm RPMパッケージ作成](#2-5-slurm-rpmパッケージ作成)**
+6. **[Slurm RPMパッケージインストール・セットアップ](#2-6-slurm-rpmパッケージインストールセットアップ)**
+7. **[Slurm設定ファイル作成](#2-7-slurm設定ファイル作成)**
+8. **[Slurmサービス起動](#2-8-slurmサービス起動)**
+9. **[Slurm利用に必要な環境変数設定](#2-9-slurm利用に必要な環境変数設定)**
 
 なお、各ソフトウェアと **Slurm** サービスは、以下のサブシステムにインストールします。
 
@@ -103,13 +106,14 @@ table, th, td {
 | :----------------------: | :--------: | :---------: | :---: |
 | **munge**                | 〇          | 〇           | 〇     |
 | **MariaDB**              | 〇          | -           | -     |
-| **OpenPMIx**             | 〇          | 〇           | 〇     |
-| **OpenUCX**                  | 〇          | 〇           | 〇     |
-| **OpenMPI**              | -          | 〇           | 〇     |
+| **OpenPMIx**             | 〇          | 〇（※6）       | 〇（※6） |
+| **OpenUCX**              | 〇          | 〇（※6）       | 〇（※6） |
 | **slurmctld**            | 〇          | -           | -     |
 | **slurmdbd**             | 〇          | -           | -     |
 | **slurmd**               | -          | -           | 〇     |
 | **Slurm**<br>クライアントパッケージ | 〇          | 〇           | 〇     |
+
+※6）**[1. 前提システム](#1-前提システム)** の構築手順により既にインストールされています。
 
 ## 2-1. munge インストール・セットアップ
 
@@ -125,7 +129,7 @@ $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
 
 ```sh
 $ sudo yum-config-manager --enable ol8_codeready_builder
-$ sudo dnf install -y munge munge-libs munge-devel
+$ sudo dnf install -y munge munge-libs munge-libs
 ```
 
 次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **munge** キーファイル（ **munge.key** ）を作成します。
@@ -165,14 +169,14 @@ $
 以下コマンドをopcユーザで実行し、 **MariaDB** をインストールします。
 
 ```sh
-$ sudo dnf install -y mariadb-server mariadb-devel
+$ sudo dnf install -y mariadb-server
 ```
 
-次に、 **MariaDB** の設定ファイル（ **mariadb-server.cnf** ）の[mysqld]フィールドに以下の記述を追加します。
+次に、 **MariaDB** の設定ファイル（ **mariadb-server.cnf** ）の **[mysqld]** フィールドに以下の記述を追加します。
 
 ```sh
-$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org /etc/my.cnf.d/mariadb-server.cnf
-20a21,22
+$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org  /etc/my.cnf.d/mariadb-server.cnf
+21a22,23
 > innodb_buffer_pool_size=4096M
 > innodb_lock_wait_timeout=900
 $
@@ -193,7 +197,7 @@ $ sudo systemctl enable --now mariadb
 
 以下コマンドをopcユーザで実行します。  
 なお、 **MariaDB** に対して入力するコマンドは、 **MariaDB** のプロンプト（ **MariaDB [(none)]>** ）に続く文字列です。  
-なお、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
+また、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
 
 ```sh
 $ sudo mysql
@@ -220,8 +224,8 @@ Query OK, 0 rows affected (0.000 sec)
 MariaDB [(none)]> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.000 sec)
 
-MariaDB [(none)]> Ctrl-C -- exit!
-Aborted
+MariaDB [(none)]> exit
+Bye
 $
 ```
 
@@ -240,12 +244,7 @@ $
 ```
 
 
-## 2-3. OpenMPIインストール
-
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、Slurmクライアントと全ての計算ノードに **OpenMPI** をインストールします。  
-これにより、これらのノードに **OpenPMIx** と **OpenUCX** もインストールされます。
-
-## 2-4. OpenPMIxインストール
+## 2-3. OpenPMIxインストール
 
 本章は、Slurmマネージャに **OpenPMIx** をインストールします。
 
@@ -257,18 +256,18 @@ $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
 $ mkdir ~/`hostname` && cd ~/`hostname` &&  wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-$ make -j 36 && sudo make install
-$ cd .. &&  wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
-$ tar -xvf ./hwloc-2.11.2.tar.gz
-$ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
-$ make -j 36 && sudo make install
-$ cd .. && wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-$ tar -xvf ./pmix-5.0.4.tar.gz
-$ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 36 && sudo make install
+$ make -j 16 && sudo make install
+$ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
+$ tar -xvf ./hwloc-2.12.2.tar.gz
+$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
+$ make -j 16 && sudo make install
+$ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
+$ tar -xvf ./pmix-5.0.8.tar.gz
+$ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
+$ make -j 16 && sudo make install
 ```
 
-## 2-5. OpenUCXインストール
+## 2-4. OpenUCXインストール
 
 本章は、Slurmマネージャに **OpenUCX** をインストールします。
 
@@ -276,57 +275,58 @@ $ make -j 36 && sudo make install
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
-$ tar -xvf ./ucx-1.17.0.tar.gz
-$ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx
-$ make -j 36 && sudo make install
+$ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
+$ tar -xvf ./ucx-1.19.0.tar.gz
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
+$ make -j 16 && sudo make install
 ```
 
-## 2-6. Slurm RPMパッケージ作成
+## 2-5. Slurm RPMパッケージ作成
 
 本章は、SlurmマネージャでRPMパッケージを作成します。
 
 以下コマンドをSlurmマネージャのopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```sh
-$ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake
+$ sudo yum-config-manager --enable ol9_codeready_builder
+$ sudo dnf install -y mariadb-devel munge-devel pam-devel readline-devel dbus-devel
 ```
 
 次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **Slurm** RPMパッケージを作成します。
 
 ```sh
-$ cd .. && wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
-$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-24.11.0.tar.bz2
+$ cd ~/`hostname` && wget https://download.schedmd.com/slurm/slurm-25.05.3.tar.bz2
+$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-25.05.3.tar.bz2
 ```
 
 作成されたパッケージは、以下のディレクトリに配置されるので、これらの全ファイルを他のサブシステムにコピーします。
 
 ```sh
 $ ls -1 ~/rpmbuild/RPMS/x86_64/
-slurm-24.11.0-1.el8.x86_64.rpm
-slurm-contribs-24.11.0-1.el8.x86_64.rpm
-slurm-devel-24.11.0-1.el8.x86_64.rpm
-slurm-example-configs-24.11.0-1.el8.x86_64.rpm
-slurm-libpmi-24.11.0-1.el8.x86_64.rpm
-slurm-openlava-24.11.0-1.el8.x86_64.rpm
-slurm-pam_slurm-24.11.0-1.el8.x86_64.rpm
-slurm-perlapi-24.11.0-1.el8.x86_64.rpm
-slurm-sackd-24.11.0-1.el8.x86_64.rpm
-slurm-slurmctld-24.11.0-1.el8.x86_64.rpm
-slurm-slurmd-24.11.0-1.el8.x86_64.rpm
-slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm
-slurm-torque-24.11.0-1.el8.x86_64.rpm
+slurm-25.05.3-1.el9.x86_64.rpm
+slurm-contribs-25.05.3-1.el9.x86_64.rpm
+slurm-devel-25.05.3-1.el9.x86_64.rpm
+slurm-example-configs-25.05.3-1.el9.x86_64.rpm
+slurm-libpmi-25.05.3-1.el9.x86_64.rpm
+slurm-openlava-25.05.3-1.el9.x86_64.rpm
+slurm-pam_slurm-25.05.3-1.el9.x86_64.rpm
+slurm-perlapi-25.05.3-1.el9.x86_64.rpm
+slurm-sackd-25.05.3-1.el9.x86_64.rpm
+slurm-slurmctld-25.05.3-1.el9.x86_64.rpm
+slurm-slurmd-25.05.3-1.el9.x86_64.rpm
+slurm-slurmdbd-25.05.3-1.el9.x86_64.rpm
+slurm-torque-25.05.3-1.el9.x86_64.rpm
 $
 ```
 
-## 2-7. Slurm RPMパッケージインストール・セットアップ
+## 2-6. Slurm RPMパッケージインストール・セットアップ
 
 本章は、先に作成した **Slurm** RPMパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。
 
 以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```sh
-$ cd ~/rpmbuild/RPMS/x86_64/ && sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.11.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+$ cd ~/rpmbuild/RPMS/x86_64/ && sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmctld-25.05.3-1.el9.x86_64.rpm ./slurm-slurmdbd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /var/spool/slurmctld && sudo chown slurm:slurm /var/spool/slurmctld
 $ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
@@ -339,8 +339,9 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 次に、以下コマンドを全ての計算ノードのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```sh
+$ sudo yum-config-manager --enable ol9_codeready_builder
 $ sudo dnf install -y mariadb-devel
-$ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
 $ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
@@ -350,13 +351,14 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 次に、以下コマンドをSlurmクライアントのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```sh
+$ sudo yum-config-manager --enable ol9_codeready_builder
 $ sudo dnf install -y mariadb-devel
-$ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
-## 2-8. Slurm設定ファイル作成
+## 2-7. Slurm設定ファイル作成
 
 本章は、以下3種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
 この際、これらファイルのオーナーユーザ・オーナーグループを **slurm** とします。  
@@ -431,13 +433,11 @@ StorageLoc=slurm_acct_db
 [ **mpi.conf** ]
 
 ```sh
-PMIxDirectConn=true
 PMIxDirectConnEarly=true
 PMIxDirectConnUCX=true
-PMIxNetDevicesUCX=mlx5_0:0
 ```
 
-## 2-9. Slurmサービス起動
+## 2-8. Slurmサービス起動
 
 本章は、 **Slurm** の各systemdサービスを対象のサブシステムで起動します。
 
@@ -451,10 +451,8 @@ $ sudo systemctl enable --now slurmd
 
 ```sh
 $ sudo systemctl enable --now slurmdbd
-$ sudo systemctl start slurmctld
+$ sudo systemctl enable --now slurmctld
 ```
-
-**slurmctld** は、全ての計算ノードの **slurmd** 起動完了後に起動する必要があるため、手動起動を想定して自動起動設定は行いません。
 
 次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。
 
@@ -478,7 +476,7 @@ specific pmix plugin versions available: pmix_v5
 $
 ```
 
-## 2-10. Slurm利用に必要な環境変数設定
+## 2-9. Slurm利用に必要な環境変数設定
 
 以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、 **Slurm** を利用するための環境変数を設定します。
 
@@ -495,7 +493,7 @@ $ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を実行するバッチジョブを **srun** で起動する場合と **mpirun** で起動する場合の2種類実行し、その結果を比較します。  
 またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。
 
-**srun** を利用する場合（ **srun.sh** ）と **mpiexec** を利用する場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
+**srun** を利用する場合（ **srun.sh** ）と **mpirun** を利用する場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
 
 [ **srun.sh** ]
 ```sh
@@ -503,10 +501,12 @@ $ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 #SBATCH -p sltest
 #SBATCH -n 2
 #SBATCH -N 2
-#SBATCH -J ping_ping
+#SBATCH -J ping_pong_srun
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
-srun /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
+
+module load openmpi imb
+srun IMB-MPI1 -msglog 28:28 pingpong
 ```
 
 [ **mpirun.sh** ]
@@ -515,16 +515,18 @@ srun /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
 #SBATCH -p sltest
 #SBATCH -n 2
 #SBATCH -N 2
-#SBATCH -J ping_ping
+#SBATCH -J ping_pong_mpirun
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
-mpirun -n 2 -N 1 /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
+
+module load openmpi imb
+mpirun IMB-MPI1 -msglog 28:28 pingpong
 ```
 
 次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。
 
 ```sh
-$ cd ~; sbatch srun.sh
+$ cd ~ && sbatch srun.sh
 Submitted batch job 3
 $ grep -A 2 usec stdout.3
        #bytes #repetitions      t[usec]   Mbytes/sec

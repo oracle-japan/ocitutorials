@@ -1,7 +1,7 @@
 ---
-title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）"
+title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）"
 description: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。"
-weight: "351"
+weight: "352"
 tags:
 - hpc
 params:
@@ -55,13 +55,12 @@ params:
 本テクニカルTipsは、以下の環境を前提とします。
 
 - シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- イメージ ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+- イメージ ： **Oracle Linux** 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **OpenMPI** ： 5.0.8
 - **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
 - **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
 
-
-※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。
 
 またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** が参考になります。
@@ -85,9 +84,8 @@ params:
 1. **[libevent](https://libevent.org/)**
 2. **[hwloc](https://www.open-mpi.org/projects/hwloc/)**
 3. **OpenPMIx**
-4. **XPMEM**
-5. **OpenUCX**
-6. **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）
+4. **OpenUCX**
+5. **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）
 
 ### 1-1-1. libeventインストール
 
@@ -125,28 +123,7 @@ $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent 
 $ make -j 36 && sudo make install
 ```
 
-### 1-1-4. XPMEMインストール
-
-以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
-
-```sh
-$ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
-$ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 128 && sudo make install
-```
-
-次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
-
-```sh
-$ sudo modprobe -r xpmem
-$ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
-$ sudo depmod -a
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
-$ sudo modprobe xpmem
-```
-
-### 1-1-5. OpenUCXインストール
+### 1-1-4. OpenUCXインストール
 
 以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -154,11 +131,11 @@ $ sudo modprobe xpmem
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 $ tar -xvf ./ucx-1.19.0.tar.gz
-$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
 $ make -j 36 && sudo make install
 ```
 
-### 1-1-6. UCCインストール
+### 1-1-5. UCCインストール
 
 以下コマンドをopcユーザで実行し、 **UCC** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -265,7 +242,7 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 **OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
-$ cd ~ && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+$ cd ~/`hostname` && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 $ tar -xvf ./NPB3.4.3-MZ.tar.gz
 $ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def

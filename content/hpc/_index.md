@@ -413,7 +413,8 @@ HPC/機械学習ワークロード実行のためのGPU搭載インスタンス�
 
 ## 3-5. ソフトウェア環境
 
-- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](tech-knowhow/build-openmpi/)**  
+- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](tech-knowhow/build-openmpi/)**  
+- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](tech-knowhow/build-openmpi-ol9/)**  
 **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
 **OpenMPI** で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが **[Slurm](https://slurm.schedmd.com/)** の場合、 **[PMIx](https://pmix.github.io/)** を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。  
 また **[UCX](https://openucx.org/)** は、 **OpenMPI** が **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** を介して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。  
