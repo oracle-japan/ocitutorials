@@ -1,7 +1,7 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)"
 description: "GPUノード/クラスタのリソース管理・ジョブ管理は、近年主流となっているマルチGPUノードのGPUリソース有効利用の観点から、ジョブスケジューラを活用することが主流となっていますが、オープンソースのジョブスケジューラSlurmは、高機能のGPUリソース管理機能を有する代表的なジョブスケジューラとして現在人気を集めています。またHPC/機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっています。本テクニカルTipsは、NVIDIA製のGPUを複数搭載するベアメタルインスタンスのGPUリソース管理を念頭に、GPUノード/クラスタのリソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。"
-weight: "353"
+weight: "354"
 tags:
 - hpc
 params:
@@ -27,12 +27,12 @@ table, th, td {
 前提システムは、以下4種類のサブシステムから構成されます。  
 また、必要に応じてこれらのサブシステムにログインするための踏み台となる、パブリックサブネットに接続するBastionノードを用意します。
 
-| サブシステム          | 使用するシェイプ                    | OS                       | ノード数 | 接続<br>サブネット | 役割                                                                      |
-| :-------------: | :-------------------------: | :----------------------: | :--: | :---------: | :---------------------------------------------------------------------: |
-| Slurm<br>マネージャ  | 任意の仮想マシン<br>                | **Ubuntu** 24.04<br>（※1） | 1    | プライベート      | ・ **slurmctld** と **slurmdbd** が<br>稼働するSlurm管理ノード                      |
-| Slurm<br>クライアント | 任意の仮想マシン<br>                | **Ubuntu** 24.04<br>（※1） | 1    | プライベート      | ・アプリケーション開発用<br>フロントエンドノード<br>・ **Slurm** にジョブを投入する<br>ジョブサブミッションクライアント |
-| GPUノード          | 複数GPUを搭載する<br>ベアメタルシェイプ（※2） | **Ubuntu** 24.04<br>（※1） | 任意のノード数    | プライベート      | ・ **slurmd** が稼働するジョブ実行ノード                                              |
-| NFSサーバ          | -<br>（※3）                   | -                        | 1    | プライベート      | ・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）                                    |
+| サブシステム          | 使用するシェイプ                    | OS                       | ノード数    | 接続<br>サブネット                                            | 役割                                                                      |
+| :-------------: | :-------------------------: | :----------------------: | :-----: | :----------------------------------------------------: | :---------------------------------------------------------------------: |
+| Slurm<br>マネージャ  | 任意の仮想マシン<br>                | **Ubuntu** 24.04<br>（※1） | 1       | プライベート                                                 | ・ **slurmctld** と **slurmdbd** が<br>稼働するSlurm管理ノード                      |
+| Slurm<br>クライアント | 任意の仮想マシン<br>                | **Ubuntu** 24.04<br>（※1） | 1       | プライベート                                                 | ・アプリケーション開発用<br>フロントエンドノード<br>・ **Slurm** にジョブを投入する<br>ジョブサブミッションクライアント |
+| GPUノード          | 複数GPUを搭載する<br>ベアメタルシェイプ（※2） | **Ubuntu** 24.04<br>（※1） | 任意のノード数 | プライベート<br>( **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** ) | ・ **slurmd** が稼働するジョブ実行ノード                                              |
+| NFSサーバ          | -<br>（※3）                   | -                        | 1       | プライベート                                                 | ・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）                                    |
 
 ![画面ショット](architecture_diagram.png)
 
@@ -41,11 +41,13 @@ table, th, td {
 ※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../howto-configure-sharedstorage/)** を参照してください。  
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、SlurmクライアントとGPUノードでNFSマウントします。  
 
-GPUノードとSlurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../gpu-with-ubuntu/)** の手順に従い、インスタンスの作成とGPU関連ソフトウェアをインストールします。  
-ここでSlurmクライアントは、GPUを搭載しない仮想マシンのため、以下ソフトウェアのインストール・セットアップの手順と、動作確認をスキップします。
+Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../gpu-with-ubuntu/)** の手順に従い、インスタンスの作成とGPU関連ソフトウェアをインストールします。  
+ここでSlurmクライアントは、GPUを搭載しない仮想マシンのため、以下ソフトウェアのインストール・セットアップの手順と、動作確認をスキップします。  
 
 - **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)**
 - **[gdrcopy](https://github.com/NVIDIA/gdrcopy)**
+
+GPUノードは、単一GPUノードの場合は **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../gpu-with-ubuntu/)** の手順に従いインスタンスの作成とGPU関連ソフトウェアをインストールし、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続されたGPUクラスタの場合は **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu)** の手順に従い構築します。
 
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
@@ -61,28 +63,34 @@ GPUノードとSlurmクライアントは、 **[OCI HPCテクニカルTips集](.
 # 2. 環境構築
 
 ## 2-0. 概要
-本章は、既に作成されている **[1. 前提システム](#1-前提システム)** で解説したシステム上で、 **Slurm** 環境を構築します。
+
+本章は、既に作成されている **[1. 前提システム](#1-前提システム)** で解説したシステム上で、 **[OpenMPI](https://www.open-mpi.org/)** のMPI並列アプリケーションを **[PMIx](https://pmix.github.io/)** の大規模並列ジョブに対する利点（※5）を生かして実行することを念頭に、 **PMIx** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築します。
+
+※5）この詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../setup-slurm-cluster/)** の **[0. 概要](../setup-slurm-cluster/#0-概要)** を参照してください。
 
 **Slurm** のインストールは、多数のGPUノードに効率よくインストールする必要から、checkinstallで作成するdebパッケージによるインストール方法を採用します。
 
-本テクニカルTipsで使用する **Slurm** は、バージョン **25.05.3** を前提とし、 **Slurm** のプロセス間通信の認証に **[munge](https://dun.github.io/munge/)** 、ジョブのアカウンティング情報格納用RDBMSに **[MariaDB](https://mariadb.org/)** を使用します。  
-また、 **[OpenMPI](https://www.open-mpi.org/)** のMPI並列アプリケーションを **[PMIx](https://pmix.github.io/)** の大規模並列ジョブに対する利点を生かして実行することを念頭に（※5）、 **PMIx** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築します。
+本テクニカルTipsは、各ソフトウェアに以下を使用します。
 
-※5）この詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../setup-slurm-cluster/)** の **[0. 概要](../setup-slurm-cluster/#0-概要)** を参照してください。
+- **Slurm** ： 25.05.3
+- **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
+- **UCX** ： **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
+
+また、 **Slurm** のプロセス間通信の認証に **[munge](https://dun.github.io/munge/)** 、ジョブのアカウンティング情報格納用RDBMSに **[MariaDB](https://mariadb.org/)** を使用します。
 
 以上より、本章で解説する環境構築は、以下の手順に沿って行います。
 
 1. **[mungeインストール・セットアップ](#2-1-munge-インストールセットアップ)**
 2. **[MariaDBインストール・セットアップ](#2-2-mariadb-インストールセットアップ)**
-3. **[OpenPMIxインストール](#2-4-openpmixインストール)**
-5. **[OpenUCXインストール](#2-5-openucxインストール)**
-6. **[Slurm debパッケージ作成](#2-6-slurm-rpmパッケージ作成)**
-7. **[Slurm debパッケージインストール・セットアップ](#2-7-slurm-rpmパッケージインストールセットアップ)**
-8. **[Slurm設定ファイル作成](#2-8-slurm設定ファイル作成)**
-9. **[Slurmサービス起動](#2-9-slurmサービス起動)**
-10. **[Slurm利用に必要な環境変数設定](#2-10-slurm利用に必要な環境変数設定)**
+3. **[OpenPMIxインストール](#2-3-openpmixインストール)**
+4. **[OpenUCXインストール](#2-4-openucxインストール)**
+5. **[Slurm debパッケージ作成](#2-5-slurm-debパッケージ作成)**
+6. **[Slurm debパッケージインストール・セットアップ](#2-6-slurm-debパッケージインストールセットアップ)**
+7. **[Slurm設定ファイル作成](#2-7-slurm設定ファイル作成)**
+8. **[Slurmサービス起動](#2-8-slurmサービス起動)**
+9. **[Slurm利用に必要な環境変数設定](#2-9-slurm利用に必要な環境変数設定)**
 
-なお、各ソフトウェアと **Slurm** サービスは、以下のサブシステムにインストールします。
+なお、各ソフトウェアは、以下のサブシステムにインストールします。
 
 |                    | Slurmマネージャ | Slurmクライアント | GPUノード |
 | :----------------: | :--------: | :---------: | :---: |
@@ -138,7 +146,7 @@ $
 $ sudo apt install -y mariadb-server libmariadb-dev
 ```
 
-次に、 **MariaDB** の設定ファイル（ **/etc/mysql/mariadb.conf.d/50-server.cnf** ）の[mysqld]フィールドに以下の記述を追加します。
+次に、 **MariaDB** の設定ファイル（ **/etc/mysql/mariadb.conf.d/50-server.cnf** ）の **[mysqld]** フィールドに以下の記述を追加します。
 
 ```sh
 $ sudo diff /etc/mysql/mariadb.conf.d/50-server.cnf_org /etc/mysql/mariadb.conf.d/50-server.cnf
@@ -163,7 +171,7 @@ $ sudo systemctl restart mariadb
 
 以下コマンドをubuntuユーザで実行します。  
 なお、 **MariaDB** に対して入力するコマンドは、 **MariaDB** のプロンプト（ **MariaDB [(none)]>** ）に続く文字列です。  
-なお、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
+また、コマンド中の **passcord** は、自身の設定するパスワードに置き換えます。
 
 ```sh
 $ sudo mysql
@@ -232,7 +240,7 @@ $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent 
 $ make -j 16 && sudo make install
 ```
 
-## 2-5. OpenUCXインストール
+## 2-4. OpenUCXインストール
 
 本章は、Slurmマネージャに **OpenUCX** をインストールします。
 
@@ -246,7 +254,7 @@ $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
 $ make -j 16 && sudo make install
 ```
 
-## 2-6. Slurm RPMパッケージ作成
+## 2-5. Slurm debパッケージ作成
 
 本章は、Slurmクライアントでdebパッケージを作成します。
 
@@ -274,7 +282,7 @@ slurm_25.05.3-1_amd64.deb
 $
 ```
 
-## 2-7. Slurm RPMパッケージインストール・セットアップ
+## 2-6. Slurm debパッケージインストール・セットアップ
 
 本章は、先に作成した **Slurm** のdebパッケージをSlurmマネージャ、Slurmクライアント、及び全てのGPUノードにインストールし、必要なセットアップ作業を実施します。
 
@@ -312,7 +320,7 @@ $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
-## 2-8. Slurm設定ファイル作成
+## 2-7. Slurm設定ファイル作成
 
 本章は、以下3種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
 この際、これらファイルのオーナーユーザ・オーナーグループを **slurm** とします。  
@@ -396,10 +404,8 @@ StorageLoc=slurm_acct_db
 
 [ **mpi.conf** ]
 ```sh
-PMIxDirectConn=true
 PMIxDirectConnEarly=true
 PMIxDirectConnUCX=true
-PMIxNetDevicesUCX=mlx5_4:1
 ```
 
 [ **cgroup.conf** ]
@@ -414,7 +420,9 @@ ConstrainRAMSpace=yes
 NodeName=inst-ao-ub Name=gpu Type=nvidia_a100-sxm4-40gb File=/dev/nvidia[0-7]
 ```
 
-## 2-9. Slurmサービス起動
+なお、 **NodeName** の設定値は、自身の環境に合わせて修正します。
+
+## 2-8. Slurmサービス起動
 
 本章は、 **Slurm** の各systemdサービスを対象のサブシステムで起動します。
 
@@ -453,7 +461,7 @@ specific pmix plugin versions available: pmix_v5
 $
 ```
 
-## 2-10. Slurm利用に必要な環境変数設定
+## 2-9. Slurm利用に必要な環境変数設定
 
 以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **Slurm** を利用するための環境変数を設定します。
 
@@ -465,7 +473,7 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 
 本章は、構築した **Slurm** 環境の稼働確認を以下の方針で行います。
 
-- GPUリソース管理が想定通りに行われているかを **nvidia-smi** コマンドで確認
+- GPUリソース管理が想定通りに行われていることを **nvidia-smi** コマンドで確認
 - ノード内GPUデバイスメモリ間レイテンシを **OSU Micro-Benchmarks** で確認
 - ノード内GPUデバイスメモリ間帯域幅を **OSU Micro-Benchmarks** で確認
 - 使用したGPUリソースがジョブアカウンティング情報に記録されていることを確認
@@ -473,7 +481,7 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 なお、 **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** をSlurmクライアントとGPUノードに予めインストール・セットアップしておきます。  
 この手順は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** の **[1. OSU Micro-Benchmarksインストール・セットアップ](../../benchmark/run-omb-gpu/#1-osu-micro-benchmarksインストールセットアップ)** を参照してください。
 
-以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **Slurm** が割り当てるGPU数が **--gres** オプションの指定通りとなっていることを確認します。
+以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **Slurm** が割り当てるGPU数が **- -gres** オプションの指定通りとなっていることを確認します。
 
 ```sh
 $ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:1 nvidia-smi | grep SXM
