@@ -55,9 +55,9 @@ table, th, td {
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
 ※5）**Oracle Linux** 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
 
-Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の手順に従い、 **OpenMPI** をインストールします。
+Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../build-openmpi-ol9/)** の手順に従い、 **OpenMPI** をインストールします。
 
-計算ノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPCクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の手順に従い、 **OpenMPI** を計算ノードにインストールします。
+計算ノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPCクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../build-openmpi-ol9/)** の手順に従い、 **OpenMPI** を計算ノードにインストールします。
 
 またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** をインストールします。
 
@@ -482,15 +482,11 @@ $
 
 ```sh
 $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
-$ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 ```
-
-ここで設定している環境変数 **UCX_NET_DEVICES** は、 **Slurm** から実行する **OpenMPI** のジョブがそのノード間通信を  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するNIC（RDMAリンク名 **mlx5_2/1** ）を介して行うことを指示しています。  
-またこの環境変数は、 **OpenPMIx** がMPIプロセス制御に **OpenUCX** を使用することも指示しているため、 **srun** でジョブを実行する際に設定する必要があります。
 
 # 3. 稼働確認
 
-本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** を実行するバッチジョブを **srun** で起動する場合と **mpirun** で起動する場合の2種類実行し、その結果を比較します。  
+本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **Intel MPI Benchmarks** を実行するバッチジョブを **srun** で起動する場合と **mpirun** で起動する場合の2種類実行し、その結果を比較します。  
 またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。
 
 **srun** を利用する場合（ **srun.sh** ）と **mpirun** を利用する場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
@@ -506,6 +502,8 @@ $ echo "export UCX_NET_DEVICES=mlx5_2:1" | tee -a ~/.bashrc
 #SBATCH -e stderr.%J
 
 module load openmpi imb
+export UCX_NET_DEVICES=mlx5_2:1
+
 srun IMB-MPI1 -msglog 28:28 pingpong
 ```
 
@@ -520,6 +518,8 @@ srun IMB-MPI1 -msglog 28:28 pingpong
 #SBATCH -e stderr.%J
 
 module load openmpi imb
+export UCX_NET_DEVICES=mlx5_2:1
+
 mpirun IMB-MPI1 -msglog 28:28 pingpong
 ```
 

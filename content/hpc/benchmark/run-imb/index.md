@@ -25,13 +25,13 @@ params:
 
 [実行環境]
 - シェイプ : **BM.Optimized3.36** （搭載コア数36）
-- OS ： **Oracle Linux** 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+- OS ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **OpenMPI** ： 5.0.8（※2）
 - **Intel MPI Library** ： 2021.3.0
 - **Intel MPI Benchmarks** ： 2021.10
 
-※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
-※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従って構築された **OpenMPI** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。  
+※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** / **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従って構築された **OpenMPI** です。
 
 [実行結果（ **OpenMPI** ）]
 - レイテンシ: 1.68 usec
@@ -54,7 +54,7 @@ params:
 
 ## 1-1. OpenMPIインストール  
 
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** か **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
 ## 1-2. Intel MPI Benchmarksインストール
 
@@ -201,7 +201,7 @@ $
 
 ```sh
 $ module load openmpi imb
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 IMB-MPI1 -msglog 28:28 -npmin 144 allreduce
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH IMB-MPI1 -msglog 28:28 -npmin 144 allreduce
 [inst-ztgl1-x9-ol810:215912] SET UCX_NET_DEVICES=mlx5_2:1
 #----------------------------------------------------------------
 #    Intel(R) MPI Benchmarks 2021.10, MPI-1 part
