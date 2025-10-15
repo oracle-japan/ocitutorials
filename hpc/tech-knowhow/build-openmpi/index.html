@@ -11,7 +11,7 @@
 
   <meta name="description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。" />
 
-  <title>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法 | OCIチュートリアル</title>
+  <title>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編） | OCIチュートリアル</title>
 
   <link rel="icon" type="image/ico" href="/ocitutorials/favicon/favicon.ico" />
 <link
@@ -32,7 +32,7 @@
   
   <meta
     property="og:title"
-    content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法"
+    content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）"
   />
   <meta property="og:site_name" content="OCIチュートリアル" />
   <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png" />
@@ -43,12 +43,12 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-15T15:43:56+09:00"
     />
 
 
   <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法" />
+<meta name="twitter:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）" />
   <meta property="twitter:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png" />
   <meta name="twitter:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。" />
 
@@ -58,9 +58,9 @@
       "@context": "http://schema.org",
       "@type": "TechArticle",
       "articleSection": "Hpc",
-      "name": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法",
+      "name": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）",
       "url" : "https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-openmpi/",
-      "headline": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法",
+      "headline": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）",
       "description": "OpenMPIは、最新のMPI言語規格に準拠し、HPC\/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC\/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
       "wordCount" : "998",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-15T15:43:56.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -161,19 +161,19 @@
   
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-openmpi/">
   <meta property="og:site_name" content="OCIチュートリアル">
-  <meta property="og:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法">
+  <meta property="og:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）">
   <meta property="og:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。">
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
-  <meta name="twitter:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法">
+  <meta name="twitter:title" content="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）">
   <meta name="twitter:description" content="OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。">
       <meta name="twitter:site" content="@Oracle_Japan">
 
@@ -405,7 +405,7 @@
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/' href='/ocitutorials/'><span itemprop='name'>Oracle Cloud Infrastructure チュートリアル</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/hpc/' href='/ocitutorials/hpc/'><span itemprop='name'>OCI HPCポータル</span></a><meta itemprop='position' content='4' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</span><meta itemprop='position' content='5' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/' href='/ocitutorials/'><span itemprop='name'>Oracle Cloud Infrastructure チュートリアル</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/hpc/' href='/ocitutorials/hpc/'><span itemprop='name'>OCI HPCポータル</span></a><meta itemprop='position' content='4' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</span><meta itemprop='position' content='5' /></li>
   
 
   
@@ -420,13 +420,13 @@
 
 
   <article class="gdoc-markdown gdoc-markdown__align--left">
-     <h1>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</h1> 
+     <h1>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</h1> 
     <span class="flex align-center no-wrap">
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-15T15:43:56&#43;09:00">
+            Oct 15, 2025
         </time>
     
 </span>
@@ -441,8 +441,7 @@
     
 </div>
 
-    <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -612,7 +611,6 @@
   class="gdoc-markdown__link"
   href="../../tech-knowhow/setup-slurm-cluster/"
 >Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> を参照してください。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-インストールセットアップ"
     >
@@ -878,7 +876,6 @@
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> .ssh <span class="o">&amp;&amp;</span> cat ./id_rsa.pub &gt;&gt; ./authorized_keys <span class="o">&amp;&amp;</span> chmod <span class="m">600</span> ./authorized_keys
 </span></span><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh -oStrictHostKeyChecking<span class="o">=</span>accept-new <span class="nv">$hname</span> :<span class="p">;</span> <span class="k">done</span>
 </span></span></code></pre></div><p>なお、ここで実施するパスフレーズ無しのSSHアクセスのための手順は、 <strong>OpenMPI</strong> 単独で稼働確認を行うために実施しますが、 <strong>PMIx</strong> を使用する <strong>Slurm</strong> 環境では必要ありません。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-稼働確認"
     >
@@ -3292,6 +3289,39 @@
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -12539,10 +12569,10 @@
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/"
-      title="Slurmによるリソース管理・ジョブ管理システム構築方法"
+      href="/ocitutorials/hpc/tech-knowhow/build-openmpi-ol9/"
+      title="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）"
     >
-      Slurmによるリソース管理・ジョブ管理システム構築方法
+      Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

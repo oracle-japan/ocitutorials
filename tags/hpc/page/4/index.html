@@ -491,13 +491,181 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-openfoam/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.openfoam.com/"
+>OpenFOAM</a></strong> は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのツール類と連携し、自身の解析用途に合わせた最適な流体解析シミュレーションを実施することが可能です。<br>
+この際、外部のツールと連携して <strong>OpenFOAM</strong> を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。</p>
+<p>本テクニカルTipsは、以下の外部ツールと連係動作する <strong>OpenFOAM</strong> 実行環境を構築します。</p>
+<ul>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.open-mpi.org/"
+>OpenMPI</a></strong><br>
+MPI言語規格に準拠するMPI実装</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.mcs.anl.gov/petsc/"
+>PETSc</a></strong><br>
+偏微分方程式で記述された問題をMPIで並列計算するための数値計算ライブラリ</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="http://www.fftw.org/"
+>FFTW</a></strong><br>
+高速フーリエ変換ライブラリ</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="http://www.paraview.org/"
+>ParaView</a></strong><br>
+計算結果の可視化ツール</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://vtk.org/"
+>VTK</a></strong><br>
+<strong>ParaView</strong> がモデルの描画を行う際に使用する可視化ツールキット</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.paraview.org/insitu/"
+>ParaView Catalyst</a></strong><br>
+<strong>ParaView</strong> でin-situシミュレーションを行うためのツールキット</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.mesa3d.org/"
+>MESA</a></strong><br>
+<strong>ParaView</strong> でOff-screenレンダリングを行うためのグラフィックライブラリ</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="http://glaros.dtc.umn.edu/gkhome/metis/metis/overview"
+>METIS</a></strong><br>
+メッシュを並列計算用に領域分割するツール</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.labri.fr/perso/pelegrin/scotch/"
+>SCOTCH</a></strong><br>
+メッシュを並列計算用に領域分割するツール</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://kahip.github.io/"
+>KaHIP </a></strong><br>
+メッシュを並列計算用に領域分割するツール</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://www.cgal.org/"
+>CGAL</a></strong><br>
+幾何形状を取り扱うライブラリー</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://csmd.ornl.gov/adios"
+>ADIOS</a></strong><br>
+大規模データを効率よく可視化・解析するためのフレームワーク</li>
+</ul>
+<p>また本テクニカルTipsは、 <strong>OpenFOAM</strong> に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。<br>
+この際、 <strong>OpenFOAM</strong> が提供するツールによるプリ処理と <strong>OpenFOAM</strong> が提供するソルバーによる解析処理を <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> 対応のベアメタルシェイプ <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
+>BM.Optimized3.36</a></strong> でデプロイする計算ノードで、 <strong>ParaView</strong> によるポスト処理を <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
+>VM.Optimized3.Flex</a></strong> でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。<br>
+また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と <strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/"
+>Slurm</a></strong> 環境でのバッチ実行を念頭に置いて、以下4パターンを解説します。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/tech-knowhow/install-openfoam/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
+      
+        更新日時
+      
+      Oct 15, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 9 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/">Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a>
         </h1>
       </header>
 
       <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+        <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -564,11 +732,11 @@
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
       
         更新日時
       
-      Oct 9, 2025
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1622,130 +1790,6 @@ table, th, td {
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 10 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <style>
-table, th, td {
-    font-size: 80%;
-}
-</style>
-<hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-概要"
-    >
-        0. 概要
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 <strong>Docker Community Edition</strong> と <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html"
->NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a
-  class="gdoc-markdown__link"
-  href="https://developer.nvidia.com/nccl"
->NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a
-  class="gdoc-markdown__link"
-  href="https://github.com/nvidia/nccl-tests"
->NCCL Tests</a></strong> で検証後、分散機械学習の稼働確認として <strong>TensorFlow</strong> の <strong>MultiWorkerMirroredStrategy</strong> を使用するサンプルプログラムを実行、その性能を検証します。</p>
-<p>本チュートリアルで構築するGPUクラスタの構成を以下に示します。</p>
-<p>[GPUノード]</p>
-<ul>
-<li>シェイプ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
-<li>インターコネクト ： <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
-</ul>
-<p>[Bastionノード]</p>
-<ul>
-<li>シェイプ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Standard.E4.Flex</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9</li>
-</ul>
-<p>[ソフトウェア]</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/spinup-gpu-cluster/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T16:31:44&#43;09:00">
-      
-        更新日時
-      
-      Sep 26, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 11 分かかります</span>
 </span>
 
 
@@ -3369,6 +3413,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

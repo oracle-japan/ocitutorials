@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-15T16:48:59+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Intel MPI Benchmarks実行方法",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1190",
+      "wordCount" : "1264",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-15T16:48:59.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-15T16:48:59+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -412,8 +412,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-15T16:48:59&#43;09:00">
+            Oct 15, 2025
         </time>
     
 </span>
@@ -474,7 +474,7 @@
 <p>[実行環境]</p>
 <ul>
 <li>シェイプ : <strong>BM.Optimized3.36</strong> （搭載コア数36）</li>
-<li>OS ： <strong>Oracle Linux</strong> 9.5ベースのHPC <strong><a
+<li>OS ： <strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> （※1）</li>
@@ -491,18 +491,21 @@
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.13</strong> です。<br>
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> / <strong>No.13</strong> です。<br>
 ※2） <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</a></strong> / <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/build-openmpi-ol9/"
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
 <p>[実行結果（ <strong>OpenMPI</strong> ）]</p>
 <ul>
-<li>レイテンシ: 1.66 usec</li>
-<li>帯域幅（256 MiBメッセージサイズ）: 12,211 MB/s</li>
+<li>レイテンシ: 1.68 usec</li>
+<li>帯域幅（256 MiBメッセージサイズ）: 12,238 MB/s</li>
 </ul>
 <p>[実行結果（ <strong>Intel MPI Library</strong> ）]</p>
 <ul>
@@ -549,7 +552,10 @@
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従い、  <strong>Intel MPI Benchmarks</strong> を実行する全てのノードに <strong>OpenMPI</strong> をインストールします。</p>
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</a></strong> か <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/build-openmpi-ol9/"
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> に従い、  <strong>Intel MPI Benchmarks</strong> を実行する全てのノードに <strong>OpenMPI</strong> をインストールします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-intel-mpi-benchmarksインストール"
     >
@@ -566,6 +572,22 @@
 </span></span><span class="line"><span class="cl">$ module load openmpi
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> mpi-benchmarks-IMB-v2021.10 <span class="o">&amp;&amp;</span> make -j <span class="m">36</span> <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx all
 </span></span><span class="line"><span class="cl">$ sudo mkdir -p /opt/openmpi/tests/imb <span class="o">&amp;&amp;</span> sudo cp ./IMB* /opt/openmpi/tests/imb/
+</span></span></code></pre></div><p>次に、以下のファイルを <strong>/usr/share/Modules/modulefiles/imb</strong> で作成します。<br>
+このファイルは、 <strong>Environment modules</strong> にモジュール名 <strong>imb</strong> を登録し、これをロードすることで <strong>Intel MPI Benchmarks</strong> 利用環境の設定が可能になります</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#%Module1.0</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">## Intel MPI Benchmarks for OpenMPI</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">proc ModulesHelp <span class="o">{</span> <span class="o">}</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        puts stderr <span class="s2">&#34;Intel MPI Benchmarks for OpenMPI\n&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">module-whatis <span class="s2">&#34;Intel MPI Benchmarks for OpenMPI&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> pkg_root  /opt/openmpi/tests/imb
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> ver       2021.10
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">prepend-path PATH <span class="nv">$pkg_root</span>
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-3-intel-mpi-benchmarks実行"
     >
@@ -586,23 +608,23 @@
 </div>
 <p>以下コマンドを対象ノードで <strong>Intel MPI Benchmarks</strong> 実行ユーザで実行します。<br>
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ32 MiBで計測しています。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">36</span> /opt/openmpi/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin <span class="m">36</span> alltoall
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi imb
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">36</span> IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin <span class="m">36</span> alltoall
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Fri Sep  5 14:50:38 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Wed Oct 15 11:44:25 2025</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Machine               : x86_64</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># System                : Linux</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 4.18.0-553.54.1.el8_10.x86_64</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP Wed May 28 02:12:15 PDT 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 5.14.0-503.40.1.el9_5.x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># MPI Version           : 3.1</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># MPI Thread Environment: </span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># IMB-MPI1 -msglog 25:25 -mem 2.3G -off_cache 39,64 -npmin 36 alltoall </span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   33554432</span>
@@ -623,7 +645,7 @@
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
 </span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
 </span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         0.03         0.03         0.03
-</span></span><span class="line"><span class="cl">     <span class="m">33554432</span>            <span class="m">1</span>    365159.73    375007.98    370325.94
+</span></span><span class="line"><span class="cl">     <span class="m">33554432</span>            <span class="m">1</span>    404586.22    415032.49    410026.69
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># All processes entering MPI_Finalize</span>
@@ -639,25 +661,25 @@
     </a>
 </div>
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br>
-ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは <strong>1.68 usec</strong> ）、帯域幅は256 MiBメッセージの帯域幅（ <strong>12,235.56 MB/s</strong> ）を以ってその結果とします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
-</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-ztgl1-x9-ol810:211103<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+ここでは、2ノードを使用したPingPongをメッセージサイズ0バイトと256 MiBで計測し、レイテンシは0バイトメッセージの所要時間（ここでは <strong>1.68 usec</strong> ）、帯域幅は256 MiBメッセージの帯域幅（ <strong>12,237.89 MB/s</strong> ）を以ってその結果とします。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi imb
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH IMB-MPI1 -msglog 28:28 pingpong
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-vvb7u-x9-ol905:12579<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Fri Sep  5 14:51:28 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Wed Oct 15 11:43:04 2025</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Machine               : x86_64</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># System                : Linux</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 4.18.0-553.54.1.el8_10.x86_64</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP Wed May 28 02:12:15 PDT 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 5.14.0-503.40.1.el9_5.x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># MPI Version           : 3.1</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># MPI Thread Environment: </span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># IMB-MPI1 -msglog 28:28 pingpong </span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   268435456</span>
@@ -677,8 +699,8 @@
 </span></span><span class="line"><span class="cl"><span class="c1"># #processes = 2 </span>
 </span></span><span class="line"><span class="cl"><span class="c1">#---------------------------------------------------</span>
 </span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.66         0.00
-</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21983.36     12210.85
+</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.68         0.00
+</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21934.78     12237.89
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># All processes entering MPI_Finalize</span>
@@ -695,8 +717,8 @@
 </div>
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br>
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ256 MiBで計測しています。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">144</span> -N <span class="m">36</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 -npmin <span class="m">144</span> allreduce
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi imb
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">144</span> -N <span class="m">36</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH IMB-MPI1 -msglog 28:28 -npmin <span class="m">144</span> allreduce
 </span></span><span class="line"><span class="cl"><span class="o">[</span>inst-ztgl1-x9-ol810:215912<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#    Intel(R) MPI Benchmarks 2021.10, MPI-1 part</span>
@@ -712,7 +734,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 -npmin 144 allreduce </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># IMB-MPI1 -msglog 28:28 -npmin 144 allreduce </span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   268435456</span>
@@ -2488,6 +2510,39 @@
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

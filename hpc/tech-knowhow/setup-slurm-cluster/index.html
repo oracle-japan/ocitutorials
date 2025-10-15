@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-09T17:02:48+09:00"
+      content="2025-10-15T16:48:59+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法",
       "description": "HPC\/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC\/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC\/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC\/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1375",
+      "wordCount" : "1387",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-09T17:02:48.00Z",
+      "dateModified": "2025-10-15T16:48:59.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
+    <meta property="article:modified_time" content="2025-10-15T16:48:59+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -317,14 +317,13 @@
         <li><a href="#2-0-概要">2-0. 概要</a></li>
         <li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li>
         <li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li>
-        <li><a href="#2-3-openmpiインストール">2-3. OpenMPIインストール</a></li>
-        <li><a href="#2-4-openpmixインストール">2-4. OpenPMIxインストール</a></li>
-        <li><a href="#2-5-openucxインストール">2-5. OpenUCXインストール</a></li>
-        <li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm RPMパッケージ作成</a></li>
-        <li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm RPMパッケージインストール・セットアップ</a></li>
-        <li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li>
-        <li><a href="#2-9-slurmサービス起動">2-9. Slurmサービス起動</a></li>
-        <li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li>
+        <li><a href="#2-3-openpmixインストール">2-3. OpenPMIxインストール</a></li>
+        <li><a href="#2-4-openucxインストール">2-4. OpenUCXインストール</a></li>
+        <li><a href="#2-5-slurm-rpmパッケージ作成">2-5. Slurm RPMパッケージ作成</a></li>
+        <li><a href="#2-6-slurm-rpmパッケージインストールセットアップ">2-6. Slurm RPMパッケージインストール・セットアップ</a></li>
+        <li><a href="#2-7-slurm設定ファイル作成">2-7. Slurm設定ファイル作成</a></li>
+        <li><a href="#2-8-slurmサービス起動">2-8. Slurmサービス起動</a></li>
+        <li><a href="#2-9-slurm利用に必要な環境変数設定">2-9. Slurm利用に必要な環境変数設定</a></li>
       </ul>
     </li>
     <li><a href="#3-稼働確認">3. 稼働確認</a></li>
@@ -412,8 +411,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-09T17:02:48&#43;09:00">
-            Oct 9, 2025
+        <time datetime="2025-10-15T16:48:59&#43;09:00">
+            Oct 15, 2025
         </time>
     
 </span>
@@ -507,7 +506,7 @@ table, th, td {
       <tr>
           <td style="text-align: center">Slurm<br>マネージャ</td>
           <td style="text-align: center">任意の仮想マシン<br></td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
           <td style="text-align: center">・ <strong>slurmctld</strong> と <strong>slurmdbd</strong> が<br>稼働するSlurm管理ノード</td>
@@ -515,7 +514,7 @@ table, th, td {
       <tr>
           <td style="text-align: center">Slurm<br>クライアント</td>
           <td style="text-align: center">任意の仮想マシン<br></td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
           <td style="text-align: center">・アプリケーション開発用<br>フロントエンドノード<br>・ <strong>Slurm</strong> にジョブを投入する<br>ジョブサブミッションクライアント</td>
@@ -526,7 +525,7 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 対応<br>ベアメタルシェイプ（※2）</td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 8.10<br>（※5）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
           <td style="text-align: center">2ノード以上<br>（※2）</td>
           <td style="text-align: center">プライベート<br> <strong>クラスタ・ネットワーク</strong></td>
           <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
@@ -564,7 +563,7 @@ table, th, td {
   href="../../tech-knowhow/howto-configure-sharedstorage/"
 >HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。<br>
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。<br>
-※5）<strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
+※5）<strong>Oracle Linux</strong> 9.5ベースのHPC <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> で、 <strong><a
@@ -576,14 +575,46 @@ table, th, td {
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。Slurmマネージャは、計算ノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。</p>
-<p>計算ノードの構築手順は、 <strong><a
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.13</strong> です。Slurmマネージャは、計算ノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。</p>
+<p>Slurmクライアントは、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../build-openmpi-ol9/"
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> の手順に従い、 <strong>OpenMPI</strong> をインストールします。</p>
+<p>計算ノードは、 <strong><a
   class="gdoc-markdown__link"
   href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../spinup-cluster-network/"
->HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> が参考になります。</p>
+>HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の手順に従う等で <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> に接続するHPCクラスタを構築し、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../build-openmpi-ol9/"
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> の手順に従い、 <strong>OpenMPI</strong> を計算ノードにインストールします。</p>
+<p>またSlurmクライアントと計算ノードは、<strong><a
+  class="gdoc-markdown__link"
+  href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-imb/"
+>Intel MPI Benchmarks実行方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
+>1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、 <strong><a
+  class="gdoc-markdown__link"
+  href="#3-%e7%a8%bc%e5%83%8d%e7%a2%ba%e8%aa%8d"
+>3. 稼働確認</a></strong> で使用する <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/intel/mpi-benchmarks"
+>Intel MPI Benchmarks</a></strong> をインストールします。</p>
 <p>本テクニカルTipsの各サブシステムのホスト名は、以下とします。<br>
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。</p>
 <div class="table-wrap"> <table>
@@ -627,23 +658,22 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、既にデプロイされている <strong><a
+<p>本章は、既に作成されている <strong><a
   class="gdoc-markdown__link"
   href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
 >1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築します。</p>
 <p><strong>Slurm</strong> のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。</p>
-<p>本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。</p>
+<p>本テクニカルTipsは、各ソフトウェアに以下を使用します。</p>
 <ul>
-<li><strong>Slurm</strong> ： 24.11.0</li>
-<li><strong>OpenMPI</strong> ： 5.0.6</li>
+<li><strong>Slurm</strong> ： 25.05.3</li>
 <li><strong>PMIx</strong> ： <strong><a
   class="gdoc-markdown__link"
   href="https://openpmix.github.io/"
->OpenPMIx</a></strong> 5.0.4</li>
-<li><strong>UCX</strong> : <strong><a
+>OpenPMIx</a></strong> 5.0.8</li>
+<li><strong>UCX</strong> ： <strong><a
   class="gdoc-markdown__link"
   href="https://openucx.readthedocs.io/en/master/index.html#"
->OpenUCX</a></strong> 1.17.0</li>
+>OpenUCX</a></strong> 1.19.0</li>
 </ul>
 <p>また、 <strong>Slurm</strong> のプロセス間通信の認証に <strong><a
   class="gdoc-markdown__link"
@@ -664,35 +694,31 @@ table, th, td {
 >MariaDBインストール・セットアップ</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-3-openmpi%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
->OpenMPIインストール</a></strong></li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="#2-4-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+  href="#2-3-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
 >OpenPMIxインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-5-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+  href="#2-4-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
 >OpenUCXインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
+  href="#2-5-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
 >Slurm RPMパッケージ作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >Slurm RPMパッケージインストール・セットアップ</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
+  href="#2-7-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
 >Slurm設定ファイル作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
+  href="#2-8-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
 >Slurmサービス起動</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-10-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a"
+  href="#2-9-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a"
 >Slurm利用に必要な環境変数設定</a></strong></li>
 </ol>
 <p>なお、各ソフトウェアと <strong>Slurm</strong> サービスは、以下のサブシステムにインストールします。</p>
@@ -721,20 +747,14 @@ table, th, td {
       <tr>
           <td style="text-align: center"><strong>OpenPMIx</strong></td>
           <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇</td>
+          <td style="text-align: center">〇（※6）</td>
+          <td style="text-align: center">〇（※6）</td>
       </tr>
       <tr>
           <td style="text-align: center"><strong>OpenUCX</strong></td>
           <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇</td>
-      </tr>
-      <tr>
-          <td style="text-align: center"><strong>OpenMPI</strong></td>
-          <td style="text-align: center">-</td>
-          <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇</td>
+          <td style="text-align: center">〇（※6）</td>
+          <td style="text-align: center">〇（※6）</td>
       </tr>
       <tr>
           <td style="text-align: center"><strong>slurmctld</strong></td>
@@ -762,6 +782,10 @@ table, th, td {
       </tr>
   </tbody>
 </table> </div>
+<p>※6）<strong><a
+  class="gdoc-markdown__link"
+  href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
+>1. 前提システム</a></strong> の構築手順により既にインストールされています。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-1-munge-インストールセットアップ"
     >
@@ -776,7 +800,7 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u <span class="m">5001</span> munge
 </span></span></code></pre></div><p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol8_codeready_builder
-</span></span><span class="line"><span class="cl">$ sudo dnf install -y munge munge-libs munge-devel
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y munge munge-libs munge-libs
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>munge</strong> キーファイル（ <strong>munge.key</strong> ）を作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo /usr/sbin/create-munge-key
 </span></span><span class="line"><span class="cl">Generating a pseudo-random key using /dev/urandom completed.
@@ -805,10 +829,10 @@ table, th, td {
 </div>
 <p>本章は、Slurmマネージャに <strong>MariaDB</strong> をインストール・セットアップします。</p>
 <p>以下コマンドをopcユーザで実行し、 <strong>MariaDB</strong> をインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y mariadb-server mariadb-devel
-</span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> の設定ファイル（ <strong>mariadb-server.cnf</strong> ）の[mysqld]フィールドに以下の記述を追加します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org /etc/my.cnf.d/mariadb-server.cnf
-</span></span><span class="line"><span class="cl">20a21,22
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y mariadb-server
+</span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> の設定ファイル（ <strong>mariadb-server.cnf</strong> ）の <strong>[mysqld]</strong> フィールドに以下の記述を追加します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org  /etc/my.cnf.d/mariadb-server.cnf
+</span></span><span class="line"><span class="cl">21a22,23
 </span></span><span class="line"><span class="cl">&gt; <span class="nv">innodb_buffer_pool_size</span><span class="o">=</span>4096M
 </span></span><span class="line"><span class="cl">&gt; <span class="nv">innodb_lock_wait_timeout</span><span class="o">=</span><span class="m">900</span>
 </span></span><span class="line"><span class="cl">$
@@ -823,7 +847,7 @@ table, th, td {
 </ul>
 <p>以下コマンドをopcユーザで実行します。<br>
 なお、 <strong>MariaDB</strong> に対して入力するコマンドは、 <strong>MariaDB</strong> のプロンプト（ <strong>MariaDB [(none)]&gt;</strong> ）に続く文字列です。<br>
-なお、コマンド中の <strong>passcord</strong> は、自身の設定するパスワードに置き換えます。</p>
+また、コマンド中の <strong>passcord</strong> は、自身の設定するパスワードに置き換えます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mysql
 </span></span><span class="line"><span class="cl">Welcome to the MariaDB monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
 </span></span><span class="line"><span class="cl">Your MariaDB connection id is <span class="m">8</span>
@@ -848,8 +872,8 @@ table, th, td {
 </span></span><span class="line"><span class="cl">MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; FLUSH PRIVILEGES<span class="p">;</span>
 </span></span><span class="line"><span class="cl">Query OK, <span class="m">0</span> rows affected <span class="o">(</span>0.000 sec<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; Ctrl-C -- exit!
-</span></span><span class="line"><span class="cl">Aborted
+</span></span><span class="line"><span class="cl">MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; <span class="nb">exit</span>
+</span></span><span class="line"><span class="cl">Bye
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、先に登録したデータベースとユーザが正しく登録されていることを確認します。<br>
 なお、コマンド中の <strong>passcord</strong> は、自身の設定したパスワードに置き換えます。</p>
@@ -862,28 +886,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">+--------------------+
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-3-openmpiインストール"
+    <h2 id="2-3-openpmixインストール"
     >
-        2-3. OpenMPIインストール
+        2-3. OpenPMIxインストール
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-3-openmpiインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-3. OpenMPIインストール" aria-label="アンカー先: 2-3. OpenMPIインストール" href="#2-3-openmpi%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p><strong><a
-  class="gdoc-markdown__link"
-  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../../tech-knowhow/build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> に従い、Slurmクライアントと全ての計算ノードに <strong>OpenMPI</strong> をインストールします。<br>
-これにより、これらのノードに <strong>OpenPMIx</strong> と <strong>OpenUCX</strong> もインストールされます。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-4-openpmixインストール"
-    >
-        2-4. OpenPMIxインストール
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-4-openpmixインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-4. OpenPMIxインストール" aria-label="アンカー先: 2-4. OpenPMIxインストール" href="#2-4-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-3-openpmixインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-3. OpenPMIxインストール" aria-label="アンカー先: 2-3. OpenPMIxインストール" href="#2-3-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -894,74 +901,75 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span>  wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/libevent
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span>  wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./hwloc-2.11.2.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.11.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./pmix-5.0.4.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.4 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./hwloc-2.12.2.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.12.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./pmix-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.8 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-5-openucxインストール"
+    <h2 id="2-4-openucxインストール"
     >
-        2-5. OpenUCXインストール
+        2-4. OpenUCXインストール
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-5-openucxインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-5. OpenUCXインストール" aria-label="アンカー先: 2-5. OpenUCXインストール" href="#2-5-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-4-openucxインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-4. OpenUCXインストール" aria-label="アンカー先: 2-4. OpenUCXインストール" href="#2-4-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>本章は、Slurmマネージャに <strong>OpenUCX</strong> をインストールします。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./ucx-1.17.0.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.17.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./ucx-1.19.0.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-6-slurm-rpmパッケージ作成"
+    <h2 id="2-5-slurm-rpmパッケージ作成"
     >
-        2-6. Slurm RPMパッケージ作成
+        2-5. Slurm RPMパッケージ作成
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-6-slurm-rpmパッケージ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-6. Slurm RPMパッケージ作成" aria-label="アンカー先: 2-6. Slurm RPMパッケージ作成" href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-5-slurm-rpmパッケージ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-5. Slurm RPMパッケージ作成" aria-label="アンカー先: 2-5. Slurm RPMパッケージ作成" href="#2-5-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>本章は、SlurmマネージャでRPMパッケージを作成します。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、前提RPMパッケージをインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y rpm-build pam-devel perl readline-devel autoconf automake
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel munge-devel pam-devel readline-devel dbus-devel
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>Slurm</strong> RPMパッケージを作成します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
-</span></span><span class="line"><span class="cl">$ rpmbuild --define <span class="s1">&#39;_prefix /opt/slurm&#39;</span> --define <span class="s1">&#39;_slurm_sysconfdir /opt/slurm/etc&#39;</span> --define <span class="s1">&#39;_with_pmix --with-pmix=/opt/pmix&#39;</span> --define <span class="s1">&#39;_with_ucx --with-ucx=/opt/ucx&#39;</span> -ta ./slurm-24.11.0.tar.bz2
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.schedmd.com/slurm/slurm-25.05.3.tar.bz2
+</span></span><span class="line"><span class="cl">$ rpmbuild --define <span class="s1">&#39;_prefix /opt/slurm&#39;</span> --define <span class="s1">&#39;_slurm_sysconfdir /opt/slurm/etc&#39;</span> --define <span class="s1">&#39;_with_pmix --with-pmix=/opt/pmix&#39;</span> --define <span class="s1">&#39;_with_ucx --with-ucx=/opt/ucx&#39;</span> -ta ./slurm-25.05.3.tar.bz2
 </span></span></code></pre></div><p>作成されたパッケージは、以下のディレクトリに配置されるので、これらの全ファイルを他のサブシステムにコピーします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ls -1 ~/rpmbuild/RPMS/x86_64/
-</span></span><span class="line"><span class="cl">slurm-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-contribs-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-devel-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-example-configs-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-libpmi-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-openlava-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-pam_slurm-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-perlapi-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-sackd-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmctld-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmd-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-torque-24.11.0-1.el8.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-contribs-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-devel-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-example-configs-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-libpmi-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-openlava-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-pam_slurm-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-perlapi-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-sackd-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-slurmctld-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-slurmd-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-slurmdbd-25.05.3-1.el9.x86_64.rpm
+</span></span><span class="line"><span class="cl">slurm-torque-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-7-slurm-rpmパッケージインストールセットアップ"
+    <h2 id="2-6-slurm-rpmパッケージインストールセットアップ"
     >
-        2-7. Slurm RPMパッケージインストール・セットアップ
+        2-6. Slurm RPMパッケージインストール・セットアップ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-7-slurm-rpmパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-7. Slurm RPMパッケージインストール・セットアップ" aria-label="アンカー先: 2-7. Slurm RPMパッケージインストール・セットアップ" href="#2-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-6-slurm-rpmパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-6. Slurm RPMパッケージインストール・セットアップ" aria-label="アンカー先: 2-6. Slurm RPMパッケージインストール・セットアップ" href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>本章は、先に作成した <strong>Slurm</strong> RPMパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/ <span class="o">&amp;&amp;</span> sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmctld-24.11.0-1.el8.x86_64.rpm ./slurm-slurmdbd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/ <span class="o">&amp;&amp;</span> sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmctld-25.05.3-1.el9.x86_64.rpm ./slurm-slurmdbd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/spool/slurmctld <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/spool/slurmctld
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/spool/slurmd <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/spool/slurmd
@@ -970,23 +978,25 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ sudo su - slurm
 </span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
 </span></span></code></pre></div><p>次に、以下コマンドを全ての計算ノードのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel
-</span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-slurmd-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel
+</span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/spool/slurmd <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/spool/slurmd
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/log/slurm <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/log/slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /opt/slurm/etc <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /opt/slurm/etc
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、Slurmクライアントに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel
-</span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-24.11.0-1.el8.x86_64.rpm ./slurm-perlapi-24.11.0-1.el8.x86_64.rpm
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel
+</span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /opt/slurm/etc <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /opt/slurm/etc
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-8-slurm設定ファイル作成"
+    <h2 id="2-7-slurm設定ファイル作成"
     >
-        2-8. Slurm設定ファイル作成
+        2-7. Slurm設定ファイル作成
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-8-slurm設定ファイル作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-8. Slurm設定ファイル作成" aria-label="アンカー先: 2-8. Slurm設定ファイル作成" href="#2-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-7-slurm設定ファイル作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-7. Slurm設定ファイル作成" aria-label="アンカー先: 2-7. Slurm設定ファイル作成" href="#2-7-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1053,16 +1063,14 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">StorageLoc</span><span class="o">=</span>slurm_acct_db
 </span></span></code></pre></div><p>なお、 <strong>DbdHost</strong> と <strong>StoragePass</strong> の設定値は、自身の環境に合わせて修正します。</p>
 <p>[ <strong>mpi.conf</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PMIxDirectConn</span><span class="o">=</span><span class="nb">true</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PMIxDirectConnEarly</span><span class="o">=</span><span class="nb">true</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PMIxDirectConnEarly</span><span class="o">=</span><span class="nb">true</span>
 </span></span><span class="line"><span class="cl"><span class="nv">PMIxDirectConnUCX</span><span class="o">=</span><span class="nb">true</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PMIxNetDevicesUCX</span><span class="o">=</span>mlx5_0:0
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-9-slurmサービス起動"
+    <h2 id="2-8-slurmサービス起動"
     >
-        2-9. Slurmサービス起動
+        2-8. Slurmサービス起動
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-9-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-9. Slurmサービス起動" aria-label="アンカー先: 2-9. Slurmサービス起動" href="#2-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-8-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-8. Slurmサービス起動" aria-label="アンカー先: 2-8. Slurmサービス起動" href="#2-8-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1071,9 +1079,8 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmd
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>slurmdbd</strong> と <strong>slurmctld</strong> を起動します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmdbd
-</span></span><span class="line"><span class="cl">$ sudo systemctl start slurmctld
-</span></span></code></pre></div><p><strong>slurmctld</strong> は、全ての計算ノードの <strong>slurmd</strong> 起動完了後に起動する必要があるため、手動起動を想定して自動起動設定は行いません。</p>
-<p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。</p>
+</span></span><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmctld
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sinfo
 </span></span><span class="line"><span class="cl">PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 </span></span><span class="line"><span class="cl">sltest*      up   infinite      <span class="m">2</span>   idle inst-aaaaa-x9,inst-bbbbb-x9
@@ -1088,23 +1095,17 @@ table, th, td {
 </span></span><span class="line"><span class="cl">specific pmix plugin versions available: pmix_v5
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-10-slurm利用に必要な環境変数設定"
+    <h2 id="2-9-slurm利用に必要な環境変数設定"
     >
-        2-10. Slurm利用に必要な環境変数設定
+        2-9. Slurm利用に必要な環境変数設定
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-10-slurm利用に必要な環境変数設定" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-10. Slurm利用に必要な環境変数設定" aria-label="アンカー先: 2-10. Slurm利用に必要な環境変数設定" href="#2-10-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-9-slurm利用に必要な環境変数設定" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-9. Slurm利用に必要な環境変数設定" aria-label="アンカー先: 2-9. Slurm利用に必要な環境変数設定" href="#2-9-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、 <strong>Slurm</strong> を利用するための環境変数を設定します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
-</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export UCX_NET_DEVICES=mlx5_2:1&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
-</span></span></code></pre></div><p>ここで設定している環境変数 <strong>UCX_NET_DEVICES</strong> は、 <strong>Slurm</strong> から実行する <strong>OpenMPI</strong> のジョブがそのノード間通信を  <strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> に接続するNIC（RDMAリンク名 <strong>mlx5_2/1</strong> ）を介して行うことを指示しています。<br>
-またこの環境変数は、 <strong>OpenPMIx</strong> がMPIプロセス制御に <strong>OpenUCX</strong> を使用することも指示しているため、 <strong>srun</strong> でジョブを実行する際に設定する必要があります。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-稼働確認"
     >
         3. 稼働確認
@@ -1113,32 +1114,37 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認と <strong>PMIx</strong> の効果を確認するため、ジョブ投入ユーザで <strong><a
-  class="gdoc-markdown__link"
-  href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html"
->Intel MPI Benchmarks</a></strong> を実行するバッチジョブを <strong>srun</strong> で起動する場合と <strong>mpirun</strong> で起動する場合の2種類実行し、その結果を比較します。<br>
+<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認と <strong>PMIx</strong> の効果を確認するため、ジョブ投入ユーザで <strong>Intel MPI Benchmarks</strong> を実行するバッチジョブを <strong>srun</strong> で起動する場合と <strong>mpirun</strong> で起動する場合の2種類実行し、その結果を比較します。<br>
 またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。</p>
-<p><strong>srun</strong> を利用する場合（ <strong>srun.sh</strong> ）と <strong>mpiexec</strong> を利用する場合（ <strong>mpirun.sh</strong> ）で、以下のように<strong>Intel MPI Benchmarks</strong> を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。</p>
+<p><strong>srun</strong> を利用する場合（ <strong>srun.sh</strong> ）と <strong>mpirun</strong> を利用する場合（ <strong>mpirun.sh</strong> ）で、以下のように<strong>Intel MPI Benchmarks</strong> を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。</p>
 <p>[ <strong>srun.sh</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 2</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_ping</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_pong_srun</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
-</span></span><span class="line"><span class="cl">srun /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">module load openmpi imb
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">srun IMB-MPI1 -msglog 28:28 pingpong
 </span></span></code></pre></div><p>[ <strong>mpirun.sh</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 2</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_ping</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_pong_mpirun</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
-</span></span><span class="line"><span class="cl">mpirun -n <span class="m">2</span> -N <span class="m">1</span> /opt/openmpi/tests/imb/IMB-MPI1 -msglog 28:28 pingpong
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">module load openmpi imb
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">mpirun IMB-MPI1 -msglog 28:28 pingpong
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~<span class="p">;</span> sbatch srun.sh
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> sbatch srun.sh
 </span></span><span class="line"><span class="cl">Submitted batch job <span class="m">3</span>
 </span></span><span class="line"><span class="cl">$ grep -A <span class="m">2</span> usec stdout.3
 </span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
@@ -2728,6 +2734,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
@@ -12677,11 +12716,11 @@ table, th, td {
   
     <a
       class="gdoc-page__nav--prev flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/build-openmpi/"
-      title="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法"
+      href="/ocitutorials/hpc/tech-knowhow/build-openmpi-ol9/"
+      title="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）"
     >
       <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-      Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法
+      Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）
     </a>
   
 </span>

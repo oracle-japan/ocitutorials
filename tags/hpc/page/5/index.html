@@ -491,6 +491,130 @@
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/spinup-gpu-cluster/">GPUクラスタを構築する(基礎インフラ手動構築編)</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 <strong>Docker Community Edition</strong> と <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html"
+>NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a
+  class="gdoc-markdown__link"
+  href="https://developer.nvidia.com/nccl"
+>NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/nvidia/nccl-tests"
+>NCCL Tests</a></strong> で検証後、分散機械学習の稼働確認として <strong>TensorFlow</strong> の <strong>MultiWorkerMirroredStrategy</strong> を使用するサンプルプログラムを実行、その性能を検証します。</p>
+<p>本チュートリアルで構築するGPUクラスタの構成を以下に示します。</p>
+<p>[GPUノード]</p>
+<ul>
+<li>シェイプ ： <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
+>BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
+<li>インターコネクト ： <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong></li>
+<li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
+</ul>
+<p>[Bastionノード]</p>
+<ul>
+<li>シェイプ ： <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
+>VM.Standard.E4.Flex</a></strong></li>
+<li>OS ： <strong>Oracle Linux</strong> 8.9</li>
+</ul>
+<p>[ソフトウェア]</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/spinup-gpu-cluster/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-09-26T16:31:44&#43;09:00">
+      
+        更新日時
+      
+      Sep 26, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 11 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
           <a href="/ocitutorials/hpc/spinup-gpu-cluster-withterraform/">GPUクラスタを構築する(基礎インフラ自動構築編)</a>
         </h1>
       </header>
@@ -1582,123 +1706,6 @@ table, th, td {
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 4 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/spinup-backup-server/">ベア・メタル・インスタンスNFSサーバ向けバックアップサーバを構築する</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-概要"
-    >
-        0. 概要
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-backup-server/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>HPC/GPUクラスタを運用する際必須となるファイル共有ストレージは、NFSでこれをサービスすることが一般的ですが、このファイル共有ストレージをコストパフォーマンス優先で選定する場合、 <strong>ベア・メタル・インスタンス</strong> とストレージサービスで構築する方法（以降&quot;ベア・メタル・インスタンスNFSサーバ&quot;と呼称）を採用することになり、ストレージに <strong>ブロック・ボリューム</strong> を使用しこれをベア・メタル・インスタンスにアタッチする方法（以降&quot;ブロック・ボリュームNFSサーバ”と呼称）と、 <strong>ベア・メタル・インスタンス</strong> にNVMe SSDドライブを搭載するDenceIOシェイプを使用する方法（以降”DenceIO NFSサーバ”と呼称）があります。（※1）</p>
-<p>※1）ベア・メタル・インスタンスNFSサーバの詳細は、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../tech-knowhow/howto-configure-sharedstorage/"
->HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。</p>
-<p>このベア・メタル・インスタンスNFSサーバは、NFSのマネージドサービスである <strong>ファイル・ストレージ</strong> の場合は備え付けのバックアップ機能を利用できるのに対し、自身でバックアップ環境を用意する必要があります。（※2）</p>
-<p>※2）バックアップの観点でのベア・メタル・インスタンスNFSサーバと <strong>ファイル・ストレージ</strong> の比較は、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../tech-knowhow/howto-configure-sharedstorage/"
->HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../tech-knowhow/howto-configure-sharedstorage/#2-2-%e5%8f%af%e7%94%a8%e6%80%a7%e3%81%ab%e3%82%88%e3%82%8b%e6%af%94%e8%bc%83"
->2-2 可用性による比較</a></strong> を参照してください。</p>
-<p>以上を踏まえて本チュートリアルは、ベア・メタル・インスタンスNFSサーバで構築するファイル共有ストレージに格納されるファイルをバックアップする、バックアップサーバの構築方法を解説します。</p>
-<p>ここで構築するバックアップ環境は、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
->OCI HPCテクニカルTips集</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../tech-knowhow/howto-choose-osbackuptool/"
->ファイル共有ストレージ向けバックアップ環境の最適な構築手法</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../tech-knowhow/howto-choose-osbackuptool/#0-%e6%a6%82%e8%a6%81"
->0. 概要</a></strong> に記載のバックアップ環境 <strong>No. 3</strong> と <strong>No. 4</strong> から選択して構築することとし、採用したいバックアップ格納ストレージが <strong>オブジェクト・ストレージ</strong> （<strong>No.3</strong>）と <strong>ブロック・ボリューム</strong> の <strong>より低いコスト</strong> （<strong>No.4</strong>）（<strong>ブロック・ボリューム</strong> の <strong>パフォーマンス・レベル</strong> が最低のサービスで、 <strong>ブロック・ボリューム</strong> の中では最も容量単価が安価です。関連する <strong>OCI</strong> 公式ドキュメントは、 <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Block/Concepts/blockvolumeperformance.htm"
->ここ</a></strong> を参照してください。以降&quot; <strong>BVLC</strong> &ldquo;と呼称します。）のどちらを採用するかにより決定します。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/spinup-backup-server/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T16:31:44&#43;09:00">
-      
-        更新日時
-      
-      Sep 26, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 6 分かかります</span>
 </span>
 
 
@@ -3322,6 +3329,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

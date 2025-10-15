@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-15T15:43:56+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "計算/GPUノードデプロイ時の効果的なOSカスタマイズ方法",
       "description": "ノード数が多くなるHPC\/GPUクラスタの計算\/GPUノードは、デプロイ時に実施するOSカスタマイズをどのように行うのが効果的でしょうか。本テクニカルTipsは、計算\/GPUノードデプロイ時のOSカスタマイズ方法の選択肢と、それぞれの利用方法について解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "366",
+      "wordCount" : "347",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-15T15:43:56.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -412,8 +412,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-15T15:43:56&#43;09:00">
+            Oct 15, 2025
         </time>
     
 </span>
@@ -434,7 +434,6 @@ table, th, td {
 }
 </style>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -444,8 +443,8 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>HPC/GPUクラスタの計算/GPUノードは、ノード数が数十ノードから時には数百ノードになることもあり、これらのOSに自身の環境に合わせたカスタマイズを加える際、どのような手法を採用するのが最も効果的かという観点で考慮する必要があります。</p>
-<p>OCIでこれらのカスタマイズを加えるための代表的な選択肢は、以下が挙げられます。</p>
+<p>HPC/GPUクラスタの計算/GPUノードは、ノード数が時には数百ノードになることもあり、これらのOSに自身の環境に合わせたカスタマイズを加える際、どのような手法を採用するのが最も効果的かという観点で考慮する必要があります。</p>
+<p>これらのカスタマイズを加えるための代表的な選択肢は、以下が挙げられます。</p>
 <ul>
 <li>
 <p>Ansible</p>
@@ -500,9 +499,8 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
       </tr>
   </tbody>
 </table> </div>
-<p>以上を踏まえて次章以降は、 <strong>cloud-init</strong> と <strong>カスタム・イメージ</strong> を使用した計算/GPUノードのOSカスタマイズの手順を解説します。<br>
+<p>以上を踏まえて次章以降は、 <strong>cloud-init</strong> と <strong>カスタム・イメージ</strong> を使用する計算/GPUノードのOSカスタマイズの手順を解説します。<br>
 なおAnsibleは、オープンソースでインターネットから様々な情報を入手することが可能なため、ここでは解説しません。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-cloud-initを使用したosカスタマイズ"
     >
@@ -567,9 +565,9 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
 </span></span><span class="line"><span class="cl">runcmd:
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Mount NVMe local storage</span>
-</span></span><span class="line"><span class="cl">  - parted -s /dev/nvme0n1 mklabel gpt
-</span></span><span class="line"><span class="cl">  - parted -s /dev/nvme0n1 -- mkpart primary xfs <span class="m">1</span> -1
-</span></span><span class="line"><span class="cl">  - mkfs.xfs -L localscratch /dev/nvme0n1p1
+</span></span><span class="line"><span class="cl">  - vgcreate nvme /dev/nvme0n1
+</span></span><span class="line"><span class="cl">  - lvcreate -l 100%FREE nvme
+</span></span><span class="line"><span class="cl">  - mkfs.xfs -L localscratch /dev/nvme/lvol0
 </span></span><span class="line"><span class="cl">  - mkdir -p /mnt/localdisk
 </span></span><span class="line"><span class="cl">  - <span class="nb">echo</span> <span class="s2">&#34;LABEL=localscratch /mnt/localdisk/ xfs defaults,noatime 0 0&#34;</span> &gt;&gt; /etc/fstab
 </span></span><span class="line"><span class="cl">  - systemctl daemon-reload
@@ -644,8 +642,7 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cloud-init status
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-カスタムイメージを使用したosカスタマイズ"
     >
         2. カスタム・イメージを使用したOSカスタマイズ
@@ -720,31 +717,17 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
   class="gdoc-markdown__link"
   href="../../#5-6-%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >カスタム・イメージ</a></strong> を使用してクラスタをデプロイする際に問題となる設定を、 <strong>カスタム・イメージ</strong> 取得前に除去します。</p>
-<p>問題となる設定で代表的なものは、以下の2項目です。</p>
+<p>問題となる設定で代表的なものは、以下です。</p>
 <ul>
-<li>
-<p>NVMe SSDローカルディスク領域ファイルシステム設定</p>
-<p>HPC/機械学習用途のベアメタルインスタンスに搭載されるNVMe SSDローカルディスクは、 <strong>カスタム・イメージ</strong> を使用する場合でも、デプロイ時にファイルシステムとしフォーマットしマウントする必要があります。<br>
-このため、 <strong>カスタム・イメージ</strong> 取得前にこのファイルシステム設定を削除し、 <strong>カスタム・イメージ</strong> を使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
-</li>
-<li>
-<p><strong><a
+<li><strong><a
   class="gdoc-markdown__link"
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 用ネットワークインターフェース設定</p>
-<p><strong>クラスタ・ネットワーク</strong> のネットワークインターフェース設定は、 <strong>カスタム・イメージ</strong> 取得インスタンス用の静的IPアドレスを含んでおり、そのまま <strong>カスタム・イメージ</strong> を取得すると、これを使用してデプロイしたインスタンスで全て同じIPアドレスが設定され、 <strong>クラスタ・ネットワーク</strong> に接続することが出来ません。
-このため、 <strong>カスタム・イメージ</strong> 取得前にこのネットワークインターフェース設定を削除し、<strong>カスタム・イメージ</strong> を使用してインスタンスをデプロイする際に改めてこの設定を追加します。</p>
-</li>
+>クラスタ・ネットワーク</a></strong> 用ネットワークインターフェース設定<br>
+<strong>クラスタ・ネットワーク</strong> のネットワークインターフェース設定は、 <strong>カスタム・イメージ</strong> 取得インスタンスの静的IPアドレスを含んでおり、そのまま <strong>カスタム・イメージ</strong> を取得すると、これを使用してデプロイしたインスタンスで全て同じIPアドレスが設定され、 <strong>クラスタ・ネットワーク</strong> に接続することが出来ません。<br>
+このため、 <strong>カスタム・イメージ</strong> 取得前に <strong>/etc/sysconfig/network-scripts</strong> ディレクトリに存在する <strong>クラスタ・ネットワーク</strong> のネットワークインターフェース設定ファイル（ <strong>ifcfg-ens800f0np0</strong> や <strong>ifcfg-rdma0</strong> 等）を削除します。<br>
+なおこの問題は、 <strong>Oracle Linux</strong> バージョン9では発生しないため、本修正を実施する必要はありません。</li>
 </ul>
-<p>以上より、 <strong>カスタム・イメージ</strong> 取得前に以下の修正を適用します。</p>
-<ul>
-<li><strong>/etc/fstab</strong> 内NVMe SSDローカルディスク領域ファイルシステムマウント設定削除</li>
-<li><strong>/etc/sysconfig/network-scripts/ifcfg-rdmaxx</strong> 削除</li>
-</ul>
-<p>なお、 <strong>カスタム・イメージ</strong> によるクラスタデプロイ時にここで削除した設定を適用し直すには、NVMe SSDローカルディスク領域ファイルシステム設定の場合は <strong><a
-  class="gdoc-markdown__link"
-  href="#1-cloud-init%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%97%e3%81%9fos%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%9e%e3%82%a4%e3%82%ba"
->1. cloud-initを使用したOSカスタマイズ</a></strong> の手法を、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定の場合は <strong>Oracle Cloud Agent</strong> を使用します。</p>
+<p>なお、 <strong>カスタム・イメージ</strong> によるクラスタデプロイ時にここで削除した設定を適用し直すには、 <strong>クラスタ・ネットワーク</strong> 用ネットワークインターフェース設定の場合は <strong>Oracle Cloud Agent</strong> を使用します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-3-カスタムイメージ取得"
     >
@@ -2809,6 +2792,39 @@ Playbookは、条件分岐や反復処理を記述することが可能で、clo
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         

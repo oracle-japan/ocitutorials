@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-09T17:02:48+09:00"
+      content="2025-10-15T15:43:56+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)",
       "description": "GPUノード\/クラスタのリソース管理・ジョブ管理は、近年主流となっているマルチGPUノードのGPUリソース有効利用の観点から、ジョブスケジューラを活用することが主流となっていますが、オープンソースのジョブスケジューラSlurmは、高機能のGPUリソース管理機能を有する代表的なジョブスケジューラとして現在人気を集めています。またHPC\/機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっています。本テクニカルTipsは、NVIDIA製のGPUを複数搭載するベアメタルインスタンスのGPUリソース管理を念頭に、GPUノード\/クラスタのリソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1398",
+      "wordCount" : "1422",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-09T17:02:48.00Z",
+      "dateModified": "2025-10-15T15:43:56.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-09T17:02:48+09:00">
+    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -318,12 +318,12 @@
         <li><a href="#2-1-munge-インストールセットアップ">2-1. munge インストール・セットアップ</a></li>
         <li><a href="#2-2-mariadb-インストールセットアップ">2-2. MariaDB インストール・セットアップ</a></li>
         <li><a href="#2-3-openpmixインストール">2-3. OpenPMIxインストール</a></li>
-        <li><a href="#2-5-openucxインストール">2-5. OpenUCXインストール</a></li>
-        <li><a href="#2-6-slurm-rpmパッケージ作成">2-6. Slurm RPMパッケージ作成</a></li>
-        <li><a href="#2-7-slurm-rpmパッケージインストールセットアップ">2-7. Slurm RPMパッケージインストール・セットアップ</a></li>
-        <li><a href="#2-8-slurm設定ファイル作成">2-8. Slurm設定ファイル作成</a></li>
-        <li><a href="#2-9-slurmサービス起動">2-9. Slurmサービス起動</a></li>
-        <li><a href="#2-10-slurm利用に必要な環境変数設定">2-10. Slurm利用に必要な環境変数設定</a></li>
+        <li><a href="#2-4-openucxインストール">2-4. OpenUCXインストール</a></li>
+        <li><a href="#2-5-slurm-debパッケージ作成">2-5. Slurm debパッケージ作成</a></li>
+        <li><a href="#2-6-slurm-debパッケージインストールセットアップ">2-6. Slurm debパッケージインストール・セットアップ</a></li>
+        <li><a href="#2-7-slurm設定ファイル作成">2-7. Slurm設定ファイル作成</a></li>
+        <li><a href="#2-8-slurmサービス起動">2-8. Slurmサービス起動</a></li>
+        <li><a href="#2-9-slurm利用に必要な環境変数設定">2-9. Slurm利用に必要な環境変数設定</a></li>
       </ul>
     </li>
     <li><a href="#3-稼働確認">3. 稼働確認</a></li>
@@ -411,8 +411,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-09T17:02:48&#43;09:00">
-            Oct 9, 2025
+        <time datetime="2025-10-15T15:43:56&#43;09:00">
+            Oct 15, 2025
         </time>
     
 </span>
@@ -498,7 +498,10 @@ table, th, td {
           <td style="text-align: center">複数GPUを搭載する<br>ベアメタルシェイプ（※2）</td>
           <td style="text-align: center"><strong>Ubuntu</strong> 24.04<br>（※1）</td>
           <td style="text-align: center">任意のノード数</td>
-          <td style="text-align: center">プライベート</td>
+          <td style="text-align: center">プライベート<br>( <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> )</td>
           <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
       </tr>
       <tr>
@@ -535,7 +538,7 @@ table, th, td {
   href="../howto-configure-sharedstorage/"
 >HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。<br>
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、SlurmクライアントとGPUノードでNFSマウントします。</p>
-<p>GPUノードとSlurmクライアントは、 <strong><a
+<p>Slurmクライアントは、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -553,6 +556,22 @@ table, th, td {
   href="https://github.com/NVIDIA/gdrcopy"
 >gdrcopy</a></strong></li>
 </ul>
+<p>GPUノードは、単一GPUノードの場合は <strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../gpu-with-ubuntu/"
+>UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></strong> の手順に従いインスタンスの作成とGPU関連ソフトウェアをインストールし、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> に接続されたGPUクラスタの場合は <strong><a
+  class="gdoc-markdown__link"
+  href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
+>OCI HPCチュートリアル集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../spinup-gpu-cluster-withubuntu"
+>GPUクラスタを構築する(Ubuntu OS編)</a></strong> の手順に従い構築します。</p>
 <p>本テクニカルTipsの各サブシステムのホスト名は、以下とします。<br>
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。</p>
 <div class="table-wrap"> <table>
@@ -599,22 +618,13 @@ table, th, td {
 <p>本章は、既に作成されている <strong><a
   class="gdoc-markdown__link"
   href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
->1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築します。</p>
-<p><strong>Slurm</strong> のインストールは、多数のGPUノードに効率よくインストールする必要から、checkinstallで作成するdebパッケージによるインストール方法を採用します。</p>
-<p>本テクニカルTipsで使用する <strong>Slurm</strong> は、バージョン <strong>25.05.3</strong> を前提とし、 <strong>Slurm</strong> のプロセス間通信の認証に <strong><a
-  class="gdoc-markdown__link"
-  href="https://dun.github.io/munge/"
->munge</a></strong> 、ジョブのアカウンティング情報格納用RDBMSに <strong><a
-  class="gdoc-markdown__link"
-  href="https://mariadb.org/"
->MariaDB</a></strong> を使用します。<br>
-また、 <strong><a
+>1. 前提システム</a></strong> で解説したシステム上で、 <strong><a
   class="gdoc-markdown__link"
   href="https://www.open-mpi.org/"
 >OpenMPI</a></strong> のMPI並列アプリケーションを <strong><a
   class="gdoc-markdown__link"
   href="https://pmix.github.io/"
->PMIx</a></strong> の大規模並列ジョブに対する利点を生かして実行することを念頭に（※5）、 <strong>PMIx</strong> と <strong><a
+>PMIx</a></strong> の大規模並列ジョブに対する利点（※5）を生かして実行することを念頭に、 <strong>PMIx</strong> と <strong><a
   class="gdoc-markdown__link"
   href="https://openucx.org/"
 >UCX</a></strong> を取り込んだ <strong>Slurm</strong> 環境を構築します。</p>
@@ -628,6 +638,26 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../setup-slurm-cluster/#0-%e6%a6%82%e8%a6%81"
 >0. 概要</a></strong> を参照してください。</p>
+<p><strong>Slurm</strong> のインストールは、多数のGPUノードに効率よくインストールする必要から、checkinstallで作成するdebパッケージによるインストール方法を採用します。</p>
+<p>本テクニカルTipsは、各ソフトウェアに以下を使用します。</p>
+<ul>
+<li><strong>Slurm</strong> ： 25.05.3</li>
+<li><strong>PMIx</strong> ： <strong><a
+  class="gdoc-markdown__link"
+  href="https://openpmix.github.io/"
+>OpenPMIx</a></strong> 5.0.8</li>
+<li><strong>UCX</strong> ： <strong><a
+  class="gdoc-markdown__link"
+  href="https://openucx.readthedocs.io/en/master/index.html#"
+>OpenUCX</a></strong> 1.19.0</li>
+</ul>
+<p>また、 <strong>Slurm</strong> のプロセス間通信の認証に <strong><a
+  class="gdoc-markdown__link"
+  href="https://dun.github.io/munge/"
+>munge</a></strong> 、ジョブのアカウンティング情報格納用RDBMSに <strong><a
+  class="gdoc-markdown__link"
+  href="https://mariadb.org/"
+>MariaDB</a></strong> を使用します。</p>
 <p>以上より、本章で解説する環境構築は、以下の手順に沿って行います。</p>
 <ol>
 <li><strong><a
@@ -640,34 +670,34 @@ table, th, td {
 >MariaDBインストール・セットアップ</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-4-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+  href="#2-3-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
 >OpenPMIxインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-5-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+  href="#2-4-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
 >OpenUCXインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
+  href="#2-5-slurm-deb%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
 >Slurm debパッケージ作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+  href="#2-6-slurm-deb%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >Slurm debパッケージインストール・セットアップ</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
+  href="#2-7-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
 >Slurm設定ファイル作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
+  href="#2-8-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
 >Slurmサービス起動</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-10-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a"
+  href="#2-9-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a"
 >Slurm利用に必要な環境変数設定</a></strong></li>
 </ol>
-<p>なお、各ソフトウェアと <strong>Slurm</strong> サービスは、以下のサブシステムにインストールします。</p>
+<p>なお、各ソフトウェアは、以下のサブシステムにインストールします。</p>
 <div class="table-wrap"> <table>
   <thead>
       <tr>
@@ -749,7 +779,7 @@ table, th, td {
 <p>本章は、Slurmマネージャに <strong>MariaDB</strong> をインストール・セットアップします。</p>
 <p>以下コマンドをubuntuユーザで実行し、 <strong>MariaDB</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo apt install -y mariadb-server libmariadb-dev
-</span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> の設定ファイル（ <strong>/etc/mysql/mariadb.conf.d/50-server.cnf</strong> ）の[mysqld]フィールドに以下の記述を追加します。</p>
+</span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> の設定ファイル（ <strong>/etc/mysql/mariadb.conf.d/50-server.cnf</strong> ）の <strong>[mysqld]</strong> フィールドに以下の記述を追加します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo diff /etc/mysql/mariadb.conf.d/50-server.cnf_org /etc/mysql/mariadb.conf.d/50-server.cnf
 </span></span><span class="line"><span class="cl">106a107,108
 </span></span><span class="line"><span class="cl">&gt; <span class="nv">innodb_buffer_pool_size</span><span class="o">=</span>4096M
@@ -766,7 +796,7 @@ table, th, td {
 </ul>
 <p>以下コマンドをubuntuユーザで実行します。<br>
 なお、 <strong>MariaDB</strong> に対して入力するコマンドは、 <strong>MariaDB</strong> のプロンプト（ <strong>MariaDB [(none)]&gt;</strong> ）に続く文字列です。<br>
-なお、コマンド中の <strong>passcord</strong> は、自身の設定するパスワードに置き換えます。</p>
+また、コマンド中の <strong>passcord</strong> は、自身の設定するパスワードに置き換えます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mysql
 </span></span><span class="line"><span class="cl">Welcome to the MariaDB monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
 </span></span><span class="line"><span class="cl">Your MariaDB connection id is <span class="m">8</span>
@@ -830,11 +860,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.8 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-5-openucxインストール"
+    <h2 id="2-4-openucxインストール"
     >
-        2-5. OpenUCXインストール
+        2-4. OpenUCXインストール
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-5-openucxインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-5. OpenUCXインストール" aria-label="アンカー先: 2-5. OpenUCXインストール" href="#2-5-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-4-openucxインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-4. OpenUCXインストール" aria-label="アンカー先: 2-4. OpenUCXインストール" href="#2-4-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -846,11 +876,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-6-slurm-rpmパッケージ作成"
+    <h2 id="2-5-slurm-debパッケージ作成"
     >
-        2-6. Slurm RPMパッケージ作成
+        2-5. Slurm debパッケージ作成
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-6-slurm-rpmパッケージ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-6. Slurm RPMパッケージ作成" aria-label="アンカー先: 2-6. Slurm RPMパッケージ作成" href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-5-slurm-debパッケージ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-5. Slurm debパッケージ作成" aria-label="アンカー先: 2-5. Slurm debパッケージ作成" href="#2-5-slurm-deb%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -868,11 +898,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">slurm_25.05.3-1_amd64.deb
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-7-slurm-rpmパッケージインストールセットアップ"
+    <h2 id="2-6-slurm-debパッケージインストールセットアップ"
     >
-        2-7. Slurm RPMパッケージインストール・セットアップ
+        2-6. Slurm debパッケージインストール・セットアップ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-7-slurm-rpmパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-7. Slurm RPMパッケージインストール・セットアップ" aria-label="アンカー先: 2-7. Slurm RPMパッケージインストール・セットアップ" href="#2-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-6-slurm-debパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-6. Slurm debパッケージインストール・セットアップ" aria-label="アンカー先: 2-6. Slurm debパッケージインストール・セットアップ" href="#2-6-slurm-deb%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -896,11 +926,11 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /opt/slurm/etc <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /opt/slurm/etc
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-8-slurm設定ファイル作成"
+    <h2 id="2-7-slurm設定ファイル作成"
     >
-        2-8. Slurm設定ファイル作成
+        2-7. Slurm設定ファイル作成
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-8-slurm設定ファイル作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-8. Slurm設定ファイル作成" aria-label="アンカー先: 2-8. Slurm設定ファイル作成" href="#2-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-7-slurm設定ファイル作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-7. Slurm設定ファイル作成" aria-label="アンカー先: 2-7. Slurm設定ファイル作成" href="#2-7-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -977,22 +1007,21 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">StorageLoc</span><span class="o">=</span>slurm_acct_db
 </span></span></code></pre></div><p>なお、 <strong>DbdHost</strong> と <strong>StoragePass</strong> の設定値は、自身の環境に合わせて修正します。</p>
 <p>[ <strong>mpi.conf</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PMIxDirectConn</span><span class="o">=</span><span class="nb">true</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PMIxDirectConnEarly</span><span class="o">=</span><span class="nb">true</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PMIxDirectConnEarly</span><span class="o">=</span><span class="nb">true</span>
 </span></span><span class="line"><span class="cl"><span class="nv">PMIxDirectConnUCX</span><span class="o">=</span><span class="nb">true</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PMIxNetDevicesUCX</span><span class="o">=</span>mlx5_4:1
 </span></span></code></pre></div><p>[ <strong>cgroup.conf</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ConstrainCores</span><span class="o">=</span>yes 
 </span></span><span class="line"><span class="cl"><span class="nv">ConstrainDevices</span><span class="o">=</span>yes
 </span></span><span class="line"><span class="cl"><span class="nv">ConstrainRAMSpace</span><span class="o">=</span>yes
 </span></span></code></pre></div><p>[ <strong>gres.conf</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-ao-ub <span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>0-7<span class="o">]</span>
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-9-slurmサービス起動"
+</span></span></code></pre></div><p>なお、 <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="2-8-slurmサービス起動"
     >
-        2-9. Slurmサービス起動
+        2-8. Slurmサービス起動
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-9-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-9. Slurmサービス起動" aria-label="アンカー先: 2-9. Slurmサービス起動" href="#2-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-8-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-8. Slurmサービス起動" aria-label="アンカー先: 2-8. Slurmサービス起動" href="#2-8-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1017,11 +1046,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">specific pmix plugin versions available: pmix_v5
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-10-slurm利用に必要な環境変数設定"
+    <h2 id="2-9-slurm利用に必要な環境変数設定"
     >
-        2-10. Slurm利用に必要な環境変数設定
+        2-9. Slurm利用に必要な環境変数設定
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-10-slurm利用に必要な環境変数設定" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-10. Slurm利用に必要な環境変数設定" aria-label="アンカー先: 2-10. Slurm利用に必要な環境変数設定" href="#2-10-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster-withubuntu/#2-9-slurm利用に必要な環境変数設定" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-9. Slurm利用に必要な環境変数設定" aria-label="アンカー先: 2-9. Slurm利用に必要な環境変数設定" href="#2-9-slurm%e5%88%a9%e7%94%a8%e3%81%ab%e5%bf%85%e8%a6%81%e3%81%aa%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e8%a8%ad%e5%ae%9a">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1038,7 +1067,7 @@ table, th, td {
 </div>
 <p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認を以下の方針で行います。</p>
 <ul>
-<li>GPUリソース管理が想定通りに行われているかを <strong>nvidia-smi</strong> コマンドで確認</li>
+<li>GPUリソース管理が想定通りに行われていることを <strong>nvidia-smi</strong> コマンドで確認</li>
 <li>ノード内GPUデバイスメモリ間レイテンシを <strong>OSU Micro-Benchmarks</strong> で確認</li>
 <li>ノード内GPUデバイスメモリ間帯域幅を <strong>OSU Micro-Benchmarks</strong> で確認</li>
 <li>使用したGPUリソースがジョブアカウンティング情報に記録されていることを確認</li>
@@ -1057,7 +1086,7 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../../benchmark/run-omb-gpu/#1-osu-micro-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >1. OSU Micro-Benchmarksインストール・セットアップ</a></strong> を参照してください。</p>
-<p>以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>Slurm</strong> が割り当てるGPU数が <strong>&ndash;gres</strong> オプションの指定通りとなっていることを確認します。</p>
+<p>以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>Slurm</strong> が割り当てるGPU数が <strong>- -gres</strong> オプションの指定通りとなっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:1 nvidia-smi <span class="p">|</span> grep SXM
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 nvidia-smi <span class="p">|</span> grep SXM
@@ -2674,6 +2703,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

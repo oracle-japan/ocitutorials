@@ -1021,13 +1021,12 @@ CPU・メモリ・ディスク・ネットワーク（ <strong><a
     <article class="gdoc-post">
       <header class="gdoc-post__header">
         <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a>
+          <a href="/ocitutorials/hpc/tech-knowhow/build-openmpi/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</a>
         </h1>
       </header>
 
       <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+        <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -1126,11 +1125,164 @@ CPU・メモリ・ディスク・ネットワーク（ <strong><a
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-09-26T16:31:44&#43;09:00">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
       
         更新日時
       
-      Sep 26, 2025
+      Oct 15, 2025
+    </time>
+  </span>
+</span>
+
+<span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
+  <span class="gdoc-post__tag">読むのに約 5 分かかります</span>
+</span>
+
+
+
+  
+    
+    
+      
+        <span class="flex align-center no-wrap">
+          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
+          
+  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
+    <a
+      class="gdoc-button__link"
+      href="/ocitutorials/tags/hpc/"
+      title="&#39;hpc&#39;タグ付きの記事一覧"
+    >
+      hpc
+    </a>
+  </span>
+
+        </span>
+      
+    
+    
+  
+
+
+
+
+        </div>
+      </footer>
+    </article>
+  
+    <article class="gdoc-post">
+      <header class="gdoc-post__header">
+        <h1 class="gdoc-post__title">
+          <a href="/ocitutorials/hpc/tech-knowhow/build-openmpi-ol9/">Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a>
+        </h1>
+      </header>
+
+      <section class="gdoc-markdown">
+        <div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-openmpi-ol9/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="https://slurm.schedmd.com/"
+>Slurm</a></strong> 環境で <strong><a
+  class="gdoc-markdown__link"
+  href="https://www.open-mpi.org/"
+>OpenMPI</a></strong> のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">No.</th>
+          <th style="text-align: center">計算リソース<br>確保</th>
+          <th style="text-align: center">MPIプロセス<br>起動</th>
+          <th style="text-align: center">MPIプロセス間<br>通信初期化</th>
+          <th style="text-align: center">ノード間<br>リモート実行</th>
+          <th style="text-align: center">起動コマンド</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">1.</td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong><a
+  class="gdoc-markdown__link"
+  href="https://pmix.github.io/"
+>PMIx</a></strong></td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong>srun</strong></td>
+      </tr>
+      <tr>
+          <td style="text-align: center">2.</td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong>PMIx</strong></td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong>mpirun</strong><br>（※1）</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">3.</td>
+          <td style="text-align: center"><strong>Slurm</strong></td>
+          <td style="text-align: center"><strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.prrte.org/en/latest/"
+>PRRTE</a></strong></td>
+          <td style="text-align: center"><strong>PMIx</strong></td>
+          <td style="text-align: center"><strong>SSH</strong><br>（※2）</td>
+          <td style="text-align: center"><strong>mpirun</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>※1）本テクニカルTipsの手順に従い、 <strong>Slurm</strong> と連携するよう <strong>OpenMPI</strong> がビルドされている必要があります。<br>
+※2）パスフレーズ無しで計算ノード間をSSHアクセス出来るよう設定する必要があります。</p>
+<p>ここで <strong>No. 1.</strong> の動作モードは、その他の動作モードに対して以下の利点があります。</p>
+<ul>
+<li>高並列アプリケーションを高速に起動することが可能（※3）</li>
+<li>プロセスバインディングや終了処理等のプロセス管理を <strong>Slurm</strong> に統合することが可能</li>
+<li>精度の高いアカウンティング情報を <strong>Slurm</strong> に提供することが可能</li>
+<li><strong>Slurm</strong> クラスタ内のパスフレーズ無しSSHアクセス設定が不要</li>
+</ul>
+<p>※3）この詳細は、<strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/setup-slurm-cluster/"
+>Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/setup-slurm-cluster/#0-%e6%a6%82%e8%a6%81"
+>0. 概要</a></strong> を参照してください。</p>
+      </section>
+
+      <div class="gdoc-post__readmore">
+        
+          <a
+            class="flex-inline align-center fake-link"
+            title="全投稿を閲覧"
+            href="/ocitutorials/hpc/tech-knowhow/build-openmpi-ol9/"
+          >
+            全投稿を閲覧
+            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
+          </a>
+        
+      </div>
+
+      <footer class="gdoc-post__footer">
+        <div class="flex flex-wrap align-center gdoc-post__meta">
+          <span class="flex align-center no-wrap">
+  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
+  <span class="gdoc-post__tag">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
+      
+        更新日時
+      
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1251,11 +1403,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
+    <time datetime="2025-10-15T16:48:59&#43;09:00">
       
         更新日時
       
-      Oct 9, 2025
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1376,7 +1528,10 @@ table, th, td {
           <td style="text-align: center">複数GPUを搭載する<br>ベアメタルシェイプ（※2）</td>
           <td style="text-align: center"><strong>Ubuntu</strong> 24.04<br>（※1）</td>
           <td style="text-align: center">任意のノード数</td>
-          <td style="text-align: center">プライベート</td>
+          <td style="text-align: center">プライベート<br>( <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> )</td>
           <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
       </tr>
       <tr>
@@ -1414,11 +1569,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
       
         更新日時
       
-      Oct 9, 2025
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1548,11 +1703,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
       
         更新日時
       
-      Oct 9, 2025
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1602,8 +1757,7 @@ table, th, td {
       </header>
 
       <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+        <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -1676,11 +1830,11 @@ table, th, td {
           <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
   <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
+    <time datetime="2025-10-15T15:43:56&#43;09:00">
       
         更新日時
       
-      Oct 9, 2025
+      Oct 15, 2025
     </time>
   </span>
 </span>
@@ -1688,176 +1842,6 @@ table, th, td {
 <span class="flex align-center no-wrap">
   <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
   <span class="gdoc-post__tag">読むのに約 3 分かかります</span>
-</span>
-
-
-
-  
-    
-    
-      
-        <span class="flex align-center no-wrap">
-          <svg class="gdoc-icon gdoc_bookmark"><use xlink:href="#gdoc_bookmark"></use></svg>
-          
-  <span class="gdoc-post__tag gdoc-button gdoc-button--regular">
-    <a
-      class="gdoc-button__link"
-      href="/ocitutorials/tags/hpc/"
-      title="&#39;hpc&#39;タグ付きの記事一覧"
-    >
-      hpc
-    </a>
-  </span>
-
-        </span>
-      
-    
-    
-  
-
-
-
-
-        </div>
-      </footer>
-    </article>
-  
-    <article class="gdoc-post">
-      <header class="gdoc-post__header">
-        <h1 class="gdoc-post__title">
-          <a href="/ocitutorials/hpc/tech-knowhow/install-openfoam/">OpenFOAMインストール・利用方法</a>
-        </h1>
-      </header>
-
-      <section class="gdoc-markdown">
-        <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-概要"
-    >
-        0. 概要
-    </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-openfoam/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.openfoam.com/"
->OpenFOAM</a></strong> は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのツール類と連携し、自身の解析用途に合わせた最適な流体解析シミュレーションを実施することが可能です。<br>
-この際、外部のツールと連携して <strong>OpenFOAM</strong> を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。</p>
-<p>本テクニカルTipsは、以下の外部ツールと連係動作する <strong>OpenFOAM</strong> 実行環境を構築します。</p>
-<ul>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.open-mpi.org/"
->OpenMPI</a></strong><br>
-MPI言語規格に準拠するMPI実装</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.mcs.anl.gov/petsc/"
->PETSc</a></strong><br>
-偏微分方程式で記述された問題をMPIで並列計算するための数値計算ライブラリ</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="http://www.fftw.org/"
->FFTW</a></strong><br>
-高速フーリエ変換ライブラリ</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="http://www.paraview.org/"
->ParaView</a></strong><br>
-計算結果の可視化ツール</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://vtk.org/"
->VTK</a></strong><br>
-<strong>ParaView</strong> がモデルの描画を行う際に使用する可視化ツールキット</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.paraview.org/insitu/"
->ParaView Catalyst</a></strong><br>
-<strong>ParaView</strong> でin-situシミュレーションを行うためのツールキット</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.mesa3d.org/"
->MESA</a></strong><br>
-<strong>ParaView</strong> でOff-screenレンダリングを行うためのグラフィックライブラリ</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="http://glaros.dtc.umn.edu/gkhome/metis/metis/overview"
->METIS</a></strong><br>
-メッシュを並列計算用に領域分割するツール</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.labri.fr/perso/pelegrin/scotch/"
->SCOTCH</a></strong><br>
-メッシュを並列計算用に領域分割するツール</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://kahip.github.io/"
->KaHIP </a></strong><br>
-メッシュを並列計算用に領域分割するツール</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://www.cgal.org/"
->CGAL</a></strong><br>
-幾何形状を取り扱うライブラリー</li>
-<li><strong><a
-  class="gdoc-markdown__link"
-  href="https://csmd.ornl.gov/adios"
->ADIOS</a></strong><br>
-大規模データを効率よく可視化・解析するためのフレームワーク</li>
-</ul>
-<p>また本テクニカルTipsは、 <strong>OpenFOAM</strong> に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。<br>
-この際、 <strong>OpenFOAM</strong> が提供するツールによるプリ処理と <strong>OpenFOAM</strong> が提供するソルバーによる解析処理を <strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 対応のベアメタルシェイプ <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
->BM.Optimized3.36</a></strong> でデプロイする計算ノードで、 <strong>ParaView</strong> によるポスト処理を <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Optimized3.Flex</a></strong> でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する <strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。<br>
-また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と <strong><a
-  class="gdoc-markdown__link"
-  href="https://slurm.schedmd.com/"
->Slurm</a></strong> 環境でのバッチ実行を念頭に置いて、以下4パターンを解説します。</p>
-      </section>
-
-      <div class="gdoc-post__readmore">
-        
-          <a
-            class="flex-inline align-center fake-link"
-            title="全投稿を閲覧"
-            href="/ocitutorials/hpc/tech-knowhow/install-openfoam/"
-          >
-            全投稿を閲覧
-            <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-          </a>
-        
-      </div>
-
-      <footer class="gdoc-post__footer">
-        <div class="flex flex-wrap align-center gdoc-post__meta">
-          <span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
-  <span class="gdoc-post__tag">
-    <time datetime="2025-10-09T17:02:48&#43;09:00">
-      
-        更新日時
-      
-      Oct 9, 2025
-    </time>
-  </span>
-</span>
-
-<span class="flex align-center no-wrap">
-  <svg class="gdoc-icon gdoc_timer"><use xlink:href="#gdoc_timer"></use></svg>
-  <span class="gdoc-post__tag">読むのに約 9 分かかります</span>
 </span>
 
 
@@ -3481,6 +3465,39 @@ MPI言語規格に準拠するMPI実装</li>
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
