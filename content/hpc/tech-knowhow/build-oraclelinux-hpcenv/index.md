@@ -39,16 +39,15 @@ params:
 
 本章は、計算ノードの環境を以下の手順に沿って構築します。
 
-1. インスタンス作成
-2. **AOCC** インストール
-3. **OpenMPI** 前提ソフトウェア・RPMパッケージインストール
-4. **OpenMPI** インストール・セットアップ
-5. **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** インストール（※3）
-6. **[munge](https://dun.github.io/munge/)** インストール・セットアップ（※4）
-7. **Slurm** RPMパッケージ作成
-8. **Slurm** RPMパッケージインストール・セットアップ
-9. **Slurm** 設定ファイル修正
-10. **Slurm** サービス起動
+1. **[インスタンス作成](#1-1-インスタンス作成)**
+2. **[AOCCインストール](#1-2-aoccインストール)**
+3. **[OpenMPI前提ソフトウェア・RPMパッケージインストール](#1-3-openmpi前提ソフトウェアrpmパッケージインストール)**
+4. **[OpenMPIインストール・セットアップ](#1-4-openmpiインストールセットアップ)**
+5. **[Intel MPI Benchmarksインストール](#1-5-intel-mpi-benchmarksインストール)**（※3）
+6. **[mungeインストール・セットアップ](#1-6-munge-インストールセットアップ)**（※4）
+7. **[Slurm RPMパッケージインストール・セットアップ](#1-7-slurm-rpmパッケージインストールセットアップ)**
+8. **[Slurm設定ファイル修正](#1-8-slurm設定ファイル修正)**
+9. **[Slurmサービス起動](#1-9-slurmサービス起動)**
 
 ※3）計算ノードのMPI通信性能の検証と構築した環境の稼働確認に使用します。  
 ※4） **Slurm** のプロセス間通信の認証に使用します。
@@ -61,6 +60,8 @@ params:
 - イメージ： **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.04.16-0**
 - シェイプ： **BM.Standard.E6.256**
 
+インスタンス起動後、 **firewalld** を停止し、 **SELinux** をDisabledにします。
+
 ## 1-2. AOCCインストール
 
 以下のサイトから **AOCC** のtarアーカイブ **aocc-compiler-5.0.0.tar** をダウンロードし、これを計算ノードの **/tmp** ディレクトリにコピーします。
@@ -70,8 +71,7 @@ params:
 次に、以下コマンドを計算ノードのopcユーザで実行し、 **AOCC** を **/opt/aocc** にインストールします。
 
 ```sh
-$ sudo mkdir /opt/aocc
-$ cd /opt/aocc && sudo tar --no-same-owner -xvf /tmp/aocc-compiler-5.0.0.tar
+$ sudo mkdir /opt/aocc && cd /opt/aocc && sudo tar --no-same-owner -xvf /tmp/aocc-compiler-5.0.0.tar
 $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 ```
 
@@ -86,6 +86,9 @@ $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```sh
+$ sudo dnf install -y gcc-c++ gcc-gfortran git autoconf automake libtool 
+
+
 $ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool numactl
 ```
 
@@ -107,9 +110,9 @@ $ make -j 256 && sudo make install
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
-$ tar -xvf ./hwloc-2.11.2.tar.gz
-$ cd hwloc-2.11.2 && ./configure --prefix=/opt/hwloc
+$ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
+$ tar -xvf ./hwloc-2.12.2.tar.gz
+$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
 $ make -j 256 && sudo make install
 ```
 
@@ -121,42 +124,32 @@ $ make -j 256 && sudo make install
 ※5） **Slurm** がMPIアプリケーションを起動する際に使用します。
 
 ```sh
-$ cd .. && wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-$ tar -xvf ./pmix-5.0.4.tar.gz
-$ cd pmix-5.0.4 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
+$ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
+$ tar -xvf ./pmix-5.0.8.tar.gz
+$ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
 $ make -j 256 && sudo make install
 ```
 
-### 1-3-5. XPMEM・KNEMインストール
+### 1-3-5. XPMEMインストール
 
-以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）と **[KNEM](https://knem.gitlabpages.inria.fr/)** （※6）を **/opt** ディレクトリにインストールします。  
+以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
-※6） **OpenMPI** がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。
+※6）**OpenMPI** がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。
 
 ```sh
-$ cd .. && git clone https://github.com/hpc/xpmem.git
+$ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 256 && sudo make install
-$ sudo install -D -m 644 ./kernel/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
-$ echo "xpmem" | sudo tee /lib/modules-load.d/xpmem.conf
-$ cd .. && git clone https://gitlab.inria.fr/knem/knem.git
-$ cd knem && ./autogen.sh && ./configure --prefix=/opt/knem
-$ make -j 256 && sudo make install
-$ sudo cp -p /opt/knem/etc/10-knem.rules /opt/knem/etc/10-knem.rules_org
-$ grep "^#KERNEL" /opt/knem/etc/10-knem.rules_org | sed 's/^#KERNEL/KERNEL/g' | sudo tee /opt/knem/etc/10-knem.rules
-$ echo "knem" | sudo tee /lib/modules-load.d/knem.conf
-$ sudo /opt/knem/sbin/knem_local_install
-$ sudo systemctl restart systemd-modules-load.service
+$ make -j 128 && sudo make install
 ```
 
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **XPMEM** と **KNEM** がカーネルモジュールとして組み込まれていることを確認します。
+次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
 
 ```sh
-$ lsmod | grep -i -e xpmem -e knem
-xpmem                  57344  0
-knem                   65536  0
-$
+$ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
+$ sudo depmod -a
+$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
+$ sudo modprobe xpmem
 ```
 
 ### 1-3-6. OpenUCXインストール
@@ -165,9 +158,9 @@ $
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
-$ tar -xvf ./ucx-1.17.0.tar.gz
-$ cd ucx-1.17.0 && ./contrib/configure-release --prefix=/opt/ucx
+$ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
+$ tar -xvf ./ucx-1.19.0.tar.gz
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem
 $ make -j 256 && sudo make install
 ```
 
@@ -177,9 +170,9 @@ $ make -j 256 && sudo make install
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
-$ tar -xvf ./v1.3.0.tar.gz
-$ cd ./ucc-1.3.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
+$ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
+$ tar -xvf ./v1.5.0.tar.gz
+$ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
 $ make -j 256 && sudo make install
 ```
 
@@ -189,35 +182,52 @@ $ make -j 256 && sudo make install
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ cd .. && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
-$ tar -xvf ./openmpi-5.0.6.tar.gz
-$ cd openmpi-5.0.6 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-knem=/opt/knem --with-xpmem=/opt/xpmem --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
+$ cd ~/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
+$ tar -xvf ./openmpi-5.0.8.tar.gz
+$ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
 $ make -j 256 all && sudo make install
 ```
 
-ここでは、 **KNEM** 、 **XPMEM** 、及び **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を利用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
+ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
-次に、以下コマンドを計算ノードの **OpenMPI** を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。
+次に、以下のファイルを **/usr/share/Modules/modulefiles/openmpi** で作成します。  
+このファイルは、 **Environment modules** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定が可能になります
 
 ```sh
-$ echo "export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH" | tee -a ~/.bashrc
+#%Module1.0
+##
+## OpenMPI for GNU compiler
+
+proc ModulesHelp { } {
+        puts stderr "OpenMPI 5.0.8 for GNU compiler\n"
+}
+
+module-whatis   "OpenMPI 5.0.8 for GNU compiler"
+
+set pkg_root    /opt/openmpi
+set ver         5.0.8
+
+setenv MPI_ROOT $pkg_root
+setenv MPICC    mpicc
+setenv MPICXX   mpicxx
+setenv MPIFC    mpif90
+
+prepend-path PATH               $pkg_root/bin:/opt/ucx/bin
+prepend-path LD_LIBRARY_PATH    $pkg_root/lib
+prepend-path LIBRARY_PATH       $pkg_root/lib
+prepend-path CPATH              $pkg_root/include
+prepend-path C_INCLUDE_PATH     $pkg_root/include
+prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
+prepend-path MANPATH            $pkg_root/share/man
 ```
 
 ## 1-5. Intel MPI Benchmarksインストール
 
-以下コマンドを計算ノードのopcユーザで実行し、 **Intel MPI Benchmarks** をインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
-
-```sh
-$ cd .. && wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
-$ tar -xvf ./IMB-v2021.7.tar.gz
-$ export CC=/opt/openmpi/bin/mpicc; export CXX=/opt/openmpi/bin/mpicxx; cd mpi-benchmarks-IMB-v2021.7 && make -j 256 all
-$ sudo mkdir -p /opt/openmpi/tests/imb && sudo cp ./IMB* /opt/openmpi/tests/imb/
-```
+**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** をインストールします。
 
 ## 1-6. munge インストール・セットアップ
 
-以下コマンドを計算ノードのopcユーザで実行し、 **munge** プロセス起動ユーザを作成します。
+以下コマンドを計算ノードのopcユーザで実行し、 **[munge](https://dun.github.io/munge/)** プロセス起動ユーザを作成します。
 
 ```sh
 $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
@@ -247,54 +257,23 @@ STATUS:           Success (0)
 $
 ```
 
-## 1-7. Slurm RPMパッケージ作成
+## 1-7. Slurm RPMパッケージインストール・セットアップ
 
-以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** の前提RPMパッケージをインストールします。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** の **[2-5. Slurm RPMパッケージ作成](../../tech-knowhow/setup-slurm-cluster/#2-5-slurm-rpmパッケージ作成)** で作成した **Slurm** のRPMパッケージを計算ノードにコピーします。
 
-```sh
-$ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
-```
-
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **Oracle Linux** 9.5用の **Slurm** RPMパッケージを作成します。
+次に、以下コマンドを計算ノードのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
 ```sh
-$ cd ~/`hostname` && wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
-$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' -ta ./slurm-24.11.0.tar.bz2
-```
-
-作成されたパッケージは、以下のディレクトリに配置されます。
-
-```sh
-$ ls -1 ~/rpmbuild/RPMS/x86_64/
-slurm-24.11.0-1.el9.x86_64.rpm
-slurm-contribs-24.11.0-1.el9.x86_64.rpm
-slurm-devel-24.11.0-1.el9.x86_64.rpm
-slurm-example-configs-24.11.0-1.el9.x86_64.rpm
-slurm-libpmi-24.11.0-1.el9.x86_64.rpm
-slurm-openlava-24.11.0-1.el9.x86_64.rpm
-slurm-pam_slurm-24.11.0-1.el9.x86_64.rpm
-slurm-perlapi-24.11.0-1.el9.x86_64.rpm
-slurm-sackd-24.11.0-1.el9.x86_64.rpm
-slurm-slurmctld-24.11.0-1.el9.x86_64.rpm
-slurm-slurmd-24.11.0-1.el9.x86_64.rpm
-slurm-slurmdbd-24.11.0-1.el9.x86_64.rpm
-slurm-torque-24.11.0-1.el9.x86_64.rpm
-$
-```
-
-## 1-8. Slurm RPMパッケージインストール・セットアップ
-
-以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** RPMパッケージのインストール・セットアップを行います。
-
-```sh
-$ cd ~/rpmbuild/RPMS/x86_64/ && sudo rpm -ivh ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
+$ sudo yum-config-manager --enable ol9_codeready_builder
+$ sudo dnf install -y mariadb-devel infiniband-diags libibumad
+$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
 $ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
 $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
-## 1-9. Slurm設定ファイル修正
+## 1-8. Slurm設定ファイル修正
 
 既存の **Slurm** 環境の **slurm.conf** に対して、計算ノードを追加するための以下3行を追加します。
 
@@ -310,7 +289,7 @@ PartitionName=e6 Nodes=inst-e6 Default=YES MaxTime=INFINITE State=UP
 
 次に、この **slurm.conf** を計算ノード、Slurmマネージャ、及びSlurmクライアントの **/opt/slurm/etc** に配置します。
 
-## 1-10. Slurmサービス起動
+## 1-9. Slurmサービス起動
 
 以下コマンドを計算ノードのopcユーザで実行し、 **slurmd** を起動します。
 
@@ -347,7 +326,7 @@ $
 なおこの **STREAM** の実行は、 **BM.Standard.E6.256** を想定した設定になっています。
 
 ```sh
-$ cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+$ mkdir ~/`hostname` && cd ~/`hostname` && mkdir ./stream && cd ./stream && wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 $ source /opt/aocc/setenv_AOCC.sh
 $ clang -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=430080000 -O3 -mcmodel=large -fopenmp -fnt-store ./stream.c
 $ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.out
@@ -369,7 +348,10 @@ $ OMP_NUM_THREADS=128 KMP_AFFINITY="explicit,proclist=[`seq -s, 0 2 255`]" ./a.o
 #SBATCH -J alltoall
 #SBATCH -o alltoall.%J
 #SBATCH -e stderr.%J
-srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin $SLURM_NTASKS alltoall
+
+module load openmpi imb
+
+srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin $SLURM_NTASKS alltoall
 ```
 
 このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから4 MiBまでで計測しています。  
@@ -378,7 +360,7 @@ srun --cpu-bind=map_cpu:`seq -s, 0 255 | tr -d '\n'` /opt/openmpi/tests/imb/IMB-
 次に、以下コマンドをSlurmクライアントの **OpenMPI** と **Slurm** を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。
 
 ```sh
-$ sbatch imb_ata.sh 
+$ sbatch imb_ata.sh
 Submitted batch job 23808
 $ cat ./alltoall.23808
 #----------------------------------------------------------------
