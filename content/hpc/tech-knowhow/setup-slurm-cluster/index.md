@@ -129,7 +129,7 @@ $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
 
 ```sh
 $ sudo yum-config-manager --enable ol8_codeready_builder
-$ sudo dnf install -y munge munge-libs munge-libs
+$ sudo dnf install -y munge munge-libs
 ```
 
 次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 **munge** キーファイル（ **munge.key** ）を作成します。

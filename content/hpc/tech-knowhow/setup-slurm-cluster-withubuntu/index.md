@@ -36,7 +36,7 @@ table, th, td {
 
 ![画面ショット](architecture_diagram.png)
 
-※1） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。Slurmマネージャは、Slurmクライアントでビルドする **Ubuntu** 用debパッケージから **Slurm** をインストールするため、Slurmクライアントは、GPUノードのアプリケーション開発環境の役割を担うため、これらにGPUノードと同じOSを採用します。  
+※1） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。SlurmクライアントはGPUノードのアプリケーション開発環境の役割を担うため、SlurmマネージャはSlurmクライアントでビルドする **Ubuntu** 用debパッケージから **Slurm** をインストールするため、これらにGPUノードと同じOSを採用します。  
 ※2）本テクニカルTipsは、8枚の **NVIDIA A100** GPUを搭載するベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用します。  
 ※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../howto-configure-sharedstorage/)** を参照してください。  
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、SlurmクライアントとGPUノードでNFSマウントします。  
@@ -531,7 +531,7 @@ $ srun -p sltest -n 2 --gres=gpu:nvidia_a100-sxm4-40gb:2 osu_bw -x 10 -i 10 -m 2
 $
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、実行したジョブが使用したGPUリソースをジョブのアカウンティング情報から取得できることを確認します。  
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、実行したジョブが使用したGPUリソースが当該ジョブのアカウンティング情報に記録されていることを確認します。  
 なお、ユーザ名とジョブIDは自身の環境のものに置き換えます。
 
 ```sh
