@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-15T15:43:56+09:00"
+      content="2025-10-16T16:49:13+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法",
       "description": "HPCワークロードは、複数の計算ノードをクラスタ・ネットワークでノード間接続するHPCクラスタで実行することが主流ですが、BM.Standard.E6.256のような高性能のベアメタル・シェイプは、11 TFLOPSを超える理論性能と3 TBのDDR5メモリを有し、単一ノードでも十分大規模なHPCワークロードを実行することが可能です。このように単一ノードでHPCワークロードを実行する場合は、ベースOSのOracle Linuxのバージョンに制約のあるクラスタネットワーキングイメージを使用する必要が無く、プラットフォーム・イメージから最新のOracle Linuxを選択することが可能になります。本テクニカルTipsは、単一ノードでHPCワークロードを実行することを念頭に、プラットフォーム・イメージから提供される最新のOracle Linux上にOpenMPIとSlurmをインストールしてHPC環境を構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1305",
+      "wordCount" : "1219",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-15T15:43:56.00Z",
+      "dateModified": "2025-10-16T16:49:13.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
+    <meta property="article:modified_time" content="2025-10-16T16:49:13+09:00">
     <meta property="article:tag" content="Hpc">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
@@ -316,25 +316,13 @@
         <li><a href="#1-0-概要">1-0. 概要</a></li>
         <li><a href="#1-1-インスタンス作成">1-1. インスタンス作成</a></li>
         <li><a href="#1-2-aoccインストール">1-2. AOCCインストール</a></li>
-        <li><a href="#1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・RPMパッケージインストール</a>
-          <ul>
-            <li><a href="#1-3-0-概要">1-3-0. 概要</a></li>
-            <li><a href="#1-3-1-前提rpmパッケージインストール">1-3-1. 前提RPMパッケージインストール</a></li>
-            <li><a href="#1-3-2-libeventインストール">1-3-2. libeventインストール</a></li>
-            <li><a href="#1-3-3-hwlocインストール">1-3-3. hwlocインストール</a></li>
-            <li><a href="#1-3-4-openpmixインストール">1-3-4. OpenPMIxインストール</a></li>
-            <li><a href="#1-3-5-xpmemknemインストール">1-3-5. XPMEM・KNEMインストール</a></li>
-            <li><a href="#1-3-6-openucxインストール">1-3-6. OpenUCXインストール</a></li>
-            <li><a href="#1-3-7-unified-collective-communicationインストール">1-3-7. Unified Collective Communicationインストール</a></li>
-          </ul>
-        </li>
+        <li><a href="#1-3-openmpi前提ソフトウェアrpmパッケージインストール">1-3. OpenMPI前提ソフトウェア・RPMパッケージインストール</a></li>
         <li><a href="#1-4-openmpiインストールセットアップ">1-4. OpenMPIインストール・セットアップ</a></li>
         <li><a href="#1-5-intel-mpi-benchmarksインストール">1-5. Intel MPI Benchmarksインストール</a></li>
         <li><a href="#1-6-munge-インストールセットアップ">1-6. munge インストール・セットアップ</a></li>
-        <li><a href="#1-7-slurm-rpmパッケージ作成">1-7. Slurm RPMパッケージ作成</a></li>
-        <li><a href="#1-8-slurm-rpmパッケージインストールセットアップ">1-8. Slurm RPMパッケージインストール・セットアップ</a></li>
-        <li><a href="#1-9-slurm設定ファイル修正">1-9. Slurm設定ファイル修正</a></li>
-        <li><a href="#1-10-slurmサービス起動">1-10. Slurmサービス起動</a></li>
+        <li><a href="#1-7-slurm-rpmパッケージインストールセットアップ">1-7. Slurm RPMパッケージインストール・セットアップ</a></li>
+        <li><a href="#1-8-slurm設定ファイル修正">1-8. Slurm設定ファイル修正</a></li>
+        <li><a href="#1-9-slurmサービス起動">1-9. Slurmサービス起動</a></li>
       </ul>
     </li>
     <li><a href="#2-稼働確認">2. 稼働確認</a>
@@ -426,8 +414,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-15T15:43:56&#43;09:00">
-            Oct 15, 2025
+        <time datetime="2025-10-16T16:49:13&#43;09:00">
+            Oct 16, 2025
         </time>
     
 </span>
@@ -503,8 +491,8 @@
   href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm"
 >Oracle-Linux-9.5-2025.04.16-0</a></strong></li>
 <li>コンパイラ： <strong>AOCC</strong> 5.0</li>
-<li>MPI： <strong>OpenMPI</strong> 5.0.6</li>
-<li>ジョブスケジューラ： <strong>Slurm</strong> 24.11.0</li>
+<li>MPI： <strong>OpenMPI</strong> 5.0.8</li>
+<li>ジョブスケジューラ： <strong>Slurm</strong> 25.05.3</li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-環境構築"
@@ -526,22 +514,42 @@
 </div>
 <p>本章は、計算ノードの環境を以下の手順に沿って構築します。</p>
 <ol>
-<li>インスタンス作成</li>
-<li><strong>AOCC</strong> インストール</li>
-<li><strong>OpenMPI</strong> 前提ソフトウェア・RPMパッケージインストール</li>
-<li><strong>OpenMPI</strong> インストール・セットアップ</li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="https://github.com/intel/mpi-benchmarks"
->Intel MPI Benchmarks</a></strong> インストール（※3）</li>
+  href="#1-1-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e4%bd%9c%e6%88%90"
+>インスタンス作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="https://dun.github.io/munge/"
->munge</a></strong> インストール・セットアップ（※4）</li>
-<li><strong>Slurm</strong> RPMパッケージ作成</li>
-<li><strong>Slurm</strong> RPMパッケージインストール・セットアップ</li>
-<li><strong>Slurm</strong> 設定ファイル修正</li>
-<li><strong>Slurm</strong> サービス起動</li>
+  href="#1-2-aocc%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>AOCCインストール</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-3-openmpi%e5%89%8d%e6%8f%90%e3%82%bd%e3%83%95%e3%83%88%e3%82%a6%e3%82%a7%e3%82%a2rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>OpenMPI前提ソフトウェア・RPMパッケージインストール</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-4-openmpi%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>OpenMPIインストール・セットアップ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-5-intel-mpi-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>Intel MPI Benchmarksインストール</a></strong>（※3）</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-6-munge-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>mungeインストール・セットアップ</a></strong>（※4）</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>Slurm RPMパッケージインストール・セットアップ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bf%ae%e6%ad%a3"
+>Slurm設定ファイル修正</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#1-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95"
+>Slurmサービス起動</a></strong></li>
 </ol>
 <p>※3）計算ノードのMPI通信性能の検証と構築した環境の稼働確認に使用します。<br>
 ※4） <strong>Slurm</strong> のプロセス間通信の認証に使用します。</p>
@@ -569,6 +577,7 @@
 >プラットフォーム・イメージ</a></strong> <strong>Oracle-Linux-9.5-2025.04.16-0</strong></li>
 <li>シェイプ： <strong>BM.Standard.E6.256</strong></li>
 </ul>
+<p>インスタンス起動後、 <strong>firewalld</strong> を停止し、 <strong>SELinux</strong> をDisabledにします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-aoccインストール"
     >
@@ -584,8 +593,7 @@
   href="https://www.amd.com/en/developer/aocc.html#downloads"
 >https://www.amd.com/en/developer/aocc.html#downloads</a></strong></p>
 <p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>AOCC</strong> を <strong>/opt/aocc</strong> にインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mkdir /opt/aocc
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> /opt/aocc <span class="o">&amp;&amp;</span> sudo tar --no-same-owner -xvf /tmp/aocc-compiler-5.0.0.tar
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mkdir /opt/aocc <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /opt/aocc <span class="o">&amp;&amp;</span> sudo tar --no-same-owner -xvf /tmp/aocc-compiler-5.0.0.tar
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> aocc-compiler-5.0.0 <span class="o">&amp;&amp;</span> sudo ./install.sh
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-3-openmpi前提ソフトウェアrpmパッケージインストール"
@@ -596,37 +604,9 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-0-概要"
-    >
-        1-3-0. 概要
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-0. 概要" aria-label="アンカー先: 1-3-0. 概要" href="#1-3-0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>本章は、 <strong>OpenMPI</strong> の前提となるRPMパッケージ・ソフトウェアをインストールします。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-1-前提rpmパッケージインストール"
-    >
-        1-3-1. 前提RPMパッケージインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-1-前提rpmパッケージインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-1. 前提RPMパッケージインストール" aria-label="アンカー先: 1-3-1. 前提RPMパッケージインストール" href="#1-3-1-%e5%89%8d%e6%8f%90rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool numactl
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-2-libeventインストール"
-    >
-        1-3-2. libeventインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-2-libeventインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-2. libeventインストール" aria-label="アンカー先: 1-3-2. libeventインストール" href="#1-3-2-libevent%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+<p>以下コマンドを計算ノードのopcユーザで実行し、以降でインストールするソフトウェアの前提RPMパッケージをインストールします。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y gcc-c++ gcc-gfortran git autoconf automake libtool 
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="https://libevent.org/"
 >libevent</a></strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
@@ -635,114 +615,56 @@
 </span></span><span class="line"><span class="cl">$ tar -xvf ./libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/libevent
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-3-hwlocインストール"
-    >
-        1-3-3. hwlocインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-3-hwlocインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-3. hwlocインストール" aria-label="アンカー先: 1-3-3. hwlocインストール" href="#1-3-3-hwloc%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/open-mpi/hwloc"
 >hwloc</a></strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.11/hwloc-2.11.2.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./hwloc-2.11.2.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.11.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./hwloc-2.12.2.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.12.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-4-openpmixインストール"
-    >
-        1-3-4. OpenPMIxインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-4-openpmixインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-4. OpenPMIxインストール" aria-label="アンカー先: 1-3-4. OpenPMIxインストール" href="#1-3-4-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="https://openpmix.github.io/"
 >OpenPMIx</a></strong> （※5）を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 <p>※5） <strong>Slurm</strong> がMPIアプリケーションを起動する際に使用します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.4/pmix-5.0.4.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./pmix-5.0.4.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.4 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./pmix-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.8 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-5-xpmemknemインストール"
-    >
-        1-3-5. XPMEM・KNEMインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-5-xpmemknemインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-5. XPMEM・KNEMインストール" aria-label="アンカー先: 1-3-5. XPMEM・KNEMインストール" href="#1-3-5-xpmemknem%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/hpc/xpmem"
->XPMEM</a></strong> （※6）と <strong><a
-  class="gdoc-markdown__link"
-  href="https://knem.gitlabpages.inria.fr/"
->KNEM</a></strong> （※6）を <strong>/opt</strong> ディレクトリにインストールします。<br>
+>XPMEM</a></strong> （※6）を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<p>※6） <strong>OpenMPI</strong> がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
+<p>※6）<strong>OpenMPI</strong> がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> xpmem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/xpmem
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span><span class="line"><span class="cl">$ sudo install -D -m <span class="m">644</span> ./kernel/xpmem.ko /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/extra/xpmem/xpmem.ko
-</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;xpmem&#34;</span> <span class="p">|</span> sudo tee /lib/modules-load.d/xpmem.conf
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> git clone https://gitlab.inria.fr/knem/knem.git
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> knem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/knem
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span><span class="line"><span class="cl">$ sudo cp -p /opt/knem/etc/10-knem.rules /opt/knem/etc/10-knem.rules_org
-</span></span><span class="line"><span class="cl">$ grep <span class="s2">&#34;^#KERNEL&#34;</span> /opt/knem/etc/10-knem.rules_org <span class="p">|</span> sed <span class="s1">&#39;s/^#KERNEL/KERNEL/g&#39;</span> <span class="p">|</span> sudo tee /opt/knem/etc/10-knem.rules
-</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;knem&#34;</span> <span class="p">|</span> sudo tee /lib/modules-load.d/knem.conf
-</span></span><span class="line"><span class="cl">$ sudo /opt/knem/sbin/knem_local_install
-</span></span><span class="line"><span class="cl">$ sudo systemctl restart systemd-modules-load.service
-</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>XPMEM</strong> と <strong>KNEM</strong> がカーネルモジュールとして組み込まれていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ lsmod <span class="p">|</span> grep -i -e xpmem -e knem
-</span></span><span class="line"><span class="cl">xpmem                  <span class="m">57344</span>  <span class="m">0</span>
-</span></span><span class="line"><span class="cl">knem                   <span class="m">65536</span>  <span class="m">0</span>
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-6-openucxインストール"
-    >
-        1-3-6. OpenUCXインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-6-openucxインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-6. OpenUCXインストール" aria-label="アンカー先: 1-3-6. OpenUCXインストール" href="#1-3-6-openucx%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、  <strong><a
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">128</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>XPMEM</strong> をカーネルモジュールとしてインストールします。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo install -D -m <span class="m">644</span> /opt/xpmem/lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/xpmem/xpmem.ko /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/extra/xpmem/xpmem.ko
+</span></span><span class="line"><span class="cl">$ sudo depmod -a
+</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> xpmem <span class="p">|</span> sudo tee /etc/modules-load.d/xpmem.conf
+</span></span><span class="line"><span class="cl">$ sudo modprobe xpmem
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、  <strong><a
   class="gdoc-markdown__link"
   href="https://openucx.readthedocs.io/en/master/index.html#"
 >OpenUCX</a></strong>  を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.17.0/ucx-1.17.0.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./ucx-1.17.0.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.17.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./ucx-1.19.0.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx --with-xpmem<span class="o">=</span>/opt/xpmem
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="1-3-7-unified-collective-communicationインストール"
-    >
-        1-3-7. Unified Collective Communicationインストール
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-3-7-unified-collective-communicationインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-3-7. Unified Collective Communicationインストール" aria-label="アンカー先: 1-3-7. Unified Collective Communicationインストール" href="#1-3-7-unified-collective-communication%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/openucx/ucc"
 >Unified Collective Communication (UCC)</a></strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucc/archive/refs/tags/v1.3.0.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./v1.3.0.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ./ucc-1.3.0/ <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/ucc --with-ucx<span class="o">=</span>/opt/ucx
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./v1.5.0.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ./ucc-1.5.0/ <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/ucc --with-ucx<span class="o">=</span>/opt/ucx
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-4-openmpiインストールセットアップ"
@@ -755,13 +677,38 @@
 </div>
 <p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>OpenMPI</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.6.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./openmpi-5.0.6.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> openmpi-5.0.6 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/openmpi --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc --with-pmix<span class="o">=</span>/opt/pmix --with-knem<span class="o">=</span>/opt/knem --with-xpmem<span class="o">=</span>/opt/xpmem --with-ucx<span class="o">=</span>/opt/ucx --with-ucc<span class="o">=</span>/opt/ucc --with-slurm
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./openmpi-5.0.8.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> openmpi-5.0.8 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/openmpi --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc --with-pmix<span class="o">=</span>/opt/pmix --with-ucx<span class="o">=</span>/opt/ucx --with-ucc<span class="o">=</span>/opt/ucc --with-slurm
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">256</span> all <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><p>ここでは、 <strong>KNEM</strong> 、 <strong>XPMEM</strong> 、及び <strong>UCC</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を利用して <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
-<p>次に、以下コマンドを計算ノードの <strong>OpenMPI</strong> を利用するユーザで実行し、MPIプログラムのコンパイル・実行に必要な環境変数を設定します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export PATH=/opt/openmpi/bin:/opt/ucx/bin:\$PATH&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
+</span></span></code></pre></div><p>ここでは、先にインストールした <strong>OpenUCX</strong> と <strong>UCC</strong> を <strong>OpenMPI</strong> から利用出来るよう、また <strong>Slurm</strong> から <strong>OpenPMIx</strong> を使用して <strong>OpenMPI</strong> のアプリケーションを実行できるようにビルドしています。</p>
+<p>次に、以下のファイルを <strong>/usr/share/Modules/modulefiles/openmpi</strong> で作成します。<br>
+このファイルは、 <strong>Environment modules</strong> にモジュール名 <strong>openmpi</strong> を登録し、これをロードすることで <strong>OpenMPI</strong> 利用環境の設定が可能になります</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#%Module1.0</span>
+</span></span><span class="line"><span class="cl"><span class="c1">##</span>
+</span></span><span class="line"><span class="cl"><span class="c1">## OpenMPI for GNU compiler</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">proc ModulesHelp <span class="o">{</span> <span class="o">}</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        puts stderr <span class="s2">&#34;OpenMPI 5.0.8 for GNU compiler\n&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">module-whatis   <span class="s2">&#34;OpenMPI 5.0.8 for GNU compiler&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> pkg_root    /opt/openmpi
+</span></span><span class="line"><span class="cl"><span class="nb">set</span> ver         5.0.8
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">setenv MPI_ROOT <span class="nv">$pkg_root</span>
+</span></span><span class="line"><span class="cl">setenv MPICC    mpicc
+</span></span><span class="line"><span class="cl">setenv MPICXX   mpicxx
+</span></span><span class="line"><span class="cl">setenv MPIFC    mpif90
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">prepend-path PATH               <span class="nv">$pkg_root</span>/bin:/opt/ucx/bin
+</span></span><span class="line"><span class="cl">prepend-path LD_LIBRARY_PATH    <span class="nv">$pkg_root</span>/lib
+</span></span><span class="line"><span class="cl">prepend-path LIBRARY_PATH       <span class="nv">$pkg_root</span>/lib
+</span></span><span class="line"><span class="cl">prepend-path CPATH              <span class="nv">$pkg_root</span>/include
+</span></span><span class="line"><span class="cl">prepend-path C_INCLUDE_PATH     <span class="nv">$pkg_root</span>/include
+</span></span><span class="line"><span class="cl">prepend-path CPLUS_INCLUDE_PATH <span class="nv">$pkg_root</span>/include
+</span></span><span class="line"><span class="cl">prepend-path MANPATH            <span class="nv">$pkg_root</span>/share/man
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-5-intel-mpi-benchmarksインストール"
     >
@@ -771,13 +718,20 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> をインストールします。<br>
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.7.tar.gz
-</span></span><span class="line"><span class="cl">$ tar -xvf ./IMB-v2021.7.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">export</span> <span class="nv">CC</span><span class="o">=</span>/opt/openmpi/bin/mpicc<span class="p">;</span> <span class="nb">export</span> <span class="nv">CXX</span><span class="o">=</span>/opt/openmpi/bin/mpicxx<span class="p">;</span> <span class="nb">cd</span> mpi-benchmarks-IMB-v2021.7 <span class="o">&amp;&amp;</span> make -j <span class="m">256</span> all
-</span></span><span class="line"><span class="cl">$ sudo mkdir -p /opt/openmpi/tests/imb <span class="o">&amp;&amp;</span> sudo cp ./IMB* /opt/openmpi/tests/imb/
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-imb/"
+>Intel MPI Benchmarks実行方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
+>1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/intel/mpi-benchmarks"
+>Intel MPI Benchmarks</a></strong> をインストールします。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-6-munge-インストールセットアップ"
     >
         1-6. munge インストール・セットアップ
@@ -786,7 +740,10 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
+<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://dun.github.io/munge/"
+>munge</a></strong> プロセス起動ユーザを作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u <span class="m">5001</span> munge
 </span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
@@ -800,56 +757,38 @@
 </span></span><span class="line"><span class="cl">STATUS:           Success <span class="o">(</span>0<span class="o">)</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-7-slurm-rpmパッケージ作成"
+    <h2 id="1-7-slurm-rpmパッケージインストールセットアップ"
     >
-        1-7. Slurm RPMパッケージ作成
+        1-7. Slurm RPMパッケージインストール・セットアップ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-7-slurm-rpmパッケージ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-7. Slurm RPMパッケージ作成" aria-label="アンカー先: 1-7. Slurm RPMパッケージ作成" href="#1-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-7-slurm-rpmパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-7. Slurm RPMパッケージインストール・セットアップ" aria-label="アンカー先: 1-7. Slurm RPMパッケージインストール・セットアップ" href="#1-7-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> の前提RPMパッケージをインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y rpm-build pam-devel perl readline-devel mariadb-devel dbus-glib-devel
-</span></span></code></pre></div><p>次に、以下コマンドを計算ノードのopcユーザで実行し、 <strong>Oracle Linux</strong> 9.5用の <strong>Slurm</strong> RPMパッケージを作成します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.schedmd.com/slurm/slurm-24.11.0.tar.bz2
-</span></span><span class="line"><span class="cl">$ rpmbuild --define <span class="s1">&#39;_prefix /opt/slurm&#39;</span> --define <span class="s1">&#39;_slurm_sysconfdir /opt/slurm/etc&#39;</span> --define <span class="s1">&#39;_with_pmix --with-pmix=/opt/pmix&#39;</span> -ta ./slurm-24.11.0.tar.bz2
-</span></span></code></pre></div><p>作成されたパッケージは、以下のディレクトリに配置されます。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ls -1 ~/rpmbuild/RPMS/x86_64/
-</span></span><span class="line"><span class="cl">slurm-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-contribs-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-devel-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-example-configs-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-libpmi-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-openlava-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-pam_slurm-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-perlapi-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-sackd-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmctld-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmd-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-slurmdbd-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">slurm-torque-24.11.0-1.el9.x86_64.rpm
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-8-slurm-rpmパッケージインストールセットアップ"
-    >
-        1-8. Slurm RPMパッケージインストール・セットアップ
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-8-slurm-rpmパッケージインストールセットアップ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-8. Slurm RPMパッケージインストール・セットアップ" aria-label="アンカー先: 1-8. Slurm RPMパッケージインストール・セットアップ" href="#1-8-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下コマンドを計算ノードのopcユーザで実行し、 <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/ <span class="o">&amp;&amp;</span> sudo rpm -ivh ./slurm-24.11.0-1.el9.x86_64.rpm ./slurm-slurmd-24.11.0-1.el9.x86_64.rpm ./slurm-perlapi-24.11.0-1.el9.x86_64.rpm
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/setup-slurm-cluster/"
+>Slurmによるリソース管理・ジョブ管理システム構築方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/setup-slurm-cluster/#2-5-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e4%bd%9c%e6%88%90"
+>2-5. Slurm RPMパッケージ作成</a></strong> で作成した <strong>Slurm</strong> のRPMパッケージを計算ノードにコピーします。</p>
+<p>次に、以下コマンドを計算ノードのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel infiniband-diags libibumad
+</span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/spool/slurmd <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/spool/slurmd
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/log/slurm <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/log/slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /opt/slurm/etc <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /opt/slurm/etc
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-9-slurm設定ファイル修正"
+    <h2 id="1-8-slurm設定ファイル修正"
     >
-        1-9. Slurm設定ファイル修正
+        1-8. Slurm設定ファイル修正
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-9-slurm設定ファイル修正" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-9. Slurm設定ファイル修正" aria-label="アンカー先: 1-9. Slurm設定ファイル修正" href="#1-9-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bf%ae%e6%ad%a3">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-8-slurm設定ファイル修正" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-8. Slurm設定ファイル修正" aria-label="アンカー先: 1-8. Slurm設定ファイル修正" href="#1-8-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bf%ae%e6%ad%a3">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -867,11 +806,11 @@
 >パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> を参照してください。</p>
 <p>次に、この <strong>slurm.conf</strong> を計算ノード、Slurmマネージャ、及びSlurmクライアントの <strong>/opt/slurm/etc</strong> に配置します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-10-slurmサービス起動"
+    <h2 id="1-9-slurmサービス起動"
     >
-        1-10. Slurmサービス起動
+        1-9. Slurmサービス起動
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-10-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-10. Slurmサービス起動" aria-label="アンカー先: 1-10. Slurmサービス起動" href="#1-10-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/build-oraclelinux-hpcenv/#1-9-slurmサービス起動" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-9. Slurmサービス起動" aria-label="アンカー先: 1-9. Slurmサービス起動" href="#1-9-slurm%e3%82%b5%e3%83%bc%e3%83%93%e3%82%b9%e8%b5%b7%e5%8b%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -919,7 +858,7 @@
   href="https://www.cs.virginia.edu/stream/"
 >STREAM</a></strong> をコンパイル・実行することで、 <strong>AOCC</strong> の稼働確認を行います。<br>
 なおこの <strong>STREAM</strong> の実行は、 <strong>BM.Standard.E6.256</strong> を想定した設定になっています。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> mkdir ./stream <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ./stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> mkdir ./stream <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ./stream <span class="o">&amp;&amp;</span> wget http://www.cs.virginia.edu/stream/FTP/Code/stream.c
 </span></span><span class="line"><span class="cl">$ <span class="nb">source</span> /opt/aocc/setenv_AOCC.sh
 </span></span><span class="line"><span class="cl">$ clang -DSTREAM_TYPE<span class="o">=</span>double -DSTREAM_ARRAY_SIZE<span class="o">=</span><span class="m">430080000</span> -O3 -mcmodel<span class="o">=</span>large -fopenmp -fnt-store ./stream.c
 </span></span><span class="line"><span class="cl">$ <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">128</span> <span class="nv">KMP_AFFINITY</span><span class="o">=</span><span class="s2">&#34;explicit,proclist=[`seq -s, 0 2 255`]&#34;</span> ./a.out
@@ -948,7 +887,10 @@
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J alltoall</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o alltoall.%J</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
-</span></span><span class="line"><span class="cl">srun --cpu-bind<span class="o">=</span>map_cpu:<span class="sb">`</span>seq -s, <span class="m">0</span> <span class="m">255</span> <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span><span class="sb">`</span> /opt/openmpi/tests/imb/IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin <span class="nv">$SLURM_NTASKS</span> alltoall
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">module load openmpi imb
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">srun --cpu-bind<span class="o">=</span>map_cpu:<span class="sb">`</span>seq -s, <span class="m">0</span> <span class="m">255</span> <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span><span class="sb">`</span> IMB-MPI1 -msglog 0:22 -mem 4.1G -off_cache 512,64 -npmin <span class="nv">$SLURM_NTASKS</span> alltoall
 </span></span></code></pre></div><p>このジョブスクリプトは、256プロセスを使用するノード内並列のAlltoall所要時間をメッセージサイズ0Bから4 MiBまでで計測しています。<br>
 <strong>BM.Standard.E6.256</strong> 上で実行する <strong>Intel MPI Benchmarks</strong> のMPI集合通信性能については、 <strong><a
   class="gdoc-markdown__link"
@@ -958,7 +900,7 @@
   href="../../benchmark/openmpi-perftune-e6/"
 >OpenMPIのMPI集合通信チューニング方法（BM.Standard.E6.256編）</a></strong> も合わせて参照してください。</p>
 <p>次に、以下コマンドをSlurmクライアントの <strong>OpenMPI</strong> と <strong>Slurm</strong> を利用するユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sbatch imb_ata.sh 
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sbatch imb_ata.sh
 </span></span><span class="line"><span class="cl">Submitted batch job <span class="m">23808</span>
 </span></span><span class="line"><span class="cl">$ cat ./alltoall.23808
 </span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
