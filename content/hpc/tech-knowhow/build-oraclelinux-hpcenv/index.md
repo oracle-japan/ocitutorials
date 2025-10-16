@@ -30,8 +30,8 @@ params:
 
 - 計算ノードOS： **プラットフォーム・イメージ** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
 - コンパイラ： **AOCC** 5.0
-- MPI： **OpenMPI** 5.0.6
-- ジョブスケジューラ： **Slurm** 24.11.0
+- MPI： **OpenMPI** 5.0.8
+- ジョブスケジューラ： **Slurm** 25.05.3
 
 # 1. 環境構築
 
@@ -77,24 +77,13 @@ $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 
 ## 1-3. OpenMPI前提ソフトウェア・RPMパッケージインストール
 
-### 1-3-0. 概要
-
-本章は、 **OpenMPI** の前提となるRPMパッケージ・ソフトウェアをインストールします。
-
-### 1-3-1. 前提RPMパッケージインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。
+以下コマンドを計算ノードのopcユーザで実行し、以降でインストールするソフトウェアの前提RPMパッケージをインストールします。
 
 ```sh
 $ sudo dnf install -y gcc-c++ gcc-gfortran git autoconf automake libtool 
-
-
-$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran git automake autoconf libtool numactl
 ```
 
-### 1-3-2. libeventインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -104,9 +93,7 @@ $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
 $ make -j 256 && sudo make install
 ```
 
-### 1-3-3. hwlocインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、 **[hwloc](https://github.com/open-mpi/hwloc)** を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[hwloc](https://github.com/open-mpi/hwloc)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -116,9 +103,7 @@ $ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
 $ make -j 256 && sudo make install
 ```
 
-### 1-3-4. OpenPMIxインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、 **[OpenPMIx](https://openpmix.github.io/)** （※5）を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[OpenPMIx](https://openpmix.github.io/)** （※5）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ※5） **Slurm** がMPIアプリケーションを起動する際に使用します。
@@ -130,9 +115,7 @@ $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent 
 $ make -j 256 && sudo make install
 ```
 
-### 1-3-5. XPMEMインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ※6）**OpenMPI** がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。
@@ -152,9 +135,7 @@ $ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
 $ sudo modprobe xpmem
 ```
 
-### 1-3-6. OpenUCXインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、  **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)**  を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、  **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)**  を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -164,9 +145,7 @@ $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/o
 $ make -j 256 && sudo make install
 ```
 
-### 1-3-7. Unified Collective Communicationインストール
-
-以下コマンドを計算ノードのopcユーザで実行し、 **[Unified Collective Communication (UCC)](https://github.com/openucx/ucc)** を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[Unified Collective Communication (UCC)](https://github.com/openucx/ucc)** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
