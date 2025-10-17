@@ -1,5 +1,6 @@
 ---
 title: タグ検索ページ
-type: tags-search
+type: tags
+layout: cardlist
 outputs: ["HTML"]
 ---

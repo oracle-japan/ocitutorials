@@ -1,11 +1,10 @@
 {{ with .Params.tags }}
-<div class="tags" style="margin-top: 1rem; font-size: 0.9rem;">
-    <strong>タグ：</strong>
+<div class="page-tags" style="margin-top: 1rem; font-size: 0.9rem;">
+    <b>タグ：</b>
     {{ range . }}
-    <a href="{{ absURL "tags-search/" }}"
-        style="background: #e2e8f0; padding: 5px 10px; border-radius: 5px; margin-right: 5px; text-decoration: none; color: #1a202c;">
-        {{ . }}
-    </a>
+        <a href="{{ absURL (printf "tag-search/?tags=%s" .) }}" class="page-tag">
+            &#35;{{ . }}
+        </a>
     {{ end }}
 </div>
 {{ end }}
