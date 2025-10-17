@@ -53,26 +53,26 @@ LoadBalancer や証明書サービスなどをはじめとした各 OCI サー�
 
 {{< columns >}}
 
-<h3> {{< icon-oci "database" >}} &nbsp;Oracle Database </h3>
-Oracle Database関連サービスのチュートリアル
+<h3> {{< icon-oci "database" >}} &nbsp;Oracle AI Database </h3>
+Oracle AI Database関連サービスのチュートリアル
 
-- [Autonomous Database 編](./adb)  
+- [Oracle Autonomous AI Database 編](./adb)  
   Exadata 上で稼働する 自己稼働・自己保護・自己修復の自律型 Database
 
 - [Oracle AI Vector Search 編](./ai-vector-search)  
-  Oracle AI Vector Search を学ぶチュートリアルです。Always Free ADB の作成から、様々な使い方までを一通り体験します。
+  Oracle AI Vector Search を学ぶチュートリアルです。Always Free AAIDB の作成から、様々な使い方までを一通り体験します。
 
 - [Base Database Service 編](./basedb)  
-  OCI 上で Oracle Database をシンプルに使えるベーシックなデータベース・サービス
+  Base Database Service は、OCI 上で Oracle AI Database を手軽に使える、シンプルでベーシックなデータベース・サービスです。面倒な設定や複雑な運用なしで、すぐにデータベースの機能を活用できるのが特長です。
 
 - [Exadata Database Service on Dedicated Infrastructure (ExaDB-D) 編](./exadbd)  
-  Oracle Database が動く、多くのミッションクリティカルなシステムを支える Exadata を基盤としたデータベース・サービス
+  ExaDB-D は、数多くのミッションクリティカルなシステムを支えてきた Exadata 専用の高性能な基盤上で、Oracle AI Database を安心・安定して利用できるデータベース・サービスです。
 
 - [Exadata Database Service on Exascale Infrastructure (ExaDB-XS)編](./exadb-xs)  
-  Exadata Database Service のメリットを、小規模ながら重要度の劣らないデータベース向けに、より低いエントリーコストでご利用いただけるデータベース・サービス
+  ExaDB-XS は、Exadata の高性能や信頼性といったメリットを、小規模でも重要なデータベース向けに、手頃なコストで利用できるデータベース・サービスです。無駄を抑えつつ、必要な性能と安心を確保したい場合に最適です。
 
 - [Full Stack Disaster Recovery(FSDR)編](./fsdr)  
-  Exadata Database Service のメリットを、小規模ながら重要度の劣らないデータベース向けに、より低いエントリーコストでご利用いただけるデータベース・サービス
+  FSDR を使えば、世界中どこからでもワンクリックで OCI リージョン間のコンピュート、データベース、アプリケーション移行やリカバリが可能です。複数のビジネスシステムのリカバリ作業を自動化でき、特別な管理サーバーや既存システムの再設計は不要。既存環境のまま、簡単・安心に災害対策を実現できます。
 
 ---
 

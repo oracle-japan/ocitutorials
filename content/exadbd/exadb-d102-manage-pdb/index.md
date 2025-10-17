@@ -11,7 +11,7 @@ header:
 
 ## はじめに
 
-**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** では、OCI 上で稼働する Oracle Database の PDB を OCI コンソールから停止や起動、クローン作成など簡単に操作できます。この章では実際の操作手順を確認します。
+**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** では、OCI 上で稼働する Oracle AI Database の PDB を OCI コンソールから停止や起動、クローン作成など簡単に操作できます。この章では実際の操作手順を確認します。
 
 <br>
 
@@ -25,7 +25,7 @@ header:
 
 ## 1. PDB の起動・停止
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** へ移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** へ移動します。
 
    ![](exadbd102-1.png)
 
@@ -78,7 +78,7 @@ header:
 
 ## 2. PDB の新規作成
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** へ移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** へ移動します。
 
    ![](exadbd102-13.png)
 
@@ -141,7 +141,7 @@ header:
    exit;
    ```
 
-3. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+3. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
 ![](exadbd102-22.png)
 

@@ -34,7 +34,7 @@ ADB で DBMS_CLOUD を利用する方法は[202: コマンドラインから大�
 
 - PDB にユーザーが作成されていて、そのユーザーに接続可能であること
 
-- [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+- [101: Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) を通じて Oracle AI Database の作成が完了していること
 
 - 以下にリンクされているサンプルデータの CSV ファイルをダウンロードしていること
 

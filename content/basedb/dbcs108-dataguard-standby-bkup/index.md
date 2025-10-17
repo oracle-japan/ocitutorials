@@ -15,7 +15,7 @@ header:
 
 # はじめに
 
-Oracle Database のデータ保護機能である**Oracle Data Guard**は、プライマリ・データベースの更新情報（REDO ログ）をスタンバイ・データベースに転送し、同期を保ち続けることで高い可用性と堅牢性を実現しています。<br>さらに、Data Guard Group や Data Guard Association を活用すると、**Oracle Database Autonomous Recovery Service（RCV/ZRCV）や OCI Object Storage などをバックアップ先として、自動バックアップをプライマリ・データベースだけでなくスタンバイ・データベースにも柔軟に設定**できます。
+Oracle AI Database のデータ保護機能である**Oracle Data Guard**は、プライマリ・データベースの更新情報（REDO ログ）をスタンバイ・データベースに転送し、同期を保ち続けることで高い可用性と堅牢性を実現しています。<br>さらに、Data Guard Group や Data Guard Association を活用すると、**Oracle Database Autonomous Recovery Service（RCV/ZRCV）や OCI Object Storage などをバックアップ先として、自動バックアップをプライマリ・データベースだけでなくスタンバイ・データベースにも柔軟に設定**できます。
 
 このチュートリアルでは、Base Database Service（BaseDB）のスタンバイ・データベースに対して自動バックアップを設定し、実際にバックアップの取得とリストアを体験する方法をわかりやすく解説します。
 
@@ -45,7 +45,7 @@ Data Guard アソシエーションの構築が完了したら、スタンバイ
 プライマリ・データベースの自動バックアップを設定する際は、プライマリ・データベース作成時に自動バックアップの構成をすることができますが、スタンバイ・データベースへの自動バックアップの設定は、スタンバイ・データベース作成後に実施します。スタンバイ・データベース作成時に自動バックアップの設定をすることはできません。  
 {{< /hint >}}
 
-まず、ナビケーションメニューから、「**Oracle Database**」>「**Oracle ベース・データベース・サービス**」をクリックします。
+まず、ナビケーションメニューから、「**Oracle AI Database**」>「**Oracle ベース・データベース・サービス**」をクリックします。
 
 ![img](basedb108-01.png)
 
@@ -115,7 +115,7 @@ DB システムの詳細画面の「**データベース**」タブを選択し�
 「**バックアップからのデータベースの作成**」ウィンドウで必要項目を入力します。
 
 {{< hint type=note title="自動バックアップの設定タイミングについて" >}}
-設定方法は新規作成時と同様です。入力項目は[Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db)をご参照下さい。
+設定方法は新規作成時と同様です。入力項目は[Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db)をご参照下さい。
 {{< /hint >}}
 
 全ての情報を入力し終わったら「**作成**」をクリックします。
