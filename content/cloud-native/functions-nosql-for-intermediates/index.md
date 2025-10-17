@@ -170,7 +170,7 @@ Oracle OCIコンソールの左上にあるハンバーガーメニューをク�
 
 ![image-20200422165548576](nosql-database-03.png)
 
-[Oracle NoSQL Database]⇒[表]の画面で、右側のケバブメニューの[削除]をクリックして、Oracle Functionsにより作成されたテーブルが削除されます。
+[Oracle NoSQL Database]⇒[表]の画面で、右側のケバブメニューの[削除]をクリックして、Oracle Functionsにより作成されたテーブルを削除します。
 
 ![image-20200422165804835](nosql-database-04.png)
 
