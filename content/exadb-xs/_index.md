@@ -1,5 +1,5 @@
 ---
-title: "Oracle Database編 - Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう"
+title: "Oracle AI Database編 - Exadata Database Service on Exascale Infrastructure (ExaDB-XS) を使ってみよう"
 description: "Exadata Database Service on Exascale Infrastructure (ExaDB-XS)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
 permalink: /exadb-xs
 layout: single

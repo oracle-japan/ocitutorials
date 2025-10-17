@@ -16,15 +16,15 @@ header:
 # はじめに
 
 Oracle Base Database Service(BaseDB)では、OS 以上がユーザー管理となるため、ユーザー側でパッチ適用の計画と適用実施が可能です。
-ここでは、**Grid Infrastructure**と**Oracle Database**に対するそれぞれのパッチ適用方法についてご紹介します。
+ここでは、**Grid Infrastructure**と**Oracle AI Database**に対するそれぞれのパッチ適用方法についてご紹介します。
 
 <br>
 
 **前提条件**
 
-- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+- [Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) を通じて Oracle AI Database の作成が完了していること
 
-- パッチ適用対象の Oracle Database に対して最新 RU/RUR が適用されていないこと
+- パッチ適用対象の Oracle AI Database に対して最新 RU/RUR が適用されていないこと
 
 **注意** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 
@@ -32,10 +32,10 @@ Oracle Base Database Service(BaseDB)では、OS 以上がユーザー管理と�
 
 # 1. 現在のバージョンを確認しよう
 
-まずは、コンソール上で作成済みの Grid Infrastructure と Oracle Database のバージョンを確認していきましょう。
+まずは、コンソール上で作成済みの Grid Infrastructure と Oracle AI Database のバージョンを確認していきましょう。
 <br>
 
-1. ナビゲーション・メニューから **Oracle Database → Oracle Base Database Service** を選択します。<br>
+1. ナビゲーション・メニューから **Oracle AI Database → Oracle Base Database Service** を選択します。<br>
 
 ![image.png](basedb103-1.png)
 
@@ -51,7 +51,7 @@ Oracle Base Database Service(BaseDB)では、OS 以上がユーザー管理と�
 
 4. 次に**データベースのバージョン**を確認しましょう。 DB システムの詳細画面から「**データベース**」タブを開き、一覧表示されているデータベースの名前からバージョンを確認したいデータベースの名前を選択します。すると、**データベース詳細** ページに遷移します。<br>
 
-   **データベース詳細** ページの左下**バージョン**セクションの**データベースのバージョン** から Oracle Database のバージョンを確認できます。
+   **データベース詳細** ページの左下**バージョン**セクションの**データベースのバージョン** から Oracle AI Database のバージョンを確認できます。
    <br>
 
 ![image.png](basedb103-3.png)
@@ -107,9 +107,9 @@ DB システムも「使用可能」になり、**DB システム・バージョ
 ![image.png](basedb103-14.png)
 <br>
 
-# 3. Oracle Database にパッチを適用しよう
+# 3. Oracle AI Database にパッチを適用しよう
 
-続いて、**Oracle Database** にパッチを適用していきましょう。
+続いて、**Oracle AI Database** にパッチを適用していきましょう。
 
 1. **DB システムの詳細**の「**データベース**」タブから更新したいデータベースの名前を選択し、**データベースの詳細画面**に遷移します。
 

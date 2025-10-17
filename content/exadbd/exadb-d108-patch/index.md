@@ -32,7 +32,7 @@ header:
 
 # 1. Grid Infrastructure(GI)のパッチ適用
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
 
    ![](2023-11-21-01.png)
 
@@ -141,7 +141,7 @@ header:
 
 ## Out-of-place Patching
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
    ![](2022-11-04-17-13-56.png)
 
@@ -272,7 +272,7 @@ header:
 
 ## In-place Patching
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
 
    ![](2023-11-21-01.png)
 
@@ -502,7 +502,7 @@ ExaDB-D のクラウド・ツールである dbaascli ユーティリティを�
 
 # 4. OS のパッチ適用
 
-1. OCI コンソール・メニューから **Oracle Database** → ** Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → ** Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
 
    ![](2023-11-21-01.png)
 

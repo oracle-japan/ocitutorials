@@ -27,7 +27,7 @@ header:
 
 # 1. Data Guard の構成
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
    ![](2022-11-04-17-13-56.png)
 

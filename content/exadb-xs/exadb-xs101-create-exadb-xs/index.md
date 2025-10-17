@@ -13,7 +13,7 @@ header:
 
 # はじめに
 
-**Oracle Exadata Database Service on Exascale Infrastructure (ExaDB-XS)** は、Oracle Database が高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**を、より低いエントリーコストでご利用いただけるサービスです。
+**Oracle Exadata Database Service on Exascale Infrastructure (ExaDB-XS)** は、Oracle AI Database が高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**を、より低いエントリーコストでご利用いただけるサービスです。
 
 ExaDB-XS は、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と同じ強力な自動化機能を使用して VM クラスタとデータベースを管理しますが、物理的なコンピュートとストレージはサービスから抽象化されます。VM クラスタとデータベースをデプロイするだけで、その上で実行されるオラクル管理のインフラストラクチャを意識する必要はありません。
 
@@ -51,7 +51,7 @@ ExaDB-XS は、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と
 
 # 2. **DB システムへのアクセス**
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Exascale Infrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Exascale Infrastructure** に移動します。
 
    ![](2-1_oci_console_home.png)
 
@@ -249,7 +249,7 @@ ExaDB-XS は、Exadata Database Service on Dedicated Infrastructure (ExaDB-D)と
 
 # 4. **PDB 上のスキーマへのアクセス**
 
-1.  OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Exascale Infrastructure** に移動します。
+1.  OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Exascale Infrastructure** に移動します。
 
     ![](2-1_oci_console_home.png)
 

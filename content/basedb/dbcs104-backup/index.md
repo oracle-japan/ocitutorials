@@ -14,7 +14,7 @@ header:
 
 クラウドサービスを利用する際、万が一インスタンスやデータが損失・破損してしまった場合や、特定の時点にデータを戻したい場合に備えて、バックアップやリカバリの仕組みを確立することは非常に重要です。
 BaseDB では、RMAN を利用した自動バックアップ機能により、最新の状態はもちろん、任意の過去の時点（Point in Time Recovery, PITR）へのリカバリが可能です。
-さらに、**Oracle Database Autonomous Recovery Service（リカバリ・サービス）** は、Oracle Cloud Infrastructure (OCI) 上で Oracle Database 向けに設計されたフルマネージド型のデータ保護サービスです。オンプレミスの Zero Data Loss Recovery Appliance (RA) の技術を活用しつつ、クラウドならではの自動化とリアルタイム保護を実現し、業務継続性を強力にサポートします。
+さらに、**Oracle Database Autonomous Recovery Service（リカバリ・サービス）** は、Oracle Cloud Infrastructure (OCI) 上で Oracle AI Database 向けに設計されたフルマネージド型のデータ保護サービスです。オンプレミスの Zero Data Loss Recovery Appliance (RA) の技術を活用しつつ、クラウドならではの自動化とリアルタイム保護を実現し、業務継続性を強力にサポートします。
 
 本章では、OCI コンソールから自動バックアップを構成するまでの手順についてご紹介します。
 このチュートリアルでは、BaseDB にリカバリ・サービスを設定する手順についてご紹介します。  
@@ -27,7 +27,7 @@ BaseDB では、RMAN を利用した自動バックアップ機能により、�
 **前提条件 :**
 DB システム内(FRA)にとる場合など、CLI(dbcli)で設定する場合には、バックアップはコンソールからの管理対象外となります。
 
-- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db/index.md) を通じて Oracle Database の作成が完了していること
+- [Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db/index.md) を通じて Oracle AI Database の作成が完了していること
 
 - Autonomous Recovery Service(RCV)を利用する場合、Oracle Database 19.16 以上
 
@@ -163,7 +163,7 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 
 複数の保護されたデータベースを作成したい場合は、リカバリ・サービス専用のサブネットを新規作成し、それを利用することを検討します。
 
-まず、ナビゲーション・メニューで、[Oracle Database]をクリックし、[データベース・バックアップ]を選択します。
+まず、ナビゲーション・メニューで、[Oracle AI Database]をクリックし、[データベース・バックアップ]を選択します。
 
 ![img](basedb104-7.png)
 
@@ -241,7 +241,7 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 
 ![img](basedb104-15.png)
 
-データベース・サービスの新規作成方法は[Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db)で学習できます。
+データベース・サービスの新規作成方法は[Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db)で学習できます。
 <br>
 
 ## B：既存のデータベース・サービスにリカバリ・サービスを有効化
@@ -249,7 +249,7 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 既存のデータベース・サービスの自動バックアップの取得先として、リカバリ・サービスを指定します。
 <br>
 
-ナビゲーション・メニューの「Oracle Database」をクリックし、「Oracle ベース・データベース・サービスをクリックします。
+ナビゲーション・メニューの「Oracle AI Database」をクリックし、「Oracle ベース・データベース・サービスをクリックします。
 
 ![img](basedb104-16.png)
 <br>

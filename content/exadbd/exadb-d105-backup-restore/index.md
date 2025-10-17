@@ -43,7 +43,7 @@ Oracle Exadata Database Service on Dedicated Infrastructure（ExaDB-D）では�
   SCN を使用してデータベースをリストアします。<br>
   有効な SCN を指定する必要がありますので、データベース・ホストにアクセスして問い合せるか、オンラインまたはアーカイブ・ログにアクセスして使用する SCN 番号を確認してください。
 
-1. ナビゲーション・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
+1. ナビゲーション・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
 
 ![image.png](exadbd105-01.png)
 
@@ -113,7 +113,7 @@ Oracle Exadata Database Service on Dedicated Infrastructure（ExaDB-D）では�
 
 # 3. オンデマンドバックアップを使用したリストア
 
-1. ナビゲーション・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動し、**スタンドアロン・バックアップ**をクリックします。
+1. ナビゲーション・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動し、**スタンドアロン・バックアップ**をクリックします。
 
 ![image.png](exadbd105-12.png)
 
