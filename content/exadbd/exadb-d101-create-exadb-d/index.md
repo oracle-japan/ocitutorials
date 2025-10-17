@@ -11,7 +11,7 @@ header:
 
 # はじめに
 
-**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** は、Oracle Database が高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**が利用可能なサービスです。同じように OCI 上で Exadata を利用可能なサービスとしては、Autonomous Data Warehouse や Autonomous Transaction Processing などの Autonomous Database のサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える**専有型の Automated 型 サービス**であるということです。
+**Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure (ExaDB-D)** は、Oracle AI Database が高い可用性を備えつつ高いパフォーマンスを発揮できる**Oracle Exadata Database Machine (Exadata)**が利用可能なサービスです。同じように OCI 上で Exadata を利用可能なサービスとしては、Autonomous Data Warehouse や Autonomous Transaction Processing などの Autonomous Database のサービスがありますが、ExaDB-D が他のサービスと大きく違うところは、全オプションが使える**専有型の Automated 型 サービス**であるということです。
 
 - **専有型** : H/W もユーザー専有となり、他のユーザーの環境と分離されるため、セキュリティ・性能を担保できます。
 - **User-Managed サービス** : OS 以上は顧客管理。OS 上の構築・運用・管理に有効な機能を、クラウドのツールでも提供。パッチ適用やメンテナンスの実施判断・作業タイミングは顧客判。OS ログインが可能でこれまで同様の管理方法を用いることができる (OS 権限が必要な変更作業、サード・パーティの Agent の導入、ローカルにログやダンプファイルの配置など)ので、別途インスタンスやストレージサービスを立てる必要はありません。
@@ -55,7 +55,7 @@ header:
 
 # 1. Exadata Infrastructure の作成
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
 
 ![](exadbd101-1.png)
 
@@ -92,7 +92,7 @@ header:
 
 # 2. Exadata VM クラスタの作成
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
 
 ![](exadbd101-7.png)
 
@@ -147,7 +147,7 @@ header:
 
 # 3. **データベースの作成**
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
 ![](exadbd101-15.png)
 
@@ -172,7 +172,7 @@ header:
 - **データベース・ホームの指定**
   - **データベース・ホームの表示名** - 任意
   - **データベース・イメージ** - データベース・イメージの変更をクリックします。
-    **データベース・ソフトウェア・イメージ**の選択画面で、使用したい**イメージ・タイプ**と**Oracle Database バージョン**選択します。
+    **データベース・ソフトウェア・イメージ**の選択画面で、使用したい**イメージ・タイプ**と**Oracle AI Database バージョン**選択します。
 
 ![](exadbd101-18.png)
 
@@ -199,7 +199,7 @@ header:
 
 # 4. **DB システムへのアクセス**
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Inrastructure** に移動します。
 
 ![](exadbd101-22.png)
 
@@ -393,7 +393,7 @@ header:
 
 # 6. **PDB 上のスキーマへのアクセス**
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
 ![](exadbd101-25.png)
 

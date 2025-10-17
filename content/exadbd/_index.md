@@ -1,5 +1,5 @@
 ---
-title: "Oracle Database編 - Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう"
+title: "Oracle AI Database編 - Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう"
 description: "多くのミッションクリティカルなシステムを支えるExadata Database Service on Dedicated Infrastructure (ExaDB-D)を学ぶチュートリアルです。インスタンスの作成から、運用管理までを一通り体験します。"
 permalink: /exadbd
 layout: single
@@ -25,7 +25,7 @@ toc: true
 
 <br/>
 # <span style="color: brown; ">■ Exadata Database Service on Dedicated Infrastructure (ExaDB-D) を使ってみよう</span>
-Oracle Databaseを動かすための最適な基盤として、リリースから10年以上経過し、多くのミッションクリティカルなシステムを支えるExadata !
+Oracle AI Databaseを動かすための最適な基盤として、リリースから10年以上経過し、多くのミッションクリティカルなシステムを支えるExadata !
 OCIであればExadataもサブスクリプションで使えます。インスタンスの作り方から、様々な使い方を学んでいただける内容になっています。
 
 - **[101: ExaDB-D を使おう](./exadb-d101-create-exadb-d/)**

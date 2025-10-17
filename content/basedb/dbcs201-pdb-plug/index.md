@@ -27,7 +27,7 @@ CDB で構成されているオンプレミスのデータベースから BaseDB
 
 - 移行元のデータベースが**CDB で構成されている**こと
 
-- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+- [Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) を通じて Oracle AI Database の作成が完了していること
 
 <br>
 **所要時間 :** 約1時間30分
@@ -48,6 +48,7 @@ select tablespace_name, file_name from dba_data_files;
 ```
 
 （作業イメージ）
+
 <div align="center">
 <img width="700" alt="pdb-plug01.png" src="pdb-plug01.png" style="border: 1px black solid;">
 </div>
@@ -96,6 +97,7 @@ file_name_convert = ('<データファイルの配置ディレクトリ>','<デ�
 
 （作業イメージ）<br>
 ※testpdb2 という名前でプラグしており、ASM ディスクグループ上に再配置する為に"+DATA" を指定
+
 <div align="center">
 <img width="700" alt="pdb-plug04.png" src="pdb-plug04.png" style="border: 1px black solid;">
 </div>

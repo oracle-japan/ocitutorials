@@ -13,7 +13,7 @@ header:
 
 ## はじめに
 
-Oracle Database Autonomous Recovery Service（以下「リカバリ・サービス」）は、Oracle Cloud Infrastructure（OCI）上で稼働する Oracle Database 向けのフルマネージド型データ保護サービスです。
+Oracle Database Autonomous Recovery Service（以下「リカバリ・サービス」）は、Oracle Cloud Infrastructure（OCI）上で稼働する Oracle AI Database 向けのフルマネージド型データ保護サービスです。
 
 リカバリ・サービスでは、Oracle が自動で実行するバックアップに加えて、お客様自身で任意のタイミングでスタンドアロン・バックアップを取得できます。これらの操作は OCI コンソールから簡単に実行でき、取得したスタンドアロン・バックアップはリカバリ・サービスに安全に保管されます。また、スタンドアロン・バックアップを利用して新規の DB システムを作成することも可能です。
 
@@ -43,7 +43,7 @@ Base Database Service（BaseDB）では、長期保管要件への対応とし�
 自動バックアップとは別に、任意の時点でフルバックアップを取得できます。  
 例えば、「大きな変更を加えた直後」や「別環境への複製やリストアのため」などにフルバックアップを取ることで、フル＋増分バックアップのリストアよりも、リストア時間を短縮できる場合があります。取得したバックアップはリカバリ・サービスに保存されます。
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Base Database Service** に移動し、DB システムの詳細画面 → データベースの詳細画面からバックアップタブを選択します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Base Database Service** に移動し、DB システムの詳細画面 → データベースの詳細画面からバックアップタブを選択します。
 
    ![img](basedb105-1.png)
 
@@ -67,7 +67,7 @@ Base Database Service（BaseDB）では、長期保管要件への対応とし�
 
 **所要時間 :** 約 90 分
 
-1. ナビゲーション・メニューから「Oracle Database」→「Oracle Database Services」をクリックします。
+1. ナビゲーション・メニューから「Oracle AI Database」→「Oracle Base Database Services」をクリックします。
 
    ![img](basedb105-3.png)
 
@@ -138,7 +138,7 @@ LTR はリカバリ・サービスから作成されるため、LTR 作成中も
    ![img](basedb105-10.png)
 
 3. 「バックアップからのデータベースの作成」ウィンドウで必要項目を入力します。  
-   ※設定方法は新規作成時と同様です。入力項目は [101: Oracle Cloud で Oracle Database を使おう(BaseDB)](../dbcs101-create-db) をご参照ください。
+   ※設定方法は新規作成時と同様です。入力項目は [101: Oracle Cloud で Oracle AI Database を使おう(BaseDB)](../dbcs101-create-db) をご参照ください。
 
    ![img](basedb105-11.png)
 

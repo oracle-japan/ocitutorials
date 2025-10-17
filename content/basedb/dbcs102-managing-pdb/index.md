@@ -13,13 +13,13 @@ header:
 
 ## はじめに
 
-Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure 上で稼働する Oracle Database の PDB を OCI コンソールから停止や起動、既存 PDB からのクローン作成など、簡単に操作できます。この章では、実際にどのように操作するかを確認します。
+Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure 上で稼働する Oracle AI Database の PDB を OCI コンソールから停止や起動、既存 PDB からのクローン作成など、簡単に操作できます。この章では、実際にどのように操作するかを確認します。
 
 <br>
 
 **前提条件 :**
 
-- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+- [Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) を通じて Oracle AI Database の作成が完了していること
 
 <br>
 
@@ -46,7 +46,7 @@ Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure 上で�
 
 <br>
 
-1. コンソールメニューから **Oracle Database → Oracle Base Database Service** を選択し、操作したい PDB を持つ **DB システム** を選択します。
+1. コンソールメニューから **Oracle AI Database → Oracle Base Database Service** を選択し、操作したい PDB を持つ **DB システム** を選択します。
 
 2. DB システムの一覧から対象のデータベースを選択します。
 
@@ -96,7 +96,7 @@ Oracle Base Database Service(BaseDB)では、Oracle Cloud Infrastructure 上で�
 
    - **PDB の名前** - 任意の名前を入力します（例 : pdb1）。
    - **PDB 管理パスワード** - 任意のパスワードを入力します（例 : WelCome123#123#）。
-   - **データベースの TDE ウォレット・パスワード** - [101: Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) でデータベース作成時に設定したパスワードを入力します。
+   - **データベースの TDE ウォレット・パスワード** - [101: Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) でデータベース作成時に設定したパスワードを入力します。
 
    ![image.png](basedb102-6.png)
 

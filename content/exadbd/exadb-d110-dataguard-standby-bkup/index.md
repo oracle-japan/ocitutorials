@@ -15,7 +15,7 @@ header:
 
 # はじめに
 
-Data Guard は、Oracle Database 自身が持つレプリケーション機能です。 プライマリ DB の更新情報（REDO ログ）をスタンバイ DB に転送し、その REDO ログを使ってリカバリし続けることでプライマリ DB と同じ状態を維持します。
+Data Guard は、Oracle AI Database 自身が持つレプリケーション機能です。 プライマリ DB の更新情報（REDO ログ）をスタンバイ DB に転送し、その REDO ログを使ってリカバリし続けることでプライマリ DB と同じ状態を維持します。
 Data Guard Group もしくは Data Guard Association を使用している場合、Oracle Database Autonomous Recovery Service（RCV/ZRCV）および OCI Object Storage をバックアップの保存先として、プライマリ・データベースだけでなくスタンバイ・データベースにも自動バックアップの設定をすることができます。
 
 このチュートリアルでは Exadata Database Service on Dedicated Infrastructure (ExaDB-D) のスタンバイ・データベースに自動バックアップを設定する方法を紹介します。
@@ -48,7 +48,7 @@ Data Guard アソシエーションの構築が完了したら、スタンバイ
 プライマリ・データベースの自動バックアップを設定する際は、プライマリ・データベース作成時に自動バックアップの構成をすることができますが、スタンバイ・データベースへの自動バックアップの設定は、スタンバイ・データベース作成後に実施します。スタンバイ・データベース作成時に自動バックアップの設定をすることはできません。  
 {{< /hint >}}
 
-まず、ナビケーションメニューから、「Oracle Database」>「Exadata Database Service on Dedicated Infrastructure」をクリックします。
+まず、ナビケーションメニューから、「Oracle AI Database」>「Exadata Database Service on Dedicated Infrastructure」をクリックします。
 
 ![img](exadb-d-stbk01.png)
 

@@ -37,7 +37,7 @@ Oracle Cloud Infrastructure Exadata Database Service on Dedicated Infrastructure
 
 まずはコンソール上の操作での OCPU スケーリングからです。
 
-1. ナビゲーション・メニューから **Oracle Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
+1. ナビゲーション・メニューから **Oracle AI Database** → **Oracle Exadata Database Service on Dedicated Infrastructure** に移動します。
 
 ![image.png](exadbd106-01.png)
 
@@ -149,7 +149,7 @@ CLI(OCI CLI/REST/Terraform など)でもスケール・アップ/ダウンは可
 
 ## データベース・サーバーの追加
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
 ![image.png](exadbd106-14.png)
 
@@ -198,7 +198,7 @@ VM クラスタの**作業リクエスト**の**Scale Cloud VM Cluster Compute**
 
 ## ストレージ・サーバーの追加
 
-1. OCI コンソール・メニューから **Oracle Database** → **Oracle Public Cloud 上の Exadata** に移動します。
+1. OCI コンソール・メニューから **Oracle AI Database** → **Oracle Public Cloud 上の Exadata** に移動します。
 
 ![image.png](exadbd106-14.png)
 

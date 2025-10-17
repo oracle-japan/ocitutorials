@@ -13,7 +13,7 @@ header:
 
 # はじめに
 
-**Oracle Data Guard** は、**Oracle Database が標準で提供するレプリケーション機能**です。
+**Oracle Data Guard** は、**Oracle AI Database が標準で提供するレプリケーション機能**です。
 **プライマリ・データベース**の更新情報（REDO ログ）を**スタンバイ・データベース**に転送し、その REDO ログを適用し続けることで、プライマリと同じデータの状態を維持します。 <br>
 
 リアルタイムで複製されたデータベースを保持できるため、**データベース障害やリージョン障害時の RTO（目標復旧時間）や RPO（目標復旧地点）を大幅に短縮**できます。また、計画メンテナンス中の切り替えによって、**サービスのダウンタイムも最小限**に抑えられます。<br>
@@ -27,7 +27,7 @@ header:
 
 **前提条件 :**
 
-- [Oracle Cloud で Oracle Database を使おう](../dbcs101-create-db) を通じて Oracle Database の作成が完了していること
+- [Oracle Cloud で Oracle AI Database を使おう](../dbcs101-create-db) を通じて Oracle AI Database の作成が完了していること
 
 **注意** チュートリアル内の画面ショットについては現在の画面と異なっている場合があります。
 
@@ -80,7 +80,7 @@ Oracle Data Guard を構成するにあたり前提条件を確認してみま�
 
 次に OCI コンソールから Oracle Data Guard を構成するまでの手順を紹介します。
 
-1. ナビゲーション・メニューから **Oracle Database → Oracle Base Database Service** を選択します。<br>「**DB システムの詳細**」から「**データベース**」タブを展開します。
+1. ナビゲーション・メニューから **Oracle AI Database → Oracle Base Database Service** を選択します。<br>「**DB システムの詳細**」から「**データベース**」タブを展開します。
 
 ![image.png](basedb107-01.png)
 
