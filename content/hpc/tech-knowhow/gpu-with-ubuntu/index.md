@@ -409,7 +409,6 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v12.9.zip
 $ unzip v12.9.zip
-$ module purge
 $ export PATH=/usr/local/cuda-12.9/bin:${PATH}
 $ cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j 128
 ```
