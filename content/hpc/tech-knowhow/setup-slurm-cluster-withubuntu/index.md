@@ -421,7 +421,8 @@ Name=gpu Type=nvidia_a100-sxm4-40gb File=/dev/nvidia[0-3] COREs=[0-31]
 Name=gpu Type=nvidia_a100-sxm4-40gb File=/dev/nvidia[4-7] COREs=[32-63]
 ```
 
-なお、 **NodeName** の設定値は、自身の環境に合わせて修正します。
+上記 **gres.conf** は、GPU番号0～3とCPUコア番号0～31、GPU番号4～7とCPUコア番号32～63のアフィニティを定義しており、ジョブが要求するGPUとCPUコアのリソースがこれを維持できる範囲で定義したアフィニティに従いリソース割り当てを行い、維持できない場合はこれを無視してリソースを割り当てます。  
+このアフィニティの維持を強制する場合は、 **--gres-flags=enforce-binding** オプションを指定してジョブを投入します。これにより、アフィニティを維持できるGPUとCPUコアが空くまでジョブの実行を延期するか、指定したリソースがそもそも定義したアフィニティを満たせない場合（4個以下のGPUと33個以上のCPUコア等）はこのジョブの投入を拒否します。
 
 ## 2-8. Slurmサービス起動
 
@@ -490,17 +491,17 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 また、最後のコマンドの出力からGPU番号とそのPCIバスIDの組み合わせを記録しておきます。
 
 ```sh
-$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:1 --mem=1000M nvidia-smi | grep SXM
+$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:1 --mem=1G nvidia-smi | grep SXM
 |   0  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
-$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:2 --mem=1000M nvidia-smi | grep SXM
+$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:2 --mem=1G nvidia-smi | grep SXM
 |   0  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
 |   1  NVIDIA A100-SXM4-40GB          On  |   00000000:54:00.0 Off |                    0 |
-$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:4 --mem=1000M nvidia-smi | grep SXM
+$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:4 --mem=1G nvidia-smi | grep SXM
 |   0  NVIDIA A100-SXM4-40GB          On  |   00000000:0F:00.0 Off |                    0 |
 |   1  NVIDIA A100-SXM4-40GB          On  |   00000000:15:00.0 Off |                    0 |
 |   2  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
 |   3  NVIDIA A100-SXM4-40GB          On  |   00000000:54:00.0 Off |                    0 |
-$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 --mem=1000M nvidia-smi | grep SXM
+$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 --mem=1G nvidia-smi | grep SXM
 |   0  NVIDIA A100-SXM4-40GB          On  |   00000000:0F:00.0 Off |                    0 |
 |   1  NVIDIA A100-SXM4-40GB          On  |   00000000:15:00.0 Off |                    0 |
 |   2  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
@@ -509,7 +510,7 @@ $ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 --mem=1000M nvidia-smi 
 |   5  NVIDIA A100-SXM4-40GB          On  |   00000000:92:00.0 Off |                    0 |
 |   6  NVIDIA A100-SXM4-40GB          On  |   00000000:D6:00.0 Off |                    0 |
 |   7  NVIDIA A100-SXM4-40GB          On  |   00000000:DA:00.0 Off |                    0 |
-$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 --mem=1000M nvidia-smi | grep SXM | awk '{print $2, $7}'
+$ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 --mem=1G nvidia-smi | grep SXM | awk '{print $2, $7}'
 0 00000000:0F:00.0
 1 00000000:15:00.0
 2 00000000:51:00.0
@@ -617,3 +618,13 @@ Rank 30 Node 0 Core 62
 Rank 31 Node 0 Core 63
 $
 ```
+
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **--gres-flags=enforce-binding** オプション指定の有無で定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブ投入可否が変化することを確認します。
+
+```sh
+$ srun -p sltest -n 33 --gres=gpu:nvidia_a100-sxm4-40gb:4 bash -c "true"
+$ srun -p sltest -n 33 --gres=gpu:nvidia_a100-sxm4-40gb:4 --gres-flags=enforce-binding bash -c "true"
+srun: error: Unable to allocate resources: Requested node configuration is not available
+$
+```
+
