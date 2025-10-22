@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-22T16:05:01+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Standard.E6.256編）",
       "description": "NUMAアーキテクチャを採用するインスタンスに於けるMPIやOpenMPの並列プログラム実行は、生成されるプロセスやスレッドをどのようにインスタンスのコアに割当てるかでその性能が大きく変動するため、その配置を意識してアプリケーションを実行することが求められます。このため、使用するシェイプに搭載されるプロセッサのアーキテクチャやアプリケーションの特性に合わせて意図したとおりにプロセスやスレッドをコアに配置するために必要な、MPI実装、OpenMP実装、及びジョブスケジューラが有するコア割当て制御機能に精通している必要があります。本パフォーマンス関連Tipsは、MPI実装にOpenMPI、OpenMP実装にGNUコンパイラ、及びジョブスケジューラにSlurmを取り上げ、第5世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E6.256でこれらのコア割当て機能を駆使してプロセス・スレッドのコア割当てを行う方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "33289",
+      "wordCount" : "33280",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-22T16:05:01.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-22T16:05:01+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -316,34 +316,26 @@
       <h1>&nbsp;目次</h1>
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#0-概要">0. 概要</a>
-      <ul>
-        <li><a href="#0-0-概要">0-0. 概要</a></li>
-        <li><a href="#0-1-前提システム">0-1. 前提システム</a></li>
-        <li><a href="#0-2-コア割当てパターン">0-2. コア割当てパターン</a></li>
-      </ul>
-    </li>
-    <li><a href="#1-prrteを使用するプロセススレッドのコア割当て">1. PRRTEを使用するプロセス・スレッドのコア割当て</a>
-      <ul>
-        <li><a href="#1-0-概要">1-0. 概要</a></li>
-        <li><a href="#1-1-各コア割当てパターンのオプション環境変数組合せ">1-1. 各コア割当てパターンのオプション・環境変数組合せ</a></li>
-      </ul>
-    </li>
-    <li><a href="#2-slurmを使用するプロセススレッドのコア割当て">2. Slurmを使用するプロセス・スレッドのコア割当て</a>
-      <ul>
-        <li><a href="#2-0-概要">2-0. 概要</a></li>
-        <li><a href="#2-1-各コア割当てパターンのオプション環境変数組合せ">2-1. 各コア割当てパターンのオプション・環境変数組合せ</a></li>
-      </ul>
-    </li>
-    <li><a href="#3-プロセススレッドのコア割当て確認方法">3. プロセス・スレッドのコア割当て確認方法</a>
+    <li><a href="#0-概要">0. 概要</a></li>
+    <li><a href="#1-前提システム">1. 前提システム</a></li>
+    <li><a href="#2-コア割当てパターン">2. コア割当てパターン</a></li>
+    <li><a href="#3-prrteを使用するプロセススレッドのコア割当て">3. PRRTEを使用するプロセス・スレッドのコア割当て</a>
       <ul>
         <li><a href="#3-0-概要">3-0. 概要</a></li>
-        <li><a href="#3-1-コア割当て確認結果">3-1. コア割当て確認結果</a>
-          <ul>
-            <li><a href="#3-1-1-prrte">3-1-1. PRRTE</a></li>
-            <li><a href="#3-1-2-slurm">3-1-2. Slurm</a></li>
-          </ul>
-        </li>
+        <li><a href="#3-1-各コア割当てパターンのオプション環境変数組合せ">3-1. 各コア割当てパターンのオプション・環境変数組合せ</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-slurmを使用するプロセススレッドのコア割当て">4. Slurmを使用するプロセス・スレッドのコア割当て</a>
+      <ul>
+        <li><a href="#4-0-概要">4-0. 概要</a></li>
+        <li><a href="#4-1-各コア割当てパターンのオプション環境変数組合せ">4-1. 各コア割当てパターンのオプション・環境変数組合せ</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-プロセススレッドのコア割当て確認方法">5. プロセス・スレッドのコア割当て確認方法</a>
+      <ul>
+        <li><a href="#5-0-概要">5-0. 概要</a></li>
+        <li><a href="#5-1-prrteのコア割当て確認結果">5-1. PRRTEのコア割当て確認結果</a></li>
+        <li><a href="#5-2-slurmのコア割当て確認結果">5-2. Slurmのコア割当て確認結果</a></li>
       </ul>
       
     </section>
@@ -418,8 +410,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-22T16:05:01&#43;09:00">
+            Oct 22, 2025
         </time>
     
 </span>
@@ -438,22 +430,12 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
     </h1>
     <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-0-概要"
-    >
-        0-0. 概要
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#0-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-0. 概要" aria-label="アンカー先: 0-0. 概要" href="#0-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -482,11 +464,11 @@ table, th, td {
 <p>なお、プロセス・スレッドのコア割当て同様に並列プログラムの実行時性能に大きく影響するメモリ割り当ては、割当てられるコアと同一NUMAノード内のメモリを割り当てることにより多くのケースで性能が最大となることから、以下のように <strong>- -localalloc</strong> オプションを付与した <strong>numactl</strong> コマンドの使用を前提とし、本パフォーマンス関連Tipsの実行例を記載します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ numactl --localalloc a.out
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-1-前提システム"
+    <h1 id="1-前提システム"
     >
-        0-1. 前提システム
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#0-1-前提システム" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-1. 前提システム" aria-label="アンカー先: 0-1. 前提システム" href="#0-1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0">
+        1. 前提システム
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#1-前提システム" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. 前提システム" aria-label="アンカー先: 1. 前提システム" href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -532,11 +514,11 @@ table, th, td {
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-2-コア割当てパターン"
+    <h1 id="2-コア割当てパターン"
     >
-        0-2. コア割当てパターン
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#0-2-コア割当てパターン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-2. コア割当てパターン" aria-label="アンカー先: 0-2. コア割当てパターン" href="#0-2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3">
+        2. コア割当てパターン
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#2-コア割当てパターン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. コア割当てパターン" aria-label="アンカー先: 2. コア割当てパターン" href="#2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -780,22 +762,21 @@ table, th, td {
   alt="コアバインディング11"
   
 /></p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-prrteを使用するプロセススレッドのコア割当て"
+    <h1 id="3-prrteを使用するプロセススレッドのコア割当て"
     >
-        1. PRRTEを使用するプロセス・スレッドのコア割当て
+        3. PRRTEを使用するプロセス・スレッドのコア割当て
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#1-prrteを使用するプロセススレッドのコア割当て" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. PRRTEを使用するプロセス・スレッドのコア割当て" aria-label="アンカー先: 1. PRRTEを使用するプロセス・スレッドのコア割当て" href="#1-prrte%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-prrteを使用するプロセススレッドのコア割当て" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. PRRTEを使用するプロセス・スレッドのコア割当て" aria-label="アンカー先: 3. PRRTEを使用するプロセス・スレッドのコア割当て" href="#3-prrte%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-0-概要"
+    <h2 id="3-0-概要"
     >
-        1-0. 概要
+        3-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#1-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-0. 概要" aria-label="アンカー先: 1-0. 概要" href="#1-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -807,8 +788,8 @@ table, th, td {
   href="../../tech-knowhow/build-oraclelinux-hpcenv/"
 >Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> に従って構築された <strong>OpenMPI</strong> に含まれる <strong>PRRTE</strong> を使用し、 <strong><a
   class="gdoc-markdown__link"
-  href="#0-2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
->0-2. コア割当てパターン</a></strong> に記載のコア割当てを実現する方法を解説します。</p>
+  href="#2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
+>2. コア割当てパターン</a></strong> に記載のコア割当てを実現する方法を解説します。</p>
 <p>以降で解説するコア割当て方法は、以下の <strong>mpirun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数を組合せて実現します。</p>
 <p>[ <strong>mpirun</strong> オプション]</p>
 <ul>
@@ -828,18 +809,18 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mpirun -n <span class="m">32</span> --bind-to core --map-by ppr:1:l3cache:PE<span class="o">=</span><span class="m">8</span> -x <span class="nv">OMP_NUM_THREAD</span><span class="o">=</span><span class="m">8</span> -x <span class="nv">OMP_PROC_BIND</span><span class="o">=</span>TRUE numactl --localalloc ./a.out
 </span></span></code></pre></div><p>以降では、コア割当てパターンを実現するオプション・環境変数の組み合わせを解説します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-1-各コア割当てパターンのオプション環境変数組合せ"
+    <h2 id="3-1-各コア割当てパターンのオプション環境変数組合せ"
     >
-        1-1. 各コア割当てパターンのオプション・環境変数組合せ
+        3-1. 各コア割当てパターンのオプション・環境変数組合せ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#1-1-各コア割当てパターンのオプション環境変数組合せ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1. 各コア割当てパターンのオプション・環境変数組合せ" aria-label="アンカー先: 1-1. 各コア割当てパターンのオプション・環境変数組合せ" href="#1-1-%e5%90%84%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3%e3%81%ae%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e7%b5%84%e5%90%88%e3%81%9b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-1-各コア割当てパターンのオプション環境変数組合せ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. 各コア割当てパターンのオプション・環境変数組合せ" aria-label="アンカー先: 3-1. 各コア割当てパターンのオプション・環境変数組合せ" href="#3-1-%e5%90%84%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3%e3%81%ae%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e7%b5%84%e5%90%88%e3%81%9b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>本章は、 <strong><a
   class="gdoc-markdown__link"
-  href="#0-2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
->0-2. コア割当てパターン</a></strong> に記載のコア割当てを実現するための、 <strong>mpirun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数の組合せを記載します。<br>
+  href="#2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
+>2. コア割当てパターン</a></strong> に記載のコア割当てを実現するための、 <strong>mpirun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数の組合せを記載します。<br>
 なお、表中に <strong>-</strong> と記載されている箇所は、そのオプション・環境変数を指定する必要が無い（デフォルトのままで良い）ことを示します。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -1045,22 +1026,21 @@ table, th, td {
       </tr>
   </tbody>
 </table> </div>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="2-slurmを使用するプロセススレッドのコア割当て"
+    <h1 id="4-slurmを使用するプロセススレッドのコア割当て"
     >
-        2. Slurmを使用するプロセス・スレッドのコア割当て
+        4. Slurmを使用するプロセス・スレッドのコア割当て
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#2-slurmを使用するプロセススレッドのコア割当て" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. Slurmを使用するプロセス・スレッドのコア割当て" aria-label="アンカー先: 2. Slurmを使用するプロセス・スレッドのコア割当て" href="#2-slurm%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#4-slurmを使用するプロセススレッドのコア割当て" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4. Slurmを使用するプロセス・スレッドのコア割当て" aria-label="アンカー先: 4. Slurmを使用するプロセス・スレッドのコア割当て" href="#4-slurm%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-0-概要"
+    <h2 id="4-0-概要"
     >
-        2-0. 概要
+        4-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#2-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-0. 概要" aria-label="アンカー先: 2-0. 概要" href="#2-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#4-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-0. 概要" aria-label="アンカー先: 4-0. 概要" href="#4-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1075,8 +1055,8 @@ table, th, td {
   href="../../tech-knowhow/build-oraclelinux-hpcenv/"
 >Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> に従って構築された <strong>BM.Standard.E6.256</strong> を計算ノードとする <strong>Slurm</strong> ジョブスケジューラ環境で、 <strong><a
   class="gdoc-markdown__link"
-  href="#0-2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
->0-2. コア割当てパターン</a></strong> に記載のコア割当てを実現する方法を解説します。</p>
+  href="#2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
+>2. コア割当てパターン</a></strong> に記載のコア割当てを実現する方法を解説します。</p>
 <p>以降で解説するコア割当て方法は、以下の <strong>srun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数を組合せて実現します。</p>
 <p>[ <strong>srun</strong> オプション]</p>
 <ul>
@@ -1097,18 +1077,18 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span> <span class="nv">OMP_PROC_BIND</span><span class="o">=</span>TRUE srun -p e6 -n <span class="m">32</span> -c <span class="m">8</span> --cpu-bind<span class="o">=</span>map_ldom:<span class="sb">`</span><span class="k">for</span> i in <span class="se">\`</span><span class="nb">echo</span> <span class="m">0</span> <span class="m">2</span> <span class="m">3</span> <span class="m">1</span> <span class="m">16</span> <span class="m">18</span> <span class="m">19</span> 17<span class="se">\`</span><span class="p">;</span> <span class="k">do</span> seq -s, <span class="nv">$i</span> <span class="m">4</span> <span class="k">$((</span>i+12<span class="k">))</span> <span class="p">|</span> tr <span class="s1">&#39;\n&#39;</span> <span class="s1">&#39;,&#39;</span><span class="p">;</span> <span class="k">done</span> <span class="p">|</span> sed <span class="s1">&#39;s/,$//g&#39;</span><span class="sb">`</span> numactl --localalloc ./a.out
 </span></span></code></pre></div><p>以降では、コア割当てパターンを実現するオプション・環境変数の組み合わせを解説します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-1-各コア割当てパターンのオプション環境変数組合せ"
+    <h2 id="4-1-各コア割当てパターンのオプション環境変数組合せ"
     >
-        2-1. 各コア割当てパターンのオプション・環境変数組合せ
+        4-1. 各コア割当てパターンのオプション・環境変数組合せ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#2-1-各コア割当てパターンのオプション環境変数組合せ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. 各コア割当てパターンのオプション・環境変数組合せ" aria-label="アンカー先: 2-1. 各コア割当てパターンのオプション・環境変数組合せ" href="#2-1-%e5%90%84%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3%e3%81%ae%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e7%b5%84%e5%90%88%e3%81%9b">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#4-1-各コア割当てパターンのオプション環境変数組合せ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-1. 各コア割当てパターンのオプション・環境変数組合せ" aria-label="アンカー先: 4-1. 各コア割当てパターンのオプション・環境変数組合せ" href="#4-1-%e5%90%84%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3%e3%81%ae%e3%82%aa%e3%83%97%e3%82%b7%e3%83%a7%e3%83%b3%e7%92%b0%e5%a2%83%e5%a4%89%e6%95%b0%e7%b5%84%e5%90%88%e3%81%9b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>本章は、 <strong><a
   class="gdoc-markdown__link"
-  href="#0-2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
->0-2. コア割当てパターン</a></strong> に記載のコア割当てを実現するための、 <strong>srun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数の組合せを記載します。<br>
+  href="#2-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e3%83%91%e3%82%bf%e3%83%bc%e3%83%b3"
+>2. コア割当てパターン</a></strong> に記載のコア割当てを実現するための、 <strong>srun</strong> コマンドオプションと <strong>GNUコンパイラ</strong> 環境変数の組合せを記載します。<br>
 なお、表中に <strong>-</strong> と記載されている箇所は、そのオプション・環境変数を指定する必要が無い（デフォルトのままで良い）ことを示します。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -1361,22 +1341,21 @@ table, th, td {
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">map_ldom:<span class="sb">`</span><span class="k">for</span> i in <span class="se">\`</span>seq <span class="m">0</span> 7<span class="se">\`</span><span class="p">;</span> <span class="k">do</span> <span class="k">for</span> j in <span class="se">\`</span><span class="nb">echo</span> <span class="m">0</span> <span class="m">2</span> <span class="m">3</span> <span class="m">1</span> <span class="m">16</span> <span class="m">18</span> <span class="m">19</span> 17<span class="se">\`</span><span class="p">;</span> <span class="k">do</span> <span class="k">for</span> k in <span class="se">\`</span>seq <span class="nv">$j</span> <span class="m">4</span> <span class="k">$((</span>j+12<span class="k">))</span><span class="se">\`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> -n <span class="nv">$k</span><span class="s2">&#34;,&#34;</span><span class="p">;</span> <span class="k">done</span><span class="p">;</span> <span class="k">done</span><span class="p">;</span> <span class="k">done</span> <span class="p">|</span> sed <span class="s1">&#39;s/,$//g&#39;</span><span class="sb">`</span>
 </span></span></code></pre></div><p>[No. 21]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">map_ldom:<span class="sb">`</span><span class="k">for</span> i in <span class="se">\`</span><span class="nb">echo</span> <span class="m">0</span> <span class="m">2</span> <span class="m">3</span> <span class="m">1</span> <span class="m">16</span> <span class="m">18</span> <span class="m">19</span> 17<span class="se">\`</span><span class="p">;</span> <span class="k">do</span> seq -s, <span class="nv">$i</span> <span class="m">4</span> <span class="k">$((</span>i+12<span class="k">))</span> <span class="p">|</span> tr <span class="s1">&#39;\n&#39;</span> <span class="s1">&#39;,&#39;</span><span class="p">;</span> <span class="k">done</span> <span class="p">|</span> sed <span class="s1">&#39;s/,$//g&#39;</span><span class="sb">`</span>
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="3-プロセススレッドのコア割当て確認方法"
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="5-プロセススレッドのコア割当て確認方法"
     >
-        3. プロセス・スレッドのコア割当て確認方法
+        5. プロセス・スレッドのコア割当て確認方法
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-プロセススレッドのコア割当て確認方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. プロセス・スレッドのコア割当て確認方法" aria-label="アンカー先: 3. プロセス・スレッドのコア割当て確認方法" href="#3-%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e7%a2%ba%e8%aa%8d%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#5-プロセススレッドのコア割当て確認方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5. プロセス・スレッドのコア割当て確認方法" aria-label="アンカー先: 5. プロセス・スレッドのコア割当て確認方法" href="#5-%e3%83%97%e3%83%ad%e3%82%bb%e3%82%b9%e3%82%b9%e3%83%ac%e3%83%83%e3%83%89%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e7%a2%ba%e8%aa%8d%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="3-0-概要"
+    <h2 id="5-0-概要"
     >
-        3-0. 概要
+        5-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#5-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-0. 概要" aria-label="アンカー先: 5-0. 概要" href="#5-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1490,21 +1469,11 @@ table, th, td {
 </span></span></code></pre></div><p>これを以下のコマンドでコンパイルして使用します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ gcc -fopenmp show_thread_bind.c -o show_thread_bind
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="3-1-コア割当て確認結果"
+    <h2 id="5-1-prrteのコア割当て確認結果"
     >
-        3-1. コア割当て確認結果
+        5-1. PRRTEのコア割当て確認結果
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-1-コア割当て確認結果" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. コア割当て確認結果" aria-label="アンカー先: 3-1. コア割当て確認結果" href="#3-1-%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e7%a2%ba%e8%aa%8d%e7%b5%90%e6%9e%9c">
-        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-    </a>
-</div>
-<p>以下では、各コア割当てパターン番号ごとの確認結果を <strong>PRRTE</strong> と <strong>Slurm</strong> に分けて記載します。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="3-1-1-prrte"
-    >
-        3-1-1. PRRTE
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-1-1-prrte" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1-1. PRRTE" aria-label="アンカー先: 3-1-1. PRRTE" href="#3-1-1-prrte">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#5-1-prrteのコア割当て確認結果" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-1. PRRTEのコア割当て確認結果" aria-label="アンカー先: 5-1. PRRTEのコア割当て確認結果" href="#5-1-prrte%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e7%a2%ba%e8%aa%8d%e7%b5%90%e6%9e%9c">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -4537,11 +4506,11 @@ table, th, td {
 </span></span><span class="line"><span class="cl">Thread  <span class="m">7</span> Core <span class="m">255</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="3-1-2-slurm"
+    <h2 id="5-2-slurmのコア割当て確認結果"
     >
-        3-1-2. Slurm
-    </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#3-1-2-slurm" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1-2. Slurm" aria-label="アンカー先: 3-1-2. Slurm" href="#3-1-2-slurm">
+        5-2. Slurmのコア割当て確認結果
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/cpu-binding-e6/#5-2-slurmのコア割当て確認結果" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-2. Slurmのコア割当て確認結果" aria-label="アンカー先: 5-2. Slurmのコア割当て確認結果" href="#5-2-slurm%e3%81%ae%e3%82%b3%e3%82%a2%e5%89%b2%e5%bd%93%e3%81%a6%e7%a2%ba%e8%aa%8d%e7%b5%90%e6%9e%9c">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>

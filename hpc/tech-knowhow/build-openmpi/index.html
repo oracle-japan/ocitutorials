@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-15T15:43:56+09:00"
+      content="2025-10-22T16:05:01+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）",
       "description": "OpenMPIは、最新のMPI言語規格に準拠し、HPC\/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC\/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "998",
+      "wordCount" : "991",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-15T15:43:56.00Z",
+      "dateModified": "2025-10-22T16:05:01.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
+    <meta property="article:modified_time" content="2025-10-22T16:05:01+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -421,8 +421,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-15T15:43:56&#43;09:00">
-            Oct 15, 2025
+        <time datetime="2025-10-22T16:05:01&#43;09:00">
+            Oct 22, 2025
         </time>
     
 </span>
@@ -723,12 +723,11 @@
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/hpc/xpmem.git
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> xpmem <span class="o">&amp;&amp;</span> ./autogen.sh <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/xpmem
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">128</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>XPMEM</strong> をカーネルモジュールとしてインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo modprobe -r xpmem
 </span></span><span class="line"><span class="cl">$ sudo install -D -m <span class="m">644</span> /opt/xpmem/lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/kernel/xpmem/xpmem.ko /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/extra/xpmem/xpmem.ko
 </span></span><span class="line"><span class="cl">$ sudo depmod -a
-</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> xpmem <span class="p">|</span> sudo tee /etc/modules-load.d/xpmem.conf
 </span></span><span class="line"><span class="cl">$ sudo modprobe xpmem
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h3 id="1-1-5-openucxインストール"

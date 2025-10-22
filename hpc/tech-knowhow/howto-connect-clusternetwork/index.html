@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-10-22T16:05:01+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法",
       "description": "クラスタ・ネットワーク対応シェイプを使用してクラスター・ネットワークに接続するインスタンスは、ベースOSにOracle Linuxを使用するクラスタネットワーキングイメージを使用することで、クラスタ・ネットワーク接続に必要なソフトウェアのインストールやセットアップ等の作業を大幅に簡素化することが可能です。本テクニカルTipsは、このクラスタネットワーキングイメージを使用してインスタンスをクラスタ・ネットワークに接続する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "825",
+      "wordCount" : "826",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-10-22T16:05:01.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-10-22T16:05:01+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -407,8 +407,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-10-22T16:05:01&#43;09:00">
+            Oct 22, 2025
         </time>
     
 </span>
@@ -428,7 +428,6 @@ table, th, td {
 }
 </style>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -441,8 +440,9 @@ table, th, td {
 <p><strong><a
   class="gdoc-markdown__link"
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> への接続は、使用するインスタンスが以下の接続条件を満たし、このインスタンスデプロイ後に以下の接続処理を完了する必要があります。</p>
-<p>[接続条件]</p>
+>クラスタ・ネットワーク</a></strong> への接続は、使用するインスタンスが以下の接続条件を満たし、</p>
+<ul>
+<li>接続条件
 <ol>
 <li>
 <p><strong>クラスタ・ネットワーク</strong> 対応シェイプ（ <strong><a
@@ -476,11 +476,17 @@ table, th, td {
 >ここ</a></strong> のサイトが参考になります。</p>
 </li>
 </ol>
-<p>[接続処理]</p>
+</li>
+</ul>
+<p>このインスタンスデプロイ後に以下の接続処理を完了する必要があります。</p>
+<ul>
+<li>接続処理
 <ol>
 <li><strong>クラスタ・ネットワーク</strong> との802.1X認証（<strong>接続条件 3-3.</strong> が実施）</li>
 <li><strong>クラスタ・ネットワーク</strong> 接続用ネットワークインターフェース作成（<strong>接続条件 3-4.</strong> が実施）</li>
 </ol>
+</li>
+</ul>
 <p>ここで <strong>接続条件 3.</strong> は、全てのソフトウェアを予めインストールした <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
@@ -566,7 +572,6 @@ table, th, td {
   href="../../#1-1-hpcgpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf"
 >HPC/GPUクラスタ</a></strong> カテゴリのチュートリアルは、全て <strong>OCA</strong> HPC関連プラグインを使用する方法を採用しています。</p>
 <p>以上を踏まえて以降では、 <strong>クラスタ・ネットワーキングイメージ</strong> を使用して <strong>クラスタ・ネットワーク</strong> に接続する際、 <strong>OCA</strong> HPC関連プラグインを使用する場合と個別RPMを使用する場合について、それぞれの手順を解説します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-oca-hpc関連プラグインでクラスタネットワークに接続する方法"
     >
@@ -810,7 +815,6 @@ or</li>
   class="gdoc-markdown__link"
   href="../../tech-knowhow/compute-os-customization/#2-%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%97%e3%81%9fos%e3%82%ab%e3%82%b9%e3%82%bf%e3%83%9e%e3%82%a4%e3%82%ba"
 >2. カスタム・イメージを使用したOSカスタマイズ</a></strong> を参照してください。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-個別rpmを使用してクラスタネットワークに接続する方法"
     >

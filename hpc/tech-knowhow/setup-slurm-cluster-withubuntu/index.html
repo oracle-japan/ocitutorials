@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-16T16:26:04+09:00"
+      content="2025-10-22T17:02:36+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)",
       "description": "GPUノード\/クラスタのリソース管理・ジョブ管理は、近年主流となっているマルチGPUノードのGPUリソース有効利用の観点から、ジョブスケジューラを活用することが主流となっていますが、オープンソースのジョブスケジューラSlurmは、高機能のGPUリソース管理機能を有する代表的なジョブスケジューラとして現在人気を集めています。またHPC\/機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっています。本テクニカルTipsは、NVIDIA製のGPUを複数搭載するベアメタルインスタンスのGPUリソース管理を念頭に、GPUノード\/クラスタのリソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1422",
+      "wordCount" : "1855",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-16T16:26:04.00Z",
+      "dateModified": "2025-10-22T17:02:36.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-16T16:26:04+09:00">
+    <meta property="article:modified_time" content="2025-10-22T17:02:36+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -408,8 +408,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-16T16:26:04&#43;09:00">
-            Oct 16, 2025
+        <time datetime="2025-10-22T17:02:36&#43;09:00">
+            Oct 22, 2025
         </time>
     
 </span>
@@ -525,7 +525,13 @@ table, th, td {
 ※2）本テクニカルTipsは、8枚の <strong>NVIDIA A100</strong> GPUを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8</a></strong> を使用します。<br>
+>BM.GPU4.8</a></strong> を、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/bios-setting/"
+>パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> の手順に従い、 <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称）を無効化して使用します。<br>
 ※3）<strong>ファイル・ストレージ</strong> やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
@@ -882,7 +888,7 @@ table, th, td {
 </div>
 <p>本章は、Slurmクライアントでdebパッケージを作成します。</p>
 <p>以下コマンドをSlurmクライアントのubuntuユーザで実行し、前提パッケージをインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo apt install -y checkinstall libmariadb-dev libdbus-1-dev
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo apt install -y checkinstall libmariadb-dev libdbus-1-dev libnuma-dev
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントのubuntuユーザで実行し、 <strong>Slurm</strong> のdebパッケージを作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.schedmd.com/slurm/slurm-25.05.3.tar.bz2
 </span></span><span class="line"><span class="cl">$ tar -xvf ./slurm-25.05.3.tar.bz2
@@ -971,7 +977,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">TaskPlugin</span><span class="o">=</span>task/cgroup,task/affinity
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># GPU node specifications</span>
-</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-ao-ub <span class="nv">Gres</span><span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 <span class="nv">CPUs</span><span class="o">=</span><span class="m">128</span> <span class="nv">Boards</span><span class="o">=</span><span class="m">1</span> <span class="nv">SocketsPerBoard</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">2</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">2000000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-ao-ub <span class="nv">Gres</span><span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 <span class="nv">CPUs</span><span class="o">=</span><span class="m">64</span> <span class="nv">Boards</span><span class="o">=</span><span class="m">1</span> <span class="nv">SocketsPerBoard</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">2000000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 </span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>sltest <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </span></span></code></pre></div><p>なお、 <strong>SlurmctldHost</strong> 、 <strong>AccountingStorageHost</strong> 、及び <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。</p>
 <p>[ <strong>slurmdbd.conf</strong> ]</p>
@@ -1010,8 +1016,10 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">ConstrainDevices</span><span class="o">=</span>yes
 </span></span><span class="line"><span class="cl"><span class="nv">ConstrainRAMSpace</span><span class="o">=</span>yes
 </span></span></code></pre></div><p>[ <strong>gres.conf</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-ao-ub <span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>0-7<span class="o">]</span>
-</span></span></code></pre></div><p>なお、 <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>0-3<span class="o">]</span> <span class="nv">COREs</span><span class="o">=[</span>0-31<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>4-7<span class="o">]</span> <span class="nv">COREs</span><span class="o">=[</span>32-63<span class="o">]</span>
+</span></span></code></pre></div><p>上記 <strong>gres.conf</strong> は、GPU番号0～3とCPUコア番号0～31、GPU番号4～7とCPUコア番号32～63のアフィニティを定義しており、ジョブが要求するGPUとCPUコアのリソースがこれを維持できる範囲で定義したアフィニティに従いリソース割り当てを行い、維持できない場合はこれを無視してリソースを割り当てます。<br>
+このアフィニティの維持を強制する場合は、 <strong>&ndash;gres-flags=enforce-binding</strong> オプションを指定してジョブを投入します。これにより、アフィニティを維持できるGPUとCPUコアが空くまでジョブの実行を延期するか、指定したリソースがそもそも定義したアフィニティを満たせない場合（4個以下のGPUと33個以上のCPUコア等）はこのジョブの投入を拒否します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-8-slurmサービス起動"
     >
@@ -1067,6 +1075,7 @@ table, th, td {
 <li>ノード内GPUデバイスメモリ間レイテンシを <strong>OSU Micro-Benchmarks</strong> で確認</li>
 <li>ノード内GPUデバイスメモリ間帯域幅を <strong>OSU Micro-Benchmarks</strong> で確認</li>
 <li>使用したGPUリソースがジョブアカウンティング情報に記録されていることを確認</li>
+<li>設定したGPU/GPUアフィニティが想定通りに行われていることを確認</li>
 </ul>
 <p>なお、 <strong><a
   class="gdoc-markdown__link"
@@ -1082,18 +1091,33 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../../benchmark/run-omb-gpu/#1-osu-micro-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >1. OSU Micro-Benchmarksインストール・セットアップ</a></strong> を参照してください。</p>
-<p>以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>Slurm</strong> が割り当てるGPU数が <strong>- -gres</strong> オプションの指定通りとなっていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:1 nvidia-smi <span class="p">|</span> grep SXM
+<p>また、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/nvidia/cuda-samples"
+>CUDA Samples</a></strong> を <strong>Slurm</strong> 利用ユーザでビルドしておきます。<br>
+この手順は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/gpu-with-ubuntu/"
+>UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/gpu-with-ubuntu/#4-1-cuda-samples%e3%81%ab%e3%82%88%e3%82%8bnvidia-cuda-toolkit%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
+>4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認</a></strong> を参照してください。</p>
+<p>以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>Slurm</strong> が割り当てるGPU数が <strong>- -gres</strong> オプションの指定通りとなっていることを確認します。<br>
+また、最後のコマンドの出力からGPU番号とそのPCIバスIDの組み合わせを記録しておきます。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:1 --mem<span class="o">=</span>1G nvidia-smi <span class="p">|</span> grep SXM
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 --mem<span class="o">=</span>1G nvidia-smi <span class="p">|</span> grep SXM
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 --mem<span class="o">=</span>1G nvidia-smi <span class="p">|</span> grep SXM
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 --mem<span class="o">=</span>1G nvidia-smi <span class="p">|</span> grep SXM
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
@@ -1102,6 +1126,15 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">5</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:92:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">6</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:D6:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
 </span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">7</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:DA:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 --mem<span class="o">=</span>1G nvidia-smi <span class="p">|</span> grep SXM <span class="p">|</span> awk <span class="s1">&#39;{print $2, $7}&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="m">0</span> 00000000:0F:00.0
+</span></span><span class="line"><span class="cl"><span class="m">1</span> 00000000:15:00.0
+</span></span><span class="line"><span class="cl"><span class="m">2</span> 00000000:51:00.0
+</span></span><span class="line"><span class="cl"><span class="m">3</span> 00000000:54:00.0
+</span></span><span class="line"><span class="cl"><span class="m">4</span> 00000000:8D:00.0
+</span></span><span class="line"><span class="cl"><span class="m">5</span> 00000000:92:00.0
+</span></span><span class="line"><span class="cl"><span class="m">6</span> 00000000:D6:00.0
+</span></span><span class="line"><span class="cl"><span class="m">7</span> 00000000:DA:00.0
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、GPUデバイスメモリ間のレイテンシを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load nvhpc openmpi omb
@@ -1130,6 +1163,60 @@ table, th, td {
 </span></span><span class="line"><span class="cl">------------ -------------------------------------------------- 
 </span></span><span class="line"><span class="cl"><span class="m">89</span>               <span class="nv">billing</span><span class="o">=</span>2,cpu<span class="o">=</span>2,gres/gpu<span class="o">=</span>2,mem<span class="o">=</span>2000000M,node<span class="o">=</span><span class="m">1</span> 
 </span></span><span class="line"><span class="cl">89.0                       <span class="nv">cpu</span><span class="o">=</span>2,gres/gpu<span class="o">=</span>2,mem<span class="o">=</span>2000000M,node<span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下のスクリプトをSlurmクライアントの <strong>Slurm</strong> 利用ユーザでファイル名 <strong>gpu_affinity.sh</strong> で作成します。このスクリプトは、4枚のGPU（ノードに搭載するGPU数の半分）と32個のCPUコア（ノードに搭載するCPUコア数の半分）を要求し、自身が割り当てられたGPUのPCIバスIDとCPUコア番号を表示します。
+なお、スクリプト中の <strong>CUDA Samples</strong> をビルドしたディレクトリは、自身の環境に置き換えます。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 32</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --gres=gpu:nvidia_a100-sxm4-40gb:4</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --mem=500G</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /path_to_cuda_samples
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">srun bash -c <span class="s1">&#39;echo -n &#34;Rank $SLURM_PROCID Node $SLURM_NODEID Core &#34;; taskset -cp $$ | cut -d&#34; &#34; -f6; ./Samples/1_Utilities/deviceQuery/deviceQuery | grep PCI&#39;</span> <span class="p">|</span> sort -k 2n,2 <span class="p">|</span> uniq
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。<br>
+なお、GPUノードに使用している <strong>BM.GPU4.8</strong> は、CPUソケットを2個搭載し、ソケット0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット1側にGPU番号4～7とCPUコア番号32～63を収容します。<br>
+また、先に <strong>nvidia-smi</strong> コマンドの出力で確認したPCIバスIDが16進数表記なのに対し、以下の出力は10進数表記であることに留意します。（0x0F -&gt; 15, 0x15 -&gt; 21, 0x51 -&gt; 81, 0x54 -&gt; 84, 0x8D -&gt; 141, 0x92 -&gt; 146, 0xD6 -&gt; 214, 0xDA -&gt; 218）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> i in <span class="sb">`</span>seq <span class="m">1</span> 2<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> sbatch gpu_affinity.sh<span class="p">;</span> <span class="k">done</span>
+</span></span><span class="line"><span class="cl">Submitted batch job <span class="m">301</span>
+</span></span><span class="line"><span class="cl">Submitted batch job <span class="m">302</span>
+</span></span><span class="line"><span class="cl">$ squeue 
+</span></span><span class="line"><span class="cl">             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+</span></span><span class="line"><span class="cl">               <span class="m">301</span>    sltest gpu_affi    usera  R       0:02      <span class="m">1</span> inst-a0zgi-ao-ub24
+</span></span><span class="line"><span class="cl">               <span class="m">302</span>    sltest gpu_affi    usera  R       0:02      <span class="m">1</span> inst-a0zgi-ao-ub24
+</span></span><span class="line"><span class="cl">$ cat stdout.301
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">15</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">21</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">81</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">84</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">0</span> Node <span class="m">0</span> Core <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">1</span> Node <span class="m">0</span> Core <span class="m">1</span>
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">Rank <span class="m">30</span> Node <span class="m">0</span> Core <span class="m">30</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">31</span> Node <span class="m">0</span> Core <span class="m">31</span>
+</span></span><span class="line"><span class="cl">$ cat stdout.302
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">141</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">146</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">214</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Device PCI Domain ID / Bus ID / location ID:   <span class="m">0</span> / <span class="m">218</span> / <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">0</span> Node <span class="m">0</span> Core <span class="m">32</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">1</span> Node <span class="m">0</span> Core <span class="m">33</span>
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">Rank <span class="m">30</span> Node <span class="m">0</span> Core <span class="m">62</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">31</span> Node <span class="m">0</span> Core <span class="m">63</span>
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>&ndash;gres-flags=enforce-binding</strong> オプション指定の有無で定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブ投入可否が変化することを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">33</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 bash -c <span class="s2">&#34;true&#34;</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">33</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 --gres-flags<span class="o">=</span>enforce-binding bash -c <span class="s2">&#34;true&#34;</span>
+</span></span><span class="line"><span class="cl">srun: error: Unable to allocate resources: Requested node configuration is not available
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div>
   </article>
