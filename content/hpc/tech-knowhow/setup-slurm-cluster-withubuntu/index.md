@@ -580,7 +580,7 @@ cd /path_to_cuda_samples
 srun bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6; ./Samples/1_Utilities/deviceQuery/deviceQuery | grep PCI' | sort -k 2n,2 | uniq
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、2本のジョブがそれぞれ同一ソケットに接続するGPUとCPUコアが割り当てられていることを確認します。  
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。  
 なお、GPUノードに使用している **BM.GPU4.8** は、CPUソケットを2個搭載し、ソケット0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット1側にGPU番号4～7とCPUコア番号32～63を収容します。  
 また、先に **nvidia-smi** コマンドの出力で確認したPCIバスIDが16進数表記なのに対し、以下の出力は10進数表記であることに留意します。（0x0F -> 15, 0x15 -> 21, 0x51 -> 81, 0x54 -> 84, 0x8D -> 141, 0x92 -> 146, 0xD6 -> 214, 0xDA -> 218）
 
