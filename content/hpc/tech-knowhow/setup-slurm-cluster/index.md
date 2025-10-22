@@ -33,6 +33,8 @@ table, th, td {
 
 以上の利点を享受するべく本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行することを念頭に、 **PMIx** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築し、初期化処理時間の効果を検証すべく、 **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** PingPongのレイテンシに着目して比較・検証を実施します。
 
+なお、 **Ubuntu** をOSとするNVIDIA製GPUを複数搭載するベアメタルインスタンスのGPUリソース管理やジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)](../setup-slurm-cluster-withubuntu/)** を参照してください。
+
 # 1. 前提システム
 
 本章は、本テクニカルTipsで解説する **Slurm** 環境構築手順の前提となるシステムを解説します。  
@@ -128,7 +130,7 @@ $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
 次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** をインストールします。
 
 ```sh
-$ sudo yum-config-manager --enable ol8_codeready_builder
+$ sudo yum-config-manager --enable ol9_codeready_builder
 $ sudo dnf install -y munge munge-libs
 ```
 

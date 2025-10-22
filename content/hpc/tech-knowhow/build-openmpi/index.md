@@ -133,7 +133,7 @@ $ make -j 36 && sudo make install
 ```sh
 $ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 128 && sudo make install
+$ make -j 36 && sudo make install
 ```
 
 次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
@@ -142,7 +142,6 @@ $ make -j 128 && sudo make install
 $ sudo modprobe -r xpmem
 $ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
 $ sudo depmod -a
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
 $ sudo modprobe xpmem
 ```
 
