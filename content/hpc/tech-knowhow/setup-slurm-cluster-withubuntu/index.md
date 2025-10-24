@@ -566,7 +566,8 @@ JobID                                                 AllocTRES
 $
 ```
 
-次に、以下のスクリプトをSlurmクライアントの **Slurm** 利用ユーザでファイル名 **gpu_affinity.sh** で作成します。このスクリプトは、4枚のGPU（ノードに搭載するGPU数の半分）と32個のCPUコア（ノードに搭載するCPUコア数の半分）を要求し、自身が割り当てられたGPUのPCIバスIDとCPUコア番号を表示します。
+次に、以下のスクリプトをSlurmクライアントの **Slurm** 利用ユーザでファイル名 **gpu_affinity.sh** で作成します。  
+このスクリプトは、4枚のGPU（ノードに搭載するGPU数の半分）と32個のCPUコア（ノードに搭載するCPUコア数の半分）を要求し、自身が割り当てられたGPUのPCIバスIDとCPUコア番号を表示します。
 
 ```sh
 #!/bin/bash
@@ -620,7 +621,7 @@ Rank 31 Node 0 Core 63
 $
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **--gres-flags=enforce-binding** オプション指定の有無で定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブ投入可否が変化することを確認します。
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **--gres-flags=enforce-binding** オプション指定の有無により、定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブの投入可否が変化することを確認します。
 
 ```sh
 $ srun -p sltest -n 33 --gres=gpu:nvidia_a100-sxm4-40gb:4 bash -c "true"
