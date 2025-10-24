@@ -12,20 +12,20 @@ params:
 
 本テクニカルTipsは、HPC/GPUクラスタのリソース管理・ジョブ管理を **[Slurm](https://slurm.schedmd.com/)** で効果的に運用する際に有益な、以下のテクニカルTipsを解説します。
 
-1. **[Prolog/Epilogセットアップ方法](#1-prologepilogセットアップ方法)**
+1. **[Prolog/Epilog設定方法](#1-prologepilog設定方法)**
 2. **[メンテナンスを考慮した計算/GPUノードのステータス変更方法](#2-メンテナンスを考慮した計算gpuノードのステータス変更方法)**
 3. **[ヘテロジニアス環境下のパーティションを使った計算/GPUノード割り当て制御](#3-ヘテロジニアス環境下のパーティションを使った計算gpuノード割り当て制御)**
 4. **[複数ジョブによる計算/GPUノード共有方法](#4-複数ジョブによる計算gpuノード共有方法)**
 
 これらのTipsは、全て **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築された **Slurm** 環境を前提に記載します。
 
-# 1. Prolog/Epilogセットアップ方法
+# 1. Prolog/Epilog設定方法
 
 ## 1-0. 概要
 
-本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能である **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** をセットアップする方法を解説します。
+本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能である **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** を設定する方法を解説します。
 
-ここでは、PrologとEpilogで以下の処理を適用することを想定し、そのセットアップ方法を解説します。
+ここでは、PrologとEpilogで以下の処理を行うことを想定します。
 
 [Prolog]
 
@@ -56,7 +56,7 @@ log_file=/var/log/slurm/clean_memory.log
 /bin/rm -rf /mnt/localdisk/*
 ```
 
-## 1-1. セットアップ手順
+## 1-1. 設定手順
 
 Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **slurm.conf** に以下の記述を追加します。
 
@@ -73,7 +73,8 @@ $ sudo mkdir -p /opt/slurm/etc/scripts/prolog.d
 $ sudo mkdir -p /opt/slurm/etc/scripts/epilog.d
 ```
 
-次に、全ての計算/GPUノードで、 **[1-0. 概要](#1-0-概要)** に記載のProlog/Epilog用スクリプトをそれぞれ **10_clean_memory.sh** と **10_clean_nvme.sh** として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。
+次に、全ての計算/GPUノードで、 **[1-0. 概要](#1-0-概要)** に記載のProlog/Epilog用スクリプトをそれぞれ **10_clean_memory.sh** と **10_clean_nvme.sh** として先に作成したディレクトリに格納し、以下のようにスクリプトファイルのオーナーとパーミッションを設定します。  
+なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトが実行されます。
 
 ```sh
 $ ls -l /opt/slurm/etc/scripts/*/
@@ -87,8 +88,6 @@ total 4
 $
 ```
 
-なお、このディレクトリに2桁数字の接頭辞を持つスクリプトを複数格納することで、その数字の順番にスクリプトが実行されます。
-
 次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映、その結果を確認します。
 
 ```sh
@@ -101,7 +100,7 @@ $
 ```
 
 なお、 **slurm.conf** にProlog/Epilogを定義した状態でそのスクリプトを格納するディレクトリに実行すべきスクリプトが存在しない場合、ジョブがディスパッチされた時点で当該ノードのステータスが **drain** となり、以降ジョブを受け付ない状態になります。  
-そのため、実行すべきProlog/Epilogがない場合は、 **slurm.conf** 中の不要な定義を削除するか、以下のような実質的に何も実行しないスクリプトを配置することで、これを回避することが可能です。
+そのため、実行すべきProlog/Epilogがない場合は、 **slurm.conf** 中の不要な定義を削除するか、以下の実質的に何も実行しないスクリプトを配置することで、これを回避することが可能です。
 
 
 [99_nill.sh]
@@ -218,7 +217,7 @@ NodeName=inst-xxxxx-x9 Arch=x86_64 CoresPerSocket=18
 $
 ```
 
-次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスから **DRAIN** フラグを除去、ステータスが **IDLE** となっていることを確認します。  
+次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、対象の計算/GPUノードのステータスから **DRAIN** フラグを除去、ステータスが **IDLE** になることを確認します。  
 ここで、計算/GPUノードのホスト名（inst-xxxxx-x9）は、自身の環境に合わせて修正します。  
 なお、この計算/GPUノードで実行可能なジョブが待機していた場合、ジョブが即座に実行を開始してステータスが **ALLOCATED** になります。
 
@@ -258,11 +257,10 @@ HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソース
 - **NPS2** の計算ノードで実行するジョブはパーティション **nps2** に投入
 - **SMT** が有効の計算ノードで実行するジョブはパーティション **smt** に投入
 
-## 3-1. slurm.conf修正
+## 3-1. 設定手順
 
-本章は、本Tipsの想定する運用要件を実現するよう **slurm.conf** を修正します。
-
-作成する **slurm.conf** は、 **NodeName** 行と **PartitionName** 行を以下に修正します。
+Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **slurm.conf** の **NodeName** 行と **PartitionName** 行を以下のように修正します。  
+この設定は、 **BM.Optimized3.36** がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 **NPS1** と **NPS2** と **SMT** 有効・無効の計算ノードを異なるリソース定義の **NodeName** フィールドで定義しています。（※3）
 
 ```sh
 NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
@@ -274,23 +272,17 @@ PartitionName=nps2 Nodes=inst-ccccc-x9,inst-ddddd-x9 MaxTime=INFINITE State=UP
 PartitionName=smte Nodes=inst-eeeee-x9,inst-fffff-x9 MaxTime=INFINITE State=UP
 ```
 
-この設定は、 **BM.Optimized3.36** がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 **NPS1** と **NPS2** と **SMT** 有効・無効の計算ノードを異なるリソース定義の **NodeName** フィールドで定義しています。（※3）
-
 ※3）**slurm.conf** 中の **Socket** は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
 
-## 3-2. slurm.conf修正の反映
-
-本章は、先に修正した **slurm.conf** を反映します。
-
-Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した **slurm.conf** を **/opt/slurm/etc** ディレクトリにコピーします。
-
-次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、修正した **slurm.conf** の内容を反映します。
+次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映します。
 
 ```sh
 $ sudo su - slurm -c "scontrol reconfigure"
 ```
 
-次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
+## 3-2. 稼働確認
+
+Slurmクライアントの **Slurm** 利用ユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
 
 ```sh
 $ sinfo
@@ -311,7 +303,7 @@ $
 
 本Tipsは、前述の運用要件を念頭に、ジョブを投入するパーティションを使い分けることで、ノード占有ジョブとノード共有ジョブが混在する **Slurm** 環境を構築する方法を解説します。
 
-構築する **Slurm** 環境は、計算ノードに3ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** （搭載コア数： 36、 搭載メモリ量： 512GB（**Slurm** 設定上の利用可能メモリ量を500GBに設定））を使用し、以下のパーティション構成とします。
+構築する **Slurm** 環境は、計算ノードに3ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** （搭載コア数： 36、 搭載メモリ量： 512GB（**Slurm** 設定上の利用可能メモリ量を500400MBに設定））を使用し、以下のパーティション構成とします。
 
 | パーティション名 | 割当てられるノード名                  | ノードの占有/共有 |
 | :------: | :-------------------------: | :---: |
@@ -323,39 +315,30 @@ $
 - ノード占有ジョブはパーティション **large** に投入
 - ノード共有ジョブはパーティション **small** に投入
 - パーティション **large** に投入されたジョブは実行中ジョブの総使用ノード数が2ノードを超えない範囲で先着順にノード占有実行
-- パーティション **small** に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500GBを超えない範囲で先着順にノード共有実行（※4）
-
-※4）ジョブ投入時は、以下のように使用するメモリ量を **--mem=xxxxM** オプションで指定する必要があります。
-
-```sh
-$ srun -p small -n 4 --mem=100000M ./a.out
-```
+- パーティション **small** に投入されたジョブは実行中ジョブの総使用コア数と総使用メモリ量がそれぞれ36コアと500400MBを超えない範囲で先着順にノード共有実行
 
 この運用は、CPU、メモリ、GPU等のリソース単位のジョブ割り当て（複数ジョブのノード共有）を可能にする、 **[Consumable Trackable Resource Plugin](https://slurm.schedmd.com/cons_tres.html#using_cons_tres)** をリソース選択アルゴリズムに使用し、その上でノード占有ジョブ用のパーティションを排他ジョブ用として宣言することで、これを実現します。
 
-## 4-1. slurm.conf修正
+## 4-1. 設定手順
 
-本章は、本Tipsの想定する運用要件を実現するよう **slurm.conf** を修正します。
-
-作成する **slurm.conf** は、 **SelectType** 行、 **NodeName** 行、及び **PartitionName** 行を以下に修正します。
+Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノードの **slurm.conf** の **SelectType** 行、 **NodeName** 行、及び **PartitionName** 行を以下のように修正します。  
+この設定は、 **SelectType** に **select/cons_tres** を指定することでリソース選択アルゴリズムに **Consumable Trackable Resource Plugin** を指定し、 **OverSubscribe=Exclusive** を指定することでパーティション **large** をノード占有パーティションとして宣言し、 **DefMemPerCPU=13900** を指定することでパーティション **small** のデフォルトのコア当たり割り当てメモリ量を **BM.Optimized3.36** のコア当たりの搭載メモリ量に指定（※4）しています。
 
 ```sh
 :
 SelectType=select/cons_tres
 :
-NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500400 TmpDisk=10000 State=UNKNOWN
 PartitionName=large Nodes=inst-aaaaa-x9,inst-bbbbb-x9 MaxTime=INFINITE State=UP OverSubscribe=Exclusive
-PartitionName=small Nodes=inst-ccccc-x9 MaxTime=INFINITE State=UP
+PartitionName=small Nodes=inst-ccccc-x9 DefMemPerCPU=13900 MaxTime=INFINITE State=UP
 :
 ```
 
-この設定は、 **SelectType** 行に **select/cons_tres** を指定することでリソース選択アルゴリズムを **Consumable Trackable Resource Plugin** に指定し、 **OverSubscribe=Exclusive** を指定することでパーティション **large** をノード占有パーティションとして宣言しています。
+※4）ここで指定しているコア当たりのメモリ量以上のジョブを投入する場合は、以下のようにジョブが使用する総メモリ量を **- –mem=xxxx** オプションで指定します。
 
-## 4-2. slurm.conf修正の反映
-
-本章は、先に修正した **slurm.conf** を反映します。
-
-Slurmマネージャ、Slurmクライアント、及び計算/GPUノードで、先に修正した **slurm.conf** を **/opt/slurm/etc** ディレクトリにコピーします。
+```sh
+$ srun -p small -n 4 --mem=100G ./a.out
+```
 
 次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映、その結果を確認します。
 
@@ -366,7 +349,9 @@ SelectType              = select/cons_tres
 $
 ```
 
-次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
+## 4-2. 稼働確認
+
+Slurmクライアントの **Slurm** 利用ユーザで以下のコマンドを実行し、パーティションが想定通り作成されていることを確認します。
 
 ```sh
 $ sinfo -l
