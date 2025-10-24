@@ -31,7 +31,7 @@ table, th, td {
 - 精度の高いアカウンティング情報を **Slurm** に提供することが可能
 - **Slurm** クラスタ内のSSHパスフレーズ無しアクセス設定が不要
 
-以上の利点を享受するべく本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行することを念頭に、 **PMIx** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築し、初期化処理時間の効果を検証すべく、 **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** PingPongのレイテンシに着目して比較・検証を実施します。
+以上の利点を享受するべく本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行することを念頭に、 **PMIx** と **[UCX](https://openucx.org/)** を取り込んだ **Slurm** 環境を構築し、初期化処理時間の効果を検証すべく、 **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して比較・検証を実施します。
 
 なお、 **Ubuntu** をOSとするNVIDIA製GPUを複数搭載するベアメタルインスタンスのGPUリソース管理やジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)](../setup-slurm-cluster-withubuntu/)** を参照してください。
 
@@ -52,7 +52,7 @@ table, th, td {
 
 ![画面ショット](architecture_diagram.png)
 
-※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された2ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
+※2）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続された4ノードの **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  
 ※3）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。  
 ※5）**Oracle Linux** 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。Slurmマネージャは、計算ノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。
@@ -61,7 +61,7 @@ Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpc
 
 計算ノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPCクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../build-openmpi-ol9/)** の手順に従い、 **OpenMPI** を計算ノードにインストールします。
 
-またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** をインストールします。
+またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb/)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **OSU Micro-Benchmarks** をインストールします。
 
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
@@ -70,7 +70,7 @@ Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpc
 | :---------: | :---------: |
 | Slurmマネージャ  | slurm-srv   |
 | Slurmクライアント | slurm-cli   |
-| 計算ノード       | inst-aaaaa-x9<br>inst-bbbbb-x9 |
+| 計算ノード       | inst-aaaaa-x9<br>inst-bbbbb-x9<br>inst-ccccc-x9<br>inst-ddddd-x9 |
 
 また、各サブシステムのセキュリティーに関するOS設定は、 **firewalld** を停止し、 **SELinux** をDisabledにします。
 
@@ -393,7 +393,7 @@ AccountingStorageType=accounting_storage/slurmdbd
 AccountingStorageHost=slurm-srv
 AccountingStoragePort=7004
 MpiDefault=pmix
-NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
 PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 TaskPlugin=task/affinity
 ```
@@ -461,7 +461,7 @@ $ sudo systemctl enable --now slurmctld
 ```sh
 $ sinfo
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-sltest*      up   infinite      2   idle inst-aaaaa-x9,inst-bbbbb-x9
+sltest*      up   infinite      4   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
 $
 ```
 
@@ -488,62 +488,74 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 
 # 3. 稼働確認
 
-本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、ジョブ投入ユーザで **Intel MPI Benchmarks** を実行するバッチジョブを **srun** で起動する場合と **mpirun** で起動する場合の2種類実行し、その結果を比較します。  
-またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。
+本章は、構築した **Slurm** 環境の稼働確認と **PMIx** の効果を確認するため、 **OSU Micro-Benchmarks** で2ノード間のレイテンシと4ノード間のMPI_Init所要時間をバッチジョブとインタラクティブで計測し、その結果を比較します。  
+またこのバッチジョブがアカウンティング情報に記録されていることを確認します。
 
-**srun** を利用する場合（ **srun.sh** ）と **mpirun** を利用する場合（ **mpirun.sh** ）で、以下のように**Intel MPI Benchmarks** を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。
+以下のスクリプトをファイル名 **srun.sh** で作成します。
 
-[ **srun.sh** ]
 ```sh
 #!/bin/bash
 #SBATCH -p sltest
-#SBATCH -n 2
-#SBATCH -N 2
-#SBATCH -J ping_pong_srun
+#SBATCH -n 144
+#SBATCH -N 4
+#SBATCH -J srun
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 
-module load openmpi imb
+module load openmpi omb
 export UCX_NET_DEVICES=mlx5_2:1
 
-srun IMB-MPI1 -msglog 28:28 pingpong
-```
-
-[ **mpirun.sh** ]
-```sh
-#!/bin/bash
-#SBATCH -p sltest
-#SBATCH -n 2
-#SBATCH -N 2
-#SBATCH -J ping_pong_mpirun
-#SBATCH -o stdout.%J
-#SBATCH -e stderr.%J
-
-module load openmpi imb
-export UCX_NET_DEVICES=mlx5_2:1
-
-mpirun IMB-MPI1 -msglog 28:28 pingpong
+echo "Start osu_latency"
+srun -n 2 -N 2 osu_latency -x 1000 -i 10000 -m 1:1
+echo
+echo "Start osu_init"
+srun osu_init
 ```
 
 次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。
 
 ```sh
-$ cd ~ && sbatch srun.sh
+$ sbatch srun.sh
 Submitted batch job 3
-$ grep -A 2 usec stdout.3
-       #bytes #repetitions      t[usec]   Mbytes/sec
-            0         1000         1.47         0.00
-    268435456            1     21925.54     12243.05
-$ sbatch mpirun.sh
-Submitted batch job 4
-$ grep -A 3 usec stdout.4
-       #bytes #repetitions      t[usec]   Mbytes/sec
-            0         1000         1.67         0.00
-    268435456            1     21955.08     12226.58
+$ cat stdout.3
+Start osu_latency
+
+# OSU MPI Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.51
+
+Start osu_init
+# OSU MPI Init Test v7.5
+nprocs: 144, min: 2032 ms, max: 2054 ms, avg: 2048 ms
 $
 ```
 
-この結果より、 **srun** を利用することでMPI通信の初期化処理に要する時間が短縮され、レイテンシが **0.2 μ秒** 改善されていることがわかります。
+次に、以下のコマンドを計算ノードのうちの1ノードでジョブ投入ユーザで実行し、インタラクティブに **mpirun** で起動する場合の結果を確認します。
+
+```sh
+$ module load openmpi omb
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_latency -x 1000 -i 10000 -m 1:1
+[inst-xsyjo-x9-ol905:263038] SET UCX_NET_DEVICES=mlx5_2:1
+
+# OSU MPI Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.67
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_init
+[inst-ntoae-x9-ol810:52203] SET UCX_NET_DEVICES=mlx5_2:1
+# OSU MPI Init Test v7.5
+nprocs: 144, min: 2163 ms, max: 2215 ms, avg: 2182 ms
+$
+```
+
+この結果より、2ノード間のレイテンシが約 **0.2 μ秒** 改善されていることがわかります。  
+4ノード間のMPI_Init所要時間は、目立った差異が見られませんが、16ノード576MPIプロセスでその差を比較した場合は、以下のように **20パーセント** 程度の性能向上が見られます。
+
+|          | 4ノード間のMPI_Init所要時間 |
+| :------: | ------------------: |
+| バッチジョブ   | 3,878 ms           |
+| インタラクティブ | 4,981 ms           |
 
 次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、終了したジョブのアカウンティング情報を取得できることを確認します。
 

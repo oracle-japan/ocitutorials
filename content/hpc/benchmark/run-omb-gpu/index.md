@@ -103,7 +103,7 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
 ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ1バイトでのレイテンシを計測しています。  
-使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
 
 ```sh
 $ module load nvhpc openmpi omb
