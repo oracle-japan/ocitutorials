@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-22T16:05:01+09:00"
+      content="2025-10-24T14:17:25+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法",
       "description": "HPC\/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC\/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC\/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC\/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1397",
+      "wordCount" : "1438",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-22T16:05:01.00Z",
+      "dateModified": "2025-10-24T14:17:25.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-22T16:05:01+09:00">
+    <meta property="article:modified_time" content="2025-10-24T14:17:25+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -408,8 +408,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-22T16:05:01&#43;09:00">
-            Oct 22, 2025
+        <time datetime="2025-10-24T14:17:25&#43;09:00">
+            Oct 24, 2025
         </time>
     
 </span>
@@ -472,8 +472,8 @@ table, th, td {
   href="https://openucx.org/"
 >UCX</a></strong> を取り込んだ <strong>Slurm</strong> 環境を構築し、初期化処理時間の効果を検証すべく、 <strong><a
   class="gdoc-markdown__link"
-  href="https://github.com/intel/mpi-benchmarks"
->Intel MPI Benchmarks</a></strong> PingPongのレイテンシに着目して比較・検証を実施します。</p>
+  href="https://mvapich.cse.ohio-state.edu/benchmarks/"
+>OSU Micro-Benchmarks</a></strong> で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して比較・検証を実施します。</p>
 <p>なお、 <strong>Ubuntu</strong> をOSとするNVIDIA製GPUを複数搭載するベアメタルインスタンスのGPUリソース管理やジョブ管理を <strong>Slurm</strong> で行う環境の構築方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
@@ -548,7 +548,7 @@ table, th, td {
   alt="画面ショット"
   
 /></p>
-<p>※2）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続された2ノードの <strong><a
+<p>※2）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続された4ノードの <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> を、 <strong><a
@@ -607,17 +607,11 @@ table, th, td {
   href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
 >OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
-  href="../../benchmark/run-imb/"
->Intel MPI Benchmarks実行方法</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
->1. OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、 <strong><a
+  href="../../benchmark/run-omb/"
+>OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）</a></strong> の手順に従い、 <strong><a
   class="gdoc-markdown__link"
   href="#3-%e7%a8%bc%e5%83%8d%e7%a2%ba%e8%aa%8d"
->3. 稼働確認</a></strong> で使用する <strong><a
-  class="gdoc-markdown__link"
-  href="https://github.com/intel/mpi-benchmarks"
->Intel MPI Benchmarks</a></strong> をインストールします。</p>
+>3. 稼働確認</a></strong> で使用する <strong>OSU Micro-Benchmarks</strong> をインストールします。</p>
 <p>本テクニカルTipsの各サブシステムのホスト名は、以下とします。<br>
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。</p>
 <div class="table-wrap"> <table>
@@ -638,7 +632,7 @@ table, th, td {
       </tr>
       <tr>
           <td style="text-align: center">計算ノード</td>
-          <td style="text-align: center">inst-aaaaa-x9<br>inst-bbbbb-x9</td>
+          <td style="text-align: center">inst-aaaaa-x9<br>inst-bbbbb-x9<br>inst-ccccc-x9<br>inst-ddddd-x9</td>
       </tr>
   </tbody>
 </table> </div>
@@ -1033,7 +1027,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">AccountingStorageHost</span><span class="o">=</span>slurm-srv
 </span></span><span class="line"><span class="cl"><span class="nv">AccountingStoragePort</span><span class="o">=</span><span class="m">7004</span>
 </span></span><span class="line"><span class="cl"><span class="nv">MpiDefault</span><span class="o">=</span>pmix
-</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9 <span class="nv">CPUs</span><span class="o">=</span><span class="m">36</span> <span class="nv">Boards</span><span class="o">=</span><span class="m">1</span> <span class="nv">SocketsPerBoard</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">18</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">500000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 <span class="nv">CPUs</span><span class="o">=</span><span class="m">36</span> <span class="nv">Boards</span><span class="o">=</span><span class="m">1</span> <span class="nv">SocketsPerBoard</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">18</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">500000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 </span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>sltest <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </span></span><span class="line"><span class="cl"><span class="nv">TaskPlugin</span><span class="o">=</span>task/affinity
 </span></span></code></pre></div><p>なお、 <strong>SlurmctldHost</strong> 、 <strong>AccountingStorageHost</strong> 、及び <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。</p>
@@ -1086,7 +1080,7 @@ table, th, td {
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sinfo
 </span></span><span class="line"><span class="cl">PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
-</span></span><span class="line"><span class="cl">sltest*      up   infinite      <span class="m">2</span>   idle inst-aaaaa-x9,inst-bbbbb-x9
+</span></span><span class="line"><span class="cl">sltest*      up   infinite      <span class="m">4</span>   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、 <strong>PMIx</strong> が利用可能になっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun --mpi<span class="o">=</span>list
@@ -1117,50 +1111,74 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認と <strong>PMIx</strong> の効果を確認するため、ジョブ投入ユーザで <strong>Intel MPI Benchmarks</strong> を実行するバッチジョブを <strong>srun</strong> で起動する場合と <strong>mpirun</strong> で起動する場合の2種類実行し、その結果を比較します。<br>
-またこのジョブの終了後、そのアカウンティング情報を取得できることを確認します。</p>
-<p><strong>srun</strong> を利用する場合（ <strong>srun.sh</strong> ）と <strong>mpirun</strong> を利用する場合（ <strong>mpirun.sh</strong> ）で、以下のように<strong>Intel MPI Benchmarks</strong> を実行する2種類のジョブスクリプトをジョブ投入ユーザのホームディレクトリ直下に作成します。</p>
-<p>[ <strong>srun.sh</strong> ]</p>
+<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認と <strong>PMIx</strong> の効果を確認するため、 <strong>OSU Micro-Benchmarks</strong> で2ノード間のレイテンシと4ノード間のMPI_Init所要時間をバッチジョブとインタラクティブで計測し、その結果を比較します。<br>
+またこのバッチジョブがアカウンティング情報に記録されていることを確認します。</p>
+<p>以下のスクリプトをファイル名 <strong>srun.sh</strong> で作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_pong_srun</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 144</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 4</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J srun</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">module load openmpi imb
+</span></span><span class="line"><span class="cl">module load openmpi omb
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">srun IMB-MPI1 -msglog 28:28 pingpong
-</span></span></code></pre></div><p>[ <strong>mpirun.sh</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
-</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 2</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -J ping_pong_mpirun</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">module load openmpi imb
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">mpirun IMB-MPI1 -msglog 28:28 pingpong
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Start osu_latency&#34;</span>
+</span></span><span class="line"><span class="cl">srun -n <span class="m">2</span> -N <span class="m">2</span> osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s2">&#34;Start osu_init&#34;</span>
+</span></span><span class="line"><span class="cl">srun osu_init
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、バッチジョブの投入とその結果確認を行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> sbatch srun.sh
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sbatch srun.sh
 </span></span><span class="line"><span class="cl">Submitted batch job <span class="m">3</span>
-</span></span><span class="line"><span class="cl">$ grep -A <span class="m">2</span> usec stdout.3
-</span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.47         0.00
-</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21925.54     12243.05
-</span></span><span class="line"><span class="cl">$ sbatch mpirun.sh
-</span></span><span class="line"><span class="cl">Submitted batch job <span class="m">4</span>
-</span></span><span class="line"><span class="cl">$ grep -A <span class="m">3</span> usec stdout.4
-</span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
-</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.67         0.00
-</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21955.08     12226.58
+</span></span><span class="line"><span class="cl">$ cat stdout.3
+</span></span><span class="line"><span class="cl">Start osu_latency
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.51
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Start osu_init
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI Init Test v7.5</span>
+</span></span><span class="line"><span class="cl">nprocs: 144, min: <span class="m">2032</span> ms, max: <span class="m">2054</span> ms, avg: <span class="m">2048</span> ms
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>この結果より、 <strong>srun</strong> を利用することでMPI通信の初期化処理に要する時間が短縮され、レイテンシが <strong>0.2 μ秒</strong> 改善されていることがわかります。</p>
+</span></span></code></pre></div><p>次に、以下のコマンドを計算ノードのうちの1ノードでジョブ投入ユーザで実行し、インタラクティブに <strong>mpirun</strong> で起動する場合の結果を確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi omb
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-xsyjo-x9-ol905:263038<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.67
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">144</span> -N <span class="m">36</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH osu_init
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-ntoae-x9-ol810:52203<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI Init Test v7.5</span>
+</span></span><span class="line"><span class="cl">nprocs: 144, min: <span class="m">2163</span> ms, max: <span class="m">2215</span> ms, avg: <span class="m">2182</span> ms
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>この結果より、2ノード間のレイテンシが約 <strong>0.2 μ秒</strong> 改善されていることがわかります。<br>
+4ノード間のMPI_Init所要時間は、目立った差異が見られませんが、16ノード576MPIプロセスでその差を比較した場合は、以下のように <strong>20パーセント</strong> 程度の性能向上が見られます。</p>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th style="text-align: center"></th>
+          <th style="text-align: right">4ノード間のMPI_Init所要時間</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">バッチジョブ</td>
+          <td style="text-align: right">3,878 ms</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">インタラクティブ</td>
+          <td style="text-align: right">4,981 ms</td>
+      </tr>
+  </tbody>
+</table> </div>
 <p>次に、以下コマンドをSlurmクライアントのジョブ投入ユーザで実行し、終了したジョブのアカウンティング情報を取得できることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sacct -j <span class="m">3</span> -o JobID,User,AllocCPUS,Start,End
 </span></span><span class="line"><span class="cl">JobID             User  AllocCPUS               Start                 End 

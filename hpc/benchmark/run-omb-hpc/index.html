@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-15T17:12:21+09:00"
+      content="2025-10-24T14:17:25+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "518",
+      "wordCount" : "565",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-15T17:12:21.00Z",
+      "dateModified": "2025-10-24T14:17:25.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-15T17:12:21+09:00">
+    <meta property="article:modified_time" content="2025-10-24T14:17:25+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -325,6 +325,7 @@
         <li><a href="#3-2-2ノード間のレイテンシ">3-2. 2ノード間のレイテンシ</a></li>
         <li><a href="#3-3-2ノード間の帯域幅">3-3. 2ノード間の帯域幅</a></li>
         <li><a href="#3-4-4ノード間のallreduce">3-4. 4ノード間のAllreduce</a></li>
+        <li><a href="#3-5-4ノード間のmpi_init所要時間">3-5. 4ノード間のMPI_Init所要時間</a></li>
       </ul>
       
     </section>
@@ -399,8 +400,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-15T17:12:21&#43;09:00">
-            Oct 15, 2025
+        <time datetime="2025-10-24T14:17:25&#43;09:00">
+            Oct 24, 2025
         </time>
     
 </span>
@@ -431,10 +432,26 @@
   href="https://www.open-mpi.org/"
 >OpenMPI</a></strong> でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。</p>
 <ol>
-<li>1ノード内全コアを使用するAlltoall</li>
-<li>2ノード間のレイテンシ</li>
-<li>2ノード間の帯域幅</li>
-<li>4ノード間のAllreduce</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-1-1%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85%e5%85%a8%e3%82%b3%e3%82%a2%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8balltoall"
+>1ノード内全コアを使用するAlltoall</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-2-2%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93%e3%81%ae%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7"
+>2ノード間のレイテンシ</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-3-2%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93%e3%81%ae%e5%b8%af%e5%9f%9f%e5%b9%85"
+>2ノード間の帯域幅</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-4-4%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93%e3%81%aeallreduce"
+>4ノード間のAllreduce</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-5-4%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93%e3%81%aempi_init%e6%89%80%e8%a6%81%e6%99%82%e9%96%93"
+>4ノード間のMPI_Init所要時間</a></strong></li>
 </ol>
 <p>本ドキュメントで <strong>OSU Micro-Benchmarks</strong> を実行するHPCクラスタは、計算ノードに第3世代 <strong>Intel Xeon</strong> プロセッサを搭載するベア・メタル・シェイプ <strong><a
   class="gdoc-markdown__link"
@@ -492,8 +509,8 @@
 >Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> に従って構築された <strong>OpenMPI</strong> です。</p>
 <p>以下の性能が出ています。</p>
 <ul>
-<li>レイテンシ: 1.67 usec</li>
-<li>帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s</li>
+<li>2ノード間のレイテンシ: 1.67 usec</li>
+<li>2ノード間の帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s</li>
 </ul>
 <p>以降では、以下の順に解説します。</p>
 <ol>
@@ -699,6 +716,23 @@
 </span></span><span class="line"><span class="cl"><span class="m">67108864</span>           119121.65
 </span></span><span class="line"><span class="cl"><span class="m">134217728</span>          251878.54
 </span></span><span class="line"><span class="cl"><span class="m">268435456</span>          496306.98
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-5-4ノード間のmpi_init所要時間"
+    >
+        3-5. 4ノード間のMPI_Init所要時間
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-hpc/#3-5-4ノード間のmpi_init所要時間" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-5. 4ノード間のMPI_Init所要時間" aria-label="アンカー先: 3-5. 4ノード間のMPI_Init所要時間" href="#3-5-4%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93%e3%81%aempi_init%e6%89%80%e8%a6%81%e6%99%82%e9%96%93">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>以下コマンドを <strong>OSU Micro-Benchmarks</strong> を実行するユーザで何れか1ノードで実行します。<br>
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したMPI_Initの所要時間を計測しています。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi omb
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">144</span> -N <span class="m">36</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH osu_init
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-ntoae-x9-ol810:19647<span class="o">]</span> SET <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI Init Test v7.5</span>
+</span></span><span class="line"><span class="cl">nprocs: 144, min: <span class="m">2170</span> ms, max: <span class="m">2216</span> ms, avg: <span class="m">2187</span> ms
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div>
   </article>
