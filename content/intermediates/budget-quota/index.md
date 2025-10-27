@@ -4,6 +4,7 @@ description: "予期せぬコスト増加を避けるために、テナンシの
 weight: 105
 tags:
   - コスト管理
+  - アカウント管理
 images:
 - /intermediates/budget-quota/cost.png
 #link: 
