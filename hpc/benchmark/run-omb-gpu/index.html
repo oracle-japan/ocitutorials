@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-24T14:17:25+09:00"
+      content="2025-10-27T18:26:13+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU4.8\/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPUデバイスメモリ間のMPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "630",
+      "wordCount" : "1291",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-24T14:17:25.00Z",
+      "dateModified": "2025-10-27T18:26:13.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-24T14:17:25+09:00">
+    <meta property="article:modified_time" content="2025-10-27T18:26:13+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -320,8 +320,8 @@
     <li><a href="#1-osu-micro-benchmarksインストールセットアップ">1. OSU Micro-Benchmarksインストール・セットアップ</a></li>
     <li><a href="#2-osu-micro-benchmarks実行">2. OSU Micro-Benchmarks実行</a>
       <ul>
-        <li><a href="#2-1-ノード内gpuデバイスメモリ間レイテンシ">2-1. ノード内GPUデバイスメモリ間レイテンシ</a></li>
-        <li><a href="#2-2-ノード内gpuデバイスメモリ間帯域幅">2-2. ノード内GPUデバイスメモリ間帯域幅</a></li>
+        <li><a href="#2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ">2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ</a></li>
+        <li><a href="#2-2-ノード内ホストメモリgpuデバイスメモリ間帯域幅">2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅</a></li>
         <li><a href="#2-3-2ノードに跨るgpuデバイスメモリ間レイテンシ">2-3. 2ノードに跨るGPUデバイスメモリ間レイテンシ</a></li>
         <li><a href="#2-4-2ノードに跨るgpuデバイスメモリ間帯域幅">2-4. 2ノードに跨るGPUデバイスメモリ間帯域幅</a></li>
         <li><a href="#2-5-ノード内8個のgpuを使用するnccl-allreduce通信性能">2-5. ノード内8個のGPUを使用するNCCL Allreduce通信性能</a></li>
@@ -400,8 +400,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-24T14:17:25&#43;09:00">
-            Oct 24, 2025
+        <time datetime="2025-10-27T18:26:13&#43;09:00">
+            Oct 27, 2025
         </time>
     
 </span>
@@ -434,12 +434,12 @@
 <ol>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-1-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85gpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7"
->ノード内GPUデバイスメモリ間レイテンシ</a></strong></li>
+  href="#2-1-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85%e3%83%9b%e3%82%b9%e3%83%88%e3%83%a1%e3%83%a2%e3%83%aagpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7"
+>ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-2-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85gpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e5%b8%af%e5%9f%9f%e5%b9%85"
->ノード内GPUデバイスメモリ間帯域幅</a></strong></li>
+  href="#2-2-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85%e3%83%9b%e3%82%b9%e3%83%88%e3%83%a1%e3%83%a2%e3%83%aagpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e5%b8%af%e5%9f%9f%e5%b9%85"
+>ノード内ホストメモリ・GPUデバイスメモリ間帯域幅</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
   href="#2-3-2%e3%83%8e%e3%83%bc%e3%83%89%e3%81%ab%e8%b7%a8%e3%82%8bgpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7"
@@ -494,7 +494,7 @@
 <li><strong>OpenMPI</strong> ： 5.0.8</li>
 <li><strong>OSU Micro-Benchmarks</strong> ： 7.5.1</li>
 </ul>
-<p>2 GPU間のレイテンシと帯域幅に関して以下の性能が出ています。</p>
+<p>GPUデバイスメモリ間のレイテンシと帯域幅に関して以下の性能が出ています。</p>
 <div class="table-wrap"> <table>
   <thead>
       <tr>
@@ -507,7 +507,7 @@
       <tr>
           <td style="text-align: center">レイテンシ</td>
           <td style="text-align: center">ノード内</td>
-          <td style="text-align: center">2.50 us</td>
+          <td style="text-align: center">2.46 us</td>
       </tr>
       <tr>
           <td style="text-align: center"></td>
@@ -517,12 +517,97 @@
       <tr>
           <td style="text-align: center">帯域幅</td>
           <td style="text-align: center">ノード内</td>
-          <td style="text-align: center">279,568 MB/s</td>
+          <td style="text-align: center">279,573 MB/s</td>
       </tr>
       <tr>
           <td style="text-align: center"></td>
           <td style="text-align: center">2ノード間</td>
           <td style="text-align: center">11,962 MB/s</td>
+      </tr>
+  </tbody>
+</table> </div>
+<p>また、同一ノード内のGPUデバイスメモリ・ホストメモリ間のレイテンシと帯域幅に関して以下の性能が出ています。</p>
+<div class="table-wrap"> <table>
+  <thead>
+      <tr>
+          <th style="text-align: center">測定項目</th>
+          <th style="text-align: center">方向</th>
+          <th style="text-align: center">接続位置</th>
+          <th style="text-align: center">測定結果</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">レイテンシ</td>
+          <td style="text-align: center">ホストメモリ -&gt; GPUデバイスメモリ</td>
+          <td style="text-align: center">同一NUMAノード</td>
+          <td style="text-align: center">1.31 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">同一ソケットで異なるNUMAノード</td>
+          <td style="text-align: center">1.65 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">異なるソケット</td>
+          <td style="text-align: center">1.93 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">GPUデバイスメモリ -&gt; ホストメモリ</td>
+          <td style="text-align: center">同一NUMAノード</td>
+          <td style="text-align: center">1.30 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">同一ソケットで異なるNUMAノード</td>
+          <td style="text-align: center">1.67 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">異なるソケット</td>
+          <td style="text-align: center">1.94 us</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">帯域幅</td>
+          <td style="text-align: center">ホストメモリ -&gt; GPUデバイスメモリ</td>
+          <td style="text-align: center">同一NUMAノード</td>
+          <td style="text-align: center">23,752 MB/s</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">同一ソケットで異なるNUMAノード</td>
+          <td style="text-align: center">23,737 MB/s</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">異なるソケット</td>
+          <td style="text-align: center">23,440 MB/s</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">GPUデバイスメモリ -&gt; ホストメモリ</td>
+          <td style="text-align: center">同一NUMAノード</td>
+          <td style="text-align: center">21,955 MB/s</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">同一ソケットで異なるNUMAノード</td>
+          <td style="text-align: center">21,942 MB/s</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">異なるソケット</td>
+          <td style="text-align: center">21,966 MB/s</td>
       </tr>
   </tbody>
 </table> </div>
@@ -562,7 +647,6 @@
 <p>以下コマンドを <strong>OSU Micro-Benchmarks</strong> を実行する全てのノードのubuntuユーザで実行します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
-</span></span><span class="line"><span class="cl">$ module purge
 </span></span><span class="line"><span class="cl">$ module load nvhpc openmpi
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> osu-micro-benchmarks-7.5.1 <span class="o">&amp;&amp;</span> ./configure <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx --prefix<span class="o">=</span>/opt/openmpi/tests/omb --enable-cuda --with-cuda-include<span class="o">=</span>/usr/local/cuda-12.9/include --with-cuda-libpath<span class="o">=</span>/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl<span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 </span></span></code></pre></div><p>次に、カレントディレクトリに作成されたファイル <strong>libtool</strong> を以下のように修正します。</p>
@@ -599,44 +683,156 @@
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-1-ノード内gpuデバイスメモリ間レイテンシ"
+    <h2 id="2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ"
     >
-        2-1. ノード内GPUデバイスメモリ間レイテンシ
+        2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-gpu/#2-1-ノード内gpuデバイスメモリ間レイテンシ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. ノード内GPUデバイスメモリ間レイテンシ" aria-label="アンカー先: 2-1. ノード内GPUデバイスメモリ間レイテンシ" href="#2-1-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85gpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-gpu/#2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ" aria-label="アンカー先: 2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ" href="#2-1-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85%e3%83%9b%e3%82%b9%e3%83%88%e3%83%a1%e3%83%a2%e3%83%aagpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e3%83%ac%e3%82%a4%e3%83%86%e3%83%b3%e3%82%b7">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>以下コマンドを対象ノードで <strong>OSU Micro-Benchmarks</strong> 実行ユーザで実行します。<br>
-ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ1バイトでのレイテンシを計測しています。<br>
-使用するGPUが0番と1番になるのは、 <strong>OSU Micro-Benchmarks</strong> がMPIプロセスを割り当てるGPUを決定する際、 <strong>OpenMPI</strong> の環境変数 <strong>OMPI_COMM_WORLD_LOCAL_RANK</strong> 環境変数と同じGPU番号のGPUを選択するためです。</p>
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ1バイトでのレイテンシを、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のホストメモリの間の&quot;ホストメモリ -&gt; GPUデバイスメモリ&quot;方向と&quot;GPUデバイスメモリ -&gt; ホストメモリ&quot;方向で、計7種類計測しています。</p>
+<ul>
+<li>同一NUMAノードに接続するホストメモリ</li>
+<li>同一ソケットで異なるNUMAノードに接続するホストメモリ</li>
+<li>異なるソケットに接続するホストメモリ</li>
+</ul>
+<p>使用するGPU番号が0と1になるのは、 <strong>OSU Micro-Benchmarks</strong> がMPIプロセスを割り当てるGPUを決定する際、 <strong>OpenMPI</strong> の環境変数 <strong>OMPI_COMM_WORLD_LOCAL_RANK</strong> 環境変数と同じGPU番号のGPUを選択するためです。</p>
+<p>なお <strong>BM.GPU4.8</strong> は、2個のソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、ソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load nvhpc openmpi omb
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D D
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --report-bindings osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-h3f2o-ao-ub24:35751<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-h3f2o-ao-ub24:35751<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:1<span class="o">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
-</span></span><span class="line"><span class="cl"><span class="m">1</span>                       2.50
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       2.46
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>24,25:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13044<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:24<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13044<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.31
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>0,25:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13100<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13100<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.65
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>32,25:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13150<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>1<span class="o">][</span>core:32<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13150<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.93
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,24:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13210<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13210<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:24<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.30
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,0:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13266<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13266<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.67
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,32:ordered --report-bindings numactl -l osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13324<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13324<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>1<span class="o">][</span>core:32<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       1.94
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-2-ノード内gpuデバイスメモリ間帯域幅"
+    <h2 id="2-2-ノード内ホストメモリgpuデバイスメモリ間帯域幅"
     >
-        2-2. ノード内GPUデバイスメモリ間帯域幅
+        2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-gpu/#2-2-ノード内gpuデバイスメモリ間帯域幅" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. ノード内GPUデバイスメモリ間帯域幅" aria-label="アンカー先: 2-2. ノード内GPUデバイスメモリ間帯域幅" href="#2-2-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85gpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e5%b8%af%e5%9f%9f%e5%b9%85">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/benchmark/run-omb-gpu/#2-2-ノード内ホストメモリgpuデバイスメモリ間帯域幅" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅" aria-label="アンカー先: 2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅" href="#2-2-%e3%83%8e%e3%83%bc%e3%83%89%e5%86%85%e3%83%9b%e3%82%b9%e3%83%88%e3%83%a1%e3%83%a2%e3%83%aagpu%e3%83%87%e3%83%90%e3%82%a4%e3%82%b9%e3%83%a1%e3%83%a2%e3%83%aa%e9%96%93%e5%b8%af%e5%9f%9f%e5%b9%85">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>以下コマンドを対象ノードで <strong>OSU Micro-Benchmarks</strong> 実行ユーザで実行します。<br>
-ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ256 MiBバイトでの帯域幅を計測しています。<br>
-使用するGPUが0番と1番になるのは、 <strong>OSU Micro-Benchmarks</strong> がMPIプロセスを割り当てるGPUを決定する際、 <strong>OpenMPI</strong> の環境変数 <strong>OMPI_COMM_WORLD_LOCAL_RANK</strong> 環境変数と同じGPU番号とするためです。</p>
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ256 MiBでの帯域幅を、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のホストメモリの間のホストメモリ -&gt; デバイスメモリ&quot;方向と&quot;デバイスメモリ -&gt; ホストメモリ&quot;方向で、計7種類計測しています。</p>
+<ul>
+<li>同一NUMAノードに接続するホストメモリ</li>
+<li>同一ソケットで異なるNUMAノードに接続するホストメモリ</li>
+<li>異なるソケットに接続するホストメモリ</li>
+</ul>
+<p>使用するGPU番号が0と1になるのは、 <strong>OSU Micro-Benchmarks</strong> がMPIプロセスを割り当てるGPUを決定する際、 <strong>OpenMPI</strong> の環境変数 <strong>OMPI_COMM_WORLD_LOCAL_RANK</strong> 環境変数と同じGPU番号のGPUを選択するためです。</p>
+<p>なお <strong>BM.GPU4.8</strong> は、2個のソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、ソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load nvhpc openmpi omb
-</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D D
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --report-bindings osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-h3f2o-ao-ub24:35062<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-h3f2o-ao-ub24:35062<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:1<span class="o">]</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
-</span></span><span class="line"><span class="cl"><span class="m">268435456</span>          279568.26
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>          279573.25
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>24,25:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13431<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:24<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13431<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           23751.60
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>0,25:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13493<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13493<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           23736.70
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>32,25:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda H D
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13561<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>1<span class="o">][</span>core:32<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13561<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           23439.57
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,24:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13644<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13644<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:24<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           21954.50
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,0:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13718<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13718<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:0<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           21941.79
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> --map-by pe-list<span class="o">=</span>25,32:ordered --report-bindings numactl -l osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D H
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13783<span class="o">]</span> Rank <span class="m">0</span> bound to package<span class="o">[</span>0<span class="o">][</span>core:25<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>inst-qurnl-ao-ub24:13783<span class="o">]</span> Rank <span class="m">1</span> bound to package<span class="o">[</span>1<span class="o">][</span>core:32<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>           21965.65
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-3-2ノードに跨るgpuデバイスメモリ間レイテンシ"
