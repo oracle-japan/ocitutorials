@@ -61,7 +61,7 @@ Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpc
 
 計算ノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPCクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../build-openmpi-ol9/)** の手順に従い、 **OpenMPI** を計算ノードにインストールします。
 
-またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb/)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **OSU Micro-Benchmarks** をインストールします。
+またSlurmクライアントと計算ノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb-hpc/)** の **[2. OSU Micro-Benchmarksインストール・セットアップ](../../benchmark/run-omb-hpc/#2-osu-micro-benchmarksインストールセットアップ)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **OSU Micro-Benchmarks** をインストールします。
 
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。

@@ -49,6 +49,8 @@ Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpc
 
 GPUノードは、単一GPUノードの場合は **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../gpu-with-ubuntu/)** の手順に従いインスタンスの作成とGPU関連ソフトウェアをインストールし、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続されたGPUクラスタの場合は **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu)** の手順に従い構築します。
 
+またSlurmクライアントとGPUノードは、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** の **[1. OSU Micro-Benchmarksインストール・セットアップ](../../benchmark/run-omb-gpu/#1-osu-micro-benchmarksインストールセットアップ)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **OSU Micro-Benchmarks** をインストールします。
+
 本テクニカルTipsの各サブシステムのホスト名は、以下とします。  
 以降の章では、これらのホスト名を自身の環境に置き換えて使用して下さい。
 
@@ -487,9 +489,6 @@ $ echo "export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH" | tee -a ~/.bashrc
 - ノード内GPUデバイスメモリ間帯域幅を **OSU Micro-Benchmarks** で確認
 - 使用したGPUリソースがジョブアカウンティング情報に記録されることを確認
 - 設定したGPU/CPUアフィニティが想定通りに行われることを確認
-
-なお、 **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** をSlurmクライアントとGPUノードに予めインストール・セットアップしておきます。  
-この手順は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** の **[1. OSU Micro-Benchmarksインストール・セットアップ](../../benchmark/run-omb-gpu/#1-osu-micro-benchmarksインストールセットアップ)** を参照してください。
 
 以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **Slurm** が割り当てるGPU数が **- -gres** オプションの指定通りとなっていることを確認します。  
 また、最後のコマンドの出力から、GPU番号とそのPCIバスIDの8個の組み合わせを記録しておきます。

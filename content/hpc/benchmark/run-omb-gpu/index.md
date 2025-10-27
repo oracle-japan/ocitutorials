@@ -12,8 +12,8 @@ params:
 
 本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、GPUクラスタのノード間接続インターコネクトを介するGPUデバイスメモリ間MPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下5種類の性能指標を計測する実行方法を解説します。
 
-1. **[ノード内GPUデバイスメモリ間レイテンシ](#2-1-ノード内gpuデバイスメモリ間レイテンシ)**
-2. **[ノード内GPUデバイスメモリ間帯域幅](#2-2-ノード内gpuデバイスメモリ間帯域幅)**
+1. **[ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ](#2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ)**
+2. **[ノード内ホストメモリ・GPUデバイスメモリ間帯域幅](#2-2-ノード内ホストメモリgpuデバイスメモリ間帯域幅)**
 3. **[2ノードに跨るGPUデバイスメモリ間レイテンシ](#2-3-2ノードに跨るgpuデバイスメモリ間レイテンシ)**
 4. **[2ノードに跨るGPUデバイスメモリ間帯域幅](#2-4-2ノードに跨るgpuデバイスメモリ間帯域幅)**
 5. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-5-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
@@ -33,14 +33,31 @@ params:
 - **OpenMPI** ： 5.0.8
 - **OSU Micro-Benchmarks** ： 7.5.1
 
-2 GPU間のレイテンシと帯域幅に関して以下の性能が出ています。
+GPUデバイスメモリ間のレイテンシと帯域幅に関して以下の性能が出ています。
 
 | 測定項目  | ノード内/2ノード間 | 測定結果         |
 | :---: | :--------: | :----------: |
-| レイテンシ | ノード内       | 2.50 us      |
+| レイテンシ | ノード内       | 2.46 us      |
 |       | 2ノード間      | 3.89 us      |
-| 帯域幅   | ノード内       | 279,568 MB/s |
+| 帯域幅   | ノード内       | 279,573 MB/s |
 |       | 2ノード間      | 11,962 MB/s  |
+
+また、同一ノード内のGPUデバイスメモリ・ホストメモリ間のレイテンシと帯域幅に関して以下の性能が出ています。
+
+| 測定項目  | 方向                   | 接続位置              | 測定結果        |
+| :---: | :------------------: | :---------------: | :---------: |
+| レイテンシ | ホストメモリ -> GPUデバイスメモリ | 同一NUMAノード         | 1.31 us     |
+|       |                      | 同一ソケットで異なるNUMAノード | 1.65 us     |
+|       |                      | 異なるソケット           | 1.93 us     |
+|       | GPUデバイスメモリ -> ホストメモリ | 同一NUMAノード         | 1.30 us     |
+|       |                      | 同一ソケットで異なるNUMAノード | 1.67 us     |
+|       |                      | 異なるソケット           | 1.94 us     |
+| 帯域幅   | ホストメモリ -> GPUデバイスメモリ | 同一NUMAノード         | 23,752 MB/s |
+|       |                      | 同一ソケットで異なるNUMAノード | 23,737 MB/s |
+|       |                      | 異なるソケット           | 23,440 MB/s |
+|       | GPUデバイスメモリ -> ホストメモリ | 同一NUMAノード         | 21,955 MB/s |
+|       |                      | 同一ソケットで異なるNUMAノード | 21,942 MB/s |
+|       |                      | 異なるソケット           | 21,966 MB/s |
 
 以降では、以下の順に解説します。
 
@@ -56,9 +73,8 @@ params:
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
-$ module purge
 $ module load nvhpc openmpi
-$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
+$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl --enable-openacc
 ```
 
 次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。
@@ -99,37 +115,154 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 
 # 2. OSU Micro-Benchmarks実行
 
-## 2-1. ノード内GPUデバイスメモリ間レイテンシ
+## 2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ1バイトでのレイテンシを計測しています。  
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ1バイトでのレイテンシを、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のGPUデバイスメモリ・ホストメモリ間の"ホストメモリ -> GPUデバイスメモリ"方向と"GPUデバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
+
+- 同一NUMAノードに接続するホストメモリ
+- 同一ソケットで異なるNUMAノードに接続するホストメモリ
+- 異なるソケットに接続するホストメモリ
+
 使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
+
+なお **BM.GPU4.8** は、2個のCPUソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、CPUソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、CPUソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
+
 
 ```sh
 $ module load nvhpc openmpi omb
-$ mpirun -n 2 osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
+$ mpirun -n 2 --report-bindings osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
+[inst-h3f2o-ao-ub24:35751] Rank 0 bound to package[0][core:0]
+[inst-h3f2o-ao-ub24:35751] Rank 1 bound to package[0][core:1]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
-1                       2.50
+1                       2.46
+$ mpirun -n 2 --map-by pe-list=24,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
+[inst-qurnl-ao-ub24:13044] Rank 0 bound to package[0][core:24]
+[inst-qurnl-ao-ub24:13044] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.31
+$ mpirun -n 2 --map-by pe-list=0,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
+[inst-qurnl-ao-ub24:13100] Rank 0 bound to package[0][core:0]
+[inst-qurnl-ao-ub24:13100] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.65
+$ mpirun -n 2 --map-by pe-list=32,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
+[inst-qurnl-ao-ub24:13150] Rank 0 bound to package[1][core:32]
+[inst-qurnl-ao-ub24:13150] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.93
+$ mpirun -n 2 --map-by pe-list=25,24:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
+[inst-qurnl-ao-ub24:13210] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13210] Rank 1 bound to package[0][core:24]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.30
+$ mpirun -n 2 --map-by pe-list=25,0:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
+[inst-qurnl-ao-ub24:13266] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13266] Rank 1 bound to package[0][core:0]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.67
+$ mpirun -n 2 --map-by pe-list=25,32:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
+[inst-qurnl-ao-ub24:13324] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13324] Rank 1 bound to package[1][core:32]
+
+# OSU MPI-CUDA Latency Test v7.5
+# Datatype: MPI_CHAR.
+# Size       Avg Latency(us)
+1                       1.94
 $
 ```
 
-## 2-2. ノード内GPUデバイスメモリ間帯域幅
+
+## 2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-ここでは、ノード内の0番GPUと1番GPU間のメッセージサイズ256 MiBバイトでの帯域幅を計測しています。  
-使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ256 MiBでの帯域幅を、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のGPUデバイスメモリ・ホストメモリ間のホストメモリ -> デバイスメモリ"方向と"デバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
+
+- 同一NUMAノードに接続するホストメモリ
+- 同一ソケットで異なるNUMAノードに接続するホストメモリ
+- 異なるソケットに接続するホストメモリ
+
+使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
+
+なお **BM.GPU4.8** は、2個のCPUソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、CPUソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、CPUソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
+
 
 ```sh
 $ module load nvhpc openmpi omb
-$ mpirun -n 2 osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
+$ mpirun -n 2 --report-bindings osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
+[inst-h3f2o-ao-ub24:35062] Rank 0 bound to package[0][core:0]
+[inst-h3f2o-ao-ub24:35062] Rank 1 bound to package[0][core:1]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
-268435456          279568.26
+268435456          279573.25
+$ mpirun -n 2 --map-by pe-list=24,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
+[inst-qurnl-ao-ub24:13431] Rank 0 bound to package[0][core:24]
+[inst-qurnl-ao-ub24:13431] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           23751.60
+$ mpirun -n 2 --map-by pe-list=0,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
+[inst-qurnl-ao-ub24:13493] Rank 0 bound to package[0][core:0]
+[inst-qurnl-ao-ub24:13493] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           23736.70
+$ mpirun -n 2 --map-by pe-list=32,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
+[inst-qurnl-ao-ub24:13561] Rank 0 bound to package[1][core:32]
+[inst-qurnl-ao-ub24:13561] Rank 1 bound to package[0][core:25]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           23439.57
+$ mpirun -n 2 --map-by pe-list=25,24:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
+[inst-qurnl-ao-ub24:13644] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13644] Rank 1 bound to package[0][core:24]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           21954.50
+$ mpirun -n 2 --map-by pe-list=25,0:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
+[inst-qurnl-ao-ub24:13718] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13718] Rank 1 bound to package[0][core:0]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           21941.79
+$ mpirun -n 2 --map-by pe-list=25,32:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
+[inst-qurnl-ao-ub24:13783] Rank 0 bound to package[0][core:25]
+[inst-qurnl-ao-ub24:13783] Rank 1 bound to package[1][core:32]
+
+# OSU MPI-CUDA Bandwidth Test v7.5
+# Datatype: MPI_CHAR.
+# Size      Bandwidth (MB/s)
+268435456           21965.65
 $
 ```
 
