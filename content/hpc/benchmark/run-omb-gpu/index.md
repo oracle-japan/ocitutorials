@@ -74,7 +74,7 @@ GPUデバイスメモリ間のレイテンシと帯域幅に関して以下の�
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
 $ module load nvhpc openmpi
-$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl --enable-openacc
+$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 ```
 
 次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。
@@ -118,15 +118,15 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 ## 2-1. ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ1バイトでのレイテンシを、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のGPUデバイスメモリ・ホストメモリ間の"ホストメモリ -> GPUデバイスメモリ"方向と"GPUデバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ1バイトでのレイテンシを、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のホストメモリの間の"ホストメモリ -> GPUデバイスメモリ"方向と"GPUデバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
 
 - 同一NUMAノードに接続するホストメモリ
 - 同一ソケットで異なるNUMAノードに接続するホストメモリ
 - 異なるソケットに接続するホストメモリ
 
-使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
+使用するGPU番号が0と1になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
 
-なお **BM.GPU4.8** は、2個のCPUソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、CPUソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、CPUソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
+なお **BM.GPU4.8** は、2個のソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、ソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
 
 
 ```sh
@@ -194,15 +194,15 @@ $
 ## 2-2. ノード内ホストメモリ・GPUデバイスメモリ間帯域幅
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ256 MiBでの帯域幅を、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のGPUデバイスメモリ・ホストメモリ間のホストメモリ -> デバイスメモリ"方向と"デバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
+ここでは、ノード内のホストメモリ・GPUデバイスメモリ間のメッセージサイズ256 MiBでの帯域幅を、GPU番号0とGPU番号1のGPUデバイスメモリ間と、GPU番号0/1とソケット・NUMAノードの観点で接続位置の異なる以下3種類のホストメモリの間のホストメモリ -> デバイスメモリ"方向と"デバイスメモリ -> ホストメモリ"方向で、計7種類計測しています。
 
 - 同一NUMAノードに接続するホストメモリ
 - 同一ソケットで異なるNUMAノードに接続するホストメモリ
 - 異なるソケットに接続するホストメモリ
 
-使用するGPUが0番と1番になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
+使用するGPU番号が0と1になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号のGPUを選択するためです。
 
-なお **BM.GPU4.8** は、2個のCPUソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、CPUソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、CPUソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
+なお **BM.GPU4.8** は、2個のソケットと8個のNUMAノードと64個のCPUコアと8個のGPUを搭載し、ソケット番号0側にNUMAノード番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にCPUコア番号32～63を収容し、NUMAノード番号3にCPUコア番号24～31とGPU番号0～1を収容します。
 
 
 ```sh
