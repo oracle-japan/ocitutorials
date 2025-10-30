@@ -60,7 +60,7 @@ Oracle AI Database関連サービスのチュートリアル
   Exadata 上で稼働する 自己稼働・自己保護・自己修復の自律型 Database
 
 - [Oracle AI Vector Search 編](./ai-vector-search)  
-  Oracle AI Vector Search を学ぶチュートリアルです。Always Free AAIDB の作成から、様々な使い方までを一通り体験します。
+  Oracle AI Vector Search を学ぶチュートリアルです。Always Free ADB の作成から、様々な使い方までを一通り体験します。
 
 - [Base Database Service 編](./basedb)  
   Base Database Service は、OCI 上で Oracle AI Database を手軽に使える、シンプルでベーシックなデータベース・サービスです。面倒な設定や複雑な運用なしで、すぐにデータベースの機能を活用できるのが特長です。

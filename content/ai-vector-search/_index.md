@@ -1,6 +1,6 @@
 ---
 title: "Oracle AI Database - Oracle AI Vector Searchを使ってみよう"
-description: "Oracle AI Vector Searchを学ぶチュートリアルです。Always Free AAIDBの作成から、様々な使い方までを一通り体験します。"
+description: "Oracle AI Vector Searchを学ぶチュートリアルです。Always Free ADBの作成から、様々な使い方までを一通り体験します。"
 tags:
   - データベース
   - AIと機械学習
@@ -34,8 +34,8 @@ Oracle AI Vector Search 機能は、ドキュメント、画像、その他の�
 Oracle AI Vector Search を使用すると、ビジネス・データにベクトル検索を追加して Cohere や ChatGPT などのジェネレーティブ AI と組み合わせながら精度の高い分析が可能になります。
 <br/>
 
-以下のチュートリアルでは Always Free AAIDB の作り方/仮想マシンへの Oracle AI Database Free のインストール方法から、Oracle AI Vector Search の様々な使い方を学んでいただける内容になっています。
-以下のチュートリアルでは Always Free AAIDB の作り方/仮想マシンへの Oracle AI Database Free のインストール方法から、Oracle AI Vector Search の様々な使い方を学んでいただける内容になっています。
+以下のチュートリアルでは Always Free ADB の作り方/仮想マシンへの Oracle AI Database Free のインストール方法から、Oracle AI Vector Search の様々な使い方を学んでいただける内容になっています。
+以下のチュートリアルでは Always Free ADB の作り方/仮想マシンへの Oracle AI Database Free のインストール方法から、Oracle AI Vector Search の様々な使い方を学んでいただける内容になっています。
 <br/>
 
 - **[101 : Always Free で 26ai の ADB インスタンスを作成してみよう](./ai-vector101-always-free-adb/)**
