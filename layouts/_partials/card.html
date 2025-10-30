@@ -1,0 +1,24 @@
+<div class="card">
+  <section class="card-image">
+    {{ if .Params.images }}
+      <img src="{{ absURL "" }}{{ index .Params.images 0 }}" alt="{{ .Title }}">
+    {{ else }}
+      <img src='{{ index .Site.Params.images 0 }}' alt="{{ .Title }}" loading="lazy">
+    {{ end }}
+  </section>
+  <section class="card-content">
+    <h2>{{ .Title }}</h2> 
+    {{ if .Params.tags }}
+      <div class="card-tags">
+        {{ range .Params.tags }}
+          <span class="tag">{{ . }}</span>
+        {{ end }}
+      </div>
+    {{ end }}
+      <div class="card-description ">
+        {{ with .Params.description }}
+          <p>{{ . }}</p>
+        {{ end }}
+      </div>
+  </section>
+</div>

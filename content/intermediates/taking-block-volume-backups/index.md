@@ -4,6 +4,8 @@ description: "運用管理を行う上で、データのバックアップは重
 weight: 040
 tags:
   - ストレージ
+  - バックアップ・冗長性
+  - 可用性・DR
 images:
 - "/intermediates/taking-block-volume-backups/img6.png"
 #link: https://community.oracle.com/tech/welcome/discussion/4474358/%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF-%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%99%E3%82%8B-oracle-cloud-infrastructure%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89

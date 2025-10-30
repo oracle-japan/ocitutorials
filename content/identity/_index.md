@@ -67,3 +67,6 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 
 + **[OCI IAM Identity DomainsでCSVファイルからユーザーとグループをインポートする](https://speakerdeck.com/oracle4engineer/identity-domain-importing-using-csv-file)**  
    本チュートリアルは外部のページで、OCI IAM Identity Domainsで提供されているサンプルファイルを利用したユーザーとグループをインポートするための設定手順を紹介しています。
+
++ **[OCI IAM Identity Domainsでユーザー自身にてMFAの要素管理を行う](https://speakerdeck.com/oracle4engineer/identity-domains-selfservice-mfa-factor-management)**  
+   本チュートリアルは外部のページで、OCI IAM Identity Domainsにてユーザーが自身のMFA要素を管理(確認、追加など)する手順を紹介しています。

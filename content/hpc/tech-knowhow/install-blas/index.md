@@ -1,14 +1,13 @@
 ---
 title: "線形代数演算ライブラリインストール・利用方法"
 description: "HPCワークロードを実行する際、行列やベクトルの線形代数演算を高速に実行する必要が生じます。これらの演算は、ソースコードを自作することで対応することも出来ますが、オープンソースで配布されている線形代数演算ライブラリであるBLASやOpenBLASを利用することで、開発工数の削減、保証された計算精度、高速な演算の実行等、様々なメリットを享受することが可能です。本テクニカルTipsは、BLASとOpenBLASをHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、Fortranのサンプルコードからこれを利用する方法を解説します。"
-weight: "353"
+weight: "356"
 tags:
 - hpc
 params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 **[BLAS](https://www.netlib.org/blas/)** は、ベクトルや行列の基本的な線形代数演算を行うサブルーチンを集めたライブラリで、インターフェース互換を維持してこれを高速化したものが **[OpenBLAS](https://github.com/OpenMathLib/OpenBLAS/wiki)** です。  
@@ -35,7 +34,6 @@ params:
 なお、本テクニカルTipsで使用するインスタンスは、シェイプを **BM.Optimized3.36** 、OSを **Oracle Linux** 8.9として予めデプロイしておきますが、この手順は **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** を参照してください。  
 またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化しておきますが、BIOS設定でこれを適用する場合は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
-***
 # 1. BLAS・OpenBLASインストール・セットアップ
 
 本章は、 **BLAS** と **OpenBLAS** をインストールし、利用に必要な環境設定を行います。  
@@ -84,7 +82,6 @@ params:
     $ source ~/.bashrc
     ```
 
-***
 # 2. サンプルプログラムコンパイル
 
 本章は、 **BLAS** の倍精度行列・行列積サブルーチン（DGEMM）を使用するFortranのサンプルプログラムを **BLAS** と **OpenBLAS** を使用してコンパイルし、実行バイナリを作成します。  
@@ -139,7 +136,6 @@ end program main
     $ gfortran -O3 -L/opt/OpenBLAS/lib -lopenblas -o openblas ./dgemm_timer.f90
     ```
 
-***
 # 3. サンプルプログラム実行
 
 本章は、先に作成した実行バイナリを実行し、 **BLAS** と **OpenBLAS** の性能を比較します。

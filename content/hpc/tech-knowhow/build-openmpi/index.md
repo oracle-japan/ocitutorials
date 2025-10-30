@@ -1,5 +1,5 @@
 ---
-title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法"
+title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）"
 description: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。"
 weight: "351"
 tags:
@@ -8,7 +8,6 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 **[Slurm](https://slurm.schedmd.com/)** 環境で **[OpenMPI](https://www.open-mpi.org/)** のアプリケーションを実行する場合、計算リソース確保、MPIプロセス起動、及びMPIプロセス間通信初期化をそれぞれ誰が行うか、ノード間リモート実行と起動コマンドに何を使用するかにより、以下3種類の動作モードが存在します。
@@ -69,7 +68,6 @@ params:
 
 なお、ここで構築する **OpenMPI** と連携する **Slurm** の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** を参照してください。  
 
-***
 # 1. インストール・セットアップ
 
 ## 1-0. 概要
@@ -135,7 +133,7 @@ $ make -j 36 && sudo make install
 ```sh
 $ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 128 && sudo make install
+$ make -j 36 && sudo make install
 ```
 
 次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
@@ -144,7 +142,6 @@ $ make -j 128 && sudo make install
 $ sudo modprobe -r xpmem
 $ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
 $ sudo depmod -a
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
 $ sudo modprobe xpmem
 ```
 
@@ -252,7 +249,6 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 
 なお、ここで実施するパスフレーズ無しのSSHアクセスのための手順は、 **OpenMPI** 単独で稼働確認を行うために実施しますが、 **PMIx** を使用する **Slurm** 環境では必要ありません。
 
-***
 # 2. 稼働確認
 
 ## 2-0. 概要

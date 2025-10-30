@@ -10,7 +10,6 @@ params:
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
-***
 # 0. 概要
 
 GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている **Ubuntu** もこれに含まれます。  
@@ -24,7 +23,7 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 
 ※1）**NVSwitch** を搭載するシェイプの場合のみインストールします。
 
-本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、GPUシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を例に解説します。
+本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の **NVIDIA A100** GPUを搭載するベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を例に解説します。
 
 1. **[CUDA Samples](https://github.com/nvidia/cuda-samples)**
 2. OpenACCサンプルプログラム
@@ -42,10 +41,9 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 
 ※2） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。
 
-***
 # 1. GPUインスタンス作成
 
-本章は、 **Ubuntu** をOSとする **BM.GPU4.8** を作成します。
+本章は、 **Ubuntu** をOSとしシェイプに **BM.GPU4.8** を使用するGPUインスタンスを作成します。
 
 OCIコンソールにログインし、GPUインスタンスを作成する **リージョン** を選択後、 **コンピュート** → **インスタンス** とメニューを辿ります。
 
@@ -116,13 +114,22 @@ Removed "/etc/systemd/system/multi-user.target.wants/unattended-upgrades.service
 $
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、apparmorサービスを永続的に停止します。
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **iptables** を永続的に停止します。
+
+```sh
+$ sudo iptables -P INPUT ACCEPT
+$ sudo iptables -P OUTPUT ACCEPT
+$ sudo iptables -P FORWARD ACCEPT
+$ sudo iptables -F
+$ sudo systemctl disable --now iptables
+```
+
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **AppArmor** を永続的に停止します。
 
 ```sh
 $ sudo systemctl disable --now apparmor
 ```
 
-***
 # 2. NVIDIA GPU関連ソフトウェアインストール
 
 ## 2-0. 概要
@@ -187,7 +194,6 @@ $ sudo apt install -y nvhpc-25-7-cuda-multi environment-modules
 $ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/modules/modulefiles/nvhpc
 ```
 
-***
 # 3. OpenMPIインストール・セットアップ
 
 ## 3-0. 概要
@@ -377,7 +383,6 @@ prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
 prepend-path MANPATH            $pkg_root/share/man
 ```
 
-***
 # 4. 動作確認
 
 ## 4-0. 概要
@@ -404,7 +409,6 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v12.9.zip
 $ unzip v12.9.zip
-$ module purge
 $ export PATH=/usr/local/cuda-12.9/bin:${PATH}
 $ cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j 128
 ```
@@ -506,14 +510,13 @@ main:
          76, #pragma acc loop gang, vector(128) /* blockIdx.x threadIdx.x */
              Generating reduction(+:sum)
 mpicc -O3 -acc -Minfo=accel  -gpu=cc80  main.o   -o run
-$ mpirun -n 2 -x UCX_NET_DEVICES=mlx5_4:1 -x UCX_TLS=rc,cuda_copy,gdr_copy ./run
-[inst-wyzi7-ao-ub24:41287] SET UCX_NET_DEVICES=mlx5_4:1
-[inst-wyzi7-ao-ub24:41287] SET UCX_TLS=rc,cuda_copy,gdr_copy
+$ mpirun -n 2 -x UCX_NET_DEVICES=mlx5_4:1 ./run
+[inst-v6xda-ao-ub24:17765] SET UCX_NET_DEVICES=mlx5_4:1
 num of GPUs = 8
-Rank 0: hostname = inst-wyzi7-ao-ub24, GPU num = 0
-Rank 1: hostname = inst-wyzi7-ao-ub24, GPU num = 1
+Rank 0: hostname = inst-v6xda-ao-ub24, GPU num = 0
+Rank 1: hostname = inst-v6xda-ao-ub24, GPU num = 1
 mean = 30.00
-Time =    0.008 [sec]
+Time =    0.007 [sec]
 $
 ```
 

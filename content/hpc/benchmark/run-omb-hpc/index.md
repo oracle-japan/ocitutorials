@@ -8,15 +8,15 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。
 
-1. 1ノード内全コアを使用するAlltoall
-2. 2ノード間のレイテンシ
-3. 2ノード間の帯域幅
-4. 4ノード間のAllreduce
+1. **[1ノード内全コアを使用するAlltoall](#3-1-1ノード内全コアを使用するalltoall)**
+2. **[2ノード間のレイテンシ](#3-2-2ノード間のレイテンシ)**
+3. **[2ノード間の帯域幅](#3-3-2ノード間の帯域幅)**
+4. **[4ノード間のAllreduce](#3-4-4ノード間のallreduce)**
+5. **[4ノード間のMPI_Init所要時間](#3-5-4ノード間のmpi_init所要時間)**
 
 本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、計算ノードに第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用してこれを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](../../#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
 
@@ -25,20 +25,20 @@ params:
 - 計算ノード
   - ノード数： 2 / 4
   - シェイプ : **BM.Optimized3.36** （搭載コア数36）
-  - OS ： **Oracle Linux** 8.10ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+  - OS ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - ノード間接続インターコネクト
   - **クラスタ・ネットワーク**
   - リンク速度： 100 Gbps
 - **OpenMPI** ： 5.0.8（※2）
 - **OSU Micro-Benchmarks** ： 7.5.1
 
-※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** です。  
-※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。  
+※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** / **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従って構築された **OpenMPI** です。
 
 以下の性能が出ています。
 
-- レイテンシ: 1.67 usec
-- 帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s
+- 2ノード間のレイテンシ: 1.67 usec
+- 2ノード間の帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s
 
 以降では、以下の順に解説します。
 
@@ -46,12 +46,10 @@ params:
 2. **[OSU Micro-Benchmarksインストール・セットアップ](#2-osu-micro-benchmarksインストールセットアップ)**
 3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
 
-***
 # 1. OpenMPIインストール  
 
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** か **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
-***
 # 2. OSU Micro-Benchmarksインストール・セットアップ
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
@@ -77,15 +75,14 @@ proc ModulesHelp { } {
         puts stderr "OSU Micro-Benchmarks for OpenMPI\n"
 }
 
-module-whatis   "OSU Micro-Benchmarks for OpenMPI"
+module-whatis "OSU Micro-Benchmarks for OpenMPI"
 
-set pkg_root    /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
-set ver         7.5.1
+set pkg_root  /opt/openmpi/tests/omb/libexec/osu-micro-benchmarks
+set ver       7.5.1
 
-prepend-path PATH               $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
+prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
 ```
 
-***
 # 3. OSU Micro-Benchmarks実行
 
 ## 3-1. 1ノード内全コアを使用するAlltoall
@@ -136,7 +133,7 @@ $
 
 ```sh
 $ module load openmpi omb
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_latency -x 1000 -i 10000 -m 1:1
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_latency -x 1000 -i 10000 -m 1:1
 [inst-xsyjo-x9-ol905:263038] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Latency Test v7.5
@@ -153,7 +150,7 @@ $
 
 ```sh
 $ module load openmpi omb
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_bw -x 10 -i 10 -m 268435456:268435456
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_bw -x 10 -i 10 -m 268435456:268435456
 [inst-xsyjo-x9-ol905:263198] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Bandwidth Test v7.5
@@ -170,7 +167,7 @@ $
 
 ```sh
 $ module load openmpi omb
-$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_allreduce -x 10 -i 10 -m 4:268435456
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_allreduce -x 10 -i 10 -m 4:268435456
 [inst-ztgl1-x9-ol810:227754] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Allreduce Latency Test v7.5
@@ -203,5 +200,19 @@ $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 osu_a
 67108864           119121.65
 134217728          251878.54
 268435456          496306.98
+$
+```
+
+## 3-5. 4ノード間のMPI_Init所要時間
+
+以下コマンドを **OSU Micro-Benchmarks** を実行するユーザで何れか1ノードで実行します。  
+ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したMPI_Initの所要時間を計測しています。
+
+```sh
+$ module load openmpi omb
+$ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_init
+[inst-ntoae-x9-ol810:19647] SET UCX_NET_DEVICES=mlx5_2:1
+# OSU MPI Init Test v7.5
+nprocs: 144, min: 2170 ms, max: 2216 ms, avg: 2187 ms
 $
 ```

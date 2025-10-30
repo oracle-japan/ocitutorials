@@ -5,6 +5,8 @@ weight: 045
 layout: single
 tags:
   - ストレージ
+  - バックアップ・冗長性
+  - 可用性・DR
 images:
 - /intermediates/object-storage-advanced/img11.png
 ---

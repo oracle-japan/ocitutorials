@@ -4,6 +4,7 @@ description: "予期せぬコスト増加を避けるために、テナンシの
 weight: 105
 tags:
   - コスト管理
+  - アカウント管理
 images:
 - /intermediates/budget-quota/cost.png
 #link: 
@@ -46,9 +47,9 @@ images:
 
 **目次 :**
 
-      1. [コスト分析でコストの確認](#anchor1)
-      2. [予算の設定](#anchor2)
-      2. [割当て制限の設定](#anchor3)
+   1. [コスト分析でコストの確認](#anchor1)
+   2. [予算の設定](#anchor2)
+   2. [割当て制限の設定](#anchor3)
 
 <br><br>
 
