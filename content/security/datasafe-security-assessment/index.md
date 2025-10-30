@@ -8,6 +8,8 @@ tags:
 - 初期設定
 images:
 - security/datasafe-security-assessment/image02.png
+params:
+  author: watarun97
 ---
 
 Data Safeのセキュリティ・アセスメントは、データベースのセキュリティ体制の全体像を提供します。 データベース構成、ユーザーとその権限、およびセキュリティ・ポリシーを分析し、セキュリティ・リスクを明らかにします。また明らかにされたリスクを改善するための推奨事項も表示されます。<br>
