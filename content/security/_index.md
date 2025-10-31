@@ -107,6 +107,9 @@ Oracle Cloud Infrastructureは、設計段階からセキュリティを考慮�
 + **[Oracle Data SafeをBaseDBに設定する](./datasafe-setup/)**  
    Oracle Data SafeをBaseDBに設定する手順についてまとめています。
 
++ **[セキュリティ・アセスメント機能でセキュリティ構成を評価する](./datasafe-security-assessment/)**  
+   本チュートリアルは「Oracle Data SafeをBaseDBに設定する」の続編として、セキュリティ・アセスメントの設定および動作を確認します。
+
 <br>
 
 ## Security Zones
