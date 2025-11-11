@@ -17,7 +17,7 @@ params:
 - Docker互換CLI： **[nerdctl](https://github.com/containerd/nerdctl)**
 - rootlessコンテナ： **[rootlesskit](https://github.com/rootless-containers/rootlesskit)**
 
-本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUインスタンスで分散機械学習環境を構築する](../../spinup-ml-instance-cntnd/)** / **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluste/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、NVIDIA GPUを搭載するGPUインスタンスが予め利用可能であることを前提に、ここに **containerd** と前述のソフトウェア群をインストールして **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供されるコンテナを非特権ユーザ（以降"コンテナ起動ユーザ"と呼称します。）権限で起動するまでの手順を、以下の順に解説します。
+本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUインスタンスで分散機械学習環境を構築する](../../spinup-ml-instance-cntnd/)** / **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、NVIDIA GPUを搭載するGPUインスタンスが予め作成されていることを前提に、ここに **containerd** と前述のソフトウェア群をインストールして **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供されるコンテナを非特権ユーザ（以降"コンテナ起動ユーザ"と呼称します。）権限で起動するまでの手順を、以下の順に解説します。
 
 1. **[コンテナ環境構築](#1-コンテナ環境構築)**
 2. **[コンテナ起動ユーザ作成](#2-コンテナ起動ユーザ作成)**
@@ -27,8 +27,8 @@ params:
 
 - **イメージ** ：  
 **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm)** /  
-**[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm)** /  
-**Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
+**プラットフォーム・イメージ** **[Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm)** /  
+**Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** ： 1.18.0
 - **containerd** ： 2.2.0
 - **runc** ： 1.3.3
@@ -36,7 +36,7 @@ params:
 - **nerdctl** ： 2.2.0
 - **rootlesskit** ： 2.3.5
 
-※1） **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
+※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
 
 # 1. コンテナ環境構築
 
@@ -233,6 +233,7 @@ $ ping inst-gpu-slave
 次に、以下コマンドをスレーブノードで起動したコンテナ上のrootユーザで実行し、SSHサーバを起動します。
 
 ```sh
+$ apt update
 $ apt install -y openssh-server
 $ mkdir /run/sshd && /usr/sbin/sshd -p 22222
 ```
@@ -240,7 +241,6 @@ $ mkdir /run/sshd && /usr/sbin/sshd -p 22222
 次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、SSHの鍵ペアを作成します。
 
 ```sh
-$ apt update
 $ apt install -y openssh-server
 $ mkdir -p ~/.ssh && chmod 700 ~/.ssh
 $ ssh-keygen -f ~/.ssh/id_rsa -N ""
@@ -262,7 +262,7 @@ $ chmod 600 ~/.ssh/authorized_keys
 
 ```sh
 $ ssh -p 22222 -oStrictHostKeyChecking=accept-new inst-gpu-slave hostname
-Warning: Permanently added '[inst-vm-ol905mg-2]:22222' (ED25519) to the list of known hosts.
+Warning: Permanently added '[inst-gpu-slave]:22222' (ED25519) to the list of known hosts.
 inst-gpu-slave
 $
 ```

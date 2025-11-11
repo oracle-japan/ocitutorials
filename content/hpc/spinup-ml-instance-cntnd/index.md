@@ -23,7 +23,7 @@ table, th, td {
 
 -  **シェイプ** ： **[BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
 - **イメージ** ：  
-**[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm)** /  
+**[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm)** /  
 **プラットフォーム・イメージ** **[Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm)**
 
 [Bastionノード]
