@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-27T18:10:47+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-27T18:10:47.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-27T18:10:47+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -408,8 +408,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-27T18:10:47&#43;09:00">
-            Oct 27, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -1166,7 +1166,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">srun -n <span class="m">1</span> nvidia-smi <span class="p">|</span> grep SXM <span class="p">|</span> awk <span class="s1">&#39;{print $2, $7}&#39;</span>
 </span></span><span class="line"><span class="cl">srun bash -c <span class="s1">&#39;echo -n &#34;Rank $SLURM_PROCID Node $SLURM_NODEID Core &#34;; taskset -cp $$ | cut -d&#34; &#34; -f6&#39;</span> <span class="p">|</span> sort -k 2n,2
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、先の8枚のGPUを使用した <strong>nvidia-smi</strong> コマンドの出力と比較し割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。<br>
-なお、GPUノードに使用している <strong>BM.GPU4.8</strong> は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容します。</p>
+なお、GPUノードに使用している <strong>BM.GPU4.8</strong> は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容することに留意します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> i in <span class="sb">`</span>seq <span class="m">1</span> 2<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> sbatch gpu_affinity.sh<span class="p">;</span> <span class="k">done</span>
 </span></span><span class="line"><span class="cl">Submitted batch job <span class="m">301</span>
 </span></span><span class="line"><span class="cl">Submitted batch job <span class="m">302</span>
@@ -2772,6 +2772,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

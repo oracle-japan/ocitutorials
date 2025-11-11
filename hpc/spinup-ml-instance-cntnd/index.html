@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-11T17:05:20+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "GPUインスタンスで分散機械学習環境を構築する",
       "description": "複数のGPUを搭載するインスタンスで分散機械学習環境を構築してみましょう。このチュートリアルは、複数のGPUを必要とする大規模な機械学習ワークロードを実行するための分散機械学習環境を、複数のGPUを搭載するGPUインスタンスをはじめとする分散機械学習環境に必要なリソースを順次OCIコンソールから作成しながら構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1964",
+      "wordCount" : "750",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-11T17:05:20.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-11T17:05:20+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -419,8 +419,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-11T17:05:20&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -439,7 +439,6 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -465,30 +464,43 @@ table, th, td {
 <p>本チュートリアルで構築する分散機械学習環境の構成を以下に示します。</p>
 <p>[GPUノード]</p>
 <ul>
-<li>シェイプ： <strong><a
+<li><strong>シェイプ</strong> ： <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
 >BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8</a></strong></li>
-<li>OS： <strong>プラットフォーム・イメージ</strong> <strong><a
+<li><strong>イメージ</strong> ：<br>
+<strong><a
   class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-02-28-0.htm"
->Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0</a></strong></li>
+  href="../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>プラットフォーム・イメージ</a></strong> <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm"
+>Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0</a></strong> /<br>
+<strong>プラットフォーム・イメージ</strong> <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm"
+>Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0</a></strong></li>
 </ul>
 <p>[Bastionノード]</p>
 <ul>
-<li>シェイプ ： <strong><a
+<li><strong>シェイプ</strong>  ： <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
 >VM.Standard.E5.Flex</a></strong></li>
-<li>OS ： <strong>プラットフォーム・イメージ</strong> <strong><a
+<li><strong>イメージ</strong> ：<br>
+<strong>プラットフォーム・イメージ</strong> <strong><a
   class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-02-28-0.htm"
->Oracle-Linux-8.10-2025.02.28-0</a></strong></li>
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-09-16-0.htm"
+>Oracle-Linux-8.10-2025.09.16-0</a></strong> /<br>
+<strong>プラットフォーム・イメージ</strong> <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-2025-09-16-0.htm"
+>Oracle-Linux-9.6-2025.09.16-0</a></strong></li>
 </ul>
 <p>[機械学習環境ソフトウェア]</p>
 <ul>
-<li>コンテナランタイム ： <strong>containerd</strong> 2.0.3</li>
-<li><strong>NVIDIA Container Toolkit</strong> ： 1.17.5</li>
+<li>コンテナランタイム ： <strong>containerd</strong> 2.2.0</li>
+<li><strong>NVIDIA Container Toolkit</strong> ： 1.18.0</li>
 </ul>
 <p><img
   src="architecture_diagram.png"
@@ -498,7 +510,6 @@ table, th, td {
 <p><strong>所要時間 :</strong> 約2時間</p>
 <p><strong>前提条件 :</strong> 分散機械学習環境を収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-事前作業"
     >
@@ -535,22 +546,9 @@ table, th, td {
   href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn"
 >その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順に従い、以下のリソースを作成します。</p>
 <ul>
-<li><strong>仮想クラウド・ネットワーク</strong>
-<ul>
-<li><strong>VCN名</strong> ： vcn</li>
-<li><strong>VCN IPv4 CIDRブロック</strong> ： 10.0.0.0/16</li>
-</ul>
-</li>
-<li>パブリックサブネット
-<ul>
-<li><strong>IPv4 CIDRブロック</strong> ： 10.0.0.0/24</li>
-</ul>
-</li>
-<li>プライベートサブネット
-<ul>
-<li><strong>IPv4 CIDRブロック</strong> ： 10.0.1.0/24</li>
-</ul>
-</li>
+<li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
+<li>パブリックサブネット（10.0.1.0/24）</li>
+<li>プライベートサブネット（10.0.2.0/24）</li>
 <li><strong>インターネット・ゲートウェイ</strong> （パブリックサブネットにアタッチ）</li>
 <li><strong>NATゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
 <li><strong>サービス・ゲートウェイ</strong> （プライベートサブネットにアタッチ）</li>
@@ -618,7 +616,11 @@ table, th, td {
       </tr>
   </tbody>
 </table> </div>
-<p>※2）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのアクセス元IPアドレスに限定することで、不正アクセスを防ぐことが可能です。</p>
+<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> でインターネットとの通信に以下のアクセス制限が掛けられています。</p>
+<ul>
+<li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
+<li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
+</ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-bastionノード作成"
     >
@@ -634,13 +636,11 @@ table, th, td {
 >OCIチュートリアル</a></strong> の  <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance"
->その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> を指定して作成します。<br>
+>その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。<br>
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 <ul>
-<li><strong>名前</strong> ： bastion</li>
-<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10（Oracle-Linux-8.10-2025.02.28-0）</li>
 <li><strong>シェイプ</strong> ： <strong>VM.Standard.E5.Flex</strong> （任意のコア数・メモリ容量）</li>
-<li><strong>サブネット</strong> ： 先に作成したパブリックサブネット</li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9.6（Oracle-Linux-9.6-2025.09.16-0）</li>
 <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
 <p>次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行してSSH鍵ペアを作成し、その公開鍵を控えます。<br>
@@ -666,8 +666,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ cat .ssh/id_rsa.pub 
 </span></span><span class="line"><span class="cl">ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrLpD1kDQQzsc6Q8ndyOu6h7X3E0FGY2SDjDyhJRdntbOZKPkYkQrGHbhnBllFPMV4NlObkf/YX6a9bc4vrGgnayRgfj0vOZ0RKlJmkfjAR/7Cw48LzQnaDDq2HHZAo+c71WBSjLt1SsX7tXHqkzjGUv44qqEiC6qlEiZd9yevA7kR0IoN9dIWXaKnMbOVGr8DezyLsruoQxhj6bHNwXhEjlGPg8E6R35AdjGeGZOCYT2clfMu9iavuzR5dilysARq1Lxow2/MEija3/twxmzhxVbwoGTXE0sCz3SGMnHTwLGEE7Tok+i7zZMB2ySbCM42Icz3Ja2qxNxqdx9YUKZ48SgkNPrMMouZGm+lZrZf0dypQqDbUrA0uZkkTUR+RTY+V/0MmuH6eDgHQLjxzo07/+gw2BG9CMcor0fMYhEJiKUVRy2LXBIK2Zj2+Ow7zs552f7SRGWnAktU7sTU801frAjE<span class="o">=</span> opc@bastion
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-gpuノード作成"
     >
         2. GPUノード作成
@@ -692,8 +691,14 @@ table, th, td {
   href="../#5-11-cloud-init"
 >cloud-init</a></strong> を使用するため、以下の手順を経て行います。</p>
 <ol>
-<li><strong>cloud-init</strong> 設定ファイル（ <strong>cloud-config</strong> ）作成</li>
-<li>GPUノード作成</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-1-cloud-init%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
+>cloud-init設定ファイル作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-2-gpu%e3%83%8e%e3%83%bc%e3%83%89%e4%bd%9c%e6%88%90"
+>GPUノード作成</a></strong></li>
 </ol>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-1-cloud-init設定ファイル作成"
@@ -704,18 +709,20 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong><a
+<p>本チュートリアルは、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を作成します。</p>
-<p>本チュートリアルは、 <strong>cloud-init</strong> を以下の目的で使用します。</p>
+>cloud-init</a></strong> を以下の目的で使用します。</p>
 <ul>
 <li>タイムゾーンをJSTに変更</li>
 <li>NVMe SSDローカルディスク領域ファイルシステム作成（ <strong>BM.GPU4.8 / BM.GPU.A100-v2.8</strong> の場合のみ）</li>
 <li>firewalld停止</li>
 <li>ルートファイルシステム拡張</li>
 </ul>
-<p>以下は、本チュートリアルで使用する <strong>cloud-config</strong> で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、本チュートリアルで使用する <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-11-cloud-init"
+>cloud-init</a></strong> 設定ファイル（以降 <strong>cloud-config</strong> と呼称します。）で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 <p>[ <strong>BM.GPU3.8</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#cloud-config</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
@@ -760,31 +767,32 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、GPUノードを作成します。</p>
 <p>OCIコンソールにログインし、GPUノードをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、表示される以下画面で <strong>インスタンスの作成</strong> ボタンをクリックします。</p>
 <p><img
   src="console_page01.png"
   alt="画面ショット"
   
 /></p>
-<p>次に、表示される <strong>コンピュート・インスタンスの作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
-<ol>
-<li>
-<p>概要フィールド　</p>
+<p>表示される <strong>基本情報</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 <ul>
-<li><strong>名前</strong> ： GPUノードに付与する名前</li>
-<li><strong>コンパートメントに作成</strong> ： GPUノードを作成する <strong>コンパートメント</strong></li>
-</ul>
+<li>
+<p><strong>名前</strong> ： GPUノードに付与する名前</p>
+</li>
+<li>
+<p><strong>コンパートメントに作成</strong> ： GPUノードを作成する <strong>コンパートメント</strong></p>
 <p><img
   src="console_page02.png"
   alt="画面ショット"
   
 /></p>
 </li>
+</ul>
+<ol>
 <li>
 <p><strong>配置</strong> フィールド</p>
 <ul>
-<li><strong>可用性ドメイン</strong> ：インスタンスをデプロイする <strong>可用性ドメイン</strong></li>
+<li><strong>可用性ドメイン</strong> ：GPUノードを作成する <strong>可用性ドメイン</strong></li>
 </ul>
 <p><img
   src="console_page03.png"
@@ -800,7 +808,8 @@ table, th, td {
   
 /></p>
 <ul>
-<li><strong>Shape</strong> ：<strong>BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8</strong> （ <strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</li>
+<li><strong>シェイプ</strong> ：<strong>BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8</strong><br>
+（ <strong>シェイプの変更</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック。）</li>
 </ul>
 <p><img
   src="console_page05.png"
@@ -808,21 +817,17 @@ table, th, td {
   
 /></p>
 <ul>
-<li><strong>イメージ</strong> ：Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>イメージ名</strong>  <strong>Oracle Linux 8</strong> の右端のアイコンをクリックして表示される <strong>イメージ・ビルド</strong> フィールドで <strong>Oracle-Linux-8.10-Gen2-GPU-2025.02.28-0</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</li>
+<li><strong>イメージ</strong> ：<strong>Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0</strong><br>
+（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Oracle Linux</strong> を選択して表示される <strong>Oracle Linux 9</strong> を選択して表示される <strong>互換シェイプ</strong> ブルダウンメニューで <strong>Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0</strong> を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
 </ul>
 <p><img
   src="console_page06.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>ネットワーキング</strong> フィールド</p>
 <ul>
-<li><strong>プライマリ・ネットワーク</strong> ： <strong>既存の仮想クラウド・ネットワークを選択</strong></li>
-<li><strong>VCN in xxxx</strong> ： 先に作成したVCNを選択</li>
-<li><strong>サブネット</strong> ： <strong>既存のサブネットを選択</strong></li>
-<li><strong>サブネット in xxxx</strong> ： 先に作成したプライベートサブネットを選択</li>
+<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong>cloud-config</strong> を選択<br>
+（ <strong>拡張オプション</strong> ボタンをクリックして表示される以下 <strong>管理</strong> フィールドの <strong>初期化スクリプト</strong> フィールドの <strong>ファイルをドロップするか選択</strong> ボタンをクリックしてファイルを選択）</li>
 </ul>
 <p><img
   src="console_page07.png"
@@ -830,50 +835,55 @@ table, th, td {
   
 /></p>
 </li>
-<li>
-<p><strong>SSHキーの追加</strong> フィールド</p>
+</ol>
+<p>表示される <strong>セキュリティー</strong> 画面で、 <strong>次</strong> ボタンをクリックします。</p>
+<p>表示される <strong>ネットワーキング</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 <ul>
-<li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵の公開鍵（ 以下 <strong>公開キーの貼付け</strong> ラジオボタンを選択することで入力フィールドを表示）</li>
-</ul>
-<p><img
-  src="console_page08.png"
-  alt="画面ショット"
-  
-/></p>
+<li>
+<p><strong>仮想クラウド・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong></p>
 </li>
 <li>
-<p><strong>ブート・ボリューム</strong> フィールド</p>
-<ul>
-<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※2）（ <strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能）</li>
-</ul>
+<p><strong>サブネット</strong> ： 先に作成したプライベートサブネット</p>
 <p><img
   src="console_page09.png"
   alt="画面ショット"
   
 /></p>
-<p>※2）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
 </li>
+</ul>
+<ol>
 <li>
-<p><strong>管理</strong> フィールド（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
+<p><strong>SSHキーの追加</strong> フィールド</p>
+<ul>
+<li><strong>SSH公開キー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br>
+（ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
+</ul>
 <p><img
   src="console_page10.png"
   alt="画面ショット"
   
 /></p>
+</li>
+</ol>
+<p>表示される <strong>ストレージ</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<ol>
+<li>
+<p><strong>ブート・ボリューム</strong> フィールド</p>
 <ul>
-<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を選択（ <strong>参照</strong> ボタンでファイルを選択）</li>
+<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※3）<br>
+（ <strong>カスタム・ブート・ボリューム・サイズとパフォーマンス設定を指定します</strong> チェックボックスをチェックすると指定可能）</li>
 </ul>
 <p><img
   src="console_page11.png"
   alt="画面ショット"
   
 /></p>
+<p>※3）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
 </li>
 </ol>
-<hr>
+<p>表示される <strong>確認</strong> 画面で、設定した内容に間違いがないかを確認した後、 <strong>作成</strong> ボタンをクリックします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-gpuノード確認"
     >
@@ -940,7 +950,7 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
 </div>
 <p>以下コマンドをGPUノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ date
-</span></span><span class="line"><span class="cl">Mon Jan <span class="m">29</span> 12:08:00 JST <span class="m">2024</span>
+</span></span><span class="line"><span class="cl">Wed Nov  <span class="m">5</span> 03:23:35 PM JST <span class="m">2025</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-4-ファイルシステム確認"
@@ -960,7 +970,7 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
 </span></span></code></pre></div><p>[ <strong>BM.GPU4.8 / BM.GPU.A100-v2.8</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ df -h / /mnt/localdisk
 </span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root  189G   39G  151G  21% /
+</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root  183G   24G  160G  13% /
 </span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
@@ -974,11 +984,10 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
 </div>
 <p>以下コマンドをGPUノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl status firewalld <span class="p">|</span> grep -e Active -e disabled
-</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-</span></span><span class="line"><span class="cl">   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: inactive <span class="o">(</span>dead<span class="o">)</span>
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-コンテナ環境構築"
     >
         4. コンテナ環境構築
@@ -987,132 +996,14 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>containerd</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築・確認します。</p>
-<p>以下コマンドをGPUノードのopcユーザで実行し、 <strong>containerd</strong> と <strong>NVIDIA Container Toolkit</strong> をインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/containerd/containerd/releases/download/v2.0.3/containerd-2.0.3-linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ sudo tar -C /usr/local -xvf ./containerd-2.0.3-linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ sudo wget -P /usr/lib/systemd/system/ https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
-</span></span><span class="line"><span class="cl">$ sudo systemctl daemon-reload
-</span></span><span class="line"><span class="cl">$ wget https://github.com/opencontainers/runc/releases/download/v1.2.5/runc.amd64
-</span></span><span class="line"><span class="cl">$ sudo install -m <span class="m">755</span> ./runc.amd64 /usr/local/sbin/runc
-</span></span><span class="line"><span class="cl">$ wget https://github.com/containernetworking/plugins/releases/download/v1.6.2/cni-plugins-linux-amd64-v1.6.2.tgz
-</span></span><span class="line"><span class="cl">$ sudo mkdir -p /opt/cni/bin <span class="o">&amp;&amp;</span> sudo tar -C /opt/cni/bin -xvf ./cni-plugins-linux-amd64-v1.6.2.tgz
-</span></span><span class="line"><span class="cl">$ wget https://github.com/containerd/nerdctl/releases/download/v2.0.3/nerdctl-2.0.3-linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ sudo tar -C /usr/local/bin/ -xvf ./nerdctl-2.0.3-linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ sudo sed -i <span class="s1">&#39;/^Defaults    secure_path/s/$/:\/usr\/local\/bin/g&#39;</span> /etc/sudoers
-</span></span><span class="line"><span class="cl">$ sudo dnf install -y nvidia-container-toolkit
-</span></span></code></pre></div><p>次に、以下コマンドをGPUノードのopcユーザで実行し、一般ユーザ権限で <strong>containerd</strong> 上にコンテナを起動するために必要なソフトウェアをインストールします。<br>
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ wget https://go.dev/dl/go1.24.1.linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ sudo tar -C /usr/local/ -xvf ./go1.24.1.linux-amd64.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>/usr/local/go/bin:<span class="nv">$PATH</span>
-</span></span><span class="line"><span class="cl">$ sudo dnf install -y git slirp4netns libseccomp libseccomp-devel
-</span></span><span class="line"><span class="cl">$ git clone https://github.com/rootless-containers/rootlesskit
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> rootlesskit <span class="o">&amp;&amp;</span> make -j <span class="m">128</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/rootless-containers/bypass4netns
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> bypass4netns <span class="o">&amp;&amp;</span> make -j <span class="m">128</span> <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div><p>次に、以下コマンドをGPUノードのopcユーザで実行し、コンテナを起動するユーザ <strong>usera</strong> を作成、BastionノードのopcユーザからSSHログインするための公開鍵の登録を行います。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -d /home/usera -s /bin/bash -u <span class="m">10000</span> usera
-</span></span><span class="line"><span class="cl">$ sudo mkdir ~usera/.ssh <span class="o">&amp;&amp;</span> sudo chmod <span class="m">700</span> ~usera/.ssh <span class="o">&amp;&amp;</span> sudo chown usera:usera ~usera/.ssh
-</span></span><span class="line"><span class="cl">$ sudo cp -p ~/.ssh/authorized_keys ~usera/.ssh/ <span class="o">&amp;&amp;</span> sudo chown usera:usera ~usera/.ssh/authorized_keys
-</span></span></code></pre></div><p>次に、BastionノードのopcユーザからGPUノードの <strong>usera</strong> ユーザにSSHでログインして以下コマンドを実行し、 <strong>containerd</strong> を起動・確認します。<br>
-なお、GPUノードのopcユーザから <strong>usera</strong> ユーザにスイッチした場合は、以下のコマンドがエラーする点に注意します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ containerd-rootless-setuptool.sh install
-</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> Checking RootlessKit functionality
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> You <span class="k">do</span> NOT need to specify <span class="nv">$CONTAINERD_ADDRESS</span> explicitly.
-</span></span><span class="line"><span class="cl">$ systemctl --user status containerd <span class="p">|</span> grep -e Active -e enabled
-</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/home/usera/.config/systemd/user/containerd.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-</span></span><span class="line"><span class="cl">   Active: active <span class="o">(</span>running<span class="o">)</span> since Wed 2025-03-19 10:38:54 JST<span class="p">;</span> 1min 39s ago
-</span></span><span class="line"><span class="cl">$ containerd-rootless-setuptool.sh install-bypass4netnsd
-</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> Creating <span class="s2">&#34;/home/usera/.config/systemd/user/bypass4netnsd.service&#34;</span>
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> To use bypass4netnsd, <span class="nb">set</span> the <span class="s2">&#34;nerdctl/bypass4netns=true&#34;</span> annotation on containers, e.g., <span class="sb">`</span>nerdctl run --annotation nerdctl/bypass4netns<span class="o">=</span><span class="nb">true</span><span class="sb">`</span>
-</span></span><span class="line"><span class="cl">$ systemctl --user status bypass4netnsd <span class="p">|</span> grep -e Active -e enabled
-</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/home/usera/.config/systemd/user/bypass4netnsd.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-</span></span><span class="line"><span class="cl">   Active: active <span class="o">(</span>running<span class="o">)</span> since Wed 2025-03-19 11:11:25 JST<span class="p">;</span> 1min 2s ago
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドをGPUノードの <strong>usera</strong> ユーザで実行し、コンテナ上でGPUノードが搭載するGPUにアクセスできることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ nerdctl run --rm --gpus all --annotation nerdctl/bypass4netns<span class="o">=</span><span class="nb">true</span> nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
-</span></span><span class="line"><span class="cl">nvcr.io/nvidia/base/ubuntu:22.04_20240212:                                        resolved       <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">We trust you have received the usual lecture from the <span class="nb">local</span> System
-</span></span><span class="line"><span class="cl">Administrator. It usually boils down to these three things:
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">    <span class="c1">#1) Respect the privacy of others.</span>
-</span></span><span class="line"><span class="cl">nvcr.io/nvidia/base/ubuntu:22.04_20240212:                                        resolved       <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">index-sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">manifest-sha256:9bb542ce92bf6f772be19cb12acaeb7477869a05aa099b23506e8d2d264c7d30: <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">config-sha256:a42a5aed2c5c677cd56f364aa16b4575ad99e88daf9130dd7bfa348c63d0c6b6:   <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:d66d6a6a368713979f9d00fad193991ae1af18b8efd3abf4d70ade192807c1bd:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:24c2d4f7ea407e096d657abd42bbeeb9d009bb6a80061ed3da05a5b97aa1cc60:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:feb1277c15aaf19e9f1f1f9c5d7589e8500a4d09ea00828c24d88bf20d980a97:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:a8f7f8dfd4e2e72ec795a2ff2b30820324a9ba17d1da0f60231109bc233b5229:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:3cf0dbeda93aa8b1ca78ab293ce1157996edf2334c73319cb847a52daff4078d:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:9d30336abbd75810bebd155677f0c1839efc7b3aba3d01f6317cf180c348294b:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">layer-sha256:99fc1e9ef2061bdda5435d1aff0b2bd59eaa648c010ac561745f45f0bab44a0b:    <span class="k">done</span>           <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">elapsed: 15.5s                                                                    total:  29.0 M <span class="o">(</span>1.9 MiB/s<span class="o">)</span>                                       
-</span></span><span class="line"><span class="cl">Wed Mar <span class="m">19</span> 01:42:33 <span class="m">2025</span>       
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> GPU  Name                 Persistence-M <span class="p">|</span> Bus-Id          Disp.A <span class="p">|</span> Volatile Uncorr. ECC <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Fan  Temp   Perf          Pwr:Usage/Cap <span class="p">|</span>           Memory-Usage <span class="p">|</span> GPU-Util  Compute M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>               MIG M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   31C    P0             56W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   30C    P0             55W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   31C    P0             56W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   30C    P0             52W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">4</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:8D:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   30C    P0             53W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">5</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:92:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   30C    P0             52W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">6</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:D6:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   32C    P0             56W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">7</span>  NVIDIA A100-SXM4-40GB          Off <span class="p">|</span>   00000000:DA:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   32C    P0             54W /  400W <span class="p">|</span>       1MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl">                                                                                         
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Processes:                                                                              <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  GPU   GI   CI              PID   Type   Process name                        GPU Memory <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>        ID   ID                                                               Usage      <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================================================================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  No running processes found                                                             <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>なお、 <strong>usera</strong> のホームディレクトリがNFS上に置かれている場合、前述のコマンドが以下のメッセージでエラーする点に留意します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ nerdctl run --rm --gpus all --annotation nerdctl/bypass4netns<span class="o">=</span><span class="nb">true</span> nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
-</span></span><span class="line"><span class="cl">nvcr.io/nvidia/base/ubuntu:22.04_20240212:                                        resolved       <span class="p">|</span>++++++++++++++++++++++++++++++++++++++<span class="p">|</span> 
-</span></span><span class="line"><span class="cl">:
-</span></span><span class="line"><span class="cl">FATA<span class="o">[</span>0003<span class="o">]</span> failed to extract layer sha256:d101c9453715a978a2a520f553588e77dfb4236762175eba61c5c264a449c75d: mount callback failed on /var/lib/containerd/tmpmounts/containerd-mount3405457249: failed to Lchown <span class="s2">&#34;/var/lib/containerd/tmpmounts/containerd-mount3405457249/etc/gshadow&#34;</span> <span class="k">for</span> UID 0, GID 42: lchown /var/lib/containerd/tmpmounts/containerd-mount3405457249/etc/gshadow: operation not permitted 
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
+<p>本章は、 <strong>containerd</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
+<p>このコンテナ環境構築は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/container-with-containerd/"
+>containerdによるコンテナ実行環境構築方法</a></strong> の手順をGPUノードに適用することで実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-nccl-tests実行"
     >
@@ -1128,63 +1019,14 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
 >NGC Catalog</a></strong> から提供される <strong><a
   class="gdoc-markdown__link"
   href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow"
->TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、コンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
-<p>以下コマンドをGPUノードの <strong>usera</strong> ユーザで実行し、 <strong>TensorFlow NGC Container</strong> を起動します。<br>
-本コンテナのサイズは、約14 GBです。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ nerdctl run -it --rm --gpus all --ipc<span class="o">=</span>host --ulimit <span class="nv">stack</span><span class="o">=</span><span class="m">67108864</span> --annotation nerdctl/bypass4netns<span class="o">=</span><span class="nb">true</span> nvcr.io/nvidia/tensorflow:24.06-tf2-py3
-</span></span></code></pre></div><p>次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロードしてビルドします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ apt update
-</span></span><span class="line"><span class="cl">$ git clone https://github.com/NVIDIA/nccl-tests.git
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> nccl-tests <span class="o">&amp;&amp;</span> make <span class="nv">MPI</span><span class="o">=</span><span class="m">1</span> <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local/mpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
-</span></span></code></pre></div><p>次に、以下コマンドを起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を実行します。<br>
-以下では、 <strong>BM.GPU4.8</strong> の8枚の <strong>NVIDIA A100 40 GB</strong> を使用し、busbwで <strong>232 GB/s</strong> の性能が確認できます。</p>
-<p>[ <strong>BM.GPU3.8</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./build/all_reduce_perf -b 1G -e 1G -f <span class="m">2</span> -t <span class="m">1</span> -g <span class="m">8</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># nThread 1 nGpus 8 minBytes 1073741824 maxBytes 1073741824 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Using devices</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  0 Group  0 Pid   1711 on 4c3719b595b1 device  0 [0000:61:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  1 Group  0 Pid   1711 on 4c3719b595b1 device  1 [0000:62:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  2 Group  0 Pid   1711 on 4c3719b595b1 device  2 [0000:67:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  3 Group  0 Pid   1711 on 4c3719b595b1 device  3 [0000:69:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  4 Group  0 Pid   1711 on 4c3719b595b1 device  4 [0000:89:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  5 Group  0 Pid   1711 on 4c3719b595b1 device  5 [0000:8a:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  6 Group  0 Pid   1711 on 4c3719b595b1 device  6 [0000:8f:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  7 Group  0 Pid   1711 on 4c3719b595b1 device  7 [0000:91:00] Tesla V100-SXM2-16GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#                                                              out-of-place                       in-place          </span>
-</span></span><span class="line"><span class="cl"><span class="c1">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
-</span></span><span class="line"><span class="cl">  <span class="m">1073741824</span>     <span class="m">268435456</span>     float     sum      -1    <span class="m">13867</span>   77.43  135.50      <span class="m">0</span>    <span class="m">13877</span>   77.38  135.41      <span class="m">0</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Out of bounds values : 0 OK</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Avg bus bandwidth    : 135.455 </span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>[ <strong>BM.GPU4.8 / BM.GPU.A100-v2.8</strong> ]</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./build/all_reduce_perf -b 10G -e 10G -f <span class="m">2</span> -t <span class="m">1</span> -g <span class="m">8</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># nThread 1 nGpus 8 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Using devices</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  0 Group  0 Pid   1728 on a4bae1424041 device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  1 Group  0 Pid   1728 on a4bae1424041 device  1 [0000:15:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  2 Group  0 Pid   1728 on a4bae1424041 device  2 [0000:51:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  3 Group  0 Pid   1728 on a4bae1424041 device  3 [0000:54:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  4 Group  0 Pid   1728 on a4bae1424041 device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  5 Group  0 Pid   1728 on a4bae1424041 device  5 [0000:92:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  6 Group  0 Pid   1728 on a4bae1424041 device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#  Rank  7 Group  0 Pid   1728 on a4bae1424041 device  7 [0000:da:00] NVIDIA A100-SXM4-40GB</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#                                                              out-of-place                       in-place          </span>
-</span></span><span class="line"><span class="cl"><span class="c1">#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong</span>
-</span></span><span class="line"><span class="cl"><span class="c1">#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       </span>
-</span></span><span class="line"><span class="cl"> <span class="m">10737418240</span>    <span class="m">2684354560</span>     float     sum      -1    <span class="m">80978</span>  132.60  232.04      <span class="m">0</span>    <span class="m">81154</span>  132.31  231.54      <span class="m">0</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Out of bounds values : 0 OK</span>
-</span></span><span class="line"><span class="cl"><span class="c1"># Avg bus bandwidth    : 231.793 </span>
-</span></span><span class="line"><span class="cl"><span class="c1">#</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
+>TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、コンテナ上で <strong>NCCL</strong> のGPU間通信性能を検証します。</p>
+<p>この <strong>NCCL Tests</strong> 実行方法は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../benchmark/run-nccltests/"
+>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></strong> を単一GPUノード向けの手順のみ適用することで実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="6-gpuノード削除"
     >
@@ -2777,6 +2619,39 @@ BastionノードからGPUノードへのログインは、GPUノードのIPア�
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

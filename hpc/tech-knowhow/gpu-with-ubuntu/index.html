@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-22T16:05:01+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法",
       "description": "HPC\/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC\/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1453",
+      "wordCount" : "1455",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-22T16:05:01.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-22T16:05:01+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -413,8 +413,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-22T16:05:01&#43;09:00">
-            Oct 22, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -428,8 +428,7 @@
     
 </div>
 
-    <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -441,7 +440,7 @@
 <p>GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 <strong>Oracle Linux</strong> をはじめ主要なものが <strong><a
   class="gdoc-markdown__link"
   href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->プラットフォーム・イメージ</a></strong> として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている <strong>Ubuntu</strong> もこれに含まれます。<br>
+>プラットフォーム・イメージ</a></strong> として用意されていますが、GPU上でHPC/機械学習ワークロードを実行する際のOSで主流になっている <strong>Ubuntu</strong> もこれに含まれます。<br>
 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンス作成後に自身でインストール・セットアップする必要があります。</p>
 <ul>
 <li><strong><a
@@ -463,7 +462,7 @@
 <li>CUDA-aware MPIライブラリ： <strong>CUDA IPC</strong> / <strong>GPUDirect RDMA</strong> 対応のデバイスメモリアドレッシング可能なMPIライブラリ</li>
 </ul>
 <p>※1）<strong>NVSwitch</strong> を搭載するシェイプの場合のみインストールします。</p>
-<p>本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の <strong>NVIDIA A100</strong> GPUを搭載するベアメタルシェイプ <strong><a
+<p>本テクニカルTipsは、これらのソフトウェアを <strong>Ubuntu</strong> をOSとするGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の <strong>NVIDIA A100</strong> GPUを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
 >BM.GPU4.8</a></strong> を例に解説します。</p>
@@ -498,6 +497,7 @@
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm"
 >Canonical-Ubuntu-24.04-2025.07.23-0</a></strong> です。</p>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-gpuインスタンス作成"
     >
@@ -3267,6 +3267,39 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
@@ -12659,10 +12692,10 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
   
     <a
       class="gdoc-page__nav--next flex align-center"
-      href="/ocitutorials/hpc/tech-knowhow/build-openmpi/"
-      title="Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）"
+      href="/ocitutorials/hpc/tech-knowhow/container-with-containerd/"
+      title="containerdによるコンテナ実行環境構築方法"
     >
-      Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）
+      containerdによるコンテナ実行環境構築方法
       <i class="gdoc-icon">gdoc_arrow_right_alt</i>
     </a>
   

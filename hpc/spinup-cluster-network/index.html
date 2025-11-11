@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "HPCクラスタを構築する(基礎インフラ手動構築編)",
       "description": "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルHPCインスタンスをノード間接続するHPCクラスタを、必要なリソースを順次コンソールから作成しながら構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1114",
+      "wordCount" : "1400",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -345,7 +345,7 @@
     </li>
     <li><a href="#4-mpiプログラム実行2ノード編">4. MPIプログラム実行（2ノード編）</a>
       <ul>
-        <li><a href="#4-0-mpiプログラム実行2ノード編概要">4-0. MPIプログラム実行（2ノード編）概要</a></li>
+        <li><a href="#4-0-概要">4-0. 概要</a></li>
         <li><a href="#4-1-計算ノード間ssh接続環境構築">4-1. 計算ノード間SSH接続環境構築</a></li>
         <li><a href="#4-2-プライベートサブネットセキュリティリスト修正">4-2. プライベートサブネットセキュリティリスト修正</a></li>
         <li><a href="#4-3-intel-mpi-benchmark-ping-pong実行">4-3. Intel MPI Benchmark Ping-Pong実行</a></li>
@@ -356,7 +356,7 @@
       <ul>
         <li><a href="#6-0-mpiプログラム実行4ノード編概要">6-0. MPIプログラム実行（4ノード編）概要</a></li>
         <li><a href="#6-1-計算ノード間ssh接続環境構築">6-1. 計算ノード間SSH接続環境構築</a></li>
-        <li><a href="#6-2-intel-mpi-benchmark-all-reduce実行">6-2. Intel MPI Benchmark All-Reduce実行</a></li>
+        <li><a href="#6-2-intel-mpi-benchmarks-all-reduce実行">6-2. Intel MPI Benchmarks All-Reduce実行</a></li>
       </ul>
     </li>
     <li><a href="#7-計算ノード入れ替え">7. 計算ノード入れ替え</a></li>
@@ -436,8 +436,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -451,8 +451,7 @@
     
 </div>
 
-    <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -461,7 +460,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>このチュートリアルは、HPCワークロードの実行に最適な、 <strong>Intel Ice Lake</strong> プロセッサを搭載する <strong><a
+<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上に作成する方法で、HPCワークロード向け <strong>Intel Ice Lake</strong> プロセッサを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> を <strong><a
@@ -470,7 +469,47 @@
 >クラスタ・ネットワーク</a></strong> でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を <strong><a
   class="gdoc-markdown__link"
   href="https://github.com/intel/mpi-benchmarks"
->Intel MPI Benchmarks</a></strong> で検証します。</p>
+>Intel MPI Benchmarks</a></strong> で検証します。<br>
+また、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の <strong>クラスタ・ネットワーク</strong> に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。</p>
+<p>本チュートリアルで構築するHPCクラスタの構成を以下に示します。</p>
+<p>[計算ノード]</p>
+<ul>
+<li><strong>シェイプ</strong> ： <strong>BM.Optimized3.36</strong></li>
+<li>ノード間接続インターコネクト ： <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> （100 Gbps x 1）</li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
+</ul>
+<p>[Bastionノード]</p>
+<ul>
+<li><strong>シェイプ</strong> ： <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
+>VM.Standard.E5.Flex</a></strong></li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
+</ul>
+<p>※1）<strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/"
+>クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> / <strong>No.13</strong> です。</p>
+<p><img
+  src="architecture_diagram.png"
+  alt="システム構成図"
+  
+/></p>
 <p>このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。<br>
 なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する <strong><a
   class="gdoc-markdown__link"
@@ -482,16 +521,9 @@
   class="gdoc-markdown__link"
   href="../spinup-hpc-cluster"
 >HPCクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照ください。</p>
-<p><img
-  src="architecture_diagram.png"
-  alt="システム構成図"
-  
-/></p>
-<p>またこのチュートリアルは、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の <strong>クラスタ・ネットワーク</strong> に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。</p>
 <p><strong>所要時間 :</strong> 約2時間</p>
 <p><strong>前提条件 :</strong> <strong>クラスタ・ネットワーク</strong> を収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、この <strong>コンパートメント</strong> に対する必要なリソース管理権限がユーザーに付与されていること。</p>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-hpcクラスタ作成事前作業"
     >
@@ -518,7 +550,7 @@
 >クラスタ・ネットワーク</a></strong> 接続に使用する <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm"
->Oracle Cloud Agent</a></strong> HPCプラグインの動作条件を満たしている必要があります。<br>
+>Oracle Cloud Agent</a></strong> （以降 <strong>OCA</strong> と呼称します。）HPCプラグインの動作条件を満たしている必要があります。<br>
 この詳細は、 <strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
@@ -538,14 +570,14 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、計算ノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。<br>
-<strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a
+<p>本章は、計算ノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。</p>
+<p><strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/"
 >OCIチュートリアル</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/beginners/creating-vcn"
->その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順通りに実行し、以下のリソースを作成します。</p>
+>その2 - クラウドに仮想ネットワーク(VCN)を作る</a></strong> の手順に従い、以下のリソースを作成します。</p>
 <ul>
 <li><strong>仮想クラウド・ネットワーク</strong> （10.0.0.0/16）</li>
 <li>パブリックサブネット（10.0.1.0/24）</li>
@@ -556,7 +588,7 @@
 <li><strong>ルート表</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
 <li><strong>セキュリティリスト</strong> x 2（パブリックサブネットとプライベートサブネットにアタッチ）</li>
 </ul>
-<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> で以下のアクセス制限が掛けられています。</p>
+<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> でインターネットとの通信に以下のアクセス制限が掛けられています。</p>
 <ul>
 <li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
 <li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
@@ -570,8 +602,8 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、計算ノードにログインする際の踏み台となるBastinノードを作成します。<br>
-Bastionノードの作成は、 <strong><a
+<p>本章は、計算ノードにログインする際の踏み台となるBastinノードを作成し、必要なセットアップ作業を実施します。</p>
+<p>Bastionノードの作成は、 <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/"
 >OCIチュートリアル</a></strong> の <strong><a
@@ -580,14 +612,14 @@ Bastionノードの作成は、 <strong><a
 >その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。<br>
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 <ul>
-<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
 <li><strong>シェイプ</strong> ： <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Optimized3.Flex</a></strong> （任意のコア数・メモリ容量）</li>
+>VM.Standard.E5.Flex</a></strong> （任意のコア数・メモリ容量）</li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
 <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
 <p>※1）<strong><a
@@ -599,7 +631,7 @@ Bastionノードの作成は、 <strong><a
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> / <strong>No.13</strong> です。</p>
 <p>次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。<br>
 先のチュートリアル <strong>インスタンスを作成する</strong> に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の <strong><a
   class="gdoc-markdown__link"
@@ -650,7 +682,6 @@ Bastionノードの作成は、 <strong><a
   href="../tech-knowhow/cluster-with-pdsh/#1-pdsh%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
 >1. pdshインストール・セットアップ</a></strong> の手順を実施し、 <strong>pdsh</strong> をインストール・セットアップします。<br>
 なおこの手順は、該当する手順を全ての計算ノードで実施する場合、必要ありません。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-hpcクラスタ作成"
     >
@@ -673,24 +704,29 @@ Bastionノードの作成は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> を作成することでHPCクラスタを作成します。</p>
-<p><strong>クラスタ・ネットワーク</strong> は、作成時に指定する <strong><a
+<p><strong>クラスタ・ネットワーク</strong> の作成は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
->インスタンス構成</a></strong> に基づいて使用するシェイプを決定し、作成時に指定するノード数のインスタンスをデプロイ、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
-<p>計算ノードに使用する <strong>BM.Optimized3.36</strong> に装備されるNVMeローカルディスクは、OS起動時点でファイルシステムが作成されていないため、 <strong><a
+>インスタンス構成</a></strong> を指定して行い、この <strong>インスタンス構成</strong> で指定している <strong>シェイプ</strong> のインスタンスを指定するノード数分作成し、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
+<p>また計算ノードのOSレベルのカスタマイズは、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-11-cloud-init"
->cloud-init</a></strong> でこの作成を行います。</p>
+>cloud-init</a></strong> を使用して自動化することで、作成後の作業を軽減します。</p>
 <p>以上よりHPCクラスタの作成は、以下の手順を経て行います。</p>
 <ul>
-<li><strong>cloud-init</strong> 設定ファイル（cloud-config）作成</li>
-<li>インスタンス構成作成</li>
-<li>クラスタ・ネットワーク作成</li>
-</ul>
-<p>なお計算ノードのOSは、 <strong>Oracle Linux</strong> 8.10ベースのHPC <strong><a
+<li><strong><a
   class="gdoc-markdown__link"
-  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> を使用します。</p>
+  href="#2-1-cloud-config%e4%bd%9c%e6%88%90"
+>cloud-init設定ファイル（cloud-config）作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-2-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90%e4%bd%9c%e6%88%90"
+>インスタンス構成作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-3-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e4%bd%9c%e6%88%90"
+>クラスタ・ネットワーク作成</a></strong></li>
+</ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-1-cloud-config作成"
     >
@@ -709,7 +745,7 @@ Bastionノードの作成は、 <strong><a
 <li>NVMe SSDローカルディスク領域ファイルシステム作成</li>
 <li>firewalld停止</li>
 </ul>
-<p>以下は、本チュートリアルで使用する <strong>BM.Optimized3.36</strong> 用の <strong>cloud-init</strong> 設定ファイル（cloud-config）で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、本チュートリアルで使用する <strong>BM.Optimized3.36</strong> 用の <strong>cloud-init</strong> 設定ファイル（以降 <strong>cloud-config</strong> と呼称します。）で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#cloud-config</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Change time zone to JST</span>
@@ -737,24 +773,36 @@ Bastionノードの作成は、 <strong><a
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIコンソールにログインし、HPCクラスタをデプロイする <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
+<p>OCIコンソールにログインし、HPCクラスタを作成する <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
+>インスタンス構成</a></strong> とメニューを辿ります。</p>
 <p>表示される以下画面で、 <strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
 <p><img
-  src="console_page02.png"
+  src="console_page01.png"
   alt="画面ショット"
   
 /></p>
-<p>表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。<br>
+<p>表示される <strong>基本情報</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
 なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 <ol>
 <li>
 <p><strong>インスタンス構成情報</strong> フィールド</p>
 <ul>
-<li><strong>名前</strong> ： <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
->インスタンス構成</a></strong> に付与する名前</li>
-<li><strong>コンパートメントに作成</strong> ：<strong>インスタンス構成</strong> を作成する <strong>コンパートメント</strong></li>
+<li><strong>名前</strong> ： <strong>インスタンス構成</strong> に付与する名前</li>
+<li><strong>コンパートメントに作成</strong> ： <strong>インスタンス構成</strong> を作成する <strong>コンパートメント</strong></li>
+<li><strong>インスタンスの作成先のコンパートメント</strong> ： 計算ノードを作成する <strong>コンパートメント</strong></li>
+</ul>
+<p><img
+  src="console_page02.png"
+  alt="画面ショット"
+  
+/></p>
+</li>
+<li>
+<p><strong>配置</strong> フィールド</p>
+<ul>
+<li><strong>可用性ドメイン</strong> ：計算ノードを作成する <strong>可用性ドメイン</strong></li>
 </ul>
 <p><img
   src="console_page03.png"
@@ -763,41 +811,22 @@ Bastionノードの作成は、 <strong><a
 /></p>
 </li>
 <li>
-<p><strong>インスタンスの作成先のコンパートメント</strong> フィールド：計算ノードをデプロイする <strong>コンパートメント</strong></p>
+<p><strong>イメージとシェイプ</strong> フィールド</p>
 <p><img
   src="console_page04.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>配置</strong> フィールド</p>
 <ul>
-<li><strong>可用性ドメイン</strong> ：計算ノードをデプロイする <strong>可用性ドメイン</strong></li>
+<li><strong>イメージ</strong> ：Oracle Linux - HPC Cluster Networking Image<br>
+（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> ブルダウンメニューで <strong>Oracle-Linux-8.10-2025.06.17-0-RHCK-OFED-24.10-1.1.4.0-2025.07.19-0</strong> / <strong>Oracle-Linux-9.5-2025.05.19-0-RHCK-OFED-24.10-1.1.4.0-2025.07.20-0</strong> （※3）を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
 </ul>
 <p><img
   src="console_page05.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>イメージとシェイプ</strong> フィールド</p>
-<p><img
-  src="console_page06.png"
-  alt="画面ショット"
-  
-/></p>
-<ul>
-<li><strong>イメージ</strong> ：Oracle Linux - HPC Cluster Networking Image<br>
-（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>hpc</strong> と入力して表示される <strong>Oracle Linux - HPC Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-2024.09.18-0</strong> （※2）を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
-</ul>
-<p><img
-  src="console_page08.png"
-  alt="画面ショット"
-  
-/></p>
-<p>※2）このイメージは、 <strong><a
+<p>※3）このイメージは、 <strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -806,21 +835,50 @@ Bastionノードの作成は、 <strong><a
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> です。</p>
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.12</strong> / <strong>No.13</strong>です。</p>
 <ul>
-<li><strong>Shape</strong> ：<strong>BM.Optimized3.36</strong><br>
-（<strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック。）</li>
+<li><strong>シェイプ</strong> ：<strong>BM.Optimized3.36</strong><br>
+（ <strong>シェイプの変更</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.Optimized3.36</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック。）</li>
+</ul>
+<p><img
+  src="console_page06.png"
+  alt="画面ショット"
+  
+/></p>
+<ul>
+<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong>cloud-config</strong> を選択<br>
+（ <strong>拡張オプション</strong> ボタンをクリックして表示される以下 <strong>管理</strong> フィールドの <strong>初期化スクリプト</strong> フィールドの <strong>ファイルをドロップするか選択</strong> ボタンをクリックしてファイルを選択）</li>
 </ul>
 <p><img
   src="console_page07.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>プライマリVNIC情報</strong> フィールド</p>
 <ul>
-<li><strong>プライマリ・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong> とプライベートサブネットを選択</li>
+<li><strong>Oracle Cloudエージェント</strong> ： 以下 <strong>OCA</strong> プラグインを選択
+<ul>
+<li><strong>Compute HPC RDMA Auto-Configuration</strong></li>
+<li><strong>Compute HPC RDMA Authentication</strong><br>
+（ <strong>拡張オプション</strong> ボタンをクリックして表示される以下 <strong>管理</strong> フィールドの <strong>Oracle Cloudエージェント</strong> フィールドのドロップダウンメニューで選択）</li>
+</ul>
+</li>
+</ul>
+<p><img
+  src="console_page08.png"
+  alt="画面ショット"
+  
+/></p>
+</li>
+</ol>
+<p>表示される <strong>セキュリティー</strong> 画面で、 <strong>次</strong> ボタンをクリックします。</p>
+<p>表示される <strong>ネットワーキング</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<ol>
+<li>
+<p><strong>プライマリ・ネットワーク</strong> フィールド</p>
+<ul>
+<li><strong>仮想クラウド・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong></li>
+<li><strong>サブネット</strong> ： 先に作成したプライベートサブネット</li>
 </ul>
 <p><img
   src="console_page09.png"
@@ -831,7 +889,7 @@ Bastionノードの作成は、 <strong><a
 <li>
 <p><strong>SSHキーの追加</strong> フィールド</p>
 <ul>
-<li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br>
+<li><strong>SSH公開キー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br>
 （ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
 </ul>
 <p><img
@@ -840,39 +898,9 @@ Bastionノードの作成は、 <strong><a
   
 /></p>
 </li>
-<li>
-<p><strong>管理</strong> フィールド（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
-<p><img
-  src="console_page11.png"
-  alt="画面ショット"
-  
-/></p>
-<ul>
-<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル（cloud-config）を選択<br>
-（ <strong>参照</strong> ボタンでファイルを選択）</li>
-</ul>
-<p><img
-  src="console_page12.png"
-  alt="画面ショット"
-  
-/></p>
-</li>
-<li>
-<p><strong>Oracle Cloudエージェント</strong> フィールド（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
-<ul>
-<li><strong>Compute HPC RDMA Auto-Configuration</strong> ：チェック</li>
-<li><strong>Compute HPC RDMA Authentication</strong> ：チェック</li>
-</ul>
-<p><img
-  src="console_page12-1.png"
-  alt="画面ショット"
-  
-/></p>
-</li>
 </ol>
+<p>表示される <strong>ストレージ</strong> 画面で、 <strong>次</strong> ボタンをクリックします。</p>
+<p>表示される <strong>確認</strong> 画面で、設定した内容に間違いがないかを確認した後、 <strong>作成</strong> ボタンをクリックします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-3-クラスタネットワーク作成"
     >
@@ -882,39 +910,32 @@ Bastionノードの作成は、 <strong><a
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIコンソールにログインし、HPCクラスタをデプロイする <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
+<p>OCIコンソールにログインし、HPCクラスタを作成する <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
 <p>表示される以下画面で、<strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。</p>
 <p><img
-  src="console_page13.png"
+  src="console_page11.png"
   alt="画面ショット"
   
 /></p>
-<p>次に、表示される <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。<br>
+<p>次に、表示される以下 <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。<br>
 なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<p><img
+  src="console_page12.png"
+  alt="画面ショット"
+  
+/></p>
 <ol>
 <li>
-<p><strong>名前</strong> フィールド：<strong>クラスタ・ネットワーク</strong> に付与する名前</p>
-<p><img
-  src="console_page14.png"
-  alt="画面ショット"
-  
-/></p>
+<p><strong>名前</strong> ： <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> に付与する名前</p>
 </li>
 <li>
-<p><strong>コンパートメントに作成</strong> フィールド：<strong>クラスタ・ネットワーク</strong> を作成する <strong>コンパートメント</strong></p>
-<p><img
-  src="console_page15.png"
-  alt="画面ショット"
-  
-/></p>
+<p><strong>コンパートメントに作成</strong> ： <strong>クラスタ・ネットワーク</strong> を作成する <strong>コンパートメント</strong></p>
 </li>
 <li>
-<p><strong>可用性ドメイン</strong> フィールド：<strong>クラスタ・ネットワーク</strong> をデプロイする <strong>可用性ドメイン</strong></p>
-<p><img
-  src="console_page16.png"
-  alt="画面ショット"
-  
-/></p>
+<p><strong>可用性ドメイン</strong> ： <strong>クラスタ・ネットワーク</strong> を作成する <strong>可用性ドメイン</strong></p>
 </li>
 <li>
 <p><strong>ネットワーキングの構成</strong> フィールド</p>
@@ -922,11 +943,6 @@ Bastionノードの作成は、 <strong><a
 <li><strong>仮想クラウド・ネットワーク</strong> ：先に作成した <strong>仮想クラウドネットワーク</strong> を選択</li>
 <li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
 </ul>
-<p><img
-  src="console_page17.png"
-  alt="画面ショット"
-  
-/></p>
 </li>
 <li>
 <p><strong>インスタンス・プールの構成</strong> フィールド</p>
@@ -934,31 +950,25 @@ Bastionノードの作成は、 <strong><a
 <li><strong>インスタンス・プール名</strong> ：作成される <strong><a
   class="gdoc-markdown__link"
   href="../#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
->インスタンス・プール</a></strong> に付与する名前（※3）</li>
-<li><strong>インスタンス数</strong> ：デプロイする計算ノードのノード数</li>
+>インスタンス・プール</a></strong> に付与する名前（※4）</li>
+<li><strong>インスタンス数</strong> ：作成する計算ノードのノード数</li>
 <li><strong>インスタンス構成</strong> ：先に作成した <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong></li>
 </ul>
-<p><img
-  src="console_page18.png"
-  alt="画面ショット"
-  
-/></p>
-<p>※3） ここで付与した名前は、計算ノードのホスト名の接尾辞として使用されます。<br>
+<p>※4） ここで付与した名前は、計算ノードのホスト名の接尾辞として使用されます。<br>
 例えば <strong>x9</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
 </li>
 </ol>
-<p>次に、表示される以下 <strong>クラスタ・ネットワークの詳細</strong> 画面で、ステータスが <strong>プロビジョニング中</strong> と表示されれば、 <strong>クラスタ・ネットワーク</strong> と計算ノードの作成が実施されています。</p>
+<p>次に、表示される以下 <strong>クラスタ・ネットワーク</strong> 画面で、ステータスが <strong>プロビジョニング中</strong> と表示されれば、 <strong>クラスタ・ネットワーク</strong> と計算ノードの作成が実施されています。</p>
 <p><img
-  src="console_page19.png"
+  src="console_page13.png"
   alt="画面ショット"
   
 /></p>
 <p>ステータスが <strong>実行中</strong> となれば、 <strong>クラスタ・ネットワーク</strong> と計算ノードの作成が完了しています。<br>
 作成が完了するまでの所要時間は、計算ノードのノード数が2ノードの場合で10分程度です。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-計算ノード確認"
     >
@@ -977,21 +987,33 @@ Bastionノードの作成は、 <strong><a
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、以下のステップでデプロイされた計算ノードの環境を確認します。</p>
-<ul>
-<li>計算ノードログイン</li>
+<p>本章は、以下のステップで作成された計算ノードの環境を確認します。</p>
+<ol>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 完了確認</li>
-<li>タイムゾーン確認</li>
-<li>NVMeローカルディスクファイルシステム確認</li>
-<li>ファイアーウォール停止確認</li>
+  href="#3-1-%e8%a8%88%e7%ae%97%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3"
+>計算ノードログイン</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 接続用ネットワークインターフェース確認</li>
-</ul>
+  href="#3-2-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d"
+>cloud-init完了確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-3-%e3%82%bf%e3%82%a4%e3%83%a0%e3%82%be%e3%83%bc%e3%83%b3%e7%a2%ba%e8%aa%8d"
+>タイムゾーン確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-4-nvme%e3%83%ad%e3%83%bc%e3%82%ab%e3%83%ab%e3%83%87%e3%82%a3%e3%82%b9%e3%82%af%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d"
+>NVMeローカルディスクファイルシステム確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-5-%e3%83%95%e3%82%a1%e3%82%a4%e3%82%a2%e3%83%bc%e3%82%a6%e3%82%a9%e3%83%bc%e3%83%ab%e5%81%9c%e6%ad%a2%e7%a2%ba%e8%aa%8d"
+>ファイアーウォール停止確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-6-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e6%8e%a5%e7%b6%9a%e7%94%a8%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%bc%e3%83%95%e3%82%a7%e3%83%bc%e3%82%b9%e7%a2%ba%e8%aa%8d"
+>クラスタ・ネットワーク接続用ネットワークインターフェース確認</a></strong></li>
+</ol>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-1-計算ノードログイン"
     >
@@ -1003,15 +1025,15 @@ Bastionノードの作成は、 <strong><a
 </div>
 <p>計算ノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。<br>
 Bastionノードから計算ノードへのログインは、計算ノードのインスタンス名を使用します。</p>
-<p>計算ノードのインスタンス名は、OCIコンソールで計算ノードをデプロイした <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br>
+<p>計算ノードのインスタンス名は、OCIコンソールで計算ノードを作成した <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br>
 またこの画面は、計算ノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。</p>
 <p><img
-  src="console_page20.png"
+  src="console_page14.png"
   alt="画面ショット"
   
 /></p>
 <p>計算ノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh inst-ijeeq-x9
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh inst-ofwf3-x9
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-2-cloud-init完了確認"
     >
@@ -1028,7 +1050,7 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo cloud-init status&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-ijeeq-x9,inst-mpdri-x9
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
 </span></span><span class="line"><span class="cl">$
@@ -1044,9 +1066,9 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>以下コマンドをBastionノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;date&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-ijeeq-x9,inst-mpdri-x9
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">Mon Jan <span class="m">29</span> 12:08:00 JST <span class="m">2024</span>
+</span></span><span class="line"><span class="cl">Wed Oct <span class="m">29</span> 04:35:58 PM JST <span class="m">2025</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-4-nvmeローカルディスクファイルシステム確認"
@@ -1060,10 +1082,10 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>以下コマンドをBastionノードのopcユーザで実行し、NVMeローカルディスク領域が <strong>/mnt/localdisk</strong> にマウントされていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo df -h /mnt/localdisk&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-ijeeq-x9,inst-mpdri-x9
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">Filesystem      Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/nvme0n1p1  3.5T   25G  3.5T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">Filesystem              Size  Used Avail Use% Mounted on
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0  3.5T   25G  3.5T   1% /mnt/localdisk
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-5-ファイアーウォール停止確認"
@@ -1077,10 +1099,10 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo systemctl status firewalld | grep -e Active -e disabled&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-ijeeq-x9,inst-mpdri-x9
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-</span></span><span class="line"><span class="cl">   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: inactive <span class="o">(</span>dead<span class="o">)</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-6-クラスタネットワーク接続用ネットワークインターフェース確認"
@@ -1094,8 +1116,8 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ <strong>rdma0</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスが設定されていることを確認します。（※4）</p>
-<p>※4）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
+>クラスタ・ネットワーク</a></strong> 接続用のネットワークインターフェース（ <strong>ens800f0np0</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスで4フィールド目が <strong>仮想クラウド・ネットワーク</strong> 接続用のネットワークインターフェース（ <strong>ens300f0np0</strong> ）に割り当てられたIPアドレスの4フィールド目と同じ値のものが設定されていることを確認します。（※5）</p>
+<p>※5）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -1105,34 +1127,19 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
   class="gdoc-markdown__link"
   href="../tech-knowhow/howto-connect-clusternetwork/#1-4-%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%83%89%e3%83%ac%e3%82%b9%e3%81%ae%e3%83%87%e3%83%95%e3%82%a9%e3%83%ab%e3%83%88%e3%81%8b%e3%82%89%e3%81%ae%e5%a4%89%e6%9b%b4"
 >1-4. ネットワークアドレスのデフォルトからの変更</a></strong> を参照してください。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;ifconfig rdma0&#39;</span> <span class="p">|</span> dshbak -c
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;ip a s ens300f0np0 | grep &#34;inet &#34;; ip a s ens800f0np0 | grep inet&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-ptma1-x9
+</span></span><span class="line"><span class="cl">inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">rdma0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu <span class="m">4220</span>
-</span></span><span class="line"><span class="cl">        inet 10.224.0.72  netmask 255.240.0.0  broadcast 10.239.255.255
-</span></span><span class="line"><span class="cl">        inet6 fe80::ac0:ebff:fe88:34d0  prefixlen <span class="m">64</span>  scopeid 0x20&lt;link&gt;
-</span></span><span class="line"><span class="cl">        ether 08:c0:eb:88:34:d0  txqueuelen <span class="m">20000</span>  <span class="o">(</span>Ethernet<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        RX packets <span class="m">12</span>  bytes <span class="m">4479</span> <span class="o">(</span>4.3 KiB<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        RX errors <span class="m">0</span>  dropped <span class="m">0</span>  overruns <span class="m">0</span>  frame <span class="m">0</span>
-</span></span><span class="line"><span class="cl">        TX packets <span class="m">45</span>  bytes <span class="m">8033</span> <span class="o">(</span>7.8 KiB<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        TX errors <span class="m">0</span>  dropped <span class="m">0</span> overruns <span class="m">0</span>  carrier <span class="m">0</span>  collisions <span class="m">0</span>
-</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    inet 10.0.2.62/24 brd 10.0.2.255 scope global dynamic noprefixroute ens300f0np0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.62/12 scope global ens800f0np0
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-rnak1-x9
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">rdma0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu <span class="m">4220</span>
-</span></span><span class="line"><span class="cl">        inet 10.224.0.208  netmask 255.240.0.0  broadcast 10.239.255.255
-</span></span><span class="line"><span class="cl">        inet6 fe80::ac0:ebff:fe88:34f0  prefixlen <span class="m">64</span>  scopeid 0x20&lt;link&gt;
-</span></span><span class="line"><span class="cl">        ether 08:c0:eb:88:34:f0  txqueuelen <span class="m">20000</span>  <span class="o">(</span>Ethernet<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        RX packets <span class="m">12</span>  bytes <span class="m">4479</span> <span class="o">(</span>4.3 KiB<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        RX errors <span class="m">0</span>  dropped <span class="m">0</span>  overruns <span class="m">0</span>  frame <span class="m">0</span>
-</span></span><span class="line"><span class="cl">        TX packets <span class="m">44</span>  bytes <span class="m">7942</span> <span class="o">(</span>7.7 KiB<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        TX errors <span class="m">0</span>  dropped <span class="m">0</span> overruns <span class="m">0</span>  carrier <span class="m">0</span>  collisions <span class="m">0</span>
-</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    inet 10.0.2.168/24 brd 10.0.2.255 scope global dynamic noprefixroute ens300f0np0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.168/12 scope global ens800f0np0
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-mpiプログラム実行2ノード編"
     >
         4. MPIプログラム実行（2ノード編）
@@ -1142,11 +1149,11 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="4-0-mpiプログラム実行2ノード編概要"
+    <h2 id="4-0-概要"
     >
-        4-0. MPIプログラム実行（2ノード編）概要
+        4-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-cluster-network/#4-0-mpiプログラム実行2ノード編概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-0. MPIプログラム実行（2ノード編）概要" aria-label="アンカー先: 4-0. MPIプログラム実行（2ノード編）概要" href="#4-0-mpi%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e5%ae%9f%e8%a1%8c2%e3%83%8e%e3%83%bc%e3%83%89%e7%b7%a8%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-cluster-network/#4-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-0. 概要" aria-label="アンカー先: 4-0. 概要" href="#4-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1164,9 +1171,18 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 <p>また <strong>OpenMPI</strong> の実行は、これを実行する計算ノード間で必要なポートにアクセス出来る必要があるため、先に作成したプライベートサブネットのセキュリティリストを修正する必要があります。</p>
 <p>以上より、本章で実施する <strong>Intel MPI Benchmark</strong> によるMPIプログラム実行は、以下の手順を経て行います。</p>
 <ul>
-<li>計算ノード間SSH接続環境構築</li>
-<li>プライベートサブネット <strong>セキュリティリスト</strong> 修正</li>
-<li><strong>Intel MPI Benchmark</strong> Ping-Pong実行</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#4-1-%e8%a8%88%e7%ae%97%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93ssh%e6%8e%a5%e7%b6%9a%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89"
+>計算ノード間SSH接続環境構築</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#4-2-%e3%83%97%e3%83%a9%e3%82%a4%e3%83%99%e3%83%bc%e3%83%88%e3%82%b5%e3%83%96%e3%83%8d%e3%83%83%e3%83%88%e3%82%bb%e3%82%ad%e3%83%a5%e3%83%aa%e3%83%86%e3%82%a3%e3%83%aa%e3%82%b9%e3%83%88%e4%bf%ae%e6%ad%a3"
+>プライベートサブネットセキュリティリスト修正</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#4-3-intel-mpi-benchmark-ping-pong%e5%ae%9f%e8%a1%8c"
+>Intel MPI Benchmark Ping-Pong実行</a></strong></li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="4-1-計算ノード間ssh接続環境構築"
@@ -1179,9 +1195,9 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 </div>
 <p>計算ノード間をパスフレーズ無しでSSH接続するための環境構築は、先にBastionノードで作成したSSH秘密鍵を全ての計算ノードにコピーすることでこれを実現します。</p>
 <p>以下コマンドをBastionノードのopcユーザで実行し、BastionノードのSSH秘密鍵を全計算ノードにコピーします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp -oStrictHostKeyChecking<span class="o">=</span>accept-new -p ~/.ssh/id_rsa <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdcp -g all -p ~/.ssh/id_rsa ~/.ssh/
 </span></span></code></pre></div><p>次に、以下コマンドをBastionノードのopcユーザで実行し、先のSSH秘密鍵のコピーでBastionノードに作成された全計算ノードのエントリを含むknown_hostsファイルを全計算ノードにコピーします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp -p ~/.ssh/known_hosts <span class="nv">$hname</span>:~/.ssh/<span class="p">;</span> <span class="k">done</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdcp -g all -p ~/.ssh/known_hosts ~/.ssh/
 </span></span></code></pre></div><p>次に、以下コマンドをBastionノードのopcユーザで実行し、後の <strong>Intel MPI Benchmark</strong> Ping-Pongを実行する際に使用する計算ノードのホスト名リストを全計算ノードにコピーします。<br>
 なお、ホスト名リストを作成していない場合は、 <strong><a
   class="gdoc-markdown__link"
@@ -1190,7 +1206,7 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
   class="gdoc-markdown__link"
   href="../tech-knowhow/compute-host-list/"
 >計算/GPUノードのホスト名リスト作成方法</a></strong> を参照してこれを作成し、Bastionノードのopcユーザのホームディレクトリにファイル名 <strong>hostlist.txt</strong> で配置します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> scp -p ~/hostlist.txt <span class="nv">$hname</span>:~/<span class="p">;</span> <span class="k">done</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdcp -g all -p ~/hostlist.txt ~/
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="4-2-プライベートサブネットセキュリティリスト修正"
     >
@@ -1200,11 +1216,11 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>OCIコンソールにログインし、計算ノードをデプロイしたリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
+<p>OCIコンソールにログインし、計算ノードを作成したリージョンを選択後、 <strong>ネットワーキング</strong> → <strong>仮想クラウド・ネットワーク</strong> とメニューを辿ります。</p>
 <p>次に、表示される画面で、先に作成した <strong>仮想クラウド・ネットワーク</strong> をクリックします。</p>
 <p>次に、表示される以下 <strong>サブネット</strong> フィールドで、先に作成したプライベートサブネットをクリックします。</p>
 <p><img
-  src="console_page20-1.png"
+  src="console_page20.png"
   alt="画面ショット"
   
 /></p>
@@ -1241,19 +1257,52 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Intel MPI Benchmark</strong> のPing-Pongを実行します。</p>
-<p><strong><a
-  class="gdoc-markdown__link"
-  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
->OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../benchmark/run-imb/"
->Intel MPI Benchmark実行方法</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
->OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、2ノードを使用するPing-Pongを実行します。</p>
-<hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+<p>以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> のPing-Pongを実行します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpivars.sh
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Wed Oct 29 17:05:59 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Machine               : x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># System                : Linux</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 5.14.0-503.40.1.el9_5.x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Version           : 3.1</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Thread Environment: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   268435456</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype                   :   MPI_BYTE </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Op                         :   MPI_SUM  </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of Benchmarks to run:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># PingPong</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#---------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Benchmarking PingPong </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># #processes = 2 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#---------------------------------------------------</span>
+</span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.66         0.00
+</span></span><span class="line"><span class="cl">    <span class="m">134217728</span>            <span class="m">1</span>     10968.94     12236.16
+</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21931.66     12239.63
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># All processes entering MPI_Finalize</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-計算ノード追加"
     >
         5. 計算ノード追加
@@ -1276,7 +1325,6 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
   class="gdoc-markdown__link"
   href="../tech-knowhow/cluster-resize/#2-%e3%83%8e%e3%83%bc%e3%83%89%e6%95%b0%e3%82%92%e5%a2%97%e3%82%84%e3%81%99"
 >2. ノード数を増やす</a></strong> の手順に従い、計算ノードを2ノードから4ノードに拡張します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="6-mpiプログラム実行4ノード編"
     >
@@ -1295,7 +1343,7 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、追加した2ノードを含めた計4ノードで <strong>Intel MPI Benchmark</strong> のAll-Reduceを実行します。</p>
+<p>本章は、追加した2ノードを含めた計4ノードで <strong>Intel MPI Benchmarks</strong> のAll-Reduceを実行します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="6-1-計算ノード間ssh接続環境構築"
     >
@@ -1311,27 +1359,60 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
   href="#4-1-%e8%a8%88%e7%ae%97%e3%83%8e%e3%83%bc%e3%83%89%e9%96%93ssh%e6%8e%a5%e7%b6%9a%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89"
 >4-1. 計算ノード間SSH接続環境構築</a></strong> を参照ください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="6-2-intel-mpi-benchmark-all-reduce実行"
+    <h2 id="6-2-intel-mpi-benchmarks-all-reduce実行"
     >
-        6-2. Intel MPI Benchmark All-Reduce実行
+        6-2. Intel MPI Benchmarks All-Reduce実行
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-cluster-network/#6-2-intel-mpi-benchmark-all-reduce実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6-2. Intel MPI Benchmark All-Reduce実行" aria-label="アンカー先: 6-2. Intel MPI Benchmark All-Reduce実行" href="#6-2-intel-mpi-benchmark-all-reduce%e5%ae%9f%e8%a1%8c">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-cluster-network/#6-2-intel-mpi-benchmarks-all-reduce実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6-2. Intel MPI Benchmarks All-Reduce実行" aria-label="アンカー先: 6-2. Intel MPI Benchmarks All-Reduce実行" href="#6-2-intel-mpi-benchmarks-all-reduce%e5%ae%9f%e8%a1%8c">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Intel MPI Benchmark</strong> のAll-Reduceを実行します。</p>
-<p><strong><a
-  class="gdoc-markdown__link"
-  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
->OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../benchmark/run-imb/"
->Intel MPI Benchmark実行方法</a></strong> の <strong><a
-  class="gdoc-markdown__link"
-  href="../benchmark/run-imb/#1-openmpi%e3%81%a7intel-mpi-benchmarks%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8b%e5%a0%b4%e5%90%88"
->OpenMPIでIntel MPI Benchmarksを実行する場合</a></strong> の手順に従い、4ノードを使用するAll-Reduceを実行します。</p>
-<hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+<p>以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、4ノードで <strong>Intel MPI Benchmarks</strong> のAllreduceを実行します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpivars.sh
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">144</span> -N <span class="m">36</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 -x PATH /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 -npmin <span class="m">144</span> allreduce
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Wed Oct 29 17:33:15 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Machine               : x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># System                : Linux</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 5.14.0-503.40.1.el9_5.x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Version           : 3.1</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Thread Environment: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 -npmin 144 allreduce</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   268435456</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype                   :   MPI_BYTE </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Op                         :   MPI_SUM  </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of Benchmarks to run:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Allreduce</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Benchmarking Allreduce </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># #processes = 144 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#----------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions  t_min[usec]  t_max[usec]  t_avg[usec]</span>
+</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         0.02         0.03         0.03
+</span></span><span class="line"><span class="cl">    <span class="m">134217728</span>            <span class="m">1</span>    147394.84    161213.00    155283.13
+</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>    308252.23    323720.28    313516.40
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># All processes entering MPI_Finalize</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="7-計算ノード入れ替え"
     >
         7. 計算ノード入れ替え
@@ -1355,7 +1436,6 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
   class="gdoc-markdown__link"
   href="#6-mpi%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e5%ae%9f%e8%a1%8c4%e3%83%8e%e3%83%bc%e3%83%89%e7%b7%a8"
 >6. MPIプログラム実行（4ノード編）</a></strong> に従い <strong>Intel MPI Benchmarks</strong> を実行、インターコネクト性能が十分出ていることを確認します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="8-クラスタネットワークの終了"
     >
@@ -1371,7 +1451,13 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
 >クラスタ・ネットワーク</a></strong> を終了することで、作成したクラスタ・ネットワークと計算ノードを削除します。</p>
 <p>OCIコンソールメニューから <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> を選択し、表示される以下画面で作成した <strong>クラスタ・ネットワーク</strong> の <strong>終了</strong> メニューをクリックします。</p>
 <p><img
-  src="console_page29.png"
+  src="console_page15.png"
+  alt="画面ショット"
+  
+/></p>
+<p>表示される以下 <strong>クラスタ・ネットワークの終了</strong> サイドバーで、 <strong>TERMINATE</strong> と入力して <strong>終了</strong> ボタンをクリックします。</p>
+<p><img
+  src="console_page16.png"
   alt="画面ショット"
   
 /></p>
@@ -2945,6 +3031,39 @@ Bastionノードから計算ノードへのログインは、計算ノードの�
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

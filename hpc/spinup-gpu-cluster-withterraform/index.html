@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "GPUクラスタを構築する(基礎インフラ自動構築編)",
       "description": "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "2281",
+      "wordCount" : "1786",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -316,48 +316,49 @@
       <h1>&nbsp;目次</h1>
       <nav id="TableOfContents">
   <ul>
-    <li><a href="#0-事前準備">0. 事前準備</a>
-      <ul>
-        <li><a href="#0-0-概要">0-0. 概要</a></li>
-        <li><a href="#0-1-リソースマネージャを使用する方法">0-1. リソース・マネージャを使用する方法</a>
-          <ul>
-            <li><a href="#0-1-1-構成ソースプロバイダ作成">0-1-1. 構成ソース・プロバイダ作成</a></li>
-            <li><a href="#0-1-2-スタック作成">0-1-2. スタック作成</a></li>
-          </ul>
-        </li>
-        <li><a href="#0-2-terraform-cliを使用する方法">0-2. Terraform CLIを使用する方法</a>
-          <ul>
-            <li><a href="#0-2-1-terraform実行環境構築">0-2-1. Terraform実行環境構築</a></li>
-            <li><a href="#0-2-2-terraformスクリプト概要">0-2-2. Terraformスクリプト概要</a></li>
-            <li><a href="#0-2-3-terraformスクリプト作成">0-2-3. Terraformスクリプト作成</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#1-gpuクラスタ構築">1. GPUクラスタ構築</a>
+    <li><a href="#0-概要">0. 概要</a></li>
+    <li><a href="#1-事前準備">1. 事前準備</a>
       <ul>
         <li><a href="#1-0-概要">1-0. 概要</a></li>
-        <li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a></li>
-        <li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a></li>
+        <li><a href="#1-1-リソースマネージャを使用する方法">1-1. リソース・マネージャを使用する方法</a>
+          <ul>
+            <li><a href="#1-1-1-構成ソースプロバイダ作成">1-1-1. 構成ソース・プロバイダ作成</a></li>
+            <li><a href="#1-1-2-スタック作成">1-1-2. スタック作成</a></li>
+          </ul>
+        </li>
+        <li><a href="#1-2-terraform-cliを使用する方法">1-2. Terraform CLIを使用する方法</a>
+          <ul>
+            <li><a href="#1-2-1-terraform実行環境構築">1-2-1. Terraform実行環境構築</a></li>
+            <li><a href="#1-2-2-terraformスクリプト概要">1-2-2. Terraformスクリプト概要</a></li>
+            <li><a href="#1-2-3-terraformスクリプト作成">1-2-3. Terraformスクリプト作成</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
-    <li><a href="#2-gpuクラスタ確認">2. GPUクラスタ確認</a>
+    <li><a href="#2-gpuクラスタ構築">2. GPUクラスタ構築</a>
       <ul>
         <li><a href="#2-0-概要">2-0. 概要</a></li>
-        <li><a href="#2-1-bastionノードログイン">2-1. Bastionノードログイン</a></li>
-        <li><a href="#2-2-cloud-init完了確認">2-2. cloud-init完了確認</a></li>
-        <li><a href="#2-3-gpuノードファイルシステム確認">2-3. GPUノードファイルシステム確認</a></li>
-        <li><a href="#2-4-gpuノードbios設定確認">2-4. GPUノードBIOS設定確認</a></li>
-        <li><a href="#2-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認">2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認</a></li>
+        <li><a href="#2-1-リソースマネージャを使用する方法">2-1. リソース・マネージャを使用する方法</a></li>
+        <li><a href="#2-2-terraform-cliを使用する方法">2-2. Terraform CLIを使用する方法</a></li>
       </ul>
     </li>
-    <li><a href="#3-コンテナ環境構築">3. コンテナ環境構築</a></li>
-    <li><a href="#4-nccl-tests実行">4. NCCL Tests実行</a></li>
-    <li><a href="#5-gpuクラスタ削除">5. GPUクラスタ削除</a>
+    <li><a href="#3-gpuクラスタ確認">3. GPUクラスタ確認</a>
       <ul>
-        <li><a href="#5-0-概要">5-0. 概要</a></li>
-        <li><a href="#5-1-リソースマネージャを使用する方法">5-1. リソース・マネージャを使用する方法</a></li>
-        <li><a href="#5-2-terraform-cliの場合">5-2. Terraform CLIの場合</a></li>
+        <li><a href="#3-0-概要">3-0. 概要</a></li>
+        <li><a href="#3-1-bastionノードログイン">3-1. Bastionノードログイン</a></li>
+        <li><a href="#3-2-cloud-init完了確認">3-2. cloud-init完了確認</a></li>
+        <li><a href="#3-3-gpuノードファイルシステム確認">3-3. GPUノードファイルシステム確認</a></li>
+        <li><a href="#3-4-gpuノードbios設定確認">3-4. GPUノードBIOS設定確認</a></li>
+        <li><a href="#3-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認">3-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-コンテナ環境構築">4. コンテナ環境構築</a></li>
+    <li><a href="#5-nccl-tests実行">5. NCCL Tests実行</a></li>
+    <li><a href="#6-gpuクラスタ削除">6. GPUクラスタ削除</a>
+      <ul>
+        <li><a href="#6-0-概要">6-0. 概要</a></li>
+        <li><a href="#6-1-リソースマネージャを使用する方法">6-1. リソース・マネージャを使用する方法</a></li>
+        <li><a href="#6-2-terraform-cliの場合">6-2. Terraform CLIの場合</a></li>
       </ul>
       
     </section>
@@ -432,8 +433,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -452,16 +453,31 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<p>このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは <strong><a
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="0-概要"
+    >
+        0. 概要
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 概要" aria-label="アンカー先: 0. 概要" href="#0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本チュートリアルは、8枚の <strong>NVIDIA A100</strong> GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8</a></strong> を使用）を <strong><a
+>BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a
+>クラスタ・ネットワーク</a></strong> でノード間接続する、HPC/機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された <strong><a
   class="gdoc-markdown__link"
   href="../#5-12-terraform"
->Terraform</a></strong> スクリプトを活用して自動構築し、Dockerコンテナ上で <strong><a
+>Terraform</a></strong> スクリプトを活用して自動構築し、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/containerd/containerd/tree/main"
+>containerd</a></strong> と <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html"
+>NVIDIA Container Toolkit</a></strong> を使用するコンテナ実行環境で起動するコンテナ上で <strong><a
   class="gdoc-markdown__link"
   href="https://developer.nvidia.com/nccl"
 >NCCL（NVIDIA Collective Communication Library）</a></strong> のGPU間通信性能を <strong><a
@@ -480,6 +496,9 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../#5-10-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
 >HPCクラスタスタック</a></strong> も利用可能で、詳細は <strong><a
+  class="gdoc-markdown__link"
+  href="../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
+>OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../spinup-gpu-cluster-withstack"
 >GPUクラスタを構築する(スタティッククラスタ自動構築編)</a></strong> を参照してください。</p>
@@ -523,19 +542,19 @@ table, th, td {
   href="../tech-knowhow/howto-connect-clusternetwork/#1-2-%e6%8e%a5%e7%b6%9a%e3%82%b5%e3%83%96%e3%83%8d%e3%83%83%e3%83%88%e3%81%aeoca-hpc%e3%83%97%e3%83%a9%e3%82%b0%e3%82%a4%e3%83%b3%e5%8b%95%e4%bd%9c%e6%9d%a1%e4%bb%b6%e5%85%85%e8%b6%b3%e7%a2%ba%e8%aa%8d"
 >1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認</a></strong> を参照してください。</p>
 <p><img
-  src="../spinup-cluster-network/architecture_diagram.png"
+  src="../spinup-hpc-cluster-withterraform/architecture_diagram.png"
   alt="システム構成図（パブリック）"
   
 /></p>
 <p><img
-  src="../spinup-cluster-network/architecture_diagram_private.png"
+  src="../spinup-hpc-cluster-withterraform/architecture_diagram_private.png"
   alt="システム構成図（プライベート）"
   
 /></p>
 <p>Bastionノード作成は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )を含み、 <strong>cloud-init</strong> がBastionノード作成時に以下の処理を行います。</p>
+>cloud-init</a></strong> 設定ファイル(以降 <strong>cloud-config</strong> と呼称します。)を含み、 <strong>cloud-init</strong> がBastionノード作成時に以下の処理を行います。</p>
 <ul>
 <li>タイムゾーンをJSTに変更</li>
 <li>ホームディレクトリ領域のNFSエクスポート</li>
@@ -552,23 +571,22 @@ table, th, td {
 </ul>
 <p><strong>所要時間 :</strong> 約2時間</p>
 <p><strong>前提条件 :</strong> GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
-<p><strong>注意 :</strong> チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。</p>
-<hr>
+<p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="0-事前準備"
+    <h1 id="1-事前準備"
     >
-        0. 事前準備
+        1. 事前準備
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-事前準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0. 事前準備" aria-label="アンカー先: 0. 事前準備" href="#0-%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-事前準備" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. 事前準備" aria-label="アンカー先: 1. 事前準備" href="#1-%e4%ba%8b%e5%89%8d%e6%ba%96%e5%82%99">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-0-概要"
+    <h2 id="1-0-概要"
     >
-        0-0. 概要
+        1-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-0. 概要" aria-label="アンカー先: 0-0. 概要" href="#0-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-0. 概要" aria-label="アンカー先: 1-0. 概要" href="#1-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -604,54 +622,40 @@ table, th, td {
 </ol>
 <p>以降では、2つの異なる構築手法毎にその手順を解説します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-1-リソースマネージャを使用する方法"
+    <h2 id="1-1-リソースマネージャを使用する方法"
     >
-        0-1. リソース・マネージャを使用する方法
+        1-1. リソース・マネージャを使用する方法
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 0-1. リソース・マネージャを使用する方法" href="#0-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 1-1. リソース・マネージャを使用する方法" href="#1-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="0-1-1-構成ソースプロバイダ作成"
+    <h3 id="1-1-1-構成ソースプロバイダ作成"
     >
-        0-1-1. 構成ソース・プロバイダ作成
+        1-1-1. 構成ソース・プロバイダ作成
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-1-構成ソースプロバイダ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-1-1. 構成ソース・プロバイダ作成" aria-label="アンカー先: 0-1-1. 構成ソース・プロバイダ作成" href="#0-1-1-%e6%a7%8b%e6%88%90%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%97%e3%83%ad%e3%83%90%e3%82%a4%e3%83%80%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-1-1-構成ソースプロバイダ作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1-1. 構成ソース・プロバイダ作成" aria-label="アンカー先: 1-1-1. 構成ソース・プロバイダ作成" href="#1-1-1-%e6%a7%8b%e6%88%90%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%97%e3%83%ad%e3%83%90%e3%82%a4%e3%83%80%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、ひな型となる <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-12-terraform"
->Terraform</a></strong> スクリプトを <strong>GitHub</strong> パブリックレポジトリから取り込むための <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-14-%e6%a7%8b%e6%88%90%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%97%e3%83%ad%e3%83%90%e3%82%a4%e3%83%80"
->構成ソース・プロバイダ</a></strong> を作成します。</p>
 <p><strong>構成ソース・プロバイダ</strong> の作成は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-14-%e6%a7%8b%e6%88%90%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%97%e3%83%ad%e3%83%90%e3%82%a4%e3%83%80"
 >ここ</a></strong> を参照してください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="0-1-2-スタック作成"
+    <h3 id="1-1-2-スタック作成"
     >
-        0-1-2. スタック作成
+        1-1-2. スタック作成
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-1-2-スタック作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-1-2. スタック作成" aria-label="アンカー先: 0-1-2. スタック作成" href="#0-1-2-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-1-2-スタック作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1-2. スタック作成" aria-label="アンカー先: 1-1-2. スタック作成" href="#1-1-2-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、GPUクラスタを構築するための <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-2-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3"
->リソース・マネージャ</a></strong> 用 <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-3-%e3%82%b9%e3%82%bf%e3%83%83%e3%82%af"
->スタック</a></strong> を作成します。</p>
 <p>OCIコンソールにログインし、GPUクラスタを構築するリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
-<p>次に、表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
+<p>表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
 <p><img
-  src="console_page02.png"
+  src="console_page01.png"
   alt="画面ショット"
   
 /></p>
@@ -673,7 +677,7 @@ table, th, td {
   alt="画面ショット"
   
 /></p>
-<p>次に、表示される <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
+<p>次に、表示される以下 <strong>変数の構成</strong> 画面で、各画面フィールドに以下の情報を入力し、下部の <strong>次</strong> ボタンをクリックします。</p>
 <ul>
 <li>
 <p><strong>General options</strong> フィールド</p>
@@ -699,15 +703,12 @@ table, th, td {
 <p><strong>Compute/GPU node options</strong> フィールド</p>
 <ul>
 <li><strong>Display name postfix :</strong> GPUノードホスト名の接尾辞（※3）</li>
-<li><strong>Shape :</strong> <strong>BM.GPU4.8</strong></li>
+<li><strong>Shape :</strong> <strong>BM.GPU4.8</strong> / <strong>BM.GPU.A100-v2.8</strong></li>
 <li><strong>Node count :</strong> GPUノードのノード数（デフォルト：2）</li>
 <li><strong>Image OCID :</strong> GPUノードのイメージOCID（※4）</li>
 <li><strong>Boot volume size :</strong> GPUノードのブートボリュームサイズ（200GB以上）</li>
-<li><strong>cloud-config :</strong> GPUノードの <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル( <strong>cloud-config</strong> )（※5）</li>
-<li><strong>NPS for BM.GPU4.8 :</strong> GPUノードの <strong>NPS</strong> 設定値 (デフォルト：NPS4) （※6）</li>
+<li><strong>cloud-config :</strong> GPUノードの <strong>cloud-config</strong> （※5）</li>
+<li><strong>NPS for BM.xxxx.xx :</strong> GPUノードの <strong>NPS</strong> 設定値 (デフォルト：NPS4) （※6）</li>
 <li><strong>SMT :</strong> GPUノードの <strong>SMT</strong> 設定値 (デフォルト：有効) （※6）</li>
 </ul>
 </li>
@@ -717,7 +718,7 @@ table, th, td {
   alt="画面ショット"
   
 /></p>
-<p>※3） 例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
+<p>※3） 例えば <strong>gpu4-ol905</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol905</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
 ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -729,19 +730,9 @@ table, th, td {
   </thead>
   <tbody>
       <tr>
-          <td style="text-align: center">7</td>
-          <td style="text-align: center">8.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna</td>
-      </tr>
-      <tr>
-          <td style="text-align: center">9</td>
-          <td style="text-align: center">8.8</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq</td>
-      </tr>
-      <tr>
-          <td style="text-align: center">8</td>
-          <td style="text-align: center">7.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq</td>
+          <td style="text-align: center">15</td>
+          <td style="text-align: center">9.5</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaaevo5a2g6zd524mlu5aopkzxem6farzeilzqwcaax6nnpaflr2ipq</td>
       </tr>
   </tbody>
 </table> </div>
@@ -780,8 +771,8 @@ table, th, td {
 >パフォーマンス関連Tips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../benchmark/bios-setting/"
->パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。</p>
-<p>※7）<strong><a
+>パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。<br>
+※7）<strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -805,20 +796,20 @@ table, th, td {
   
 /></p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="0-2-terraform-cliを使用する方法"
+    <h2 id="1-2-terraform-cliを使用する方法"
     >
-        0-2. Terraform CLIを使用する方法
+        1-2. Terraform CLIを使用する方法
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-terraform-cliを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-2. Terraform CLIを使用する方法" aria-label="アンカー先: 0-2. Terraform CLIを使用する方法" href="#0-2-terraform-cli%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-2-terraform-cliを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-2. Terraform CLIを使用する方法" aria-label="アンカー先: 1-2. Terraform CLIを使用する方法" href="#1-2-terraform-cli%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="0-2-1-terraform実行環境構築"
+    <h3 id="1-2-1-terraform実行環境構築"
     >
-        0-2-1. Terraform実行環境構築
+        1-2-1. Terraform実行環境構築
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-1-terraform実行環境構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-2-1. Terraform実行環境構築" aria-label="アンカー先: 0-2-1. Terraform実行環境構築" href="#0-2-1-terraform%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-2-1-terraform実行環境構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-2-1. Terraform実行環境構築" aria-label="アンカー先: 1-2-1. Terraform実行環境構築" href="#1-2-1-terraform%e5%ae%9f%e8%a1%8c%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -850,11 +841,11 @@ table, th, td {
   href="https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm"
 >ここ</a></strong> を参照してください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="0-2-2-terraformスクリプト概要"
+    <h3 id="1-2-2-terraformスクリプト概要"
     >
-        0-2-2. Terraformスクリプト概要
+        1-2-2. Terraformスクリプト概要
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-2-terraformスクリプト概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-2-2. Terraformスクリプト概要" aria-label="アンカー先: 0-2-2. Terraformスクリプト概要" href="#0-2-2-terraform%e3%82%b9%e3%82%af%e3%83%aa%e3%83%97%e3%83%88%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-2-2-terraformスクリプト概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-2-2. Terraformスクリプト概要" aria-label="アンカー先: 1-2-2. Terraformスクリプト概要" href="#1-2-2-terraform%e3%82%b9%e3%82%af%e3%83%aa%e3%83%97%e3%83%88%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -913,11 +904,11 @@ table, th, td {
 >cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を格納しています。<br>
 この <strong>cloud-config</strong> を修正することで、構築するGPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h3 id="0-2-3-terraformスクリプト作成"
+    <h3 id="1-2-3-terraformスクリプト作成"
     >
-        0-2-3. Terraformスクリプト作成
+        1-2-3. Terraformスクリプト作成
     </h3>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#0-2-3-terraformスクリプト作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 0-2-3. Terraformスクリプト作成" aria-label="アンカー先: 0-2-3. Terraformスクリプト作成" href="#0-2-3-terraform%e3%82%b9%e3%82%af%e3%83%aa%e3%83%97%e3%83%88%e4%bd%9c%e6%88%90">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-2-3-terraformスクリプト作成" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-2-3. Terraformスクリプト作成" aria-label="アンカー先: 1-2-3. Terraformスクリプト作成" href="#1-2-3-terraform%e3%82%b9%e3%82%af%e3%83%aa%e3%83%97%e3%83%88%e4%bd%9c%e6%88%90">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1076,7 +1067,7 @@ table, th, td {
 </table> </div>
 <p>※8）OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
 <p><img
-  src="console_page01.png"
+  src="console_page02.png"
   alt="画面ショット"
   
 /></p>
@@ -1097,25 +1088,24 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../benchmark/bios-setting/"
 >パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。<br>
-※11）例えば <strong>gpu4-ol89</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-gpu4-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
+※11）例えば <strong>ao-ol905</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-ao-ol905</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
 ※12）既存の <strong>VCN</strong> を使用する場合のみコメントを外して指定します。<br>
 ※13）OCIコンソール上で当該 <strong>VCN</strong> ・サブネットの詳細画面を表示して確認します。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="1-gpuクラスタ構築"
+    <h1 id="2-gpuクラスタ構築"
     >
-        1. GPUクラスタ構築
+        2. GPUクラスタ構築
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-gpuクラスタ構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1. GPUクラスタ構築" aria-label="アンカー先: 1. GPUクラスタ構築" href="#1-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e6%a7%8b%e7%af%89">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-gpuクラスタ構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. GPUクラスタ構築" aria-label="アンカー先: 2. GPUクラスタ構築" href="#2-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e6%a7%8b%e7%af%89">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-0-概要"
+    <h2 id="2-0-概要"
     >
-        1-0. 概要
+        2-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-0. 概要" aria-label="アンカー先: 1-0. 概要" href="#1-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-0. 概要" aria-label="アンカー先: 2-0. 概要" href="#2-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1131,11 +1121,11 @@ table, th, td {
   href="../#5-2-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3"
 >リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-1-リソースマネージャを使用する方法"
+    <h2 id="2-1-リソースマネージャを使用する方法"
     >
-        1-1. リソース・マネージャを使用する方法
+        2-1. リソース・マネージャを使用する方法
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 1-1. リソース・マネージャを使用する方法" href="#1-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 2-1. リソース・マネージャを使用する方法" href="#2-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1165,29 +1155,32 @@ table, th, td {
 /></p>
 <p>この適用が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 <p>ステータスが <strong>成功</strong> となれば、GPUクラスタの構築が完了しており、以下のように <strong>ログ</strong> フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">Outputs:
-</span></span><span class="line"><span class="cl">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">Outputs:
 </span></span><span class="line"><span class="cl"><span class="nv">Bastion_instances_created</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;bastion&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.138&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;123.456.789.123&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;bastion&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.186&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;123.456.789.123&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;inst-9fhuq-gpu4-ol89&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-9fhuq-gpu4-ol89&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.10&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;inst-dz99s-gpu4-ol89&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-dz99s-gpu4-ol89&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.73&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-2tdfx-ao-ol810&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-2tdfx-ao-ol810&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.129&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-t157c-ao-ol810&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-t157c-ao-ol810&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.247&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span> 
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="1-2-terraform-cliを使用する方法"
+    <h2 id="2-2-terraform-cliを使用する方法"
     >
-        1-2. Terraform CLIを使用する方法
+        2-2. Terraform CLIを使用する方法
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#1-2-terraform-cliを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 1-2. Terraform CLIを使用する方法" aria-label="アンカー先: 1-2. Terraform CLIを使用する方法" href="#1-2-terraform-cli%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-2-terraform-cliを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. Terraform CLIを使用する方法" aria-label="アンカー先: 2-2. Terraform CLIを使用する方法" href="#2-2-terraform-cli%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1197,41 +1190,42 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ terraform apply --auto-approve
 </span></span></code></pre></div><p>最後のコマンドによる <strong>Terraform</strong> スクリプトの適用完了までの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 <p><strong>Terraform</strong> スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">Apply complete! Resources: <span class="m">16</span> added, <span class="m">0</span> changed, <span class="m">0</span> destroyed.
-</span></span><span class="line"><span class="cl">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
 </span></span><span class="line"><span class="cl">Outputs:
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="nv">Bastion_instances_created</span> <span class="o">=</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">  <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;bastion&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.138&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.186&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;123.456.789.123&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-9fhuq-gpu4-ol89&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-9fhuq-gpu4-ol89&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.10&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-2tdfx-ao-ol810&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-2tdfx-ao-ol810&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.129&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-dz99s-gpu4-ol89&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-dz99s-gpu4-ol89&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.73&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-t157c-ao-ol810&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-t157c-ao-ol810&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.247&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="2-gpuクラスタ確認"
+</span></span><span class="line"><span class="cl"><span class="o">}</span> 
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="3-gpuクラスタ確認"
     >
-        2. GPUクラスタ確認
+        3. GPUクラスタ確認
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-gpuクラスタ確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. GPUクラスタ確認" aria-label="アンカー先: 2. GPUクラスタ確認" href="#2-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-gpuクラスタ確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. GPUクラスタ確認" aria-label="アンカー先: 3. GPUクラスタ確認" href="#3-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-0-概要"
+    <h2 id="3-0-概要"
     >
-        2-0. 概要
+        3-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-0. 概要" aria-label="アンカー先: 2-0. 概要" href="#2-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1239,22 +1233,22 @@ table, th, td {
 <p>この際、作成されたGPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからGPUクラスタ内の全GPUノードにSSHでコマンドを発行、その環境を確認します。<br>
 なおこのホストリストファイルは、Bastionノードと全GPUノードに <strong>/home/opc/hostlist.txt</strong> として存在します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-1-bastionノードログイン"
+    <h2 id="3-1-bastionノードログイン"
     >
-        2-1. Bastionノードログイン
+        3-1. Bastionノードログイン
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-1-bastionノードログイン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. Bastionノードログイン" aria-label="アンカー先: 2-1. Bastionノードログイン" href="#2-1-bastion%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-1-bastionノードログイン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. Bastionノードログイン" aria-label="アンカー先: 3-1. Bastionノードログイン" href="#3-1-bastion%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>Bastionノードは、パブリックサブネット接続の場合はGPUクラスタ構築完了時に表示されるパブリックIPアドレスに対してインターネット経由SSHログインし、プライベートサブネット接続の場合はGPUクラスタ構築完了時に表示されるプライベートIPアドレスに対して拠点間接続経由SSHログインしますが、これには構築時に指定したSSH公開鍵に対応する秘密鍵を使用して以下コマンドで行います。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-2-cloud-init完了確認"
+    <h2 id="3-2-cloud-init完了確認"
     >
-        2-2. cloud-init完了確認
+        3-2. cloud-init完了確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-2-cloud-init完了確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. cloud-init完了確認" aria-label="アンカー先: 2-2. cloud-init完了確認" href="#2-2-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-2-cloud-init完了確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-2. cloud-init完了確認" aria-label="アンカー先: 3-2. cloud-init完了確認" href="#3-2-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1263,76 +1257,76 @@ table, th, td {
   href="../#5-11-cloud-init"
 >cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh  -oStrictHostKeyChecking<span class="o">=</span>accept-new <span class="nv">$hname</span> <span class="s2">&#34;sudo cloud-init status&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
-</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-xxxxx-gpu4-ol89,10.0.2.117&#39;</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">inst-aizyo-ao-ol905
+</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-aizyo-ao-ol905&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-yyyyy-gpu4-ol89,10.0.2.17&#39;</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">inst-apcve-ao-ol905
+</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-apcve-ao-ol905&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-3-gpuノードファイルシステム確認"
+    <h2 id="3-3-gpuノードファイルシステム確認"
     >
-        2-3. GPUノードファイルシステム確認
+        3-3. GPUノードファイルシステム確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-3-gpuノードファイルシステム確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-3. GPUノードファイルシステム確認" aria-label="アンカー先: 2-3. GPUノードファイルシステム確認" href="#2-3-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-3-gpuノードファイルシステム確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-3. GPUノードファイルシステム確認" aria-label="アンカー先: 3-3. GPUノードファイルシステム確認" href="#3-3-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされ、Bastionノードの <strong>/home</strong> が <strong>/home</strong> としてマウントされています。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;df -h / /mnt/localdisk /home&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
-</span></span><span class="line"><span class="cl">Filesystem              Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/sda3               192G   23G  170G  12% /
-</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
-</span></span><span class="line"><span class="cl">bastion:/home            36G  9.1G   27G  26% /home
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">Filesystem              Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/sda3               192G   23G  170G  12% /
-</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
-</span></span><span class="line"><span class="cl">bastion:/home            36G  9.1G   27G  26% /home
+</span></span><span class="line"><span class="cl">inst-aizyo-ao-ol905
+</span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
+</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root  183G   31G  153G  17% /
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">bastion:/home                83G   31G   53G  37% /home
+</span></span><span class="line"><span class="cl">inst-apcve-ao-ol905
+</span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
+</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root  183G   31G  153G  17% /
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">bastion:/home                83G   31G   53G  37% /home
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-4-gpuノードbios設定確認"
+    <h2 id="3-4-gpuノードbios設定確認"
     >
-        2-4. GPUノードBIOS設定確認
+        3-4. GPUノードBIOS設定確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-4-gpuノードbios設定確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-4. GPUノードBIOS設定確認" aria-label="アンカー先: 2-4. GPUノードBIOS設定確認" href="#2-4-gpu%e3%83%8e%e3%83%bc%e3%83%89bios%e8%a8%ad%e5%ae%9a%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-4-gpuノードbios設定確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-4. GPUノードBIOS設定確認" aria-label="アンカー先: 3-4. GPUノードBIOS設定確認" href="#3-4-gpu%e3%83%8e%e3%83%bc%e3%83%89bios%e8%a8%ad%e5%ae%9a%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>以下コマンドをBastionノードのopcユーザで実行し、GPUノードのBIOSで指定した <strong>NPS</strong> と <strong>SMT</strong> 設定が指定したとおりになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;lscpu | grep -i -e numa -e thread&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
-</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:  <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:        <span class="m">8</span>
-</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-7,64-71
-</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   8-15,72-79
-</span></span><span class="line"><span class="cl">NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:   16-23,80-87
-</span></span><span class="line"><span class="cl">NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:   24-31,88-95
-</span></span><span class="line"><span class="cl">NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:   32-39,96-103
-</span></span><span class="line"><span class="cl">NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:   40-47,104-111
-</span></span><span class="line"><span class="cl">NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:   48-55,112-119
-</span></span><span class="line"><span class="cl">NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:   56-63,120-127
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:  <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:        <span class="m">8</span>
-</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-7,64-71
-</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   8-15,72-79
-</span></span><span class="line"><span class="cl">NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:   16-23,80-87
-</span></span><span class="line"><span class="cl">NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:   24-31,88-95
-</span></span><span class="line"><span class="cl">NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:   32-39,96-103
-</span></span><span class="line"><span class="cl">NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:   40-47,104-111
-</span></span><span class="line"><span class="cl">NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:   48-55,112-119
-</span></span><span class="line"><span class="cl">NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:   56-63,120-127
+</span></span><span class="line"><span class="cl">inst-aizyo-ao-ol905
+</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:                   <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:                         <span class="m">8</span>
+</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:                    0-7,64-71
+</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:                    8-15,72-79
+</span></span><span class="line"><span class="cl">NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:                    16-23,80-87
+</span></span><span class="line"><span class="cl">NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:                    24-31,88-95
+</span></span><span class="line"><span class="cl">NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:                    32-39,96-103
+</span></span><span class="line"><span class="cl">NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:                    40-47,104-111
+</span></span><span class="line"><span class="cl">NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:                    48-55,112-119
+</span></span><span class="line"><span class="cl">NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:                    56-63,120-127
+</span></span><span class="line"><span class="cl">inst-apcve-ao-ol905
+</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:                   <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:                         <span class="m">8</span>
+</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:                    0-7,64-71
+</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:                    8-15,72-79
+</span></span><span class="line"><span class="cl">NUMA node2 CPU<span class="o">(</span>s<span class="o">)</span>:                    16-23,80-87
+</span></span><span class="line"><span class="cl">NUMA node3 CPU<span class="o">(</span>s<span class="o">)</span>:                    24-31,88-95
+</span></span><span class="line"><span class="cl">NUMA node4 CPU<span class="o">(</span>s<span class="o">)</span>:                    32-39,96-103
+</span></span><span class="line"><span class="cl">NUMA node5 CPU<span class="o">(</span>s<span class="o">)</span>:                    40-47,104-111
+</span></span><span class="line"><span class="cl">NUMA node6 CPU<span class="o">(</span>s<span class="o">)</span>:                    48-55,112-119
+</span></span><span class="line"><span class="cl">NUMA node7 CPU<span class="o">(</span>s<span class="o">)</span>:                    56-63,120-127
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認"
+    <h2 id="3-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認"
     >
-        2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認
+        3-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#2-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認" aria-label="アンカー先: 2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認" href="#2-5-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e7%94%a8%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%bc%e3%83%95%e3%82%a7%e3%83%bc%e3%82%b9%e8%a8%ad%e5%ae%9a%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-5-gpuノードクラスタネットワーク用ネットワークインターフェース設定確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認" aria-label="アンカー先: 3-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認" href="#3-5-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e7%94%a8%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%bc%e3%83%95%e3%82%a7%e3%83%bc%e3%82%b9%e8%a8%ad%e5%ae%9a%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1340,47 +1334,47 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
 >クラスタ・ネットワーク</a></strong> 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;ip a | grep -e eth0 -e rdma | grep inet&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
-</span></span><span class="line"><span class="cl">    inet 10.0.2.117/24 brd 10.0.2.255 scope global dynamic eth0
-</span></span><span class="line"><span class="cl">    inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
-</span></span><span class="line"><span class="cl">    inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
-</span></span><span class="line"><span class="cl">    inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
-</span></span><span class="line"><span class="cl">    inet 10.224.3.117/12 brd 10.239.255.255 scope global noprefixroute rdma3
-</span></span><span class="line"><span class="cl">    inet 10.224.4.117/12 brd 10.239.255.255 scope global noprefixroute rdma4
-</span></span><span class="line"><span class="cl">    inet 10.224.5.117/12 brd 10.239.255.255 scope global noprefixroute rdma5
-</span></span><span class="line"><span class="cl">    inet 10.224.6.117/12 brd 10.239.255.255 scope global noprefixroute rdma6
-</span></span><span class="line"><span class="cl">    inet 10.224.7.117/12 brd 10.239.255.255 scope global noprefixroute rdma7
-</span></span><span class="line"><span class="cl">    inet 10.224.8.117/12 brd 10.239.255.255 scope global noprefixroute rdma8
-</span></span><span class="line"><span class="cl">    inet 10.224.9.117/12 brd 10.239.255.255 scope global noprefixroute rdma9
-</span></span><span class="line"><span class="cl">    inet 10.224.10.117/12 brd 10.239.255.255 scope global noprefixroute rdma10
-</span></span><span class="line"><span class="cl">    inet 10.224.11.117/12 brd 10.239.255.255 scope global noprefixroute rdma11
-</span></span><span class="line"><span class="cl">    inet 10.224.12.117/12 brd 10.239.255.255 scope global noprefixroute rdma12
-</span></span><span class="line"><span class="cl">    inet 10.224.13.117/12 brd 10.239.255.255 scope global noprefixroute rdma13
-</span></span><span class="line"><span class="cl">    inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
-</span></span><span class="line"><span class="cl">    inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">    inet 10.0.2.17/24 brd 10.0.2.255 scope global dynamic eth0
-</span></span><span class="line"><span class="cl">    inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
-</span></span><span class="line"><span class="cl">    inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
-</span></span><span class="line"><span class="cl">    inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
-</span></span><span class="line"><span class="cl">    inet 10.224.3.17/12 brd 10.239.255.255 scope global noprefixroute rdma3
-</span></span><span class="line"><span class="cl">    inet 10.224.4.17/12 brd 10.239.255.255 scope global noprefixroute rdma4
-</span></span><span class="line"><span class="cl">    inet 10.224.5.17/12 brd 10.239.255.255 scope global noprefixroute rdma5
-</span></span><span class="line"><span class="cl">    inet 10.224.6.17/12 brd 10.239.255.255 scope global noprefixroute rdma6
-</span></span><span class="line"><span class="cl">    inet 10.224.7.17/12 brd 10.239.255.255 scope global noprefixroute rdma7
-</span></span><span class="line"><span class="cl">    inet 10.224.8.17/12 brd 10.239.255.255 scope global noprefixroute rdma8
-</span></span><span class="line"><span class="cl">    inet 10.224.9.17/12 brd 10.239.255.255 scope global noprefixroute rdma9
-</span></span><span class="line"><span class="cl">    inet 10.224.10.17/12 brd 10.239.255.255 scope global noprefixroute rdma10
-</span></span><span class="line"><span class="cl">    inet 10.224.11.17/12 brd 10.239.255.255 scope global noprefixroute rdma11
-</span></span><span class="line"><span class="cl">    inet 10.224.12.17/12 brd 10.239.255.255 scope global noprefixroute rdma12
-</span></span><span class="line"><span class="cl">    inet 10.224.13.17/12 brd 10.239.255.255 scope global noprefixroute rdma13
-</span></span><span class="line"><span class="cl">    inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
-</span></span><span class="line"><span class="cl">    inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;ip a | grep -e ens300f0np0 -e ens800f0np0 -e eth0 -e rdma | grep inet&#34;</span><span class="p">;</span> <span class="k">done</span>
+</span></span><span class="line"><span class="cl">inst-aizyo-ao-ol905
+</span></span><span class="line"><span class="cl">    inet 10.0.2.135/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.135/12 scope global rdma0
+</span></span><span class="line"><span class="cl">    inet 10.224.1.135/12 scope global rdma1
+</span></span><span class="line"><span class="cl">    inet 10.224.2.135/12 scope global rdma2
+</span></span><span class="line"><span class="cl">    inet 10.224.3.135/12 scope global rdma3
+</span></span><span class="line"><span class="cl">    inet 10.224.4.135/12 scope global rdma4
+</span></span><span class="line"><span class="cl">    inet 10.224.5.135/12 scope global rdma5
+</span></span><span class="line"><span class="cl">    inet 10.224.6.135/12 scope global rdma6
+</span></span><span class="line"><span class="cl">    inet 10.224.7.135/12 scope global rdma7
+</span></span><span class="line"><span class="cl">    inet 10.224.8.135/12 scope global rdma8
+</span></span><span class="line"><span class="cl">    inet 10.224.9.135/12 scope global rdma9
+</span></span><span class="line"><span class="cl">    inet 10.224.10.135/12 scope global rdma10
+</span></span><span class="line"><span class="cl">    inet 10.224.11.135/12 scope global rdma11
+</span></span><span class="line"><span class="cl">    inet 10.224.12.135/12 scope global rdma12
+</span></span><span class="line"><span class="cl">    inet 10.224.13.135/12 scope global rdma13
+</span></span><span class="line"><span class="cl">    inet 10.224.14.135/12 scope global rdma14
+</span></span><span class="line"><span class="cl">    inet 10.224.15.135/12 scope global rdma15
+</span></span><span class="line"><span class="cl">inst-apcve-ao-ol905
+</span></span><span class="line"><span class="cl">    inet 10.0.2.83/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.83/12 scope global rdma0
+</span></span><span class="line"><span class="cl">    inet 10.224.1.83/12 scope global rdma1
+</span></span><span class="line"><span class="cl">    inet 10.224.2.83/12 scope global rdma2
+</span></span><span class="line"><span class="cl">    inet 10.224.3.83/12 scope global rdma3
+</span></span><span class="line"><span class="cl">    inet 10.224.4.83/12 scope global rdma4
+</span></span><span class="line"><span class="cl">    inet 10.224.5.83/12 scope global rdma5
+</span></span><span class="line"><span class="cl">    inet 10.224.6.83/12 scope global rdma6
+</span></span><span class="line"><span class="cl">    inet 10.224.7.83/12 scope global rdma7
+</span></span><span class="line"><span class="cl">    inet 10.224.8.83/12 scope global rdma8
+</span></span><span class="line"><span class="cl">    inet 10.224.9.83/12 scope global rdma9
+</span></span><span class="line"><span class="cl">    inet 10.224.10.83/12 scope global rdma10
+</span></span><span class="line"><span class="cl">    inet 10.224.11.83/12 scope global rdma11
+</span></span><span class="line"><span class="cl">    inet 10.224.12.83/12 scope global rdma12
+</span></span><span class="line"><span class="cl">    inet 10.224.13.83/12 scope global rdma13
+</span></span><span class="line"><span class="cl">    inet 10.224.14.83/12 scope global rdma14
+</span></span><span class="line"><span class="cl">    inet 10.224.15.83/12 scope global rdma15
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>なお、後に実行する <strong>NCCL Tests</strong> の起動コマンドで設定している <strong>NCCL_IB_HCA</strong> 環境変数に指定のRDMAリンク名（ <strong>mlx5_xx</strong> ）は、以下のように先の <strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースに対応しています。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat /home/opc/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;rdma link show | grep rdma&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-aizyo-ao-ol905
 </span></span><span class="line"><span class="cl">link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
 </span></span><span class="line"><span class="cl">link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
 </span></span><span class="line"><span class="cl">link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
@@ -1397,7 +1391,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
 </span></span><span class="line"><span class="cl">link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
 </span></span><span class="line"><span class="cl">link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-apcve-ao-ol905
 </span></span><span class="line"><span class="cl">link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
 </span></span><span class="line"><span class="cl">link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
 </span></span><span class="line"><span class="cl">link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
@@ -1413,94 +1407,31 @@ table, th, td {
 </span></span><span class="line"><span class="cl">link mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12 
 </span></span><span class="line"><span class="cl">link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
 </span></span><span class="line"><span class="cl">link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
-</span></span><span class="line"><span class="cl">link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="3-コンテナ環境構築"
+</span></span><span class="line"><span class="cl">link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="4-コンテナ環境構築"
     >
-        3. コンテナ環境構築
+        4. コンテナ環境構築
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#3-コンテナ環境構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3. コンテナ環境構築" aria-label="アンカー先: 3. コンテナ環境構築" href="#3-%e3%82%b3%e3%83%b3%e3%83%86%e3%83%8a%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#4-コンテナ環境構築" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4. コンテナ環境構築" aria-label="アンカー先: 4. コンテナ環境構築" href="#4-%e3%82%b3%e3%83%b3%e3%83%86%e3%83%8a%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
-<p>以下コマンドを全てのGPUノードのopcユーザで実行し、 <strong>Docker Community Edition</strong> と <strong><a
+<p>本章は、 <strong>containerd</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
+<p>このコンテナ環境構築は、 <strong><a
   class="gdoc-markdown__link"
-  href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html"
->NVIDIA Container Toolkit</a></strong> をインストール・起動します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-</span></span><span class="line"><span class="cl">$ sudo dnf install -y docker-ce nvidia-container-toolkit
-</span></span><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now docker
-</span></span></code></pre></div><p>次に、以下コマンドを全てのGPUノードのopcユーザで実行し、コンテナ上で <strong>BM.GPU4.8</strong> が搭載する8個のGPUにアクセスできることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo docker run --rm --gpus all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
-</span></span><span class="line"><span class="cl">Unable to find image <span class="s1">&#39;nvcr.io/nvidia/base/ubuntu:22.04_20240212&#39;</span> locally
-</span></span><span class="line"><span class="cl">22.04_20240212: Pulling from nvidia/base/ubuntu
-</span></span><span class="line"><span class="cl">d66d6a6a3687: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">24c2d4f7ea40: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">9d30336abbd7: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">feb1277c15aa: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">3cf0dbeda93a: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">99fc1e9ef206: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">a8f7f8dfd4e2: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">Digest: sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd
-</span></span><span class="line"><span class="cl">Status: Downloaded newer image <span class="k">for</span> nvcr.io/nvidia/base/ubuntu:22.04_20240212
-</span></span><span class="line"><span class="cl">Mon Jul  <span class="m">1</span> 02:58:34 <span class="m">2024</span>       
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> GPU  Name                 Persistence-M <span class="p">|</span> Bus-Id          Disp.A <span class="p">|</span> Volatile Uncorr. ECC <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Fan  Temp   Perf          Pwr:Usage/Cap <span class="p">|</span>           Memory-Usage <span class="p">|</span> GPU-Util  Compute M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>               MIG M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   38C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   37C    P0             85W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   34C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   36C    P0             82W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">4</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:8D:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   35C    P0             79W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">5</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:92:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   35C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">6</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:D6:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   34C    P0             78W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">7</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:DA:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   36C    P0             85W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl">                                                                                         
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Processes:                                                                              <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  GPU   GI   CI        PID   Type   Process name                              GPU Memory <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>        ID   ID                                                               Usage      <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================================================================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  No running processes found                                                             <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/container-with-containerd/"
+>containerdによるコンテナ実行環境構築方法</a></strong> の手順を全てのGPUノードに適用することで実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="4-nccl-tests実行"
+    <h1 id="5-nccl-tests実行"
     >
-        4. NCCL Tests実行
+        5. NCCL Tests実行
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#4-nccl-tests実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4. NCCL Tests実行" aria-label="アンカー先: 4. NCCL Tests実行" href="#4-nccl-tests%e5%ae%9f%e8%a1%8c">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#5-nccl-tests実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5. NCCL Tests実行" aria-label="アンカー先: 5. NCCL Tests実行" href="#5-nccl-tests%e5%ae%9f%e8%a1%8c">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1510,30 +1441,29 @@ table, th, td {
 >NGC Catalog</a></strong> から提供される <strong><a
   class="gdoc-markdown__link"
   href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow"
->TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、Dockerコンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
+>TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、コンテナ上で <strong>NCCL</strong> のGPU間通信性能を検証します。</p>
 <p>この <strong>NCCL Tests</strong> 実行方法は、 <strong><a
   class="gdoc-markdown__link"
-  href="../#2-1-%e6%a8%99%e6%ba%96%e3%83%99%e3%83%b3%e3%83%81%e3%83%9e%e3%83%bc%e3%82%af%e5%ae%9f%e8%a1%8c%e6%96%b9%e6%b3%95"
->標準ベンチマーク実行方法</a></strong> の <strong><a
+  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../benchmark/run-nccltests/"
->NCCL Tests実行方法</a></strong> を参照してください。</p>
-<hr>
+>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></strong> に従い実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="5-gpuクラスタ削除"
+    <h1 id="6-gpuクラスタ削除"
     >
-        5. GPUクラスタ削除
+        6. GPUクラスタ削除
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#5-gpuクラスタ削除" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5. GPUクラスタ削除" aria-label="アンカー先: 5. GPUクラスタ削除" href="#5-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e5%89%8a%e9%99%a4">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#6-gpuクラスタ削除" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6. GPUクラスタ削除" aria-label="アンカー先: 6. GPUクラスタ削除" href="#6-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e5%89%8a%e9%99%a4">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="5-0-概要"
+    <h2 id="6-0-概要"
     >
-        5-0. 概要
+        6-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#5-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-0. 概要" aria-label="アンカー先: 5-0. 概要" href="#5-0-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#6-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6-0. 概要" aria-label="アンカー先: 6-0. 概要" href="#6-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1549,11 +1479,11 @@ table, th, td {
   href="../#5-2-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3"
 >リソース・マネージャ</a></strong> を使用する方法を採用するか、 <strong>Terraform</strong> CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="5-1-リソースマネージャを使用する方法"
+    <h2 id="6-1-リソースマネージャを使用する方法"
     >
-        5-1. リソース・マネージャを使用する方法
+        6-1. リソース・マネージャを使用する方法
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#5-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 5-1. リソース・マネージャを使用する方法" href="#5-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#6-1-リソースマネージャを使用する方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6-1. リソース・マネージャを使用する方法" aria-label="アンカー先: 6-1. リソース・マネージャを使用する方法" href="#6-1-%e3%83%aa%e3%82%bd%e3%83%bc%e3%82%b9%e3%83%9e%e3%83%8d%e3%83%bc%e3%82%b8%e3%83%a3%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -1584,11 +1514,11 @@ table, th, td {
 <p>この破棄が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で5分程度です。</p>
 <p>ステータスが <strong>成功</strong> となれば、GPUクラスタの削除が完了しています。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="5-2-terraform-cliの場合"
+    <h2 id="6-2-terraform-cliの場合"
     >
-        5-2. Terraform CLIの場合
+        6-2. Terraform CLIの場合
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#5-2-terraform-cliの場合" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 5-2. Terraform CLIの場合" aria-label="アンカー先: 5-2. Terraform CLIの場合" href="#5-2-terraform-cli%e3%81%ae%e5%a0%b4%e5%90%88">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster-withterraform/#6-2-terraform-cliの場合" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 6-2. Terraform CLIの場合" aria-label="アンカー先: 6-2. Terraform CLIの場合" href="#6-2-terraform-cli%e3%81%ae%e5%a0%b4%e5%90%88">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -3171,6 +3101,39 @@ table, th, td {
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

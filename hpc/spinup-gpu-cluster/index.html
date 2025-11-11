@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "GPUクラスタを構築する(基礎インフラ手動構築編)",
       "description": "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "2255",
+      "wordCount" : "1832",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -334,11 +334,11 @@
     </li>
     <li><a href="#3-gpuノード確認">3. GPUノード確認</a>
       <ul>
-        <li><a href="#30-概要">3.0. 概要</a></li>
-        <li><a href="#31-gpuノードログイン">3.1. GPUノードログイン</a></li>
-        <li><a href="#32-cloud-init完了確認">3.2. cloud-init完了確認</a></li>
+        <li><a href="#3-0-概要">3-0. 概要</a></li>
+        <li><a href="#3-1-gpuノードログイン">3-1. GPUノードログイン</a></li>
+        <li><a href="#3-2-cloud-init完了確認">3-2. cloud-init完了確認</a></li>
         <li><a href="#3-3-タイムゾーン確認">3-3. タイムゾーン確認</a></li>
-        <li><a href="#3-4-ファイルシステム確認">3-4. ファイルシステム確認</a></li>
+        <li><a href="#3-4-nvme-ssdローカルディスクファイルシステム確認">3-4. NVMe SSDローカルディスクファイルシステム確認</a></li>
         <li><a href="#3-5-ファイアーウォール停止確認">3-5. ファイアーウォール停止確認</a></li>
         <li><a href="#3-6-クラスタネットワーク接続用ネットワークインターフェース確認">3-6. クラスタ・ネットワーク接続用ネットワークインターフェース確認</a></li>
       </ul>
@@ -422,8 +422,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -442,7 +442,6 @@ table, th, td {
     font-size: 80%;
 }
 </style>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -452,10 +451,19 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上にデプロイしてその上でソフトウェア環境を手動で構築する方法で、 <strong>Docker Community Edition</strong> と <strong><a
+<p>本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上に作成してその上でソフトウェア環境を手動で構築する方法で、8枚の <strong>NVIDIA A100</strong> GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
+>BM.GPU4.8/BM.GPU.A100-v2.8</a></strong> を <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> でノード間接続するGPUクラスタを構築し、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://github.com/containerd/containerd/tree/main"
+>containerd</a></strong> と <strong><a
   class="gdoc-markdown__link"
   href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html"
->NVIDIA Container Toolkit</a></strong> を使用する分散機械学習に対応するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a
+>NVIDIA Container Toolkit</a></strong> を使用するコンテナ実行環境をGPUクラスタ上に構築、複数ノードに跨るGPU間の通信性能を <strong><a
   class="gdoc-markdown__link"
   href="https://developer.nvidia.com/nccl"
 >NCCL（NVIDIA Collective Communication Library）</a></strong> の通信性能計測プログラム <strong><a
@@ -465,35 +473,28 @@ table, th, td {
 <p>本チュートリアルで構築するGPUクラスタの構成を以下に示します。</p>
 <p>[GPUノード]</p>
 <ul>
-<li>シェイプ ： <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
->BM.GPU4.8/BM.GPU.A100-v2.8</a></strong></li>
-<li>インターコネクト ： <strong><a
+<li>シェイプ ： <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong></li>
+<li>ノード間接続インターコネクト ： <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9ベースのGPU <strong><a
+>クラスタ・ネットワーク</a></strong> （100 Gbps x 16）</li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9.5ベースのGPU <strong><a
   class="gdoc-markdown__link"
   href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> （※1）</li>
+<li>コンテナランタイム ： <strong>containerd</strong> 2.2.0</li>
+<li><strong>NVIDIA Container Toolkit</strong> ： 1.18.0</li>
 </ul>
 <p>[Bastionノード]</p>
 <ul>
 <li>シェイプ ： <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Standard.E4.Flex</a></strong></li>
-<li>OS ： <strong>Oracle Linux</strong> 8.9</li>
-</ul>
-<p>[ソフトウェア]</p>
-<ul>
-<li>コンテナランタイム ： <strong>Docker Community Edition</strong> 26.1.3</li>
-<li><strong>NVIDIA Container Toolkit</strong> ： 1.15.0</li>
-</ul>
-<p>[クラスタ管理]</p>
-<ul>
-<li>共有ストレージ ： BastionノードをNFSサーバとするGPUクラスタ内ホームディレクトリ共有</li>
+>VM.Standard.E5.Flex</a></strong></li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9.5ベースのGPU <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
 </ul>
 <p>※1） <strong><a
   class="gdoc-markdown__link"
@@ -504,7 +505,7 @@ table, th, td {
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.7</strong> です。</p>
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.15</strong> です。</p>
 <p><img
   src="architecture_diagram.png"
   alt="システム構成図"
@@ -520,11 +521,10 @@ table, th, td {
 >OCI HPCチュートリアル集</a></strong> のカテゴリ <strong><a
   class="gdoc-markdown__link"
   href="../#1-2-%e6%a9%9f%e6%a2%b0%e5%ad%a6%e7%bf%92%e7%92%b0%e5%a2%83"
->機械学習環境</a></strong> のチュートリアルでクラスタ管理機能が有りとなっているチュートリアルを参照ください。</p>
+>機械学習環境</a></strong> のチュートリアルでクラスタ管理機能が有りとなっているチュートリアルを参照してください。</p>
 <p><strong>所要時間 :</strong> 約2時間</p>
 <p><strong>前提条件 :</strong> GPUクラスタを収容する <strong>コンパートメント</strong> ( <strong>ルート・コンパートメント</strong> でもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-gpuクラスタ作成事前作業"
     >
@@ -544,6 +544,24 @@ table, th, td {
     </a>
 </div>
 <p>本章は、GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> と、インターネットから直接アクセス出来ないプライベートサブネットに接続するGPUノードにログインする際の踏み台となるBastionノードを、GPUクラスタ作成前に予め用意します。</p>
+<p>なおこの <strong>仮想クラウド・ネットワーク</strong> は、既存のものを使用することが可能です。<br>
+ただしこの場合、GPUノードが接続するサブネットは、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> 接続に使用する <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/Tasks/manage-plugins.htm"
+>Oracle Cloud Agent</a></strong> （以降 <strong>OCA</strong> と呼称します。）HPCプラグインの動作条件を満たしている必要があります。<br>
+この詳細は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/howto-connect-clusternetwork/"
+>クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/howto-connect-clusternetwork/#1-2-%e6%8e%a5%e7%b6%9a%e3%82%b5%e3%83%96%e3%83%8d%e3%83%83%e3%83%88%e3%81%ae%e5%8b%95%e4%bd%9c%e6%9d%a1%e4%bb%b6%e5%85%85%e8%b6%b3%e7%a2%ba%e8%aa%8d"
+>1-2. 接続サブネットの動作条件充足確認</a></strong> を参照してください。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-1-仮想クラウドネットワーク作成"
     >
@@ -553,8 +571,7 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、GPUノードをTCP接続する <strong>仮想クラウド・ネットワーク</strong> を作成します。<br>
-<strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a
+<p><strong>仮想クラウド・ネットワーク</strong> の作成は、 <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/"
 >OCIチュートリアル</a></strong> の <strong><a
@@ -632,7 +649,11 @@ table, th, td {
       </tr>
   </tbody>
 </table> </div>
-<p>※2）この設定により、BastionノードへのSSHアクセスをインターネット上の全てのIPアドレスに許可していますが、これを自身のサイトのIPアドレスに限定することで、不正アクセスを防ぐことが可能です。</p>
+<p>この <strong>仮想クラウド・ネットワーク</strong> は、 <strong>セキュリティリスト</strong> でインターネットとの通信に以下のアクセス制限が掛けられています。</p>
+<ul>
+<li>インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定</li>
+<li>インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能</li>
+</ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-bastionノード作成"
     >
@@ -642,7 +663,6 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、GPUノードにログインする際の踏み台となるBastinノードを作成し、必要なセットアップ作業を実施します。</p>
 <p>Bastionノードの作成は、 <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/"
@@ -652,13 +672,27 @@ table, th, td {
 >その3 - インスタンスを作成する</a></strong> の手順を参考に、ご自身の要件に沿ったインスタンスを先の手順で <strong>仮想クラウド・ネットワーク</strong> を作成した <strong>コンパートメント</strong> とパブリックサブネットを指定して作成します。<br>
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。</p>
 <ul>
-<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.9</li>
+<li><strong>名前</strong> ： bastion</li>
 <li><strong>シェイプ</strong> ： <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible"
->VM.Standard.E4.Flex</a></strong> （任意のコア数・メモリ容量）</li>
+>VM.Standard.E5.Flex</a></strong> （任意のコア数・メモリ容量）</li>
+<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9.5ベースのGPU <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> （※1）</li>
 <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
+<p>※1） <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/"
+>クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.15</strong> です。</p>
 <p>次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行、SSH鍵ペアを作成してこの公開鍵を <strong>authorized_keys</strong> に登録します。<br>
 このSSH鍵は、BastionノードからGPUノードにログインする際や、GPUノード間のMPIプログラム実行時に使用します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh-keygen -t rsa -N <span class="s2">&#34;&#34;</span> -f ~/.ssh/id_rsa
@@ -697,8 +731,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">&lt;/zone&gt;
 </span></span></code></pre></div><p>opcユーザで以下コマンドを実行し、プライベートサブネットからのNFSアクセスをファイアーウォールに許可します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl restart firewalld
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-gpuクラスタ作成"
     >
         2. GPUクラスタ作成
@@ -716,25 +749,32 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p><strong><a
+<p>本章は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> は、作成時に指定する <strong><a
+>クラスタ・ネットワーク</a></strong> を作成することでGPUクラスタを作成します。</p>
+<p><strong>クラスタ・ネットワーク</strong> の作成は、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
->インスタンス構成</a></strong> とノード数を基に <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
->インスタンス・プール</a></strong> がGPUノードをデプロイし、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
+>インスタンス構成</a></strong> を指定して行い、この <strong>インスタンス構成</strong> で指定している <strong>シェイプ</strong> のインスタンスを指定するノード数分作成し、これを <strong>クラスタ・ネットワーク</strong> に接続します。</p>
 <p>またGPUノードのOSレベルのカスタマイズは、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-11-cloud-init"
->cloud-init</a></strong> を使用して自動化することで、デプロイ後の作業を軽減します。</p>
+>cloud-init</a></strong> を使用して自動化することで、作成後の作業を軽減します。</p>
 <p>以上より、GPUクラスタの作成は、以下の手順を経て行います。</p>
 <ul>
-<li><strong>cloud-init</strong> 設定ファイル（ <strong>cloud-config</strong> ）作成</li>
-<li><strong>インスタンス構成</strong> 作成</li>
-<li><strong>クラスタ・ネットワーク</strong> 作成</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-1-cloud-config%e4%bd%9c%e6%88%90"
+>cloud-init設定ファイル（cloud-config）作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-2-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90%e4%bd%9c%e6%88%90"
+>インスタンス構成作成</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#2-3-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e4%bd%9c%e6%88%90"
+>クラスタ・ネットワーク作成</a></strong></li>
 </ul>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-1-cloud-config作成"
@@ -745,10 +785,6 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を作成します。</p>
 <p>本チュートリアルは、 <strong>cloud-init</strong> を以下の目的で使用します。</p>
 <ul>
 <li>タイムゾーンをJSTに変更</li>
@@ -758,7 +794,7 @@ table, th, td {
 <li>パブリックサブネットのドメイン名を <strong>search</strong> 行に追加</li>
 <li>BastionノードのホームディレクトリをNFSマウント</li>
 </ul>
-<p>以下は、本チュートリアルで使用する <strong>cloud-config</strong> で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
+<p>以下は、本チュートリアルで使用する <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> 用の <strong>cloud-init</strong> 設定ファイル（以降 <strong>cloud-config</strong> と呼称します。）で、OCIコンソールを実行している端末上にテキストファイルで保存します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#cloud-config</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Change time zone to JST</span>
@@ -796,24 +832,25 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong><a
+<p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
->インスタンス構成</a></strong> を作成します。</p>
-<p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス構成</strong> とメニューを辿ります。</p>
-<p>次に、表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
+>インスタンス構成</a></strong> とメニューを辿ります。</p>
+<p>表示される以下画面で、<strong>インスタンス構成の作成</strong> ボタンをクリックします。</p>
 <p><img
   src="console_page01.png"
   alt="画面ショット"
   
 /></p>
-<p>次に、表示される <strong>インスタンス構成の作成</strong> 画面で、以下の情報を入力し <strong>作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<p>表示される <strong>基本情報</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 <ol>
 <li>
 <p><strong>インスタンス構成情報</strong> フィールド</p>
 <ul>
-<li><strong>名前</strong> ：インスタンス構成に付与する名前</li>
-<li><strong>コンパートメントに作成</strong> ：インスタンス構成を作成するコンパートメント</li>
+<li><strong>名前</strong> ： <strong>インスタンス構成</strong> に付与する名前</li>
+<li><strong>コンパートメントに作成</strong> ： <strong>インスタンス構成</strong> を作成する <strong>コンパートメント</strong></li>
+<li><strong>インスタンスの作成先のコンパートメント</strong> ： GPUノードを作成する <strong>コンパートメント</strong></li>
 </ul>
 <p><img
   src="console_page02.png"
@@ -822,7 +859,10 @@ table, th, td {
 /></p>
 </li>
 <li>
-<p><strong>インスタンスの作成先のコンパートメント</strong> フィールド：インスタンスをデプロイするコンパートメント</p>
+<p><strong>配置</strong> フィールド</p>
+<ul>
+<li><strong>可用性ドメイン</strong> ：GPUノードを作成する <strong>可用性ドメイン</strong></li>
+</ul>
 <p><img
   src="console_page03.png"
   alt="画面ショット"
@@ -830,49 +870,57 @@ table, th, td {
 /></p>
 </li>
 <li>
-<p><strong>配置</strong> フィールド</p>
-<ul>
-<li><strong>可用性ドメイン</strong> ：インスタンスをデプロイする可用性ドメイン</li>
-</ul>
+<p><strong>イメージとシェイプ</strong> フィールド</p>
 <p><img
   src="console_page04.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>イメージとシェイプ</strong> フィールド</p>
+<ul>
+<li><strong>イメージ</strong> ：Oracle Linux - GPU Cluster Networking Image<br>
+（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで、 <strong>Marketplace</strong> を選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択して表示される <strong>イメージ・ビルド</strong> ブルダウンメニューで <strong>Oracle-Linux-9.5-2025.05.19-0-RHCK-OFED-24.10-1.1.4.0-GPU-570-OPEN-CUDA-12.8-2025.07.20-0</strong> （※3）を選択し、 <strong>イメージの選択</strong> ボタンをクリック。）</li>
+</ul>
 <p><img
   src="console_page05.png"
   alt="画面ショット"
   
 /></p>
+<p>※3）このイメージは、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/"
+>クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.15</strong>です。</p>
 <ul>
-<li>
-<p><strong>イメージ</strong> ：Oracle Linux - GPU Cluster Networking Image<br>
-（ <strong>イメージの変更</strong> ボタンをクリックして表示される以下 <strong>イメージの選択</strong> サイドバーで <strong>Marketplace</strong> アイコンを選択し検索フィールドに <strong>gpu</strong> と入力して表示される <strong>Oracle Linux - GPU Cluster Networking Image</strong> を選択し <strong>イメージ・ビルド</strong> フィールドで <strong>OracleLinux-8-OCA-RHCK-OFED-23.10-2.1.3.1-GPU-550-CUDA-12.4-2024.05.08-0</strong> を選択し <strong>イメージの選択</strong> ボタンをクリック）</p>
+<li><strong>シェイプ</strong> ：<strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong><br>
+（ <strong>シェイプの変更</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を選択し <strong>シェイプの選択</strong> ボタンをクリック。）</li>
+</ul>
 <p><img
   src="console_page06.png"
   alt="画面ショット"
   
 /></p>
-</li>
-<li>
-<p><strong>Shape</strong> ：<strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong><br>
-（ <strong>Change Shape</strong> ボタンをクリックして表示される以下 <strong>すべてのシェイプの参照</strong> サイドバーで <strong>ベア・メタル・マシン</strong> をクリックして表示される <strong>BM.GPU4.8/BM.GPU.A100-v2.8</strong> を選択し <strong>次のドキュメントを確認した上でこれに同意します</strong> チェックボックスをチェックし <strong>シェイプの選択</strong> ボタンをクリック）</p>
+<ul>
+<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong>cloud-config</strong> を選択<br>
+（ <strong>拡張オプション</strong> ボタンをクリックして表示される以下 <strong>管理</strong> フィールドの <strong>初期化スクリプト</strong> フィールドの <strong>ファイルをドロップするか選択</strong> ボタンをクリックしてファイルを選択）</li>
+</ul>
 <p><img
   src="console_page07.png"
   alt="画面ショット"
   
 /></p>
-</li>
+<ul>
+<li><strong>Oracle Cloudエージェント</strong> ： 以下 <strong>OCA</strong> プラグインを選択
+<ul>
+<li><strong>Compute HPC RDMA Auto-Configuration</strong></li>
+<li><strong>Compute HPC RDMA Authentication</strong><br>
+（ <strong>拡張オプション</strong> ボタンをクリックして表示される以下 <strong>Oracle Cloudエージェント</strong> フィールドのプルダウンメニューで選択）</li>
 </ul>
 </li>
-<li>
-<p><strong>ネットワーキング</strong> フィールド</p>
-<ul>
-<li><strong>プライマリ・ネットワーク</strong> ： 先に作成したVCNを選択</li>
-<li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
 </ul>
 <p><img
   src="console_page08.png"
@@ -880,11 +928,16 @@ table, th, td {
   
 /></p>
 </li>
+</ol>
+<p>表示される <strong>セキュリティー</strong> 画面で、 <strong>次</strong> ボタンをクリックします。</p>
+<p>表示される <strong>ネットワーキング</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<ol>
 <li>
-<p><strong>SSHキーの追加</strong> フィールド</p>
+<p><strong>プライマリ・ネットワーク</strong> フィールド</p>
 <ul>
-<li><strong>SSHキー</strong> ：先にBastionノードで作成したSSH鍵の公開鍵<br>
-（以下 <strong>公開キーの貼付け</strong> ラジオボタンを選択することで入力フィールドを表示）</li>
+<li><strong>仮想クラウド・ネットワーク</strong> ： 先に作成した <strong>仮想クラウド・ネットワーク</strong></li>
+<li><strong>サブネット</strong> ： 先に作成したプライベートサブネット</li>
 </ul>
 <p><img
   src="console_page09.png"
@@ -893,53 +946,36 @@ table, th, td {
 /></p>
 </li>
 <li>
-<p><strong>ブート・ボリューム</strong> フィールド</p>
+<p><strong>SSHキーの追加</strong> フィールド</p>
 <ul>
-<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※2）<br>
-（ <strong>カスタム・ブート・ボリューム・サイズを指定します</strong> チェックボックスをチェックすると指定可能）</li>
+<li><strong>SSH公開キー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br>
+（ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
 </ul>
-<p><img
-  src="console_page27.png"
-  alt="画面ショット"
-  
-/></p>
-<p>※2）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
-</li>
-<li>
-<p><strong>管理</strong> フィールド<br>
-（以下 <strong>拡張オプションの表示</strong> ボタンを選択して表示）</p>
 <p><img
   src="console_page10.png"
   alt="画面ショット"
   
 /></p>
-<ul>
-<li><strong>cloud-initスクリプト</strong> ：先に作成した <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-11-cloud-init"
->cloud-init</a></strong> 設定ファイル（ <strong>cloud-config</strong> ）を選択<br>
-（ <strong>参照</strong> ボタンでファイルを選択）</li>
-</ul>
-<p><img
-  src="console_page11.png"
-  alt="画面ショット"
-  
-/></p>
-</li>
-<li>
-<p><strong>Oracle Cloudエージェント</strong> フィールド<br>
-（以下 <strong>Oracle Cloudエージェント</strong> タブを選択して表示）</p>
-<ul>
-<li><strong>Compute HPC RDMA Auto-Configuration</strong> ：チェック</li>
-<li><strong>Compute HPC RDMA Authentication</strong> ：チェック</li>
-</ul>
-<p><img
-  src="console_page12-1.png"
-  alt="画面ショット"
-  
-/></p>
 </li>
 </ol>
+<p>表示される <strong>ストレージ</strong> 画面で、以下の情報を入力し <strong>次</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
+<ol>
+<li>
+<p><strong>ブート・ボリューム</strong> フィールド</p>
+<ul>
+<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※3）<br>
+（ <strong>カスタム・ブート・ボリューム・サイズとパフォーマンス設定を指定します</strong> チェックボックスをチェックすると指定可能）</li>
+</ul>
+<p><img
+  src="console_page10-2.png"
+  alt="画面ショット"
+  
+/></p>
+<p>※3）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
+</li>
+</ol>
+<p>表示される <strong>確認</strong> 画面で、設定した内容に間違いがないかを確認した後、 <strong>作成</strong> ボタンをクリックします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-3-クラスタネットワーク作成"
     >
@@ -949,81 +985,65 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong><a
-  class="gdoc-markdown__link"
-  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> を作成します。</p>
-<ol>
-<li>
 <p>OCIコンソールにログインし、GPUクラスタをデプロイするリージョンを選択後、 <strong>コンピュート</strong> → <strong>クラスタ・ネットワーク</strong> とメニューを辿ります。</p>
-</li>
-<li>
 <p>表示される以下画面で、<strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。</p>
+<p><img
+  src="console_page11.png"
+  alt="画面ショット"
+  
+/></p>
+<p>次に、表示される以下 <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。<br>
+なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
 <p><img
   src="console_page12.png"
   alt="画面ショット"
   
 /></p>
+<ol>
+<li>
+<p><strong>名前</strong> ： <strong><a
+  class="gdoc-markdown__link"
+  href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
+>クラスタ・ネットワーク</a></strong> に付与する名前</p>
 </li>
 <li>
-<p>表示される <strong>クラスタ・ネットワークの作成</strong> 画面で、以下の情報を入力し <strong>クラスタ・ネットワークの作成</strong> ボタンをクリックします。なお、ここに記載のないフィールドは、デフォルトのままとします。</p>
-<p>3.1 <strong>名前</strong> フィールド：クラスタ・ネットワークに付与する名前</p>
-<p><img
-  src="console_page13.png"
-  alt="画面ショット"
-  
-/></p>
-<p>3.2 <strong>コンパートメントに作成</strong> フィールド：クラスタ・ネットワークをデプロイするコンパートメント</p>
-<p><img
-  src="console_page14.png"
-  alt="画面ショット"
-  
-/></p>
-<p>3.2 <strong>可用性ドメイン</strong> フィールド：クラスタ・ネットワークをデプロイする可用性ドメイン</p>
-<p><img
-  src="console_page15.png"
-  alt="画面ショット"
-  
-/></p>
-<p>3.3 <strong>ネットワーキングの構成</strong> フィールド</p>
+<p><strong>コンパートメントに作成</strong> ： <strong>クラスタ・ネットワーク</strong> を作成する <strong>コンパートメント</strong></p>
+</li>
+<li>
+<p><strong>可用性ドメイン</strong> ： <strong>クラスタ・ネットワーク</strong> を作成する <strong>可用性ドメイン</strong></p>
+</li>
+<li>
+<p><strong>ネットワーキングの構成</strong> フィールド</p>
 <ul>
-<li><strong>仮想クラウド・ネットワーク</strong> ：先に作成したVCNを選択</li>
+<li><strong>仮想クラウド・ネットワーク</strong> ：先に作成した <strong>仮想クラウドネットワーク</strong> を選択</li>
 <li><strong>サブネット</strong> ：先に作成したプライベートサブネットを選択</li>
 </ul>
-<p><img
-  src="console_page16.png"
-  alt="画面ショット"
-  
-/></p>
-<p>3.4 <strong>インスタンス・プールの構成</strong> フィールド</p>
+</li>
+<li>
+<p><strong>インスタンス・プールの構成</strong> フィールド</p>
 <ul>
 <li><strong>インスタンス・プール名</strong> ：作成される <strong><a
   class="gdoc-markdown__link"
   href="../#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
->インスタンス・プール</a></strong> に付与する名前</li>
-<li><strong>インスタンス数</strong> ：2（デプロイするGPUノードのノード数）</li>
+>インスタンス・プール</a></strong> に付与する名前（※4）</li>
+<li><strong>インスタンス数</strong> ：作成するGPUノードのノード数</li>
 <li><strong>インスタンス構成</strong> ：先に作成した <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong></li>
 </ul>
-<p><img
-  src="console_page17.png"
-  alt="画面ショット"
-  
-/></p>
-</li>
-<li>
-<p>表示される以下 <strong>クラスタ・ネットワーク作業リクエスト</strong> 画面で、左上のステータスが <strong>プロビジョニング中</strong> と表示されれば、クラスタ・ネットワークとGPUノードの作成が実施されています。</p>
-<p><img
-  src="console_page18.png"
-  alt="画面ショット"
-  
-/></p>
-<p>ステータスが <strong>実行中</strong> となれば、 <strong>クラスタ・ネットワーク</strong> とGPUノードの作成が完了しています。</p>
+<p>※4） ここで付与した名前は、GPUノードのホスト名の接尾辞として使用されます。<br>
+例えば <strong>ao</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-ao</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
 </li>
 </ol>
-<hr>
+<p>次に、表示される以下 <strong>クラスタ・ネットワーク</strong> 画面で、ステータスが <strong>プロビジョニング中</strong> と表示されれば、 <strong>クラスタ・ネットワーク</strong> とGPUノードの作成が実施されています。</p>
+<p><img
+  src="console_page13.png"
+  alt="画面ショット"
+  
+/></p>
+<p>ステータスが <strong>実行中</strong> となれば、 <strong>クラスタ・ネットワーク</strong> とGPUノードの作成が完了しています。<br>
+作成が完了するまでの所要時間は、GPUノードのノード数が2ノードの場合で15分程度です。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-gpuノード確認"
     >
@@ -1034,52 +1054,78 @@ table, th, td {
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="30-概要"
+    <h2 id="3-0-概要"
     >
-        3.0. 概要
+        3-0. 概要
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#30-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.0. 概要" aria-label="アンカー先: 3.0. 概要" href="#30-%e6%a6%82%e8%a6%81">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、デプロイされたGPUノードにログインし、環境を確認します。</p>
+<p>本章は、以下のステップで作成されたGPUノードの環境を確認します。</p>
+<ol>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-1-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3"
+>GPUノードログイン</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-2-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d"
+>cloud-init完了確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-3-%e3%82%bf%e3%82%a4%e3%83%a0%e3%82%be%e3%83%bc%e3%83%b3%e7%a2%ba%e8%aa%8d"
+>タイムゾーン確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-4-nvme-ssd%e3%83%ad%e3%83%bc%e3%82%ab%e3%83%ab%e3%83%87%e3%82%a3%e3%82%b9%e3%82%af%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d"
+>NVMe SSDローカルディスクファイルシステム確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-5-%e3%83%95%e3%82%a1%e3%82%a4%e3%82%a2%e3%83%bc%e3%82%a6%e3%82%a9%e3%83%bc%e3%83%ab%e5%81%9c%e6%ad%a2%e7%a2%ba%e8%aa%8d"
+>ファイアーウォール停止確認</a></strong></li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="#3-6-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e6%8e%a5%e7%b6%9a%e7%94%a8%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a4%e3%83%b3%e3%82%bf%e3%83%bc%e3%83%95%e3%82%a7%e3%83%bc%e3%82%b9%e7%a2%ba%e8%aa%8d"
+>クラスタ・ネットワーク接続用ネットワークインターフェース確認</a></strong></li>
+</ol>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="31-gpuノードログイン"
+    <h2 id="3-1-gpuノードログイン"
     >
-        3.1. GPUノードログイン
+        3-1. GPUノードログイン
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#31-gpuノードログイン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.1. GPUノードログイン" aria-label="アンカー先: 3.1. GPUノードログイン" href="#31-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#3-1-gpuノードログイン" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. GPUノードログイン" aria-label="アンカー先: 3-1. GPUノードログイン" href="#3-1-gpu%e3%83%8e%e3%83%bc%e3%83%89%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p>GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。<br>
 BastionノードからGPUノードへのログインは、GPUノードのインスタンス名を使用します。</p>
-<p>GPUノードのインスタンス名は、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br>
+<p>GPUノードのインスタンス名は、OCIコンソールでGPUノードを作成した <strong>リージョン</strong> を選択後、 <strong>コンピュート</strong> → <strong>インスタンス</strong> とメニューを辿り、以下のインスタンス一覧からそのインスタンス名を確認します。<br>
 またこの画面は、GPUノードのIPアドレスも表示しており、これを使用してBastionノードからSSHログインすることも可能です。</p>
 <p><img
-  src="console_page19.png"
+  src="console_page14.png"
   alt="画面ショット"
   
 /></p>
 <p>GPUノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh -oStrictHostKeyChecking<span class="o">=</span>accept-new inst-xxxxx-gpu4-ol89
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh -oStrictHostKeyChecking<span class="o">=</span>accept-new inst-xxxxx-ao
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="32-cloud-init完了確認"
+    <h2 id="3-2-cloud-init完了確認"
     >
-        3.2. cloud-init完了確認
+        3-2. cloud-init完了確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#32-cloud-init完了確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3.2. cloud-init完了確認" aria-label="アンカー先: 3.2. cloud-init完了確認" href="#32-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#3-2-cloud-init完了確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-2. cloud-init完了確認" aria-label="アンカー先: 3-2. cloud-init完了確認" href="#3-2-cloud-init%e5%ae%8c%e4%ba%86%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <p><strong><a
   class="gdoc-markdown__link"
   href="../#5-11-cloud-init"
->cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br>
+>cloud-init</a></strong> は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。<br>
 ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo cloud-init status&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
 </span></span><span class="line"><span class="cl">$
@@ -1095,28 +1141,26 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 <p>以下コマンドをBastionノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;date&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-ofwf3-x9,inst-toyke-x9
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">Mon Jan <span class="m">29</span> 12:08:00 JST <span class="m">2024</span>
+</span></span><span class="line"><span class="cl">Wed Oct <span class="m">29</span> 04:35:58 PM JST <span class="m">2025</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="3-4-ファイルシステム確認"
+    <h2 id="3-4-nvme-ssdローカルディスクファイルシステム確認"
     >
-        3-4. ファイルシステム確認
+        3-4. NVMe SSDローカルディスクファイルシステム確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#3-4-ファイルシステム確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-4. ファイルシステム確認" aria-label="アンカー先: 3-4. ファイルシステム確認" href="#3-4-%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/spinup-gpu-cluster/#3-4-nvme-ssdローカルディスクファイルシステム確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-4. NVMe SSDローカルディスクファイルシステム確認" aria-label="アンカー先: 3-4. NVMe SSDローカルディスクファイルシステム確認" href="#3-4-nvme-ssd%e3%83%ad%e3%83%bc%e3%82%ab%e3%83%ab%e3%83%87%e3%82%a3%e3%82%b9%e3%82%af%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドをBastionノードのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていること、Bastionノードの <strong>/home</strong> がNFSで <strong>/home</strong> にマウントされていること、及びNVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo df -h / /home /mnt/localdisk&#39;</span> <span class="p">|</span> dshbak -c
+<p>以下コマンドをBastionノードのopcユーザで実行し、NVMeローカルディスク領域が <strong>/mnt/localdisk</strong> にマウントされていることを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo df -h /mnt/localdisk&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-ygssn-ao,inst-nysmb-ao
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root  189G   39G  151G  21% /
-</span></span><span class="line"><span class="cl">bastion:/home                36G   11G   25G  31% /home
-</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">Filesystem              Size  Used Avail Use% Mounted on
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0   25T  177G   25T   1% /mnt/localdisk
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-5-ファイアーウォール停止確認"
@@ -1130,10 +1174,10 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 <p>以下コマンドをBastionノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo systemctl status firewalld | grep -e Active -e disabled&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-ygssn-ao,inst-nysmb-ao
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
-</span></span><span class="line"><span class="cl">   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/usr/lib/systemd/system/firewalld.service<span class="p">;</span> disabled<span class="p">;</span> preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: inactive <span class="o">(</span>dead<span class="o">)</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-6-クラスタネットワーク接続用ネットワークインターフェース確認"
@@ -1147,49 +1191,59 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（rdmax）にTCP/IP接続用のネットワークインターフェース（eth0）と4フィールド目が同じ10.224.[0 - 15].x/12のIPアドレスが設定されていることを確認します。<br>
+>クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（ <strong>rdma0-15</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスで4フィールド目が <strong>仮想クラウド・ネットワーク</strong> 接続用のネットワークインターフェース（ <strong>eth0</strong> ）に割り当てられたIPアドレスの4フィールド目と同じ値のものが設定されていることを確認します。（※5）<br>
 なお、このIPアドレス設定が完了するまで、GPUノードにログイン可能となってから10分程度を要します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;ip a | grep -e eth0 -e rdma | grep inet&#39;</span> <span class="p">|</span> dshbak -c
+<p>※5）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/howto-connect-clusternetwork/"
+>クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/howto-connect-clusternetwork/#1-4-%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af%e3%82%a2%e3%83%89%e3%83%ac%e3%82%b9%e3%81%ae%e3%83%87%e3%83%95%e3%82%a9%e3%83%ab%e3%83%88%e3%81%8b%e3%82%89%e3%81%ae%e5%a4%89%e6%9b%b4"
+>1-4. ネットワークアドレスのデフォルトからの変更</a></strong> を参照してください。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;ip a s eth0 | grep &#34;inet &#34;; ip a | grep rdma | grep inet | sort -n -t. -k 3n,3&#39;</span> <span class="p">|</span> dshbak -c
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-ygssn-ao
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">    inet 10.0.2.117/24 brd 10.0.2.255 scope global dynamic eth0
-</span></span><span class="line"><span class="cl">    inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
-</span></span><span class="line"><span class="cl">    inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
-</span></span><span class="line"><span class="cl">    inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
-</span></span><span class="line"><span class="cl">    inet 10.224.3.117/12 brd 10.239.255.255 scope global noprefixroute rdma3
-</span></span><span class="line"><span class="cl">    inet 10.224.4.117/12 brd 10.239.255.255 scope global noprefixroute rdma4
-</span></span><span class="line"><span class="cl">    inet 10.224.5.117/12 brd 10.239.255.255 scope global noprefixroute rdma5
-</span></span><span class="line"><span class="cl">    inet 10.224.6.117/12 brd 10.239.255.255 scope global noprefixroute rdma6
-</span></span><span class="line"><span class="cl">    inet 10.224.7.117/12 brd 10.239.255.255 scope global noprefixroute rdma7
-</span></span><span class="line"><span class="cl">    inet 10.224.8.117/12 brd 10.239.255.255 scope global noprefixroute rdma8
-</span></span><span class="line"><span class="cl">    inet 10.224.9.117/12 brd 10.239.255.255 scope global noprefixroute rdma9
-</span></span><span class="line"><span class="cl">    inet 10.224.10.117/12 brd 10.239.255.255 scope global noprefixroute rdma10
-</span></span><span class="line"><span class="cl">    inet 10.224.11.117/12 brd 10.239.255.255 scope global noprefixroute rdma11
-</span></span><span class="line"><span class="cl">    inet 10.224.12.117/12 brd 10.239.255.255 scope global noprefixroute rdma12
-</span></span><span class="line"><span class="cl">    inet 10.224.13.117/12 brd 10.239.255.255 scope global noprefixroute rdma13
-</span></span><span class="line"><span class="cl">    inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
-</span></span><span class="line"><span class="cl">    inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
+</span></span><span class="line"><span class="cl">    inet 10.0.2.194/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.194/12 scope global rdma0
+</span></span><span class="line"><span class="cl">    inet 10.224.1.194/12 scope global rdma1
+</span></span><span class="line"><span class="cl">    inet 10.224.2.194/12 scope global rdma2
+</span></span><span class="line"><span class="cl">    inet 10.224.3.194/12 scope global rdma3
+</span></span><span class="line"><span class="cl">    inet 10.224.4.194/12 scope global rdma4
+</span></span><span class="line"><span class="cl">    inet 10.224.5.194/12 scope global rdma5
+</span></span><span class="line"><span class="cl">    inet 10.224.6.194/12 scope global rdma6
+</span></span><span class="line"><span class="cl">    inet 10.224.7.194/12 scope global rdma7
+</span></span><span class="line"><span class="cl">    inet 10.224.8.194/12 scope global rdma8
+</span></span><span class="line"><span class="cl">    inet 10.224.9.194/12 scope global rdma9
+</span></span><span class="line"><span class="cl">    inet 10.224.10.194/12 scope global rdma10
+</span></span><span class="line"><span class="cl">    inet 10.224.11.194/12 scope global rdma11
+</span></span><span class="line"><span class="cl">    inet 10.224.12.194/12 scope global rdma12
+</span></span><span class="line"><span class="cl">    inet 10.224.13.194/12 scope global rdma13
+</span></span><span class="line"><span class="cl">    inet 10.224.14.194/12 scope global rdma14
+</span></span><span class="line"><span class="cl">    inet 10.224.15.194/12 scope global rdma15
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-yyyyy-gpu4-ol89
+</span></span><span class="line"><span class="cl">inst-nysmb-ao
 </span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">    inet 10.0.2.17/24 brd 10.0.2.255 scope global dynamic eth0
-</span></span><span class="line"><span class="cl">    inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
-</span></span><span class="line"><span class="cl">    inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
-</span></span><span class="line"><span class="cl">    inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
-</span></span><span class="line"><span class="cl">    inet 10.224.3.17/12 brd 10.239.255.255 scope global noprefixroute rdma3
-</span></span><span class="line"><span class="cl">    inet 10.224.4.17/12 brd 10.239.255.255 scope global noprefixroute rdma4
-</span></span><span class="line"><span class="cl">    inet 10.224.5.17/12 brd 10.239.255.255 scope global noprefixroute rdma5
-</span></span><span class="line"><span class="cl">    inet 10.224.6.17/12 brd 10.239.255.255 scope global noprefixroute rdma6
-</span></span><span class="line"><span class="cl">    inet 10.224.7.17/12 brd 10.239.255.255 scope global noprefixroute rdma7
-</span></span><span class="line"><span class="cl">    inet 10.224.8.17/12 brd 10.239.255.255 scope global noprefixroute rdma8
-</span></span><span class="line"><span class="cl">    inet 10.224.9.17/12 brd 10.239.255.255 scope global noprefixroute rdma9
-</span></span><span class="line"><span class="cl">    inet 10.224.10.17/12 brd 10.239.255.255 scope global noprefixroute rdma10
-</span></span><span class="line"><span class="cl">    inet 10.224.11.17/12 brd 10.239.255.255 scope global noprefixroute rdma11
-</span></span><span class="line"><span class="cl">    inet 10.224.12.17/12 brd 10.239.255.255 scope global noprefixroute rdma12
-</span></span><span class="line"><span class="cl">    inet 10.224.13.17/12 brd 10.239.255.255 scope global noprefixroute rdma13
-</span></span><span class="line"><span class="cl">    inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
-</span></span><span class="line"><span class="cl">    inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
+</span></span><span class="line"><span class="cl">    inet 10.0.2.90/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+</span></span><span class="line"><span class="cl">    inet 10.224.0.90/12 scope global rdma0
+</span></span><span class="line"><span class="cl">    inet 10.224.1.90/12 scope global rdma1
+</span></span><span class="line"><span class="cl">    inet 10.224.2.90/12 scope global rdma2
+</span></span><span class="line"><span class="cl">    inet 10.224.3.90/12 scope global rdma3
+</span></span><span class="line"><span class="cl">    inet 10.224.4.90/12 scope global rdma4
+</span></span><span class="line"><span class="cl">    inet 10.224.5.90/12 scope global rdma5
+</span></span><span class="line"><span class="cl">    inet 10.224.6.90/12 scope global rdma6
+</span></span><span class="line"><span class="cl">    inet 10.224.7.90/12 scope global rdma7
+</span></span><span class="line"><span class="cl">    inet 10.224.8.90/12 scope global rdma8
+</span></span><span class="line"><span class="cl">    inet 10.224.9.90/12 scope global rdma9
+</span></span><span class="line"><span class="cl">    inet 10.224.10.90/12 scope global rdma10
+</span></span><span class="line"><span class="cl">    inet 10.224.11.90/12 scope global rdma11
+</span></span><span class="line"><span class="cl">    inet 10.224.12.90/12 scope global rdma12
+</span></span><span class="line"><span class="cl">    inet 10.224.13.90/12 scope global rdma13
+</span></span><span class="line"><span class="cl">    inet 10.224.14.90/12 scope global rdma14
+</span></span><span class="line"><span class="cl">    inet 10.224.15.90/12 scope global rdma15
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>なお、後に実行する <strong>NCCL Tests</strong> の起動コマンドで設定している <strong>NCCL_IB_HCA</strong> 環境変数に指定のRDMAリンク名（ <strong>mlx5_xx</strong> ）は、以下のように先の <strong>クラスタ・ネットワーク</strong> 接続用のネットワークインターフェースに対応しています。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;rdma link show | grep rdma&#39;</span> <span class="p">|</span> dshbak -c
@@ -1212,8 +1266,7 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 </span></span><span class="line"><span class="cl">link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
 </span></span><span class="line"><span class="cl">link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
 </span></span><span class="line"><span class="cl">link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-コンテナ環境構築"
     >
         4. コンテナ環境構築
@@ -1222,83 +1275,14 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
-<p>以下コマンドをBastionノードのopcユーザで実行し、 <strong>Docker Community Edition</strong> と <strong>NVIDIA Container Toolkit</strong> を全てのGPUノードにインストールしこれを起動します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo&#39;</span> <span class="p">|</span> dshbak -c
-</span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">Adding repo from: https://download.docker.com/linux/centos/docker-ce.repo
-</span></span><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo dnf install -y docker-ce nvidia-container-toolkit &gt; /dev/null 2&gt;&amp;1; echo $?&#39;</span> <span class="p">|</span> dshbak -c
-</span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl">inst-xxxxx-gpu4-ol89,inst-yyyyy-gpu4-ol89
-</span></span><span class="line"><span class="cl">----------------
-</span></span><span class="line"><span class="cl"><span class="m">0</span>
-</span></span><span class="line"><span class="cl">$ pdsh -g all <span class="s1">&#39;sudo systemctl enable --now docker 2&gt; /dev/null&#39;</span> <span class="p">|</span> dshbak -c
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドを全てのGPUノードのopcユーザで実行し、コンテナ上で <strong>BM.GPU4.8</strong> が搭載する8個のGPUにアクセスできることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo docker run --rm --gpus all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
-</span></span><span class="line"><span class="cl">Unable to find image <span class="s1">&#39;nvcr.io/nvidia/base/ubuntu:22.04_20240212&#39;</span> locally
-</span></span><span class="line"><span class="cl">22.04_20240212: Pulling from nvidia/base/ubuntu
-</span></span><span class="line"><span class="cl">d66d6a6a3687: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">24c2d4f7ea40: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">9d30336abbd7: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">feb1277c15aa: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">3cf0dbeda93a: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">99fc1e9ef206: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">a8f7f8dfd4e2: Pull <span class="nb">complete</span> 
-</span></span><span class="line"><span class="cl">Digest: sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd
-</span></span><span class="line"><span class="cl">Status: Downloaded newer image <span class="k">for</span> nvcr.io/nvidia/base/ubuntu:22.04_20240212
-</span></span><span class="line"><span class="cl">Mon Jul  <span class="m">1</span> 02:58:34 <span class="m">2024</span>       
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> GPU  Name                 Persistence-M <span class="p">|</span> Bus-Id          Disp.A <span class="p">|</span> Volatile Uncorr. ECC <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Fan  Temp   Perf          Pwr:Usage/Cap <span class="p">|</span>           Memory-Usage <span class="p">|</span> GPU-Util  Compute M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>               MIG M. <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================</span>+<span class="o">========================</span>+<span class="o">======================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   38C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   37C    P0             85W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   34C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   36C    P0             82W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">4</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:8D:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   35C    P0             79W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">5</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:92:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   35C    P0             81W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">6</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:D6:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   34C    P0             78W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">7</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:DA:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span> N/A   36C    P0             85W /  400W <span class="p">|</span>       0MiB /  40960MiB <span class="p">|</span>      0%      Default <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>                                         <span class="p">|</span>                        <span class="p">|</span>             Disabled <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------+------------------------+----------------------+
-</span></span><span class="line"><span class="cl">                                                                                         
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl"><span class="p">|</span> Processes:                                                                              <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  GPU   GI   CI        PID   Type   Process name                              GPU Memory <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>        ID   ID                                                               Usage      <span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span><span class="o">=========================================================================================</span><span class="p">|</span>
-</span></span><span class="line"><span class="cl"><span class="p">|</span>  No running processes found                                                             <span class="p">|</span>
-</span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
+<p>本章は、 <strong>containerd</strong> と <strong>NVIDIA Container Toolkit</strong> を使用し、GPU利用可能なコンテナ環境を構築します。</p>
+<p>このコンテナ環境構築は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
+>OCI HPCテクニカルTips集</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../tech-knowhow/container-with-containerd/"
+>containerdによるコンテナ実行環境構築方法</a></strong> の手順を全てのGPUノードに適用することで実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-nccl-tests実行"
     >
@@ -1308,15 +1292,20 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>NGC Catalog</strong> から提供される <strong>TensorFlow NGC Container</strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、Dockerコンテナ上で <strong>NCCL</strong> のGPU間通信性能を <strong>NCCL Tests</strong> で検証します。</p>
+<p>本章は、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://catalog.ngc.nvidia.com/"
+>NGC Catalog</a></strong> から提供される <strong><a
+  class="gdoc-markdown__link"
+  href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow"
+>TensorFlow NGC Container</a></strong> を起動し、このコンテナに含まれる <strong>NCCL</strong> とコンテナ上でビルドする <strong>NCCL Tests</strong> を使用し、コンテナ上で <strong>NCCL</strong> のGPU間通信性能を検証します。</p>
 <p>この <strong>NCCL Tests</strong> 実行方法は、 <strong><a
   class="gdoc-markdown__link"
-  href="../#2-1-%e6%a8%99%e6%ba%96%e3%83%99%e3%83%b3%e3%83%81%e3%83%9e%e3%83%bc%e3%82%af%e5%ae%9f%e8%a1%8c%e6%96%b9%e6%b3%95"
->標準ベンチマーク実行方法</a></strong> の <strong><a
+  href="../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../benchmark/run-nccltests/"
->NCCL Tests実行方法</a></strong> を参照してください。</p>
-<hr>
+>NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）</a></strong> に従い実施します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="6-multiworkermirroredstrategyサンプルプログラム実行"
     >
@@ -1415,8 +1404,7 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 </span></span><span class="line"><span class="cl">70/70 <span class="o">[==============================]</span> - 2s 29ms/step - loss: 2.2036 - accuracy: 0.3489
 </span></span><span class="line"><span class="cl">Epoch 3/3
 </span></span><span class="line"><span class="cl">70/70 <span class="o">[==============================]</span> - 2s 28ms/step - loss: 2.1268 - accuracy: 0.5488
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="7-gpuクラスタの削除"
     >
         7. GPUクラスタの削除
@@ -3009,6 +2997,39 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       

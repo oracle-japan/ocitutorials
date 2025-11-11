@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-11T16:33:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "HPCクラスタを構築する(基礎インフラ自動構築編)",
       "description": "HPCクラスタを構築してみましょう。このチュートリアルは、HPCクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するHPCクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1307",
+      "wordCount" : "1441",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-11T16:33:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -432,8 +432,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-11T16:33:55&#43;09:00">
+            Nov 11, 2025
         </time>
     
 </span>
@@ -447,7 +447,11 @@
     
 </div>
 
-    <hr>
+    <style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
@@ -457,7 +461,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本チュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンスの <strong><a
+<p>本チュートリアルは、HPCワークロード向け <strong>Intel Ice Lake</strong> / <strong>AMD EPYC 第4世代</strong> プロセッサを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36 / BM.HPC.E5.144</a></strong> を <strong><a
@@ -555,7 +559,6 @@
 <p><strong>所要時間 :</strong> 約1時間</p>
 <p><strong>前提条件 :</strong> HPCクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。</p>
 <p><strong>注意 :</strong> 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-事前準備"
     >
@@ -637,9 +640,9 @@
     </a>
 </div>
 <p>OCIコンソールにログインし、HPCクラスタを構築するリージョンを選択後、 <strong>開発者サービス</strong> → <strong>リソース・マネージャ</strong> → <strong>スタック</strong> とメニューを辿ります。</p>
-<p>次に、表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
+<p>表示される以下画面で、<strong>スタックの作成</strong> ボタンをクリックします。</p>
 <p><img
-  src="console_page02.png"
+  src="console_page01.png"
   alt="画面ショット"
   
 /></p>
@@ -702,7 +705,7 @@
   alt="画面ショット"
   
 /></p>
-<p>※3） 例えば <strong>x9-ol89</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
+<p>※3） 例えば <strong>x9-ol810</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol810</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
 ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -719,19 +722,9 @@
           <td style="text-align: center">ocid1.image.oc1..aaaaaaaa45plxi2fuhmbze63ynbs3xfigb2iroqpbqxh5qbauw3pbh66ddvq</td>
       </tr>
       <tr>
-          <td style="text-align: center">1</td>
-          <td style="text-align: center">8.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaaxiqlqer2ycd7hgto7in7raojq7v5kud6wlakmm7u7q64ai352tzq</td>
-      </tr>
-      <tr>
-          <td style="text-align: center">3</td>
-          <td style="text-align: center">8.8</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaa2irxaj3eqti6nlggadyo2avsinc6cscxrphsldiuqebcaljlqomq</td>
-      </tr>
-      <tr>
-          <td style="text-align: center">2</td>
-          <td style="text-align: center">7.9</td>
-          <td style="text-align: center">ocid1.image.oc1..aaaaaaaano7btfbh7cvbaygka4fehemtsal7f7l2qx6oqvbwua6xnszdvaha</td>
+          <td style="text-align: center">13</td>
+          <td style="text-align: center">9.5</td>
+          <td style="text-align: center">ocid1.image.oc1..aaaaaaaaxtobh657yix7kj2zbbuzhwzgvlonqjhpqa23ixdlq2dwipeelxsa</td>
       </tr>
   </tbody>
 </table> </div>
@@ -1064,7 +1057,7 @@
 </table> </div>
 <p>※8）OCIコンソールメニューから <strong>コンピュート</strong> → <strong>インスタンス</strong> を選択し <strong>インスタンスの作成</strong> ボタンをクリックし、表示される以下 <strong>配置</strong> フィールドで確認出来ます。</p>
 <p><img
-  src="console_page01.png"
+  src="console_page02.png"
   alt="画面ショット"
   
 /></p>
@@ -1085,11 +1078,10 @@
   class="gdoc-markdown__link"
   href="../benchmark/bios-setting/"
 >パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法</a></strong> を参照してください。<br>
-※11）例えば <strong>x9-ol89</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol89</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
+※11）例えば <strong>x9-ol905</strong> と指定した場合、計算ノードのホスト名は <strong>inst-xxxxx-x9-ol905</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）<br>
 ※12）既存の <strong>VCN</strong> を使用する場合のみコメントを外して指定します。<br>
 ※13）OCIコンソール上で当該 <strong>VCN</strong> ・サブネットの詳細画面を表示して確認します。<br>
 ※14）計算ノードに <strong>BM.HPC.E5.144</strong> を使用する場合は、この変数を使用しないためコメントのままとします。</p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-hpcクラスタ構築"
     >
@@ -1158,23 +1150,22 @@
 </span></span><span class="line"><span class="cl">:
 </span></span><span class="line"><span class="cl">:
 </span></span><span class="line"><span class="cl">Outputs:
-</span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="nv">Bastion_instances_created</span> <span class="o">=</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">  <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;bastion&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.242&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;158.101.120.164&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.66&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;123.456.789.123&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-obsxx-e5-ol81&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-obsxx-e5-ol81&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.27&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-dbhnx-x9-ol905&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-dbhnx-x9-ol905&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.219&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-utyax-e5-ol81&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-utyax-e5-ol81&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.138&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-h9mlv-x9-ol905&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-h9mlv-x9-ol905&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.172&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span> 
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-2-terraform-cliを使用する方法"
     >
@@ -1197,22 +1188,21 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="nv">Bastion_instances_created</span> <span class="o">=</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">  <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;bastion&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.242&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;158.101.120.164&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.1.40&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;public_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;123.456.789.123&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-obsxx-e5-ol81&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-obsxx-e5-ol81&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.27&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_e5</span> <span class="o">=</span> <span class="o">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-6cx1c-x9-ol905&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-6cx1c-x9-ol905&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.105&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
-</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-utyax-e5-ol81&#34;</span> <span class="o">=</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-utyax-e5-ol81&#34;</span>
-</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.138&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;inst-ev75s-x9-ol905&#34;</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;display_name&#34;</span> <span class="o">=</span> <span class="s2">&#34;inst-ev75s-x9-ol905&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;private_ip&#34;</span> <span class="o">=</span> <span class="s2">&#34;10.0.2.100&#34;</span>
 </span></span><span class="line"><span class="cl">  <span class="o">}</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Compute_in_cn_created_none5</span> <span class="o">=</span> <span class="o">{}</span>
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-hpcクラスタ確認"
     >
         3. HPCクラスタ確認
@@ -1258,11 +1248,11 @@
   href="../#5-11-cloud-init"
 >cloud-init</a></strong> は、計算ノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが <strong>done</strong> となっていることで <strong>cloud-init</strong> の処理完了を確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh -oStrictHostKeyChecking<span class="o">=</span>accept-new <span class="nv">$hname</span> <span class="s2">&#34;sudo cloud-init status&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-xxxxx-x9-ol8
-</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-xxxxx-x9-ol8,10.0.2.159&#39;</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">inst-dbhnx-x9-ol905
+</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-dbhnx-x9-ol905&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-yyyyy-x9-ol8
-</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-yyyyy-x9-ol8,10.0.2.31&#39;</span> <span class="o">(</span>ECDSA<span class="o">)</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">inst-h9mlv-x9-ol905
+</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;inst-h9mlv-x9-ol905&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
 </span></span><span class="line"><span class="cl">status: <span class="k">done</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><p>ステータスが <strong>running</strong> の場合は、 <strong>cloud-init</strong> の処理が継続中のため、処理が完了するまで待ちます。</p>
@@ -1277,16 +1267,16 @@
 </div>
 <p>計算ノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが <strong>/mnt/localdisk</strong> にマウントされ、Bastionノードの <strong>/home</strong> が <strong>/home</strong> としてマウントされています。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;df -h / /mnt/localdisk /home&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-kicav-x9-ol8
+</span></span><span class="line"><span class="cl">inst-dbhnx-x9-ol905
 </span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-</span></span><span class="line"><span class="cl">/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-</span></span><span class="line"><span class="cl">bastion:/home                36G  8.5G   28G  24% /home
-</span></span><span class="line"><span class="cl">inst-0vdz8-x9-ol8
+</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root   83G   16G   68G  19% /
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0      3.5T   25G  3.5T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">bastion:/home                83G   15G   68G  19% /home
+</span></span><span class="line"><span class="cl">inst-h9mlv-x9-ol905
 </span></span><span class="line"><span class="cl">Filesystem                  Size  Used Avail Use% Mounted on
-</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-</span></span><span class="line"><span class="cl">/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-</span></span><span class="line"><span class="cl">bastion:/home                36G  8.5G   28G  24% /home
+</span></span><span class="line"><span class="cl">/dev/mapper/ocivolume-root   83G   16G   68G  19% /
+</span></span><span class="line"><span class="cl">/dev/mapper/nvme-lvol0      3.5T   25G  3.5T   1% /mnt/localdisk
+</span></span><span class="line"><span class="cl">bastion:/home                83G   15G   68G  19% /home
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-4-計算ノードbios設定確認"
@@ -1300,16 +1290,16 @@
 <p>以下コマンドをBastionノードのopcユーザで実行し、計算ノードのBIOSで指定した <strong>NPS</strong> と <strong>SMT</strong> 設定が指定したとおりになっていることを確認します。<br>
 なお本手順は、計算ノードに使用するシェイプが <strong>BM.HPC.E5.144</strong> の場合はスキップします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;lscpu | grep -i -e numa -e thread&#34;</span><span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl">inst-e0tw0-x9-ol87
-</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:  <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:        <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
-</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
-</span></span><span class="line"><span class="cl">inst-uyopv-x9-ol87
-</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:  <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:        <span class="m">2</span>
-</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:   0-17,36-53
-</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:   18-35,54-71
+</span></span><span class="line"><span class="cl">inst-dbhnx-x9-ol905
+</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:                   <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:                         <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:                    0-17,36-53
+</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:                    18-35,54-71
+</span></span><span class="line"><span class="cl">inst-h9mlv-x9-ol905
+</span></span><span class="line"><span class="cl">Thread<span class="o">(</span>s<span class="o">)</span> per core:                   <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node<span class="o">(</span>s<span class="o">)</span>:                         <span class="m">2</span>
+</span></span><span class="line"><span class="cl">NUMA node0 CPU<span class="o">(</span>s<span class="o">)</span>:                    0-17,36-53
+</span></span><span class="line"><span class="cl">NUMA node1 CPU<span class="o">(</span>s<span class="o">)</span>:                    18-35,54-71
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="3-5-計算ノードクラスタネットワーク接続用ネットワークインターフェース設定確認"
@@ -1323,7 +1313,7 @@
 <p>以下コマンドをBastionノードのopcユーザで実行し、計算ノードが <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> に接続するためのネットワークインターフェース（ <strong>rdma0</strong> ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。</p>
+>クラスタ・ネットワーク</a></strong> に接続するためのネットワークインターフェース（ <strong>ens800f0np0</strong> / <strong>rdma0</strong> ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> hname in <span class="sb">`</span>cat ~/hostlist.txt<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$hname</span><span class="p">;</span> ssh <span class="nv">$hname</span> <span class="s2">&#34;ip a | grep -e ens300f0np0 -e ens800f0np0 -e eth0 -e rdma0 | grep inet&#34;</span><span class="p">;</span> <span class="k">done</span>
 </span></span><span class="line"><span class="cl">inst-e0tw0-x9-ol87
 </span></span><span class="line"><span class="cl">    inet 10.0.2.182/24 brd 10.0.2.255 scope global dynamic eth0
@@ -1332,8 +1322,7 @@
 </span></span><span class="line"><span class="cl">    inet 10.0.2.154/24 brd 10.0.2.255 scope global dynamic eth0
 </span></span><span class="line"><span class="cl">    inet 10.224.0.154/12 brd 10.239.255.255 scope global noprefixroute rdma0
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="4-mpiプログラム実行"
     >
         4. MPIプログラム実行
@@ -1354,12 +1343,53 @@
 >Intel MPI Benchmarks</a></strong> を使用し、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。<br>
-ここでは、 <strong>Intel MPI Benchmarks</strong> のPing-Pongを実行します。</p>
-<p>以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、 <strong>クラスタ・ネットワーク</strong> を経由する2ノード間のPing-Pongを実行、その結果に問題が無いことを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+>クラスタ・ネットワーク</a></strong> のノード間インターコネクト性能を確認します。</p>
+<p>以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> のPing-Pongを実行します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">source</span> /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpivars.sh
+</span></span><span class="line"><span class="cl">$ mpirun -n <span class="m">2</span> -N <span class="m">1</span> -hostfile ~/hostlist.txt -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    Intel (R) MPI Benchmarks 2018, MPI-1 part    </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#------------------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date                  : Fri Oct 31 10:53:16 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Machine               : x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># System                : Linux</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Release               : 5.14.0-503.40.1.el9_5.x86_64</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Version           : 3.1</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI Thread Environment: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calling sequence was: </span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Minimum message length in bytes:   0</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Maximum message length in bytes:   268435456</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype                   :   MPI_BYTE </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Datatype for reductions    :   MPI_FLOAT</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># MPI_Op                         :   MPI_SUM  </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># List of Benchmarks to run:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># PingPong</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#---------------------------------------------------</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Benchmarking PingPong </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># #processes = 2 </span>
+</span></span><span class="line"><span class="cl"><span class="c1">#---------------------------------------------------</span>
+</span></span><span class="line"><span class="cl">       <span class="c1">#bytes #repetitions      t[usec]   Mbytes/sec</span>
+</span></span><span class="line"><span class="cl">            <span class="m">0</span>         <span class="m">1000</span>         1.66         0.00
+</span></span><span class="line"><span class="cl">    <span class="m">134217728</span>            <span class="m">1</span>     10969.39     12235.66
+</span></span><span class="line"><span class="cl">    <span class="m">268435456</span>            <span class="m">1</span>     21932.62     12239.10
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># All processes entering MPI_Finalize</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="5-hpcクラスタ削除"
     >
         5. HPCクラスタ削除
@@ -3011,6 +3041,39 @@
         
         
       
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+
+  
+    
+
+    
+      
+    
+
     
       
       
