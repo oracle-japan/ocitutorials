@@ -8,11 +8,9 @@ params:
   author: Tsutomu Miyashita
 ---
 
-**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
-
 # 0. 概要
 
-GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として用意されていますが、HPC/機械学習ワークロード向けのOSで主流になっている **Ubuntu** もこれに含まれます。  
+GPUインスタンスのOSに利用可能なLinuxディストリビューションは、 **Oracle Linux** をはじめ主要なものが **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として用意されていますが、GPU上でHPC/機械学習ワークロードを実行する際のOSで主流になっている **Ubuntu** もこれに含まれます。  
 ただこの場合、GPUを利用するための以下ソフトウェアは、GPUインスタンス作成後に自身でインストール・セットアップする必要があります。
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** : NVIDIA製GPUドライバソフトウェア
@@ -23,7 +21,7 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 
 ※1）**NVSwitch** を搭載するシェイプの場合のみインストールします。
 
-本テクニカルTipsは、GPU上でHPC/機械学習ワークロードを実行する際に必要となるこれらのソフトウェアをGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の **NVIDIA A100** GPUを搭載するベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を例に解説します。
+本テクニカルTipsは、これらのソフトウェアを **Ubuntu** をOSとするGPUインスタンスにインストールし、構築した環境で以下のソフトウェア/サンプルプログラムを使用して動作確認を行う手順を、8枚の **NVIDIA A100** GPUを搭載するベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を例に解説します。
 
 1. **[CUDA Samples](https://github.com/nvidia/cuda-samples)**
 2. OpenACCサンプルプログラム
@@ -40,6 +38,8 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 - CUDA-aware MPIライブラリ ： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8
 
 ※2） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。
+
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
 # 1. GPUインスタンス作成
 

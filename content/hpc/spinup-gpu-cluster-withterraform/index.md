@@ -13,11 +13,13 @@ table, th, td {
 }
 </style>
 
-このチュートリアルは、GPUクラスタのGPUノードに最適なベアメタルインスタンス（本チュートリアルでは **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用）を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、Dockerコンテナ上で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** のGPU間通信性能を **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。  
+# 0. 概要
+
+本チュートリアルは、8枚の **NVIDIA A100** GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPC/機械学習ワークロードを実行するためのGPUクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、 **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用するコンテナ実行環境で起動するコンテナ上で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** のGPU間通信性能を **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。  
 この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、共有ファイルシステム、プログラム開発環境等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったGPUクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
-なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](../#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](../spinup-gpu-cluster-withstack)** を参照してください。
+なお、これらのクラスタ管理に必要なソフトウェアの導入までを自動化する **[HPCクラスタスタック](../#5-10-hpcクラスタスタック)** も利用可能で、詳細は **[OCI HPCチュートリアル集](../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(スタティッククラスタ自動構築編)](../spinup-gpu-cluster-withstack)** を参照してください。
 
 本チュートリアルで作成するGPUクラスタ構築用の **Terraform** スクリプトは、そのひな型が **GitHub** のパブリックレポジトリから公開されており、適用すると以下の処理を行います。
 
@@ -45,11 +47,11 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 
 ※2）この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](../tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
 
-![システム構成図（パブリック）](../spinup-cluster-network/architecture_diagram.png)
+![システム構成図（パブリック）](../spinup-hpc-cluster-withterraform/architecture_diagram.png)
 
-![システム構成図（プライベート）](../spinup-cluster-network/architecture_diagram_private.png)
+![システム構成図（プライベート）](../spinup-hpc-cluster-withterraform/architecture_diagram_private.png)
 
-Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル( **cloud-config** )を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
+Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル(以降 **cloud-config** と呼称します。)を含み、 **cloud-init** がBastionノード作成時に以下の処理を行います。
 
 - タイムゾーンをJSTに変更
 - ホームディレクトリ領域のNFSエクスポート
@@ -68,12 +70,11 @@ Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファ�
 
 **前提条件 :** GPUクラスタを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
-**注意 :** チュートリアル内の画面ショットについては、OCIの現在のコンソール画面と異なっている場合があります。
+**注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
-***
-# 0. 事前準備
+# 1. 事前準備
 
-## 0-0. 概要
+## 1-0. 概要
 
 本章は、GPUクラスタを構築する際事前に用意しておく必要のあるリソースを作成します。  
 この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **[Terraform](../#5-12-terraform)** CLIを使用する方法を採用するかで異なります。
@@ -90,23 +91,19 @@ Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファ�
 
 以降では、2つの異なる構築手法毎にその手順を解説します。
 
-## 0-1. リソース・マネージャを使用する方法
+## 1-1. リソース・マネージャを使用する方法
 
-### 0-1-1. 構成ソース・プロバイダ作成
-
-本章は、ひな型となる **[Terraform](../#5-12-terraform)** スクリプトを **GitHub** パブリックレポジトリから取り込むための **[構成ソース・プロバイダ](../#5-14-構成ソースプロバイダ)** を作成します。
+### 1-1-1. 構成ソース・プロバイダ作成
 
 **構成ソース・プロバイダ** の作成は、 **[ここ](../#5-14-構成ソースプロバイダ)** を参照してください。
 
-### 0-1-2. スタック作成
-
-本章は、GPUクラスタを構築するための **[リソース・マネージャ](../#5-2-リソースマネージャ)** 用 **[スタック](../#5-3-スタック)** を作成します。
+### 1-1-2. スタック作成
 
 OCIコンソールにログインし、GPUクラスタを構築するリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
-次に、表示される以下画面で、**スタックの作成** ボタンをクリックします。
+表示される以下画面で、**スタックの作成** ボタンをクリックします。
 
-![画面ショット](console_page02.png)
+![画面ショット](console_page01.png)
 
 次に、表示される以下 **スタック情報** 画面で、以下の情報を入力し、下部の **次** ボタンをクリックします。
 
@@ -120,7 +117,7 @@ OCIコンソールにログインし、GPUクラスタを構築するリージ�
 
 ![画面ショット](stack_page01.png)
 
-次に、表示される **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。
+次に、表示される以下 **変数の構成** 画面で、各画面フィールドに以下の情報を入力し、下部の **次** ボタンをクリックします。
 
 - **General options** フィールド
 
@@ -138,24 +135,22 @@ OCIコンソールにログインし、GPUクラスタを構築するリージ�
 - **Compute/GPU node options** フィールド
 
     - **Display name postfix :** GPUノードホスト名の接尾辞（※3）
-    - **Shape :** **BM.GPU4.8**
+    - **Shape :** **BM.GPU4.8** / **BM.GPU.A100-v2.8**
     - **Node count :** GPUノードのノード数（デフォルト：2）
     - **Image OCID :** GPUノードのイメージOCID（※4）
     - **Boot volume size :** GPUノードのブートボリュームサイズ（200GB以上）
-    - **cloud-config :** GPUノードの **[cloud-init](../#5-11-cloud-init)** 設定ファイル( **cloud-config** )（※5）
-    - **NPS for BM.GPU4.8 :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※6）
+    - **cloud-config :** GPUノードの **cloud-config** （※5）
+    - **NPS for BM.xxxx.xx :** GPUノードの **NPS** 設定値 (デフォルト：NPS4) （※6）
     - **SMT :** GPUノードの **SMT** 設定値 (デフォルト：有効) （※6）
 
 ![画面ショット](stack_page03.png)
 
-※3） 例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
+※3） 例えば **gpu4-ol905** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol905** となります。（ **xxxxx** はランダムな文字列）  
 ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
 
 | No.<br>（※7） | **Oracle Linux**<br>バージョン | OCID                                                                          |
 | :---------: | :-----------------------: | :---------------------------------------------------------------------------: |
-| 7           | 8.9                       | ocid1.image.oc1..aaaaaaaag36bbqszitkjcnnuauf3tiu3dg6bg2q7goj2uaxbbgnszan66fna |
-| 9           | 8.8                       | ocid1.image.oc1..aaaaaaaaeka3qe2v5ucxztilltohgmsyr63s3cd55uidtve4mtietoafopeq |
-| 8           | 7.9                       | ocid1.image.oc1..aaaaaaaa42ozstmmllgevxjvcbompvj6632lwlsigaudh26os7rsmfbcoilq |
+| 15           | 9.5                       | ocid1.image.oc1..aaaaaaaaevo5a2g6zd524mlu5aopkzxem6farzeilzqwcaax6nnpaflr2ipq |
 
 ※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。  
 なお既存の **VCN** を使用する場合は、以下の **cloud-config** 中のDNSサーチパスにパブリックサブネット名（**public.vcn.oraclevcn.com**）を追加している箇所を、既存のパブリックサブネット名に変更します。
@@ -190,8 +185,7 @@ runcmd:
     - mount /home
 ```
 
-※6）詳細は、 **[パフォーマンス関連Tips集](../#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。
-
+※6）詳細は、 **[パフォーマンス関連Tips集](../#2-2-パフォーマンス関連tips集)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
 ※7）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージNo.です。
 
 次に、表示される **確認** 画面で、これまでの設定項目が意図したものになっているかを確認し、以下 **作成されたスタックで適用を実行しますか。** フィールドの **適用の実行** をチェックオフし、下部の **作成** ボタンをクリックします。
@@ -204,9 +198,9 @@ runcmd:
 
 ![画面ショット](stack_page05.png)
 
-## 0-2. Terraform CLIを使用する方法
+## 1-2. Terraform CLIを使用する方法
 
-### 0-2-1. Terraform実行環境構築
+### 1-2-1. Terraform実行環境構築
 
 本章は、 **[Terraform](../#5-12-terraform)** CLIを使用してGPUクラスタのライフサイクル管理を実行する **Terraform** 実行環境を構築します。  
 この実行環境は、インターネットに接続された **Linux** ・ **Windows** ・ **Mac** の何れかのOSが稼働している端末であればよく、以下のような選択肢が考えられます。
@@ -225,7 +219,7 @@ runcmd:
 具体的な **Terraform** 実行環境構築手順は、チュートリアル **[TerraformでOCIの構築を自動化する](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/)** の **[2. Terraform環境の構築](https://oracle-japan.github.io/ocitutorials/intermediates/terraform/#2terraform%E7%92%B0%E5%A2%83%E3%81%AE%E6%A7%8B%E7%AF%89)** を参照してください。  
 また、関連するOCI公式ドキュメントは、 **[ここ](https://docs.oracle.com/ja-jp/iaas/developer-tutorials/tutorials/tf-provider/01-summary.htm)** を参照してください。
 
-### 0-2-2. Terraformスクリプト概要
+### 1-2-2. Terraformスクリプト概要
 
 本チュートリアルで使用するGPUクラスタ構築用の **[Terraform](../#5-12-terraform)** スクリプトは、そのひな型を **GitHub** のパブリックレポジトリで公開しており、以下のファイル群で構成されています。
 
@@ -244,7 +238,7 @@ runcmd:
 また、これらのファイルと同じディレクトリに **user_data** ディレクトリが存在し、 **[cloud-init](../#5-11-cloud-init)** 設定ファイル（ **cloud-config** ）を格納しています。  
 この **cloud-config** を修正することで、構築するGPUクラスタのOSレベルのカスタマイズをご自身の環境に合わせて追加・変更することも可能でます。
 
-### 0-2-3. Terraformスクリプト作成
+### 1-2-3. Terraformスクリプト作成
 
 **[Terraform](../#5-12-terraform)** スクリプトの作成は、まず以下の **GitHub** レポジトリからひな型となる **Terraform** スクリプトを **Terraform** 実行環境にダウンロードしますが、
 
@@ -294,24 +288,23 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ※8）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
-![画面ショット](console_page01.png)
+![画面ショット](console_page02.png)
 
 ※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
 ※10）詳細は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
-※11）例えば **gpu4-ol89** と指定した場合、GPUノードのホスト名は **inst-xxxxx-gpu4-ol89** となります。（ **xxxxx** はランダムな文字列）  
+※11）例えば **ao-ol905** と指定した場合、GPUノードのホスト名は **inst-xxxxx-ao-ol905** となります。（ **xxxxx** はランダムな文字列）  
 ※12）既存の **VCN** を使用する場合のみコメントを外して指定します。  
 ※13）OCIコンソール上で当該 **VCN** ・サブネットの詳細画面を表示して確認します。
 
-***
-# 1. GPUクラスタ構築
+# 2. GPUクラスタ構築
 
-## 1-0. 概要
+## 2-0. 概要
 
 本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、GPUクラスタを構築します。
 
 この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
-## 1-1. リソース・マネージャを使用する方法
+## 2-1. リソース・マネージャを使用する方法
 
 以下 **スタックの詳細** 画面で、 **適用** ボタンをクリックします。
 
@@ -334,26 +327,29 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 ステータスが **成功** となれば、GPUクラスタの構築が完了しており、以下のように **ログ** フィールドの最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。
 
 ```sh
+:
+:
+:
 Outputs:
-
 Bastion_instances_created = {
-    "display_name" = "bastion"
-    "private_ip" = "10.0.1.138"
-    "public_ip" = "123.456.789.123"
+  "display_name" = "bastion"
+  "private_ip" = "10.0.1.186"
+  "public_ip" = "123.456.789.123"
 }
-Compute_in_cn_created = {
-    "inst-9fhuq-gpu4-ol89" = {
-    "display_name" = "inst-9fhuq-gpu4-ol89"
-    "private_ip" = "10.0.2.10"
-    }
-    "inst-dz99s-gpu4-ol89" = {
-    "display_name" = "inst-dz99s-gpu4-ol89"
-    "private_ip" = "10.0.2.73"
-    }
-}
+Compute_in_cn_created_e5 = {}
+Compute_in_cn_created_none5 = {
+  "inst-2tdfx-ao-ol810" = {
+    "display_name" = "inst-2tdfx-ao-ol810"
+    "private_ip" = "10.0.2.129"
+  }
+  "inst-t157c-ao-ol810" = {
+    "display_name" = "inst-t157c-ao-ol810"
+    "private_ip" = "10.0.2.247"
+  }
+} 
 ```
 
-## 1-2. Terraform CLIを使用する方法
+## 2-2. Terraform CLIを使用する方法
 
 **Terraform** 実行環境で、以下コマンドを実行します。
 
@@ -368,38 +364,39 @@ $ terraform apply --auto-approve
 **Terraform** スクリプトの適用が正常に完了すると、以下のようにコマンド出力の最後にBastionノードとGPUノードのホスト名とIPアドレスが出力されます。
 
 ```sh
-Apply complete! Resources: 16 added, 0 changed, 0 destroyed.
-
+:
+:
+:
 Outputs:
 
 Bastion_instances_created = {
   "display_name" = "bastion"
-  "private_ip" = "10.0.1.138"
+  "private_ip" = "10.0.1.186"
   "public_ip" = "123.456.789.123"
 }
-Compute_in_cn_created = {
-  "inst-9fhuq-gpu4-ol89" = {
-    "display_name" = "inst-9fhuq-gpu4-ol89"
-    "private_ip" = "10.0.2.10"
+Compute_in_cn_created_e5 = {}
+Compute_in_cn_created_none5 = {
+  "inst-2tdfx-ao-ol810" = {
+    "display_name" = "inst-2tdfx-ao-ol810"
+    "private_ip" = "10.0.2.129"
   }
-  "inst-dz99s-gpu4-ol89" = {
-    "display_name" = "inst-dz99s-gpu4-ol89"
-    "private_ip" = "10.0.2.73"
+  "inst-t157c-ao-ol810" = {
+    "display_name" = "inst-t157c-ao-ol810"
+    "private_ip" = "10.0.2.247"
   }
-}
+} 
 ```
 
-***
-# 2. GPUクラスタ確認
+# 3. GPUクラスタ確認
 
-## 2-0. 概要
+## 3-0. 概要
 
 本章は、構築されたGPUクラスタ環境を確認します。
 
 この際、作成されたGPUノードの全ホスト名を記載したホストリストファイルを使用し、BastionノードからGPUクラスタ内の全GPUノードにSSHでコマンドを発行、その環境を確認します。  
 なおこのホストリストファイルは、Bastionノードと全GPUノードに **/home/opc/hostlist.txt** として存在します。
 
-## 2-1. Bastionノードログイン
+## 3-1. Bastionノードログイン
 
 Bastionノードは、パブリックサブネット接続の場合はGPUクラスタ構築完了時に表示されるパブリックIPアドレスに対してインターネット経由SSHログインし、プライベートサブネット接続の場合はGPUクラスタ構築完了時に表示されるプライベートIPアドレスに対して拠点間接続経由SSHログインしますが、これには構築時に指定したSSH公開鍵に対応する秘密鍵を使用して以下コマンドで行います。
 
@@ -407,115 +404,115 @@ Bastionノードは、パブリックサブネット接続の場合はGPUクラ�
 $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 ```
 
-## 2-2. cloud-init完了確認
+## 3-2. cloud-init完了確認
 
 **[cloud-init](../#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であっても、その処理が継続している可能性があるため、以下コマンドをBastionノードのopcユーザで実行し、そのステータスが **done** となっていることで **cloud-init** の処理完了を確認します。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh  -oStrictHostKeyChecking=accept-new $hname "sudo cloud-init status"; done
-inst-xxxxx-gpu4-ol89
-Warning: Permanently added 'inst-xxxxx-gpu4-ol89,10.0.2.117' (ECDSA) to the list of known hosts.
+inst-aizyo-ao-ol905
+Warning: Permanently added 'inst-aizyo-ao-ol905' (ED25519) to the list of known hosts.
 status: done
-inst-yyyyy-gpu4-ol89
-Warning: Permanently added 'inst-yyyyy-gpu4-ol89,10.0.2.17' (ECDSA) to the list of known hosts.
+inst-apcve-ao-ol905
+Warning: Permanently added 'inst-apcve-ao-ol905' (ED25519) to the list of known hosts.
 status: done
 $
 ```
 
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
-## 2-3. GPUノードファイルシステム確認
+## 3-3. GPUノードファイルシステム確認
 
 GPUノードは、以下のようにルートファイルシステムがデフォルトの50 GBから指定したサイズに拡張され、NVMe SSDローカルディスクが **/mnt/localdisk** にマウントされ、Bastionノードの **/home** が **/home** としてマウントされています。
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "df -h / /mnt/localdisk /home"; done
-inst-xxxxx-gpu4-ol89
-Filesystem              Size  Used Avail Use% Mounted on
-/dev/sda3               192G   23G  170G  12% /
-/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
-bastion:/home            36G  9.1G   27G  26% /home
-inst-yyyyy-gpu4-ol89
-Filesystem              Size  Used Avail Use% Mounted on
-/dev/sda3               192G   23G  170G  12% /
-/dev/mapper/nvme-lvol0   25T   34M   25T   1% /mnt/localdisk
-bastion:/home            36G  9.1G   27G  26% /home
+inst-aizyo-ao-ol905
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root  183G   31G  153G  17% /
+/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+bastion:/home                83G   31G   53G  37% /home
+inst-apcve-ao-ol905
+Filesystem                  Size  Used Avail Use% Mounted on
+/dev/mapper/ocivolume-root  183G   31G  153G  17% /
+/dev/mapper/nvme-lvol0       25T  177G   25T   1% /mnt/localdisk
+bastion:/home                83G   31G   53G  37% /home
 $
 ```
 
-## 2-4. GPUノードBIOS設定確認
+## 3-4. GPUノードBIOS設定確認
 
 以下コマンドをBastionノードのopcユーザで実行し、GPUノードのBIOSで指定した **NPS** と **SMT** 設定が指定したとおりになっていることを確認します。  
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "lscpu | grep -i -e numa -e thread"; done
-inst-xxxxx-gpu4-ol89
-Thread(s) per core:  2
-NUMA node(s):        8
-NUMA node0 CPU(s):   0-7,64-71
-NUMA node1 CPU(s):   8-15,72-79
-NUMA node2 CPU(s):   16-23,80-87
-NUMA node3 CPU(s):   24-31,88-95
-NUMA node4 CPU(s):   32-39,96-103
-NUMA node5 CPU(s):   40-47,104-111
-NUMA node6 CPU(s):   48-55,112-119
-NUMA node7 CPU(s):   56-63,120-127
-inst-yyyyy-gpu4-ol89
-Thread(s) per core:  2
-NUMA node(s):        8
-NUMA node0 CPU(s):   0-7,64-71
-NUMA node1 CPU(s):   8-15,72-79
-NUMA node2 CPU(s):   16-23,80-87
-NUMA node3 CPU(s):   24-31,88-95
-NUMA node4 CPU(s):   32-39,96-103
-NUMA node5 CPU(s):   40-47,104-111
-NUMA node6 CPU(s):   48-55,112-119
-NUMA node7 CPU(s):   56-63,120-127
+inst-aizyo-ao-ol905
+Thread(s) per core:                   2
+NUMA node(s):                         8
+NUMA node0 CPU(s):                    0-7,64-71
+NUMA node1 CPU(s):                    8-15,72-79
+NUMA node2 CPU(s):                    16-23,80-87
+NUMA node3 CPU(s):                    24-31,88-95
+NUMA node4 CPU(s):                    32-39,96-103
+NUMA node5 CPU(s):                    40-47,104-111
+NUMA node6 CPU(s):                    48-55,112-119
+NUMA node7 CPU(s):                    56-63,120-127
+inst-apcve-ao-ol905
+Thread(s) per core:                   2
+NUMA node(s):                         8
+NUMA node0 CPU(s):                    0-7,64-71
+NUMA node1 CPU(s):                    8-15,72-79
+NUMA node2 CPU(s):                    16-23,80-87
+NUMA node3 CPU(s):                    24-31,88-95
+NUMA node4 CPU(s):                    32-39,96-103
+NUMA node5 CPU(s):                    40-47,104-111
+NUMA node6 CPU(s):                    48-55,112-119
+NUMA node7 CPU(s):                    56-63,120-127
 $
 ```
 
-## 2-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認
+## 3-5. GPUノードクラスタ・ネットワーク用ネットワークインターフェース設定確認
 
 以下コマンドをBastionノードのopcユーザで実行し、GPUノードの **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 接続に使用する16個のネットワークインターフェースに正しくIPアドレスが設定されていることを確認します。  
 
 ```sh
-$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e eth0 -e rdma | grep inet"; done
-inst-xxxxx-gpu4-ol89
-    inet 10.0.2.117/24 brd 10.0.2.255 scope global dynamic eth0
-    inet 10.224.0.117/12 brd 10.239.255.255 scope global noprefixroute rdma0
-    inet 10.224.1.117/12 brd 10.239.255.255 scope global noprefixroute rdma1
-    inet 10.224.2.117/12 brd 10.239.255.255 scope global noprefixroute rdma2
-    inet 10.224.3.117/12 brd 10.239.255.255 scope global noprefixroute rdma3
-    inet 10.224.4.117/12 brd 10.239.255.255 scope global noprefixroute rdma4
-    inet 10.224.5.117/12 brd 10.239.255.255 scope global noprefixroute rdma5
-    inet 10.224.6.117/12 brd 10.239.255.255 scope global noprefixroute rdma6
-    inet 10.224.7.117/12 brd 10.239.255.255 scope global noprefixroute rdma7
-    inet 10.224.8.117/12 brd 10.239.255.255 scope global noprefixroute rdma8
-    inet 10.224.9.117/12 brd 10.239.255.255 scope global noprefixroute rdma9
-    inet 10.224.10.117/12 brd 10.239.255.255 scope global noprefixroute rdma10
-    inet 10.224.11.117/12 brd 10.239.255.255 scope global noprefixroute rdma11
-    inet 10.224.12.117/12 brd 10.239.255.255 scope global noprefixroute rdma12
-    inet 10.224.13.117/12 brd 10.239.255.255 scope global noprefixroute rdma13
-    inet 10.224.14.117/12 brd 10.239.255.255 scope global noprefixroute rdma14
-    inet 10.224.15.117/12 brd 10.239.255.255 scope global noprefixroute rdma15
-inst-yyyyy-gpu4-ol89
-    inet 10.0.2.17/24 brd 10.0.2.255 scope global dynamic eth0
-    inet 10.224.0.17/12 brd 10.239.255.255 scope global noprefixroute rdma0
-    inet 10.224.1.17/12 brd 10.239.255.255 scope global noprefixroute rdma1
-    inet 10.224.2.17/12 brd 10.239.255.255 scope global noprefixroute rdma2
-    inet 10.224.3.17/12 brd 10.239.255.255 scope global noprefixroute rdma3
-    inet 10.224.4.17/12 brd 10.239.255.255 scope global noprefixroute rdma4
-    inet 10.224.5.17/12 brd 10.239.255.255 scope global noprefixroute rdma5
-    inet 10.224.6.17/12 brd 10.239.255.255 scope global noprefixroute rdma6
-    inet 10.224.7.17/12 brd 10.239.255.255 scope global noprefixroute rdma7
-    inet 10.224.8.17/12 brd 10.239.255.255 scope global noprefixroute rdma8
-    inet 10.224.9.17/12 brd 10.239.255.255 scope global noprefixroute rdma9
-    inet 10.224.10.17/12 brd 10.239.255.255 scope global noprefixroute rdma10
-    inet 10.224.11.17/12 brd 10.239.255.255 scope global noprefixroute rdma11
-    inet 10.224.12.17/12 brd 10.239.255.255 scope global noprefixroute rdma12
-    inet 10.224.13.17/12 brd 10.239.255.255 scope global noprefixroute rdma13
-    inet 10.224.14.17/12 brd 10.239.255.255 scope global noprefixroute rdma14
-    inet 10.224.15.17/12 brd 10.239.255.255 scope global noprefixroute rdma15
+$ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e ens300f0np0 -e ens800f0np0 -e eth0 -e rdma | grep inet"; done
+inst-aizyo-ao-ol905
+    inet 10.0.2.135/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+    inet 10.224.0.135/12 scope global rdma0
+    inet 10.224.1.135/12 scope global rdma1
+    inet 10.224.2.135/12 scope global rdma2
+    inet 10.224.3.135/12 scope global rdma3
+    inet 10.224.4.135/12 scope global rdma4
+    inet 10.224.5.135/12 scope global rdma5
+    inet 10.224.6.135/12 scope global rdma6
+    inet 10.224.7.135/12 scope global rdma7
+    inet 10.224.8.135/12 scope global rdma8
+    inet 10.224.9.135/12 scope global rdma9
+    inet 10.224.10.135/12 scope global rdma10
+    inet 10.224.11.135/12 scope global rdma11
+    inet 10.224.12.135/12 scope global rdma12
+    inet 10.224.13.135/12 scope global rdma13
+    inet 10.224.14.135/12 scope global rdma14
+    inet 10.224.15.135/12 scope global rdma15
+inst-apcve-ao-ol905
+    inet 10.0.2.83/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+    inet 10.224.0.83/12 scope global rdma0
+    inet 10.224.1.83/12 scope global rdma1
+    inet 10.224.2.83/12 scope global rdma2
+    inet 10.224.3.83/12 scope global rdma3
+    inet 10.224.4.83/12 scope global rdma4
+    inet 10.224.5.83/12 scope global rdma5
+    inet 10.224.6.83/12 scope global rdma6
+    inet 10.224.7.83/12 scope global rdma7
+    inet 10.224.8.83/12 scope global rdma8
+    inet 10.224.9.83/12 scope global rdma9
+    inet 10.224.10.83/12 scope global rdma10
+    inet 10.224.11.83/12 scope global rdma11
+    inet 10.224.12.83/12 scope global rdma12
+    inet 10.224.13.83/12 scope global rdma13
+    inet 10.224.14.83/12 scope global rdma14
+    inet 10.224.15.83/12 scope global rdma15
 $
 ```
 
@@ -523,7 +520,7 @@ $
 
 ```sh
 $ for hname in `cat /home/opc/hostlist.txt`; do echo $hname; ssh $hname "rdma link show | grep rdma"; done
-inst-xxxxx-gpu4-ol89
+inst-aizyo-ao-ol905
 link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
 link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
 link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
@@ -540,7 +537,7 @@ link mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12
 link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
 link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
 link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
-inst-yyyyy-gpu4-ol89
+inst-apcve-ao-ol905
 link mlx5_6/1 state ACTIVE physical_state LINK_UP netdev rdma0 
 link mlx5_7/1 state ACTIVE physical_state LINK_UP netdev rdma1 
 link mlx5_8/1 state ACTIVE physical_state LINK_UP netdev rdma2 
@@ -556,104 +553,30 @@ link mlx5_17/1 state ACTIVE physical_state LINK_UP netdev rdma11
 link mlx5_10/1 state ACTIVE physical_state LINK_UP netdev rdma12 
 link mlx5_11/1 state ACTIVE physical_state LINK_UP netdev rdma13 
 link mlx5_12/1 state ACTIVE physical_state LINK_UP netdev rdma14 
-link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15 
-```
-
-***
-# 3. コンテナ環境構築
-
-本章は、 **Docker Community Edition** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
-
-以下コマンドを全てのGPUノードのopcユーザで実行し、 **Docker Community Edition** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** をインストール・起動します。
-
-```sh
-$ sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-$ sudo dnf install -y docker-ce nvidia-container-toolkit
-$ sudo systemctl enable --now docker
-```
-
-次に、以下コマンドを全てのGPUノードのopcユーザで実行し、コンテナ上で **BM.GPU4.8** が搭載する8個のGPUにアクセスできることを確認します。
-
-```sh
-$ sudo docker run --rm --gpus all nvcr.io/nvidia/base/ubuntu:22.04_20240212 nvidia-smi
-Unable to find image 'nvcr.io/nvidia/base/ubuntu:22.04_20240212' locally
-22.04_20240212: Pulling from nvidia/base/ubuntu
-d66d6a6a3687: Pull complete 
-24c2d4f7ea40: Pull complete 
-9d30336abbd7: Pull complete 
-feb1277c15aa: Pull complete 
-3cf0dbeda93a: Pull complete 
-99fc1e9ef206: Pull complete 
-a8f7f8dfd4e2: Pull complete 
-Digest: sha256:2a9f71d82aa4daac444c1b4b74d5d7b01f93eb23662c1236f89d817f083abecd
-Status: Downloaded newer image for nvcr.io/nvidia/base/ubuntu:22.04_20240212
-Mon Jul  1 02:58:34 2024       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 550.54.15              Driver Version: 550.54.15      CUDA Version: 12.4     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:0F:00.0 Off |                    0 |
-| N/A   38C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   1  NVIDIA A100-SXM4-40GB          On  |   00000000:15:00.0 Off |                    0 |
-| N/A   37C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   2  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
-| N/A   34C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   3  NVIDIA A100-SXM4-40GB          On  |   00000000:54:00.0 Off |                    0 |
-| N/A   36C    P0             82W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   4  NVIDIA A100-SXM4-40GB          On  |   00000000:8D:00.0 Off |                    0 |
-| N/A   35C    P0             79W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   5  NVIDIA A100-SXM4-40GB          On  |   00000000:92:00.0 Off |                    0 |
-| N/A   35C    P0             81W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   6  NVIDIA A100-SXM4-40GB          On  |   00000000:D6:00.0 Off |                    0 |
-| N/A   34C    P0             78W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   7  NVIDIA A100-SXM4-40GB          On  |   00000000:DA:00.0 Off |                    0 |
-| N/A   36C    P0             85W /  400W |       0MiB /  40960MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|  No running processes found                                                             |
-+-----------------------------------------------------------------------------------------+
+link mlx5_13/1 state ACTIVE physical_state LINK_UP netdev rdma15
 $
 ```
 
-***
-# 4. NCCL Tests実行
+# 4. コンテナ環境構築
 
-本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、Dockerコンテナ上で **NCCL** のGPU間通信性能を **NCCL Tests** で検証します。
+本章は、 **containerd** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
 
-この **NCCL Tests** 実行方法は、 **[標準ベンチマーク実行方法](../#2-1-標準ベンチマーク実行方法)** の **[NCCL Tests実行方法](../benchmark/run-nccltests/)** を参照してください。
+このコンテナ環境構築は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順を全てのGPUノードに適用することで実施します。
 
-***
-# 5. GPUクラスタ削除
+# 5. NCCL Tests実行
 
-## 5-0. 概要
+本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、コンテナ上で **NCCL** のGPU間通信性能を検証します。
+
+この **NCCL Tests** 実行方法は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）](../benchmark/run-nccltests/)** に従い実施します。
+
+# 6. GPUクラスタ削除
+
+## 6-0. 概要
 
 本章は、先に作成した **[スタック](../#5-3-スタック)** / **[Terraform](../#5-12-terraform)** スクリプトを使用し、GPUクラスタを削除します。  
 この手順は、構築手法に **[リソース・マネージャ](../#5-2-リソースマネージャ)** を使用する方法を採用するか、 **Terraform** CLIを使用する方法を採用するかで異なり、以降では2つの異なる構築手法毎にその手順を解説します。
 
-## 5-1. リソース・マネージャを使用する方法
+## 6-1. リソース・マネージャを使用する方法
 
 以下 **スタックの詳細** 画面で、 **破棄** ボタンをクリックします。
 
@@ -675,7 +598,7 @@ $
 
 ステータスが **成功** となれば、GPUクラスタの削除が完了しています。
 
-## 5-2. Terraform CLIの場合
+## 6-2. Terraform CLIの場合
 
 本章は、 **[Terraform](../#5-12-terraform)** スクリプトを **Terraform** CLIで破棄し、GPUクラスタを削除します。
 

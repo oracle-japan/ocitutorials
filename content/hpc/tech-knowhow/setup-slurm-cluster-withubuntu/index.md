@@ -583,7 +583,7 @@ srun bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp
 ```
 
 次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、先の8枚のGPUを使用した **nvidia-smi** コマンドの出力と比較し割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。  
-なお、GPUノードに使用している **BM.GPU4.8** は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容します。
+なお、GPUノードに使用している **BM.GPU4.8** は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容することに留意します。
 
 ```sh
 $ for i in `seq 1 2`; do sbatch gpu_affinity.sh; done
