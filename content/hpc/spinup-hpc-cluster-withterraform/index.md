@@ -7,11 +7,15 @@ tags:
 params:
   author: Tsutomu Miyashita
 ---
+<style>
+table, th, td {
+    font-size: 80%;
+}
+</style>
 
-***
 # 0. 概要
 
-本チュートリアルは、HPCクラスタの計算ノードに最適なベアメタルインスタンスの **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
+本チュートリアルは、HPCワークロード向け **Intel Ice Lake** / **AMD EPYC 第4世代** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
 この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  
@@ -68,7 +72,6 @@ Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファ�
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
-***
 # 1. 事前準備
 
 ## 1-0. 概要
@@ -98,9 +101,9 @@ Bastionノード作成は、 **[cloud-init](../#5-11-cloud-init)** 設定ファ�
 
 OCIコンソールにログインし、HPCクラスタを構築するリージョンを選択後、 **開発者サービス** → **リソース・マネージャ** → **スタック** とメニューを辿ります。
 
-次に、表示される以下画面で、**スタックの作成** ボタンをクリックします。
+表示される以下画面で、**スタックの作成** ボタンをクリックします。
 
-![画面ショット](console_page02.png)
+![画面ショット](console_page01.png)
 
 次に、表示される以下 **スタック情報** 画面で、以下の情報を入力し、下部の **次** ボタンをクリックします。
 
@@ -142,15 +145,13 @@ OCIコンソールにログインし、HPCクラスタを構築するリージ�
 
 ![画面ショット](stack_page03.png)
 
-※3） 例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
+※3） 例えば **x9-ol810** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol810** となります。（ **xxxxx** はランダムな文字列）  
 ※4）以下のOCIDを指定します。なおこのイメージは、Bastionノードにも使用されます。
 
 | No.<br>（※7） | **Oracle Linux**<br>バージョン | OCID                                                                          |
 | :---------: | :-----------------------: | :---------------------------------------------------------------------------: |
 | 12          | 8.10                      | ocid1.image.oc1..aaaaaaaa45plxi2fuhmbze63ynbs3xfigb2iroqpbqxh5qbauw3pbh66ddvq |
-| 1           | 8.9                       | ocid1.image.oc1..aaaaaaaaxiqlqer2ycd7hgto7in7raojq7v5kud6wlakmm7u7q64ai352tzq |
-| 3           | 8.8                       | ocid1.image.oc1..aaaaaaaa2irxaj3eqti6nlggadyo2avsinc6cscxrphsldiuqebcaljlqomq |
-| 2           | 7.9                       | ocid1.image.oc1..aaaaaaaano7btfbh7cvbaygka4fehemtsal7f7l2qx6oqvbwua6xnszdvaha |
+| 13           | 9.5                       | ocid1.image.oc1..aaaaaaaaxtobh657yix7kj2zbbuzhwzgvlonqjhpqa23ixdlq2dwipeelxsa |
 
 ※5）以下をテキストファイルとして保存し、ブラウザから読み込みます。  
 なお既存の **VCN** を使用する場合は、以下の **cloud-config** 中のDNSサーチパスにパブリックサブネット名（**public.vcn.oraclevcn.com**）を追加している箇所を、既存のパブリックサブネット名に変更します。
@@ -289,16 +290,15 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 
 ※8）OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し **インスタンスの作成** ボタンをクリックし、表示される以下 **配置** フィールドで確認出来ます。
 
-![画面ショット](console_page01.png)
+![画面ショット](console_page02.png)
 
 ※9）コメントとして埋め込まれているOSイメージOCIDから、コメント文の記載を参考に適切なOSイメージOCIDのコメントを外して使用します。詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** を参照してください。  
 ※10）詳細は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベア・メタル・インスタンスのBIOS設定方法](../benchmark/bios-setting/)** を参照してください。  
-※11）例えば **x9-ol89** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol89** となります。（ **xxxxx** はランダムな文字列）  
+※11）例えば **x9-ol905** と指定した場合、計算ノードのホスト名は **inst-xxxxx-x9-ol905** となります。（ **xxxxx** はランダムな文字列）  
 ※12）既存の **VCN** を使用する場合のみコメントを外して指定します。  
 ※13）OCIコンソール上で当該 **VCN** ・サブネットの詳細画面を表示して確認します。  
 ※14）計算ノードに **BM.HPC.E5.144** を使用する場合は、この変数を使用しないためコメントのままとします。
 
-***
 # 2. HPCクラスタ構築
 
 ## 2-0. 概要
@@ -334,23 +334,22 @@ $ git clone https://github.com/fwiw6430/tutorial_cn
 :
 :
 Outputs:
-
 Bastion_instances_created = {
   "display_name" = "bastion"
-  "private_ip" = "10.0.1.242"
-  "public_ip" = "158.101.120.164"
+  "private_ip" = "10.0.1.66"
+  "public_ip" = "123.456.789.123"
 }
-Compute_in_cn_created_e5 = {
-  "inst-obsxx-e5-ol81" = {
-    "display_name" = "inst-obsxx-e5-ol81"
-    "private_ip" = "10.0.2.27"
+Compute_in_cn_created_e5 = {}
+Compute_in_cn_created_none5 = {
+  "inst-dbhnx-x9-ol905" = {
+    "display_name" = "inst-dbhnx-x9-ol905"
+    "private_ip" = "10.0.2.219"
   }
-  "inst-utyax-e5-ol81" = {
-    "display_name" = "inst-utyax-e5-ol81"
-    "private_ip" = "10.0.2.138"
+  "inst-h9mlv-x9-ol905" = {
+    "display_name" = "inst-h9mlv-x9-ol905"
+    "private_ip" = "10.0.2.172"
   }
-}
-Compute_in_cn_created_none5 = {}
+} 
 ```
 
 ## 2-2. Terraform CLIを使用する方法
@@ -375,23 +374,22 @@ Outputs:
 
 Bastion_instances_created = {
   "display_name" = "bastion"
-  "private_ip" = "10.0.1.242"
-  "public_ip" = "158.101.120.164"
+  "private_ip" = "10.0.1.40"
+  "public_ip" = "123.456.789.123"
 }
-Compute_in_cn_created_e5 = {
-  "inst-obsxx-e5-ol81" = {
-    "display_name" = "inst-obsxx-e5-ol81"
-    "private_ip" = "10.0.2.27"
+Compute_in_cn_created_e5 = {}
+Compute_in_cn_created_none5 = {
+  "inst-6cx1c-x9-ol905" = {
+    "display_name" = "inst-6cx1c-x9-ol905"
+    "private_ip" = "10.0.2.105"
   }
-  "inst-utyax-e5-ol81" = {
-    "display_name" = "inst-utyax-e5-ol81"
-    "private_ip" = "10.0.2.138"
+  "inst-ev75s-x9-ol905" = {
+    "display_name" = "inst-ev75s-x9-ol905"
+    "private_ip" = "10.0.2.100"
   }
 }
-Compute_in_cn_created_none5 = {}
 ```
 
-***
 # 3. HPCクラスタ確認
 
 ## 3-0. 概要
@@ -415,11 +413,11 @@ $ ssh -i path_to_ssh_secret_key opc@123.456.789.123
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking=accept-new $hname "sudo cloud-init status"; done
-inst-xxxxx-x9-ol8
-Warning: Permanently added 'inst-xxxxx-x9-ol8,10.0.2.159' (ECDSA) to the list of known hosts.
+inst-dbhnx-x9-ol905
+Warning: Permanently added 'inst-dbhnx-x9-ol905' (ED25519) to the list of known hosts.
 status: done
-inst-yyyyy-x9-ol8
-Warning: Permanently added 'inst-yyyyy-x9-ol8,10.0.2.31' (ECDSA) to the list of known hosts.
+inst-h9mlv-x9-ol905
+Warning: Permanently added 'inst-h9mlv-x9-ol905' (ED25519) to the list of known hosts.
 status: done
 $
 ```
@@ -432,16 +430,16 @@ $
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh $hname "df -h / /mnt/localdisk /home"; done
-inst-kicav-x9-ol8
+inst-dbhnx-x9-ol905
 Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-bastion:/home                36G  8.5G   28G  24% /home
-inst-0vdz8-x9-ol8
+/dev/mapper/ocivolume-root   83G   16G   68G  19% /
+/dev/mapper/nvme-lvol0      3.5T   25G  3.5T   1% /mnt/localdisk
+bastion:/home                83G   15G   68G  19% /home
+inst-h9mlv-x9-ol905
 Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ocivolume-root   89G   15G   74G  17% /
-/dev/nvme0n1p1              3.5T   25G  3.5T   1% /mnt/localdisk
-bastion:/home                36G  8.5G   28G  24% /home
+/dev/mapper/ocivolume-root   83G   16G   68G  19% /
+/dev/mapper/nvme-lvol0      3.5T   25G  3.5T   1% /mnt/localdisk
+bastion:/home                83G   15G   68G  19% /home
 $
 ```
 
@@ -452,22 +450,22 @@ $
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh $hname "lscpu | grep -i -e numa -e thread"; done
-inst-e0tw0-x9-ol87
-Thread(s) per core:  2
-NUMA node(s):        2
-NUMA node0 CPU(s):   0-17,36-53
-NUMA node1 CPU(s):   18-35,54-71
-inst-uyopv-x9-ol87
-Thread(s) per core:  2
-NUMA node(s):        2
-NUMA node0 CPU(s):   0-17,36-53
-NUMA node1 CPU(s):   18-35,54-71
+inst-dbhnx-x9-ol905
+Thread(s) per core:                   2
+NUMA node(s):                         2
+NUMA node0 CPU(s):                    0-17,36-53
+NUMA node1 CPU(s):                    18-35,54-71
+inst-h9mlv-x9-ol905
+Thread(s) per core:                   2
+NUMA node(s):                         2
+NUMA node0 CPU(s):                    0-17,36-53
+NUMA node1 CPU(s):                    18-35,54-71
 $
 ```
 
 ## 3-5. 計算ノードクラスタ・ネットワーク接続用ネットワークインターフェース設定確認
 
-以下コマンドをBastionノードのopcユーザで実行し、計算ノードが **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続するためのネットワークインターフェース（ **rdma0** ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。  
+以下コマンドをBastionノードのopcユーザで実行し、計算ノードが **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** に接続するためのネットワークインターフェース（ **ens800f0np0** / **rdma0** ）にIPアドレス（以下の例では10.224.0.0/12のサブネット内のIPアドレス）が設定されていることを確認します。  
 
 ```sh
 $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh $hname "ip a | grep -e ens300f0np0 -e ens800f0np0 -e eth0 -e rdma0 | grep inet"; done
@@ -480,20 +478,59 @@ inst-uyopv-x9-ol87
 $
 ```
 
-***
 # 4. MPIプログラム実行
 
-本章は、計算ノードの **HPC[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** を使用し、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。  
-ここでは、 **Intel MPI Benchmarks** のPing-Pongを実行します。
+本章は、計算ノードの **HPC[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** に含まれる **[OpenMPI](https://www.open-mpi.org/)** と **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** を使用し、 **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** のノード間インターコネクト性能を確認します。
 
-
-以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、 **クラスタ・ネットワーク** を経由する2ノード間のPing-Pongを実行、その結果に問題が無いことを確認します。
+以下コマンドを計算ノードのうちの1ノードのopcユーザで実行し、 **Intel MPI Benchmarks** のPing-Pongを実行します。
 
 ```sh
-$ /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+$ source /usr/mpi/gcc/openmpi-4.1.7rc1/bin/mpivars.sh
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+#------------------------------------------------------------
+#    Intel (R) MPI Benchmarks 2018, MPI-1 part    
+#------------------------------------------------------------
+# Date                  : Fri Oct 31 10:53:16 2025
+# Machine               : x86_64
+# System                : Linux
+# Release               : 5.14.0-503.40.1.el9_5.x86_64
+# Version               : #1 SMP PREEMPT_DYNAMIC Wed Apr 30 02:45:06 PDT 2025
+# MPI Version           : 3.1
+# MPI Thread Environment: 
+
+
+# Calling sequence was: 
+
+# /usr/mpi/gcc/openmpi-4.1.7rc1/tests/imb/IMB-MPI1 -msglog 27:28 pingpong
+
+# Minimum message length in bytes:   0
+# Maximum message length in bytes:   268435456
+#
+# MPI_Datatype                   :   MPI_BYTE 
+# MPI_Datatype for reductions    :   MPI_FLOAT
+# MPI_Op                         :   MPI_SUM  
+#
+#
+
+# List of Benchmarks to run:
+
+# PingPong
+
+#---------------------------------------------------
+# Benchmarking PingPong 
+# #processes = 2 
+#---------------------------------------------------
+       #bytes #repetitions      t[usec]   Mbytes/sec
+            0         1000         1.66         0.00
+    134217728            1     10969.39     12235.66
+    268435456            1     21932.62     12239.10
+
+
+# All processes entering MPI_Finalize
+
+$
 ```
 
-***
 # 5. HPCクラスタ削除
 
 ## 5-0. 概要

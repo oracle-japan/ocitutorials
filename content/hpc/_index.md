@@ -96,12 +96,12 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 
 | No. | チュートリアル名                                                                                       | 構築手法                                      | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算/GPUノードOS            |
 | :-: | :--------------------------------------------------------------------------------------------: | :---------------------------------------: | :----------: | :---------------: | :--------------------: |
-| 1   | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-cluster-network/)**                 | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
-| 2   | **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-hpc-cluster-withterraform/)**       | 自動構築<br>（**Terraform** CLI/**スタック**）      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 1   | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-cluster-network/)**                 | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 8 / 9 |
+| 2   | **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-hpc-cluster-withterraform/)**       | 自動構築<br>（**Terraform** CLI/**スタック**）      | 無し           | スタティック            | **Oracle Linux** 8 / 9 |
 | 3   | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-hpc-cluster)**                  | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
 | 4   | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-hpc-cluster-withautoscaling)**  | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
-| 5   | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
-| 6   | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Oracle Linux** 7.9/8 |
+| 5   | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 9 |
+| 6   | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Oracle Linux** 9 |
 | 7   | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
 | 8   | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
 | 9   | **[GPUクラスタを構築する<br>(Ubuntu OS編)](spinup-gpu-cluster-withubuntu/)**           | 手動構築                                      | 無し           | スタティック            | **Ubuntu** 24.04       |
@@ -114,9 +114,9 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 |No.| チュートリアル名                                                                                       | GPU<br>ノード数 | 構築手法                             | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | コンテナ<br>ランタイム                                                        | GPUノードOS               |
 | :---------:| :--------------------------------------------------------------------------------------------: | :---------: | :------------------------------: | :----------: | :---------------: | :------------------------------------------------------------------: | :--------------------: |
 |1| **[GPUインスタンスで<br>機械学習にトライ](spinup-ml-instance/)**                            | 単一          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-|2| **[GPUインスタンスで<br>分散機械学習環境を構築する](spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 8     |
-|3| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
-|4| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 7.9/8 |
+|2| **[GPUインスタンスで<br>分散機械学習環境を構築する](spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 9     |
+|3| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **Docker CE**                                                        | **Oracle Linux** 9 |
+|4| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **containerd**                                                        | **Oracle Linux** 9 |
 |5| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（**スタック**）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
 |6| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 複数          | 自動構築<br>（**スタック**）                   | 有り           | オンデマンド            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
 
@@ -411,6 +411,11 @@ HPC/GPUクラスタの構築は、同じイメージを持つ計算/GPUノード
 HPC/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主に **Ubuntu** で行われていることから、そのOSに **Ubuntu** を使用するのが主流になっていますが、 **Ubuntu** をOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。  
 本テクニカルTipsは、 **Ubuntu** をGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。  
 なおこのコンテンツは、 **[3-5. ソフトウェア環境](#3-5-ソフトウェア環境)** にも同一のものが掲載されています。
+
+- **[containerdによる機械学習ワークロード向けコンテナ実行環境構築方法](tech-knowhow/container-with-containerd/)**  
+機械学習ワークロードのためのコンテナ実行環境は、そのコンテナランタイムにいくつかの選択肢がありますが、コンテナ実行機能に特化した軽量・低オーバーヘッドの特徴と **Kubernetes** との高い親和性から、 **[containerd](https://github.com/containerd/containerd/tree/main)** が現在人気を集めています。  
+また **containerd** は、他のオープンソースのツール群と組み合わせることで、rootlessコンテナやDocker互換CLIによるコンテナライフサイクル管理が可能となり、自身の要件に合わせた機能拡張が可能です。  
+本テクニカルTipsは、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** 等から提供される既存の機械学習ワークロード向けコンテナの実行環境を念頭に、GPU搭載インスタンス上に **containerd** と関連するソフトウェア群をインストール・セットアップし、コンテナ実行環境を構築する方法を解説します。
 
 ## 3-5. ソフトウェア環境
 
