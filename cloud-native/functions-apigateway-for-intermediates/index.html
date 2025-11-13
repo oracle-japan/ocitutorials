@@ -43,7 +43,7 @@
 <meta property="article:section" content="Cloud Native" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-11-13T13:11:23+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Oracle Functionsを利用したAPI Gatewayの認証",
       "description": "Oracle Functionsは、Oracle Cloud Infrastructure(OCI)上で提供されるマネージドFaaS(Function as a Service)サービスです。Oracle Functionsを利用してOCI API Gatewayが渡されたクライアントシークレットをチェックし、正しいクライアントシークレットが含まれているかどうかに基づいてリクエストを許可したり拒否したりするシンプルなAuthorizer Functionを作成します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "198",
+      "wordCount" : "199",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-11-13T13:11:23.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="cloud-native">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-11-13T13:11:23+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -399,8 +399,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-11-13T13:11:23&#43;09:00">
+            Nov 13, 2025
         </time>
     
 </span>
@@ -614,7 +614,7 @@
   alt=""
   
 /></p>
-<p>[最初から]をクリックし、[基本情報]と[APIリクエスト・ポリシー]セクションで次を指定します。</p>
+<p>①基本情報の入力画面で[最初から]をクリックし、[基本情報]と[APIリクエスト・ポリシー]セクションで以下項目を指定して[次]をクリックします。</p>
 <ul>
 <li>
 <p>名前：新しいAPIデプロイメントの名前、今回は、<code>workshop</code></p>
@@ -624,15 +624,29 @@
 </li>
 <li>
 <p>コンパートメント：新しいAPIデプロイメントを作成するコンパートメント</p>
+<p><img
+  src="create-apigateway-04.png"
+  alt=""
+  
+/></p>
+</li>
+</ul>
+<p>②認証の入力画面で以下項目を指定して、[次]をクリックします。</p>
+<ul>
+<li>
+<p>アプリケーション：Authorizer Functionが属するアプリケーションの名前。今回は、<code>fn-samples-app</code></p>
 </li>
 <li>
-<p>認証：認証枠にある[追加]をクリックして、認証ポリシー画面で以下項目を指定して、[変更の保存]をクリックします。</p>
-<ul>
-<li>アプリケーション：Authorizer Functionが属するアプリケーションの名前。今回は、<code>fn-samples-app</code></li>
-<li>機能名：Authorizer Functionが属する機能の名前。今回は、<code>fn-authorizer</code></li>
-<li>認証トークン：ヘッダー</li>
-<li>ヘッダー名：今回使用するOracle Functionsでは、<code>token</code>という名前のヘッダー項目を使用します</li>
-</ul>
+<p>機能名：Authorizer Functionが属する機能の名前。今回は、<code>fn-authorizer</code></p>
+</li>
+<li>
+<p>[単一引数認可プロバイダ・ファンクション]を指定</p>
+</li>
+<li>
+<p>トークンの場所：ヘッダー</p>
+</li>
+<li>
+<p>トークン・ヘッダー名：今回使用するOracle Functionsでは、<code>token</code>という名前のヘッダー項目を使用します</p>
 <p><img
   src="create-apigateway-05.png"
   alt=""
@@ -640,17 +654,12 @@
 /></p>
 </li>
 </ul>
-<p>[次]をクリックします。</p>
-<p><img
-  src="create-apigateway-04.png"
-  alt=""
-  
-/></p>
-<p>[1のルーティング]セクションで次を指定して、[次]をクリックします。</p>
+<p>③ルートの入力画面で以下項目を指定して、[次]をクリックします。</p>
 <ul>
 <li>パス：APIのパス。今回は、<code>/stock</code></li>
 <li>メソッド：APIのメソッドを指定します。今回は、<code>GET</code></li>
-<li>タイプ：バックエンド・サービスのタイプを指定します。今回は、<code>標準レスポンス</code></li>
+<li>[単一バックエンドの追加]を指定</li>
+<li>バックエンド・タイプ：<code>標準レスポンス</code></li>
 <li>ステータス・コード：返却するHTTPステータスコード。今回は、<code>200</code></li>
 <li>本文：返却するメッセージ。今回は、<code>{&quot;status&quot;:&quot;ok&quot;}</code></li>
 </ul>
