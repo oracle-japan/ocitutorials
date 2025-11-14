@@ -10,7 +10,7 @@ params:
 
 # 0. 概要
 
-本ドキュメントで解説する **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** の実行は、 **GitHub** から提供される **Intel MPI Benchmarks** を **[OpenMPI](https://www.open-mpi.org/)** で実行する方法と、 **[Intel oneAPI HPC Toolkit](https://www.xlsoft.com/jp/products/intel/oneapi/hpc/index.html)** に含まれる **Intel MPI Benchmarks** と **[Intel MPI Library](https://www.xlsoft.com/jp/products/intel/cluster/mpi/index.html)** を使用する方法を解説します。
+本ドキュメントで解説する **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** の実行は、 **GitHub** から提供される **Intel MPI Benchmarks** を **[OpenMPI](https://www.open-mpi.org/)** で実行する方法と、 **[Intel oneAPI HPC Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/hpc-toolkit.html)** に含まれる **Intel MPI Benchmarks** と **[Intel MPI Library](https://www.intel.com/content/www/us/en/developer/tools/oneapi/mpi-library.html)** を使用する方法を解説します。
 
 **Intel MPI Benchmarks** の実行は、以下3種類を解説します。
 

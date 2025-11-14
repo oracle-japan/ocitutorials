@@ -12,7 +12,7 @@ params:
 
 本ドキュメントで解説する **[NCCL Tests](https://github.com/nvidia/nccl-tests)** の実行は、GPUインスタンス上に **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** で構築されたコンテナ実行環境で **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** とコンテナ上でビルドする **NCCL Tests** を使用します。
 
-本ドキュメントで **NCCL Tests** を実行するGPUインスタンスは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用し、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順に従い、 **containerd** と **NVIDIA Container Toolkit** によるコンテナ実行環境が予め構築されていることを前提に、 **TensorFlow NGC Container** を起動してこの上で **NCCL Tests** を実行する手順を、以下の順に解説します。
+本ドキュメントで **NCCL Tests** を実行するGPUインスタンスは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../../tech-knowhow/container-with-containerd/)** の手順に従い、 **containerd** と **NVIDIA Container Toolkit** によるコンテナ実行環境が予め構築されていることを前提に、 **TensorFlow NGC Container** を起動してこの上で **NCCL Tests** を実行する手順を、以下の順に解説します。
 
 1. **[NCCL Tests計測用コンテナ作成](#1-nccl-tests計測用コンテナ作成)**
 2. **[NCCL Testsコンパイル](#2-nccl-testsコンパイル)**
@@ -24,14 +24,14 @@ params:
 - ノード数 ： 2
 - GPU数 ： **NVIDIA A100 40GB/80GB** x 16
 - ノード間接続インターコネクト ： **クラスタ・ネットワーク** （100 Gbps x 16）
-- **イメージ** ： **Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
+- **イメージ** ： **Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - コンテナランタイム ： **containerd** 2.2.0
 - **NVIDIA Container Toolkit** ： 1.18.0
 - コンテナ ： **TensorFlow NGC Container** 25.02-tf2-py3
 - **NCCL** ： 2.25.1（※2）
 - MPI ： **[OpenMPI](https://www.open-mpi.org/)** 4.1.7rc1（※2）
 
-※1） **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
+※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
 ※2）コンテナに含まれるものを使用します。
 
 # 1. NCCL Tests計測用コンテナ作成
@@ -59,7 +59,7 @@ params:
 
 ## 1-1. コンテナ間SSH接続環境構築
 
-以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）のコンテナ起動ユーザで実行します。（GPUノード間でコンテナ起動ユーザのホームディレクトリが共有されている前提です。）
+以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）のコンテナ起動ユーザで実行します。
 
 ```sh
 $ ssh-keygen -f ~/.ssh/id_rsa -N ""
