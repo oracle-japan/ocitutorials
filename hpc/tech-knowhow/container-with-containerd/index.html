@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-11-11T17:05:20+09:00"
+      content="2025-11-14T10:17:46+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "containerdによるコンテナ実行環境構築方法",
       "description": "機械学習ワークロードのためのコンテナ実行環境は、そのコンテナランタイムにいくつかの選択肢がありますが、コンテナ実行機能に特化した軽量・低オーバーヘッドの特徴とKubernetesとの高い親和性から、containerdが現在人気を集めています。またcontainerdは、他のオープンソースのツール群と組み合わせることで、rootlessコンテナやDocker互換CLIによるコンテナライフサイクル管理が可能となり、自身の要件に合わせた機能拡張が可能です。本テクニカルTipsは、NGC Catalog等から提供される既存の機械学習ワークロード向けコンテナの実行環境を念頭に、GPU搭載インスタンス上にcontainerdと関連するソフトウェア群をインストール・セットアップし、コンテナ実行環境を構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "810",
+      "wordCount" : "820",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-11T17:05:20.00Z",
+      "dateModified": "2025-11-14T10:17:46.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-11-11T17:05:20+09:00">
+    <meta property="article:modified_time" content="2025-11-14T10:17:46+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -403,8 +403,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-11T17:05:20&#43;09:00">
-            Nov 11, 2025
+        <time datetime="2025-11-14T10:17:46&#43;09:00">
+            Nov 14, 2025
         </time>
     
 </span>
@@ -490,12 +490,8 @@
   href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >プラットフォーム・イメージ</a></strong> <strong><a
   class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm"
->Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0</a></strong> /<br>
-<strong>プラットフォーム・イメージ</strong> <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm"
->Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0</a></strong> /<br>
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-10-23-0.htm"
+>Oracle-Linux-9.6-Gen2-GPU-2025.10.23-0</a></strong> /<br>
 <strong>Oracle Linux</strong> 9.5ベースのGPU <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
@@ -592,19 +588,22 @@
     </a>
 </div>
 <p>本章は、コンテナ起動ユーザを作成し、このユーザでコンテナを起動するための必要な設定を行います。</p>
-<p>以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザ（ここでは <strong>usera</strong> とします。）を作成します。</p>
+<p>以下コマンドをGPUインスタンスのopcユーザで実行し、ユーザのmemlock設定値を無制限に変更します。<br>
+なお、この設定が既に入っている場合は、改めて実施する必要はありません。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat <span class="s">&lt;&lt;EOF | sudo tee -a /etc/security/limits.conf
+</span></span></span><span class="line"><span class="cl"><span class="s">&gt; * soft memlock unlimited
+</span></span></span><span class="line"><span class="cl"><span class="s">&gt; * hard memlock unlimited
+</span></span></span><span class="line"><span class="cl"><span class="s">&gt; EOF</span>
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザ（ここでは <strong>usera</strong> とします。）を作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -d /home/usera -s /bin/bash -u <span class="m">10000</span> usera
 </span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザのコンテナイメージ等のファイルを格納するディレクトリをNVMe SSDローカルディスク領域（ <strong>/mnt/localdisk</strong> にマウントされているとします。）に作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mkdir -p /mnt/localdisk/usera/root /mnt/localdisk/usera/state <span class="o">&amp;&amp;</span> sudo chown -R usera:usera /mnt/localdisk/usera
-</span></span></code></pre></div><p>次に、BastionノードからSSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。</p>
+</span></span></code></pre></div><p>次に、SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir -p ~/.config/containerd
 </span></span><span class="line"><span class="cl">$ cat <span class="s">&lt;&lt; EOF &gt; ~/.config/containerd/config.toml
 </span></span></span><span class="line"><span class="cl"><span class="s">&gt; root = &#34;/mnt/localdisk/usera/root&#34;
 </span></span></span><span class="line"><span class="cl"><span class="s">&gt; state = &#34;/mnt/localdisk/usera/state&#34;
 </span></span></span><span class="line"><span class="cl"><span class="s">&gt; EOF</span>
-</span></span><span class="line"><span class="cl">$ cat ~/.config/containerd/config.toml
-</span></span><span class="line"><span class="cl"><span class="nv">root</span> <span class="o">=</span> <span class="s2">&#34;/mnt/localdisk/usera/root&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="nv">state</span> <span class="o">=</span> <span class="s2">&#34;/mnt/localdisk/usera/state&#34;</span>
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-コンテナ起動稼働確認"
     >
@@ -637,7 +636,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>BastionノードからSSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 <strong>containerd</strong> を起動・確認します。</p>
+<p>SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 <strong>containerd</strong> を起動・確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ containerd-rootless-setuptool.sh install
 </span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> Checking RootlessKit functionality
 </span></span><span class="line"><span class="cl">:
