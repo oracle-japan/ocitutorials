@@ -15,23 +15,19 @@ table, th, td {
 
 # 0. 概要
 
-本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしてソフトウェア環境を手動で構築する方法で、 **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス（以降"GPUノード"と呼称します。）上に構築、複数GPUに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。
+本チュートリアルは、OCIコンソールから必要なリソースを順次デプロイしてソフトウェア環境を手動で構築する方法で、 **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用する分散機械学習に対応するコンテナ実行環境を複数のNVIDIA GPUを搭載するGPUインスタンス上に構築、複数GPUに跨るGPU間の通信性能を **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能計測プログラム **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で検証します。
 
 本チュートリアルで構築する分散機械学習環境の構成を以下に示します。
 
-[GPUノード]
+[GPUインスタンス]
 
--  **シェイプ** ： **[BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
-- **イメージ** ：  
-**[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm)** /  
-**プラットフォーム・イメージ** **[Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm)**
+-  **シェイプ** ： **[BM.GPU4.8 / BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
+- **イメージ** ： **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.6-Gen2-GPU-2025.10.23-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-10-23-0.htm)**
 
 [Bastionノード]
 
 -  **シェイプ**  ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
-- **イメージ** ：  
-**プラットフォーム・イメージ** **[Oracle-Linux-8.10-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-2025-09-16-0.htm)** /  
-**プラットフォーム・イメージ** **[Oracle-Linux-9.6-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-2025-09-16-0.htm)**
+- **イメージ** ： **プラットフォーム・イメージ** **[Oracle-Linux-9.6-2025.10.23-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-2025-10-23-0.htm)**
 
 [機械学習環境ソフトウェア]
 
@@ -50,7 +46,7 @@ table, th, td {
 
 ## 1-0. 概要
 
-本章は、GPUノードをTCP接続する **仮想クラウド・ネットワーク** と、インターネットから直接アクセス出来ないプライベートサブネットに接続するGPUノードにログインする際の踏み台となるBastionノードを、GPUノード作成前に予め用意します。
+本章は、GPUインスタンスをTCP接続する **仮想クラウド・ネットワーク** と、インターネットから直接アクセス出来ないプライベートサブネットに接続するGPUインスタンスにログインする際の踏み台となるBastionノードを、GPUインスタンス作成前に予め用意します。
 
 ## 1-1. 仮想クラウド・ネットワーク作成
 
@@ -78,8 +74,8 @@ table, th, td {
 
 この **仮想クラウド・ネットワーク** は、 **セキュリティリスト** でインターネットとの通信に以下のアクセス制限が掛けられています。
 
-- インターネットからのアクセス：パブリックサブネットに接続されるインスタンスの22番ポート（SSH）に限定
-- インターネットへのアクセス：インターネット上の任意のIPアドレス・ポートに制限なくアクセス可能
+- インターネットからのアクセス：パブリックサブネットに接続するインスタンスの宛先ポート22番（SSH）に限定
+- インターネットへのアクセス：インターネット上の任意の宛先IPアドレス・ポートに制限なくアクセス可能
 
 ## 1-2. Bastionノード作成
 
@@ -92,7 +88,7 @@ Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japa
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
 次に、作成したBastionノードにopcユーザでSSHログインして以下コマンドを実行してSSH鍵ペアを作成し、その公開鍵を控えます。  
-このSSH鍵は、BastionノードからGPUノードにログインする際に使用します。
+このSSH鍵は、BastionノードからGPUインスタンスにログインする際に使用します。
 
 ```sh
 $ ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
@@ -118,48 +114,27 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTkw2diccQ4mnxea/qUcClehcYfZIQhB94d2aiWUrL
 $
 ```
 
-# 2. GPUノード作成
+# 2. GPUインスタンス作成
 
 ## 2-0. 概要
 
-本章は、GPUノードを作成します。
+本章は、GPUインスタンスを作成します。
 
-本チュートリアルは、GPUノードに **BM.GPU4.8** を使用しますが、 **BM.GPU3.8 / BM.GPU.A100-v2.8** の場合で手順が異なる箇所は、その旨明記します。
-
-GPUノードの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](../#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
+GPUインスタンスの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](../#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
 
 1. **[cloud-init設定ファイル作成](#2-1-cloud-init設定ファイル作成)**
-2. **[GPUノード作成](#2-2-gpuノード作成)**
+2. **[GPUインスタンス作成](#2-2-GPUインスタンス作成)**
 
 ## 2-1. cloud-init設定ファイル作成
 
 本チュートリアルは、 **[cloud-init](../#5-11-cloud-init)** を以下の目的で使用します。
 
 - タイムゾーンをJSTに変更
-- NVMe SSDローカルディスク領域ファイルシステム作成（ **BM.GPU4.8 / BM.GPU.A100-v2.8** の場合のみ）
+- NVMe SSDローカルディスク領域ファイルシステム作成
 - firewalld停止
 - ルートファイルシステム拡張
 
-以下は、本チュートリアルで使用する **[cloud-init](../#5-11-cloud-init)** 設定ファイル（以降 **cloud-config** と呼称します。）で、OCIコンソールを実行している端末上にテキストファイルで保存します。
-
-[ **BM.GPU3.8** ]
-
-```sh
-#cloud-config
-#
-# Change time zone to JST
-timezone: Asia/Tokyo
-
-runcmd:
-#
-# Stop firewalld
-  - systemctl disable --now firewalld
-#
-# Expand root file system to those set by instance configuration
-  - /usr/libexec/oci-growfs -y
-```
-
-[ **BM.GPU4.8 / BM.GPU.A100-v2.8** ]
+以下は、本チュートリアルで使用する **cloud-init** 設定ファイル（以降 **cloud-config** と呼称します。）で、OCIコンソールを実行している端末上にテキストファイルで保存します。
 
 ```sh
 #cloud-config
@@ -185,23 +160,23 @@ runcmd:
   - /usr/libexec/oci-growfs -y
 ```
 
-## 2-2. GPUノード作成
+## 2-2. GPUインスタンス作成
 
-OCIコンソールにログインし、GPUノードをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、表示される以下画面で **インスタンスの作成** ボタンをクリックします。
+OCIコンソールにログインし、GPUインスタンスをデプロイするリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、表示される以下画面で **インスタンスの作成** ボタンをクリックします。
 
 ![画面ショット](console_page01.png)
 
 表示される **基本情報** 画面で、以下の情報を入力し **次** ボタンをクリックします。  
 なお、ここに記載のないフィールドは、デフォルトのままとします。
 
-- **名前** ： GPUノードに付与する名前
-- **コンパートメントに作成** ： GPUノードを作成する **コンパートメント**
+- **名前** ： GPUインスタンスに付与する名前
+- **コンパートメントに作成** ： GPUインスタンスを作成する **コンパートメント**
 
   ![画面ショット](console_page02.png)
 
 1. **配置** フィールド
 
-    - **可用性ドメイン** ：GPUノードを作成する **可用性ドメイン**
+    - **可用性ドメイン** ：GPUインスタンスを作成する **可用性ドメイン**
 
     ![画面ショット](console_page03.png)
 
@@ -209,8 +184,8 @@ OCIコンソールにログインし、GPUノードをデプロイするリー�
 
     ![画面ショット](console_page04.png)
 
-    - **シェイプ** ：**BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8**  
-        （ **シェイプの変更** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.GPU3.8 / BM.GPU4.8 / BM.GPU.A100-v2.8** を選択し **シェイプの選択** ボタンをクリック。）
+    - **シェイプ** ：**BM.GPU4.8 / BM.GPU.A100-v2.8**  
+        （ **シェイプの変更** ボタンをクリックして表示される以下 **すべてのシェイプの参照** サイドバーで **ベア・メタル・マシン** をクリックして表示される **BM.GPU4.8 / BM.GPU.A100-v2.8** を選択し **シェイプの選択** ボタンをクリック。）
 
     ![画面ショット](console_page05.png)
 
@@ -251,34 +226,34 @@ OCIコンソールにログインし、GPUノードをデプロイするリー�
 
    ![画面ショット](console_page11.png)
 
-    ※3）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの **ブート・ボリューム** サイズとします。
+    ※3）通常GPUインスタンスは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの **ブート・ボリューム** サイズとします。
 
 表示される **確認** 画面で、設定した内容に間違いがないかを確認した後、 **作成** ボタンをクリックします。
 
-# 3. GPUノード確認
+# 3. GPUインスタンス確認
 
 ## 3.0. 概要
 
-本章は、デプロイされたGPUノードにログインし、環境を確認します。
+本章は、デプロイされたGPUインスタンスにログインし、環境を確認します。
 
-## 3.1. GPUノードログイン
+## 3.1. GPUインスタンスログイン
 
-GPUノードは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。  
-BastionノードからGPUノードへのログインは、GPUノードのIPアドレスを使用します。
+GPUインスタンスは、プライベートサブネットに接続されており、インターネットからログインすることが出来ないため、Bastionノードを経由してSSHログインします。  
+BastionノードからGPUインスタンスへのログインは、GPUインスタンスのIPアドレスを使用します。
 
-GPUノードのIPアドレスは、OCIコンソールでGPUノードをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのIPアドレスを確認します。
+GPUインスタンスのIPアドレスは、OCIコンソールでGPUインスタンスをデプロイしたリージョンを選択後、 **コンピュート** → **インスタンス** とメニューを辿り、以下のインスタンス一覧からそのIPアドレスを確認します。
 
 ![画面ショット](console_page12.png)
 
-GPUノードへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
+GPUインスタンスへのログインは、以下のようにBastionノードからopcユーザでSSHログインします。
 
 ```sh
-$ ssh -oStrictHostKeyChecking=accept-new 10.0.1.76
+$ ssh -oStrictHostKeyChecking=accept-new 10.0.2.144
 ```
 
 ## 3.2. cloud-init完了確認
 
-**[cloud-init](../#5-11-cloud-init)** は、GPUノードが起動してSSHログインできる状態であってもその処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
+**[cloud-init](../#5-11-cloud-init)** は、GPUインスタンスが起動してSSHログインできる状態であってもその処理が継続している可能性があるため、以下コマンドでそのステータスを表示し、 **done** となっていることで **cloud-init** の処理完了を確認します。  
 ステータスが **running** の場合は、 **cloud-init** の処理が継続中のため、処理が完了するまで待ちます。
 
 ```sh
@@ -289,7 +264,7 @@ $
 
 ## 3-3. タイムゾーン確認
 
-以下コマンドをGPUノードのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。
+以下コマンドをGPUインスタンスのopcユーザで実行し、タイムゾーンがJSTになっていることを確認します。
 
 ```sh
 $ date
@@ -299,18 +274,7 @@ $
 
 ## 3-4. ファイルシステム確認
 
-以下コマンドをGPUノードのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていること、 **BM.GPU4.8 / BM.GPU.A100-v2.8** の場合はNVMe SSDローカルディスク領域ファイルシステムがマウントされていることを確認します。
-
-[ **BM.GPU3.8** ]
-
-```sh
-$ df -h /
-Filesystem                  Size  Used Avail Use% Mounted on
-/dev/mapper/ocivolume-root  189G   39G  151G  21% /
-$
-```
-
-[ **BM.GPU4.8 / BM.GPU.A100-v2.8** ]
+以下コマンドをGPUインスタンスのopcユーザで実行し、ルートファイルシステムが指定のサイズとなっていること、NVMe SSDローカルディスク領域ファイルシステムがマウントされていることを確認します。
 
 ```sh
 $ df -h / /mnt/localdisk
@@ -322,7 +286,7 @@ $
 
 ## 3-5. ファイアーウォール停止確認
 
-以下コマンドをGPUノードのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。
+以下コマンドをGPUインスタンスのopcユーザで実行し、ファイアーウォールが停止されていることを確認します。
 
 ```sh
 $ sudo systemctl status firewalld | grep -e Active -e disabled
@@ -335,19 +299,19 @@ $
 
 本章は、 **containerd** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
 
-このコンテナ環境構築は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順をGPUノードに適用することで実施します。
+このコンテナ環境構築は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順をGPUインスタンスに適用することで実施します。
 
 # 5. NCCL Tests実行
 
 本章は、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供される **[TensorFlow NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/tensorflow)** を起動し、このコンテナに含まれる **NCCL** とコンテナ上でビルドする **NCCL Tests** を使用し、コンテナ上で **NCCL** のGPU間通信性能を検証します。
 
-この **NCCL Tests** 実行方法は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）](../benchmark/run-nccltests/)** を単一GPUノード向けの手順のみ適用することで実施します。
+この **NCCL Tests** 実行方法は、 **[OCI HPCパフォーマンス関連情報](../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）](../benchmark/run-nccltests/)** を単一GPUインスタンス向けの手順のみ適用することで実施します。
 
-# 6. GPUノード削除
+# 6. GPUインスタンス削除
 
-本章は、GPUノードを削除します。
+本章は、GPUインスタンスを削除します。
 
-OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で作成したGPUノードの **終了** メニューをクリックします。
+OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で作成したGPUインスタンスの **終了** メニューをクリックします。
 
 ![画面ショット](console_page13.png)
 
@@ -355,6 +319,6 @@ OCIコンソールメニューから **コンピュート** → **インスタ�
 
 ![画面ショット](console_page14.png)
 
-GPUノードの **状態** が **終了済** となれば、削除が完了しています。
+GPUインスタンスの **状態** が **終了済** となれば、削除が完了しています。
 
 以上で、本チュートリアルは終了です。

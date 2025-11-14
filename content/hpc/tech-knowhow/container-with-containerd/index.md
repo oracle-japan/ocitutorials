@@ -26,8 +26,7 @@ params:
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
 - **イメージ** ：  
-**[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-8.10-Gen2-GPU-2025.09.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-gen2-gpu-2025-09-16-0.htm)** /  
-**プラットフォーム・イメージ** **[Oracle-Linux-9.6-Gen2-GPU-2025.08.31-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-08-31-0.htm)** /  
+**[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-9.6-Gen2-GPU-2025.10.23-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-gen2-gpu-2025-10-23-0.htm)** /  
 **Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** ： 1.18.0
 - **containerd** ： 2.2.0
@@ -107,7 +106,17 @@ $ sudo systemctl daemon-reload
 
 本章は、コンテナ起動ユーザを作成し、このユーザでコンテナを起動するための必要な設定を行います。
 
-以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザ（ここでは **usera** とします。）を作成します。
+以下コマンドをGPUインスタンスのopcユーザで実行し、ユーザのmemlock設定値を無制限に変更します。  
+なお、この設定が既に入っている場合は、改めて実施する必要はありません。
+
+```sh
+$ cat <<EOF | sudo tee -a /etc/security/limits.conf
+> * soft memlock unlimited
+> * hard memlock unlimited
+> EOF
+```
+
+次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザ（ここでは **usera** とします。）を作成します。
 
 ```sh
 $ sudo useradd -d /home/usera -s /bin/bash -u 10000 usera
@@ -119,7 +128,7 @@ $ sudo useradd -d /home/usera -s /bin/bash -u 10000 usera
 $ sudo mkdir -p /mnt/localdisk/usera/root /mnt/localdisk/usera/state && sudo chown -R usera:usera /mnt/localdisk/usera
 ```
 
-次に、BastionノードからSSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。
+次に、SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。
 
 ```sh
 $ mkdir -p ~/.config/containerd
@@ -127,9 +136,6 @@ $ cat << EOF > ~/.config/containerd/config.toml
 > root = "/mnt/localdisk/usera/root"
 > state = "/mnt/localdisk/usera/state"
 > EOF
-$ cat ~/.config/containerd/config.toml
-root = "/mnt/localdisk/usera/root"
-state = "/mnt/localdisk/usera/state"
 ```
 
 # 3. コンテナ起動・稼働確認
@@ -143,7 +149,7 @@ state = "/mnt/localdisk/usera/state"
 
 ## 3-1. コンテナ起動
 
-BastionノードからSSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 **containerd** を起動・確認します。
+SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 **containerd** を起動・確認します。
 
 ```sh
 $ containerd-rootless-setuptool.sh install
