@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-11-14T10:17:46+09:00"
+      content="2025-11-21T16:59:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "GPUクラスタを構築する(基礎インフラ手動構築編)",
       "description": "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1832",
+      "wordCount" : "1839",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-14T10:17:46.00Z",
+      "dateModified": "2025-11-21T16:59:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-11-14T10:17:46+09:00">
+    <meta property="article:modified_time" content="2025-11-21T16:59:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -422,8 +422,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-14T10:17:46&#43;09:00">
-            Nov 14, 2025
+        <time datetime="2025-11-21T16:59:55&#43;09:00">
+            Nov 21, 2025
         </time>
     
 </span>
@@ -606,7 +606,7 @@ table, th, td {
           <td style="text-align: center">パブリック</td>
           <td style="text-align: center">イングレス</td>
           <td style="text-align: center">いいえ</td>
-          <td style="text-align: center">0.0.0.0/0<br>（※2）</td>
+          <td style="text-align: center">0.0.0.0/0</td>
           <td style="text-align: center">TCP</td>
           <td style="text-align: center">All</td>
           <td style="text-align: center">22</td>
@@ -654,6 +654,7 @@ table, th, td {
 <li>インターネットからのアクセス：パブリックサブネットに接続するインスタンスの宛先ポート22番（SSH）に限定</li>
 <li>インターネットへのアクセス：インターネット上の任意の宛先IPアドレス・ポートに制限なくアクセス可能</li>
 </ul>
+<p>本チュートリアルで構築するコンテナランタイムは、 <strong>10.0.2.2</strong> を特別なIPアドレスとして内部的に使用するため、GPUノードを接続するサブネットにこのIPアドレスを含む <strong>10.0.2.0/24</strong> 等のCIDRレンジを使用すると、コンテナからこのサブネットへの通信が出来なくなる点に留意します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-bastionノード作成"
     >
@@ -680,10 +681,10 @@ table, th, td {
 <li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 9.5ベースのGPU <strong><a
   class="gdoc-markdown__link"
   href="../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
+>クラスタネットワーキングイメージ</a></strong> （※2）</li>
 <li><strong>SSHキーの追加</strong> ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵</li>
 </ul>
-<p>※1） <strong><a
+<p>※2） <strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -948,9 +949,10 @@ table, th, td {
 <li>
 <p><strong>SSHキーの追加</strong> フィールド</p>
 <ul>
-<li><strong>SSH公開キー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵<br>
+<li><strong>SSH公開キー</strong> ：先にBastionノードで作成したSSH鍵ペアの公開鍵（※4）<br>
 （ <strong>公開キーの貼付け</strong> を選択することで入力フィールドを表示）</li>
 </ul>
+<p>※4）このSSH公開鍵の登録は、 <strong>/home</strong> 領域のBasionノードからのNFSマウントが何らかの理由でうまくいかなかった場合に備えて登録します。</p>
 <p><img
   src="console_page10.png"
   alt="画面ショット"
@@ -964,7 +966,7 @@ table, th, td {
 <li>
 <p><strong>ブート・ボリューム</strong> フィールド</p>
 <ul>
-<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※3）<br>
+<li><strong>ブート・ボリューム・サイズ(GB)</strong> ： 200（※5）<br>
 （ <strong>カスタム・ブート・ボリューム・サイズとパフォーマンス設定を指定します</strong> チェックボックスをチェックすると指定可能）</li>
 </ul>
 <p><img
@@ -972,7 +974,7 @@ table, th, td {
   alt="画面ショット"
   
 /></p>
-<p>※3）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
+<p>※5）通常GPUノードは、様々な機械学習用ソフトウェアやコンテナイメージを格納する必要があるため、少なくとも200 GBの <strong>ブート・ボリューム</strong> サイズとします。</p>
 </li>
 </ol>
 <p>表示される <strong>確認</strong> 画面で、設定した内容に間違いがないかを確認した後、 <strong>作成</strong> ボタンをクリックします。</p>
@@ -1025,14 +1027,14 @@ table, th, td {
 <li><strong>インスタンス・プール名</strong> ：作成される <strong><a
   class="gdoc-markdown__link"
   href="../#5-8-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e3%83%97%e3%83%bc%e3%83%ab"
->インスタンス・プール</a></strong> に付与する名前（※4）</li>
+>インスタンス・プール</a></strong> に付与する名前（※6）</li>
 <li><strong>インスタンス数</strong> ：作成するGPUノードのノード数</li>
 <li><strong>インスタンス構成</strong> ：先に作成した <strong><a
   class="gdoc-markdown__link"
   href="../#5-7-%e3%82%a4%e3%83%b3%e3%82%b9%e3%82%bf%e3%83%b3%e3%82%b9%e6%a7%8b%e6%88%90"
 >インスタンス構成</a></strong></li>
 </ul>
-<p>※4） ここで付与した名前は、GPUノードのホスト名の接尾辞として使用されます。<br>
+<p>※6） ここで付与した名前は、GPUノードのホスト名の接尾辞として使用されます。<br>
 例えば <strong>ao</strong> と指定した場合、GPUノードのホスト名は <strong>inst-xxxxx-ao</strong> となります。（ <strong>xxxxx</strong> はランダムな文字列）</p>
 </li>
 </ol>
@@ -1191,9 +1193,9 @@ BastionノードからGPUノードへのログインは、GPUノードのイン�
 <p>以下コマンドをBastionノードのopcユーザで実行し、 <strong><a
   class="gdoc-markdown__link"
   href="../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（ <strong>rdma0-15</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスで4フィールド目が <strong>仮想クラウド・ネットワーク</strong> 接続用のネットワークインターフェース（ <strong>eth0</strong> ）に割り当てられたIPアドレスの4フィールド目と同じ値のものが設定されていることを確認します。（※5）<br>
+>クラスタ・ネットワーク</a></strong> 接続用の16個のネットワークインターフェース（ <strong>rdma0-15</strong> ）に <strong>10.224.0.0/12</strong> のネットワークアドレスに属するIPアドレスで4フィールド目が <strong>仮想クラウド・ネットワーク</strong> 接続用のネットワークインターフェース（ <strong>eth0</strong> ）に割り当てられたIPアドレスの4フィールド目と同じ値のものが設定されていることを確認します。（※7）<br>
 なお、このIPアドレス設定が完了するまで、GPUノードにログイン可能となってから10分程度を要します。</p>
-<p>※5）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
+<p>※7）このデフォルトのネットワークアドレスを変更する方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a

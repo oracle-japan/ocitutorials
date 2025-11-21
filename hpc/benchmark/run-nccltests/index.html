@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-11-14T10:17:46+09:00"
+      content="2025-11-21T16:59:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU4.8\/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "888",
+      "wordCount" : "897",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-14T10:17:46.00Z",
+      "dateModified": "2025-11-21T16:59:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-11-14T10:17:46+09:00">
+    <meta property="article:modified_time" content="2025-11-21T16:59:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -406,8 +406,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-14T10:17:46&#43;09:00">
-            Nov 14, 2025
+        <time datetime="2025-11-21T16:59:55&#43;09:00">
+            Nov 21, 2025
         </time>
     
 </span>
@@ -552,7 +552,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）のコンテナ起動ユーザで実行します。</p>
+<p>以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称します。）のコンテナ起動ユーザで実行します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh-keygen -f ~/.ssh/id_rsa -N <span class="s2">&#34;&#34;</span>
 </span></span><span class="line"><span class="cl">$ cat  ~/.ssh/id_rsa.pub <span class="p">|</span> tee -a ~/.ssh/authorized_keys
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
@@ -591,7 +591,7 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 <strong>NGC Catalog</strong> から <strong>TensorFlow NGC Container</strong> を起動します。<br>
+<p>以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 <strong>NGC Catalog</strong> から <strong>TensorFlow NGC Container</strong> をホストネットワークモードで起動します。<br>
 本コンテナのサイズは、約14 GBです。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ nerdctl run -it --rm --gpus all --network<span class="o">=</span>host --ipc<span class="o">=</span>host --ulimit <span class="nv">memlock</span><span class="o">=</span>-1 --ulimit <span class="nv">stack</span><span class="o">=</span><span class="m">67108864</span> --shm-size<span class="o">=</span>1g -v ~:/root -v /sys:/sys:ro nvcr.io/nvidia/tensorflow:25.02-tf2-py3
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
@@ -610,7 +610,7 @@
 </span></span></code></pre></div><p>次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、スレーブノードにSSH接続できることを確認します。<br>
 なお、sshコマンドで指定するホスト名は、自身の環境のスレーブノードのホスト名に置き換えます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ssh -p <span class="m">22222</span> -oStrictHostKeyChecking<span class="o">=</span>accept-new inst-gpu-slave hostname
-</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;[inst-vm-ol905mg-2]:22222&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">Warning: Permanently added <span class="s1">&#39;[inst-gpu-slave]:22222&#39;</span> <span class="o">(</span>ED25519<span class="o">)</span> to the list of known hosts.
 </span></span><span class="line"><span class="cl">inst-gpu-slave
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
@@ -623,9 +623,10 @@
     </a>
 </div>
 <p>本章は、後の章で実行する <strong>NCCL Tests</strong> のバイナリをビルドします。</p>
-<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロードしてビルドします。</p>
+<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、 <strong>NCCL Tests</strong> を <strong>GitHub</strong> からダウンロードしてビルドします。<br>
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone https://github.com/NVIDIA/nccl-tests.git
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> nccl-tests <span class="o">&amp;&amp;</span> make <span class="nv">MPI</span><span class="o">=</span><span class="m">1</span> <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local/mpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> nccl-tests <span class="o">&amp;&amp;</span> make -j <span class="m">128</span> <span class="nv">MPI</span><span class="o">=</span><span class="m">1</span> <span class="nv">MPI_HOME</span><span class="o">=</span>/usr/local/mpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda <span class="nv">NCCL_HOME</span><span class="o">=</span>/usr/lib/x86_64-linux-gnu
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-nccl-tests実行"
     >
@@ -665,7 +666,7 @@
     </a>
 </div>
 <p>以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザでそれぞれ実行し、1ノード8枚のGPUを使用する <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mpirun --allow-run-as-root -n <span class="m">8</span> ./build/all_reduce_perf -b 10G -e 10G -t <span class="m">1</span> -g <span class="m">1</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/nccl-tests <span class="o">&amp;&amp;</span> mpirun --allow-run-as-root -n <span class="m">8</span> ./build/all_reduce_perf -b 10G -e 10G -t <span class="m">1</span> -g <span class="m">1</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># nccl-tests version 2.17.6 nccl-headers=22501 nccl-library=22501</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Collective test starting: all_reduce_perf</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
@@ -699,9 +700,9 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用した、2ノード16枚のGPUを使用する <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br>
+<p>以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用する <strong>NCCL</strong> の <strong>All-Reduce</strong> 通信性能を計測します。<br>
 ここで、 <strong>-H</strong> オプションに指定するマスターノード（inst-gpu-master）とスレーブノード（inst-gpu-slave）のホスト名は、自身の環境に合わせて修正します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mpirun --allow-run-as-root -n <span class="m">16</span> -H inst-gpu-master:8,inst-gpu-slave:8 -mca plm_rsh_args <span class="s2">&#34;-p 22222&#34;</span> -x <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span><span class="m">4</span> -x <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span><span class="m">3</span> -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>eth0 -x <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">&#34;mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17&#34;</span> ./build/all_reduce_perf -b 10G -e 10G -t <span class="m">1</span> -g <span class="m">1</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/nccl-tests <span class="o">&amp;&amp;</span> mpirun --allow-run-as-root -n <span class="m">16</span> -H inst-gpu-master:8,inst-gpu-slave:8 -mca plm_rsh_args <span class="s2">&#34;-p 22222&#34;</span> -x <span class="nv">NCCL_IB_QPS_PER_CONNECTION</span><span class="o">=</span><span class="m">4</span> -x <span class="nv">NCCL_IB_GID_INDEX</span><span class="o">=</span><span class="m">3</span> -x <span class="nv">UCX_NET_DEVICES</span><span class="o">=</span>eth0 -x <span class="nv">NCCL_IB_HCA</span><span class="o">=</span><span class="s2">&#34;mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17&#34;</span> ./build/all_reduce_perf -b 10G -e 10G -t <span class="m">1</span> -g <span class="m">1</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#</span>
 </span></span><span class="line"><span class="cl"><span class="c1"># Using devices</span>

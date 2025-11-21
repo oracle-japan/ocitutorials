@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-15T15:43:56+09:00"
+      content="2025-11-21T16:59:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "線形代数演算ライブラリインストール・利用方法",
       "description": "HPCワークロードを実行する際、行列やベクトルの線形代数演算を高速に実行する必要が生じます。これらの演算は、ソースコードを自作することで対応することも出来ますが、オープンソースで配布されている線形代数演算ライブラリであるBLASやOpenBLASを利用することで、開発工数の削減、保証された計算精度、高速な演算の実行等、様々なメリットを享受することが可能です。本テクニカルTipsは、BLASとOpenBLASをHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、Fortranのサンプルコードからこれを利用する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "491",
+      "wordCount" : "452",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-15T15:43:56.00Z",
+      "dateModified": "2025-11-21T16:59:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-15T15:43:56+09:00">
+    <meta property="article:modified_time" content="2025-11-21T16:59:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -319,9 +319,12 @@
     <li><a href="#0-概要">0. 概要</a></li>
     <li><a href="#1-blasopenblasインストールセットアップ">1. BLAS・OpenBLASインストール・セットアップ</a></li>
     <li><a href="#2-サンプルプログラムコンパイル">2. サンプルプログラムコンパイル</a></li>
-    <li><a href="#3-サンプルプログラム実行">3. サンプルプログラム実行</a></li>
-  </ul>
-</nav>
+    <li><a href="#3-サンプルプログラム実行">3. サンプルプログラム実行</a>
+      <ul>
+        <li><a href="#3-0-概要">3-0. 概要</a></li>
+        <li><a href="#3-1-blasを使用するサンプルプログラム実行">3-1. BLASを使用するサンプルプログラム実行</a></li>
+        <li><a href="#3-2-openblasを使用するサンプルプログラム実行">3-2. OpenBLASを使用するサンプルプログラム実行</a></li>
+      </ul>
       
     </section>
   
@@ -395,8 +398,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-15T15:43:56&#43;09:00">
-            Oct 15, 2025
+        <time datetime="2025-11-21T16:59:55&#43;09:00">
+            Nov 21, 2025
         </time>
     
 </span>
@@ -428,14 +431,14 @@
 >OpenBLAS</a></strong> です。<br>
 このため、 <strong>BLAS</strong> 用に作成されたプログラムであれば、再コンパイル・リンクを行うだけでソースプログラムを修正することなく <strong>OpenBLAS</strong> を使用してアプリケーションを高速化することが可能です。</p>
 <p>また <strong>OpenBLAS</strong> は、pthreadを使用するスレッド並列実行に対応しており、 <strong>BLAS</strong> のサブルーチンを並列化で更に高速実行することが可能です。</p>
-<p>以降では、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> をHPCワークロードの実行に最適なベアメタルインスタンスの <strong><a
+<p>以降では、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> をHPCワークロード向け <strong>Intel Ice Lake</strong> プロセッサを搭載するベアメタルシェイプ <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> にインストール・セットアップし、 <strong>BLAS</strong> の倍精度行列・行列積サブルーチン（DGEMM）を使用するFortranのサンプルプログラムをコンパイル後、 <strong>BLAS</strong> とスレッド数を変化させたときの <strong>OpenBLAS</strong> の実行性能を比較・検証します。<br>
 この性能比較詳細は、 <strong><a
   class="gdoc-markdown__link"
-  href="#3-%e3%82%b5%e3%83%b3%e3%83%97%e3%83%ab%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e5%ae%9f%e8%a1%8c"
->3. サンプルプログラム実行</a></strong> に記載していますが、これを抜粋している下表からも性能は圧倒的に <strong>OpenBLAS</strong> が良いことがわかり、特に本テクニカルTipsで使用している <strong>BM.Optimized3.36</strong> の全コアを利用して線形代数演算を実行するようなワークロードでは、 <strong>OpenBLAS</strong> を利用するメリットが大きいと言えます。</p>
+  href="#3-0-%e6%a6%82%e8%a6%81"
+>3-0. 概要</a></strong> に記載していますが、これを抜粋している下表からも性能は圧倒的に <strong>OpenBLAS</strong> が良いことがわかり、特に本テクニカルTipsで使用している <strong>BM.Optimized3.36</strong> の全コアを利用して線形代数演算を実行するようなワークロードでは、 <strong>OpenBLAS</strong> を利用するメリットが大きいと言えます。</p>
 <div class="table-wrap"> <table>
   <thead>
       <tr>
@@ -453,33 +456,36 @@
       <tr>
           <td style="text-align: center">OpenBLAS</td>
           <td style="text-align: right">1</td>
-          <td style="text-align: right">34.4</td>
+          <td style="text-align: right">34.6</td>
       </tr>
       <tr>
           <td style="text-align: center"></td>
           <td style="text-align: right">36</td>
-          <td style="text-align: right">538.5</td>
+          <td style="text-align: right">742.7</td>
       </tr>
   </tbody>
 </table> </div>
 <p>本テクニカルTipsでは、各ソフトウェアに以下のバージョンを使用しています。</p>
 <ul>
-<li>OS ： <strong>Oracle Linux</strong> 8.9</li>
-<li><strong>BLAS</strong> ：3.8.0</li>
-<li><strong>OpenBLAS</strong> ：0.3.26</li>
-<li>Fortranコンパイラ： <strong><a
+<li><strong>イメージ</strong> ： <strong><a
   class="gdoc-markdown__link"
-  href="https://gcc.gnu.org/fortran/"
->GNU Fortran</a></strong> 8.5.0</li>
+  href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>プラットフォーム・イメージ</a></strong> <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-6-2025-10-23-0.htm"
+>Oracle-Linux-9.6-2025.10.23-0</a></strong></li>
+<li><strong>BLAS</strong> ：3.9.0</li>
+<li><strong>OpenBLAS</strong> ：0.3.30</li>
+<li>Fortranコンパイラ： <strong>GNU Fortran</strong> 11.5.0</li>
 </ul>
-<p>なお、本テクニカルTipsで使用するインスタンスは、シェイプを <strong>BM.Optimized3.36</strong> 、OSを <strong>Oracle Linux</strong> 8.9として予めデプロイしておきますが、この手順は <strong><a
+<p>なお、本テクニカルTipsで使用するインスタンスを作成する手順は、 <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/"
 >OCIチュートリアル</a></strong> の  <strong><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance"
 >その3 - インスタンスを作成する</a></strong> を参照してください。<br>
-またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化しておきますが、BIOS設定でこれを適用する場合は <strong><a
+またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化して作成しますが、BIOS設定でこれを適用する場合は <strong><a
   class="gdoc-markdown__link"
   href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
 >OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
@@ -495,41 +501,15 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> をインストールし、利用に必要な環境設定を行います。<br>
-なお <strong>OpenBLAS</strong> は、以降のインストール手順を実施する際に環境に合わせたライブラリの構築を行うため、本手順をコンパイル・実行する環境（本テクニカルTipsでは <strong>BM.Optimized3.36</strong> ）以外で実施（いわゆるクロスコンパイル）した場合、想定通りに動作しない場合があることに留意します。</p>
-<ol>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> を提供するyumレポジトリを追加します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol8_codeready_builder
-</span></span></code></pre></div><p>なお、上記コマンド実行時に以下のメッセージが出力される場合、</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">This system is receiving updates from OSMS server.
-</span></span><span class="line"><span class="cl">Error: No matching repo to modify: ol8_developer_EPEL.
-</span></span></code></pre></div><p>OSのパッケージ管理が <strong><a
-  class="gdoc-markdown__link"
-  href="https://docs.oracle.com/ja-jp/iaas/os-management/index.html"
->OS管理サービス</a></strong> で行われているため、以下コマンドをクラスタ管理ノードのopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。<br>
-ここで実施する <strong>OS管理サービス</strong> の解除は、10分程度の時間が経過すると自動的に <strong>OS管理サービス</strong> 管理に戻ります。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo osms unregister
-</span></span><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol8_codeready_builder
-</span></span></code></pre></div></li>
-<li>
+<p>本章は、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> をインストールします。</p>
 <p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> をインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y blas blas-devel
-</span></span></code></pre></div></li>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> を <strong>/opt/OpenBLAS</strong> ディレクトリにインストールします。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y git
-</span></span><span class="line"><span class="cl">$ git clone https://github.com/xianyi/OpenBLAS.git
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> OpenBLAS
-</span></span><span class="line"><span class="cl">$ make <span class="o">&amp;&amp;</span> sudo make install
-</span></span></code></pre></div></li>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> 実行に必要な環境変数を設定します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/opt/OpenBLAS/lib&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
-</span></span><span class="line"><span class="cl">$ <span class="nb">source</span> ~/.bashrc
-</span></span></code></pre></div></li>
-</ol>
-<div class="flex align-center gdoc-page__anchorwrap">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
+</span></span><span class="line"><span class="cl">$ sudo dnf install -y blas blas-devel
+</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> を <strong>/opt/OpenBLAS</strong> ディレクトリにインストールします。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.30/OpenBLAS-0.3.30.tar.gz
+</span></span><span class="line"><span class="cl">$ tar -xvf ./OpenBLAS-0.3.30.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> OpenBLAS-0.3.30 <span class="o">&amp;&amp;</span> make -j <span class="m">36</span> <span class="nv">TARGET</span><span class="o">=</span>SKYLAKEX <span class="o">&amp;&amp;</span> sudo make install <span class="nv">TARGET</span><span class="o">=</span>SKYLAKEX
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-サンプルプログラムコンパイル"
     >
         2. サンプルプログラムコンパイル
@@ -538,53 +518,47 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>BLAS</strong> の倍精度行列・行列積サブルーチン（DGEMM）を使用するFortranのサンプルプログラムを <strong>BLAS</strong> と <strong>OpenBLAS</strong> を使用してコンパイルし、実行バイナリを作成します。<br>
-なお、ここで使用するサンプルプログラム（<strong>dgemm_timer.f90</strong>）は、サイズが5,000x5,000の正方行列を乱数で初期化してその行列積をサブルーチンdgemmを使用して求め、その結果を標準出力に出力します。またdgemmの所要時間をタイマーで計測し、これを標準エラー出力に出力します。</p>
-<p>[dgemm_timer.f90]</p>
+<p>本章は、 <strong>BLAS</strong> の倍精度行列・行列積サブルーチン（DGEMM）を使用するFortranのサンプルプログラムを <strong>BLAS</strong> と <strong>OpenBLAS</strong> を使用してコンパイルし、実行バイナリを作成します。</p>
+<p>以下のファイルを <strong>dgemm_timer.f90</strong> で作成します。<br>
+このFortranプログラムは、サイズが5,000x5,000の正方行列を乱数で初期化してその行列積をサブルーチンdgemmを使用して求め、その結果を標準出力に出力します。またdgemmの所要時間をタイマーで計測し、これを標準エラー出力に出力します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">program main
-</span></span><span class="line"><span class="cl">        implicit none
-</span></span><span class="line"><span class="cl">        external dgemm
-</span></span><span class="line"><span class="cl">        integer i, j, l, m, n
-</span></span><span class="line"><span class="cl">        integer lda, ldb, ldc
-</span></span><span class="line"><span class="cl">        integer t1, t2, t_rate, t_max, diff
-</span></span><span class="line"><span class="cl">        double precision, allocatable :: a<span class="o">(</span>:,:<span class="o">)</span>, b<span class="o">(</span>:,:<span class="o">)</span>, c<span class="o">(</span>:,:<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        double precision alpha, beta
+</span></span><span class="line"><span class="cl">    implicit none
+</span></span><span class="line"><span class="cl">    external dgemm
+</span></span><span class="line"><span class="cl">    integer*8 i, j, l, m, n
+</span></span><span class="line"><span class="cl">    integer*8 lda, ldb, ldc
+</span></span><span class="line"><span class="cl">    integer t1, t2, t_rate, t_max, diff
+</span></span><span class="line"><span class="cl">    double precision, allocatable :: a<span class="o">(</span>:,:<span class="o">)</span>, b<span class="o">(</span>:,:<span class="o">)</span>, c<span class="o">(</span>:,:<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    double precision alpha, beta
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="nv">l</span><span class="o">=</span>5000<span class="p">;</span> <span class="nv">m</span><span class="o">=</span>l<span class="p">;</span> <span class="nv">n</span><span class="o">=</span>l
-</span></span><span class="line"><span class="cl">        <span class="nv">lda</span><span class="o">=</span>l<span class="p">;</span> <span class="nv">ldb</span><span class="o">=</span>n<span class="p">;</span> <span class="nv">ldc</span><span class="o">=</span>l
-</span></span><span class="line"><span class="cl">        <span class="nv">alpha</span><span class="o">=</span>1.0<span class="p">;</span> <span class="nv">beta</span><span class="o">=</span>0.0
-</span></span><span class="line"><span class="cl">        allocate<span class="o">(</span>a<span class="o">(</span>lda,n<span class="o">)</span>, b<span class="o">(</span>ldb,m<span class="o">)</span>, c<span class="o">(</span>ldc,m<span class="o">))</span>
-</span></span><span class="line"><span class="cl">        call random_number<span class="o">(</span>a<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        call random_number<span class="o">(</span>b<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        <span class="nv">a</span> <span class="o">=</span> a - 0.5d0
-</span></span><span class="line"><span class="cl">        <span class="nv">b</span> <span class="o">=</span> b - 0.5d0
+</span></span><span class="line"><span class="cl">    <span class="nv">l</span><span class="o">=</span>5000<span class="p">;</span> <span class="nv">m</span><span class="o">=</span>l<span class="p">;</span> <span class="nv">n</span><span class="o">=</span>l
+</span></span><span class="line"><span class="cl">    <span class="nv">lda</span><span class="o">=</span>l<span class="p">;</span> <span class="nv">ldb</span><span class="o">=</span>n<span class="p">;</span> <span class="nv">ldc</span><span class="o">=</span>l
+</span></span><span class="line"><span class="cl">    <span class="nv">alpha</span><span class="o">=</span>1.0<span class="p">;</span> <span class="nv">beta</span><span class="o">=</span>0.0
+</span></span><span class="line"><span class="cl">    allocate<span class="o">(</span>a<span class="o">(</span>lda,n<span class="o">)</span>, b<span class="o">(</span>ldb,m<span class="o">)</span>, c<span class="o">(</span>ldc,m<span class="o">))</span>
+</span></span><span class="line"><span class="cl">    call random_number<span class="o">(</span>a<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    call random_number<span class="o">(</span>b<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">a</span> <span class="o">=</span> a - 0.5d0
+</span></span><span class="line"><span class="cl">    <span class="nv">b</span> <span class="o">=</span> b - 0.5d0
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        call system_clock<span class="o">(</span>t1<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        call dgemm<span class="o">(</span><span class="s1">&#39;n&#39;</span>,<span class="s1">&#39;n&#39;</span>,l,m,n,alpha,a,lda,b,ldb,beta,c,ldc<span class="o">)</span>
-</span></span><span class="line"><span class="cl">        call system_clock<span class="o">(</span>t2, t_rate, t_max<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    call system_clock<span class="o">(</span>t1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    call dgemm<span class="o">(</span><span class="s1">&#39;n&#39;</span>,<span class="s1">&#39;n&#39;</span>,l,m,n,alpha,a,lda,b,ldb,beta,c,ldc<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    call system_clock<span class="o">(</span>t2, t_rate, t_max<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="o">(</span> t2 &lt; t1 <span class="o">)</span> <span class="k">then</span>
-</span></span><span class="line"><span class="cl">                <span class="nv">diff</span> <span class="o">=</span> <span class="o">(</span>t_max - t1<span class="o">)</span> + t2 + <span class="m">1</span>
-</span></span><span class="line"><span class="cl">        <span class="k">else</span>
-</span></span><span class="line"><span class="cl">                <span class="nv">diff</span> <span class="o">=</span> t2 - t1
-</span></span><span class="line"><span class="cl">        endif
-</span></span><span class="line"><span class="cl">        write<span class="o">(</span>0,<span class="s1">&#39;(a,f10.3)&#39;</span><span class="o">)</span> <span class="s2">&#34;Elapse time(sec):&#34;</span>, diff/dble<span class="o">(</span>t_rate<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span> t2 &lt; t1 <span class="o">)</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">diff</span> <span class="o">=</span> <span class="o">(</span>t_max - t1<span class="o">)</span> + t2 + <span class="m">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">diff</span> <span class="o">=</span> t2 - t1
+</span></span><span class="line"><span class="cl">    endif
+</span></span><span class="line"><span class="cl">    write<span class="o">(</span>0,<span class="s1">&#39;(a,f10.3)&#39;</span><span class="o">)</span> <span class="s2">&#34;Elapse time(sec):&#34;</span>, diff/dble<span class="o">(</span>t_rate<span class="o">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">        <span class="k">do</span> <span class="nv">i</span> <span class="o">=</span> lbound<span class="o">(</span>c,1<span class="o">)</span>, ubound<span class="o">(</span>c,1<span class="o">)</span>
-</span></span><span class="line"><span class="cl">                write<span class="o">(</span>*,*<span class="o">)</span> <span class="o">(</span>c<span class="o">(</span>i,j<span class="o">)</span>, <span class="nv">j</span><span class="o">=</span>lbound<span class="o">(</span>c,2<span class="o">)</span>, ubound<span class="o">(</span>c,2<span class="o">))</span>
-</span></span><span class="line"><span class="cl">        end <span class="k">do</span>
+</span></span><span class="line"><span class="cl">    <span class="k">do</span> <span class="nv">i</span> <span class="o">=</span> lbound<span class="o">(</span>c,1<span class="o">)</span>, ubound<span class="o">(</span>c,1<span class="o">)</span>
+</span></span><span class="line"><span class="cl">        write<span class="o">(</span>*,*<span class="o">)</span> <span class="o">(</span>c<span class="o">(</span>i,j<span class="o">)</span>, <span class="nv">j</span><span class="o">=</span>lbound<span class="o">(</span>c,2<span class="o">)</span>, ubound<span class="o">(</span>c,2<span class="o">))</span>
+</span></span><span class="line"><span class="cl">    end <span class="k">do</span>
 </span></span><span class="line"><span class="cl">end program main
-</span></span></code></pre></div><ol>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> を使用してサンプルプログラムをコンパイルします。</p>
+</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> を使用してサンプルプログラムをコンパイルします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ gfortran -O3 -lblas -o blas ./dgemm_timer.f90
-</span></span></code></pre></div></li>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> を使用してサンプルプログラムをコンパイルします。</p>
+</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> を使用してサンプルプログラムをコンパイルします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ gfortran -O3 -L/opt/OpenBLAS/lib -lopenblas -o openblas ./dgemm_timer.f90
-</span></span></code></pre></div></li>
-</ol>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-サンプルプログラム実行"
     >
         3. サンプルプログラム実行
@@ -593,36 +567,17 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、先に作成した実行バイナリを実行し、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> の性能を比較します。</p>
-<ol>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> 版実行バイナリを実行してdgemmの所要時間を計測します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./blas &gt; /dev/null
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:    87.229
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div></li>
-<li>
-<p>以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> 版実行バイナリを実行してdgemmの所要時間を計測します。<br>
-ここでは、環境変数 <strong>OMP_NUM_THREADS</strong> の値を <strong>BM.Optimized3.36</strong> の搭載コア数（36）の範囲で変化させて、その所要時間の変化を確認しています。なお、環境変数 <strong>OMP_NUM_THREADS</strong> の指定が無い場合は、実行するインスタンスの搭載コア数と同じスレッド数で実行します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> nt in <span class="sb">`</span><span class="nb">echo</span> <span class="m">1</span> <span class="m">2</span> <span class="m">4</span> <span class="m">8</span> <span class="m">16</span> <span class="m">32</span> 36<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$nt</span><span class="p">;</span> <span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="nv">$nt</span><span class="p">;</span> ./openblas &gt; /dev/null<span class="p">;</span> <span class="k">done</span>
-</span></span><span class="line"><span class="cl"><span class="m">1</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     2.533
-</span></span><span class="line"><span class="cl"><span class="m">2</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     1.285
-</span></span><span class="line"><span class="cl"><span class="m">4</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.684
-</span></span><span class="line"><span class="cl"><span class="m">8</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.359
-</span></span><span class="line"><span class="cl"><span class="m">16</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.214
-</span></span><span class="line"><span class="cl"><span class="m">32</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.168
-</span></span><span class="line"><span class="cl"><span class="m">36</span>
-</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.162
-</span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div></li>
-</ol>
-<p>以上の結果をまとめると、以下のようになります。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-0-概要"
+    >
+        3-0. 概要
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-blas/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本章は、先に作成した実行バイナリを使用し、 <strong>BLAS</strong> と <strong>OpenBLAS</strong> を使用するサンプルプログラムをそれぞれ実行、その性能を比較します。</p>
+<p>下表は、この実行結果をまとめています。</p>
 <div class="table-wrap"> <table>
   <thead>
       <tr>
@@ -640,7 +595,7 @@
           <td style="text-align: center">1</td>
           <td style="text-align: center">BLAS</td>
           <td style="text-align: center">1</td>
-          <td style="text-align: right">87.229 秒</td>
+          <td style="text-align: right">87.637 秒</td>
           <td style="text-align: right">0.029</td>
           <td style="text-align: right">-</td>
           <td style="text-align: right">2.9</td>
@@ -649,64 +604,64 @@
           <td style="text-align: center">2</td>
           <td style="text-align: center">OpenBLAS</td>
           <td style="text-align: center">1</td>
-          <td style="text-align: right">2.533 秒</td>
+          <td style="text-align: right">2.530 秒</td>
           <td style="text-align: right">1</td>
           <td style="text-align: right">-</td>
-          <td style="text-align: right">99.0</td>
+          <td style="text-align: right">99.1</td>
       </tr>
       <tr>
           <td style="text-align: center">3</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">2</td>
           <td style="text-align: right">1.285 秒</td>
-          <td style="text-align: right">1.971</td>
-          <td style="text-align: right">98.6 %</td>
+          <td style="text-align: right">1.969</td>
+          <td style="text-align: right">98.4 %</td>
           <td style="text-align: right">195.1</td>
       </tr>
       <tr>
           <td style="text-align: center">4</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">4</td>
-          <td style="text-align: right">0.684 秒</td>
-          <td style="text-align: right">3.703</td>
-          <td style="text-align: right">92.6 %</td>
-          <td style="text-align: right">366.5</td>
+          <td style="text-align: right">0.650 秒</td>
+          <td style="text-align: right">3.892</td>
+          <td style="text-align: right">97.3 %</td>
+          <td style="text-align: right">385.7</td>
       </tr>
       <tr>
           <td style="text-align: center">5</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">8</td>
-          <td style="text-align: right">0.359 秒</td>
-          <td style="text-align: right">7.056</td>
-          <td style="text-align: right">88.2 %</td>
-          <td style="text-align: right">698.3</td>
+          <td style="text-align: right">0.339 秒</td>
+          <td style="text-align: right">7.463</td>
+          <td style="text-align: right">93.3 %</td>
+          <td style="text-align: right">739.5</td>
       </tr>
       <tr>
           <td style="text-align: center">6</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">16</td>
-          <td style="text-align: right">0.214 秒</td>
-          <td style="text-align: right">11.836</td>
-          <td style="text-align: right">74.0 %</td>
-          <td style="text-align: right">1,171.5</td>
+          <td style="text-align: right">0.178 秒</td>
+          <td style="text-align: right">14.213</td>
+          <td style="text-align: right">88.8 %</td>
+          <td style="text-align: right">1,408.4</td>
       </tr>
       <tr>
           <td style="text-align: center">7</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">32</td>
-          <td style="text-align: right">0.168 秒</td>
-          <td style="text-align: right">15.077</td>
-          <td style="text-align: right">47.1 %</td>
-          <td style="text-align: right">1,492.3</td>
+          <td style="text-align: right">0.128 秒</td>
+          <td style="text-align: right">19.766</td>
+          <td style="text-align: right">61.8 %</td>
+          <td style="text-align: right">1,958.6</td>
       </tr>
       <tr>
           <td style="text-align: center">8</td>
           <td style="text-align: center"></td>
           <td style="text-align: center">36</td>
-          <td style="text-align: right">0.162 秒</td>
-          <td style="text-align: right">15.636</td>
-          <td style="text-align: right">43.4 %</td>
-          <td style="text-align: right">1,547.5</td>
+          <td style="text-align: right">0.118 秒</td>
+          <td style="text-align: right">21.441</td>
+          <td style="text-align: right">59.6 %</td>
+          <td style="text-align: right">2,124.6</td>
       </tr>
   </tbody>
 </table> </div>
@@ -716,7 +671,48 @@
   href="https://icl.utk.edu/papi/"
 >PAPI</a></strong> で計測して求めています。<br>
 ※3）<strong>BM.Optimized3.36</strong> の倍精度浮動小数点演算の理論性能は、ベースクロックの3.0GHz動作時でコア当たり <strong>96 GFLOPS</strong> 、ノード当たり <strong>3,456 GFLOPS</strong> です。</p>
-
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-1-blasを使用するサンプルプログラム実行"
+    >
+        3-1. BLASを使用するサンプルプログラム実行
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-blas/#3-1-blasを使用するサンプルプログラム実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. BLASを使用するサンプルプログラム実行" aria-label="アンカー先: 3-1. BLASを使用するサンプルプログラム実行" href="#3-1-blas%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%82%b5%e3%83%b3%e3%83%97%e3%83%ab%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e5%ae%9f%e8%a1%8c">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>以下コマンドをopcユーザで実行し、 <strong>BLAS</strong> 版実行バイナリでdgemmの所要時間を計測します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ ./blas &gt; /dev/null
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:    87.637
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-2-openblasを使用するサンプルプログラム実行"
+    >
+        3-2. OpenBLASを使用するサンプルプログラム実行
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/install-blas/#3-2-openblasを使用するサンプルプログラム実行" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-2. OpenBLASを使用するサンプルプログラム実行" aria-label="アンカー先: 3-2. OpenBLASを使用するサンプルプログラム実行" href="#3-2-openblas%e3%82%92%e4%bd%bf%e7%94%a8%e3%81%99%e3%82%8b%e3%82%b5%e3%83%b3%e3%83%97%e3%83%ab%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e5%ae%9f%e8%a1%8c">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>以下コマンドをopcユーザで実行し、 <strong>OpenBLAS</strong> 版実行バイナリでdgemmの所要時間を計測します。<br>
+ここでは、環境変数 <strong>OMP_NUM_THREADS</strong> の値を <strong>BM.Optimized3.36</strong> の搭載コア数（36）の範囲で変化させて、その所要時間の変化を確認しています。なお、環境変数 <strong>OMP_NUM_THREADS</strong> の指定が無い場合は、実行するインスタンスの搭載コア数と同じスレッド数で実行します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/opt/OpenBLAS/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+</span></span><span class="line"><span class="cl">$ <span class="k">for</span> nt in <span class="sb">`</span><span class="nb">echo</span> <span class="m">1</span> <span class="m">2</span> <span class="m">4</span> <span class="m">8</span> <span class="m">16</span> <span class="m">32</span> 36<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> <span class="nb">echo</span> <span class="nv">$nt</span><span class="p">;</span> <span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="nv">$nt</span><span class="p">;</span> ./openblas &gt; /dev/null<span class="p">;</span> <span class="k">done</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     2.530
+</span></span><span class="line"><span class="cl"><span class="m">2</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     1.285
+</span></span><span class="line"><span class="cl"><span class="m">4</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.650
+</span></span><span class="line"><span class="cl"><span class="m">8</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.339
+</span></span><span class="line"><span class="cl"><span class="m">16</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.178
+</span></span><span class="line"><span class="cl"><span class="m">32</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.128
+</span></span><span class="line"><span class="cl"><span class="m">36</span>
+</span></span><span class="line"><span class="cl">Elapse time<span class="o">(</span>sec<span class="o">)</span>:     0.118
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div>
   </article>
 
           

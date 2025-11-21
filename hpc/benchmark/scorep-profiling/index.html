@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-09-26T16:31:44+09:00"
+      content="2025-11-21T16:59:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング",
       "description": "並列アプリケーションは、ロードバランス不均衡やプロセス間通信の影響等で並列実行数の増加と共にスケーラビリティの低下が発生しますが、HPCワークロードの実行に最適なベアメタル・インスタンスでアプリケーションを高並列実行する場合、高価な計算資源を有効活用する観点から、スケーラビリティ低下の原因を調査しチューニングでスケーラビリティーを改善する開発プロセスを踏んだり、最も効率的な並列実行数を見極める必要があり、これらの判断に必要な情報を得るためにアプリケーションをプロファイリングすることが重要です。本プロファイリング関連Tipsは、ベアメタル・インスタンス上で実行するOpenMPやMPIでコーディングされた並列アプリケーションをオープンソースのScore-P、Scalasca、及びCubeGUIを駆使してプロファイリングし、これを効果的に実行するための有益な情報を取得する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1990",
+      "wordCount" : "1996",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-26T16:31:44.00Z",
+      "dateModified": "2025-11-21T16:59:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-09-26T16:31:44+09:00">
+    <meta property="article:modified_time" content="2025-11-21T16:59:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -418,8 +418,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-26T16:31:44&#43;09:00">
-            Sep 26, 2025
+        <time datetime="2025-11-21T16:59:55&#43;09:00">
+            Nov 21, 2025
         </time>
     
 </span>
@@ -433,8 +433,7 @@
     
 </div>
 
-    <hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+    <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="0-概要"
     >
         0. 概要
@@ -446,7 +445,7 @@
 <p><strong><a
   class="gdoc-markdown__link"
   href="https://www.vi-hps.org/projects/score-p/"
->Score-P</a></strong> は、HPCに於ける高並列アプリケーションをスケーラブルで簡易にプロファイリング（※1）することを目的に開発されたオープンソースのプロファイリングツールで、以下の代表的な並列プログラミングモデルに対応しています。</p>
+>Score-P</a></strong> は、HPCワークロードを高並列に実行するアプリケーションをスケーラブルで簡易にプロファイリング（※1）することを目的に開発されたオープンソースのプロファイリングツールで、以下の代表的な並列プログラミングモデルに対応しています。</p>
 <ul>
 <li>スレッド並列
 <ul>
@@ -613,6 +612,13 @@
   alt="システム構成図"
   
 /></p>
+<p>なお、本プロファイリング関連Tipsで構築したプロファイリング環境を使用して実アプリケーションにプロファイリング・チューニングを適用する実例は、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../profiling-tuning/"
+>プロファイリング情報に基づく並列アプリケーションチューニング方法</a></strong> を参照してください。</p>
 <p>以降では、以下の順に解説します。</p>
 <ol>
 <li><strong><a
@@ -636,7 +642,6 @@
   href="#5-%e3%83%88%e3%83%ac%e3%83%bc%e3%82%b7%e3%83%b3%e3%82%b0%e6%89%8b%e6%b3%95%e3%83%87%e3%83%bc%e3%82%bf%e3%81%ae%e7%a2%ba%e8%aa%8d"
 >トレーシング手法データの確認</a></strong></li>
 </ol>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-プロファイリング環境構築"
     >
@@ -822,7 +827,6 @@
   alt="画面ショット"
   
 /></p>
-<hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="2-プロファイリング手法データの取得"
     >
@@ -1039,8 +1043,7 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ scalasca -examine -s scorep_bt-mz_18p36xO_sum
 </span></span></code></pre></div><p>次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mv scorep_bt-mz_18p36xO_sum prof_wif_wipapi
-</span></span></code></pre></div><hr>
-<div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-プロファイリング手法データの確認"
     >
         3. プロファイリング手法データの確認

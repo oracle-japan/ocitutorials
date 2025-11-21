@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-11-11T16:33:55+09:00"
+      content="2025-11-21T16:59:55+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法",
       "description": "HPC\/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC\/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1455",
+      "wordCount" : "1649",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-11T16:33:55.00Z",
+      "dateModified": "2025-11-21T16:59:55.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-11-11T16:33:55+09:00">
+    <meta property="article:modified_time" content="2025-11-21T16:59:55+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -337,8 +337,9 @@
         <li><a href="#4-0-概要">4-0. 概要</a></li>
         <li><a href="#4-1-cuda-samplesによるnvidia-cuda-toolkit動作確認">4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認</a></li>
         <li><a href="#4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認">4-2. OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認</a></li>
-        <li><a href="#4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認">4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</a></li>
-        <li><a href="#4-4-nccl-testsによるnvidia-fabric-manager動作確認">4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認</a></li>
+        <li><a href="#4-3-cublasサンプルプログラムによるnvidia-hpc-sdk動作確認">4-3. cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認</a></li>
+        <li><a href="#4-4-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認">4-4. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</a></li>
+        <li><a href="#4-5-nccl-testsによるnvidia-fabric-manager動作確認">4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認</a></li>
       </ul>
       
     </section>
@@ -413,8 +414,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-11T16:33:55&#43;09:00">
-            Nov 11, 2025
+        <time datetime="2025-11-21T16:59:55&#43;09:00">
+            Nov 21, 2025
         </time>
     
 </span>
@@ -472,6 +473,10 @@
   href="https://github.com/nvidia/cuda-samples"
 >CUDA Samples</a></strong></li>
 <li>OpenACCサンプルプログラム</li>
+<li><strong><a
+  class="gdoc-markdown__link"
+  href="https://developer.nvidia.com/cublas"
+>cuBLAS</a></strong> サンプルプログラム</li>
 <li>OpenACC/MPIハイブリッドサンプルプログラム</li>
 <li><strong><a
   class="gdoc-markdown__link"
@@ -865,14 +870,21 @@ OpenACCのディレクティブを含むCプログラムをコンパイル・実
 <li>
 <p><strong><a
   class="gdoc-markdown__link"
-  href="#4-3-openaccmpi%e3%83%8f%e3%82%a4%e3%83%96%e3%83%aa%e3%83%83%e3%83%89%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bcuda-aware-openmpi%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
+  href="#4-3-cublas%e3%82%b5%e3%83%b3%e3%83%97%e3%83%ab%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bnvidia-hpc-sdk%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
+>cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認</a></strong><br>
+<strong>cuBLAS</strong> ライブラリコールを含むFortranプログラムをコンパイル・実行することで、 <strong>NVIDIA HPC SDK</strong> に含まれる <strong>cuBLAS</strong> の動作を確認します。</p>
+</li>
+<li>
+<p><strong><a
+  class="gdoc-markdown__link"
+  href="#4-4-openaccmpi%e3%83%8f%e3%82%a4%e3%83%96%e3%83%aa%e3%83%83%e3%83%89%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bcuda-aware-openmpi%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
 >OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認</a></strong><br>
 OpenACCのディレクティブを含むMPI Cプログラムをコンパイル・実行することで、CUDA-aware <strong>OpenMPI</strong> の動作を確認します。</p>
 </li>
 <li>
 <p><strong><a
   class="gdoc-markdown__link"
-  href="#4-4-nccl-tests%e3%81%ab%e3%82%88%e3%82%8bnvidia-fabric-manager%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
+  href="#4-5-nccl-tests%e3%81%ab%e3%82%88%e3%82%8bnvidia-fabric-manager%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d"
 >NCCL TestsによるNVIDIA Fabric Manager動作確認</a></strong><br>
 <strong>NCCL Tests</strong> で8枚のGPUを使用する <strong><a
   class="gdoc-markdown__link"
@@ -913,8 +925,7 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
     </a>
 </div>
 <p>以下のOpenACCサンプルプログラムをファイル名 <strong>test.c</strong> として作成します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ cat ~/<span class="sb">`</span>hostname<span class="sb">`</span>/test.c
-</span></span><span class="line"><span class="cl"><span class="c1">#include &lt;stdio.h&gt;</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#include &lt;stdio.h&gt;</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#define N 1000000000</span>
 </span></span><span class="line"><span class="cl">int array<span class="o">[</span>N<span class="o">]</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl">int main<span class="o">()</span> <span class="o">{</span>
@@ -924,11 +935,9 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 </span></span><span class="line"><span class="cl">   <span class="o">}</span>
 </span></span><span class="line"><span class="cl">   printf<span class="o">(</span><span class="s2">&#34;Success!\n&#34;</span><span class="o">)</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
-</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、 <strong>NVIDIA HPC SDK</strong> の動作を確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span>
-</span></span><span class="line"><span class="cl">$ module purge
-</span></span><span class="line"><span class="cl">$ module load nvhpc
-</span></span><span class="line"><span class="cl">$ nvc -acc -gpu<span class="o">=</span>cc80 test.c -o gpu.exe
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、OpneACC対応Cコンパイラの動作を確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load nvhpc
+</span></span><span class="line"><span class="cl">$ nvc -acc -gpu<span class="o">=</span>cc80 -o gpu.exe test.c
 </span></span><span class="line"><span class="cl">$ ./gpu.exe <span class="p">&amp;</span> sleep 3<span class="p">;</span> nvidia-smi <span class="p">|</span> tail -3
 </span></span><span class="line"><span class="cl"><span class="o">[</span>1<span class="o">]</span> <span class="m">18096</span>
 </span></span><span class="line"><span class="cl">Success!
@@ -937,11 +946,75 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 </span></span><span class="line"><span class="cl">+-----------------------------------------------------------------------------------------+
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認"
+    <h2 id="4-3-cublasサンプルプログラムによるnvidia-hpc-sdk動作確認"
     >
-        4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認
+        4-3. cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認" aria-label="アンカー先: 4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認" href="#4-3-openaccmpi%e3%83%8f%e3%82%a4%e3%83%96%e3%83%aa%e3%83%83%e3%83%89%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bcuda-aware-openmpi%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-3-cublasサンプルプログラムによるnvidia-hpc-sdk動作確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-3. cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認" aria-label="アンカー先: 4-3. cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認" href="#4-3-cublas%e3%82%b5%e3%83%b3%e3%83%97%e3%83%ab%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bnvidia-hpc-sdk%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>以下の <strong>cuBLAS</strong> を使用するFortranサンプルプログラムをファイル名 <strong>test.f90</strong> として作成します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">program main
+</span></span><span class="line"><span class="cl">  use cublas_v2
+</span></span><span class="line"><span class="cl">  implicit none
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  integer, parameter :: <span class="nv">n</span> <span class="o">=</span> <span class="m">2</span>
+</span></span><span class="line"><span class="cl">  real<span class="o">(</span>8<span class="o">)</span> :: alpha, beta
+</span></span><span class="line"><span class="cl">  real<span class="o">(</span>8<span class="o">)</span>, dimension<span class="o">(</span>n,n<span class="o">)</span> :: a_host, b_host, c_host
+</span></span><span class="line"><span class="cl">  real<span class="o">(</span>8<span class="o">)</span>, dimension<span class="o">(</span>n,n<span class="o">)</span>, device :: a_dev, b_dev, c_dev
+</span></span><span class="line"><span class="cl">  integer :: i, j
+</span></span><span class="line"><span class="cl">  type<span class="o">(</span>cublashandle<span class="o">)</span> :: handle
+</span></span><span class="line"><span class="cl">  integer :: cublas_status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nv">alpha</span> <span class="o">=</span> 1.0d0
+</span></span><span class="line"><span class="cl">  <span class="nv">beta</span> <span class="o">=</span> 0.0d0
+</span></span><span class="line"><span class="cl">  <span class="k">do</span> <span class="nv">j</span> <span class="o">=</span> 1, n
+</span></span><span class="line"><span class="cl">    <span class="k">do</span> <span class="nv">i</span> <span class="o">=</span> 1, n
+</span></span><span class="line"><span class="cl">      a_host<span class="o">(</span>i,j<span class="o">)</span> <span class="o">=</span> i + j
+</span></span><span class="line"><span class="cl">      b_host<span class="o">(</span>i,j<span class="o">)</span> <span class="o">=</span> i - j
+</span></span><span class="line"><span class="cl">    end <span class="k">do</span>
+</span></span><span class="line"><span class="cl">  end <span class="k">do</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nv">cublas_status</span> <span class="o">=</span> cublascreate<span class="o">(</span>handle<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span>cublas_status /<span class="o">=</span> cublas_status_success<span class="o">)</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    print *, <span class="s1">&#39;Error creating cuBLAS handle!&#39;</span>
+</span></span><span class="line"><span class="cl">    stop
+</span></span><span class="line"><span class="cl">  end <span class="k">if</span>
+</span></span><span class="line"><span class="cl">  <span class="nv">a_dev</span> <span class="o">=</span> a_host
+</span></span><span class="line"><span class="cl">  <span class="nv">b_dev</span> <span class="o">=</span> b_host
+</span></span><span class="line"><span class="cl">  <span class="nv">cublas_status</span> <span class="o">=</span> cublasdgemm<span class="o">(</span>handle, cublas_op_n, cublas_op_n, n, n, n, <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">                              alpha, a_dev, n, b_dev, n, beta, c_dev, n<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span>cublas_status /<span class="o">=</span> cublas_status_success<span class="o">)</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    print *, <span class="s1">&#39;Error executing cublasdgemm!&#39;</span>
+</span></span><span class="line"><span class="cl">    stop
+</span></span><span class="line"><span class="cl">  end <span class="k">if</span>
+</span></span><span class="line"><span class="cl">  <span class="nv">c_host</span> <span class="o">=</span> c_dev
+</span></span><span class="line"><span class="cl">  <span class="nv">cublas_status</span> <span class="o">=</span> cublasdestroy<span class="o">(</span>handle<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="o">(</span>cublas_status /<span class="o">=</span> cublas_status_success<span class="o">)</span> <span class="k">then</span>
+</span></span><span class="line"><span class="cl">    print *, <span class="s1">&#39;Error destroying cuBLAS handle!&#39;</span>
+</span></span><span class="line"><span class="cl">    stop
+</span></span><span class="line"><span class="cl">  end <span class="k">if</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  print *, <span class="s1">&#39;Matrix c:&#39;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">do</span> <span class="nv">i</span> <span class="o">=</span> 1, n
+</span></span><span class="line"><span class="cl">    print *, <span class="o">(</span>c_host<span class="o">(</span>i,j<span class="o">)</span>, <span class="nv">j</span> <span class="o">=</span> 1, n<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  end <span class="k">do</span>
+</span></span><span class="line"><span class="cl">end program main
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、 <strong>cuBLAS</strong> の動作を確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load nvhpc
+</span></span><span class="line"><span class="cl">$ nvfortran -cuda -o gpu_blas.exe test.f90
+</span></span><span class="line"><span class="cl">$ ./gpu_blas.exe 
+</span></span><span class="line"><span class="cl"> Matrix c:
+</span></span><span class="line"><span class="cl">    3.000000000000000        -2.000000000000000     
+</span></span><span class="line"><span class="cl">    4.000000000000000        -3.000000000000000
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="4-4-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認"
+    >
+        4-4. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-4-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認" aria-label="アンカー先: 4-4. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認" href="#4-4-openaccmpi%e3%83%8f%e3%82%a4%e3%83%96%e3%83%aa%e3%83%83%e3%83%89%e3%83%97%e3%83%ad%e3%82%b0%e3%83%a9%e3%83%a0%e3%81%ab%e3%82%88%e3%82%8bcuda-aware-openmpi%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
@@ -997,11 +1070,11 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 </span></span><span class="line"><span class="cl"><span class="nv">Time</span> <span class="o">=</span>    0.007 <span class="o">[</span>sec<span class="o">]</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="4-4-nccl-testsによるnvidia-fabric-manager動作確認"
+    <h2 id="4-5-nccl-testsによるnvidia-fabric-manager動作確認"
     >
-        4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認
+        4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-4-nccl-testsによるnvidia-fabric-manager動作確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認" aria-label="アンカー先: 4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認" href="#4-4-nccl-tests%e3%81%ab%e3%82%88%e3%82%8bnvidia-fabric-manager%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/gpu-with-ubuntu/#4-5-nccl-testsによるnvidia-fabric-manager動作確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認" aria-label="アンカー先: 4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認" href="#4-5-nccl-tests%e3%81%ab%e3%82%88%e3%82%8bnvidia-fabric-manager%e5%8b%95%e4%bd%9c%e7%a2%ba%e8%aa%8d">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
