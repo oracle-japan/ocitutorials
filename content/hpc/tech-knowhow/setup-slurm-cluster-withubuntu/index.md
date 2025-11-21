@@ -376,7 +376,7 @@ PartitionName=sltest Nodes=ALL DefMemPerGPU=250000 Default=YES MaxTime=INFINITE 
 ※7）ここで指定しているGPU当たりのホストメモリ量以上のジョブを投入する場合は、以下のようにジョブが使用する総ホストメモリ量を **- –mem=xxxx** オプションで指定します。
 
 ```sh
-$ srun -p sltest --gres=gpu:nvidia_a100-sxm4-40gb:4 --mem=1500000G ./a.out
+$ srun -p sltest --gres=gpu:nvidia_a100-sxm4-40gb:4 --mem=1500000M ./a.out
 ```
 
 [ **slurmdbd.conf** ]

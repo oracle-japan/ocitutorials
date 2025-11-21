@@ -25,8 +25,9 @@ GPUインスタンスのOSに利用可能なLinuxディストリビューショ�
 
 1. **[CUDA Samples](https://github.com/nvidia/cuda-samples)**
 2. OpenACCサンプルプログラム
-3. OpenACC/MPIハイブリッドサンプルプログラム
-4. **[NCCL Tests](https://github.com/nvidia/nccl-tests)** 
+3. **[cuBLAS](https://developer.nvidia.com/cublas)** サンプルプログラム
+4. OpenACC/MPIハイブリッドサンプルプログラム
+5. **[NCCL Tests](https://github.com/nvidia/nccl-tests)** 
 
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
@@ -395,10 +396,13 @@ prepend-path MANPATH            $pkg_root/share/man
 2. **[OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認](#4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認)**  
 OpenACCのディレクティブを含むCプログラムをコンパイル・実行することで、 **NVIDIA HPC SDK** に含まれるOpneACC対応Cコンパイラの動作を確認します。
 
-3. **[OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認](#4-3-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認)**  
+3. **[cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認](#4-3-cublasサンプルプログラムによるnvidia-hpc-sdk動作確認)**  
+**cuBLAS** ライブラリコールを含むFortranプログラムをコンパイル・実行することで、 **NVIDIA HPC SDK** に含まれる **cuBLAS** の動作を確認します。
+
+4. **[OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認](#4-4-openaccmpiハイブリッドプログラムによるcuda-aware-openmpi動作確認)**  
 OpenACCのディレクティブを含むMPI Cプログラムをコンパイル・実行することで、CUDA-aware **OpenMPI** の動作を確認します。
 
-4. **[NCCL TestsによるNVIDIA Fabric Manager動作確認](#4-4-nccl-testsによるnvidia-fabric-manager動作確認)**  
+5. **[NCCL TestsによるNVIDIA Fabric Manager動作確認](#4-5-nccl-testsによるnvidia-fabric-manager動作確認)**  
 **NCCL Tests** で8枚のGPUを使用する **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の **All-Reduce** 通信性能を計測し、十分な性能が出ていることをもって **NVIDIA Fabric Manager** の動作を確認します。
 
 ## 4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認
@@ -430,7 +434,6 @@ $
 以下のOpenACCサンプルプログラムをファイル名 **test.c** として作成します。
 
 ```sh
-$ cat ~/`hostname`/test.c
 #include <stdio.h>
 #define N 1000000000
 int array[N];
@@ -443,13 +446,11 @@ int main() {
 }
 ```
 
-次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、 **NVIDIA HPC SDK** の動作を確認します。  
+次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、OpneACC対応Cコンパイラの動作を確認します。  
 
 ```sh
-$ cd ~/`hostname`
-$ module purge
 $ module load nvhpc
-$ nvc -acc -gpu=cc80 test.c -o gpu.exe
+$ nvc -acc -gpu=cc80 -o gpu.exe test.c
 $ ./gpu.exe & sleep 3; nvidia-smi | tail -3
 [1] 18096
 Success!
@@ -459,7 +460,72 @@ Success!
 $
 ```
 
-## 4-3. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認
+## 4-3. cuBLASサンプルプログラムによるNVIDIA HPC SDK動作確認
+
+以下の **cuBLAS** を使用するFortranサンプルプログラムをファイル名 **test.f90** として作成します。
+
+```sh
+program main
+  use cublas_v2
+  implicit none
+
+  integer, parameter :: n = 2
+  real(8) :: alpha, beta
+  real(8), dimension(n,n) :: a_host, b_host, c_host
+  real(8), dimension(n,n), device :: a_dev, b_dev, c_dev
+  integer :: i, j
+  type(cublashandle) :: handle
+  integer :: cublas_status
+
+  alpha = 1.0d0
+  beta = 0.0d0
+  do j = 1, n
+    do i = 1, n
+      a_host(i,j) = i + j
+      b_host(i,j) = i - j
+    end do
+  end do
+
+  cublas_status = cublascreate(handle)
+  if (cublas_status /= cublas_status_success) then
+    print *, 'Error creating cuBLAS handle!'
+    stop
+  end if
+  a_dev = a_host
+  b_dev = b_host
+  cublas_status = cublasdgemm(handle, cublas_op_n, cublas_op_n, n, n, n, &
+                              alpha, a_dev, n, b_dev, n, beta, c_dev, n)
+  if (cublas_status /= cublas_status_success) then
+    print *, 'Error executing cublasdgemm!'
+    stop
+  end if
+  c_host = c_dev
+  cublas_status = cublasdestroy(handle)
+  if (cublas_status /= cublas_status_success) then
+    print *, 'Error destroying cuBLAS handle!'
+    stop
+  end if
+
+  print *, 'Matrix c:'
+  do i = 1, n
+    print *, (c_host(i,j), j = 1, n)
+  end do
+end program main
+```
+
+次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、このサンプルプログラムをコンパイル・実行することで、 **cuBLAS** の動作を確認します。  
+
+```sh
+$ module load nvhpc
+$ nvfortran -cuda -o gpu_blas.exe test.f90
+$ ./gpu_blas.exe 
+ Matrix c:
+    3.000000000000000        -2.000000000000000     
+    4.000000000000000        -3.000000000000000
+$
+```
+
+## 4-4. OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI動作確認
 
 ここで使用するOpenACC/MPIハイブリッドのサンプルプログラムは、 **[東京大学 情報基盤センター](https://www.itc.u-tokyo.ac.jp/)** 様がGitHubの以下レポジトリから公開している、並列プログラミング講習会向けのものを利用させて頂くこととします。
 
@@ -520,6 +586,6 @@ Time =    0.007 [sec]
 $
 ```
 
-## 4-4. NCCL TestsによるNVIDIA Fabric Manager動作確認
+## 4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認
 
 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](../../benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](../../benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](../../benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** を搭載する **BM.GPU4.8** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。

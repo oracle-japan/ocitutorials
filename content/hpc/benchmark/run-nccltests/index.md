@@ -59,7 +59,7 @@ params:
 
 ## 1-1. コンテナ間SSH接続環境構築
 
-以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称。）のコンテナ起動ユーザで実行します。
+以下コマンドを2ノードのGPUノードのうち1ノード（以降このGPUノードをマスターノード、他のGPUノードをスレーブノードと呼称します。）のコンテナ起動ユーザで実行します。
 
 ```sh
 $ ssh-keygen -f ~/.ssh/id_rsa -N ""
@@ -77,7 +77,7 @@ $ cat  ~/.ssh/id_rsa.pub | tee -a ~/.ssh/authorized_keys
 
 ## 1-3. コンテナ起動
 
-以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 **NGC Catalog** から **TensorFlow NGC Container** を起動します。  
+以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 **NGC Catalog** から **TensorFlow NGC Container** をホストネットワークモードで起動します。  
 本コンテナのサイズは、約14 GBです。
 
 ```sh
@@ -99,7 +99,7 @@ $ mkdir /run/sshd && /usr/sbin/sshd -p 22222
 
 ```sh
 $ ssh -p 22222 -oStrictHostKeyChecking=accept-new inst-gpu-slave hostname
-Warning: Permanently added '[inst-vm-ol905mg-2]:22222' (ED25519) to the list of known hosts.
+Warning: Permanently added '[inst-gpu-slave]:22222' (ED25519) to the list of known hosts.
 inst-gpu-slave
 $
 ```
@@ -108,11 +108,12 @@ $
 
 本章は、後の章で実行する **NCCL Tests** のバイナリをビルドします。
 
-以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、 **NCCL Tests** を **GitHub** からダウンロードしてビルドします。
+以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、 **NCCL Tests** を **GitHub** からダウンロードしてビルドします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~ && git clone https://github.com/NVIDIA/nccl-tests.git
-$ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu
+$ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/usr/lib/x86_64-linux-gnu
 ```
 
 # 3. NCCL Tests実行
@@ -129,7 +130,7 @@ $ cd nccl-tests && make MPI=1 MPI_HOME=/usr/local/mpi CUDA_HOME=/usr/local/cuda 
 以下コマンドをマスターノードとスレーブノードで起動したコンテナ上のrootユーザでそれぞれ実行し、1ノード8枚のGPUを使用する **NCCL** の **All-Reduce** 通信性能を計測します。
 
 ```sh
-$ mpirun --allow-run-as-root -n 8 ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
+$ cd ~/nccl-tests && mpirun --allow-run-as-root -n 8 ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
 # nccl-tests version 2.17.6 nccl-headers=22501 nccl-library=22501
 # Collective test starting: all_reduce_perf
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0
@@ -158,11 +159,11 @@ $
 
 ## 3-2. 2ノード16GPU
 
-以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用した、2ノード16枚のGPUを使用する **NCCL** の **All-Reduce** 通信性能を計測します。  
+以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、マスターノードとスレーブノードの全16枚のGPUと全32ポートのRDMAインタフェースを使用する **NCCL** の **All-Reduce** 通信性能を計測します。  
 ここで、 **-H** オプションに指定するマスターノード（inst-gpu-master）とスレーブノード（inst-gpu-slave）のホスト名は、自身の環境に合わせて修正します。
 
 ```sh
-$ mpirun --allow-run-as-root -n 16 -H inst-gpu-master:8,inst-gpu-slave:8 -mca plm_rsh_args "-p 22222" -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
+$ cd ~/nccl-tests && mpirun --allow-run-as-root -n 16 -H inst-gpu-master:8,inst-gpu-slave:8 -mca plm_rsh_args "-p 22222" -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" ./build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 2(factor) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices

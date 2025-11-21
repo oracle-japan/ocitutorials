@@ -16,6 +16,7 @@ params:
 - ネットワーク機能： **[CNI Plugins](https://github.com/containernetworking/plugins/)**
 - Docker互換CLI： **[nerdctl](https://github.com/containerd/nerdctl)**
 - rootlessコンテナ： **[rootlesskit](https://github.com/rootless-containers/rootlesskit)**
+- rootlessコンテナ通信速度高速化： **[bypass4netns](https://github.com/rootless-containers/bypass4netns)**
 
 本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUインスタンスで分散機械学習環境を構築する](../../spinup-ml-instance-cntnd/)** / **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、NVIDIA GPUを搭載するGPUインスタンスが予め作成されていることを前提に、ここに **containerd** と前述のソフトウェア群をインストールして **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供されるコンテナを非特権ユーザ（以降"コンテナ起動ユーザ"と呼称します。）権限で起動するまでの手順を、以下の順に解説します。
 
@@ -34,8 +35,11 @@ params:
 - **CNI Plugins** ： 1.8.0
 - **nerdctl** ： 2.2.0
 - **rootlesskit** ： 2.3.5
+- **bypass4netns** ： 0.4.2
 
 ※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
+
+本テクニカルTipsで構築するコンテナランタイムは、 **10.0.2.2** を特別なIPアドレスとして内部的に使用するため、GPUインスタンスを接続するサブネットにこのIPアドレスを含む **10.0.2.0/24** 等のCIDRレンジを使用すると、コンテナからこのサブネットへの通信が出来なくなる点に留意します。
 
 # 1. コンテナ環境構築
 
@@ -49,6 +53,7 @@ params:
 - **CNI Plugins**
 - **nerdctl**
 - **rootlesskit**
+- **bypass4netns**
 
 ## 1-1. インストール手順
 
@@ -102,6 +107,18 @@ $ cat <<EOF | sudo tee /etc/systemd/system/user@.service.d/delegate.conf
 $ sudo systemctl daemon-reload
 ```
 
+次に、以下コマンドをGPUインスタンスのopcユーザで実行し、 **bypass4netns** とその前提ソフトウェアをインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ wget https://go.dev/dl/go1.25.4.linux-amd64.tar.gz
+$ sudo tar -C /usr/local/ -xvf ./go1.25.4.linux-amd64.tar.gz
+$ export PATH=/usr/local/go/bin:$PATH
+$ wget https://github.com/rootless-containers/bypass4netns/archive/refs/tags/v0.4.2.tar.gz
+$ tar -xvf ./v0.4.2.tar.gz
+$ cd bypass4netns-0.4.2 && make -j 128 && sudo make install
+```
+
 # 2. コンテナ起動ユーザ作成
 
 本章は、コンテナ起動ユーザを作成し、このユーザでコンテナを起動するための必要な設定を行います。
@@ -116,11 +133,7 @@ $ cat <<EOF | sudo tee -a /etc/security/limits.conf
 > EOF
 ```
 
-次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザ（ここでは **usera** とします。）を作成します。
-
-```sh
-$ sudo useradd -d /home/usera -s /bin/bash -u 10000 usera
-```
+次に、GPUインスタンスでコンテナ起動ユーザ（ここでは **usera** とします。）を作成し、SSHでログイン可能となるようにSSH公開鍵を登録します。
 
 次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザのコンテナイメージ等のファイルを格納するディレクトリをNVMe SSDローカルディスク領域（ **/mnt/localdisk** にマウントされているとします。）に作成します。
 
@@ -138,18 +151,11 @@ $ cat << EOF > ~/.config/containerd/config.toml
 > EOF
 ```
 
-# 3. コンテナ起動・稼働確認
+# 3. コンテナランタイム起動
 
-## 3-0. 概要
+本章は、rootlessコンテナの **rootlesskit** とrootlessコンテナの通信速度を高速化する **bypass4netns** のコンテナランタイム関連サービスを起動します。
 
-本章は、コンテナ起動ユーザで **NGC Catalog** から提供されるコンテナを起動し、コンテナ上で以下を確認します。
-
-- GPUの認識
-- 異なるGPUインスタンスで起動するコンテナ間のネットワーク疎通（GPUクラスタの場合のみ実施します。）
-
-## 3-1. コンテナ起動
-
-SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 **containerd** を起動・確認します。
+SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 **rootlesskit** と **bypass4netns** をユーザモードの **systemd** サービスとして起動し、コマンド出力からその起動を確認します。
 
 ```sh
 $ containerd-rootless-setuptool.sh install
@@ -157,22 +163,52 @@ $ containerd-rootless-setuptool.sh install
 :
 :
 :
++ systemctl --user --no-pager --full status containerd.service
+● containerd.service - containerd (Rootless)
+     Loaded: loaded (/mnt/home/usera/.config/systemd/user/containerd.service; disabled; preset: disabled)
+     Active: active (running) since Thu 2025-11-20 10:21:16 JST; 3s ago   <<<--- この出力
+:
+:
+:
 [INFO] You do NOT need to specify $CONTAINERD_ADDRESS explicitly.
-$ systemctl --user status containerd | grep -e Active -e enabled
-   Loaded: loaded (/home/usera/.config/systemd/user/containerd.service; enabled; vendor preset: enabled)
-   Active: active (running) since Wed 2025-03-19 10:38:54 JST; 1min 39s ago
+$ containerd-rootless-setuptool.sh install-bypass4netnsd
+[INFO] Creating "/mnt/home/usera/.config/systemd/user/bypass4netnsd.service"
+:
+:
+:
++ systemctl --user --no-pager --full status bypass4netnsd.service
+● bypass4netnsd.service - bypass4netnsd (daemon for bypass4netns, accelerator for rootless containers)
+     Loaded: loaded (/mnt/home/usera/.config/systemd/user/bypass4netnsd.service; disabled; preset: disabled)
+     Active: active (running) since Thu 2025-11-20 14:14:28 JST; 3s ago   <<<--- この出力
+:
+:
+:
+[INFO] To use bypass4netnsd, set the "nerdctl/bypass4netns=true" annotation on containers, e.g., `nerdctl run --annotation nerdctl/bypass4netns=true`
 $
 ```
 
-次に、以下コマンドをGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナを起動します。
+# 4. コンテナ起動・稼働確認
+
+## 4-0. 概要
+
+本章は、コンテナ起動ユーザで **NGC Catalog** から提供されるコンテナを起動し、起動するコンテナ上で稼働確認を実施します。
+
+この際、以下のユースケース毎にコンテナ起動・稼働確認の手順を解説します。
+
+1. **[単一GPUインスタンスに閉じたコンテナ利用](#4-1-単一gpuインスタンスに閉じたコンテナ利用)**  
+単一のGPUインスタンス上で1個以上のコンテナをブリッジネットワークモードで起動し、 **単一コンテナに閉じた** / **複数のコンテナに跨った** ワークロードを実行する。
+2. **[異なるGPUインスタンスに跨るコンテナ利用](#4-2-異なるgpuインスタンスに跨るコンテナ利用)**  
+2台以上のGPUインスタンス上でインスタンスを跨る2個以上のコンテナをホストネットワークモードで起動し、これらのコンテナに跨ったワークロードを実行する。
+
+## 4-1. 単一GPUインスタンスに閉じたコンテナ利用
+
+以下コマンドをGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをブリッジネットワークモードで起動します。
 
 ```sh
-$ nerdctl run -it --rm --network=host --gpus all -p 22222:22 nvcr.io/nvidia/base/ubuntu:22.04_20240212
+$ nerdctl run -it --rm --gpus all --annotation nerdctl/bypass4netns=true nvcr.io/nvidia/base/ubuntu:22.04_20240212
 ```
 
-## 3-2. 稼働確認
-
-以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、GPUインスタンスに搭載されるGPUをコンテナから認識出来ることを確認します。
+次に、以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、GPUインスタンスに搭載されるGPUをコンテナから認識出来ることを確認します。
 
 ```sh
 $ nvidia-smi
@@ -227,16 +263,70 @@ Fri Nov  7 00:05:31 2025
 $
 ```
 
-次に、以下コマンドをいずれかのGPUインスタンス（以降マスターノードと呼称します。）で起動したコンテナ上のrootユーザで実行し、コンテナ間のネットワーク疎通を確認します。  
-なお、pingコマンドで指定するホスト名は、自身の環境のリモートのGPUインスタンス（以降スレーブノードと呼称します。）のホスト名に置き換えます。
+## 4-2. 異なるGPUインスタンスに跨るコンテナ利用
+
+以下コマンドを全てのGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをホストネットワークモードで起動します。
 
 ```sh
-$ apt update
-$ apt install -y iputils-ping
-$ ping inst-gpu-slave
+$ nerdctl run -it --rm --gpus all --network=host -p 22222:22 nvcr.io/nvidia/base/ubuntu:22.04_20240212
 ```
 
-次に、以下コマンドをスレーブノードで起動したコンテナ上のrootユーザで実行し、SSHサーバを起動します。
+次に、以下コマンドを全てのGPUインスタンスで起動したコンテナ上のrootユーザで実行し、GPUインスタンスに搭載されるGPUをコンテナから認識出来ることを確認します。
+
+```sh
+$ nvidia-smi
+Fri Nov  7 00:05:31 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.172.08             Driver Version: 570.172.08     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-40GB          Off |   00000000:0F:00.0 Off |                    0 |
+| N/A   36C    P0             75W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-SXM4-40GB          Off |   00000000:15:00.0 Off |                    0 |
+| N/A   34C    P0             77W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-SXM4-40GB          Off |   00000000:51:00.0 Off |                    0 |
+| N/A   34C    P0             75W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-SXM4-40GB          Off |   00000000:54:00.0 Off |                    0 |
+| N/A   36C    P0             79W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-SXM4-40GB          Off |   00000000:8D:00.0 Off |                    0 |
+| N/A   35C    P0             74W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-SXM4-40GB          Off |   00000000:92:00.0 Off |                    0 |
+| N/A   34C    P0             73W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-SXM4-40GB          Off |   00000000:D6:00.0 Off |                    0 |
+| N/A   34C    P0             73W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-SXM4-40GB          Off |   00000000:DA:00.0 Off |                    0 |
+| N/A   37C    P0             82W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+$
+```
+
+次に、以下コマンドをいずれかのGPUインスタンス（以降このGPUインスタンスをスレーブノードと呼称し、もう一台のGPUインスタンスをマスターノードと呼称します。）で起動したコンテナ上のrootユーザで実行し、SSHサーバを起動します。
 
 ```sh
 $ apt update
@@ -272,4 +362,3 @@ Warning: Permanently added '[inst-gpu-slave]:22222' (ED25519) to the list of kno
 inst-gpu-slave
 $
 ```
-
