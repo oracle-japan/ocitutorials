@@ -8,7 +8,6 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 オープンソースのMPI実装である **[OpenMPI](https://www.open-mpi.org/)** は、  **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** （以降 **MCA** と呼称します。）を採用することで、ビルド時に組み込むコンポーネントを介して集合通信を含む多彩な機能を提供し、この **MCA** パラメータにはMPI集合通信性能に影響するものがあります。  
@@ -77,6 +76,8 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 
 また **Intel MPI Benchmarks** の計測は、テストケース毎に5回実施し、その最大値と最小値を除く3回の算術平均をその結果とします。
 
+なお、本パフォーマンス関連Tipsで取得したMPI集合通信特性を使用して実アプリケーションにプロファイリング・チューニングを適用する実例は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[プロファイリング情報に基づく並列アプリケーションチューニング方法](../profiling-tuning/)** を参照してください。
+
 以降では、以下 **計測条件** の順に解説します。
 
 1. **[1ノード](#1--1ノード)**
@@ -84,7 +85,6 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 3. **[4ノード](#3--4ノード)**
 4. **[8ノード](#4--8ノード)**
 
-***
 # 1.  1ノード
 
 ## 1-0. 概要
@@ -853,7 +853,6 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **UCC** は **HCOLL** に対して8KB以上で顕著な傾向が無くそれ未満で性能が低下
 - チューニング未適用は64KBから64MBの間で大幅に性能が低下
 
-***
 # 2.  2ノード
 
 ## 2-0. 概要
@@ -1659,7 +1658,6 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **UCC** は **HCOLL** に対して8KB以上で概ね性能が向上しそれ未満で性能が低下
 - チューニング未適用は64MB以下で大幅に性能が低下
 
-***
 # 3.  4ノード
 
 ## 3-0. 概要
@@ -2465,7 +2463,6 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 - **UCC** は **HCOLL** に対して8KB以上で概ね性能が向上しそれ未満で性能が低下
 - チューニング未適用は32MB以下で大幅に性能が低下
 
-***
 # 4.  8ノード
 
 ## 4-0. 概要

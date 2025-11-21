@@ -47,6 +47,8 @@ Bastionノードは、接続するサブネットをパブリックとプライ�
 
 ※2）この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-connect-clusternetwork/)** の **[1-2. 接続サブネットのOCA HPCプラグイン動作条件充足確認](../tech-knowhow/howto-connect-clusternetwork/#1-2-接続サブネットのoca-hpcプラグイン動作条件充足確認)** を参照してください。
 
+本チュートリアルで構築するコンテナランタイムは、 **10.0.2.2** を特別なIPアドレスとして内部的に使用するため、GPUノードを接続するサブネットにこのIPアドレスを含む **10.0.2.0/24** 等のCIDRレンジを使用すると、コンテナからこのサブネットへの通信が出来なくなる点に留意します。
+
 ![システム構成図（パブリック）](../spinup-hpc-cluster-withterraform/architecture_diagram.png)
 
 ![システム構成図（プライベート）](../spinup-hpc-cluster-withterraform/architecture_diagram_private.png)
