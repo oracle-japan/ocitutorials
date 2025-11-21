@@ -268,7 +268,7 @@ $
 以下コマンドを全てのGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをホストネットワークモードで起動します。
 
 ```sh
-$ nerdctl run -it --rm --gpus all --network=host -p 22222:22 nvcr.io/nvidia/base/ubuntu:22.04_20240212
+$ nerdctl run -it --rm --gpus all --network=host nvcr.io/nvidia/base/ubuntu:22.04_20240212
 ```
 
 次に、以下コマンドを全てのGPUインスタンスで起動したコンテナ上のrootユーザで実行し、GPUインスタンスに搭載されるGPUをコンテナから認識出来ることを確認します。
@@ -337,6 +337,7 @@ $ mkdir /run/sshd && /usr/sbin/sshd -p 22222
 次に、以下コマンドをマスターノードで起動したコンテナ上のrootユーザで実行し、SSHの鍵ペアを作成します。
 
 ```sh
+$ apt update
 $ apt install -y openssh-server
 $ mkdir -p ~/.ssh && chmod 700 ~/.ssh
 $ ssh-keygen -f ~/.ssh/id_rsa -N ""
