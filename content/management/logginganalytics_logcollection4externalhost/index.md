@@ -1,6 +1,6 @@
 ---
-title: "Logging Analytics：OCI外部のホストからOSログを収集する"
-description: "Logging Analyticsでは、エージェントを使用することでOCIだけでなく、オンプレミスやOCI外部のクラウドのホストからもログを収集することができます。"
+title: "Log Analytics：OCI外部のホストからOSログを収集する"
+description: "Log Analyticsでは、エージェントを使用することでOCIだけでなく、オンプレミスやOCI外部のクラウドのホストからもログを収集することができます。"
 weight: "10"
 tags:
 - 運用管理・監視
@@ -22,8 +22,8 @@ images:
 管理エージェントを動作させるにはJDK8以降が必要です。  
 Javaが未導入であれば、JDKをインストールし、JAVA_HOMEを設定してください。
 
-・Logging Analyticsが有効化されていること    
-このチュートリアルでは、オンボーディング機能を使用してポリシーやLogging Analyticsのリソースが作成済みであることを前提としています。  
+・Log Analyticsが有効化されていること    
+このチュートリアルでは、オンボーディング機能を使用してポリシーやLog Analyticsのリソースが作成済みであることを前提としています。  
 オンボーディング機能については[こちらの記事](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_onboarding/)を参照ください。  
 
 ポリシーやリソースの作成はマニュアルで設定しても問題ありません。  
@@ -118,7 +118,7 @@ OCIコンソールのホーム画面左上のメニューから「監視およ�
 # 4. ログ・グループの作成
 --------------------------
 OCIコンソールのメニューから「監視および管理」を選択し、  
-「Logging Analytics」の「管理」をクリックします。
+「Log Analytics」の「管理」をクリックします。
 ![画像05](LA_LogcollectionFromEC2_05.png)
 
 「ログ・グループ」をクリックし、詳細画面へ進みます。
@@ -132,7 +132,7 @@ OCIコンソールのメニューから「監視および管理」を選択し�
 # 5. エンティティとログソースを関連付ける
 ---------------------------------------
 OCIコンソールのメニューから「監視および管理」を選択し、  
-「Logging Analytics」の「管理」をクリックします。  
+「Log Analytics」の「管理」をクリックします。  
 「エンティティ」をクリックし、詳細画面へ進みます。
 ![画像08](LA_LogcollectionFromEC2_08.png)
 
@@ -140,7 +140,7 @@ OCIコンソールのメニューから「監視および管理」を選択し�
 EC2のエンティティが作成されていることを確認します。
 ![画像09](LA_LogcollectionFromEC2_09.png)
 
-Logging Analyticsの管理画面で「データの追加」をクリックします。
+Log Analyticsの管理画面で「データの追加」をクリックします。
 ![画像10](LA_LogcollectionFromEC2_10.png)
 
 「Linuxコア・ログ」をクリックします。

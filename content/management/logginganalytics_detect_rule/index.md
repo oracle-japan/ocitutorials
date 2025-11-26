@@ -1,6 +1,6 @@
 ---
 title: "検出ルールを作成してアラート通知を設定する"
-description: "Logging Analyticsでは、検出ルールという機能を使用してログベースのアラート通知を設定することができます。"
+description: "Log Analyticsでは、検出ルールという機能を使用してログベースのアラート通知を設定することができます。"
 weight: "10"
 tags:
 - 運用管理・監視
@@ -16,8 +16,8 @@ images:
 ・OCIコンピュートが作成済であること  
 このチュートリアルではOSはOracle Linux 8を前提としています。
 
-・Logging Analyticsが有効化されていること    
-このチュートリアルでは、オンボーディング機能を使用してポリシーやLogging Analyticsのリソースが作成済みであることを前提としています。  
+・Log Analyticsが有効化されていること    
+このチュートリアルでは、オンボーディング機能を使用してポリシーやLog Analyticsのリソースが作成済みであることを前提としています。  
 オンボーディング機能については[こちらの記事](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_onboarding/)を参照ください。  
 
 ポリシーやリソースの作成はマニュアルで設定しても問題ありません。  
@@ -29,9 +29,9 @@ images:
 ユーザーにアクセス制御を設定する場合は以下のドキュメントを参照ください。  
 [ログ・アナリティクスのIAMポリシー・カタログ](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/iam-policies-catalog-logging-analytics.html#LOGAN-GUID-04929DA1-E865-4536-A0EC-46AB4B8B0FE1)
 
-・OCIコンピュートのOSログがLogging Analyticsで表示できていること  
+・OCIコンピュートのOSログがLog Analyticsで表示できていること  
 サンプルとして、Linux Syslogを使用します。  
-参考：[Logging Analytics：OCIコンピュートからOSのログを収集する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/)
+参考：[Log Analytics：OCIコンピュートからOSのログを収集する](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/)
 
 ![画像01](image01.png)
 

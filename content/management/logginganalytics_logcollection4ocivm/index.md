@@ -1,6 +1,6 @@
 ---
-title: "Logging Analytics：OCIコンピュートからOSのログを収集する"
-description: "Logging Analyticsではエージェントを使用することで、OCIだけでなくオンプレミスや他社IasSなど、様々な監視対象のホストから継続的にログを収集することができます。"
+title: "Log Analytics：OCIコンピュートからOSのログを収集する"
+description: "Log Analyticsではエージェントを使用することで、OCIだけでなくオンプレミスや他社IasSなど、様々な監視対象のホストから継続的にログを収集することができます。"
 weight: "10"
 tags:
 - 運用管理・監視
@@ -16,8 +16,8 @@ images:
 ・OCIコンピュートが作成済であること  
 このチュートリアルではOSはOracle Linux 8を前提としています。
 
-・Logging Analyticsが有効化されていること    
-このチュートリアルでは、オンボーディング機能を使用してポリシーやLogging Analyticsのリソースが作成済みであることを前提としています。  
+・Log Analyticsが有効化されていること    
+このチュートリアルでは、オンボーディング機能を使用してポリシーやLog Analyticsのリソースが作成済みであることを前提としています。  
 オンボーディング機能については[こちらの記事](https://oracle-japan.github.io/ocitutorials/management/logginganalytics_onboarding/)を参照ください。  
 
 ポリシーやリソースの作成はマニュアルで設定しても問題ありません。  
@@ -45,7 +45,7 @@ OCIコンソールのメニューから「監視および管理」を選択し�
 エージェント名をクリックして詳細画面へ進みます。
 ![画像02](LA_logcollection4ocivm-02.png)
 
-「プラグインのデプロイ」をクリックし、「Logging Analytics」にチェックを入れます。
+「プラグインのデプロイ」をクリックし、「Log Analytics」にチェックを入れます。
 ![画像03](LA_logcollection4ocivm-03.png)
   
 ![画像04](LA_logcollection4ocivm-04.png)
@@ -78,7 +78,7 @@ OCIコンソールのメニューから「アイデンティティとセキュ�
 ![画像12](LA_logcollection4ocivm-12.png)
 
 {{< hint type=note title="Note" >}}
-オンボーディング機能では、管理エージェントを「Management-Agents」というコンパートメントで管理するように自動設定されますが、OCIコンピュートで有効化する管理エージェントはOCIコンピュートと同じコンパートメントに割り当てられるため、管理エージェントがLogging Analyticsへログをアップロードできるようにするためには、上記のようにポリシーを変更する必要があります。 
+オンボーディング機能では、管理エージェントを「Management-Agents」というコンパートメントで管理するように自動設定されますが、OCIコンピュートで有効化する管理エージェントはOCIコンピュートと同じコンパートメントに割り当てられるため、管理エージェントがLog Analyticsへログをアップロードできるようにするためには、上記のようにポリシーを変更する必要があります。 
 {{< /hint >}}
 
 <br>
@@ -106,7 +106,7 @@ Oracle Cloudエージェントを使用して管理エージェントを有効�
 # 4. エンティティとログソースを関連付ける
 ----------------
 OCIコンソールのメニューから「監視および管理」を選択し、  
-「Logging Analytics」の「管理」をクリックします。
+「Log Analytics」の「管理」をクリックします。
 ![画像13](LA_logcollection4ocivm-13.png)
 
 「エンティティ」をクリックし、詳細画面へ進みます。
@@ -115,7 +115,7 @@ OCIコンソールのメニューから「監視および管理」を選択し�
 OCIコンピュートのエンティティが作成されていることを確認します。
 ![画像15](LA_logcollection4ocivm-15.png)
 
-Logging Analyticsの管理画面で「データの追加」をクリックします。
+Log Analyticsの管理画面で「データの追加」をクリックします。
 ![画像16](LA_logcollection4ocivm-16.png)
 
 「Linuxコア・ログ」をクリックします。
