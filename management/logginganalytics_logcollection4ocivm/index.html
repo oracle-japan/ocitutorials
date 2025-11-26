@@ -43,7 +43,7 @@
 <meta property="article:section" content="Management" />
     <meta
       property="article:modified_time"
-      content="2025-11-26T04:00:07+00:00"
+      content="2025-11-26T22:52:16+00:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Log Analytics：OCIコンピュートからOSのログを収集する",
       "description": "Log Analyticsではエージェントを使用することで、OCIだけでなくオンプレミスや他社IasSなど、様々な監視対象のホストから継続的にログを収集することができます。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/LA_logcollection4ocivm-22.png",
-      "wordCount" : "78",
+      "wordCount" : "96",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-26T04:00:07.00Z",
+      "dateModified": "2025-11-26T22:52:16.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="management">
-    <meta property="article:modified_time" content="2025-11-26T04:00:07+00:00">
+    <meta property="article:modified_time" content="2025-11-26T22:52:16+00:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/LA_logcollection4ocivm-22.png">
 
 
@@ -317,7 +317,7 @@
       <nav id="TableOfContents">
   <ul>
     <li><a href="#1-ociコンピュートの管理エージェントを有効化する">1. OCIコンピュートの管理エージェントを有効化する</a></li>
-    <li><a href="#2-ポリシーの変更">2. ポリシーの変更</a></li>
+    <li><a href="#2-動的グループの作成とポリシーの追加">2. 動的グループの作成とポリシーの追加</a></li>
     <li><a href="#3-管理エージェントがosのログファイルを読み取るための権限を付与する">3. 管理エージェントがOSのログファイルを読み取るための権限を付与する</a></li>
     <li><a href="#4-エンティティとログソースを関連付ける">4. エンティティとログソースを関連付ける</a></li>
   </ul>
@@ -395,7 +395,7 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-26T04:00:07Z">
+        <time datetime="2025-11-26T22:52:16Z">
             Nov 26, 2025
         </time>
     
@@ -420,7 +420,7 @@
 オンボーディング機能については<a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/management/logginganalytics_onboarding/"
->こちらの記事</a>を参照ください。</p>
+>Log Analyticsの有効化</a>を参照ください。</p>
 <p>ポリシーやリソースの作成はマニュアルで設定しても問題ありません。<br>
 マニュアルで設定する場合は以下のドキュメントを参照ください。<br>
 <a
@@ -482,42 +482,43 @@
 /></p>
 <br>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="2-ポリシーの変更"
+    <h1 id="2-動的グループの作成とポリシーの追加"
     >
-        2. ポリシーの変更
+        2. 動的グループの作成とポリシーの追加
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/#2-ポリシーの変更" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. ポリシーの変更" aria-label="アンカー先: 2. ポリシーの変更" href="#2-%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc%e3%81%ae%e5%a4%89%e6%9b%b4">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/management/logginganalytics_logcollection4ocivm/#2-動的グループの作成とポリシーの追加" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2. 動的グループの作成とポリシーの追加" aria-label="アンカー先: 2. 動的グループの作成とポリシーの追加" href="#2-%e5%8b%95%e7%9a%84%e3%82%b0%e3%83%ab%e3%83%bc%e3%83%97%e3%81%ae%e4%bd%9c%e6%88%90%e3%81%a8%e3%83%9d%e3%83%aa%e3%82%b7%e3%83%bc%e3%81%ae%e8%bf%bd%e5%8a%a0">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <hr>
-<p>オンボーディングで自動作成されるポリシーの一部を変更します。
-OCIコンソールのメニューから「アイデンティティとセキュリティ」を選択し、「ドメイン」をクリックして詳細画面へ進みます。
+<p>OCIコンソールのメニューから「アイデンティティとセキュリティ」を選択し、「ドメイン」をクリックして詳細画面へ進みます。
 <img
   src="LA_logcollection4ocivm-05.png"
   alt="画像05"
   
 /></p>
-<p>「Default」ドメイン内にある「動的グループ」を編集します。
-<img
+<p><img
   src="LA_logcollection4ocivm-06.png"
   alt="画像06"
   
 /></p>
-<p><img
-  src="LA_logcollection4ocivm-07.png"
-  alt="画像07"
-  
-/></p>
-<p>一致ルールを「下で定義したいずれかのルールに一致」に変更します。
+<p>「動的グループ」を作成します。
 <img
-  src="LA_logcollection4ocivm-08.png"
-  alt="画像08"
+  src="image23.png"
+  alt="画像23"
   
 /></p>
+<p>動的グループ名と説明を入力します。ここでは以下のようにします。</p>
+<ul>
+<li>動的グループ名：Management-Agent-Dynamic-Group</li>
+<li>説明：demo</li>
+</ul>
+<p>一致ルールに以下のように記入します。</p>
+<pre tabindex="0"><code>ALL {resource.type=&#39;managementagent&#39;, resource.compartment.id=&#39;&lt;management_agent_compartment_OCID&gt;&#39;}
+</code></pre><p><code>&lt;management_agent_compartment_OCID&gt;</code> については、管理エージェントが配置されているコンパートメントのOCIDを記入してください。</p>
 <p><img
-  src="LA_logcollection4ocivm-09.png"
-  alt="画像09"
+  src="image24.png"
+  alt="画像24"
   
 /></p>
 <p>アイデンティティのトップ画面に戻り、「ポリシー」をクリックして詳細画面へ進みます。
@@ -526,18 +527,16 @@ OCIコンソールのメニューから「アイデンティティとセキュ�
   alt="画像10"
   
 /></p>
-<p>「logging_analytics_automatic_injection_policies」を編集します。
+<p>Log Analyticsの有効化で自動作成された「logging_analytics_automatic_injection_policies」を編集します。
 <img
   src="LA_logcollection4ocivm-11.png"
   alt="画像11"
   
 /></p>
-<p>以下のようにポリシーのWhere句を in tenancy に変更します。
-<img
-  src="LA_logcollection4ocivm-12.png"
-  alt="画像12"
-  
-/></p>
+<p>以下のポリシーを追加します。</p>
+<pre tabindex="0"><code>ALLOW DYNAMIC-GROUP Management-Agent-Dynamic-Group TO USE METRICS IN TENANCY
+ALLOW DYNAMIC-GROUP Management-Agent-Dynamic-Group TO {LOG_ANALYTICS_LOG_GROUP_UPLOAD_LOGS} IN TENANCY
+</code></pre><!--
 
 
 
@@ -548,6 +547,7 @@ OCIコンソールのメニューから「アイデンティティとセキュ�
   <div class="gdoc-hint__text">オンボーディング機能では、管理エージェントを「Management-Agents」というコンパートメントで管理するように自動設定されますが、OCIコンピュートで有効化する管理エージェントはOCIコンピュートと同じコンパートメントに割り当てられるため、管理エージェントがLog Analyticsへログをアップロードできるようにするためには、上記のようにポリシーを変更する必要があります。</div>
 </blockquote>
 
+-->
 <br>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-管理エージェントがosのログファイルを読み取るための権限を付与する"
@@ -12055,6 +12055,30 @@ OCIコンソールのメニューから「アイデンティティとセキュ�
       
     
 
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
     
       
       
