@@ -38,7 +38,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 
 
 ## Log Analytics
-+ **[Log Analytics オンボーディング](/ocitutorials/management/logginganalytics_onboarding/)**
++ **[Log Analyticsの有効化](/ocitutorials/management/logginganalytics_onboarding/)**
 + **[OCIのLog AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)**
 + **[Log Analytics：OCIコンピュートからOSのログを収集する](/ocitutorials/management/logginganalytics_logcollection4ocivm/)**
 + **[Log Analytics：OCI外部のホストからOSログを収集する](/ocitutorials/management/logginganalytics_logcollection4externalhost/)**
