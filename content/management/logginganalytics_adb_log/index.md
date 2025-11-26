@@ -1,6 +1,6 @@
 ---
-title: "Logging AnalyticsでAutonomous Databaseのログを収集する"
-description: "Autonomous Databaseのログを収集するためのLogging Analyticsの設定方法について紹介します。"
+title: "Log AnalyticsでAutonomous Databaseのログを収集する"
+description: "Autonomous Databaseのログを収集するためのLog Analyticsの設定方法について紹介します。"
 weight: "120"
 tags:
 - 運用管理・監視
@@ -9,14 +9,14 @@ images:
 ---
 
 **チュートリアル概要説明**  
-Autonomous DatabaseにはOSログインできないため、ログ情報は表やビューにSQLでアクセスして取得する必要がありますが、O&Mの管理エージェントを使用することでLogging Analyticsへのアップロードを効率的に自動化することができます。  
+Autonomous DatabaseにはOSログインできないため、ログ情報は表やビューにSQLでアクセスして取得する必要がありますが、O&Mの管理エージェントを使用することでLog Analyticsへのアップロードを効率的に自動化することができます。  
 本チュートリアルは[こちらのドキュメント](https://docs.oracle.com/en/cloud/paas/logging-analytics/tutorial-atp-adw-support/#before_you_begin)を補足する内容となりますので、あわせてご参照ください。
 
 **所要時間 :** 約30分
 
 **前提条件 :**
-+ Logging Analyticsの有効化  
-  参考：[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)
++ Log Analyticsの有効化  
+  参考：[OCIのLog AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)
 + Autonomous Databaseの作成  
   参考：[101: ADBインスタンスを作成してみよう](/ocitutorials/adb/adb101-provisioning/)
 + Autonomous Databaseへアクセスするためのコンピュート・インスタンスの作成  
@@ -54,7 +54,7 @@ allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compar
   ![画面ショット4](img4.png)
 <br><br>
 
-# 3. Logging Analytics ロググループを作成する
+# 3. Log Analytics ロググループを作成する
 + 監視および管理 > ログ・アナリティクス > 管理
   ![画面ショット5](img5.png)
 
@@ -65,7 +65,7 @@ allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compar
   ![画面ショット7](img7.png)
 <br><br>
 
-# 4. Logging Analytics エンティティを作成する
+# 4. Log Analytics エンティティを作成する
 + エンティティの作成をクリックします。
   ![画面ショット8](img8.png)
 
@@ -186,7 +186,7 @@ Effect      Credential         Source
 ```
 <br>
 
-# 8. Logging Analytics ログソースを作成する
+# 8. Log Analytics ログソースを作成する
 + ソースの作成をクリック
   ![画面ショット10](img10.png)
 
@@ -213,7 +213,7 @@ order by event_timestamp;
   ![画面ショット13](img13.png)
 <br><br>
 
-# 9. Logging Analytics ログソースとエンティティの関連付け
+# 9. Log Analytics ログソースとエンティティの関連付け
 + 作成しておいたエンティティをソースに紐づけます。
   ![画面ショット14](img14.png)
 
@@ -225,7 +225,7 @@ order by event_timestamp;
 + 確認のため、ADB管理画面の「データベース・アクション」からユーザーを作成、更新、削除などの操作をしてみます。
   ![画面ショット16](img16.png)
 
-+ 1分ほど待つとログがLogging Analyticsにアップロードされて、エクスプローラーに表示されました。
++ 1分ほど待つとログがLog Analyticsにアップロードされて、エクスプローラーに表示されました。
   ![画面ショット17](img17.png)
 <br><br>
 

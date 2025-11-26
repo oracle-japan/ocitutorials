@@ -1,6 +1,6 @@
 ---
-title: "Logging Analytics オンボーディング"
-description: "Logging Analyticsを使用開始するには、ポリシーやリソースの作成など、事前準備が必要となります。オンボーディングを使用することで、必要なポリシーとリソースが自動的に作成されるため、すぐにログの分析を開始することができます。"
+title: "Log Analytics オンボーディング"
+description: "Log Analyticsを使用開始するには、ポリシーやリソースの作成など、事前準備が必要となります。オンボーディングを使用することで、必要なポリシーとリソースが自動的に作成されるため、すぐにログの分析を開始することができます。"
 weight: "120"
 tags:
 - 運用管理・監視
@@ -10,7 +10,7 @@ images:
 
 チュートリアル概要
 ----------------
-オンボーディングで設定可能なLogging Analyticsの構成は次の2つになります。
+オンボーディングで設定可能なLog Analyticsの構成は次の2つになります。
 * ホストログの継続的な取得  
 * OCI監査ログの継続的な取得
 
@@ -34,13 +34,13 @@ OCIコンソールの左上のメニューから「監視および管理」を�
 
 <br>
 
-Logging Analyticsがまだ有効化されていない場合、以下のような画面になります。  
+Log Analyticsがまだ有効化されていない場合、以下のような画面になります。  
 「ログ・アナリティクスの使用の開始」をクリックします。  
 ![画像01](LA_Onboarding-01.png)
 
 <br>
 
-Logging Analyticsを有効化するためのポリシーが自動作成され、「logging_analytics_automatic_service_policies」という名前で保存されます。  
+Log Analyticsを有効化するためのポリシーが自動作成され、「logging_analytics_automatic_service_policies」という名前で保存されます。  
 また、ログ・グループ「Default」が作成されます。  
 ![画像02](LA_Onboarding-02.png)
 

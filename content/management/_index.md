@@ -37,13 +37,13 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[OCIのログをDataDogで監視する](/ocitutorials/management/logging_datadog/)**
 
 
-## Logging Analytics
-+ **[Logging Analytics オンボーディング](/ocitutorials/management/logginganalytics_onboarding/)**
-+ **[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)**
-+ **[Logging Analytics：OCIコンピュートからOSのログを収集する](/ocitutorials/management/logginganalytics_logcollection4ocivm/)**
-+ **[Logging Analytics：OCI外部のホストからOSログを収集する](/ocitutorials/management/logginganalytics_logcollection4externalhost/)**
-+ **[カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する](/ocitutorials/management/logginganalytics_customparser/)**
-+ **[Logging AnalyticsでAutonomous Databaseのログを収集する](/ocitutorials/management/logginganalytics_adb_log/)**
+## Log Analytics
++ **[Log Analytics オンボーディング](/ocitutorials/management/logginganalytics_onboarding/)**
++ **[OCIのLog AnalyticsでOCIの監査ログを可視化・分析する](/ocitutorials/management/audit-log-analytics/)**
++ **[Log Analytics：OCIコンピュートからOSのログを収集する](/ocitutorials/management/logginganalytics_logcollection4ocivm/)**
++ **[Log Analytics：OCI外部のホストからOSログを収集する](/ocitutorials/management/logginganalytics_logcollection4externalhost/)**
++ **[カスタム・パーサーを作成してLog Analyticsで未対応のログを分析する](/ocitutorials/management/logginganalytics_customparser/)**
++ **[Log AnalyticsでAutonomous Databaseのログを収集する](/ocitutorials/management/logginganalytics_adb_log/)**
 + **[検出ルールを作成してアラート通知を設定する](/ocitutorials/management/logginganalytics_detect_rule/)**
 
 

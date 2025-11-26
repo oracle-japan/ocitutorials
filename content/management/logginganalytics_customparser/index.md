@@ -1,6 +1,6 @@
 ---
-title: "カスタム・パーサーを作成してOCI Logging Analyticsで未対応のログを分析する"
-description: "Logging Analyticsでは250を超えるログの解析文「パーサー」が定義されているため、主要なシステムのログはすぐに分析をすることができます。しかし万が一、分析したいログのパーサーが定義されていない場合、ユーザーが手動でパーサーを作成することができます。カスタム・パーサーの作成は画面UIからの操作だけで完了するため、非常に簡単です。本チュートリアルではカスタム・パーサーの作成手順を紹介します。"
+title: "カスタム・パーサーを作成してOCI Log Analyticsで未対応のログを分析する"
+description: "Log Analyticsでは250を超えるログの解析文「パーサー」が定義されているため、主要なシステムのログはすぐに分析をすることができます。しかし万が一、分析したいログのパーサーが定義されていない場合、ユーザーが手動でパーサーを作成することができます。カスタム・パーサーの作成は画面UIからの操作だけで完了するため、非常に簡単です。本チュートリアルではカスタム・パーサーの作成手順を紹介します。"
 weight: "150"
 tags:
 - 運用管理・監視
@@ -8,17 +8,17 @@ images:
 - management/logginganalytics_customparser/LA_customparser13.png
 ---
 
-OCI Observability & Management のサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)では、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。
-Logging Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。
-しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Logging Analyticsはユーザーがカスタムでパーサーを定義することもできます。
-本チュートリアルでは、Logging Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。
+OCI Observability & Management のサービスの1つ、Log Analyticsでは様々なログを可視化、分析する機能を提供します。[OCIのLog AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)では、事前に定義されていたOCI Audit Logのパーサー（解析文）を使用してOCIの監査ログを解析し、分析しました。
+Log Analyticsでは250種類以上のログのパーサー（解析文）が定義されているため、主要なシステムのログは取り込んですぐに分析することができます。
+しかし、万が一分析したいログのパーサー（解析文）が事前に定義されていなくても心配いりません。Log Analyticsはユーザーがカスタムでパーサーを定義することもできます。
+本チュートリアルでは、Log Analyticsで定義されていないログのパーサーを作成する手順をご紹介します。
 
 
 **所要時間 :** 約20分
 
 
 **前提条件 :**
-+ ユーザーがLogging Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
++ ユーザーがLog Analyticsを使用するためのポリシーが作成されていること。ポリシーの詳細は[OCIのLog AnalyticsでOCIの監査ログを可視化・分析する](https://oracle-japan.github.io/ocitutorials/intermediates/audit-log-analytics/)もしくは、[ドキュメント](https://docs.oracle.com/ja-jp/iaas/logging-analytics/doc/minimum-set-iam-policies-required-use-logging-analytics.html)をご参照ください。
 
 
 **注意 :**

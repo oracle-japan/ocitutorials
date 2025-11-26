@@ -1,6 +1,6 @@
 ---
-title: "OCIのLogging AnalyticsでOCIの監査ログを可視化・分析する"
-description: "トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLogging Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLogging Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。"
+title: "OCIのLog AnalyticsでOCIの監査ログを可視化・分析する"
+description: "トラブルシューティングの際、ログを即時に分析したい、という場面はありませんか？OCIのLog Analyticsでは様々なログを可視化、分析する機能を提供します。実際にOCIの監査ログをLog Analyticsで分析し、ユーザーアクティビティを可視化してみましょう。必要な操作は全てGUIから行うことができます。"
 weight: "150"
 tags:
 - 運用管理・監視
@@ -8,16 +8,16 @@ images:
 - management/audit-log-analytics/audit-loganalytics25.png
 ---
 
-OCI Observability&Managementのサービスの1つ、Logging Analyticsでは様々なログを可視化、分析する機能を提供します。
-Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit...)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。
-この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLogging Analyticsで分析する手順をご紹介します。
+OCI Observability&Managementのサービスの1つ、Log Analyticsでは様々なログを可視化、分析する機能を提供します。
+Log AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit...)だけでなく、エージェントを使用することでOSやデータベース、Webサーバーなどのログを可視化、分析することが可能です。
+この章では、エージェントは利用せず簡単な操作でOCIの監査ログをLog Analyticsで分析する手順をご紹介します。
 
 
 **所要時間 :** 約20分
 
 **前提条件 :**
-+ Logging Analyticsが有効化されていること
-- OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Logging Analyticsを有効化させることができます。
++ Log Analyticsが有効化されていること
+- OCIコンソールのメニューボタン→監視および管理→ログ・アナリティクス→ログ・エクスプローラを選択し、「ログ・アナリティクスの使用の開始」を選択することで、Log Analyticsを有効化させることができます。
 ![画面キャプチャ27](audit-loganalytics27.png)
 
 
@@ -27,13 +27,13 @@ Logging AnalyticsではOCIの各種ログ(VCN, Load Balancer, Audit...)だけで
 
 
 # 1. IAMポリシーの作成
-Logging Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。
+Log Analyticsを利用するためにはOCIの他のサービスと同様に、IAMポリシーによってアクセス権限が付与されている必要があります。
 以下のポリシーをテナンシで作成してください。
 
 
-※この章では、ユーザーにLogging Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。[ドキュメント](https://docs.oracle.com/en-us/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html#GUID-EEB0A32F-9D33-4CF6-9FE7-F254C92BB2C0) を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。
+※この章では、ユーザーにLog Analyticsの管理権限を付与します。ユーザーはログ・アナリティクスの構成やログファイルのアップロード、削除を含む全ての管理権限を行うことができます。[ドキュメント](https://docs.oracle.com/en-us/iaas/logging-analytics/doc/enable-access-logging-analytics-and-its-resources.html#GUID-EEB0A32F-9D33-4CF6-9FE7-F254C92BB2C0) を参考にユーザーの役割、ロールごとにIAMポリシーの権限を調整してください。
 
-※OCIのテナンシ管理者がLogging Analyticsを利用する場合は、作成するポリシーは「1-2.Logging Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。
+※OCIのテナンシ管理者がLog Analyticsを利用する場合は、作成するポリシーは「1-2.Log Analyticsサービスへのポリシー」のみになります。その他のポリシーは作成する必要はありません。
 
 1-1. Loggingサービスを利用するためのポリシー
 ```
@@ -41,7 +41,7 @@ allow group <IAMグループ名> to MANAGE logging-family in tenancy/compartment
 allow group <IAMグループ名> to READ audit-events in tenancy/compartment<コンパートメント名>
 ```
 
-1-2. Logging Analyticsサービスへのポリシー
+1-2. Log Analyticsサービスへのポリシー
 ```
 allow service loganalytics to READ loganalytics-features-family in tenancy
 allow service loganalytics to {LOG_ANALYTICS_LIFECYCLE_INSPECT, LOG_ANALYTICS_LIFECYCLE_READ} in tenancy
@@ -49,7 +49,7 @@ allow service loganalytics to MANAGE cloud-events-rule in tenancy/compartment <�
 allow service loganalytics to READ compartments in tenancy
 ```
 
-1-3. ユーザーがLogging Analyticsを使用するためのポリシー
+1-3. ユーザーがLog Analyticsを使用するためのポリシー
 ```
 allow group <IAMグループ名> to READ compartments in tenancy
 allow group <IAMグループ名> to MANAGE loganalytics-features-family in tenancy
@@ -91,7 +91,7 @@ allow group <IAMグループ名> to MANAGE serviceconnectors in tenancy/compartm
 	![画面ショット6](audit-loganalytics6.png)
 	
 - **ログ・グループ(ソース接続の構成)**: 「_Audit」を選択(OCIの監査ログはデフォルトで_Auditというログ・グループに格納されています。)
-- **ログ・グループ(ターゲット接続の構成)**: 手順2-2で作成したLogging Analyticsのログ・グループを選択 例)AuditLogs
+- **ログ・グループ(ターゲット接続の構成)**: 手順2-2で作成したLog Analyticsのログ・グループを選択 例)AuditLogs
 	
 	![画面ショット7](audit-loganalytics7.png)
 
@@ -170,6 +170,6 @@ Countの数字の部分を選択すると、「failed」という値が含まれ
 	![画面キャプチャ26](audit-loganalytics26.png)
 	
 
-以上がLogging Analyticsを使用したOCI監査ログの分析手順になります。
-Logging Analyticsにはご紹介したクラスタ分析、ツリーマップ、折れ線グラフの他にも、様々なビジュアライゼーションが提供されています。
+以上がLog Analyticsを使用したOCI監査ログの分析手順になります。
+Log Analyticsにはご紹介したクラスタ分析、ツリーマップ、折れ線グラフの他にも、様々なビジュアライゼーションが提供されています。
 
