@@ -162,7 +162,7 @@ SQL*Plusで、プラガブル・データベース(freepdb1)にSYSユーザー�
   BEGIN
     DBMS_NETWORK_ACL_ADMIN.APPEND_HOST_ACE(
       host => '*',
-      ace => xs$ace_type(privilege_list => xs$name_list('connect'),
+      ace => xs$ace_type(privilege_list => xs$name_list('http'),
                         principal_name => 'docuser',
                         principal_type => xs_acl.ptype_db));
   END;
