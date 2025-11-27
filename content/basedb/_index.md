@@ -30,7 +30,7 @@ toc: true
 
 <br/>
 
-**Oracle Cloud で利用したい代表的なサービスといえば、やはり Oracle AI Database です。<br/>まずは、基本となる Base Database インスタンスの作成から始めてみましょう。**
+**Oracle Cloud で利用したい代表的なサービスといえば、やはり Oracle AI Database です。<br/>まずは、基本となる Base Database インスタンスの作成から始めてみましょう! **
 
 ## 基礎編
 
