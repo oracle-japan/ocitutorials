@@ -45,7 +45,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 + **[カスタム・パーサーを作成してLog Analyticsで未対応のログを分析する](/ocitutorials/management/logginganalytics_customparser/)**
 + **[Log AnalyticsでAutonomous Databaseのログを収集する](/ocitutorials/management/logginganalytics_adb_log/)**
 + **[検出ルールを作成してアラート通知を設定する](/ocitutorials/management/logginganalytics_detect_rule/)**
-
++ **[オブジェクト・ストレージからログを収集する](/ocitutorials/management/logan_objectstorage/)**
 
 ## Database Management
 + **[OCI Base Database ServiceでDatabase Managementを有効化する](/ocitutorials/management/dbcs-database-management/)**
