@@ -43,7 +43,7 @@
 <meta property="article:section" content="Oci in Practice" />
     <meta
       property="article:modified_time"
-      content="2025-10-01T20:51:45+09:00"
+      content="2025-11-27T15:32:22+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "ユースケースに合わせてクラウド・インフラの監視をセットアップしよう - OCI Compute Service編",
       "description": "ユースケースに合わせてOCI Compute Serviceの監視を設定することで、クラウド上のサーバーやインフラの状態を的確に管理・把握でき、安定した運用を実現します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/check_metric.png",
-      "wordCount" : "538",
+      "wordCount" : "535",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-01T20:51:45.00Z",
+      "dateModified": "2025-11-27T15:32:22.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="oci-in-practice">
-    <meta property="article:modified_time" content="2025-10-01T20:51:45+09:00">
+    <meta property="article:modified_time" content="2025-11-27T15:32:22+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_compute/check_metric.png">
 
 
@@ -402,8 +402,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-01T20:51:45&#43;09:00">
-            Oct 1, 2025
+        <time datetime="2025-11-27T15:32:22&#43;09:00">
+            Nov 27, 2025
         </time>
     
 </span>
@@ -573,7 +573,7 @@
 <li>プロトコル：電子メール</li>
 <li>電子メール欄：ご自身のメールアドレス
 <img
-  src="go2subsc.png"
+  src="hung_subsc.png"
   alt="サブスクリプションへ移動"
   
 /></li>
@@ -757,8 +757,8 @@
 <ul>
 <li>名前：任意の名前</li>
 <li>説明：任意の説明</li>
-<li>コンパートメント：今回は動的グループの一致ルールで利用したコンパ―トメント</li>
-<li>ポリシー・ビルダー：手動エディタに切り替え、<code>Allow dynamic-group tutorial_dg to use metrics in compartment &lt;compartment_name&gt;</code>を入力（今回は&lt;compartment_name&gt;は一つ上で入力したコンパートメント名に置き換え）</li>
+<li>コンパートメント：root コンパートメント</li>
+<li>ポリシー・ビルダー：手動エディタに切り替え、<code>Allow dynamic-group tutorial_dg to use metrics in tenancy</code>を入力</li>
 </ul>
 <p><img
   src="create_policy.png"
@@ -823,7 +823,7 @@
 </ul>
 </li>
 <li>
-<p><code>python3 custom_metric.py</code>が実行できることを書くにしたら、<code>crontab -e</code>で以下を書き込みます。<br> <code>*/1 * * * * /usr/bin/python3 /home/opc/custom_metric.py</code></p>
+<p><code>python3 custom_metric.py</code>が実行できることを確認したら、<code>crontab -e</code>で以下を書き込みます。<br> <code>*/1 * * * * /usr/bin/python3 /home/opc/custom_metric.py</code></p>
 </li>
 <li>
 <p>ユースケース 1 の設定を参考にして、アラームの設定を行います。</p>
@@ -910,12 +910,12 @@ Windows Server ではユーザーがログオンした際に、セキュリテ�
 /></p>
 <ol>
 <li>はじめに、サービスどうしを連携させるために必要なポリシーを設定します。<br>
-ハンバーガーメニューから「アイデンティティとセキュリティ」&gt; 「ポリシー」へ移動し、ユースケース 2 で作成したポリシーの詳細を開きます。ステートメントを追加します。<br>
-「ポリシー・ステートメントの編集」で次の一文を追加します（&lt;&gt;内はユースケース 2 のときと同じ値で置き換えます）。</li>
+ハンバーガーメニューから「アイデンティティとセキュリティ」&gt; 「ポリシー」へ移動し、先ほどルートコンパートメントに作成したポリシーにステートメントを追加します。<br>
+「ポリシー・ステートメントの編集」で次の 2 文を追加します（&lt;&gt;内はユースケース 2 のときと同じ値で置き換えます）。</li>
 </ol>
 <ul>
-<li>動的グループがカスタム・ログを利用するためのポリシー：<code>allow dynamic-group &lt;dynamic_group_name&gt; to use log-content in compartment &lt;compartment_name&gt;</code></li>
-<li>サービス・コネクタが通知サービスを利用するためのポリシー：<code>allow any-user to use ons-topics in compartment &lt;compartment_name&gt; where all {request.principal.type= 'serviceconnector', request.principal.compartment.name=&lt;compartment_name&gt;}</code></li>
+<li>動的グループがカスタム・ログを利用するためのポリシー：<code>allow dynamic-group &lt;dynamic_group_name&gt; to use log-content in tenancy</code></li>
+<li>サービス・コネクタが通知サービスを利用するためのポリシー：<code>allow any-user to use ons-topics in compartment id &lt;target_topic_compartment_OCID&gt; where all {request.principal.type= 'serviceconnector', request.principal.compartment.id='&lt;serviceconnector_compartment_OCID&gt;'}</code></li>
 </ul>
 <ol start="2">
 <li>ログを保存しておくためのログ・グループを作成します。<br>ハンバーガーメニューから「監視および管理」&gt;「ロギング」&gt;「ログ・グループ」を選択し、「Create log group」ボタンからログの作成を開始します。</li>
@@ -976,7 +976,16 @@ Windows Server ではユーザーがログオンした際に、セキュリテ�
 <p>構成タイプ：ロギング</p>
 </li>
 <li>
-<p>エージェント構成のログ入力の構成 - 入力タイプ：Windows イベントログ - 名前の入力：security_input - イベント・チャネル：「セキュリティ」
+<p>エージェント構成のログ入力の構成</p>
+</li>
+<li>
+<p>入力タイプ：Windows イベントログ</p>
+</li>
+<li>
+<p>名前の入力：security_input</p>
+</li>
+<li>
+<p>イベント・チャネル：「セキュリティ」
 　<img
   src="agent_config2.png"
   alt="エージェント構成2"
@@ -1025,7 +1034,7 @@ Windows Server ではユーザーがログオンした際に、セキュリテ�
 <ol start="5">
 <li>Windows Server にログインして、少し待ち、通知が来ることを確認できたら成功です。
 <img
-  src="windows_mail.png"
+  src="Windows_mail.png"
   alt="Windows通知メール"
   
 /></li>
