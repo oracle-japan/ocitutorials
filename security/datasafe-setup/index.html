@@ -11,7 +11,7 @@
 
   <meta name="description" content="Oracle Data Safeは、OCIのOracle Databaseをよりセキュアに使うための付加的なサービスです。Data Safeは機密データの検出、データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価、SQL Firewallなどの機能を提供します。" />
 
-  <title>Oracle Data SafeをBaseDBに設定する | OCIチュートリアル</title>
+  <title>Oracle Data Safeを設定する | OCIチュートリアル</title>
 
   <link rel="icon" type="image/ico" href="/ocitutorials/favicon/favicon.ico" />
 <link
@@ -32,7 +32,7 @@
   
   <meta
     property="og:title"
-    content="Oracle Data SafeをBaseDBに設定する"
+    content="Oracle Data Safeを設定する"
   />
   <meta property="og:site_name" content="OCIチュートリアル" />
   <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/image02.png" />
@@ -43,12 +43,12 @@
 <meta property="article:section" content="Security" />
     <meta
       property="article:modified_time"
-      content="2025-09-18T15:06:24+09:00"
+      content="2025-11-26T12:09:24+00:00"
     />
 
 
   <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Oracle Data SafeをBaseDBに設定する" />
+<meta name="twitter:title" content="Oracle Data Safeを設定する" />
   <meta property="twitter:image" content="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/image02.png" />
   <meta name="twitter:description" content="Oracle Data Safeは、OCIのOracle Databaseをよりセキュアに使うための付加的なサービスです。Data Safeは機密データの検出、データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価、SQL Firewallなどの機能を提供します。" />
 
@@ -58,12 +58,12 @@
       "@context": "http://schema.org",
       "@type": "TechArticle",
       "articleSection": "Security",
-      "name": "Oracle Data SafeをBaseDBに設定する",
+      "name": "Oracle Data Safeを設定する",
       "url" : "https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/",
-      "headline": "Oracle Data SafeをBaseDBに設定する",
+      "headline": "Oracle Data Safeを設定する",
       "description": "Oracle Data Safeは、OCIのOracle Databaseをよりセキュアに使うための付加的なサービスです。Data Safeは機密データの検出、データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価、SQL Firewallなどの機能を提供します。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/image02.png",
-      "wordCount" : "112",
+      "wordCount" : "144",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-09-18T15:06:24.00Z",
+      "dateModified": "2025-11-26T12:09:24.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -161,18 +161,18 @@
   
 <meta property="og:url" content="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/">
   <meta property="og:site_name" content="OCIチュートリアル">
-  <meta property="og:title" content="Oracle Data SafeをBaseDBに設定する">
+  <meta property="og:title" content="Oracle Data Safeを設定する">
   <meta property="og:description" content="Oracle Data Safeは、OCIのOracle Databaseをよりセキュアに使うための付加的なサービスです。Data Safeは機密データの検出、データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価、SQL Firewallなどの機能を提供します。">
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="security">
-    <meta property="article:modified_time" content="2025-09-18T15:06:24+09:00">
+    <meta property="article:modified_time" content="2025-11-26T12:09:24+00:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/image02.png">
 
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/image02.png">
-  <meta name="twitter:title" content="Oracle Data SafeをBaseDBに設定する">
+  <meta name="twitter:title" content="Oracle Data Safeを設定する">
   <meta name="twitter:description" content="Oracle Data Safeは、OCIのOracle Databaseをよりセキュアに使うための付加的なサービスです。Data Safeは機密データの検出、データ・マスキング、アクティビティ監査、セキュリティ構成の評価、ユーザーのリスク評価、SQL Firewallなどの機能を提供します。">
       <meta name="twitter:site" content="@Oracle_Japan">
 
@@ -316,6 +316,7 @@
       <h1>&nbsp;目次</h1>
       <nav id="TableOfContents">
   <ul>
+    <li><a href="#data-safeにautonomous-ai-databaseを登録する">Data SafeにAutonomous AI Databaseを登録する</a></li>
     <li><a href="#data-safeにbase-dbを登録する">Data SafeにBase DBを登録する</a>
       <ul>
         <li><a href="#ユーザの作成">ユーザの作成</a></li>
@@ -374,7 +375,7 @@
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/' href='/ocitutorials/'><span itemprop='name'>Oracle Cloud Infrastructure チュートリアル</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/security/' href='/ocitutorials/security/'><span itemprop='name'>OCI セキュリティ チュートリアル</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Oracle Data SafeをBaseDBに設定する</span><meta itemprop='position' content='4' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/' href='/ocitutorials/'><span itemprop='name'>Oracle Cloud Infrastructure チュートリアル</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/ocitutorials/security/' href='/ocitutorials/security/'><span itemprop='name'>OCI セキュリティ チュートリアル</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>Oracle Data Safeを設定する</span><meta itemprop='position' content='4' /></li>
   
 
   
@@ -389,13 +390,13 @@
 
 
   <article class="gdoc-markdown gdoc-markdown__align--left">
-     <h1>Oracle Data SafeをBaseDBに設定する</h1> 
+     <h1>Oracle Data Safeを設定する</h1> 
     <span class="flex align-center no-wrap">
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-09-18T15:06:24&#43;09:00">
-            Sep 18, 2025
+        <time datetime="2025-11-26T12:09:24Z">
+            Nov 26, 2025
         </time>
     
 </span>
@@ -427,15 +428,52 @@ Data Safeを有効化すると以下の機能を利用することができま�
 <li>アクティビティ監査</li>
 <li>SQL Firewall（DBのバージョンが23aiのみ対応）</li>
 </ul>
-<p>本手順ではBaseDBに対してData Safeを設定する手順をご紹介しますが、ExaDB-DやAutomomous Databaseも同様の手順で設定できます。</p>
+<p>本チュートリアルではOCIのとAutomomous AI DatabaseとBaseDBに対してData Safeを設定する手順をご紹介します。</p>
 <p><strong>所要時間 :</strong></p>
 <ul>
 <li>約30分</li>
 </ul>
 <p><strong>前提条件 :</strong></p>
 <ul>
+<li>OCIのAutonomous AI Databaseが作成済み</li>
 <li>OCIのBase DBが作成済み</li>
 </ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="data-safeにautonomous-ai-databaseを登録する"
+    >
+        Data SafeにAutonomous AI Databaseを登録する
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/security/datasafe-setup/#data-safeにautonomous-ai-databaseを登録する" class="gdoc-page__anchor clip flex align-center" title="アンカー先: Data SafeにAutonomous AI Databaseを登録する" aria-label="アンカー先: Data SafeにAutonomous AI Databaseを登録する" href="#data-safe%e3%81%abautonomous-ai-database%e3%82%92%e7%99%bb%e9%8c%b2%e3%81%99%e3%82%8b">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>Data SafeにAutonomous AI Databaseを登録します。
+Data Safeの概要画面から、対象のデータベースの「ウィザードの起動」をクリックします。<br>
+今回はAutonomous AI Databaseに対してData Safeを設定するので、Oracle Cloudデータベースの「ウィザードの起動」をクリックします。
+<img
+  src="image11.png"
+  alt="alt text"
+  
+/>
+Data Safeに登録するAutonomous AI Databaseを選択し、「次」をクリックします。
+<img
+  src="image12.png"
+  alt="alt text"
+  
+/>
+「登録」をクリックします。
+<img
+  src="image13.png"
+  alt="alt text"
+  
+/>
+登録が完了すると、画面が推移しステータスが「ACTIVE」になります。
+<img
+  src="image14.png"
+  alt="alt text"
+  
+/>
+Autonomous AI Databaseの登録方法については以上です。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="data-safeにbase-dbを登録する"
     >
@@ -445,6 +483,7 @@ Data Safeを有効化すると以下の機能を利用することができま�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
+<p>Data SafeにBase DBを登録します。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="ユーザの作成"
     >
@@ -454,7 +493,7 @@ Data Safeを有効化すると以下の機能を利用することができま�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Data Safeに登録する際にPDBのデータベース・ユーザが必要です。
+<p>Data SafeにBase DBを登録する際にPDBのデータベース・ユーザが必要です。
 ユーザーの名前は自由ですが、OCIコンソールでの登録画面では DATASAFE$ADMIN ユーザー名がデフォルトでセットされてるため、この名前を使用して作成します。パスワードは14文字以上で、大文字、小文字、数字および特殊文字をそれぞれ1つ以上含める必要があります。
 PDBにログインし、以下のSQLを実行します。</p>
 <pre tabindex="0"><code>CREATE USER DATASAFE$ADMIN identified by &#34;パスワード&#34;;
@@ -477,7 +516,7 @@ PDBにログインし、以下のSQLを実行します。</p>
     </a>
 </div>
 <p>ユーザの設定および権限の付与が完了したら、対象のデータベースにData Safeを設定します。
-Data Safeの概要画面から、対象のデータベースの「ウィザードの起動」をクリックします。
+Data Safeの概要画面から、対象のデータベースの「ウィザードの起動」をクリックします。<br>
 今回はBaseDBに対してData Safeを設定するので、Oracle Cloudデータベースの「ウィザードの起動」をクリックします。
 <img
   src="image02.png"
@@ -5116,6 +5155,30 @@ Data Safeの概要画面から、対象のデータベースの「ウィザー�
             
             
           
+        
+
+        
+
+        
+          
+        
+
+        
+        
+      
+    
+      
+      
+
+      
+        
+        
+        
+        
+
+        
+        
+
         
 
         
