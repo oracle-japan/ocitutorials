@@ -85,7 +85,7 @@ Oracle Linux 8 のコンピュート・インスタンスで、メトリック�
      - サブスクリプション・トピック：OS_hung_topic（先ほどの手順で作成したトピックを選択）
      - プロトコル：電子メール
      - 電子メール欄：ご自身のメールアドレス
-       ![サブスクリプションへ移動](go2subsc.png)
+       ![サブスクリプションへ移動](hung_subsc.png)
    - 登録したアドレス宛に確認メールが届くので、Confirm subscription をクリックして、サブスクリプションを有効化します
      ![サブスクリプションを有効化](activate_subsc.png)
    - サブスクリプションの状態が「保留中」から「アクティブ」に変化します
@@ -171,8 +171,8 @@ Oracle Linux 8 のコンピュート・インスタンスで、メトリック�
 
      - 名前：任意の名前
      - 説明：任意の説明
-     - コンパートメント：今回は動的グループの一致ルールで利用したコンパ―トメント
-     - ポリシー・ビルダー：手動エディタに切り替え、`Allow dynamic-group tutorial_dg to use metrics in compartment <compartment_name>`を入力（今回は<compartment_name>は一つ上で入力したコンパートメント名に置き換え）
+     - コンパートメント：root コンパートメント
+     - ポリシー・ビルダー：手動エディタに切り替え、`Allow dynamic-group tutorial_dg to use metrics in tenancy`を入力
 
      ![動的グループ入力](create_policy.png)
 
@@ -224,7 +224,7 @@ Oracle Linux 8 のコンピュート・インスタンスで、メトリック�
      print(post_metric_data_response.data)
      ```
 
-4. `python3 custom_metric.py`が実行できることを書くにしたら、`crontab -e`で以下を書き込みます。<br> `*/1 * * * * /usr/bin/python3 /home/opc/custom_metric.py`
+4. `python3 custom_metric.py`が実行できることを確認したら、`crontab -e`で以下を書き込みます。<br> `*/1 * * * * /usr/bin/python3 /home/opc/custom_metric.py`
 
 5. ユースケース 1 の設定を参考にして、アラームの設定を行います。
 
@@ -271,11 +271,11 @@ Windows Server ではユーザーがログオンした際に、セキュリテ�
 ![ユースケース3概要](usecase3-overview.png)
 
 1. はじめに、サービスどうしを連携させるために必要なポリシーを設定します。<br>
-   ハンバーガーメニューから「アイデンティティとセキュリティ」> 「ポリシー」へ移動し、ユースケース 2 で作成したポリシーの詳細を開きます。ステートメントを追加します。<br>
-   「ポリシー・ステートメントの編集」で次の一文を追加します（<>内はユースケース 2 のときと同じ値で置き換えます）。
+   ハンバーガーメニューから「アイデンティティとセキュリティ」> 「ポリシー」へ移動し、先ほどルートコンパートメントに作成したポリシーにステートメントを追加します。<br>
+   「ポリシー・ステートメントの編集」で次の 2 文を追加します（<>内はユースケース 2 のときと同じ値で置き換えます）。
 
-- 動的グループがカスタム・ログを利用するためのポリシー：`allow dynamic-group <dynamic_group_name> to use log-content in compartment <compartment_name>`
-- サービス・コネクタが通知サービスを利用するためのポリシー：`allow any-user to use ons-topics in compartment <compartment_name> where all {request.principal.type= 'serviceconnector', request.principal.compartment.name=<compartment_name>}`
+- 動的グループがカスタム・ログを利用するためのポリシー：`allow dynamic-group <dynamic_group_name> to use log-content in tenancy`
+- サービス・コネクタが通知サービスを利用するためのポリシー：`allow any-user to use ons-topics in compartment id <target_topic_compartment_OCID> where all {request.principal.type= 'serviceconnector', request.principal.compartment.id='<serviceconnector_compartment_OCID>'}`
 
 2. ログを保存しておくためのログ・グループを作成します。<br>ハンバーガーメニューから「監視および管理」>「ロギング」>「ログ・グループ」を選択し、「Create log group」ボタンからログの作成を開始します。
 
@@ -309,7 +309,10 @@ OCI では、サービスごとに標準のログを有効化することが可�
   - グループ：手順 1 で権限を与えた動的グループ
 
 - 構成タイプ：ロギング
-- エージェント構成のログ入力の構成 - 入力タイプ：Windows イベントログ - 名前の入力：security_input - イベント・チャネル：「セキュリティ」
+- エージェント構成のログ入力の構成
+- 入力タイプ：Windows イベントログ
+- 名前の入力：security_input
+- イベント・チャネル：「セキュリティ」
   　![エージェント構成2](agent_config2.png)
 
 4. 次は、ログと通知サービスとの紐づけを行うためのサービス・コネクタの設定を行っていきます。
@@ -329,7 +332,7 @@ OCI では、サービスごとに標準のログを有効化することが可�
   　![サービス・コネクタ2](connector2.png)
 
 5. Windows Server にログインして、少し待ち、通知が来ることを確認できたら成功です。
-   ![Windows通知メール](windows_mail.png)
+   ![Windows通知メール](Windows_mail.png)
 
 <br>
 以上で、コンピュート・インスタンスの監視については終了です。<br>
