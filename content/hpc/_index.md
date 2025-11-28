@@ -97,13 +97,13 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 | No. | チュートリアル名                                                                                       | 構築手法                                      | クラスタ<br>管理機能 | スタティック/<br>オンデマンド | 計算/GPUノードOS            |
 | :-: | :--------------------------------------------------------------------------------------------: | :---------------------------------------: | :----------: | :---------------: | :--------------------: |
 | 1   | **[HPCクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-cluster-network/)**                 | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 8 / 9 |
-| 2   | **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-hpc-cluster-withterraform/)**       | 自動構築<br>（**Terraform** CLI/**スタック**）      | 無し           | スタティック            | **Oracle Linux** 8 / 9 |
-| 3   | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-hpc-cluster)**                  | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
-| 4   | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-hpc-cluster-withautoscaling)**  | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
+| 2   | **[HPCクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-hpc-cluster-withterraform/)**       | 自動構築<br>（**Terraform** CLI / **スタック**）      | 無し           | スタティック            | **Oracle Linux** 8 / 9 |
+| 3   | **[HPCクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-hpc-cluster)**                  | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 8 |
+| 4   | **[HPCクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-hpc-cluster-withautoscaling)**  | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 8 |
 | 5   | **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 手動構築                                      | 無し           | スタティック            | **Oracle Linux** 9 |
-| 6   | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **Oracle Linux** 9 |
-| 7   | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 7.9/8 |
-| 8   | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 7.9/8 |
+| 6   | **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 自動構築<br>（ **Terraform** CLI / **スタック**） | 無し           | スタティック            | **Oracle Linux** 9 |
+| 7   | **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 自動構築<br>（**スタック**）                        | 有り           | スタティック            | **Oracle Linux** 8 |
+| 8   | **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 自動構築<br>（**スタック**）                        | 有り           | オンデマンド            | **Oracle Linux** 8 |
 | 9   | **[GPUクラスタを構築する<br>(Ubuntu OS編)](spinup-gpu-cluster-withubuntu/)**           | 手動構築                                      | 無し           | スタティック            | **Ubuntu** 24.04       |
 
 ## 1-2. 機械学習環境
@@ -117,8 +117,8 @@ HPC/機械学習ワークロードを実行する際に有益なテクニカル�
 |2| **[GPUインスタンスで<br>分散機械学習環境を構築する](spinup-ml-instance-cntnd/)**                 | 単一          | 手動構築                             | 無し           | スタティック            | **containerd** | **Oracle Linux** 9     |
 |3| **[GPUクラスタを構築する<br>(基礎インフラ手動構築編)](spinup-gpu-cluster/)**                     | 複数          | 手動構築                             | 無し           | スタティック            | **containerd**                                                        | **Oracle Linux** 9 |
 |4| **[GPUクラスタを構築する<br>(基礎インフラ自動構築編)](spinup-gpu-cluster-withterraform/)**       | 複数          | 自動構築<br>（ **Terraform** CLI<br>/**スタック**） | 無し           | スタティック            | **containerd**                                                        | **Oracle Linux** 9 |
-|5| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（**スタック**）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
-|6| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 複数          | 自動構築<br>（**スタック**）                   | 有り           | オンデマンド            | **Enroot**                                                           | **Oracle Linux** 7.9/8 |
+|5| **[GPUクラスタを構築する<br>(スタティッククラスタ自動構築編)](spinup-gpu-cluster-withstack/)**       | 複数          | 自動構築<br>（**スタック**）                   | 有り           | スタティック            | **Enroot**                                                           | **Oracle Linux** 8 |
+|6| **[GPUクラスタを構築する<br>(オンデマンドクラスタ自動構築編)](spinup-gpu-cluster-withautoscaling/)** | 複数          | 自動構築<br>（**スタック**）                   | 有り           | オンデマンド            | **Enroot**                                                           | **Oracle Linux** 8 |
 
 
 ## 1-3. ファイル共有ストレージ
@@ -419,8 +419,7 @@ HPC/機械学習ワークロード実行のためのGPU搭載インスタンス�
 
 ## 3-5. ソフトウェア環境
 
-- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](tech-knowhow/build-openmpi/)**  
-- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](tech-knowhow/build-openmpi-ol9/)**  
+- **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](tech-knowhow/build-openmpi/)**  
 **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
 **OpenMPI** で作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラが **[Slurm](https://slurm.schedmd.com/)** の場合、 **[PMIx](https://pmix.github.io/)** を使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。  
 また **[UCX](https://openucx.org/)** は、 **OpenMPI** が **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** を介して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。  
