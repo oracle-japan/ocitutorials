@@ -43,7 +43,7 @@
 <meta property="article:section" content="Oci in Practice" />
     <meta
       property="article:modified_time"
-      content="2025-10-01T20:51:45+09:00"
+      content="2025-11-28T09:28:24+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "ユースケースに合わせてクラウド・インフラの監視をセットアップしよう - OCI Database Services編",
       "description": "ユースケースに合わせて OCI Database Services の監視を設定することで、クラウド・インフラの運用状況を的確に把握し、安定したサービス提供を実現できます。",
       "thumbnailUrl": "https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/oci-in-practice-3-1.png",
-      "wordCount" : "252",
+      "wordCount" : "278",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-01T20:51:45.00Z",
+      "dateModified": "2025-11-28T09:28:24.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="oci-in-practice">
-    <meta property="article:modified_time" content="2025-10-01T20:51:45+09:00">
+    <meta property="article:modified_time" content="2025-11-28T09:28:24+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/oci-in-practice-3-1.png">
 
 
@@ -331,9 +331,23 @@
         <li><a href="#1-5-動作確認">1-5 動作確認</a></li>
       </ul>
     </li>
-    <li><a href="#2-ora-エラー発生時に通知を受け取る方法--logging-analytics-を利用した監視手順">2 ORA エラー発生時に通知を受け取る方法 <br> －Logging Analytics を利用した監視手順</a>
+    <li><a href="#2-ブロッキングセッションロックを検知して通知する">2 ブロッキング・セッション(ロック)を検知して通知する<br></a>
       <ul>
-        <li><a href="#2-0-概要">2-0 概要</a></li>
+        <li>
+          <ul>
+            <li><a href="#database-management-を利用した性能監視手順">－Database Management を利用した性能監視手順</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#3-ora-エラー発生時に通知を受け取る方法">3 ORA エラー発生時に通知を受け取る方法 <br></a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#logging-analytics-を利用した監視手順">－Logging Analytics を利用した監視手順</a></li>
+          </ul>
+        </li>
+        <li><a href="#3-0-概要">3-0 概要</a></li>
         <li><a href="#2-1-管理エージェントの準備">2-1 管理エージェントの準備</a></li>
         <li><a href="#2-2-logging-analytics-のセットアップ">2-2 Logging Analytics のセットアップ</a></li>
         <li><a href="#2-3-ora-エラー発生時の通知先の作成">2-3 ORA エラー発生時の通知先の作成</a></li>
@@ -412,8 +426,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-01T20:51:45&#43;09:00">
-            Oct 1, 2025
+        <time datetime="2025-11-28T09:28:24&#43;09:00">
+            Nov 28, 2025
         </time>
     
 </span>
@@ -431,8 +445,8 @@
     
 </div>
 
-    <p>このチュートリアルでは、OCI の Stack Monitoring と Log Analytics を活用した BaseDB の監視方法を、具体的なユースケースに沿って解説します。<br>
-Oracle Database のエラー検知や表領域の使用率監視など、具体的なシナリオとセットアップ時の注意点などを取り上げながら、各サービスの効果的な使い方をわかりやすくご紹介します。<br></p>
+    <p>このチュートリアルでは、OCI の Stack Monitoring、Database Management、そして Log Analytics を活用した BaseDB の監視方法を、具体的なユースケースに沿って解説します。<br>
+Oracle Database のエラー検知や表領域の使用率監視など、具体的なシナリオとセットアップ時の注意点などを取り上げながら、各サービスの効果的な使い方をご紹介します。<br></p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="1-表領域が圧迫された際に通知を受け取る"
     >
@@ -460,7 +474,7 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Oracle Database の PDB 上で特定の表領域が圧迫された場合に、Stack Monitoring (EE) を使って通知を受け取るための設定方法について説明します。<br>
+<p>Oracle Database の PDB 上で特定の表領域が圧迫された場合に、Stack Monitoring を使って通知を受け取るための設定方法について説明します。<br>
 このガイドは以下のサービスおよび構成を前提としています。</p>
 <ul>
 <li><strong>Base Database Services (BaseDB)</strong>
@@ -470,7 +484,7 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
 <li>本ガイドでは「ユーザー SCOTT」・「表領域 SCOTT_HR」を利用</li>
 </ul>
 </li>
-<li><strong>Stack Monitoring (EE)</strong>（本手順内でセットアップ）</li>
+<li><strong>Stack Monitoring</strong>（本手順内でセットアップ）</li>
 </ul>
 <p>セットアップで順の概要はこちらです。</p>
 <p><img
@@ -487,17 +501,17 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Stack Monitoring の利用には、専用管理エージェントのインストールと Stack Monitoring プラグインの有効化が必要です。<br>
-詳細な手順は下記リンクをご覧ください。</p>
+<p>Stack Monitoring の利用には、専用管理エージェントのインストールを実施した後、Stack Monitoring プラグインの有効化が必要です。<br>
+管理エージェントをインストールする詳細な手順は下記リンクをご覧ください。</p>
 <p><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/management/stack_monitoring_basedb/#1-%E7%AE%A1%E7%90%86%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"
 >管理エージェントのインストール手順</a></p>
-<p><strong>＜管理エージェント準備時の注意事項＞</strong></p>
+<p><strong>＜管理エージェントをインストールする際の注意事項＞</strong></p>
 <ul>
 <li>BaseDB に既定でインストールされている JDK のバージョンは新しいため、エージェントのインストールが失敗する場合があります。事前に JDK8 を準備しましょう。</li>
-<li>JDK のインストール例：Java SE Development Kit 8u281（Linux x64 Compressed Archive）</li>
-<li>BaseDB 本体への影響を防ぐため、root ユーザーやシステム全体で JAVA_HOME を永続設定しないでください。</li>
+<li>インストールする JDK の例：Java SE Development Kit 8u281（Linux x64 Compressed Archive）</li>
+<li>BaseDB 本体への影響を防ぐため、root ユーザーやシステム全体で JAVA_HOME を永続設定しないことをおすすめします。</li>
 <li>mgmt_agent ユーザーが必要なファイルへアクセスできるよう、OS 側の権限設定にもご注意ください。</li>
 </ul>
 <p><img
@@ -515,7 +529,7 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Stack Monitoring と BaseDB の連携設定を行います。<br>
+<p>続いて Stack Monitoring と BaseDB の連携設定を行います。<br>
 詳細手順は下記リンクをご覧ください。</p>
 <p><a
   class="gdoc-markdown__link"
@@ -524,6 +538,7 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
 <p><strong>＜ Stack Monitoring セットアップ時の注意事項＞</strong></p>
 <ul>
 <li>リソース検出に失敗する場合は、入力内容に加え、IAM ポリシーに記載間違いがないかご確認ください。</li>
+<li>今回のユースケースの場合、Stack Monitoring SE で実施したいことを実現できます。</li>
 </ul>
 <p><img
   src="oci-in-practice-3-3.png"
@@ -540,8 +555,8 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>アラームが発動した際に通知を受け取れるよう通知先（メール等）を設定します。<br>
-方法は下記リンクをご参照ください。</p>
+<p>次にアラームが発動した際に通知を受け取れるよう通知先（メール等）を設定します。<br>
+設定方法は下記リンクをご参照ください。</p>
 <p><a
   class="gdoc-markdown__link"
   href="https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90"
@@ -658,24 +673,63 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
 <br>
 <hr>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h1 id="2-ora-エラー発生時に通知を受け取る方法--logging-analytics-を利用した監視手順"
+    <h1 id="2-ブロッキングセッションロックを検知して通知する"
     >
-        2 ORA エラー発生時に通知を受け取る方法 <br> －Logging Analytics を利用した監視手順
+        2 ブロッキング・セッション(ロック)を検知して通知する<br>
     </h1>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#2-ora-エラー発生時に通知を受け取る方法--logging-analytics-を利用した監視手順" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2 ORA エラー発生時に通知を受け取る方法  －Logging Analytics を利用した監視手順" aria-label="アンカー先: 2 ORA エラー発生時に通知を受け取る方法  －Logging Analytics を利用した監視手順" href="#2-ora-%e3%82%a8%e3%83%a9%e3%83%bc%e7%99%ba%e7%94%9f%e6%99%82%e3%81%ab%e9%80%9a%e7%9f%a5%e3%82%92%e5%8f%97%e3%81%91%e5%8f%96%e3%82%8b%e6%96%b9%e6%b3%95--logging-analytics-%e3%82%92%e5%88%a9%e7%94%a8%e3%81%97%e3%81%9f%e7%9b%a3%e8%a6%96%e6%89%8b%e9%a0%86">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#2-ブロッキングセッションロックを検知して通知する" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2 ブロッキング・セッション(ロック)を検知して通知する" aria-label="アンカー先: 2 ブロッキング・セッション(ロック)を検知して通知する" href="#2-%e3%83%96%e3%83%ad%e3%83%83%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%bb%e3%83%83%e3%82%b7%e3%83%a7%e3%83%b3%e3%83%ad%e3%83%83%e3%82%af%e3%82%92%e6%a4%9c%e7%9f%a5%e3%81%97%e3%81%a6%e9%80%9a%e7%9f%a5%e3%81%99%e3%82%8b">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-0-概要"
+    <h3 id="database-management-を利用した性能監視手順"
     >
-        2-0 概要
-    </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#2-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-0 概要" aria-label="アンカー先: 2-0 概要" href="#2-0-%e6%a6%82%e8%a6%81">
+        －Database Management を利用した性能監視手順
+    </h3>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#database-management-を利用した性能監視手順" class="gdoc-page__anchor clip flex align-center" title="アンカー先: －Database Management を利用した性能監視手順" aria-label="アンカー先: －Database Management を利用した性能監視手順" href="#database-management-%e3%82%92%e5%88%a9%e7%94%a8%e3%81%97%e3%81%9f%e6%80%a7%e8%83%bd%e7%9b%a3%e8%a6%96%e6%89%8b%e9%a0%86">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>Oracle Database で ORA エラーが発生した場合、Logging Analytics を活用して通知を受け取る手順です。<br>
+<p>Oracle Database の性能監視を、Database Management を活用して実施する手順です。<br>
+こちらの手順や実際のデモ動画は以下のセミナーからご確認いただけます。</p>
+<p><strong>Oracle Database Technology Night #91 Oracle AI Database 最新パフォーマンス分析手法</strong>
+資料はこちら</p>
+<div style="max-width:768px">
+<iframe class="speakerdeck-iframe" style="border: 0px; background: rgba(0, 0, 0, 0.1) padding-box; margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" frameborder="0" src="https://speakerdeck.com/player/549739d0e5df46ba9b0a79a8a757d92b" title="[TechNight #91] Oracle Database 最新パフォーマンス分析手法" allowfullscreen="true" data-ratio="1.7777777777777777"></iframe>
+</div>
+<p>動画はこちら</p>
+<div style="max-width:768px">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TLOh44T4HS4?si=x12ABsSnO9DHgsHe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+<hr>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h1 id="3-ora-エラー発生時に通知を受け取る方法"
+    >
+        3 ORA エラー発生時に通知を受け取る方法 <br>
+    </h1>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#3-ora-エラー発生時に通知を受け取る方法" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3 ORA エラー発生時に通知を受け取る方法 " aria-label="アンカー先: 3 ORA エラー発生時に通知を受け取る方法 " href="#3-ora-%e3%82%a8%e3%83%a9%e3%83%bc%e7%99%ba%e7%94%9f%e6%99%82%e3%81%ab%e9%80%9a%e7%9f%a5%e3%82%92%e5%8f%97%e3%81%91%e5%8f%96%e3%82%8b%e6%96%b9%e6%b3%95">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h3 id="logging-analytics-を利用した監視手順"
+    >
+        －Logging Analytics を利用した監視手順
+    </h3>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#logging-analytics-を利用した監視手順" class="gdoc-page__anchor clip flex align-center" title="アンカー先: －Logging Analytics を利用した監視手順" aria-label="アンカー先: －Logging Analytics を利用した監視手順" href="#logging-analytics-%e3%82%92%e5%88%a9%e7%94%a8%e3%81%97%e3%81%9f%e7%9b%a3%e8%a6%96%e6%89%8b%e9%a0%86">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-0-概要"
+    >
+        3-0 概要
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/oci-in-practice/om_basedb/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0 概要" aria-label="アンカー先: 3-0 概要" href="#3-0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>ここからは Oracle Database で ORA エラーが発生した場合、Logging Analytics を活用して通知を受け取る手順です。<br>
 本手順は以下の環境を前提とします。</p>
 <ul>
 <li><strong>Base Database Services (BaseDB)</strong>
