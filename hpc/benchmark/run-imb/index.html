@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-11-14T10:37:32+09:00"
+      content="2025-11-28T17:01:47+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Intel MPI Benchmarks実行方法",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1416",
+      "wordCount" : "1448",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-11-14T10:37:32.00Z",
+      "dateModified": "2025-11-28T17:01:47.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-11-14T10:37:32+09:00">
+    <meta property="article:modified_time" content="2025-11-28T17:01:47+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -417,8 +417,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-11-14T10:37:32&#43;09:00">
-            Nov 14, 2025
+        <time datetime="2025-11-28T17:01:47&#43;09:00">
+            Nov 28, 2025
         </time>
     
 </span>
@@ -476,10 +476,18 @@
 <p>本ドキュメントは、以下の環境で <strong>Intel MPI Benchmarks</strong> PingPongを実行し、</p>
 <ul>
 <li><strong>シェイプ</strong> ： <strong>BM.Optimized3.36</strong></li>
-<li><strong>イメージ</strong> ： <strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
+<li><strong>イメージ</strong> ：<br>
+<strong>Oracle Linux</strong> 8.10 / 9.5ベースのHPC <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
->クラスタネットワーキングイメージ</a></strong> （※1）</li>
+>クラスタネットワーキングイメージ</a></strong> （※1）/<br>
+<strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-17-%e3%83%97%e3%83%a9%e3%83%83%e3%83%88%e3%83%95%e3%82%a9%e3%83%bc%e3%83%a0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>プラットフォーム・イメージ</a></strong> <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/en-us/iaas/images/oracle-linux-10x/oracle-linux-10-0-2025-10-23-0.htm"
+>Oracle-Linux-10.0-2025.10.23-0</a></strong></li>
 <li><strong>OpenMPI</strong> ： 5.0.8（※2）</li>
 <li><strong>Intel MPI Library</strong> ： 2025.3.0</li>
 <li><strong>Intel MPI Benchmarks</strong> ： 2025.10</li>
@@ -569,10 +577,13 @@
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</a></strong> か <strong><a
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）</a></strong> / <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/build-openmpi-ol9/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> に従い、  <strong>Intel MPI Benchmarks</strong> を実行する全てのノードに <strong>OpenMPI</strong> をインストールします。</p>
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）</a></strong> / <strong><a
+  class="gdoc-markdown__link"
+  href="../../tech-knowhow/build-oraclelinux-hpcenv/"
+>Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法</a></strong> に従い、  <strong>Intel MPI Benchmarks</strong> を実行する全てのノードに <strong>OpenMPI</strong> をインストールします。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="1-2-intel-mpi-benchmarksインストール"
     >
@@ -583,14 +594,18 @@
     </a>
 </div>
 <p>以下コマンドを <strong>Intel MPI Benchmarks</strong> を実行する全てのノードのopcユーザで実行し、 <strong>Intel MPI Benchmarks</strong> を <strong>/opt/openmpi/tests/imb</strong> ディレクトリにインストールします。<br>
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.10.tar.gz
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、 <strong>Oracle Linux</strong> のバージョンにより実行するコマンドが異なる点に留意します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir -p ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.10.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./IMB-v2021.10.tar.gz
 </span></span><span class="line"><span class="cl">$ module load openmpi
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> mpi-benchmarks-IMB-v2021.10 <span class="o">&amp;&amp;</span> make -j <span class="m">36</span> <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx all
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> mpi-benchmarks-IMB-v2021.10 <span class="o">&amp;&amp;</span> make -j <span class="m">36</span> <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx all <span class="c1"># For Oracle Linux 8 and 9</span>
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> mpi-benchmarks-IMB-v2021.10 <span class="o">&amp;&amp;</span> make -j <span class="m">36</span> <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx all <span class="nv">CXXFLAGS</span><span class="o">=</span>-Wno-error<span class="o">=</span>template-id-cdtor <span class="c1"># For Oracle Linux 10</span>
 </span></span><span class="line"><span class="cl">$ sudo mkdir -p /opt/openmpi/tests/imb <span class="o">&amp;&amp;</span> sudo cp ./IMB* /opt/openmpi/tests/imb/
 </span></span></code></pre></div><p>次に、以下のファイルを <strong>/usr/share/Modules/modulefiles/imb</strong> で作成します。<br>
-このファイルは、 <strong>Environment modules</strong> にモジュール名 <strong>imb</strong> を登録し、これをロードすることで <strong>Intel MPI Benchmarks</strong> 利用環境の設定が可能になります</p>
+このファイルは、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://envmodules.io/"
+>Environment Modules</a></strong> にモジュール名 <strong>imb</strong> を登録し、これをロードすることで <strong>Intel MPI Benchmarks</strong> 利用環境の設定を可能にします</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#%Module1.0</span>
 </span></span><span class="line"><span class="cl"><span class="c1">##</span>
 </span></span><span class="line"><span class="cl"><span class="c1">## Intel MPI Benchmarks for OpenMPI</span>
@@ -2603,39 +2618,6 @@
         
         
       
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
     
       
       

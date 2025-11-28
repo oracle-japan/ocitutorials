@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-10-24T14:17:25+09:00"
+      content="2025-11-28T17:01:47+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "565",
+      "wordCount" : "578",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-10-24T14:17:25.00Z",
+      "dateModified": "2025-11-28T17:01:47.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-10-24T14:17:25+09:00">
+    <meta property="article:modified_time" content="2025-11-28T17:01:47+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -400,8 +400,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-10-24T14:17:25&#43;09:00">
-            Oct 24, 2025
+        <time datetime="2025-11-28T17:01:47&#43;09:00">
+            Nov 28, 2025
         </time>
     
 </span>
@@ -555,6 +555,13 @@
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
+<p>本章は、 <strong>OSU Micro-Benchmarks</strong> を <strong><a
+  class="gdoc-markdown__link"
+  href="https://www.open-mpi.org/"
+>OpenMPI</a></strong> でビルドし、これを <strong>/opt/openmpi/tests/omb</strong> にインストールした後、 <strong><a
+  class="gdoc-markdown__link"
+  href="https://envmodules.io/"
+>Environment Modules</a></strong> にモジュール名 <strong>omb</strong> を登録します。</p>
 <p>以下コマンドを <strong>OSU Micro-Benchmarks</strong> を実行する全てのノードのopcユーザで実行し、 <strong>OSU Micro-Benchmarks</strong> をインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
@@ -563,7 +570,7 @@
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> osu-micro-benchmarks-7.5.1 <span class="o">&amp;&amp;</span> ./configure <span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">CXX</span><span class="o">=</span>mpicxx --prefix<span class="o">=</span>/opt/openmpi/tests/omb
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">36</span> <span class="o">&amp;&amp;</span> sudo make install
 </span></span></code></pre></div><p>次に、以下のファイルを <strong>/usr/share/Modules/modulefiles/omb</strong> で作成します。<br>
-このファイルは、 <strong>Environment modules</strong> にモジュール名 <strong>omb</strong> を登録し、これをロードすることで <strong>OSU Micro-Benchmarks</strong> 利用環境の設定が可能になります</p>
+このファイルは、 <strong>Environment Modules</strong> にモジュール名 <strong>omb</strong> を登録し、これをロードすることで <strong>OSU Micro-Benchmarks</strong> 利用環境の設定を可能にします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1">#%Module1.0</span>
 </span></span><span class="line"><span class="cl"><span class="c1">##</span>
 </span></span><span class="line"><span class="cl"><span class="c1">## OSU Micro-Benchmarks for OpenMPI</span>
@@ -2302,39 +2309,6 @@
         
         
       
-    
-      
-      
-
-      
-        
-        
-        
-        
-
-        
-        
-
-        
-
-        
-
-        
-          
-        
-
-        
-        
-      
-    
-
-  
-    
-
-    
-      
-    
-
     
       
       
