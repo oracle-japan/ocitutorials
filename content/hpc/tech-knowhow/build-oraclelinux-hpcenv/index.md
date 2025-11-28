@@ -13,9 +13,9 @@ params:
 複数の計算ノードを  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタは、その計算ノードに **クラスタ・ネットワーク** 接続用のドライバーソフトウェアやユーティリティーソフトウェアがインストールされている必要があるため、これらが事前にインストールされている **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** を使用することが一般的です（※1）が、このベースとなるOSの **Oracle Linux** のバージョンは、 **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** として提供される **Oracle Linux** の最新バージョンより古くなります。（※2）
 
 ※1）この詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージを使ったクラスタ・ネットワーク接続方法](../../tech-knowhow/howto-connect-clusternetwork/)** を参照してください。  
-※2）2025年3月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 8.10を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux** 9.5です。
+※2）2025年11月時点の最新の **クラスタネットワーキングイメージ** がそのベースOSに **Oracle Linux** 9.5を使用しているのに対し、 **プラットフォーム・イメージ** の最新は **Oracle Linux** 10.0です。
 
-ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年5月時点）は、以下のスペックを持つ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
+ここで実行するワークロードが単一ノードに収まる場合は、 **クラスタ・ネットワーク** に接続する必要がなくなり、 **プラットフォーム・イメージ** から提供される最新のOSを使用することが可能になりますが、現在利用可能な単一ノードで最も高性能なシェイプ（2025年11月時点）は、以下のスペックを持つ **[BM.Standard.E6.256](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-standard)** で、このスペックからも単一ノードで十分大規模なHPCワークロードを実行することが可能と考えられます。
 
 - CPU： **AMD EPYC** 9755ベース x 2（256コア）
 - メモリ： DDR5 3.072 TB
@@ -28,7 +28,7 @@ params:
 
 本テクニカルTipsは、以下のソフトウェアバージョンを前提とします。
 
-- 計算ノードOS： **プラットフォーム・イメージ** **[Oracle-Linux-9.5-2025.04.16-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-9x/oracle-linux-9-5-2025-04-16-0.htm)**
+- 計算ノードイメージ： **プラットフォーム・イメージ** **[Oracle-Linux-10.0-2025.10.23-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-10x/oracle-linux-10-0-2025-10-23-0.htm)**
 - コンパイラ： **AOCC** 5.0
 - MPI： **OpenMPI** 5.0.8
 - ジョブスケジューラ： **Slurm** 25.05.3
@@ -45,9 +45,10 @@ params:
 4. **[OpenMPIインストール・セットアップ](#1-4-openmpiインストールセットアップ)**
 5. **[Intel MPI Benchmarksインストール](#1-5-intel-mpi-benchmarksインストール)**（※3）
 6. **[mungeインストール・セットアップ](#1-6-munge-インストールセットアップ)**（※4）
-7. **[Slurm RPMパッケージインストール・セットアップ](#1-7-slurm-rpmパッケージインストールセットアップ)**
-8. **[Slurm設定ファイル修正](#1-8-slurm設定ファイル修正)**
-9. **[Slurmサービス起動](#1-9-slurmサービス起動)**
+7. **[Slurm RPMパッケージ作成](#1-7-slurm-rpmパッケージ作成)**
+8. **[Slurm RPMパッケージインストール・セットアップ](#1-8-slurm-rpmパッケージインストールセットアップ])**
+9. **[Slurm設定ファイル修正](#1-9-slurm設定ファイル修正)**
+10. **[Slurmサービス起動](#1-10-slurmサービス起動)**
 
 ※3）計算ノードのMPI通信性能の検証と構築した環境の稼働確認に使用します。  
 ※4） **Slurm** のプロセス間通信の認証に使用します。
@@ -57,8 +58,10 @@ params:
 計算ノード用のインスタンスの作成は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** の手順に従い実施します。  
 本テクニカルTipsでは、以下属性のインスタンスを使用します。
 
-- イメージ： **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **Oracle-Linux-9.5-2025.04.16-0**
-- シェイプ： **BM.Standard.E6.256**
+- シェイプ： **BM.Standard.E6.256** （  **Simultanious Multi Threading** （以降 **SMT** と呼称します。）無効・ **NUMA nodes per socket** （以降 **NPS** と呼称します。）4（※5））
+- イメージ： **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **Oracle-Linux-10.0-2025.10.23-0**
+
+※5） **SMT** と **NPS** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
 インスタンス起動後、 **firewalld** を停止し、 **SELinux** をDisabledにします。
 
@@ -80,7 +83,7 @@ $ cd aocc-compiler-5.0.0 && sudo ./install.sh
 以下コマンドを計算ノードのopcユーザで実行し、以降でインストールするソフトウェアの前提RPMパッケージをインストールします。
 
 ```sh
-$ sudo dnf install -y gcc-c++ gcc-gfortran git autoconf automake libtool 
+$ sudo dnf install -y gcc-c++ gcc-gfortran autoconf automake libtool
 ```
 
 次に、以下コマンドを計算ノードのopcユーザで実行し、 **[libevent](https://libevent.org/)** を **/opt** ディレクトリにインストールします。  
@@ -103,10 +106,10 @@ $ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
 $ make -j 256 && sudo make install
 ```
 
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **[OpenPMIx](https://openpmix.github.io/)** （※5）を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[OpenPMIx](https://openpmix.github.io/)** （※6）を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
-※5） **Slurm** がMPIアプリケーションを起動する際に使用します。
+※6） **Slurm** がMPIアプリケーションを起動する際に使用します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
@@ -115,33 +118,13 @@ $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent 
 $ make -j 256 && sudo make install
 ```
 
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **[XPMEM](https://github.com/hpc/xpmem)** （※6）を **/opt** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
-
-※6）**OpenMPI** がノード内MPI通信の際のメモリコピーに使用することが出来る、シングルコピーメカニズムです。
-
-```sh
-$ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
-$ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 128 && sudo make install
-```
-
-次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
-
-```sh
-$ sudo install -D -m 644 /opt/xpmem/lib/modules/`uname -r`/kernel/xpmem/xpmem.ko /lib/modules/`uname -r`/extra/xpmem/xpmem.ko
-$ sudo depmod -a
-$ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
-$ sudo modprobe xpmem
-```
-
 次に、以下コマンドを計算ノードのopcユーザで実行し、  **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)**  を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 $ tar -xvf ./ucx-1.19.0.tar.gz
-$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
 $ make -j 256 && sudo make install
 ```
 
@@ -169,8 +152,15 @@ $ make -j 256 all && sudo make install
 
 ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **Environment modules** をインストールします。
+
+```sh
+$ sudo dnf install -y environment-modules
+$ source /usr/share/Modules/init/bash
+```
+
 次に、以下のファイルを **/usr/share/Modules/modulefiles/openmpi** で作成します。  
-このファイルは、 **Environment modules** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定が可能になります
+このファイルは、 **Environment modules** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定を可能にします
 
 ```sh
 #%Module1.0
@@ -215,7 +205,7 @@ $ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u 5001 munge
 次に、以下コマンドを計算ノードのopcユーザで実行し、 **munge** をインストールします。
 
 ```sh
-$ sudo yum-config-manager --enable ol9_codeready_builder
+$ sudo yum-config-manager --enable ol10_codeready_builder
 $ sudo dnf install -y munge munge-libs munge-devel
 ```
 
@@ -236,23 +226,56 @@ STATUS:           Success (0)
 $
 ```
 
-## 1-7. Slurm RPMパッケージインストール・セットアップ
+## 1-7. Slurm RPMパッケージ作成
 
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** の **[2-5. Slurm RPMパッケージ作成](../../tech-knowhow/setup-slurm-cluster/#2-5-slurm-rpmパッケージ作成)** で作成した **Slurm** のRPMパッケージを計算ノードにコピーします。
-
-次に、以下コマンドを計算ノードのopcユーザで **Slurm** RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
+以下コマンドを計算ノードのopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```sh
-$ sudo yum-config-manager --enable ol9_codeready_builder
-$ sudo dnf install -y mariadb-devel infiniband-diags libibumad
-$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
+$ sudo dnf install -y rpm-build mariadb-devel pam-devel perl perl-devel readline-devel bash-completion dbus-devel
+```
+
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **Slurm** RPMパッケージを作成します。
+
+```sh
+$ cd ~/`hostname` && wget https://download.schedmd.com/slurm/slurm-25.05.3.tar.bz2
+$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-25.05.3.tar.bz2
+```
+
+作成されたパッケージは、以下のディレクトリに配置されます。
+
+```sh
+$ ls -1 ~/rpmbuild/RPMS/x86_64/
+slurm-25.05.3-1.el10.x86_64.rpm
+slurm-contribs-25.05.3-1.el10.x86_64.rpm
+slurm-devel-25.05.3-1.el10.x86_64.rpm
+slurm-example-configs-25.05.3-1.el10.x86_64.rpm
+slurm-libpmi-25.05.3-1.el10.x86_64.rpm
+slurm-openlava-25.05.3-1.el10.x86_64.rpm
+slurm-pam_slurm-25.05.3-1.el10.x86_64.rpm
+slurm-perlapi-25.05.3-1.el10.x86_64.rpm
+slurm-sackd-25.05.3-1.el10.x86_64.rpm
+slurm-slurmctld-25.05.3-1.el10.x86_64.rpm
+slurm-slurmd-25.05.3-1.el10.x86_64.rpm
+slurm-slurmdbd-25.05.3-1.el10.x86_64.rpm
+slurm-torque-25.05.3-1.el10.x86_64.rpm
+$
+```
+
+ここで作成した **Slurm** RPMパッケージを他の計算ノードにインストールする場合は、作成したパッケージを当該計算ノードにコピーし、前提PRMパッケージをインストールしておきます。
+
+## 1-8. Slurm RPMパッケージインストール・セットアップ
+
+次に、以下コマンドを計算ノードのopcユーザで実行し、計算ノードに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
+
+```sh
+$ cd ~/rpmbuild/RPMS/x86_64 && sudo rpm -ivh ./slurm-25.05.3-1.el10.x86_64.rpm ./slurm-slurmd-25.05.3-1.el10.x86_64.rpm ./slurm-perlapi-25.05.3-1.el10.x86_64.rpm
 $ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u 5000 slurm
 $ sudo mkdir /var/spool/slurmd && sudo chown slurm:slurm /var/spool/slurmd
 $ sudo mkdir /var/log/slurm && sudo chown slurm:slurm /var/log/slurm
 $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 ```
 
-## 1-8. Slurm設定ファイル修正
+## 1-9. Slurm設定ファイル修正
 
 既存の **Slurm** 環境の **slurm.conf** に対して、計算ノードを追加するための以下3行を追加します。
 
@@ -262,13 +285,11 @@ NodeName=inst-e6 Sockets=32 CoresPerSocket=8 ThreadsPerCore=1 RealMemory=3000000
 PartitionName=e6 Nodes=inst-e6 Default=YES MaxTime=INFINITE State=UP
 ```
 
-ここでは、本テクニカルTipsで使用する **BM.Standard.E6.256** に搭載する2個の第5世代 **AMD EPYC** プロセッサが32個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効（※6）としたホスト名が **inst-e6** の **BM.Standard.E6.256** 1ノードを、パーティション名 **e6** に割り当てています。
-
-※6） **SMT** の設定方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
+ここでは、本テクニカルTipsで使用する **BM.Standard.E6.256** に搭載する2個の第5世代 **AMD EPYC** プロセッサが32個の **Core Complex Die** （以降 **CCD** と呼称します。）毎にL3キャッシュを搭載することを考慮し、 **CCD** を **Slurm** 上 **NUMA** ノードとして扱い **SMT** を無効としたホスト名が **inst-e6** の **BM.Standard.E6.256** 1ノードを、パーティション名 **e6** に割り当てています。
 
 次に、この **slurm.conf** を計算ノード、Slurmマネージャ、及びSlurmクライアントの **/opt/slurm/etc** に配置します。
 
-## 1-9. Slurmサービス起動
+## 1-10. Slurmサービス起動
 
 以下コマンドを計算ノードのopcユーザで実行し、 **slurmd** を起動します。
 

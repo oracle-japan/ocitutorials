@@ -23,7 +23,9 @@ params:
 本ドキュメントは、以下の環境で **Intel MPI Benchmarks** PingPongを実行し、
 
 - **シェイプ** ： **BM.Optimized3.36**
-- **イメージ** ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+- **イメージ** ：  
+**Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）/  
+**[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Oracle-Linux-10.0-2025.10.23-0](https://docs.oracle.com/en-us/iaas/images/oracle-linux-10x/oracle-linux-10-0-2025-10-23-0.htm)**
 - **OpenMPI** ： 5.0.8（※2）
 - **Intel MPI Library** ： 2025.3.0
 - **Intel MPI Benchmarks** ： 2025.10
@@ -51,25 +53,26 @@ params:
 2. **[Intel MPI Benchmarksインストール](#1-2-intel-mpi-benchmarksインストール)**
 3. **[Intel MPI Benchmarks実行](#1-3-intel-mpi-benchmarks実行)**
 
-## 1-1. OpenMPIインストール  
+## 1-1. OpenMPIインストール
 
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** か **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** / **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** / **[Oracle Linuxプラットフォーム・イメージベースのHPCワークロード実行環境構築方法](../../tech-knowhow/build-oraclelinux-hpcenv/)** に従い、  **Intel MPI Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
 
 ## 1-2. Intel MPI Benchmarksインストール
 
 以下コマンドを **Intel MPI Benchmarks** を実行する全てのノードのopcユーザで実行し、 **Intel MPI Benchmarks** を **/opt/openmpi/tests/imb** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、 **Oracle Linux** のバージョンにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.10.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://github.com/intel/mpi-benchmarks/archive/refs/tags/IMB-v2021.10.tar.gz
 $ tar -xvf ./IMB-v2021.10.tar.gz
 $ module load openmpi
-$ cd mpi-benchmarks-IMB-v2021.10 && make -j 36 CC=mpicc CXX=mpicxx all
+$ cd mpi-benchmarks-IMB-v2021.10 && make -j 36 CC=mpicc CXX=mpicxx all # For Oracle Linux 8 and 9
+$ cd mpi-benchmarks-IMB-v2021.10 && make -j 36 CC=mpicc CXX=mpicxx all CXXFLAGS=-Wno-error=template-id-cdtor # For Oracle Linux 10
 $ sudo mkdir -p /opt/openmpi/tests/imb && sudo cp ./IMB* /opt/openmpi/tests/imb/
 ```
 
 次に、以下のファイルを **/usr/share/Modules/modulefiles/imb** で作成します。  
-このファイルは、 **Environment modules** にモジュール名 **imb** を登録し、これをロードすることで **Intel MPI Benchmarks** 利用環境の設定が可能になります
+このファイルは、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **imb** を登録し、これをロードすることで **Intel MPI Benchmarks** 利用環境の設定を可能にします
 
 ```sh
 #%Module1.0

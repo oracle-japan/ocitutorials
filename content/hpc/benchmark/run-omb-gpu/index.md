@@ -58,7 +58,7 @@ params:
 
 # 1. OSU Micro-Benchmarksインストール・セットアップ
 
-本章は、 **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** と **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** （ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる）を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **Environment modules** にモジュール名 **omb** を登録します。
+本章は、 **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** と **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** （ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる）を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行します。
 
@@ -86,7 +86,7 @@ $ make -j 128 && sudo make install
 ```
 
 次に、以下のファイルを **/usr/share/modules/modulefiles/omb** で作成します。  
-このファイルは、 **Environment modules** にモジュール名 **omb** を登録し、これをロードすることで **OSU Micro-Benchmarks** 利用環境の設定が可能になります
+このファイルは、 **Environment Modules** にモジュール名 **omb** を登録し、これをロードすることで **OSU Micro-Benchmarks** 利用環境の設定を可能にします。
 
 ```sh
 #%Module1.0
