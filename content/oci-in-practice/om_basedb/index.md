@@ -11,8 +11,8 @@ params:
   author: omomoki
 ---
 
-このチュートリアルでは、OCI の Stack Monitoring と Log Analytics を活用した BaseDB の監視方法を、具体的なユースケースに沿って解説します。<br>
-Oracle Database のエラー検知や表領域の使用率監視など、具体的なシナリオとセットアップ時の注意点などを取り上げながら、各サービスの効果的な使い方をわかりやすくご紹介します。<br>
+このチュートリアルでは、OCI の Stack Monitoring、Database Management、そして Log Analytics を活用した BaseDB の監視方法を、具体的なユースケースに沿って解説します。<br>
+Oracle Database のエラー検知や表領域の使用率監視など、具体的なシナリオとセットアップ時の注意点などを取り上げながら、各サービスの効果的な使い方をご紹介します。<br>
 
 # 1 表領域が圧迫された際に通知を受け取る
 
@@ -20,14 +20,14 @@ Oracle Database のエラー検知や表領域の使用率監視など、具体�
 
 ## 1-0 概要
 
-Oracle Database の PDB 上で特定の表領域が圧迫された場合に、Stack Monitoring (EE) を使って通知を受け取るための設定方法について説明します。  
+Oracle Database の PDB 上で特定の表領域が圧迫された場合に、Stack Monitoring を使って通知を受け取るための設定方法について説明します。  
 このガイドは以下のサービスおよび構成を前提としています。
 
 - **Base Database Services (BaseDB)**
   - エディション：Standard Edition (SE)
   - 任意のユーザーおよび表領域が作成済み
   - 本ガイドでは「ユーザー SCOTT」・「表領域 SCOTT_HR」を利用
-- **Stack Monitoring (EE)**（本手順内でセットアップ）
+- **Stack Monitoring**（本手順内でセットアップ）
 
 セットアップで順の概要はこちらです。
 
@@ -35,16 +35,16 @@ Oracle Database の PDB 上で特定の表領域が圧迫された場合に、St
 
 ## 1-1 管理エージェントの準備
 
-Stack Monitoring の利用には、専用管理エージェントのインストールと Stack Monitoring プラグインの有効化が必要です。  
-詳細な手順は下記リンクをご覧ください。
+Stack Monitoring の利用には、専用管理エージェントのインストールを実施した後、Stack Monitoring プラグインの有効化が必要です。  
+管理エージェントをインストールする詳細な手順は下記リンクをご覧ください。
 
 [管理エージェントのインストール手順](https://oracle-japan.github.io/ocitutorials/management/stack_monitoring_basedb/#1-%E7%AE%A1%E7%90%86%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
 
-**＜管理エージェント準備時の注意事項＞**
+**＜管理エージェントをインストールする際の注意事項＞**
 
 - BaseDB に既定でインストールされている JDK のバージョンは新しいため、エージェントのインストールが失敗する場合があります。事前に JDK8 を準備しましょう。
-- JDK のインストール例：Java SE Development Kit 8u281（Linux x64 Compressed Archive）
-- BaseDB 本体への影響を防ぐため、root ユーザーやシステム全体で JAVA_HOME を永続設定しないでください。
+- インストールする JDK の例：Java SE Development Kit 8u281（Linux x64 Compressed Archive）
+- BaseDB 本体への影響を防ぐため、root ユーザーやシステム全体で JAVA_HOME を永続設定しないことをおすすめします。
 - mgmt_agent ユーザーが必要なファイルへアクセスできるよう、OS 側の権限設定にもご注意ください。
 
 ![img](oci-in-practice-3-2.png)
@@ -53,7 +53,7 @@ Stack Monitoring の利用には、専用管理エージェントのインスト
 
 ## 1-2 Stack Monitoring のセットアップ
 
-Stack Monitoring と BaseDB の連携設定を行います。  
+続いて Stack Monitoring と BaseDB の連携設定を行います。  
 詳細手順は下記リンクをご覧ください。
 
 [ホストのメトリックを可視化する方法](https://oracle-japan.github.io/ocitutorials/management/stack_monitoring_basedb/#5-%E3%83%9B%E3%82%B9%E3%83%88%E3%81%AE%E3%83%A1%E3%83%88%E3%83%AA%E3%83%83%E3%82%AF%E3%82%92%E5%8F%AF%E8%A6%96%E5%8C%96)
@@ -61,6 +61,7 @@ Stack Monitoring と BaseDB の連携設定を行います。
 **＜ Stack Monitoring セットアップ時の注意事項＞**
 
 - リソース検出に失敗する場合は、入力内容に加え、IAM ポリシーに記載間違いがないかご確認ください。
+- 今回のユースケースの場合、Stack Monitoring SE で実施したいことを実現できます。
 
 ![img](oci-in-practice-3-3.png)
 
@@ -68,8 +69,8 @@ Stack Monitoring と BaseDB の連携設定を行います。
 
 ## 1-3 アラームが発動したら通知する通知先の作成
 
-アラームが発動した際に通知を受け取れるよう通知先（メール等）を設定します。  
-方法は下記リンクをご参照ください。
+次にアラームが発動した際に通知を受け取れるよう通知先（メール等）を設定します。  
+設定方法は下記リンクをご参照ください。
 
 [アラーム通知先の設定方法](https://oracle-japan.github.io/ocitutorials/intermediates/monitoring-resources/#4-%E3%82%A2%E3%83%A9%E3%83%BC%E3%83%A0%E3%81%AE%E9%80%9A%E7%9F%A5%E5%85%88%E3%81%AE%E4%BD%9C%E6%88%90)
 
@@ -153,11 +154,35 @@ Stack Monitoring と BaseDB の連携設定を行います。
 
 ---
 
-# 2 ORA エラー発生時に通知を受け取る方法 <br> －Logging Analytics を利用した監視手順
+# 2 ブロッキング・セッション(ロック)を検知して通知する<br>
 
-## 2-0 概要
+### －Database Management を利用した性能監視手順
 
-Oracle Database で ORA エラーが発生した場合、Logging Analytics を活用して通知を受け取る手順です。  
+Oracle Database の性能監視を、Database Management を活用して実施する手順です。  
+こちらの手順や実際のデモ動画は以下のセミナーからご確認いただけます。
+
+**Oracle Database Technology Night #91 Oracle AI Database 最新パフォーマンス分析手法**
+資料はこちら
+
+<div style="max-width:768px">
+<iframe class="speakerdeck-iframe" style="border: 0px; background: rgba(0, 0, 0, 0.1) padding-box; margin: 0px; padding: 0px; border-radius: 6px; box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 40px; width: 100%; height: auto; aspect-ratio: 560 / 315;" frameborder="0" src="https://speakerdeck.com/player/549739d0e5df46ba9b0a79a8a757d92b" title="[TechNight #91] Oracle Database 最新パフォーマンス分析手法" allowfullscreen="true" data-ratio="1.7777777777777777"></iframe>
+</div>
+
+動画はこちら
+
+<div style="max-width:768px">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TLOh44T4HS4?si=x12ABsSnO9DHgsHe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+
+---
+
+# 3 ORA エラー発生時に通知を受け取る方法 <br>
+
+### －Logging Analytics を利用した監視手順
+
+## 3-0 概要
+
+ここからは Oracle Database で ORA エラーが発生した場合、Logging Analytics を活用して通知を受け取る手順です。  
 本手順は以下の環境を前提とします。
 
 - **Base Database Services (BaseDB)**
