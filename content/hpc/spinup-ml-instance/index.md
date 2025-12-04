@@ -10,7 +10,7 @@ params:
 
 # 0. 概要
 
-本チュートリアルは、 **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** や **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** がインストールされたGPUシェイプ向け **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** と以下GPUシェイプの組み合わせでGPUインスタンスを作成し、この上に機械学習環境を構築して **[TensorFlow](https://www.tensorflow.org/)** を利用するサンプル機械学習プログラムを **[JupyterLab](https://jupyter.org/)** から実行します。
+本チュートリアルは、 **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** や **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** が予めインストールされたGPUシェイプ向け **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** とNVIDIA製GPUを搭載する以下のGPUシェイプの組み合わせでGPUインスタンスを作成し、このインスタンス上にGPUを活用して機械学習ワークロードを実行することが可能な機械学習環境を構築、  **[TensorFlow](https://www.tensorflow.org/)** を利用するサンプル機械学習プログラムを **[JupyterLab](https://jupyter.org/)** から実行します。
 
 - VM.GPU.A10.1 (NVIDIA A10 24 GB x 1)
 - VM.GPU.A10.2 (NVIDIA A10 24 GB x 2)
@@ -27,14 +27,14 @@ params:
 - Python仮想環境を使用する構築方法  
 Pythonの **[venv](https://docs.python.org/3/library/venv.html)** を使用し、OSに含まれるPythonに影響を与えることなく **TensorFlow** や **JupyterLab** をインストールし、Python仮想環境上に機械学習環境を構築します。
 - コンテナを使用する構築方法  
-コンテナランタイムの **[containerd](https://github.com/containerd/containerd/tree/main)** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用してGPU利用可能なコンテナ実行環境を構築し、 **TensorFlow** や **JupyterLab** が既にインストールされた機械学習ワークロード向けコンテナを **[NGC Catalog](https://catalog.ngc.nvidia.com/)** 等のコンテナレポジトリからプル・起動し、コンテナ上に機械学習環境を構築します。
+コンテナランタイムの **[containerd](https://github.com/containerd/containerd/tree/main)** とGPU利用可能なコンテナの実行を可能にする **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用してコンテナ実行環境を構築し、 **TensorFlow** や **JupyterLab** が既にインストールされた機械学習ワークロード向けコンテナを **[NGC Catalog](https://catalog.ngc.nvidia.com/)** 等のコンテナレポジトリからプル・起動し、コンテナ上に機械学習環境を構築します。
 
 またこの機械学習環境は、マルチGPUを搭載するGPUシェイプを利用することで、複数のGPUに跨る分散トレーニングが可能になります。  
-このチュートリアルの後半では、マルチGPUを搭載する機械学習環境で、サンプル機械学習プログラムを **[Distributed TensorFlow](https://www.tensorflow.org/guide/distributed_training)** を使用する分散トレーニングモデルに修正、これを複数のGPUに跨って実行します。
+本チュートリアルの後半では、サンプル機械学習プログラムを **[Distributed TensorFlow](https://www.tensorflow.org/guide/distributed_training)** を使用する分散トレーニングモデルに修正し、これを複数のGPUに跨って実行します。
 
 **所要時間 :** 約1時間
 
-**前提条件 :** 機械学習環境を構築するインスタンスを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
+**前提条件 :** GPUインスタンスを収容するコンパートメント(ルート・コンパートメントでもOKです)の作成と、このコンパートメントに対する必要なリソース管理権限がユーザーに付与されていること。
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
@@ -107,7 +107,7 @@ $
 
 ## 3-0. 概要
 
-本章は、GPUインスタンス上のPython仮想環境に機械学習環境を構築する方法を解説します。
+本章は、Python仮想環境に機械学習環境を構築する方法を解説します。
 
 以降では、以下の順に解説を進めます。
 
@@ -141,7 +141,7 @@ $ source venv_name/bin/activate
 ((venv_name) ) $
 ```
 
-次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境に **TensorFlow** 、 **JupyterLab** 、及び **Matplotlib** をインストールします。
+次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境にGPU対応 **TensorFlow** 、 **JupyterLab** 、及び **Matplotlib** をインストールします。
 
 ```sh
 ((venv_name) ) $ pip install --upgrade pip
@@ -167,7 +167,7 @@ $
 
 次に、以下2個のファイルをカレントディレクトリにそれぞれファイル名 **num_gpu.ipynb** （※2）と **celsious2fahrenheit.ipynb** （※3）で作成します。  
 
-※2）**TensorFlow** が認識するGPUの枚数を確認するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
+※2）**TensorFlow** が認識するGPUの枚数を出力するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
 ※3）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。このファイルは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
 
 ```json
@@ -475,7 +475,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 
 ## 4-0. 概要
 
-本章は、GPUインスタンス上に **containerd** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用してGPU利用可能なコンテナ実行環境を構築し、コンテナ上に機械学習環境を構築する方法を解説します。
+本章は、 **containerd** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用するコンテナ実行環境で起動するコンテナ上に機械学習環境を構築する方法を解説します。
 
 以降では、以下の順に解説を進めます。
 
@@ -486,7 +486,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 
 ## 4-1. コンテナ環境構築
 
-コンテナ環境構築は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順を、 **単一GPUインスタンスに閉じたコンテナ利用** の範囲でGPUインスタンスに適用することで実施します。
+**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順を **単一GPUインスタンスに閉じたコンテナ利用** の範囲でGPUインスタンス上で実施し、コンテナ実行環境を構築します。
 
 次に、以下コマンドを自身の端末で実行し、この端末の8888番ポートをGPUインスタンスの8888番ポート( **JupyterLab** がアクセスを待ち受けるポート)に転送するSSHポートフォワードを作成し、GPUインスタンスの機械学習ワークロード実行ユーザにログインします。  
 なお、 **path_to_ssh_secret_key** （GPUインスタンス作成時に指定したSSH公開鍵に対応するSSH秘密鍵へのパス）と **user_name** （GPUインスタンス上の機械学習ワークロード実行ユーザ名）とGPUインスタンスのパブリックIPアドレスは、自身のものに置き換えます。
@@ -514,7 +514,7 @@ $
 
 次に、以下2個のファイルをGPUインスタンスで起動したコンテナ上のカレントディレクトリにそれぞれファイル名 **num_gpu.ipynb** （※5）と **celsious2fahrenheit.ipynb** （※6）で作成します。  
 
-※5）**TensorFlow** が認識するGPUの枚数を確認するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
+※5）**TensorFlow** が認識するGPUの枚数を出力するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
 ※6）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。このファイルは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
 
 
@@ -802,3 +802,25 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 [I 2025-12-03 03:41:46.995 ServerApp] Kernel shutdown: 57087af1-c391-49fb-95b6-459af6ce8614
 $
 ```
+
+次に、以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、コンテナを終了します。
+
+```sh
+$ exit
+```
+
+# 5. GPUインスタンス終了
+
+本章は、GPUインスタンスを終了することで、ここまでに作成した環境を完全に削除します。
+
+OCIコンソールメニューから **コンピュート** → **インスタンス** を選択し、表示される以下画面で作成したGPUインスタンスの **終了** メニューをクリックします。
+
+![画面ショット](console_page02.png)
+
+表示される以下 **インスタンスの終了** 画面で、 **アタッチされたブート・ボリュームを完全に削除** チェックボックスをチェックして **インスタンスの終了** ボタンをクリックします。
+
+![画面ショット](console_page03.png)
+
+当該GPUインスタンスの **状態** が **終了済** となれば、削除が完了しています。
+
+これで、このチュートリアルは終了です。
