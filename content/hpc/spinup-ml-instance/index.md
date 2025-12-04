@@ -103,9 +103,9 @@ Mon Dec  1 16:55:56 2025
 $
 ```
 
-# 3. Python仮想環境を使用する機械学習環境構築
+# 2. Python仮想環境を使用する機械学習環境構築
 
-## 3-0. 概要
+## 2-0. 概要
 
 本章は、Python仮想環境に機械学習環境を構築する方法を解説します。
 
@@ -116,7 +116,7 @@ $
 3. **[単一GPUを使用する機械学習プログラム実行](#3-3-単一gpuを使用する機械学習プログラム実行)**
 4. **[複数GPUを使用する分散機械学習プログラム実行](#3-4-複数gpuを使用する分散機械学習プログラム実行)**
 
-## 3-1. Python仮想環境構築
+## 2-1. Python仮想環境構築
 
 以下コマンドをGPUインスタンスのopcユーザで実行し、Python 3.12の仮想環境を作成するために必要なRPMパッケージをインストールします。
 
@@ -320,7 +320,7 @@ $
 }
 ```
 
-## 3-2. TenforFlow・JupyterLab稼働確認
+## 2-2. TenforFlow・JupyterLab稼働確認
 
 以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
 なお **project_name** と **venv_name** は、自身の環境に置き換えます。
@@ -359,7 +359,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 $
 ```
 
-## 3-3. 単一GPUを使用する機械学習プログラム実行
+## 2-3. 単一GPUを使用する機械学習プログラム実行
 
 以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
 なお **project_name** と **venv_name** は、自身の環境に置き換えます。
@@ -402,7 +402,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 ((venv_name) ) $
 ```
 
-## 3-4. 複数GPUを使用する分散機械学習プログラム実行
+## 2-4. 複数GPUを使用する分散機械学習プログラム実行
 
 以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
 なお **project_name** と **venv_name** は、自身の環境に置き換えます。
@@ -471,9 +471,9 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 ((venv_name) ) $
 ```
 
-# 4. コンテナを使用する機械学習環境構築
+# 3. コンテナを使用する機械学習環境構築
 
-## 4-0. 概要
+## 3-0. 概要
 
 本章は、 **containerd** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用するコンテナ実行環境で起動するコンテナ上に機械学習環境を構築する方法を解説します。
 
@@ -484,7 +484,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 3. **[単一GPUを使用する機械学習プログラム実行](#4-3-単一gpuを使用する機械学習プログラム実行)**
 4. **[複数GPUを使用する分散機械学習プログラム実行](#4-4-複数gpuを使用する分散機械学習プログラム実行)**
 
-## 4-1. コンテナ環境構築
+## 3-1. コンテナ環境構築
 
 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順を **単一GPUインスタンスに閉じたコンテナ利用** の範囲でGPUインスタンス上で実施し、コンテナ実行環境を構築します。
 
@@ -656,7 +656,7 @@ $
 }
 ```
 
-## 4-2. TenforFlow・JupyterLab稼働確認
+## 3-2. TenforFlow・JupyterLab稼働確認
 
 以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、 **JupyterLab** を起動します。
 
@@ -694,7 +694,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 $
 ```
 
-## 4-3. 単一GPUを使用する機械学習プログラム実行
+## 3-3. 単一GPUを使用する機械学習プログラム実行
 
 以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、 **JupyterLab** を起動します。
 
@@ -736,7 +736,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 $
 ```
 
-## 4-4. 複数GPUを使用する分散機械学習プログラム実行
+## 3-4. 複数GPUを使用する分散機械学習プログラム実行
 
 以下コマンドをGPUインスタンスで起動したコンテナ上のrootユーザで実行し、 **JupyterLab** を起動します。
 
@@ -809,7 +809,7 @@ $
 $ exit
 ```
 
-# 5. GPUインスタンス終了
+# 4. GPUインスタンス終了
 
 本章は、GPUインスタンスを終了することで、ここまでに作成した環境を完全に削除します。
 
