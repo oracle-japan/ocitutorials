@@ -152,7 +152,7 @@ $ make -j 256 all && sudo make install
 
 ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
-次に、以下コマンドを計算ノードのopcユーザで実行し、 **Environment modules** をインストールします。
+次に、以下コマンドを計算ノードのopcユーザで実行し、 **[Environment Modules](https://envmodules.io/)** をインストールします。
 
 ```sh
 $ sudo dnf install -y environment-modules

@@ -77,7 +77,7 @@ $ cat  ~/.ssh/id_rsa.pub | tee -a ~/.ssh/authorized_keys
 
 ## 1-3. コンテナ起動
 
-以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 **NGC Catalog** から **TensorFlow NGC Container** をホストネットワークモードで起動します。  
+以下コマンドをマスターノードとスレーブノードのコンテナ起動ユーザでそれぞれ実行し、 **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から **TensorFlow NGC Container** をホストネットワークモードで起動します。  
 本コンテナのサイズは、約14 GBです。
 
 ```sh

@@ -125,7 +125,7 @@ $
 GPUインスタンスの作成は、デプロイ後のカスタマイズ作業を軽減する目的で **[cloud-init](../#5-11-cloud-init)** を使用するため、以下の手順を経て行います。
 
 1. **[cloud-init設定ファイル作成](#2-1-cloud-init設定ファイル作成)**
-2. **[GPUインスタンス作成](#2-2-GPUインスタンス作成)**
+2. **[GPUインスタンス作成](#2-2-gpuインスタンス作成)**
 
 ## 2-1. cloud-init設定ファイル作成
 
@@ -299,7 +299,7 @@ $
 
 # 4. コンテナ環境構築
 
-本章は、 **containerd** と **NVIDIA Container Toolkit** を使用し、GPU利用可能なコンテナ環境を構築します。
+本章は、 **containerd** と **NVIDIA Container Toolkit** を使用してGPU利用可能なコンテナ環境を構築します。
 
 このコンテナ環境構築は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[containerdによるコンテナ実行環境構築方法](../tech-knowhow/container-with-containerd/)** の手順をGPUインスタンスに適用することで実施します。
 
