@@ -30,7 +30,7 @@ Oracle Cloud Infrastructure では、MySQL HeatWaveが利用できます。MySQL
 - [1. レプリケーションとは?](#anchor1)
 - [2. 本チュートリアルで作成する構成の構成図](#anchor2)
 - [3. MySQL HeatWaveの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)](#anchor3)
-- [4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)](#anchor4)
+- [4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave)](#anchor4)
 - [5. ソース用MySQL HeatWaveのデータをダンプし、レプリカ用MySQL HeatWaveへインポート](#anchor5)
 - [6. レプリケーションチャンネルの設定](#anchor6)
 - [7. レプリケーションの動作確認](#anchor7)
@@ -83,11 +83,11 @@ MySQL HeatWaveは、レプリケーションを利用してソースになるこ
 
 <a id="anchor4"></a>
 
-# 4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWave)
+# 4. レプリケーション用ユーザーの作成(ソース用のMySQL HeatWave)
 
-1. レプリケーション用のユーザーを作成し、`REPLICATION SLAVE`権限を付与します。以下の操作は、ソース用のMySQL HeatWave、レプリカ用のMySQL HeatWaveの両方で実行します。
+1. レプリケーション用のユーザーを作成し、`REPLICATION SLAVE`権限を付与します。以下の操作は、ソース用のMySQL HeatWaveの両方で実行します。
 
-    実行コマンド例(コピー＆ペースト用：**Source** 及び **Replica** で実行)
+    実行コマンド例(コピー＆ペースト用：**Source** で実行)
     ```
     CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
     ```
@@ -96,7 +96,7 @@ MySQL HeatWaveは、レプリケーションを利用してソースになるこ
     GRANT REPLICATION SLAVE on *.* to 'rpl'@'%';
     ```
 
-    実行例 (**Source** 及び **Replica** で実行)
+    実行例 (**Source** で実行)
     ```
     mysql> CREATE USER 'rpl'@'%' IDENTIFIED BY 'MySQL_8.0' REQUIRE SSL;
     Query OK, 0 rows affected (0.00 sec)
