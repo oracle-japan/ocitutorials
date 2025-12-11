@@ -1,7 +1,7 @@
 ---
 title: "STREAM実行方法（BM.Optimized3.36編）"
 description: "本ドキュメントは、第3世代Intel Xeonプロセッサを搭載するベア・メタル・シェイプBM.Optimized3.36で、メモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。"
-weight: "2120"
+weight: "2121"
 tags:
 - hpc
 params:

@@ -1,7 +1,7 @@
 ---
 title: "HPL実行方法（BM.Standard.E5.192編）"
 description: "本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192で、浮動小数点演算性能を計測する標準ベンチマークのHPLを実行する方法を解説します。"
-weight: "2111"
+weight: "2112"
 tags:
 - hpc
 params:

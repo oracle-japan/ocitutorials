@@ -1,7 +1,7 @@
 ---
 title: "OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）"
 description: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。"
-weight: "2140"
+weight: "2141"
 tags:
 - hpc
 params:
@@ -18,14 +18,18 @@ params:
 4. **[4ノード間のAllreduce](#3-4-4ノード間のallreduce)**
 5. **[4ノード間のMPI_Init所要時間](#3-5-4ノード間のmpi_init所要時間)**
 
-本ドキュメントで **OSU Micro-Benchmarks** を実行するHPCクラスタは、計算ノードに第3世代 **Intel Xeon** プロセッサを搭載するベア・メタル・シェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を使用してこれを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[HPC/GPUクラスタ](../../#1-1-hpcgpuクラスタ)** のチュートリアルの手順に従う等により、ノード間でMPIが実行できるよう予め構築しておきます。
+本ドキュメントは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** に従い予め **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続されたHPCクラスタが作成されていることを前提に、その計算ノードに **OSU Micro-Benchmarks** をインストールする手順を以下の順に解説します。
 
-本ドキュメントは、以下の実行環境で **OSU Micro-Benchmarks** を実行し、
+1. **[OpenMPIインストール](#1-openmpiインストール)**
+2. **[OSU Micro-Benchmarksインストール](#2-osu-micro-benchmarksインストール)**
+3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
+
+本ドキュメントは、以下の環境で **OSU Micro-Benchmarks** を実行し、
 
 - 計算ノード
+  - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+  - イメージ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
   - ノード数： 2 / 4
-  - シェイプ : **BM.Optimized3.36** （搭載コア数36）
-  - OS ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - ノード間接続インターコネクト
   - **クラスタ・ネットワーク**
   - リンク速度： 100 Gbps
@@ -33,32 +37,28 @@ params:
 - **OSU Micro-Benchmarks** ： 7.5.1
 
 ※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。  
-※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** / **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従って構築された **OpenMPI** です。
+※2） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 以下の性能が出ています。
 
 - 2ノード間のレイテンシ: 1.67 usec
 - 2ノード間の帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s
 
-以降では、以下の順に解説します。
+# 1. OpenMPIインストール
 
-1. **[OpenMPIインストール](#1-openmpiインストール)**
-2. **[OSU Micro-Benchmarksインストール・セットアップ](#2-osu-micro-benchmarksインストールセットアップ)**
-3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
+本章は、 **OpenMPI** をインストールします。
 
-# 1. OpenMPIインストール  
+**OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
 
-**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 8編）](../../tech-knowhow/build-openmpi/)** か **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法（Oracle Linux 9編）](../../tech-knowhow/build-openmpi-ol9/)** に従い、  **OSU Micro-Benchmarks** を実行する全てのノードに **OpenMPI** をインストールします。
+# 2. OSU Micro-Benchmarksインストール
 
-# 2. OSU Micro-Benchmarksインストール・セットアップ
-
-本章は、 **OSU Micro-Benchmarks** を **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
+本章は、 **OSU Micro-Benchmarks** を **OpenMPI** でコンパイルし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
 以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
 $ module load openmpi
 $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb

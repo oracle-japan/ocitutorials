@@ -1,7 +1,7 @@
 ---
 title: "計算/GPUノードの効果的な名前解決方法"
 description: "ノード数が多くなるHPC/GPUクラスタの計算ノードの名前解決は、どのように行うのが効果的でしょうか。本テクニカルTipsは、仮想クラウドネットワークのDNSを使用した効果的な計算/GPUノードの名前解決方法を解説します。"
-weight: "331"
+weight: "3301"
 tags:
 - hpc
 params:
@@ -10,7 +10,6 @@ params:
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
-***
 # 0. 概要
 
 **仮想クラウド・ネットワーク** に接続するインスタンスは、 **仮想クラウド・ネットワーク** が提供するDNSサービスにインスタンス名とIPアドレスの正引き・逆引き情報がデプロイ時に自動的に登録され、インスタンス名を使用して名前解決することが可能です。  
@@ -36,7 +35,6 @@ search vcn.oraclevcn.com public.vcn.oraclevcn.com private.vcn.oraclevcn.com
 - サブネットFQDN確認: DNS名前解決対象のインスタンスが接続するサブネットのFQDNの確認
 - **/etc/resolv.conf** 修正: DNS名前解を行うインスタンスの **/etc/resolv.conf** の修正
 
-***
 # 1. サブネットFQDN確認
 
 本章は、インスタンス名でDNS名前解決を行いたいインスタンスが接続されるサブネットのFQDNを確認します。
@@ -54,7 +52,6 @@ search vcn.oraclevcn.com public.vcn.oraclevcn.com private.vcn.oraclevcn.com
 
 ![画面ショット](console_page02.png)
 
-***
 # 2. resolv.confファイル修正
 
 ## 2-0. 概要

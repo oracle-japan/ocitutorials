@@ -1,7 +1,7 @@
 ---
 title: "File Storage with Lustreでファイル共有ストレージを構築する"
 description: "File Storage with LustreでLustreファイルシステムのファイル共有ストレージを構築してみましょう。このチュートリアルを終了すると、HPC/GPUクラスタから利用することが可能な高性能・高可用性ファイル共有ストレージを、OCIのマネージドLustreサービスであるFile Storage with Lustreを使用してOCIコンソールから構築することが出来るようになります。"
-weight: "1311"
+weight: "1303"
 tags:
 - hpc
 params:

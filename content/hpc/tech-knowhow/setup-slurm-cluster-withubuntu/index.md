@@ -1,7 +1,7 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)"
 description: "GPUノード/クラスタのリソース管理・ジョブ管理は、近年主流となっているマルチGPUノードのGPUリソース有効利用の観点から、ジョブスケジューラを活用することが主流となっていますが、オープンソースのジョブスケジューラSlurmは、高機能のGPUリソース管理機能を有する代表的なジョブスケジューラとして現在人気を集めています。またHPC/機械学習ワークロード実行のためのGPU搭載ノードは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっています。本テクニカルTipsは、NVIDIA製のGPUを複数搭載するベアメタルインスタンスのGPUリソース管理を念頭に、GPUノード/クラスタのリソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。"
-weight: "354"
+weight: "3503"
 tags:
 - hpc
 params:
@@ -366,7 +366,7 @@ SelectType=select/cons_tres
 TaskPlugin=task/cgroup,task/affinity
 #
 # GPU node specifications
-NodeName=inst-ao-ub Gres=gpu:nvidia_a100-sxm4-40gb:8 CPUs=64 Boards=1 SocketsPerBoard=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-ao-ub Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
 PartitionName=sltest Nodes=ALL DefMemPerGPU=250000 Default=YES MaxTime=INFINITE State=UP
 ```
 

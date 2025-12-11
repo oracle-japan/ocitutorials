@@ -1,14 +1,13 @@
 ---
 title: "pdshで効率的にクラスタ管理オペレーションを実行"
 description: "ノード数が多くなるHPC/GPUクラスタは、クラスタに含まれるノードに対して様々な管理オペレーションを実施する必要があります。この時、これらのオペレーションを実現するためのコマンドを全てのノードに適用する際、どのような方法が効果的でしょうか。本テクニカルTipsは、pdshを使用してHPC/GPUクラスタの管理オペレーションを効率的に実施する方法を解説します。"
-weight: "335"
+weight: "3305"
 tags:
 - hpc
 params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 HPC/GPUクラスタの運用管理を任されるシステム管理者は、管理するクラスタに含まれる計算/GPUノードに対して、以下のような管理オペレーションを実施する必要が頻繁に発生します。
@@ -59,7 +58,6 @@ $ for hname in `cat hostlist.txt`; do echo $hname; ssh $hname "sudo dnf list ope
 2. **pdsh** 使用時の留意点
 3. **pdsh** を使った代表的なクラスタ管理オペレーション
 
-***
 # 1. pdshインストール・セットアップ
 
 本章は、 **pdsh** をインストール・セットアップします。
@@ -166,7 +164,6 @@ $ pdsh -w ^/home/opc/hostlist.txt sudo yum-config-manager --enable ol9_developer
 $ pdsh -w ^/home/opc/hostlist.txt sudo dnf install -y pdsh pdsh-rcmd-ssh
 ```
 
-***
 # 2. pdsh使用時の留意点
 
 ## 2-0. 概要
@@ -281,7 +278,6 @@ $ pdsh -g all 'sudo dnf install -y httpd'
 $ pdsh -g all 'echo yes | sudo dnf install httpd'
 ```
 
-***
 # 3. pdshを使った代表的なクラスタ管理オペレーション
 
 ## 3-0. 概要

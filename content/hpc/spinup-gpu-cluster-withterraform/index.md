@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(基礎インフラ自動構築編)"
 description: "GPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベアメタルインスタンスをノード間接続するGPUクラスタを、予め用意されたTerraformスクリプトを活用してリソース・マネージャやTerraform CLIで自動構築します。"
-weight: "1240"
+weight: "1106"
 tags:
 - hpc
 params:

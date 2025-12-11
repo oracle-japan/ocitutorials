@@ -1,7 +1,7 @@
 ---
 title: "Slurmによるリソース管理・ジョブ管理システム構築方法"
 description: "HPC/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。"
-weight: "353"
+weight: "3502"
 tags:
 - hpc
 params:
@@ -117,9 +117,9 @@ Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpc
 
 ※6）**[1. 前提システム](#1-前提システム)** の構築手順により既にインストールされています。
 
-## 2-1. munge インストール・セットアップ
+## 2-1. munge インストール
 
-本章は、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードに **munge** をインストール・セットアップします。
+本章は、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードに **munge** をインストールします。
 
 以下コマンドを対象となる全ノードのopcユーザで実行し、 **munge** プロセス起動ユーザを作成します。
 
@@ -164,9 +164,9 @@ STATUS:           Success (0)
 $
 ```
 
-## 2-2. MariaDB インストール・セットアップ
+## 2-2. MariaDB インストール
 
-本章は、Slurmマネージャに **MariaDB** をインストール・セットアップします。
+本章は、Slurmマネージャに **MariaDB** をインストールします。
 
 以下コマンドをopcユーザで実行し、 **MariaDB** をインストールします。
 
@@ -250,7 +250,7 @@ $
 
 本章は、Slurmマネージャに **OpenPMIx** をインストールします。
 
-以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
+以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenPMIx** を **/opt/pmix** ディレクトリにインストールします。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
@@ -266,21 +266,21 @@ $ make -j 16 && sudo make install
 $ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 $ tar -xvf ./pmix-5.0.8.tar.gz
 $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 16 && sudo make install
+$ make -j 16 && sudo make install; echo $?
 ```
 
 ## 2-4. OpenUCXインストール
 
 本章は、Slurmマネージャに **OpenUCX** をインストールします。
 
-以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
+以下コマンドをSlurmマネージャのopcユーザで実行し、 **OpenUCX** を **/opt/ucx** ディレクトリにインストールします。  
 なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 $ tar -xvf ./ucx-1.19.0.tar.gz
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
-$ make -j 16 && sudo make install
+$ make -j 16 && sudo make install; echo $?
 ```
 
 ## 2-5. Slurm RPMパッケージ作成
@@ -298,7 +298,7 @@ $ sudo dnf install -y mariadb-devel munge-devel pam-devel readline-devel dbus-de
 
 ```sh
 $ cd ~/`hostname` && wget https://download.schedmd.com/slurm/slurm-25.05.3.tar.bz2
-$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-25.05.3.tar.bz2
+$ rpmbuild --define '_prefix /opt/slurm' --define '_slurm_sysconfdir /opt/slurm/etc' --define '_with_pmix --with-pmix=/opt/pmix' --define '_with_ucx --with-ucx=/opt/ucx' -ta ./slurm-25.05.3.tar.bz2; echo $?
 ```
 
 作成されたパッケージは、以下のディレクトリに配置されるので、これらの全ファイルを他のサブシステムにコピーします。
@@ -321,9 +321,9 @@ slurm-torque-25.05.3-1.el9.x86_64.rpm
 $
 ```
 
-## 2-6. Slurm RPMパッケージインストール・セットアップ
+## 2-6. Slurm RPMパッケージインストール
 
-本章は、先に作成した **Slurm** RPMパッケージを各サブシステムにインストールし、必要なセットアップ作業を実施します。
+本章は、先に作成した **Slurm** RPMパッケージを各サブシステムにインストールします。
 
 以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な **Slurm** RPMパッケージのインストール・セットアップを行います。
 
@@ -393,7 +393,7 @@ AccountingStorageType=accounting_storage/slurmdbd
 AccountingStorageHost=slurm-srv
 AccountingStoragePort=7004
 MpiDefault=pmix
-NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9 Sockets=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
 PartitionName=sltest Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 TaskPlugin=task/affinity
 ```

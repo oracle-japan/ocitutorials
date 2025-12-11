@@ -1,7 +1,7 @@
 ---
 title: "OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）"
 description: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU4.8/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPUデバイスメモリ間のMPI通信性能を計測する標準ベンチマークのOSU Micro-Benchmarksを実行する方法を解説します。"
-weight: "2141"
+weight: "2142"
 tags:
 - hpc
 params:
@@ -53,10 +53,10 @@ params:
 
 以降では、以下の順に解説します。
 
-1. **[OSU Micro-Benchmarksインストール・セットアップ](#1-osu-micro-benchmarksインストールセットアップ)**
+1. **[OSU Micro-Benchmarksインストール](#1-osu-micro-benchmarksインストール)**
 2. **[OSU Micro-Benchmarks実行](#2-osu-micro-benchmarks実行)**
 
-# 1. OSU Micro-Benchmarksインストール・セットアップ
+# 1. OSU Micro-Benchmarksインストール
 
 本章は、 **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** と **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** （ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる）を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
