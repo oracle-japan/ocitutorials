@@ -1,7 +1,7 @@
 ---
 title: "Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法"
 description: "OpenMPIは、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。OpenMPIで作成したアプリケーションのHPC/GPUクラスタに於ける実行は、計算リソース有効利用の観点から通常ジョブスケジューラを介したバッチジョブとして行いますが、ジョブスケジューラがSlurmの場合、PMIxを使用することでMPIアプリケーションの起動や通信初期化のスケーラビリティを向上させることが可能です。またUCXは、OpenMPIがクラスタ・ネットワークを利用して高帯域・低遅延のMPIプロセス間通信を実現するために欠かせない通信フレームワークです。本テクニカルTipsは、PMIxを使用するSlurm環境で通信フレームワークにUCXの使用を前提とするOpenMPI構築方法を解説します。"
-weight: "351"
+weight: "3501"
 tags:
 - hpc
 params:
@@ -63,18 +63,16 @@ params:
 
 ※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** / **No.14** / **No.15** です。
 
-またこれらをインストールする **BM.Optimized3.36** のインスタンスは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
+またこの環境を構成する計算ノードは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** が参考になります。
 
-なお、ここで構築する **OpenMPI** と連携する **Slurm** の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** を参照してください。  
+なお、ここで構築する **OpenMPI** と連携する **Slurm** 環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** を参照してください。  
 
 # 1. インストール・セットアップ
 
 ## 1-0. 概要
 
-本章は、予めデプロイしている **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続する **BM.Optimized3.36** のインスタンス上で、 **OpenMPI** とその前提ソフトウェアである **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムのコンパイル・実行のためのセットアップを実施します。
-
-以降の作業は、MPIプログラムのコンパイル・実行を行う全てのノードで実施します。
+本章は、計算ノードに **OpenMPI** とその前提ソフトウェアの **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムをコンパイル・実行するためのセットアップを実施します。
 
 ## 1-1.  OpenMPI前提ソフトウェアインストール
 
@@ -91,51 +89,51 @@ params:
 
 ### 1-1-1. libeventインストール
 
-以下コマンドをopcユーザで実行し、 **libevent** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **libevent** を **/opt/libevent** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 ### 1-1-2. hwlocインストール
 
-以下コマンドをopcユーザで実行し、 **hwloc** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **hwloc** を **/opt/hwloc** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 $ tar -xvf ./hwloc-2.12.2.tar.gz
 $ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 ### 1-1-3. OpenPMIxインストール
 
-以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt/pmix** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 $ tar -xvf ./pmix-5.0.8.tar.gz
 $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 ### 1-1-4. XPMEMインストール
 
 本章で実施する **XPMEM** のインストールは、 **Oracle Linux** 9.5の場合はスキップします。
 
-以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt/xpmem** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
@@ -149,7 +147,7 @@ $ sudo modprobe xpmem
 
 ### 1-1-5. OpenUCXインストール
 
-以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt/ucx** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、 **Oracle Linux** のバージョンにより実行するコマンドが異なる点に留意します。
 
 ```sh
@@ -157,31 +155,31 @@ $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19
 $ tar -xvf ./ucx-1.19.0.tar.gz
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem # For Oracle Linux 8
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx # For Oracle Linux 9
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 ### 1-1-6. UCCインストール
 
-以下コマンドをopcユーザで実行し、 **UCC** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **UCC** を **/opt/ucc** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
 $ tar -xvf ./v1.5.0.tar.gz
 $ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
-$ make -j 36 && sudo make install
+$ make -j 36 && sudo make install; echo $?
 ```
 
 ## 1-2. OpenMPIインストール
 
-以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt** ディレクトリにインストールします。  
+以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt/openmpi** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
 $ tar -xvf ./openmpi-5.0.8.tar.gz
 $ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
-$ make -j 36 all && sudo make install
+$ make -j 36 all && sudo make install; echo $?
 ```
 
 ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
@@ -190,7 +188,7 @@ $ make -j 36 all && sudo make install
 
 ### 1-3-0. 概要
 
-本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な以下の環境設定を行います。
+本章は、 **OpenMPI** を利用するユーザがMPIプログラムをコンパイル・実行するために必要な以下のセットアップを行います。
 
 1. **[Environment ModulesへのOpenMPI用モジュール登録](#1-3-1-environment-modulesへのopenmpi用モジュール登録)**
 2. **[ホストリストファイル作成](#1-3-2-ホストリストファイル作成)**

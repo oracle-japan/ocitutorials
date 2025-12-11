@@ -1,7 +1,7 @@
 ---
 title: "GPUインスタンスで機械学習にトライ"
 description: "OCIのGPUインスタンスで機械学習にトライしてみましょう。このチュートリアルを終了すると、TensorFlowやJupyterLab等の代表的な機械学習関連ソフトウェアがインストールされたNVIDIA製GPUを使用する機械学習環境で、サンプル機械学習プログラムを実行することが出来るようになります。"
-weight: "1210"
+weight: "1201"
 tags:
 - hpc
 params:
@@ -25,7 +25,7 @@ params:
 この機械学習環境は、以下2種類の構築方法を解説し、自身の機械学習ワークロードの要件に合わせて選択します。
 
 - Python仮想環境を使用する構築方法  
-Pythonの **[venv](https://docs.python.org/3/library/venv.html)** を使用し、OSに含まれるPythonに影響を与えることなく **TensorFlow** や **JupyterLab** をインストールし、Python仮想環境上に機械学習環境を構築します。
+Pythonの **[venv](https://docs.python.org/3/library/venv.html)** を使用し、OSに含まれる古いバージョン（本チュートリアルでは3.9です。）のPythonに影響を与えることなく、最新バージョン（本チュートリアルでは3.12です。）のPython仮想環境に **TensorFlow** や **JupyterLab** をインストールして機械学習環境を構築します。
 - コンテナを使用する構築方法  
 コンテナランタイムの **[containerd](https://github.com/containerd/containerd/tree/main)** とGPU利用可能なコンテナの実行を可能にする **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用してコンテナ実行環境を構築し、 **TensorFlow** や **JupyterLab** が既にインストールされた機械学習ワークロード向けコンテナを **[NGC Catalog](https://catalog.ngc.nvidia.com/)** 等のコンテナレポジトリからプル・起動し、コンテナ上に機械学習環境を構築します。
 
@@ -132,7 +132,7 @@ $ ssh -i path_to_ssh_secret_key -L 8888:localhost:8888 user_name@123.456.789.123
 ```
 
 次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境を作成します。  
-なお **project_name** と **venv_name** は、自身の環境に置き換えます。
+なお **project_name** と **venv_name** は、自身の好みの名称に置き換えます。
 
 ```sh
 $ mkdir -p ~/project_name && cd ~/project_name
@@ -141,7 +141,7 @@ $ source venv_name/bin/activate
 ((venv_name) ) $
 ```
 
-次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境にGPU対応 **TensorFlow** 、 **JupyterLab** 、及び **Matplotlib** をインストールします。
+次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python仮想環境にGPU対応 **TensorFlow** 、 **JupyterLab** 、及び **Matplotlib** をインストールします。
 
 ```sh
 ((venv_name) ) $ pip install --upgrade pip
@@ -158,7 +158,7 @@ Verify password:  <-- パスワード入力
 ((venv_name) ) $
 ```
 
-次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境を終了します。
+次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python仮想環境を終了します。
 
 ```sh
 ((venv_name) ) $ deactivate
@@ -322,8 +322,8 @@ $
 
 ## 2-2. TenforFlow・JupyterLab稼働確認
 
-以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
-なお **project_name** と **venv_name** は、自身の環境に置き換えます。
+以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、先に作成したPython仮想環境上で **JupyterLab** を起動します。  
+なお **project_name** と **venv_name** は、Python仮想環境作成時に自身で指定したものに置き換えます。
 
 ```sh
 $ cd ~/project_name
@@ -361,8 +361,8 @@ $
 
 ## 2-3. 単一GPUを使用する機械学習プログラム実行
 
-以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
-なお **project_name** と **venv_name** は、自身の環境に置き換えます。
+以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、先に作成したPython仮想環境上で **JupyterLab** を起動します。  
+なお **project_name** と **venv_name** は、Python仮想環境作成時に自身で指定したものに置き換えます。
 
 ```sh
 $ cd ~/project_name
@@ -387,7 +387,7 @@ $ source venv_name/bin/activate
 
 ![画面ショット](Jupyter_page07.png)
 
-次に、 **JupyterLab** にアクセスしているブラウザを終了後、 **JupyterLab** を起動したターミナルで以下のようにCtrl-Cを入力して **JupyterLab** を終了し、Python 3.12のPython仮想環境を終了します。
+次に、 **JupyterLab** にアクセスしているブラウザを終了後、 **JupyterLab** を起動したターミナルで以下のようにCtrl-Cを入力して **JupyterLab** を終了し、Python仮想環境を終了します。
 
 ```sh
 Cntr-C <--- 入力
@@ -405,7 +405,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 ## 2-4. 複数GPUを使用する分散機械学習プログラム実行
 
 以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、Python 3.12のPython仮想環境上で **JupyterLab** を起動します。  
-なお **project_name** と **venv_name** は、自身の環境に置き換えます。
+なお **project_name** と **venv_name** は、Python仮想環境作成時に自身で指定したものに置き換えます。
 
 ```sh
 $ cd ~/project_name
@@ -456,7 +456,7 @@ with mirrored_strategy.scope():
 
 ![画面ショット](Jupyter_page06.png)
 
-次に、 **JupyterLab** にアクセスしているブラウザを終了後、 **JupyterLab** を起動したターミナルで以下のようにCtrl-Cを入力して **JupyterLab** を終了し、Python 3.12のPython仮想環境を終了します。
+次に、 **JupyterLab** にアクセスしているブラウザを終了後、 **JupyterLab** を起動したターミナルで以下のようにCtrl-Cを入力して **JupyterLab** を終了し、Python仮想環境を終了します。
 
 ```sh
 Cntr-C <--- 入力

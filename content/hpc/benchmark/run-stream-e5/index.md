@@ -1,7 +1,7 @@
 ---
 title: "STREAM実行方法（BM.Standard.E5.192編）"
 description: "本ドキュメントは、第4世代AMD EPYCプロセッサを搭載するベア・メタル・シェイプBM.Standard.E5.192で、メモリ帯域を計測する標準ベンチマークのSTREAMを実行する方法を解説します。"
-weight: "2121"
+weight: "2122"
 tags:
 - hpc
 params:

@@ -1,14 +1,13 @@
 ---
 title: "ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法"
 description: "高速スクラッチ領域として利用することを想定したNVMe SSDローカルディスクを内蔵するHPCクラスタ向けベアメタルシェイプBM.Optimized3.36やGPUクラスタ向けベアメタルシェイプBM.GPU4.8/BM.GPU.A100-v2.8/BM.GPU.H100.8は、NVMe SSDローカルディスクをOSのファイルシステムとして利用するための設定をユーザ自身が行う必要があります。本テクニカルTipsは、このファイルシステム作成方法を解説します。"
-weight: "321"
+weight: "3201"
 tags:
 - hpc
 params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 NVMe SSDローカルディスクにファイルシステムを作成する方法は、搭載するドライブ数が異なる **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** 、 **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** 、及び、 **[BM.GPU.H100.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** でその手順が異なり、以降ではそれぞれの手順を解説します。
@@ -17,7 +16,6 @@ NVMe SSDローカルディスクにファイルシステムを作成する方法
 
 なお 、ここで解説するファイルシステム作成手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** で紹介する構築手順に含まれるため、これらチュートリアルの手順に従ってHPCクラスタやGPUクラスタを構築する場合は、改めて実施する必要はありません。
 
-***
 # 1. BM.Optimized3.36用ファイルシステム作成手順
 
 **BM.Optimized3.36** は、3.84 TBのNVMe SSDローカルディスクを1ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
@@ -42,7 +40,6 @@ $
 
 この手順は、NVMe SSDローカルディスク全領域を1パーティションで区画し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
 
-***
 # 2. BM.GPU4.8/BM.GPU.A100-v2.8用ファイルシステム作成手順
 
 **BM.GPU4.8/BM.GPU.A100-v2.8** は、6.4 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
@@ -67,7 +64,6 @@ $
 
 この手順は、4ドライブのNVMe SSDローカルディスクをまとめて1個の論理ボリュームとして作成し、ラベル名 **localscratch** でXFSファイルシステムにフォーマットし、OS再起動時に自動的にマウントされる設定で **/mnt/localdisk** にマウントします。
 
-***
 # 3. BM.GPU.H100.8用ファイルシステム作成手順
 
 ## 3-0. 概要

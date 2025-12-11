@@ -1,7 +1,7 @@
 ---
 title: "NCCL Tests実行方法（BM.GPU.H100.8編）"
 description: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU.H100.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。"
-weight: "2152"
+weight: "2153"
 tags:
 - hpc
 params:

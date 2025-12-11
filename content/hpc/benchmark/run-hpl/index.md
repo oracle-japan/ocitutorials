@@ -1,7 +1,7 @@
 ---
 title: "HPL実行方法（BM.Optimized3.36編）"
 description: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、浮動小数点演算性能を計測する標準ベンチマークのHPLを実行する方法を解説します。"
-weight: "2110"
+weight: "2111"
 tags:
 - hpc
 params:

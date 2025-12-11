@@ -1,7 +1,7 @@
 ---
 title: "Intel MPI Benchmarks実行方法"
 description: "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.Optimized3.36をノード間接続するHPCクラスタで、MPI通信性能を計測する標準ベンチマークのIntel MPI Benchmarksを実行する方法を解説します。"
-weight: "2130"
+weight: "2131"
 tags:
 - hpc
 params:

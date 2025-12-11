@@ -1,7 +1,7 @@
 ---
 title: "GPUクラスタを構築する(Ubuntu OS編)"
 description: "UbuntuをOSとするGPUクラスタを構築してみましょう。このチュートリアルは、GPUクラスタのノード間接続に最適な高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでUbuntuのベアメタルGPUインスタンスをノード間接続するGPUクラスタを、必要なリソースを順次コンソールから作成しながら構築します。"
-weight: "1270"
+weight: "1109"
 tags:
 - hpc
 params:
