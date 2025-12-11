@@ -58,7 +58,7 @@ params:
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
 $ module load openmpi
 $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb
