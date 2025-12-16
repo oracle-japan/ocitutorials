@@ -79,7 +79,7 @@ ADB で DBMS_CLOUD を利用する方法は[202: コマンドラインから大�
 | 6   | config_aces_for_user.sql | 指定ユーザに ACEs を設定            | [ダウンロード](/ocitutorials/basedb/dbcs202-dbms-cloud/config_aces_for_user.sql)                                                                                         | /home/oracle/dbc  |
 | 7   | config_aces_for_role.sql | 指定ロールに ACEs を設定            | [ダウンロード](/ocitutorials/basedb/dbcs202-dbms-cloud/config_aces_for_role.sql)                                                                                         | /home/oracle/dbc  |
 | 8   | validate_user_config.sql | 設定した権限を検証                  | [ダウンロード](/ocitutorials/basedb/dbcs202-dbms-cloud/validate_user_config.sql)                                                                                         | /home/oracle/dbc  |
-| 9   | dbc_certs.tar            | 証明書                              | [ダウンロード](https://objectstorage.us-phoenix-1.oraclecloud.com/p/QsLX1mx9A-vnjjohcC7TIK6aTDFXVKr0Uogc2DAN-Rd7j6AagsmMaQ3D3Ti4a9yU/n/adwcdemo/b/CERTS/o/dbc_certs.tar) | /home/oracle/cert |
+| 9   | dbc_certs.tar            | 証明書                              | [ダウンロード](https://objectstorage.us-phoenix-1.oraclecloud.com/p/KB63IAuDCGhz_azOVQ07Qa_mxL3bGrFh1dtsltreRJPbmb-VwsH2aQ4Pur2ADBMA/n/adwcdemo/b/CERTS/o/dbc_certs.tar) | /home/oracle/cert |
 
 <!-- {{< hint type=note title="参考" >}} DBMS_CLOUDパッケージで使用可能なスクリプトは[SQLサンプル(GitHub)](https://github.com/oracle-devrel/technology-engineering/tree/main/data-platform/core-converged-db/hybrid-partitioned/dbms_cloud/files)からもダウンロード可能です。
 {{< /hint >}} -->
