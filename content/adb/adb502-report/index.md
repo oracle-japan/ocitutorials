@@ -50,8 +50,7 @@ SRの発行方法については、本チュートリアルガイドの [506: �
 - [1. コマンドライン(SQL*Plus)で確認しよう](#anchor1)
     - [1-1. 初期化パラメータの確認](#anchor1-1)
     - [1-2. AWRレポートの確認](#anchor1-2)
-    - [1-3. アラート・ログの確認](#anchor1-3)
-    - [1-4. トレース・ログの確認](#anchor1-4)
+
 - [2. SQL Developer DBAビューで確認しよう](#anchor2)
     - [2-1. 初期化パラメータの確認](#anchor2-1)
     - [2-2. AWRレポートの確認](#anchor2-2)
@@ -184,7 +183,7 @@ SELECT name, value FROM v$parameter;
 ## 補足
 
 スナップショットに関する情報は**DBA_HIST_SNAPSHOT**ビューで参照できます。
-<br>スナップショット間隔の変更方法およびスナップショットの手動取得方法は次の通りです。
+<br>スナップショット間隔の変更方法およびスナップショットの手動取得方法は次の通りです。（再起動後に変更した内容はリセットされますので、ご注意ください。）
 
 1. **スナップショット間隔の変更方法**
     <br>10分に変更する例。（デフォルトは60分）
@@ -223,97 +222,9 @@ SELECT name, value FROM v$parameter;
     ![img1_0_2.png](img1_0_2.png)
 
 <br>
-<a id="anchor1-3"></a>
-
-# 1-3. アラート・ログの確認
-
-DB上で発生したエラーや障害の情報は、アラートファイルとトレースファイルに出力されます。
-<br>アラートファイルには発生した事象の概要が、トレースファイルには詳細が出力されます。
-<br>通常、アラートログ、トレースログはDBが稼働するOSのファイルシステム上にありますが、**ADBはOS領域にアクセスすることができない**ため、SQLを介して取得します。
-<br>それでは、SQL*Plusでアラートログを取得してみましょう。
 
 
-1. 以下のSQLを実行します。（以下では直近2週間分のアラートログを表示しています。）
-    <br>アラートログは、**V$DIAG_ALERT_EXT**ビューで参照できます。
 
-    ```sql
-    -- 出力設定
-    SET LINES 200
-    SET PAGES 9999
-    SET TRIMS ON
-    COL ORIGINATING_TIMESTAMP FOR A40
-    COL MESSAGE_TEXT FOR A120
-    COL PROCESS_ID FOR A20
-
-    -- アラートログの確認
-    SELECT
-        ORIGINATING_TIMESTAMP,
-        PROCESS_ID,
-        MESSAGE_TEXT
-    FROM
-        V$DIAG_ALERT_EXT
-    WHERE
-        ORIGINATING_TIMESTAMP > SYSDATE - 14;
-    ```
-
-    ORAエラーや管理操作が記録されているのが確認できます。
-        
-    ![img1_3_1.png](img1_3_1.png)
-
-<br>
-<a id="anchor1-4"></a>
-
-# 1-4. トレース・ログの確認
-
-次に、トレースログを確認します。
-<br>トレースファイルは複数存在するため、ファイルの一覧を確認した上で、必要なファイルを表示するという流れです。
-<br>トレースファイルの内容は**V$DIAG_TRACE_FILE**ビューおよび**V$DIAG_TRACE_FILE_CONTENTS**ビューから参照できます。
-
-1. 必要なトレースファイル名を取得するため、以下のSQLを実行します。
-
-    ```sql
-    -- 出力設定
-    COL TRACE_FILENAME FOR A30
-    COL FILE_NAME FOR A30
-    SET LINES 200
-    SET PAGES 9999
-
-    -- ファイル名を取得
-    SELECT
-        TRACE_FILENAME,
-        CHANGE_TIME
-    FROM
-        V$DIAG_TRACE_FILE
-    WHERE
-        TRACE_FILENAME LIKE '%ora%'
-    ORDER BY
-        CHANGE_TIME;
-    ```
-
-    次のようなトレースファイルの一覧が確認できます。
-
-    ![img1_4_1.png](img1_4_1.png)
-
-2. 次に任意のトレースファイルを確認するため、以下のSQLを実行します。
-
-    ```sql
-    -- 出力設定
-    COL PAYLOAD FOR A300
-    SET LINES 200
-    SET PAGES 9999
-
-    -- トレースファイルを確認
-    SELECT
-        PAYLOAD
-    FROM
-        V$DIAG_TRACE_FILE_CONTENTS
-    WHERE
-        TRACE_FILENAME = '[任意のファイル名]'
-    ORDER BY
-        LINE_NUMBER;
-    ```
-
-    トレースファイルの内容が確認できればOKです。
 
 <!-- ------------------ 2 ------------------ -->
 
