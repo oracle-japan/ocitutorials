@@ -17,28 +17,32 @@ params:
 3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
 4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#2-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
 
-本ドキュメントで **OSU Micro-Benchmarks** を実行するGPUクラスタは、GPUノードに8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を使用してこれを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続しており、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** のチュートリアルに従い予め構築しておきます。
+本ドキュメントで **OSU Micro-Benchmarks** を実行するGPUクラスタは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** のGPUノードを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** （OSが **Oracle Linux** の場合に使用します。）/ **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** （OSが **Ubuntu** の場合に使用します。）のチュートリアルに従い、予め構築されているものとします。
 
 本ドキュメントは、以下の実行環境で **OSU Micro-Benchmarks** の計測を実施し、
 
 - GPUノード
+  - シェイプ： **BM.GPU4.8** （ **NVIDIA A100 40GB SXM** x 8）
+  - イメージ：  
+  **Oracle Linux** 9.5ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）/  
+  **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)**
   - ノード数： 2
-  - シェイプ : **BM.GPU4.8** （ **NVIDIA A100 40GB SXM** x 8）
 - ノード間接続インターコネクト
   - **クラスタ・ネットワーク**
   - リンク速度・数： 100 Gbps x 16
-- ソフトウェア
-  - OS ： **Ubuntu** 24.04（※1）
-  - **NVIDIA Driver** ： 575.57.08
-  - **NVIDIA CUDA** ： 12.9.1
-  - **NVIDIA Fabric Manager** ： 575.57.08
-  - **NVIDIA HPC SDK** ： 25.7
-  - **OpenMPI** ： 5.0.8
-  - **OSU Micro-Benchmarks** ： 7.5.1
+- **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** ： 570.172.08 / 575.57.08
+- **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** ： 12.8.1 / 12.9.1
+- **[NVIDIA Fabric Manager](https://docs.nvidia.com/datacenter/tesla/fabric-manager-user-guide/index.html)** ： 570.172.08 / 575.57.08
+- **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** ： NA / 25.7
+- **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** ： 2.27.5（※2） / 2.27.5（※3）
+- **OpenMPI** ： 5.0.8
+- **OSU Micro-Benchmarks** ： 7.5.1
 
-※1） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。
+※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
+※2）GPU **クラスタネットワーキングイメージ** に含まれるものを使用します。  
+※3） **NVIDIA HPC SDK** に含まれるものを使用します。
 
-**D** ・ **H** 間のレイテンシ・帯域幅に関して以下の性能が出ています。
+**D** ・ **H** 間のレイテンシ・帯域幅に関して以下の性能が出ています。（ **Ubuntu** での計測値です。）
 
 | 方向               | ノード内/ノード間 | **D** ・ **H** 接続関係 | レイテンシ   | 帯域幅          |
 | :--------------: | :-------: | :----------------: | :-----: | :----------: |
@@ -58,34 +62,41 @@ params:
 
 # 1. OSU Micro-Benchmarksインストール
 
-本章は、 **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** と **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** （ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** に含まれる）を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **[OpenMPI](https://www.open-mpi.org/)** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
+本章は、 **NVIDIA CUDA** と **NCCL** を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **OpenMPI** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
-以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行します。
+以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
-$ module load nvhpc openmpi
-$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda-12.9/include --with-cuda-libpath=/usr/local/cuda-12.9/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
+$ module load openmpi # For Oracle Linux
+$ module load nvhpc openmpi # For Ubuntu
+$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda=/usr/local/cuda --enable-ncclomb # For Oracle Linux
+$ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda/include --with-cuda-libpath=/usr/local/cuda/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl # For Ubuntu
 ```
 
-次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。
+次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ diff libtool_org libtool
+$ diff libtool_org libtool # For Oracle Linux
+1732a1733
+>     export PATH=/opt/openmpi/bin:${PATH}
+$ diff libtool_org libtool # For Ubuntu
 1733a1734
 >       export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/compilers/bin:${PATH}
 $
 ```
 
-次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
+次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ make -j 128 && sudo make install
+$ make -j 64 && sudo make install; echo $?
 ```
 
-次に、以下のファイルを **/usr/share/modules/modulefiles/omb** で作成します。  
+次に、以下のファイルを **/usr/share/Modules/modulefiles/omb** （ **For Oracle Linux** ）/ **/usr/share/modules/modulefiles/omb** （ **For Ubuntu** ）で作成します。  
 このファイルは、 **Environment Modules** にモジュール名 **omb** を登録し、これをロードすることで **OSU Micro-Benchmarks** 利用環境の設定を可能にします。
 
 ```sh
@@ -123,10 +134,12 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 
 ### 2-1-1. レイテンシ
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ module load nvhpc openmpi omb
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 --report-bindings osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
 [inst-wpdlx-ao-ub24:22411] Rank 0 bound to package[0][core:0]
 [inst-wpdlx-ao-ub24:22411] Rank 1 bound to package[0][core:1]
@@ -188,10 +201,12 @@ $
 
 ### 2-1-2. 帯域幅
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ module load nvhpc openmpi omb
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 --report-bindings osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
 [inst-wpdlx-ao-ub24:22768] Rank 0 bound to package[0][core:0]
 [inst-wpdlx-ao-ub24:22768] Rank 1 bound to package[0][core:1]
@@ -255,7 +270,7 @@ $
 
 ### 2-2-0. 概要
 
-本章は、2ノードに跨るGPU番号0同士のメッセージサイズ1バイトでのレイテンシとメッセージサイズ256 MiBでの帯域幅を計測しています。
+本章は、2ノードに跨るGPU番号0同士のメッセージサイズ1バイトでのレイテンシとメッセージサイズ256 MiBでの帯域幅を計測します。
 
 使用するGPU番号が0になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
 
@@ -263,10 +278,12 @@ $
 
 ### 2-2-1. レイテンシ
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。   
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。 
 
 ```sh
-$ module load nvhpc openmpi omb
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
 [inst-0d12t-ao-ub24:14174] SET UCX_NET_DEVICES=mlx5_6:1
 
@@ -279,10 +296,12 @@ $
 
 ### 2-2-2. 帯域幅
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ module load nvhpc openmpi omb
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
 [inst-0d12t-ao-ub24:16701] SET UCX_NET_DEVICES=mlx5_6:1
 
@@ -297,10 +316,12 @@ $
 
 本章は、ノード内の8枚のGPUを使用する **NCCL** のAllReduce通信性能を、メッセージサイズ1 GiBバイトでの所要時間で計測します。
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ module load nvhpc openmpi omb
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 8 -x UCX_NET_DEVICES=mlx5_6:1 osu_xccl_allreduce -x 10 -i 10 -m 1073741824:1073741824 -d cuda D D
 [inst-s08bb-ao-ub24:28293] SET UCX_NET_DEVICES=mlx5_6:1
 #Using NCCL
@@ -318,15 +339,16 @@ $ mpirun -n 8 -x UCX_NET_DEVICES=mlx5_6:1 osu_xccl_allreduce -x 10 -i 10 -m 1073
 $
 ```
 
-
 ## 2-4. 2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能
 
 本章は、2ノードに跨る16枚のGPUを使用する **NCCL** のAllReduce通信性能を、メッセージサイズ1 GiBバイトでの所要時間で計測します。
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
+なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
-$ module load openmpi
+$ module load openmpi omb # For Oracle Linux
+$ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_xccl_allreduce -x 10 -i 10 -m 1073741824:1073741824 -d cuda D D
 [inst-s08bb-ao-ub24:28899] SET UCX_NET_DEVICES=mlx5_6:1
 #Using NCCL

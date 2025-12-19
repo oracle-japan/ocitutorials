@@ -131,7 +131,7 @@ $ singularity run --writable --fakeroot --bind /mnt/localdisk/usera:/mnt/localdi
 Singularity> apt update
 Singularity> echo "tzdata tzdata/Areas select Asia" | debconf-set-selections
 Singularity> echo "tzdata tzdata/Zones/Asia select Tokyo" | debconf-set-selections
-Singularity> DEBIAN_FRONTEND=noninteractive apt install -y tzdata wget build-essential openssl libssl-dev zlib1g-dev git gfortran autoconf libtool vim environment-modules libnuma-dev libibverbs-dev librdmacm-dev tcl
+Singularity> DEBIAN_FRONTEND=noninteractive apt install -y tzdata wget build-essential openssl libssl-dev zlib1g-dev git gfortran autoconf libtool vim environment-modules libnuma-dev libibverbs-dev librdmacm-dev tcl pkg-config
 Singularity> mkdir /mnt/localdisk/root/`hostname` && cd /mnt/localdisk/root/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 Singularity> tar -xvf ./libevent-2.1.12-stable.tar.gz --no-same-owner
 Singularity> cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent

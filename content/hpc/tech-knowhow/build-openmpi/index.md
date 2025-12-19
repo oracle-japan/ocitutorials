@@ -32,39 +32,48 @@ params:
 
 また **[UCX](https://openucx.org/)** は、HPCでの利用を念頭に開発されているオープンソースの通信フレームワークで、 **OpenMPI** から利用可能な以下のノード内・ノード間通信手段を提供します。
 
-[ノード内]
-- POSIX共有メモリ
-- SYSTEM V共有メモリ
-- **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)**
-- **[XPMEM](https://github.com/hpc/xpmem)**
+- ノード内
+  - POSIX共有メモリ
+  - SYSTEM V共有メモリ
+  - **[Cross Memory Attach (CMA)](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fcf634098c00dd9cd247447368495f0b79be12d1)**
+  - **[XPMEM](https://github.com/hpc/xpmem)**
+  - **[GDRCopy](https://github.com/NVIDIA/gdrcopy)** （GPUノードの場合のみ使用します。）
 
-[ノード間]
-- InfiniBandトランスポート
-    - Unreliable Datagram (UD)
-    - Reliable Connected (RC)
-    - Dynamically Connected (DC)
-- TCP
+- ノード間
+  - InfiniBandトランスポート
+      - Unreliable Datagram (UD)
+      - Reliable Connected (RC)
+      - Dynamically Connected (DC)
+  - TCP
 
 特に **UCX** を使用するノード間通信は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介してInfiniBandトランスポートを使用したRDMA通信を行うことで、高帯域・低遅延のMPIプロセス間通信を実現します。
 
-以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **No. 1.** の動作モードで実行すること、通信フレームワークに **UCX** を使用することを想定し、このための **OpenMPI** の構築方法を解説、構築した **OpenMPI** のノード間MPI通信性能の確認とOpenMPとのハイブリッドプログラム稼働確認を目的として、以下のアプリケーションを実行します。
+また **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。） は、HPC/機械学習ワークロードでの利用を念頭に開発されている高性能・スケーラブルな集合通信ライブラリで、 **OpenMPI** の **[Modular Component Architecture](https://docs.open-mpi.org/en/v5.0.x/mca.html)** （以降 **MCA** と呼称）に組み込まれたコンポーネントとして **OpenMPI** が提供する集合通信ライブラリを置き換えて利用することで、集合通信を多用するアプリケーションの高速化が期待できます。
 
--  **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)**
+以上の利点を享受するべく本テクニカルTipsは、 **Slurm** 環境でMPIアプリケーションを **No. 1.** の動作モードで実行すること、通信フレームワークに **UCX** を使用すること、及び **UCC** を **MCA** のコンポーネントとして利用することを想定し、このための **OpenMPI** の構築方法をCPUワークロード向け計算ノードでの手順とGPUワークロード向けGPUノードでの手順を解説、構築した **OpenMPI** の稼働確認として以下のアプリケーションを実行します。
+
+- **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)**
 - **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)**
 
-本テクニカルTipsは、以下の環境を前提とします。
-
-- シェイプ ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-- イメージ ： **Oracle Linux** 8.10 / 9.05ベースのHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+本テクニカルTipsは、以下の環境を前提とし、
+- 計算ノード
+  - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+  - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+- GPUノード
+  - シェイプ： **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)**
+  - イメージ： **Oracle Linux** 9.05ベースのGPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
 - **OpenMPI** ： 5.0.8
 - **PMIx** ： **[OpenPMIx](https://openpmix.github.io/)** 5.0.8
-- **UCX** : **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
+- **UCX** ： **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)** 1.19.0
+- **UCC** ： 1.5.0
 
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。  
+※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。
 
-※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** / **No.14** / **No.15** です。
+**Oracle Linux** のバージョンと計算ノードかGPUノードかによる構築方法の違いは、以降の構築手順中の注釈で判断します。
 
-またこの環境を構成する計算ノードは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
-この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** が参考になります。
+本テクニカルTipsに従い **OpenMPI** 環境を構築する計算/GPUノードは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
+この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster/)** が参考になります。
 
 なお、ここで構築する **OpenMPI** と連携する **Slurm** 環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** を参照してください。  
 
@@ -72,7 +81,7 @@ params:
 
 ## 1-0. 概要
 
-本章は、計算ノードに **OpenMPI** とその前提ソフトウェアの **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムをコンパイル・実行するためのセットアップを実施します。
+本章は、計算/GPUノードに **OpenMPI** とその前提ソフトウェアの **OpenPMIx** や **OpenUCX** 等をインストールし、MPIプログラムをコンパイル・実行するためのセットアップを実施します。
 
 ## 1-1.  OpenMPI前提ソフトウェアインストール
 
@@ -83,9 +92,10 @@ params:
 1. **[libevent](https://libevent.org/)**
 2. **[hwloc](https://www.open-mpi.org/projects/hwloc/)**
 3. **OpenPMIx**
-4. **XPMEM**（ **Oracle Linux** 8.10の場合のみ）
-5. **OpenUCX**
-6. **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）
+4. **XPMEM** （ **Oracle Linux** 8.10の場合のみ実施します。）
+5. **GDRCopy** （GPUノードの場合のみ実施します。）
+6. **OpenUCX**
+7. **UCC**
 
 ### 1-1-1. libeventインストール
 
@@ -93,7 +103,7 @@ params:
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
 $ make -j 36 && sudo make install; echo $?
@@ -102,12 +112,13 @@ $ make -j 36 && sudo make install; echo $?
 ### 1-1-2. hwlocインストール
 
 以下コマンドをopcユーザで実行し、 **hwloc** を **/opt/hwloc** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 $ tar -xvf ./hwloc-2.12.2.tar.gz
-$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
+$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc # For HPC
+$ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc --with-cuda=/usr/local/cuda # For GPU
 $ make -j 36 && sudo make install; echo $?
 ```
 
@@ -125,7 +136,7 @@ $ make -j 36 && sudo make install; echo $?
 
 ### 1-1-4. XPMEMインストール
 
-本章で実施する **XPMEM** のインストールは、 **Oracle Linux** 9.5の場合はスキップします。
+本章で実施する **XPMEM** のインストールは、 **Oracle Linux** 8.10の場合のみ実施します。
 
 以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt/xpmem** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
@@ -145,44 +156,85 @@ $ sudo depmod -a
 $ sudo modprobe xpmem
 ```
 
-### 1-1-5. OpenUCXインストール
+### 1-1-5. GDRCopyインストール
+
+本章で実施する **GDRCopy** のインストールは、GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** の場合のみ実施します。
+
+以下コマンドをopcユーザで実行し、 **GDRCopy** を **/opt/gdrcopy** ディレクトリにインストールします。  
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+
+```sh
+$ cd ~/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.1.tar.gz
+$ tar -xvf ./v2.5.1.tar.gz
+$ cd gdrcopy-2.5.1 && make -j 64 CUDA=/usr/local/cuda all && sudo make prefix=/opt/gdrcopy install; echo $?
+$ sed 's/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g' ./insmod.sh | sudo tee /opt/gdrcopy/bin/insmod.sh && sudo chmod 755 /opt/gdrcopy/bin/insmod.sh
+```
+
+次に、以下のファイルを **/etc/systemd/system/gdrcopy.service** として作成します。  
+なお、本章のこれ以降の手順はGPUを搭載するインスタンスでのみ実施します。
+
+```sh
+[Unit]
+Description=Start GDRCopy
+
+[Service]
+ExecStart=/opt/gdrcopy/bin/insmod.sh
+Restart=no
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+
+次に、以下コマンドをopcユーザで実行し、 **GDRCopy** をカーネルモジュールとしてインストールします。
+
+```sh
+$ sudo install -D -m 644 ./src/gdrdrv/gdrdrv.ko /lib/modules/`uname -r`/extra/gdrdrv.ko
+$ sudo depmod -a
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now gdrcopy
+```
+
+### 1-1-6. OpenUCXインストール
 
 以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt/ucx** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、 **Oracle Linux** のバージョンにより実行するコマンドが異なる点に留意します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージが **Oracle Linux** 8.10 / 9.05ベースのHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のうちどれかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 $ tar -xvf ./ucx-1.19.0.tar.gz
-$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem # For Oracle Linux 8
-$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx # For Oracle Linux 9
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem # For Oracle Linux 8 HPC
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx # For Oracle Linux 9 HPC
+$ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-cuda=/usr/local/cuda -with-gdrcopy=/opt/gdrcopy # For Oracle Linux 9 GPU
 $ make -j 36 && sudo make install; echo $?
 ```
 
-### 1-1-6. UCCインストール
+### 1-1-7. UCCインストール
 
 以下コマンドをopcユーザで実行し、 **UCC** を **/opt/ucc** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
 $ tar -xvf ./v1.5.0.tar.gz
-$ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
+$ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx # For HPC
+$ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx --with-cuda=/usr/local/cuda --with-nccl # For GPU
 $ make -j 36 && sudo make install; echo $?
 ```
 
 ## 1-2. OpenMPIインストール
 
 以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt/openmpi** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
 $ tar -xvf ./openmpi-5.0.8.tar.gz
-$ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
+$ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm # For HPC
+$ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm --with-cuda=/usr/local/cuda # For GPU
 $ make -j 36 all && sudo make install; echo $?
 ```
-
-ここでは、先にインストールした **OpenUCX** と **UCC** を **OpenMPI** から利用出来るよう、また **Slurm** から **OpenPMIx** を使用して **1.** の動作モードで **OpenMPI** のアプリケーションを実行できるようにビルドしています。
 
 ## 1-3. セットアップ
 
@@ -197,18 +249,19 @@ $ make -j 36 all && sudo make install; echo $?
 ### 1-3-1. Environment ModulesへのOpenMPI用モジュール登録
 
 以下のファイルを **/usr/share/Modules/modulefiles/openmpi** で作成します。  
-このファイルは、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定を可能にします。
+このファイルは、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定を可能にします。  
+なお、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより作成するファイルが異なる点に留意します。
 
 ```sh
 #%Module1.0
 ##
-## OpenMPI for GNU compiler
+## OpenMPI for GNU compiler on HPC image
 
 proc ModulesHelp { } {
-        puts stderr "OpenMPI 5.0.8 for GNU compiler\n"
+        puts stderr "OpenMPI 5.0.8 for GNU compiler on HPC image\n"
 }
 
-module-whatis   "OpenMPI 5.0.8 for GNU compiler"
+module-whatis   "OpenMPI 5.0.8 for GNU compiler on HPC image"
 
 set pkg_root    /opt/openmpi
 set ver         5.0.8
@@ -221,6 +274,34 @@ setenv MPIFC    mpif90
 prepend-path PATH               $pkg_root/bin:/opt/ucx/bin
 prepend-path LD_LIBRARY_PATH    $pkg_root/lib
 prepend-path LIBRARY_PATH       $pkg_root/lib
+prepend-path CPATH              $pkg_root/include
+prepend-path C_INCLUDE_PATH     $pkg_root/include
+prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
+prepend-path MANPATH            $pkg_root/share/man
+```
+
+```sh
+#%Module1.0
+##
+## OpenMPI for GNU compiler on GPU image
+
+proc ModulesHelp { } {
+        puts stderr "OpenMPI 5.0.8 for GNU compiler on GPU image\n"
+}
+
+module-whatis   "OpenMPI 5.0.8 for GNU compiler on GPU image"
+
+set pkg_root    /opt/openmpi
+set ver         5.0.8
+
+setenv MPI_ROOT $pkg_root
+setenv MPICC    mpicc
+setenv MPICXX   mpicxx
+setenv MPIFC    mpif90
+
+prepend-path PATH               $pkg_root/bin:/opt/ucx/bin
+prepend-path LD_LIBRARY_PATH    $pkg_root/lib:/opt/gdrcopy/lib
+prepend-path LIBRARY_PATH       $pkg_root/lib:/opt/gdrcopy/lib
 prepend-path CPATH              $pkg_root/include
 prepend-path C_INCLUDE_PATH     $pkg_root/include
 prepend-path CPLUS_INCLUDE_PATH $pkg_root/include
@@ -254,11 +335,11 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 
 ## 2-0. 概要
 
-本章は、インストールした **OpenMPI** を稼働確認するため、 **Intel MPI Benchmarks** と **NAS Parallel Benchmarks** を実行します。
+本章は、インストールした **OpenMPI** を稼働確認するため、  **OSU Micro-Benchmarks**  と **NAS Parallel Benchmarks** を実行します。
 
-## 2-1. Intel MPI Benchmarks実行
+## 2-1. OSU Micro-Benchmarks実行
 
-**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[Intel MPI Benchmarks実行方法](../../benchmark/run-imb/)** の **[1. OpenMPIでIntel MPI Benchmarksを実行する場合](../../benchmark/run-imb/#1-openmpiでintel-mpi-benchmarksを実行する場合)** の手順に従い、 **Intel MPI Benchmarks** を実行してその結果が想定される性能となっていることを確認します。
+**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb-hpc/)** /  **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** の手順に従い、 **OSU Micro-Benchmarks** を実行してその結果が想定される性能となっていることを確認します。
 
 ## 2-2. NAS Parallel Benchmarks実行
 
@@ -273,10 +354,17 @@ $ module load openmpi
 $ make bt-mz CLASS=C
 ```
 
-次に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** を実行、その結果を確認します。
+次に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** を実行、その結果を確認します。  
+なお、実行対象が計算/GPUノードのどちらかにより実行するコマンドが異なる点に留意します。またこのコマンドは、2ノード実行の場合です。
 
 ```sh
-$ mpirun -n 36 -N 18 --hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_2:1 --bind-to none ./bin/bt-mz.C.x
+$ mpirun -n 36 -N 18 --hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_2:1 --bind-to none ./bin/bt-mz.C.x # For compute x 2 nodes
+$ mpirun -n 64 -N 32 --hostfile ~/hostlist.txt -x OMP_NUM_THREADS=2 -x UCX_NET_DEVICES=mlx5_6:1 --bind-to none ./bin/bt-mz.C.x # For GPU x 2 nodes
+```
+
+以下は、計算ノード２ノードで実行した場合の出力です。
+
+```sh
 [inst-xsyjo-x9-ol905:253761] SET OMP_NUM_THREADS=2
 [inst-xsyjo-x9-ol905:253761] SET UCX_NET_DEVICES=mlx5_2:1
 
