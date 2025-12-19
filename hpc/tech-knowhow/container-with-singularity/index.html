@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-12-11T20:12:01+09:00"
+      content="2025-12-19T12:12:26+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "SingularityによるHPCワークロード向けコンテナ環境構築方法",
       "description": "HPCワークロードのためのコンテナ環境は、インターコネクトやGPU等のリソースをコンテナから容易に利用できたり、マルチユーザ環境での利用を前提とするHPCシステムで非特権ユーザのコンテナ実行をネイティブにサポートしている等の理由から、Singularityが広く利用されています。このSingularityは、可搬性に優れたSIFを採用しつつOCIイメージフォーマットのコンテナイメージにも対応しており、HPCワークロード実行に求められる性能・セキュリティ・利便性に優れたコンテナ環境を可能にします。本テクニカルTipsは、SingurarityのオープンソースエディションであるSingularityCEを利用し、クラスタ・ネットワーク対応のベアメタル・シェイプで構築するHPCクラスタにコンテナ環境を構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1019",
+      "wordCount" : "1020",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-12-11T20:12:01.00Z",
+      "dateModified": "2025-12-19T12:12:26.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-12-11T20:12:01+09:00">
+    <meta property="article:modified_time" content="2025-12-19T12:12:26+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -398,8 +398,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-12-11T20:12:01&#43;09:00">
-            Dec 11, 2025
+        <time datetime="2025-12-19T12:12:26&#43;09:00">
+            Dec 19, 2025
         </time>
     
 </span>
@@ -634,7 +634,7 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">Singularity&gt; apt update
 </span></span><span class="line"><span class="cl">Singularity&gt; <span class="nb">echo</span> <span class="s2">&#34;tzdata tzdata/Areas select Asia&#34;</span> <span class="p">|</span> debconf-set-selections
 </span></span><span class="line"><span class="cl">Singularity&gt; <span class="nb">echo</span> <span class="s2">&#34;tzdata tzdata/Zones/Asia select Tokyo&#34;</span> <span class="p">|</span> debconf-set-selections
-</span></span><span class="line"><span class="cl">Singularity&gt; <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive apt install -y tzdata wget build-essential openssl libssl-dev zlib1g-dev git gfortran autoconf libtool vim environment-modules libnuma-dev libibverbs-dev librdmacm-dev tcl
+</span></span><span class="line"><span class="cl">Singularity&gt; <span class="nv">DEBIAN_FRONTEND</span><span class="o">=</span>noninteractive apt install -y tzdata wget build-essential openssl libssl-dev zlib1g-dev git gfortran autoconf libtool vim environment-modules libnuma-dev libibverbs-dev librdmacm-dev tcl pkg-config
 </span></span><span class="line"><span class="cl">Singularity&gt; mkdir /mnt/localdisk/root/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /mnt/localdisk/root/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">Singularity&gt; tar -xvf ./libevent-2.1.12-stable.tar.gz --no-same-owner
 </span></span><span class="line"><span class="cl">Singularity&gt; <span class="nb">cd</span> libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/libevent

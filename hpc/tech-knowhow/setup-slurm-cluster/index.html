@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-12-11T15:14:11+09:00"
+      content="2025-12-19T13:56:42+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "Slurmによるリソース管理・ジョブ管理システム構築方法",
       "description": "HPC\/GPUクラスタのリソース管理・ジョブ管理は、ジョブスケジューラを活用することでこれを効率的かつ柔軟に運用することが可能です。近年のHPC\/機械学習ワークロードの大規模化は、MPI等を使ったノード間並列ジョブの重要性を増大させ、このような大規模ジョブを様々な運用ポリシーに沿って処理出来る機能をジョブスケジューラに求めています。オープンソースのジョブスケジューラSlurmは、この要求を満足出来る代表的なジョブスケジューラとして現在人気を集めています。本テクニカルTipsは、HPC\/機械学習ワークロードの実行に最適なベアメタルインスタンスを高帯域・低遅延RDMAインターコネクトサービスのクラスタ・ネットワークで接続するHPC\/GPUクラスタで、リソース管理・ジョブ管理システムをSlurmで構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1443",
+      "wordCount" : "2253",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-12-11T15:14:11.00Z",
+      "dateModified": "2025-12-19T13:56:42.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-12-11T15:14:11+09:00">
+    <meta property="article:modified_time" content="2025-12-19T13:56:42+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -321,8 +321,8 @@
     <li><a href="#2-環境構築">2. 環境構築</a>
       <ul>
         <li><a href="#2-0-概要">2-0. 概要</a></li>
-        <li><a href="#2-1-munge-インストール">2-1. munge インストール</a></li>
-        <li><a href="#2-2-mariadb-インストール">2-2. MariaDB インストール</a></li>
+        <li><a href="#2-1-mungeインストール">2-1. mungeインストール</a></li>
+        <li><a href="#2-2-mariadbインストール">2-2. MariaDBインストール</a></li>
         <li><a href="#2-3-openpmixインストール">2-3. OpenPMIxインストール</a></li>
         <li><a href="#2-4-openucxインストール">2-4. OpenUCXインストール</a></li>
         <li><a href="#2-5-slurm-rpmパッケージ作成">2-5. Slurm RPMパッケージ作成</a></li>
@@ -332,9 +332,12 @@
         <li><a href="#2-9-slurm利用に必要な環境変数設定">2-9. Slurm利用に必要な環境変数設定</a></li>
       </ul>
     </li>
-    <li><a href="#3-稼働確認">3. 稼働確認</a></li>
-  </ul>
-</nav>
+    <li><a href="#3-稼働確認">3. 稼働確認</a>
+      <ul>
+        <li><a href="#3-0-概要">3-0. 概要</a></li>
+        <li><a href="#3-1-hpcクラスタ向け稼働確認">3-1. HPCクラスタ向け稼働確認</a></li>
+        <li><a href="#3-2-gpuクラスタ向け稼働確認">3-2. GPUクラスタ向け稼働確認</a></li>
+      </ul>
       
     </section>
   
@@ -408,8 +411,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-12-11T15:14:11&#43;09:00">
-            Dec 11, 2025
+        <time datetime="2025-12-19T13:56:42&#43;09:00">
+            Dec 19, 2025
         </time>
     
 </span>
@@ -446,7 +449,10 @@ table, th, td {
 >PMIx</a></strong> の以下機能（※1）で、これらの問題に対処しています。</p>
 <ul>
 <li>Direct-connect</li>
-<li>Direct-connect UCX</li>
+<li>Direct-connect <strong><a
+  class="gdoc-markdown__link"
+  href="https://openucx.org/"
+>UCX</a></strong></li>
 <li>Direct-connect early wireup</li>
 </ul>
 <p>※1）これら機能の詳細は、SC17で発表された以下のスライドで紹介されています。<br>
@@ -462,19 +468,18 @@ table, th, td {
   href="https://docs.prrte.org/en/latest/"
 >PRRTE</a></strong> を使用する起動方法（ <strong>mpirun</strong> / <strong>mpiexec</strong> を起動コマンドに使用する方法）に対して、先の <strong>PMIx</strong> の初期化処理を含む以下の利点を享受することが出来ます。</p>
 <ul>
-<li>高並列アプリケーションを高速に起動することが可能</li>
-<li>プロセスバインディングや終了処理等のプロセス管理を <strong>Slurm</strong> に統合することが可能</li>
-<li>精度の高いアカウンティング情報を <strong>Slurm</strong> に提供することが可能</li>
+<li>高並列アプリケーションを高速に起動</li>
+<li>バインディングや終了処理等のMPIプロセス管理を <strong>Slurm</strong> に統合</li>
+<li>精度の高いアカウンティング情報を <strong>Slurm</strong> に提供</li>
 <li><strong>Slurm</strong> クラスタ内のSSHパスフレーズ無しアクセス設定が不要</li>
 </ul>
-<p>以上の利点を享受するべく本テクニカルTipsは、 <strong>OpenMPI</strong> のMPI並列アプリケーションを <strong>PMIx</strong> の大規模並列ジョブに対する利点を生かして実行することを念頭に、 <strong>PMIx</strong> と <strong><a
-  class="gdoc-markdown__link"
-  href="https://openucx.org/"
->UCX</a></strong> を取り込んだ <strong>Slurm</strong> 環境を構築し、初期化処理時間の効果を検証すべく、 <strong><a
+<p>また <strong>Slurm</strong> は、高価なGPUリソースの利用効率を最大化するための機能を豊富に備え、HPC/機械学習ワークロードをマルチユーザ環境で実行するGPUクラスタに於いて、リソース管理・ジョブ管理機能を最大化する上で最適なプラットフォームです。</p>
+<p>以上を踏まえて本テクニカルTipsは、 <strong>OpenMPI</strong> のMPI並列アプリケーションを <strong>PMIx</strong> の大規模並列ジョブに対する利点を生かして実行すること、GPUクラスタに於けるGPUリソースを有効に活用すること、を念頭に <strong>Slurm</strong> 環境を構築します。<br>
+また構築した環境の稼働確認として、HPCクラスタでは <strong><a
   class="gdoc-markdown__link"
   href="https://mvapich.cse.ohio-state.edu/benchmarks/"
->OSU Micro-Benchmarks</a></strong> で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して比較・検証を実施します。</p>
-<p>なお、 <strong>Ubuntu</strong> をOSとするNVIDIA製GPUを複数搭載するベアメタルインスタンスのGPUリソース管理やジョブ管理を <strong>Slurm</strong> で行う環境の構築方法は、 <strong><a
+>OSU Micro-Benchmarks</a></strong> で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して初期化処理時間の効果を検証し、GPUクラスタでは設定したGPUリソース管理機能が想定通りに動作することを検証します。</p>
+<p>なお、 <strong>Ubuntu</strong> をOSとするGPUクラスタのリソース管理やジョブ管理を <strong>Slurm</strong> で行う環境の構築方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
@@ -492,7 +497,7 @@ table, th, td {
 </div>
 <p>本章は、本テクニカルTipsで解説する <strong>Slurm</strong> 環境構築手順の前提となるシステムを解説します。<br>
 本テクニカルTipsは、このシステムが予め構築されている前提で、ここに <strong>Slurm</strong> 環境を構築する手順を解説します。</p>
-<p>前提システムは、以下4種類のサブシステムから構成されます。<br>
+<p>前提システムは、以下4種類（HPCクラスタの場合は計算ノードを使用し、GPUクラスタの場合はGPUノードを使用します。）のサブシステムから構成されます。<br>
 また、必要に応じてこれらのサブシステムにログインするための踏み台となる、パブリックサブネットに接続するBastionノードを用意します。</p>
 <div class="table-wrap"> <table>
   <thead>
@@ -509,7 +514,7 @@ table, th, td {
       <tr>
           <td style="text-align: center">Slurm<br>マネージャ</td>
           <td style="text-align: center">任意の仮想マシン<br></td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※6）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
           <td style="text-align: center">・ <strong>slurmctld</strong> と <strong>slurmdbd</strong> が<br>稼働するSlurm管理ノード</td>
@@ -517,29 +522,34 @@ table, th, td {
       <tr>
           <td style="text-align: center">Slurm<br>クライアント</td>
           <td style="text-align: center">任意の仮想マシン<br></td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※6）</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
           <td style="text-align: center">・アプリケーション開発用<br>フロントエンドノード<br>・ <strong>Slurm</strong> にジョブを投入する<br>ジョブサブミッションクライアント</td>
       </tr>
       <tr>
           <td style="text-align: center">計算ノード</td>
-          <td style="text-align: center"><strong><a
-  class="gdoc-markdown__link"
-  href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> 対応<br>ベアメタルシェイプ（※2）</td>
-          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※5）</td>
+          <td style="text-align: center"><strong>クラスタ・ネットワーク</strong> 対応<br>ベアメタルシェイプ（※2）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※6）</td>
           <td style="text-align: center">2ノード以上<br>（※2）</td>
           <td style="text-align: center">プライベート<br>+<br><strong>クラスタ・ネットワーク</strong></td>
           <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
       </tr>
       <tr>
+          <td style="text-align: center">GPUノード</td>
+          <td style="text-align: center"><strong>クラスタ・ネットワーク</strong> 対応<br>ベアメタルシェイプ（※3）</td>
+          <td style="text-align: center"><strong>Oracle Linux</strong> 9.5<br>（※6）</td>
+          <td style="text-align: center">2ノード以上<br>（※3）</td>
+          <td style="text-align: center">プライベート<br>+<br><strong>クラスタ・ネットワーク</strong></td>
+          <td style="text-align: center">・ <strong>slurmd</strong> が稼働するジョブ実行ノード</td>
+      </tr>
+      <tr>
           <td style="text-align: center">NFSサーバ</td>
-          <td style="text-align: center">-<br>（※3）</td>
+          <td style="text-align: center">-<br>（※4）</td>
           <td style="text-align: center">-</td>
           <td style="text-align: center">1</td>
           <td style="text-align: center">プライベート</td>
-          <td style="text-align: center">・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）</td>
+          <td style="text-align: center">・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※5）</td>
       </tr>
   </tbody>
 </table> </div>
@@ -548,7 +558,7 @@ table, th, td {
   alt="画面ショット"
   
 /></p>
-<p>※2）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続された4ノードの <strong><a
+<p>※2）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続する4ノードの <strong><a
   class="gdoc-markdown__link"
   href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized"
 >BM.Optimized3.36</a></strong> を、 <strong><a
@@ -558,15 +568,25 @@ table, th, td {
   class="gdoc-markdown__link"
   href="../../benchmark/bios-setting/"
 >パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> の手順に従い、 <strong>Simultanious Multi Threading</strong> （以降 <strong>SMT</strong> と呼称）を無効化して使用します。<br>
-※3）<strong>ファイル・ストレージ</strong> やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 <strong><a
+※3）本テクニカルTipsは、 <strong>クラスタ・ネットワーク</strong> に接続する2ノードの <strong><a
+  class="gdoc-markdown__link"
+  href="https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu"
+>BM.GPU4.8</a></strong> を、 <strong><a
+  class="gdoc-markdown__link"
+  href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
+>OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/bios-setting/"
+>パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法</a></strong> の手順に従い、 <strong>SMT</strong> を無効化して使用します。<br>
+※4）<strong>ファイル・ストレージ</strong> やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/howto-configure-sharedstorage/"
 >HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法</a></strong> を参照してください。<br>
-※4）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算ノードでNFSマウントします。<br>
-※5）<strong>Oracle Linux</strong> 9.5ベースのHPC <strong><a
+※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算/GPUノードでNFSマウントします。<br>
+※6）<strong>Oracle Linux</strong> 9.5ベースのHPC/GPU <strong><a
   class="gdoc-markdown__link"
   href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
 >クラスタネットワーキングイメージ</a></strong> で、 <strong><a
@@ -578,40 +598,55 @@ table, th, td {
 >クラスタネットワーキングイメージの選び方</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../tech-knowhow/osimage-for-cluster/#1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8%e4%b8%80%e8%a6%a7"
->1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.13</strong> です。Slurmマネージャは、計算ノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算ノードのアプリケーション開発環境の役割を担うため、計算ノードと同じOSを採用します。</p>
+>1. クラスタネットワーキングイメージ一覧</a></strong> のイメージ <strong>No.13</strong> （HPCクラスタの場合です。）/ <strong>No.15</strong> （GPUクラスタの場合です。）です。Slurmマネージャは、計算/GPUノードにインストールする <strong>Slurm</strong> のRPMをビルドするため、Slurmクライアントは、計算/GPUノードのアプリケーション開発環境の役割を担うため、計算/GPUノードと同じOSを採用します。</p>
 <p>Slurmクライアントは、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> の手順に従い、 <strong>OpenMPI</strong> をインストールします。</p>
-<p>計算ノードは、 <strong><a
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../build-openmpi/#1-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>1. インストール・セットアップ</a></strong> の手順に従い、 <strong>OpenMPI</strong> をインストールします。</p>
+<p>計算/GPUノードは、 <strong><a
   class="gdoc-markdown__link"
   href="../../#1-oci-hpc%e3%83%81%e3%83%a5%e3%83%bc%e3%83%88%e3%83%aa%e3%82%a2%e3%83%ab%e9%9b%86"
 >OCI HPCチュートリアル集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../spinup-cluster-network/"
->HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> の手順に従う等で <strong><a
+>HPCクラスタを構築する(基礎インフラ手動構築編)</a></strong> / <strong><a
+  class="gdoc-markdown__link"
+  href="../../spinup-gpu-cluster/"
+>GPUクラスタを構築する(基礎インフラ自動構築編)</a></strong> の手順に従う等で <strong><a
   class="gdoc-markdown__link"
   href="../../#5-1-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%af"
->クラスタ・ネットワーク</a></strong> に接続するHPCクラスタを構築し、 <strong><a
+>クラスタ・ネットワーク</a></strong> に接続するHPC/GPUクラスタを構築し、 <strong><a
   class="gdoc-markdown__link"
   href="../../#3-oci-hpc%e3%83%86%e3%82%af%e3%83%8b%e3%82%ab%e3%83%abtips%e9%9b%86"
 >OCI HPCテクニカルTips集</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../build-openmpi/"
->Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> の手順に従い、 <strong>OpenMPI</strong> を計算ノードにインストールします。</p>
-<p>またSlurmクライアントと計算ノードは、<strong><a
+>Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../build-openmpi/#1-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
+>1. インストール・セットアップ</a></strong> の手順に従い、 <strong>OpenMPI</strong> をインストールします。</p>
+<p>またSlurmクライアントと計算/GPUノードは、<strong><a
   class="gdoc-markdown__link"
   href="../../#2-oci-hpc%e3%83%91%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%b3%e3%82%b9%e9%96%a2%e9%80%a3%e6%83%85%e5%a0%b1"
 >OCI HPCパフォーマンス関連情報</a></strong> の <strong><a
   class="gdoc-markdown__link"
   href="../../benchmark/run-omb-hpc/"
->OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）</a></strong> の <strong><a
+>OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）</a></strong> / <strong><a
   class="gdoc-markdown__link"
-  href="../../benchmark/run-omb-hpc/#2-osu-micro-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
->2. OSU Micro-Benchmarksインストール・セットアップ</a></strong> の手順に従い、 <strong><a
+  href="../../benchmark/run-omb-gpu/"
+>OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）</a></strong> の <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-omb-hpc/#2-osu-micro-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>2. OSU Micro-Benchmarksインストール</a></strong> / <strong><a
+  class="gdoc-markdown__link"
+  href="../../benchmark/run-omb-gpu/#1-osu-micro-benchmarks%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>1. OSU Micro-Benchmarksインストール</a></strong> の手順に従い、 <strong><a
   class="gdoc-markdown__link"
   href="#3-%e7%a8%bc%e5%83%8d%e7%a2%ba%e8%aa%8d"
 >3. 稼働確認</a></strong> で使用する <strong>OSU Micro-Benchmarks</strong> をインストールします。</p>
@@ -636,6 +671,10 @@ table, th, td {
       <tr>
           <td style="text-align: center">計算ノード</td>
           <td style="text-align: center">inst-aaaaa-x9<br>inst-bbbbb-x9<br>inst-ccccc-x9<br>inst-ddddd-x9</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">GPUノード</td>
+          <td style="text-align: center">inst-aaaaa-ao<br>inst-bbbbb-ao</td>
       </tr>
   </tbody>
 </table> </div>
@@ -662,7 +701,7 @@ table, th, td {
   class="gdoc-markdown__link"
   href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
 >1. 前提システム</a></strong> で解説したシステム上で、 <strong>Slurm</strong> 環境を構築します。</p>
-<p><strong>Slurm</strong> のインストールは、多数の計算ノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。</p>
+<p><strong>Slurm</strong> のインストールは、多数の計算/GPUノードに効率よくインストールする必要から、rpmbuildで作成するRPMパッケージによるインストール方法を採用します。</p>
 <p>本テクニカルTipsは、各ソフトウェアに以下を使用します。</p>
 <ul>
 <li><strong>Slurm</strong> ： 25.05.3</li>
@@ -686,12 +725,12 @@ table, th, td {
 <ol>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-1-munge-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
->mungeインストール・セットアップ</a></strong></li>
+  href="#2-1-munge%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>mungeインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-2-mariadb-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
->MariaDBインストール・セットアップ</a></strong></li>
+  href="#2-2-mariadb%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>MariaDBインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
   href="#2-3-openpmix%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
@@ -706,8 +745,8 @@ table, th, td {
 >Slurm RPMパッケージ作成</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
-  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97"
->Slurm RPMパッケージインストール・セットアップ</a></strong></li>
+  href="#2-6-slurm-rpm%e3%83%91%e3%83%83%e3%82%b1%e3%83%bc%e3%82%b8%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab"
+>Slurm RPMパッケージインストール</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
   href="#2-7-slurm%e8%a8%ad%e5%ae%9a%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab%e4%bd%9c%e6%88%90"
@@ -728,7 +767,7 @@ table, th, td {
           <th style="text-align: center"></th>
           <th style="text-align: center">Slurmマネージャ</th>
           <th style="text-align: center">Slurmクライアント</th>
-          <th style="text-align: center">計算ノード</th>
+          <th style="text-align: center">計算/GPUノード</th>
       </tr>
   </thead>
   <tbody>
@@ -747,14 +786,14 @@ table, th, td {
       <tr>
           <td style="text-align: center"><strong>OpenPMIx</strong></td>
           <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇（※6）</td>
-          <td style="text-align: center">〇（※6）</td>
+          <td style="text-align: center">〇（※7）</td>
+          <td style="text-align: center">〇（※7）</td>
       </tr>
       <tr>
           <td style="text-align: center"><strong>OpenUCX</strong></td>
           <td style="text-align: center">〇</td>
-          <td style="text-align: center">〇（※6）</td>
-          <td style="text-align: center">〇（※6）</td>
+          <td style="text-align: center">〇（※7）</td>
+          <td style="text-align: center">〇（※7）</td>
       </tr>
       <tr>
           <td style="text-align: center"><strong>slurmctld</strong></td>
@@ -782,23 +821,22 @@ table, th, td {
       </tr>
   </tbody>
 </table> </div>
-<p>※6）<strong><a
+<p>※7）<strong><a
   class="gdoc-markdown__link"
   href="#1-%e5%89%8d%e6%8f%90%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0"
 >1. 前提システム</a></strong> の構築手順により既にインストールされています。</p>
 <div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-1-munge-インストール"
+    <h2 id="2-1-mungeインストール"
     >
-        2-1. munge インストール
+        2-1. mungeインストール
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-1-munge-インストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. munge インストール" aria-label="アンカー先: 2-1. munge インストール" href="#2-1-munge-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-1-mungeインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-1. mungeインストール" aria-label="アンカー先: 2-1. mungeインストール" href="#2-1-munge%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、Slurmマネージャ、Slurmクライアント、及び全ての計算ノードに <strong>munge</strong> をインストールします。</p>
-<p>以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
+<p>以下コマンドを全ノードのopcユーザで実行し、 <strong>munge</strong> プロセス起動ユーザを作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/munge -s /sbin/nologin -u <span class="m">5001</span> munge
-</span></span></code></pre></div><p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
+</span></span></code></pre></div><p>次に、以下コマンドを全ノードのopcユーザで実行し、 <strong>munge</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
 </span></span><span class="line"><span class="cl">$ sudo dnf install -y munge munge-libs
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>munge</strong> キーファイル（ <strong>munge.key</strong> ）を作成します。</p>
@@ -810,33 +848,32 @@ table, th, td {
 </span></span><span class="line"><span class="cl">drwxr-xr-x. <span class="m">115</span> root  root  <span class="m">8192</span> Nov <span class="m">24</span> 14:33 ..
 </span></span><span class="line"><span class="cl">-r--------.   <span class="m">1</span> munge munge <span class="m">1024</span> Nov <span class="m">24</span> 14:34 munge.key
 </span></span><span class="line"><span class="cl">$ 
-</span></span></code></pre></div><p>次に、先にSlurmマネージャで作成した <strong>munge</strong> キーファイルを、Slurmクライアントと全ての計算ノードに同一パス・ファイル名でコピーします。<br>
+</span></span></code></pre></div><p>次に、Slurmマネージャで作成した <strong>munge</strong> キーファイルを、Slurmクライアントと全ての計算/GPUノードに同一パス・ファイル名でコピーします。<br>
 この際、ファイルのオーナーとパーミッションがSlurmマネージャのキーファイルと同じとなるよう配慮します。</p>
-<p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> サービスを起動します。</p>
+<p>次に、以下コマンドを全ノードのopcユーザで実行し、 <strong>munge</strong> サービスを起動します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now munge.service
-</span></span></code></pre></div><p>次に、以下コマンドを対象となる全ノードのopcユーザで実行し、 <strong>munge</strong> が全てのノードで正常に動作していることを確認します。</p>
+</span></span></code></pre></div><p>次に、以下コマンドを全ノードのopcユーザで実行し、 <strong>munge</strong> が全てのノードで正常に動作していることを確認します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ munge -n <span class="p">|</span> unmunge <span class="p">|</span> grep STATUS
 </span></span><span class="line"><span class="cl">STATUS:           Success <span class="o">(</span>0<span class="o">)</span>
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
-    <h2 id="2-2-mariadb-インストール"
+    <h2 id="2-2-mariadbインストール"
     >
-        2-2. MariaDB インストール
+        2-2. MariaDBインストール
     </h2>
-    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-2-mariadb-インストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. MariaDB インストール" aria-label="アンカー先: 2-2. MariaDB インストール" href="#2-2-mariadb-%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#2-2-mariadbインストール" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 2-2. MariaDBインストール" aria-label="アンカー先: 2-2. MariaDBインストール" href="#2-2-mariadb%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab">
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、Slurmマネージャに <strong>MariaDB</strong> をインストールします。</p>
-<p>以下コマンドをopcユーザで実行し、 <strong>MariaDB</strong> をインストールします。</p>
+<p>以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>MariaDB</strong> をインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y mariadb-server
 </span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> の設定ファイル（ <strong>mariadb-server.cnf</strong> ）の <strong>[mysqld]</strong> フィールドに以下の記述を追加します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo diff /etc/my.cnf.d/mariadb-server.cnf_org  /etc/my.cnf.d/mariadb-server.cnf
-</span></span><span class="line"><span class="cl">21a22,23
+</span></span><span class="line"><span class="cl">20a21,22
 </span></span><span class="line"><span class="cl">&gt; <span class="nv">innodb_buffer_pool_size</span><span class="o">=</span>4096M
 </span></span><span class="line"><span class="cl">&gt; <span class="nv">innodb_lock_wait_timeout</span><span class="o">=</span><span class="m">900</span>
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、 <strong>MariaDB</strong> サービスを起動します。</p>
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>MariaDB</strong> サービスを起動します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now mariadb
 </span></span></code></pre></div><p>次に、 <strong>MariaDB</strong> のデータベースに以下の登録を行うため、</p>
 <ul>
@@ -845,7 +882,7 @@ table, th, td {
 <li>ユーザ（slurm）のパスワード</li>
 <li>ユーザ（slurm）に対するデータベース（slurm_acct_db）への全権限付与</li>
 </ul>
-<p>以下コマンドをopcユーザで実行します。<br>
+<p>以下コマンドをSlurmマネージャのopcユーザで実行します。<br>
 なお、 <strong>MariaDB</strong> に対して入力するコマンドは、 <strong>MariaDB</strong> のプロンプト（ <strong>MariaDB [(none)]&gt;</strong> ）に続く文字列です。<br>
 また、コマンド中の <strong>passcord</strong> は、自身の設定するパスワードに置き換えます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo mysql
@@ -875,7 +912,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; <span class="nb">exit</span>
 </span></span><span class="line"><span class="cl">Bye
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドをopcユーザで実行し、先に登録したデータベースとユーザが正しく登録されていることを確認します。<br>
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、先に登録したデータベースとユーザが正しく登録されていることを確認します。<br>
 なお、コマンド中の <strong>passcord</strong> は、自身の設定したパスワードに置き換えます。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mysql --user<span class="o">=</span>slurm --password<span class="o">=</span>passcord slurm_acct_db -e <span class="s1">&#39;show databases;&#39;</span>
 </span></span><span class="line"><span class="cl">+--------------------+
@@ -894,18 +931,21 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、Slurmマネージャに <strong>OpenPMIx</strong> をインストールします。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>OpenPMIx</strong> を <strong>/opt/pmix</strong> ディレクトリにインストールします。<br>
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> のどちらかにより実行するコマンドが異なる点に留意します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo dnf install -y ncurses-devel openssl-devel gcc-c++ gcc-gfortran
-</span></span><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span>  wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+</span></span><span class="line"><span class="cl">$ mkdir -p ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span>  wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./libevent-2.1.12-stable.tar.gz
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> libevent-2.1.12-stable <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/libevent
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install<span class="p">;</span> <span class="nb">echo</span> <span class="nv">$?</span>
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./hwloc-2.12.2.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.12.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc
-</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.12.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc <span class="c1"># For HPC</span>
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> hwloc-2.12.2 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/hwloc --with-cuda<span class="o">=</span>/usr/local/cuda <span class="c1"># For GPU</span>
+</span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install<span class="p">;</span> <span class="nb">echo</span> <span class="nv">$?</span>
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./pmix-5.0.8.tar.gz
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> pmix-5.0.8 <span class="o">&amp;&amp;</span> ./configure --prefix<span class="o">=</span>/opt/pmix --with-libevent<span class="o">=</span>/opt/libevent --with-hwloc<span class="o">=</span>/opt/hwloc
@@ -919,12 +959,15 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、Slurmマネージャに <strong>OpenUCX</strong> をインストールします。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt/ucx</strong> ディレクトリにインストールします。<br>
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。</p>
+なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU <strong><a
+  class="gdoc-markdown__link"
+  href="../../#5-13-%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e3%83%8d%e3%83%83%e3%83%88%e3%83%af%e3%83%bc%e3%82%ad%e3%83%b3%e3%82%b0%e3%82%a4%e3%83%a1%e3%83%bc%e3%82%b8"
+>クラスタネットワーキングイメージ</a></strong> のどちらかにより実行するコマンドが異なる点に留意します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./ucx-1.19.0.tar.gz
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx <span class="c1"># For Oracle Linux 9 HPC</span>
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ucx-1.19.0 <span class="o">&amp;&amp;</span> ./contrib/configure-release --prefix<span class="o">=</span>/opt/ucx --with-cuda<span class="o">=</span>/usr/local/cuda <span class="c1"># For Oracle Linux 9 GPU</span>
 </span></span><span class="line"><span class="cl">$ make -j <span class="m">16</span> <span class="o">&amp;&amp;</span> sudo make install<span class="p">;</span> <span class="nb">echo</span> <span class="nv">$?</span>
 </span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-5-slurm-rpmパッケージ作成"
@@ -935,7 +978,6 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、SlurmマネージャでRPMパッケージを作成します。</p>
 <p>以下コマンドをSlurmマネージャのopcユーザで実行し、前提RPMパッケージをインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
 </span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel munge-devel pam-devel readline-devel dbus-devel
@@ -967,8 +1009,7 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、先に作成した <strong>Slurm</strong> RPMパッケージを各サブシステムにインストールします。</p>
-<p>以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
+<p>以下コマンドをSlurmマネージャのopcユーザで実行し、Slurmマネージャに必要な <strong>Slurm</strong> RPMパッケージのインストールを行います。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/rpmbuild/RPMS/x86_64/ <span class="o">&amp;&amp;</span> sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmctld-25.05.3-1.el9.x86_64.rpm ./slurm-slurmdbd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
 </span></span><span class="line"><span class="cl">$ sudo useradd -m -d /var/lib/slurm -s /bin/bash -u <span class="m">5000</span> slurm
 </span></span><span class="line"><span class="cl">$ sudo mkdir /var/spool/slurmctld <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /var/spool/slurmctld
@@ -977,7 +1018,7 @@ table, th, td {
 </span></span><span class="line"><span class="cl">$ sudo mkdir /opt/slurm/etc <span class="o">&amp;&amp;</span> sudo chown slurm:slurm /opt/slurm/etc
 </span></span><span class="line"><span class="cl">$ sudo su - slurm
 </span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;export PATH=/opt/slurm/sbin:/opt/slurm/bin:\$PATH&#34;</span> <span class="p">|</span> tee -a ~/.bashrc
-</span></span></code></pre></div><p>次に、以下コマンドを全ての計算ノードのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、計算ノードに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
+</span></span></code></pre></div><p>次に、以下コマンドを全ての計算/GPUノードのopcユーザで <strong>Slurm</strong> RPMパッケージをコピーしたディレクトリで実行し、計算/GPUノードに必要な <strong>Slurm</strong> RPMパッケージのインストール・セットアップを行います。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo yum-config-manager --enable ol9_codeready_builder
 </span></span><span class="line"><span class="cl">$ sudo dnf install -y mariadb-devel
 </span></span><span class="line"><span class="cl">$ sudo rpm -ivh ./slurm-25.05.3-1.el9.x86_64.rpm ./slurm-slurmd-25.05.3-1.el9.x86_64.rpm ./slurm-perlapi-25.05.3-1.el9.x86_64.rpm
@@ -1000,15 +1041,17 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、以下3種類の <strong>Slurm</strong> 設定ファイルを作成し、これらを各サブシステムの <strong>/opt/slurm/etc</strong> ディレクトリに配布します。<br>
+<p>本章は、以下5種類の <strong>Slurm</strong> 設定ファイルを作成し、これらを各サブシステムの <strong>/opt/slurm/etc</strong> ディレクトリに配布します。<br>
 この際、これらファイルのオーナーユーザ・オーナーグループを <strong>slurm</strong> とします。<br>
 また、 <strong>slurmdbd.conf</strong> のパーミッションを <strong>600</strong> に設定します。</p>
 <ul>
 <li><strong>slurm.conf</strong>（全てのサブシステム）</li>
 <li><strong>slurmdbd.conf</strong>（Slurmマネージャ）</li>
 <li><strong>mpi.conf</strong>（Slurmマネージャ）</li>
+<li><strong>cgroup.conf</strong>（Slurmマネージャ・GPUノード）（GPUクラスタの場合のみ使用します。）</li>
+<li><strong>gres.conf</strong>（GPUノード）（GPUクラスタの場合のみ使用します。）</li>
 </ul>
-<p>[ <strong>slurm.conf</strong> ]</p>
+<p>[ <strong>slurm.conf</strong> （HPCクラスタ用）]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ClusterName</span><span class="o">=</span>sltest
 </span></span><span class="line"><span class="cl"><span class="nv">SlurmctldHost</span><span class="o">=</span>slurm-srv
 </span></span><span class="line"><span class="cl"><span class="nv">AuthType</span><span class="o">=</span>auth/munge
@@ -1034,7 +1077,45 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>sltest <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
 </span></span><span class="line"><span class="cl"><span class="nv">TaskPlugin</span><span class="o">=</span>task/affinity
 </span></span></code></pre></div><p>なお、 <strong>SlurmctldHost</strong> 、 <strong>AccountingStorageHost</strong> 、及び <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。</p>
-<p>[ <strong>slurmdbd.conf</strong> ]</p>
+<p>[ <strong>slurm.conf</strong> （GPUクラスタ用）]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ClusterName</span><span class="o">=</span>sltest
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmctldHost</span><span class="o">=</span>slurm-srv
+</span></span><span class="line"><span class="cl"><span class="nv">AuthType</span><span class="o">=</span>auth/munge
+</span></span><span class="line"><span class="cl"><span class="nv">PluginDir</span><span class="o">=</span>/opt/slurm/lib64/slurm
+</span></span><span class="line"><span class="cl"><span class="nv">SchedulerType</span><span class="o">=</span>sched/backfill
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmUser</span><span class="o">=</span>slurm
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmctldPort</span><span class="o">=</span><span class="m">7002</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmctldTimeout</span><span class="o">=</span><span class="m">300</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmdPort</span><span class="o">=</span><span class="m">7003</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmdSpoolDir</span><span class="o">=</span>/var/spool/slurmd
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmdTimeout</span><span class="o">=</span><span class="m">300</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmctldLogFile</span><span class="o">=</span>/var/log/slurm/slurmctld.log
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmdLogFile</span><span class="o">=</span>/var/log/slurm/slurmd.log
+</span></span><span class="line"><span class="cl"><span class="nv">SlurmdDebug</span><span class="o">=</span><span class="m">3</span>
+</span></span><span class="line"><span class="cl"><span class="nv">StateSaveLocation</span><span class="o">=</span>/var/spool/slurmd
+</span></span><span class="line"><span class="cl"><span class="nv">SwitchType</span><span class="o">=</span>switch/none
+</span></span><span class="line"><span class="cl"><span class="nv">AccountingStorageType</span><span class="o">=</span>accounting_storage/slurmdbd
+</span></span><span class="line"><span class="cl"><span class="nv">AccountingStorageHost</span><span class="o">=</span>slurm-srv
+</span></span><span class="line"><span class="cl"><span class="nv">AccountingStoragePort</span><span class="o">=</span><span class="m">7004</span>
+</span></span><span class="line"><span class="cl"><span class="nv">MpiDefault</span><span class="o">=</span>pmix
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># For per-GPU scheduling</span>
+</span></span><span class="line"><span class="cl"><span class="nv">AccountingStorageTRES</span><span class="o">=</span>gres/gpu
+</span></span><span class="line"><span class="cl"><span class="nv">DebugFlags</span><span class="o">=</span>CPU_Bind,gres
+</span></span><span class="line"><span class="cl"><span class="nv">GresTypes</span><span class="o">=</span>gpu
+</span></span><span class="line"><span class="cl"><span class="nv">JobAcctGatherType</span><span class="o">=</span>jobacct_gather/cgroup
+</span></span><span class="line"><span class="cl"><span class="nv">SelectType</span><span class="o">=</span><span class="k">select</span>/cons_tres
+</span></span><span class="line"><span class="cl"><span class="nv">TaskPlugin</span><span class="o">=</span>task/cgroup,task/affinity
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># GPU node specifications</span>
+</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-aaaa-ao <span class="nv">Gres</span><span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 <span class="nv">Sockets</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">2000000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+</span></span><span class="line"><span class="cl"><span class="nv">NodeName</span><span class="o">=</span>inst-bbbb-ao <span class="nv">Gres</span><span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 <span class="nv">Sockets</span><span class="o">=</span><span class="m">2</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">2000000</span> <span class="nv">TmpDisk</span><span class="o">=</span><span class="m">10000</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+</span></span><span class="line"><span class="cl"><span class="nv">PartitionName</span><span class="o">=</span>sltest <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">DefMemPerGPU</span><span class="o">=</span><span class="m">250000</span> <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span>INFINITE <span class="nv">State</span><span class="o">=</span>UP
+</span></span></code></pre></div><p>なお、 <strong>SlurmctldHost</strong> 、 <strong>AccountingStorageHost</strong> 、及び <strong>NodeName</strong> の設定値は、自身の環境に合わせて修正します。<br>
+また、 <strong>DefMemPerGPU</strong> の値は、自身の使用するGPUノードに合わせて <strong>RealMemory</strong> に指定した値を搭載するGPU数で割った値（※8）とします。</p>
+<p>※8）ここで指定しているGPU当たりのホストメモリ量以上のジョブを投入する場合は、以下のようにジョブが使用する総ホストメモリ量を <strong>- –mem=xxxx</strong> オプションで指定します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 --mem<span class="o">=</span>1500000M ./a.out
+</span></span></code></pre></div><p>[ <strong>slurmdbd.conf</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ArchiveEvents</span><span class="o">=</span>yes
 </span></span><span class="line"><span class="cl"><span class="nv">ArchiveJobs</span><span class="o">=</span>yes
 </span></span><span class="line"><span class="cl"><span class="nv">ArchiveResvs</span><span class="o">=</span>yes
@@ -1065,7 +1146,16 @@ table, th, td {
 <p>[ <strong>mpi.conf</strong> ]</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PMIxDirectConnEarly</span><span class="o">=</span><span class="nb">true</span>
 </span></span><span class="line"><span class="cl"><span class="nv">PMIxDirectConnUCX</span><span class="o">=</span><span class="nb">true</span>
-</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+</span></span></code></pre></div><p>[ <strong>cgroup.conf</strong> ]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">ConstrainCores</span><span class="o">=</span>yes 
+</span></span><span class="line"><span class="cl"><span class="nv">ConstrainDevices</span><span class="o">=</span>yes
+</span></span><span class="line"><span class="cl"><span class="nv">ConstrainRAMSpace</span><span class="o">=</span>yes
+</span></span></code></pre></div><p>[ <strong>gres.conf</strong> ]</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>0-3<span class="o">]</span> <span class="nv">COREs</span><span class="o">=[</span>0-31<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Name</span><span class="o">=</span>gpu <span class="nv">Type</span><span class="o">=</span>nvidia_a100-sxm4-40gb <span class="nv">File</span><span class="o">=</span>/dev/nvidia<span class="o">[</span>4-7<span class="o">]</span> <span class="nv">COREs</span><span class="o">=[</span>32-63<span class="o">]</span>
+</span></span></code></pre></div><p>上記 <strong>gres.conf</strong> は、GPU番号0～3とCPUコア番号0～31、GPU番号4～7とCPUコア番号32～63のアフィニティを定義しており、ジョブが要求するGPUとCPUコアのリソースがこれを維持できる範囲で定義したアフィニティに従いリソース割り当てを行い、維持できない場合はこれを無視してリソースを割り当てます。<br>
+このアフィニティの維持を強制する場合は、 <strong>&ndash;gres-flags=enforce-binding</strong> オプションを指定してジョブを投入します。これにより、アフィニティを維持できるGPUとCPUコアが空くまでジョブの実行を延期するか、指定したリソースがそもそも定義したアフィニティを満たせない場合（4個以下のGPUと33個以上のCPUコア等）はこのジョブの投入を拒否します。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
     <h2 id="2-8-slurmサービス起動"
     >
         2-8. Slurmサービス起動
@@ -1074,19 +1164,18 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、 <strong>Slurm</strong> の各systemdサービスを対象のサブシステムで起動します。</p>
-<p>以下コマンドを全ての計算ノードのopcユーザで実行し、 <strong>slurmd</strong> を起動します。</p>
+<p>以下コマンドを全ての計算/GPUノードのopcユーザで実行し、 <strong>slurmd</strong> を起動します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmd
 </span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>slurmdbd</strong> と <strong>slurmctld</strong> を起動します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmdbd
 </span></span><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now slurmctld
-</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sinfo
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、全ての計算ノードがアイドルになっていることを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo su - slurm -c sinfo
 </span></span><span class="line"><span class="cl">PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 </span></span><span class="line"><span class="cl">sltest*      up   infinite      <span class="m">4</span>   idle inst-aaaaa-x9,inst-bbbbb-x9,inst-ccccc-x9,inst-ddddd-x9
 </span></span><span class="line"><span class="cl">$
-</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのslurmユーザで実行し、 <strong>PMIx</strong> が利用可能になっていることを確認します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun --mpi<span class="o">=</span>list
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmマネージャのopcユーザで実行し、 <strong>PMIx</strong> が利用可能になっていることを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo su - slurm -c <span class="s2">&#34;srun --mpi=list&#34;</span>
 </span></span><span class="line"><span class="cl">MPI plugin types are...
 </span></span><span class="line"><span class="cl">	none
 </span></span><span class="line"><span class="cl">	cray_shasta
@@ -1114,8 +1203,44 @@ table, th, td {
         <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
     </a>
 </div>
-<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認と <strong>PMIx</strong> の効果を確認するため、 <strong>OSU Micro-Benchmarks</strong> で2ノード間のレイテンシと4ノード間のMPI_Init所要時間をバッチジョブとインタラクティブで計測し、その結果を比較します。<br>
-またこのバッチジョブがアカウンティング情報に記録されていることを確認します。</p>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-0-概要"
+    >
+        3-0. 概要
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#3-0-概要" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-0. 概要" aria-label="アンカー先: 3-0. 概要" href="#3-0-%e6%a6%82%e8%a6%81">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>本章は、構築した <strong>Slurm</strong> 環境の稼働確認を実施します。<br>
+この際、対象がHPCクラスタかGPUクラスタかにより、以下の確認項目を実施します。</p>
+<ul>
+<li>HPCクラスタ
+<ul>
+<li><strong>OSU Micro-Benchmarks</strong> で2ノード間のレイテンシを計測し <strong>PMIx</strong> の効果を確認</li>
+<li><strong>OSU Micro-Benchmarks</strong> で4ノード間のMPI_Init所要時間を計測し <strong>PMIx</strong> の効果を確認</li>
+<li>実行したバッチジョブがアカウンティング情報に記録されていることを確認</li>
+</ul>
+</li>
+<li>GPUクラスタ
+<ul>
+<li>GPUリソース割り当てが想定通りに行われることを確認</li>
+<li>ノード内GPUデバイスメモリ間レイテンシを <strong>OSU Micro-Benchmarks</strong> で確認</li>
+<li>ノード内GPUデバイスメモリ間帯域幅を <strong>OSU Micro-Benchmarks</strong> で確認</li>
+<li>使用したGPUリソースがジョブアカウンティング情報に記録されることを確認</li>
+<li>設定したGPU/CPUアフィニティが想定通りに行われることを確認</li>
+</ul>
+</li>
+</ul>
+<div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-1-hpcクラスタ向け稼働確認"
+    >
+        3-1. HPCクラスタ向け稼働確認
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#3-1-hpcクラスタ向け稼働確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-1. HPCクラスタ向け稼働確認" aria-label="アンカー先: 3-1. HPCクラスタ向け稼働確認" href="#3-1-hpc%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e5%90%91%e3%81%91%e7%a8%bc%e5%83%8d%e7%a2%ba%e8%aa%8d">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
 <p>以下のスクリプトをファイル名 <strong>srun.sh</strong> で作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
 </span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
@@ -1189,6 +1314,127 @@ table, th, td {
 </span></span><span class="line"><span class="cl"><span class="m">3</span>                usera         <span class="m">72</span> 2024-06-19T21:18:21 2024-06-19T21:18:23 
 </span></span><span class="line"><span class="cl">3.batch                        <span class="m">36</span> 2024-06-19T21:18:21 2024-06-19T21:18:23 
 </span></span><span class="line"><span class="cl">3.0                            <span class="m">72</span> 2024-06-19T21:18:22 2024-06-19T21:18:23 
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><div class="flex align-center gdoc-page__anchorwrap">
+    <h2 id="3-2-gpuクラスタ向け稼働確認"
+    >
+        3-2. GPUクラスタ向け稼働確認
+    </h2>
+    <a data-clipboard-text="https://oracle-japan.github.io/ocitutorials/hpc/tech-knowhow/setup-slurm-cluster/#3-2-gpuクラスタ向け稼働確認" class="gdoc-page__anchor clip flex align-center" title="アンカー先: 3-2. GPUクラスタ向け稼働確認" aria-label="アンカー先: 3-2. GPUクラスタ向け稼働確認" href="#3-2-gpu%e3%82%af%e3%83%a9%e3%82%b9%e3%82%bf%e5%90%91%e3%81%91%e7%a8%bc%e5%83%8d%e7%a2%ba%e8%aa%8d">
+        <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+    </a>
+</div>
+<p>以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>Slurm</strong> が割り当てるGPU数が <strong>- -gres</strong> オプションの指定通りとなっていることを確認します。<br>
+また、最後のコマンドの出力から、GPU番号とそのPCIバスIDの8個の組み合わせを記録しておきます。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:1 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 nvidia-smi <span class="p">|</span> grep SXM
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">0</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:0F:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">1</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:15:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">2</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:51:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">3</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:54:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">4</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:8D:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">5</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:92:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">6</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:D6:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl"><span class="p">|</span>   <span class="m">7</span>  NVIDIA A100-SXM4-40GB          On  <span class="p">|</span>   00000000:DA:00.0 Off <span class="p">|</span>                    <span class="m">0</span> <span class="p">|</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">1</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:8 nvidia-smi <span class="p">|</span> grep SXM <span class="p">|</span> awk <span class="s1">&#39;{print $2, $7}&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="m">0</span> 00000000:0F:00.0
+</span></span><span class="line"><span class="cl"><span class="m">1</span> 00000000:15:00.0
+</span></span><span class="line"><span class="cl"><span class="m">2</span> 00000000:51:00.0
+</span></span><span class="line"><span class="cl"><span class="m">3</span> 00000000:54:00.0
+</span></span><span class="line"><span class="cl"><span class="m">4</span> 00000000:8D:00.0
+</span></span><span class="line"><span class="cl"><span class="m">5</span> 00000000:92:00.0
+</span></span><span class="line"><span class="cl"><span class="m">6</span> 00000000:D6:00.0
+</span></span><span class="line"><span class="cl"><span class="m">7</span> 00000000:DA:00.0
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、GPUデバイスメモリ間のレイテンシを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ module load openmpi omb
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">2</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 osu_latency -x <span class="m">1000</span> -i <span class="m">10000</span> -m 1:1 -d cuda D D
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Latency Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size       Avg Latency(us)</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>                       2.37
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、GPUデバイスメモリ間の帯域幅を確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">2</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:2 osu_bw -x <span class="m">10</span> -i <span class="m">10</span> -m 268435456:268435456 -d cuda D D
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># OSU MPI-CUDA Bandwidth Test v7.5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Datatype: MPI_CHAR.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Size      Bandwidth (MB/s)</span>
+</span></span><span class="line"><span class="cl"><span class="m">268435456</span>          279577.30
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、実行したジョブが使用したGPUリソースが当該ジョブのアカウンティング情報に記録されていることを確認します。<br>
+なお、ユーザ名とジョブIDは自身の環境のものに置き換えます。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sacct -u usera -o JobID,JobName,State <span class="p">|</span> tail -2
+</span></span><span class="line"><span class="cl"><span class="m">4</span>                osu_bw  COMPLETED 
+</span></span><span class="line"><span class="cl">4.0              osu_bw  COMPLETED 
+</span></span><span class="line"><span class="cl">$ sacct -j <span class="m">4</span> -o JobID,AllocTRES%50
+</span></span><span class="line"><span class="cl">JobID                                                 AllocTRES 
+</span></span><span class="line"><span class="cl">------------ -------------------------------------------------- 
+</span></span><span class="line"><span class="cl"><span class="m">4</span>                 <span class="nv">billing</span><span class="o">=</span>2,cpu<span class="o">=</span>2,gres/gpu<span class="o">=</span>2,mem<span class="o">=</span>500000M,node<span class="o">=</span><span class="m">1</span> 
+</span></span><span class="line"><span class="cl">4.0                         <span class="nv">cpu</span><span class="o">=</span>2,gres/gpu<span class="o">=</span>2,mem<span class="o">=</span>500000M,node<span class="o">=</span><span class="m">1</span>
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下のスクリプトをSlurmクライアントの <strong>Slurm</strong> 利用ユーザでファイル名 <strong>gpu_affinity.sh</strong> で作成します。<br>
+このスクリプトは、4枚のGPU（ノードに搭載するGPU数の半分）と32個のCPUコア（ノードに搭載するCPUコア数の半分）を要求し、自身が割り当てられたGPUのPCIバスIDとCPUコア番号を表示します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="cp">#!/bin/bash
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="c1">#SBATCH -p sltest</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -n 32</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -N 1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH --gres=gpu:nvidia_a100-sxm4-40gb:4</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -o stdout.%J</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#SBATCH -e stderr.%J</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sleep <span class="m">10</span>
+</span></span><span class="line"><span class="cl">srun -n <span class="m">1</span> nvidia-smi <span class="p">|</span> grep SXM <span class="p">|</span> awk <span class="s1">&#39;{print $2, $7}&#39;</span>
+</span></span><span class="line"><span class="cl">srun bash -c <span class="s1">&#39;echo -n &#34;Rank $SLURM_PROCID Node $SLURM_NODEID Core &#34;; taskset -cp $$ | cut -d&#34; &#34; -f6&#39;</span> <span class="p">|</span> sort -k 2n,2
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、先の8枚のGPUを使用した <strong>nvidia-smi</strong> コマンドの出力と比較し割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。<br>
+なお、GPUノードに使用している <strong>BM.GPU4.8</strong> は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容することに留意します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="k">for</span> i in <span class="sb">`</span>seq <span class="m">1</span> 2<span class="sb">`</span><span class="p">;</span> <span class="k">do</span> sbatch gpu_affinity.sh<span class="p">;</span> <span class="k">done</span>
+</span></span><span class="line"><span class="cl">Submitted batch job <span class="m">5</span>
+</span></span><span class="line"><span class="cl">Submitted batch job <span class="m">6</span>
+</span></span><span class="line"><span class="cl">$ squeue 
+</span></span><span class="line"><span class="cl">             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST<span class="o">(</span>REASON<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                 <span class="m">6</span>    sltest gpu_affi    usera  R       0:01      <span class="m">1</span> inst-aaaa-ao
+</span></span><span class="line"><span class="cl">                 <span class="m">5</span>    sltest gpu_affi    usera  R       0:02      <span class="m">1</span> inst-bbbb-ao
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ cat stdout.5
+</span></span><span class="line"><span class="cl"><span class="m">0</span> 00000000:0F:00.0
+</span></span><span class="line"><span class="cl"><span class="m">1</span> 00000000:15:00.0
+</span></span><span class="line"><span class="cl"><span class="m">2</span> 00000000:51:00.0
+</span></span><span class="line"><span class="cl"><span class="m">3</span> 00000000:54:00.0
+</span></span><span class="line"><span class="cl">Rank <span class="m">0</span> Node <span class="m">0</span> Core <span class="m">0</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">1</span> Node <span class="m">0</span> Core <span class="m">1</span>
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">Rank <span class="m">30</span> Node <span class="m">0</span> Core <span class="m">30</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">31</span> Node <span class="m">0</span> Core <span class="m">31</span>
+</span></span><span class="line"><span class="cl">$ cat stdout.6
+</span></span><span class="line"><span class="cl"><span class="m">0</span> 00000000:8D:00.0
+</span></span><span class="line"><span class="cl"><span class="m">1</span> 00000000:92:00.0
+</span></span><span class="line"><span class="cl"><span class="m">2</span> 00000000:D6:00.0
+</span></span><span class="line"><span class="cl"><span class="m">3</span> 00000000:DA:00.0
+</span></span><span class="line"><span class="cl">Rank <span class="m">0</span> Node <span class="m">0</span> Core <span class="m">32</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">1</span> Node <span class="m">0</span> Core <span class="m">33</span>
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">:
+</span></span><span class="line"><span class="cl">Rank <span class="m">30</span> Node <span class="m">0</span> Core <span class="m">62</span>
+</span></span><span class="line"><span class="cl">Rank <span class="m">31</span> Node <span class="m">0</span> Core <span class="m">63</span>
+</span></span><span class="line"><span class="cl">$
+</span></span></code></pre></div><p>次に、以下コマンドをSlurmクライアントの <strong>Slurm</strong> 利用ユーザで実行し、 <strong>&ndash;gres-flags=enforce-binding</strong> オプション指定の有無により、定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブの投入可否が変化することを確認します。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">33</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 bash -c <span class="s2">&#34;true&#34;</span>
+</span></span><span class="line"><span class="cl">$ srun -p sltest -n <span class="m">33</span> --gres<span class="o">=</span>gpu:nvidia_a100-sxm4-40gb:4 --gres-flags<span class="o">=</span>enforce-binding bash -c <span class="s2">&#34;true&#34;</span>
+</span></span><span class="line"><span class="cl">srun: error: Unable to allocate resources: Requested node configuration is not available
 </span></span><span class="line"><span class="cl">$
 </span></span></code></pre></div>
   </article>

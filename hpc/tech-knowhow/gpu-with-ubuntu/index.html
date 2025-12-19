@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-12-11T15:14:11+09:00"
+      content="2025-12-19T12:12:26+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法",
       "description": "HPC\/機械学習ワークロード実行のためのGPU搭載インスタンスは、NVIDIAが提供する様々なGPU関連ソフトウェアの開発が主にUbuntuで行われていることから、そのOSにUbuntuを使用するのが主流になっていますが、UbuntuをOSに指定してGPU搭載インスタンスを作成する場合、GPUを利用するためのソフトウェアを自身でインストール・セットアップする必要があります。本テクニカルTipsは、UbuntuをGPU搭載インスタンスと共に作成した後GPU利用に必要なソフトウェアをインストール・セットアップすることで、HPC\/機械学習ワークロード向けGPUインスタンスを構築する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "1649",
+      "wordCount" : "1648",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-12-11T15:14:11.00Z",
+      "dateModified": "2025-12-19T12:12:26.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-12-11T15:14:11+09:00">
+    <meta property="article:modified_time" content="2025-12-19T12:12:26+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -414,8 +414,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-12-11T15:14:11&#43;09:00">
-            Dec 11, 2025
+        <time datetime="2025-12-19T12:12:26&#43;09:00">
+            Dec 19, 2025
         </time>
     
 </span>
@@ -688,7 +688,7 @@
 <li><strong><a
   class="gdoc-markdown__link"
   href="https://github.com/NVIDIA/gdrcopy"
->gdrcopy</a></strong></li>
+>GDRCopy</a></strong></li>
 <li><strong><a
   class="gdoc-markdown__link"
   href="https://openucx.readthedocs.io/en/master/index.html#"
@@ -737,17 +737,17 @@
 </span></span><span class="line"><span class="cl">$ sudo depmod -a
 </span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> xpmem <span class="p">|</span> sudo tee /etc/modules-load.d/xpmem.conf
 </span></span><span class="line"><span class="cl">$ sudo modprobe xpmem
-</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>gdrcopy</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>GDRCopy</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.1.tar.gz
 </span></span><span class="line"><span class="cl">$ tar -xvf ./v2.5.1.tar.gz
 </span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> gdrcopy-2.5.1 <span class="o">&amp;&amp;</span> make -j <span class="m">128</span> <span class="nv">CUDA</span><span class="o">=</span>/usr/local/cuda-12.9 all <span class="o">&amp;&amp;</span> sudo make <span class="nv">prefix</span><span class="o">=</span>/opt/gdrcopy install
-</span></span><span class="line"><span class="cl">$ sudo sed <span class="s1">&#39;s/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g&#39;</span> ./insmod.sh <span class="p">|</span> sudo tee /opt/gdrcopy/bin/insmod.sh <span class="o">&amp;&amp;</span> sudo chmod <span class="m">755</span> /opt/gdrcopy/bin/insmod.sh
+</span></span><span class="line"><span class="cl">$ sed <span class="s1">&#39;s/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g&#39;</span> ./insmod.sh <span class="p">|</span> sudo tee /opt/gdrcopy/bin/insmod.sh <span class="o">&amp;&amp;</span> sudo chmod <span class="m">755</span> /opt/gdrcopy/bin/insmod.sh
 </span></span><span class="line"><span class="cl">$ sudo install -D -m <span class="m">644</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span>/gdrcopy-2.5.1/src/gdrdrv/gdrdrv.ko /lib/modules/<span class="sb">`</span>uname -r<span class="sb">`</span>/extra/gdrdrv.ko
 </span></span><span class="line"><span class="cl">$ sudo depmod -a
 </span></span></code></pre></div><p>次に、以下のファイルを <strong>/etc/systemd/system/gdrcopy.service</strong> として作成します。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="o">[</span>Unit<span class="o">]</span>
-</span></span><span class="line"><span class="cl"><span class="nv">Description</span><span class="o">=</span>Start gdrcopy
+</span></span><span class="line"><span class="cl"><span class="nv">Description</span><span class="o">=</span>Start GDRCopy
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>Service<span class="o">]</span>
 </span></span><span class="line"><span class="cl"><span class="nv">ExecStart</span><span class="o">=</span>/opt/gdrcopy/bin/insmod.sh
@@ -757,7 +757,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="o">[</span>Install<span class="o">]</span>
 </span></span><span class="line"><span class="cl"><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
-</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>gdrcopy</strong> をカーネルモジュールとしてインストールします。</p>
+</span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>GDRCopy</strong> をカーネルモジュールとしてインストールします。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ sudo systemctl daemon-reload
 </span></span><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> --now gdrcopy
 </span></span></code></pre></div><p>次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 <strong>OpenUCX</strong> を <strong>/opt</strong> ディレクトリにインストールします。<br>

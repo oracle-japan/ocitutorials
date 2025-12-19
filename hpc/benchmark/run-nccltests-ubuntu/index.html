@@ -43,7 +43,7 @@
 <meta property="article:section" content="Hpc" />
     <meta
       property="article:modified_time"
-      content="2025-12-11T15:14:11+09:00"
+      content="2025-12-19T12:12:26+09:00"
     />
 
 
@@ -63,7 +63,7 @@
       "headline": "NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）",
       "description": "本ドキュメントは、高帯域・低遅延RDMA対応RoCEv2採用のクラスタ・ネットワークでベア・メタル・シェイプBM.GPU4.8\/BM.GPU.A100-v2.8をノード間接続するGPUクラスタで、GPU間通信の集合通信ライブラリNCCLの標準ベンチマークであるNCCL Testsを実行する方法を解説します。",
       "thumbnailUrl": "https://oracle-japan.github.io/img/hero/Infrastructure_1.png",
-      "wordCount" : "752",
+      "wordCount" : "750",
       "license": "日本オラクル株式会社",
       "inLanguage": "ja",
       "isFamilyFriendly": "true",
@@ -76,7 +76,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2025-12-11T15:14:11.00Z",
+      "dateModified": "2025-12-19T12:12:26.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "OCIチュートリアル",
@@ -166,7 +166,7 @@
   <meta property="og:locale" content="ja">
   <meta property="og:type" content="article">
     <meta property="article:section" content="hpc">
-    <meta property="article:modified_time" content="2025-12-11T15:14:11+09:00">
+    <meta property="article:modified_time" content="2025-12-19T12:12:26+09:00">
     <meta property="og:image" content="https://oracle-japan.github.io/img/hero/Infrastructure_1.png">
 
 
@@ -398,8 +398,8 @@
     <svg class="gdoc-icon gdoc_date"><use xlink:href="#gdoc_date"></use></svg>
     
     
-        <time datetime="2025-12-11T15:14:11&#43;09:00">
-            Dec 11, 2025
+        <time datetime="2025-12-19T12:12:26&#43;09:00">
+            Dec 19, 2025
         </time>
     
 </span>
@@ -522,10 +522,9 @@
 <p>本章は、 <strong>NCCL Tests</strong> をコンパイルします。</p>
 <p>以下コマンドをGPUノードの <strong>NCCL Tests</strong> 実行ユーザで実行し、 <strong>NCCL Tests</strong> をコンパイルします。<br>
 ここでは、このユーザのホームディレクトリがGPUノード間で共有されていることを前提に、以下の手順を何れかのGPUノードで実施します。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/NVIDIA/nccl-tests.git
-</span></span><span class="line"><span class="cl">$ module purge
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ mkdir -p ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/<span class="sb">`</span>hostname<span class="sb">`</span> <span class="o">&amp;&amp;</span> git clone https://github.com/NVIDIA/nccl-tests.git
 </span></span><span class="line"><span class="cl">$ module load nvhpc openmpi
-</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> nccl-tests <span class="o">&amp;&amp;</span> make -j <span class="m">128</span> <span class="nv">MPI</span><span class="o">=</span><span class="m">1</span> <span class="nv">MPI_HOME</span><span class="o">=</span>/opt/openmpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nv">NCCL_HOME</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> nccl-tests <span class="o">&amp;&amp;</span> make -j <span class="m">64</span> <span class="nv">MPI</span><span class="o">=</span><span class="m">1</span> <span class="nv">MPI_HOME</span><span class="o">=</span>/opt/openmpi <span class="nv">CUDA_HOME</span><span class="o">=</span>/usr/local/cuda-12.9 <span class="nv">NCCL_HOME</span><span class="o">=</span>/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 </span></span></code></pre></div><hr>
 <div class="flex align-center gdoc-page__anchorwrap">
     <h1 id="3-nccl-tests実行"
