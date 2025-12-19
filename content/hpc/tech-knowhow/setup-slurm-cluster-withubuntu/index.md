@@ -17,7 +17,7 @@ table, th, td {
 
 本テクニカルTipsは、HPC/機械学習ワークロードを実行するためのGPUノード/クラスタに於ける高価なGPUリソースの有効活用を念頭に、現在GPU関連ソフトウェア開発で主に利用されている **Ubuntu** をOSとする、NVIDIA製GPUを複数搭載するベアメタルインスタンスのGPUリソース管理やジョブ管理を **[Slurm](https://slurm.schedmd.com/)** で行う環境の構築方法を解説します。
 
-なお、GPUを搭載しない計算ノード/HPCクラスタのリソース管理・ジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../setup-slurm-cluster/)** を参照してください。
+なお、**Oracle Linux** をOSとするHPC/GPUクラスタのリソース管理・ジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../setup-slurm-cluster/)** を参照してください。
 
 # 1. 前提システム
 
@@ -34,7 +34,7 @@ table, th, td {
 | GPUノード          | 複数GPUを搭載する<br>ベアメタルシェイプ（※2） | **Ubuntu** 24.04<br>（※1） | 任意のノード数 | プライベート<br>+<br>( **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** ) | ・ **slurmd** が稼働するジョブ実行ノード                                              |
 | NFSサーバ          | -<br>（※3）                   | -                        | 1       | プライベート                                                 | ・ジョブ投入ユーザのホームディレクトリを<br>NFSでサービス（※4）                                    |
 
-![画面ショット](architecture_diagram.png)
+![画面ショット](../setup-slurm-cluster/architecture_diagram.png)
 
 ※1） **[プラットフォーム・イメージ](../../#5-17-プラットフォームイメージ)** の **[Canonical-Ubuntu-24.04-2025.07.23-0](https://docs.oracle.com/en-us/iaas/images/ubuntu-2404/canonical-ubuntu-24-04-2025-07-23-0.htm)** です。SlurmクライアントはGPUノードのアプリケーション開発環境の役割を担うため、SlurmマネージャはSlurmクライアントでビルドする **Ubuntu** 用debパッケージから **Slurm** をインストールするため、これらにGPUノードと同じOSを採用します。  
 ※2）本テクニカルTipsは、8枚の **NVIDIA A100** GPUを搭載するベアメタルシェイプ **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **Simultanious Multi Threading** （以降 **SMT** と呼称）を無効化して使用します。  

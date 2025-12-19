@@ -57,10 +57,9 @@ params:
 ここでは、このユーザのホームディレクトリがGPUノード間で共有されていることを前提に、以下の手順を何れかのGPUノードで実施します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && git clone https://github.com/NVIDIA/nccl-tests.git
-$ module purge
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && git clone https://github.com/NVIDIA/nccl-tests.git
 $ module load nvhpc openmpi
-$ cd nccl-tests && make -j 128 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda-12.9 NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
+$ cd nccl-tests && make -j 64 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda-12.9 NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 ```
 
 ***

@@ -205,7 +205,7 @@ $ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/modules/modul
 - **[hwloc](https://www.open-mpi.org/projects/hwloc/)**
 - **[OpenPMIx](https://openpmix.github.io/)**
 - **[XPMEM](https://github.com/hpc/xpmem)**
-- **[gdrcopy](https://github.com/NVIDIA/gdrcopy)**
+- **[GDRCopy](https://github.com/NVIDIA/gdrcopy)**
 - **[OpenUCX](https://openucx.readthedocs.io/en/master/index.html#)**
 - **[Unified Collective Communication](https://github.com/openucx/ucc)** （以降 **UCC** と呼称します。）
 
@@ -265,14 +265,14 @@ $ echo xpmem | sudo tee /etc/modules-load.d/xpmem.conf
 $ sudo modprobe xpmem
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **gdrcopy** を **/opt** ディレクトリにインストールします。  
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **GDRCopy** を **/opt** ディレクトリにインストールします。  
 なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.1.tar.gz
 $ tar -xvf ./v2.5.1.tar.gz
 $ cd gdrcopy-2.5.1 && make -j 128 CUDA=/usr/local/cuda-12.9 all && sudo make prefix=/opt/gdrcopy install
-$ sudo sed 's/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g' ./insmod.sh | sudo tee /opt/gdrcopy/bin/insmod.sh && sudo chmod 755 /opt/gdrcopy/bin/insmod.sh
+$ sed 's/src\/gdrdrv/\/lib\/modules\/`uname -r`\/extra/g' ./insmod.sh | sudo tee /opt/gdrcopy/bin/insmod.sh && sudo chmod 755 /opt/gdrcopy/bin/insmod.sh
 $ sudo install -D -m 644 ~/`hostname`/gdrcopy-2.5.1/src/gdrdrv/gdrdrv.ko /lib/modules/`uname -r`/extra/gdrdrv.ko
 $ sudo depmod -a
 ```
@@ -281,7 +281,7 @@ $ sudo depmod -a
 
 ```sh
 [Unit]
-Description=Start gdrcopy
+Description=Start GDRCopy
 
 [Service]
 ExecStart=/opt/gdrcopy/bin/insmod.sh
@@ -293,7 +293,7 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 ```
 
-次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **gdrcopy** をカーネルモジュールとしてインストールします。
+次に、以下コマンドをGPUインスタンスのubuntuユーザで実行し、 **GDRCopy** をカーネルモジュールとしてインストールします。
 
 ```sh
 $ sudo systemctl daemon-reload
