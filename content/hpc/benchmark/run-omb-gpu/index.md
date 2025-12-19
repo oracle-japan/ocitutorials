@@ -17,7 +17,7 @@ params:
 3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
 4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#2-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
 
-本ドキュメントで **OSU Micro-Benchmarks** を実行するGPUクラスタは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** のGPUノードを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** （OSが **Oracle Linux** の場合）/ **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** （OSが **Ubuntu** の場合）のチュートリアルに従い、予め構築されているものとします。
+本ドキュメントで **OSU Micro-Benchmarks** を実行するGPUクラスタは、8枚の **NVIDIA A100** GPUを搭載するベア・メタル・シェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** のGPUノードを **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続し、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** （OSが **Oracle Linux** の場合に使用します。）/ **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** （OSが **Ubuntu** の場合に使用します。）のチュートリアルに従い、予め構築されているものとします。
 
 本ドキュメントは、以下の実行環境で **OSU Micro-Benchmarks** の計測を実施し、
 
@@ -38,7 +38,7 @@ params:
 - **OpenMPI** ： 5.0.8
 - **OSU Micro-Benchmarks** ： 7.5.1
 
-※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
+※1） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。  
 ※2）GPU **クラスタネットワーキングイメージ** に含まれるものを使用します。  
 ※3） **NVIDIA HPC SDK** に含まれるものを使用します。
 

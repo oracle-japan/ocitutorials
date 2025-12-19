@@ -357,15 +357,17 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 
 ## 2-7. Slurm設定ファイル作成
 
-本章は、以下3種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
+本章は、以下5種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
 この際、これらファイルのオーナーユーザ・オーナーグループを **slurm** とします。  
 また、 **slurmdbd.conf** のパーミッションを **600** に設定します。
 
 - **slurm.conf**（全てのサブシステム）
 - **slurmdbd.conf**（Slurmマネージャ）
 - **mpi.conf**（Slurmマネージャ）
+- **cgroup.conf**（Slurmマネージャ・GPUノード）（GPUクラスタの場合のみ使用します。）
+- **gres.conf**（GPUノード）（GPUクラスタの場合のみ使用します。）
 
-[ **slurm.conf** ]
+[ **slurm.conf** （HPCクラスタ用）]
 ```sh
 ClusterName=sltest
 SlurmctldHost=slurm-srv
@@ -394,6 +396,52 @@ TaskPlugin=task/affinity
 ```
 
 なお、 **SlurmctldHost** 、 **AccountingStorageHost** 、及び **NodeName** の設定値は、自身の環境に合わせて修正します。
+
+[ **slurm.conf** （GPUクラスタ用）]
+```sh
+ClusterName=sltest
+SlurmctldHost=slurm-srv
+AuthType=auth/munge
+PluginDir=/opt/slurm/lib64/slurm
+SchedulerType=sched/backfill
+SlurmUser=slurm
+SlurmctldPort=7002
+SlurmctldTimeout=300
+SlurmdPort=7003
+SlurmdSpoolDir=/var/spool/slurmd
+SlurmdTimeout=300
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
+SlurmdDebug=3
+StateSaveLocation=/var/spool/slurmd
+SwitchType=switch/none
+AccountingStorageType=accounting_storage/slurmdbd
+AccountingStorageHost=slurm-srv
+AccountingStoragePort=7004
+MpiDefault=pmix
+#
+# For per-GPU scheduling
+AccountingStorageTRES=gres/gpu
+DebugFlags=CPU_Bind,gres
+GresTypes=gpu
+JobAcctGatherType=jobacct_gather/cgroup
+SelectType=select/cons_tres
+TaskPlugin=task/cgroup,task/affinity
+#
+# GPU node specifications
+NodeName=inst-aaaa-ao Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-bbbb-ao Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
+PartitionName=sltest Nodes=ALL DefMemPerGPU=250000 Default=YES MaxTime=INFINITE State=UP
+```
+
+なお、 **SlurmctldHost** 、 **AccountingStorageHost** 、及び **NodeName** の設定値は、自身の環境に合わせて修正します。  
+また、 **DefMemPerGPU** の値は、自身の使用するGPUノードに合わせて **RealMemory** に指定した値を搭載するGPU数で割った値（※8）とします。
+
+※8）ここで指定しているGPU当たりのホストメモリ量以上のジョブを投入する場合は、以下のようにジョブが使用する総ホストメモリ量を **- –mem=xxxx** オプションで指定します。
+
+```sh
+$ srun -p sltest --gres=gpu:nvidia_a100-sxm4-40gb:4 --mem=1500000M ./a.out
+```
 
 [ **slurmdbd.conf** ]
 ```sh
@@ -433,6 +481,22 @@ StorageLoc=slurm_acct_db
 PMIxDirectConnEarly=true
 PMIxDirectConnUCX=true
 ```
+
+[ **cgroup.conf** ]
+```sh
+ConstrainCores=yes 
+ConstrainDevices=yes
+ConstrainRAMSpace=yes
+```
+
+[ **gres.conf** ]
+```sh
+Name=gpu Type=nvidia_a100-sxm4-40gb File=/dev/nvidia[0-3] COREs=[0-31]
+Name=gpu Type=nvidia_a100-sxm4-40gb File=/dev/nvidia[4-7] COREs=[32-63]
+```
+
+上記 **gres.conf** は、GPU番号0～3とCPUコア番号0～31、GPU番号4～7とCPUコア番号32～63のアフィニティを定義しており、ジョブが要求するGPUとCPUコアのリソースがこれを維持できる範囲で定義したアフィニティに従いリソース割り当てを行い、維持できない場合はこれを無視してリソースを割り当てます。  
+このアフィニティの維持を強制する場合は、 **--gres-flags=enforce-binding** オプションを指定してジョブを投入します。これにより、アフィニティを維持できるGPUとCPUコアが空くまでジョブの実行を延期するか、指定したリソースがそもそも定義したアフィニティを満たせない場合（4個以下のGPUと33個以上のCPUコア等）はこのジョブの投入を拒否します。
 
 ## 2-8. Slurmサービス起動
 
