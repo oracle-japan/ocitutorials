@@ -19,7 +19,7 @@ jobs:
           BRANCH_NAME="${GITHUB_REF#refs/heads/}"
           echo "Branch: $BRANCH_NAME"
 
-          PRS=$(curl -s -H "Authorization: token ${{ secrets.AUTO_PR_CREATE_TOKEN }}" \
+          PRS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/pulls?state=open")
 
           MATCHING_PR=$(echo "$PRS" | jq -r --arg branch "$BRANCH_NAME" '.[] | select(.head.ref == $branch) | .number')
@@ -37,7 +37,7 @@ jobs:
         uses: actions/github-script@v7
         if: steps.check_pr.outputs.exists == 'false'
         with:
-          github-token: ${{ secrets.AUTO_PR_CREATE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const headRef = '${{ github.ref_name }}'
             const createParams = {
