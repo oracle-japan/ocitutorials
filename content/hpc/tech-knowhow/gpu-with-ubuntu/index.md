@@ -138,7 +138,7 @@ $ sudo systemctl disable --now apparmor
 本章は、GPUインスタンスに以下の **NVIDIA** GPU関連ソフトウェアをインストールします。
 
 - **NVIDIA Driver**
-- **NVIDIA CUDA Toolkit**
+- **NVIDIA CUDA**
 - **NVIDIA Fabric Manager**（※3）
 - **NVIDIA HPC SDK**
 
@@ -390,8 +390,8 @@ prepend-path MANPATH            $pkg_root/share/man
 
 本章は、ここまでにインストールしたソフトウェアの動作確認を以下の順に実施します。
 
-1. **[CUDA SamplesによるNVIDIA CUDA Toolkit動作確認](#4-1-cuda-samplesによるnvidia-cuda-toolkit動作確認)**  
- **NVIDIA CUDA Toolkit** に含まれるCUDAコンパイラとCUDAライブラリを使用する **CUDA Samples** をコンパイル・実行することで、 **NVIDIA CUDA Toolkit** 含まれるCUDAコンパイラの動作を確認します。
+1. **[CUDA SamplesによるNVIDIA CUDA動作確認](#4-1-cuda-samplesによるnvidia-cuda動作確認)**  
+ **NVIDIA CUDA** に含まれるCUDAコンパイラとCUDAライブラリを使用する **CUDA Samples** をコンパイル・実行することで、 **NVIDIA CUDA** に含まれるCUDAコンパイラの動作を確認します。
 
 2. **[OpenACCサンプルプログラムによるNVIDIA HPC SDK動作確認](#4-2-openaccサンプルプログラムによるnvidia-hpc-sdk動作確認)**  
 OpenACCのディレクティブを含むCプログラムをコンパイル・実行することで、 **NVIDIA HPC SDK** に含まれるOpneACC対応Cコンパイラの動作を確認します。
@@ -405,7 +405,7 @@ OpenACCのディレクティブを含むMPI Cプログラムをコンパイル�
 5. **[NCCL TestsによるNVIDIA Fabric Manager動作確認](#4-5-nccl-testsによるnvidia-fabric-manager動作確認)**  
 **NCCL Tests** で8枚のGPUを使用する **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の **All-Reduce** 通信性能を計測し、十分な性能が出ていることをもって **NVIDIA Fabric Manager** の動作を確認します。
 
-## 4-1. CUDA SamplesによるNVIDIA CUDA Toolkit動作確認
+## 4-1. CUDA SamplesによるNVIDIA CUDA動作確認
 
 以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、 **CUDA Samples** をコンパイルします。  
 なお、makeコマンドの並列数はGPUインスタンスのコア数に合わせて調整します。
@@ -418,7 +418,7 @@ $ cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j 128
 ```
 
 次に、以下コマンドをGPUインスタンスのGPU環境利用ユーザで実行し、 **CUDA Samples** が正しく動作することを確認します。  
-この時、出力に搭載する全てのGPUの情報が含まれ、最後に出力される **Result =** 行が **PASS** となっていることで、 **NVIDIA CUDA Toolkit** の動作を確認します。
+この時、出力に搭載する全てのGPUの情報が含まれ、最後に出力される **Result =** 行が **PASS** となっていることで、 **NVIDIA CUDA** の動作を確認します。
 
 ```sh
 $ ./Samples/1_Utilities/deviceQuery/deviceQuery
@@ -588,4 +588,4 @@ $
 
 ## 4-5. NCCL TestsによるNVIDIA Fabric Manager動作確認
 
-**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](../../benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](../../benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](../../benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL**  **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** を搭載する **BM.GPU4.8** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。
+**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Ubuntu編）](../../benchmark/run-nccltests-ubuntu/)** の **[2. NCCL Testsコンパイル](../../benchmark/run-nccltests-ubuntu/#2-nccl-testsコンパイル)** と **[3. NCCL Tests実行](../../benchmark/run-nccltests-ubuntu/#3-nccl-tests実行)** の手順に従い、1ノード8GPUの **NCCL** **All-Reduce** 通信性能を **NCCL Tests** で計測し、 **NVSwitch** を搭載する **BM.GPU4.8** に期待される性能の **230 GB/s** （10 GiBメッセージサイズ）前後の帯域（busbw）性能が出ることをもって、 **NVIDIA Fabric Manager** の動作を確認します。

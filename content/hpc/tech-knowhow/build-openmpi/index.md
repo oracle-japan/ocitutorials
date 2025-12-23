@@ -56,6 +56,7 @@ params:
 - **[NAS Parallel Benchmarks](https://www.nas.nasa.gov/software/npb.html)**
 
 本テクニカルTipsは、以下の環境を前提とし、
+
 - 計算ノード
   - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
   - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
@@ -70,7 +71,7 @@ params:
 ※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。  
 ※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。
 
-**Oracle Linux** のバージョンと計算ノードかGPUノードかによる構築方法の違いは、以降の構築手順中の注釈で判断します。
+**Oracle Linux** のバージョンと計算ノードかGPUノードかで手順の異なる箇所は、都度記載の注釈でどの手順を実行するかを判断します。
 
 本テクニカルTipsに従い **OpenMPI** 環境を構築する計算/GPUノードは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間を接続し、稼働確認を行うために少なくとも2ノード用意します。  
 この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster/)** が参考になります。
@@ -346,7 +347,7 @@ $ for hname in `cat ~/hostlist.txt`; do echo $hname; ssh -oStrictHostKeyChecking
 **OpenMPI** 利用ユーザのホームディレクトリがノード間で共有されていることを前提に、以下コマンドを何れか1ノードで **OpenMPI** を利用するユーザで実行し、 **NAS Parallel Benchmarks** をインストールします。
 
 ```sh
-$ cd ~ && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
+$ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3-MZ.tar.gz
 $ tar -xvf ./NPB3.4.3-MZ.tar.gz
 $ cd NPB3.4.3-MZ/NPB3.4-MZ-MPI
 $ cp config/make.def.template config/make.def
