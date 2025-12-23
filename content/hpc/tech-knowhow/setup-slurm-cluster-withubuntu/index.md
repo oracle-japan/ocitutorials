@@ -324,7 +324,7 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 
 ## 2-7. Slurm設定ファイル作成
 
-本章は、以下3種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
+本章は、以下5種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
 この際、これらファイルのオーナーユーザ・オーナーグループを **slurm** とします。  
 また、 **slurmdbd.conf** のパーミッションを **600** に設定します。
 

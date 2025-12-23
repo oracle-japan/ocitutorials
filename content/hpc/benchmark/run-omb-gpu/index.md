@@ -55,6 +55,8 @@ params:
 |                  |           | 同一ソケットで異なるNUMAノード  | 1.65 us | 23,224 MB/s  |
 |                  |           | 異なるソケット            | 1.92 us | 23,209 MB/s  |
 
+対象のイメージが **Oracle Linux** か **Ubuntu** かで異なる箇所は、その都度注釈を加えます。
+
 以降では、以下の順に解説します。
 
 1. **[OSU Micro-Benchmarksインストール](#1-osu-micro-benchmarksインストール)**
@@ -272,9 +274,8 @@ $
 
 本章は、2ノードに跨るGPU番号0同士のメッセージサイズ1バイトでのレイテンシとメッセージサイズ256 MiBでの帯域幅を計測します。
 
-使用するGPU番号が0になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。
-
-使用するノード間接続ネットワークインターフェースは、GPU番号0と同一PCIeスイッチに接続する **mlx5_6** を指定しています。
+使用するGPU番号が0になるのは、 **OSU Micro-Benchmarks** がMPIプロセスを割り当てるGPUを決定する際、 **OpenMPI** の環境変数 **OMPI_COMM_WORLD_LOCAL_RANK** 環境変数と同じGPU番号とするためです。  
+また、使用するノード間接続ネットワークインターフェースは、GPU番号0と同一PCIeスイッチに接続する **mlx5_6** と **mlx5_7** を指定しています。
 
 ### 2-2-1. レイテンシ
 
@@ -284,8 +285,8 @@ $
 ```sh
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
-[inst-0d12t-ao-ub24:14174] SET UCX_NET_DEVICES=mlx5_6:1
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 -x PATH -x LD_LIBRARY_PATH osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
+[inst-wth6t-ao-ol905:100892] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
@@ -302,13 +303,13 @@ $
 ```sh
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
-$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
-[inst-0d12t-ao-ub24:16701] SET UCX_NET_DEVICES=mlx5_6:1
+$ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 -x PATH -x LD_LIBRARY_PATH osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
+[inst-wth6t-ao-ol905:100977] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
-268435456           11962.21
+268435456           23055.69
 $
 ```
 

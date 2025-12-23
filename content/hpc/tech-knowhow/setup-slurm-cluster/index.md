@@ -36,6 +36,8 @@ table, th, td {
 以上を踏まえて本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行すること、GPUクラスタに於けるGPUリソースを有効に活用すること、を念頭に **Slurm** 環境を構築します。  
 また構築した環境の稼働確認として、HPCクラスタでは **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して初期化処理時間の効果を検証し、GPUクラスタでは設定したGPUリソース管理機能が想定通りに動作することを検証します。
 
+以降では、対象がHPCクラスタかGPUクラスタかで異なる箇所は、その都度注釈を加えます。
+
 なお、 **Ubuntu** をOSとするGPUクラスタのリソース管理やジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)](../setup-slurm-cluster-withubuntu/)** を参照してください。
 
 # 1. 前提システム
@@ -429,8 +431,7 @@ SelectType=select/cons_tres
 TaskPlugin=task/cgroup,task/affinity
 #
 # GPU node specifications
-NodeName=inst-aaaa-ao Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
-NodeName=inst-bbbb-ao Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-aaaa-ao,inst-bbbb-ao Gres=gpu:nvidia_a100-sxm4-40gb:8 Sockets=2 CoresPerSocket=32 ThreadsPerCore=1 RealMemory=2000000 TmpDisk=10000 State=UNKNOWN
 PartitionName=sltest Nodes=ALL DefMemPerGPU=250000 Default=YES MaxTime=INFINITE State=UP
 ```
 
@@ -678,28 +679,26 @@ $ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 nvidia-smi | grep SXM |
 $
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、GPUデバイスメモリ間のレイテンシを確認します。
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **OSU Micro-Benchmarks** で2ノード間のデバイスメモリ間のレイテンシと帯域幅を計測します。
+ここでは、最初のコマンドの出力から **Slurm** が割り当てるGPU番号が2となるため、使用するノード間接続ネットワークインターフェースにこのGPUと同一PCIeスイッチに接続する **mlx5_0** と **mlx5_1** を指定しています。
 
 ```sh
 $ module load openmpi omb
-$ srun -p sltest -n 2 --gres=gpu:nvidia_a100-sxm4-40gb:2 osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
+$ srun -p sltest -n 2 -N 2 --gres=gpu:nvidia_a100-sxm4-40gb:1 nvidia-smi | grep SXM
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:51:00.0 Off |                    0 |
+$ UCX_NET_DEVICES=mlx5_0:1,mlx5_1:1 srun -p sltest -n 2 -N 2 --gres=gpu:nvidia_a100-sxm4-40gb:1 osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
-1                       2.37
-$
-```
-
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、GPUデバイスメモリ間の帯域幅を確認します。
-
-```sh
-$ srun -p sltest -n 2 --gres=gpu:nvidia_a100-sxm4-40gb:2 osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
+1                       3.89
+$ UCX_NET_DEVICES=mlx5_0:1,mlx5_1:1 srun -p sltest -n 2 -N 2 --gres=gpu:nvidia_a100-sxm4-40gb:1 osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
-268435456          279577.30
+268435456           23073.26
 $
 ```
 
@@ -719,6 +718,7 @@ $
 ```
 
 次に、以下のスクリプトをSlurmクライアントの **Slurm** 利用ユーザでファイル名 **gpu_affinity.sh** で作成します。  
+なお、ホスト名は自身の環境のものに置き換えます。  
 このスクリプトは、4枚のGPU（ノードに搭載するGPU数の半分）と32個のCPUコア（ノードに搭載するCPUコア数の半分）を要求し、自身が割り当てられたGPUのPCIバスIDとCPUコア番号を表示します。
 
 ```sh
@@ -726,6 +726,7 @@ $
 #SBATCH -p sltest
 #SBATCH -n 32
 #SBATCH -N 1
+#SBATCH --nodelist=inst-aaaa-ao
 #SBATCH --gres=gpu:nvidia_a100-sxm4-40gb:4
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
@@ -735,7 +736,7 @@ srun -n 1 nvidia-smi | grep SXM | awk '{print $2, $7}'
 srun bash -c 'echo -n "Rank $SLURM_PROCID Node $SLURM_NODEID Core "; taskset -cp $$ | cut -d" " -f6' | sort -k 2n,2
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、投入した2本のジョブが同時に実行中になること、先の8枚のGPUを使用した **nvidia-smi** コマンドの出力と比較し割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。  
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、投入した2本のジョブが同一GPUノードで同時に実行中になること、先の8枚のGPUを使用した **nvidia-smi** コマンドの出力と比較し割り当てられたGPUとCPUコアが同一ソケットに接続するものであることを確認します。  
 なお、GPUノードに使用している **BM.GPU4.8** は、CPUソケットを2個搭載し、ソケット番号0側にGPU番号0～3とCPUコア番号0～31を収容し、ソケット番号1側にGPU番号4～7とCPUコア番号32～63を収容することに留意します。
 
 ```sh
@@ -745,7 +746,7 @@ Submitted batch job 6
 $ squeue 
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
                  6    sltest gpu_affi    usera  R       0:01      1 inst-aaaa-ao
-                 5    sltest gpu_affi    usera  R       0:02      1 inst-bbbb-ao
+                 5    sltest gpu_affi    usera  R       0:02      1 inst-aaaa-ao
 
 $ cat stdout.5
 0 00000000:0F:00.0
@@ -777,8 +778,8 @@ $
 次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **--gres-flags=enforce-binding** オプション指定の有無により、定義したGPUとCPUコアのアフィニティを満たせないリソース（4個のGPUと33個のCPUコア）を要求するジョブの投入可否が変化することを確認します。
 
 ```sh
-$ srun -p sltest -n 33 --gres=gpu:nvidia_a100-sxm4-40gb:4 bash -c "true"
-$ srun -p sltest -n 33 --gres=gpu:nvidia_a100-sxm4-40gb:4 --gres-flags=enforce-binding bash -c "true"
+$ srun -p sltest -n 33 -N 1 --gres=gpu:nvidia_a100-sxm4-40gb:4 bash -c "true"
+$ srun -p sltest -n 33 -N 1 --gres=gpu:nvidia_a100-sxm4-40gb:4 --gres-flags=enforce-binding bash -c "true"
 srun: error: Unable to allocate resources: Requested node configuration is not available
 $
 ```

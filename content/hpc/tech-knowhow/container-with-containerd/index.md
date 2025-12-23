@@ -18,10 +18,10 @@ params:
 - rootlessコンテナ： **[rootlesskit](https://github.com/rootless-containers/rootlesskit)**
 - rootlessコンテナ通信速度高速化： **[bypass4netns](https://github.com/rootless-containers/bypass4netns)**
 
-本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUインスタンスで分散機械学習環境を構築する](../../spinup-ml-instance-cntnd/)** / **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、NVIDIA GPUを搭載するGPUインスタンスが予め作成されていることを前提に、ここに **containerd** と前述のソフトウェア群をインストールして **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供されるコンテナを非特権ユーザ（以降"コンテナ起動ユーザ"と呼称します。）権限で起動するまでの手順を、以下の順に解説します。
+本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** のカテゴリ **[機械学習環境](../../#1-2-機械学習環境)** のチュートリアル **[GPUインスタンスで分散機械学習環境を構築する](../../spinup-ml-instance-cntnd/)** / **[GPUクラスタを構築する(基礎インフラ手動構築編)](../../spinup-gpu-cluster/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster-withterraform/)** の手順に従う等により、NVIDIA GPUを搭載するGPUインスタンスが予め作成されていることを前提に、ここに **containerd** と前述のソフトウェア群をインストールして **[NGC Catalog](https://catalog.ngc.nvidia.com/)** から提供されるコンテナを非特権ユーザ（以降"コンテナユーザ"と呼称します。）権限で起動するまでの手順を、以下の順に解説します。
 
 1. **[コンテナ環境構築](#1-コンテナ環境構築)**
-2. **[コンテナ起動ユーザ作成](#2-コンテナ起動ユーザ作成)**
+2. **[コンテナユーザ作成](#2-コンテナユーザ作成)**
 3. **[コンテナランタイム起動](#3-コンテナランタイム起動)**
 4. **[コンテナ起動・稼働確認](#4-コンテナ起動稼働確認)**
 
@@ -120,9 +120,9 @@ $ tar -xvf ./v0.4.2.tar.gz
 $ cd bypass4netns-0.4.2 && make -j 128 && sudo make install
 ```
 
-# 2. コンテナ起動ユーザ作成
+# 2. コンテナユーザ作成
 
-本章は、コンテナ起動ユーザを作成し、このユーザでコンテナを起動するための必要な設定を行います。
+本章は、コンテナユーザを作成し、このユーザでコンテナを起動するための必要な設定を行います。
 
 以下コマンドをGPUインスタンスのopcユーザで実行し、ユーザのmemlock設定値を無制限に変更します。  
 なお、この設定が既に入っている場合は、改めて実施する必要はありません。
@@ -134,15 +134,15 @@ $ cat <<EOF | sudo tee -a /etc/security/limits.conf
 > EOF
 ```
 
-次に、GPUインスタンスでコンテナ起動ユーザ（ここでは **usera** とします。）を作成し、SSHでログイン可能となるようにSSH公開鍵を登録します。
+次に、GPUインスタンスでコンテナユーザ（ここでは **usera** とします。）を作成し、SSHでログイン可能となるようにSSH公開鍵を登録します。
 
-次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナ起動ユーザのコンテナイメージ等のファイルを格納するディレクトリをNVMe SSDローカルディスク領域（ **/mnt/localdisk** にマウントされているとします。）に作成します。
+次に、以下コマンドをGPUインスタンスのopcユーザで実行し、コンテナユーザのコンテナイメージ等のファイルを格納するディレクトリをNVMe SSDローカルディスク領域（ **/mnt/localdisk** にマウントされているとします。）に作成します。
 
 ```sh
 $ sudo mkdir -p /mnt/localdisk/usera/root /mnt/localdisk/usera/state && sudo chown -R usera:usera /mnt/localdisk/usera
 ```
 
-次に、SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。
+次に、SSHでGPUインスタンスにコンテナユーザでログインして以下コマンドを実行し、コンテナイメージ等のファイルを格納するディレクトリを登録します。
 
 ```sh
 $ mkdir -p ~/.config/containerd
@@ -156,7 +156,7 @@ $ cat << EOF > ~/.config/containerd/config.toml
 
 本章は、rootlessコンテナの **rootlesskit** とrootlessコンテナの通信速度を高速化する **bypass4netns** のコンテナランタイム関連サービスを起動します。
 
-SSHでGPUインスタンスにコンテナ起動ユーザでログインして以下コマンドを実行し、 **rootlesskit** と **bypass4netns** をユーザモードの **systemd** サービスとして起動し、コマンド出力からその起動を確認します。
+SSHでGPUインスタンスにコンテナユーザでログインして以下コマンドを実行し、 **rootlesskit** と **bypass4netns** をユーザモードの **systemd** サービスとして起動し、コマンド出力からその起動を確認します。
 
 ```sh
 $ containerd-rootless-setuptool.sh install
@@ -192,7 +192,7 @@ $
 
 ## 4-0. 概要
 
-本章は、コンテナ起動ユーザで **NGC Catalog** から提供されるコンテナを起動し、起動するコンテナ上で稼働確認を実施します。
+本章は、コンテナユーザで **NGC Catalog** から提供されるコンテナを起動し、起動するコンテナ上で稼働確認を実施します。
 
 この際、以下のユースケース毎にコンテナ起動・稼働確認の手順を解説します。
 
@@ -203,7 +203,7 @@ $
 
 ## 4-1. 単一GPUインスタンスに閉じたコンテナ利用
 
-以下コマンドをGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをブリッジネットワークモードで起動します。
+以下コマンドをGPUインスタンスのコンテナユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをブリッジネットワークモードで起動します。
 
 ```sh
 $ nerdctl run -it --rm --gpus all --annotation nerdctl/bypass4netns=true nvcr.io/nvidia/base/ubuntu:22.04_20240212
@@ -266,7 +266,7 @@ $
 
 ## 4-2. 異なるGPUインスタンスに跨るコンテナ利用
 
-以下コマンドを全てのGPUインスタンスのコンテナ起動ユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをホストネットワークモードで起動します。
+以下コマンドを全てのGPUインスタンスのコンテナユーザで実行し、 **NGC Catalog** から提供される **Ubuntu** コンテナをホストネットワークモードで起動します。
 
 ```sh
 $ nerdctl run -it --rm --gpus all --network=host nvcr.io/nvidia/base/ubuntu:22.04_20240212
