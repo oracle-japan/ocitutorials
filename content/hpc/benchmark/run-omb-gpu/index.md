@@ -47,7 +47,7 @@ params:
 | 方向               | ノード内/ノード間 | **D** ・ **H** 接続関係 | レイテンシ   | 帯域幅          |
 | :--------------: | :-------: | :----------------: | :-----: | :----------: |
 | **D**  ->  **D** | ノード内      | -                  | 2.48 us | 279,578 MB/s |
-|                  | 2ノード間     | -                  | 3.89 us | 11,962 MB/s  |
+|                  | 2ノード間     | -                  | 3.89 us | 23,056 MB/s  |
 | **H**  ->  **D** | ノード内      | 同一NUMAノード          | 1.30 us | 23,744 MB/s  |
 |                  |           | 同一ソケットで異なるNUMAノード  | 1.66 us | 23,737 MB/s  |
 |                  |           | 異なるソケット            | 1.92 us | 23,369 MB/s  |
@@ -55,7 +55,7 @@ params:
 |                  |           | 同一ソケットで異なるNUMAノード  | 1.65 us | 23,224 MB/s  |
 |                  |           | 異なるソケット            | 1.92 us | 23,209 MB/s  |
 
-対象のイメージが **Oracle Linux** か **Ubuntu** かで異なる箇所は、その都度注釈を加えます。
+対象のイメージが **Oracle Linux** か **Ubuntu** かで手順の異なる箇所は、都度記載の注釈でどの手順を実行するかを判断します。
 
 以降では、以下の順に解説します。
 
@@ -143,56 +143,56 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 --report-bindings osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
-[inst-wpdlx-ao-ub24:22411] Rank 0 bound to package[0][core:0]
-[inst-wpdlx-ao-ub24:22411] Rank 1 bound to package[0][core:1]
+[inst-aaaaa-ao-ub24:22411] Rank 0 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:22411] Rank 1 bound to package[0][core:1]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       2.48
 $ mpirun -n 2 --map-by pe-list=24,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
-[inst-wpdlx-ao-ub24:22459] Rank 0 bound to package[0][core:24]
-[inst-wpdlx-ao-ub24:22459] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22459] Rank 0 bound to package[0][core:24]
+[inst-aaaaa-ao-ub24:22459] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       1.30
 $ mpirun -n 2 --map-by pe-list=0,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
-[inst-wpdlx-ao-ub24:22511] Rank 0 bound to package[0][core:0]
-[inst-wpdlx-ao-ub24:22511] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22511] Rank 0 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:22511] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       1.66
 $ mpirun -n 2 --map-by pe-list=32,25:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda H D
-[inst-wpdlx-ao-ub24:22558] Rank 0 bound to package[1][core:32]
-[inst-wpdlx-ao-ub24:22558] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22558] Rank 0 bound to package[1][core:32]
+[inst-aaaaa-ao-ub24:22558] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       1.92
 $ mpirun -n 2 --map-by pe-list=25,24:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
-[inst-wpdlx-ao-ub24:22630] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:22630] Rank 1 bound to package[0][core:24]
+[inst-aaaaa-ao-ub24:22630] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22630] Rank 1 bound to package[0][core:24]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       1.32
 $ mpirun -n 2 --map-by pe-list=25,0:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
-[inst-wpdlx-ao-ub24:22675] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:22675] Rank 1 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:22675] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22675] Rank 1 bound to package[0][core:0]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       1.65
 $ mpirun -n 2 --map-by pe-list=25,32:ordered --report-bindings numactl -l osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D H
-[inst-wpdlx-ao-ub24:22722] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:22722] Rank 1 bound to package[1][core:32]
+[inst-aaaaa-ao-ub24:22722] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22722] Rank 1 bound to package[1][core:32]
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
@@ -210,56 +210,56 @@ $
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 --report-bindings osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
-[inst-wpdlx-ao-ub24:22768] Rank 0 bound to package[0][core:0]
-[inst-wpdlx-ao-ub24:22768] Rank 1 bound to package[0][core:1]
+[inst-aaaaa-ao-ub24:22768] Rank 0 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:22768] Rank 1 bound to package[0][core:1]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456          279577.81
 $ mpirun -n 2 --map-by pe-list=24,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
-[inst-wpdlx-ao-ub24:22814] Rank 0 bound to package[0][core:24]
-[inst-wpdlx-ao-ub24:22814] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22814] Rank 0 bound to package[0][core:24]
+[inst-aaaaa-ao-ub24:22814] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456           23744.00
 $ mpirun -n 2 --map-by pe-list=0,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
-[inst-wpdlx-ao-ub24:22877] Rank 0 bound to package[0][core:0]
-[inst-wpdlx-ao-ub24:22877] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22877] Rank 0 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:22877] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456           23736.96
 $ mpirun -n 2 --map-by pe-list=32,25:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda H D
-[inst-wpdlx-ao-ub24:22932] Rank 0 bound to package[1][core:32]
-[inst-wpdlx-ao-ub24:22932] Rank 1 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:22932] Rank 0 bound to package[1][core:32]
+[inst-aaaaa-ao-ub24:22932] Rank 1 bound to package[0][core:25]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456           23369.30
 $ mpirun -n 2 --map-by pe-list=25,24:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
-[inst-wpdlx-ao-ub24:23111] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:23111] Rank 1 bound to package[0][core:24]
+[inst-aaaaa-ao-ub24:23111] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:23111] Rank 1 bound to package[0][core:24]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456           23229.60
 $ mpirun -n 2 --map-by pe-list=25,0:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
-[inst-wpdlx-ao-ub24:23191] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:23191] Rank 1 bound to package[0][core:0]
+[inst-aaaaa-ao-ub24:23191] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:23191] Rank 1 bound to package[0][core:0]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
 # Size      Bandwidth (MB/s)
 268435456           23223.68
 $ mpirun -n 2 --map-by pe-list=25,32:ordered --report-bindings numactl -l osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D H
-[inst-wpdlx-ao-ub24:23246] Rank 0 bound to package[0][core:25]
-[inst-wpdlx-ao-ub24:23246] Rank 1 bound to package[1][core:32]
+[inst-aaaaa-ao-ub24:23246] Rank 0 bound to package[0][core:25]
+[inst-aaaaa-ao-ub24:23246] Rank 1 bound to package[1][core:32]
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
@@ -286,7 +286,7 @@ $
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 -x PATH -x LD_LIBRARY_PATH osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
-[inst-wth6t-ao-ol905:100892] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
+[inst-aaaaa-ao:100892] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
@@ -304,7 +304,7 @@ $
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 -x PATH -x LD_LIBRARY_PATH osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
-[inst-wth6t-ao-ol905:100977] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
+[inst-aaaaa-ao:100977] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
@@ -324,7 +324,7 @@ $
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 8 -x UCX_NET_DEVICES=mlx5_6:1 osu_xccl_allreduce -x 10 -i 10 -m 1073741824:1073741824 -d cuda D D
-[inst-s08bb-ao-ub24:28293] SET UCX_NET_DEVICES=mlx5_6:1
+[inst-aaaaa-ao-ub24:28293] SET UCX_NET_DEVICES=mlx5_6:1
 #Using NCCL
 #Using NCCL
 #Using NCCL
@@ -351,7 +351,7 @@ $
 $ module load openmpi omb # For Oracle Linux
 $ module load nvhpc openmpi omb # For Ubuntu
 $ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1 -x PATH -x LD_LIBRARY_PATH osu_xccl_allreduce -x 10 -i 10 -m 1073741824:1073741824 -d cuda D D
-[inst-s08bb-ao-ub24:28899] SET UCX_NET_DEVICES=mlx5_6:1
+[inst-aaaaa-ao-ub24:28899] SET UCX_NET_DEVICES=mlx5_6:1
 #Using NCCL
 #Using NCCL
 #Using NCCL

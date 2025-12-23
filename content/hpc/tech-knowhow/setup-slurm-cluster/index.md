@@ -36,7 +36,7 @@ table, th, td {
 以上を踏まえて本テクニカルTipsは、 **OpenMPI** のMPI並列アプリケーションを **PMIx** の大規模並列ジョブに対する利点を生かして実行すること、GPUクラスタに於けるGPUリソースを有効に活用すること、を念頭に **Slurm** 環境を構築します。  
 また構築した環境の稼働確認として、HPCクラスタでは **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** で2ノード間のレイテンシと4ノード間のMPI_Init所要時間に着目して初期化処理時間の効果を検証し、GPUクラスタでは設定したGPUリソース管理機能が想定通りに動作することを検証します。
 
-以降では、対象がHPCクラスタかGPUクラスタかで異なる箇所は、その都度注釈を加えます。
+以降では、対象がHPCクラスタかGPUクラスタかで手順の異なる箇所は、都度記載の注釈でどの手順を実行するかを判断します。
 
 なお、 **Ubuntu** をOSとするGPUクラスタのリソース管理やジョブ管理を **Slurm** で行う環境の構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法(Ubuntu OS編)](../setup-slurm-cluster-withubuntu/)** を参照してください。
 
@@ -679,7 +679,7 @@ $ srun -p sltest -n 1 --gres=gpu:nvidia_a100-sxm4-40gb:8 nvidia-smi | grep SXM |
 $
 ```
 
-次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **OSU Micro-Benchmarks** で2ノード間のデバイスメモリ間のレイテンシと帯域幅を計測します。
+次に、以下コマンドをSlurmクライアントの **Slurm** 利用ユーザで実行し、 **OSU Micro-Benchmarks** で2ノード間のデバイスメモリ間のレイテンシと帯域幅を計測します。  
 ここでは、最初のコマンドの出力から **Slurm** が割り当てるGPU番号が2となるため、使用するノード間接続ネットワークインターフェースにこのGPUと同一PCIeスイッチに接続する **mlx5_0** と **mlx5_1** を指定しています。
 
 ```sh
@@ -726,7 +726,7 @@ $
 #SBATCH -p sltest
 #SBATCH -n 32
 #SBATCH -N 1
-#SBATCH --nodelist=inst-aaaa-ao
+#SBATCH --nodelist=inst-aaaaa-ao
 #SBATCH --gres=gpu:nvidia_a100-sxm4-40gb:4
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J

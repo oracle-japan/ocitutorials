@@ -136,7 +136,7 @@ $
 ```sh
 $ module load openmpi omb
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_latency -x 1000 -i 10000 -m 1:1
-[inst-xsyjo-x9-ol905:263038] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-aaaaa-x9:263038] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Latency Test v7.5
 # Datatype: MPI_CHAR.
@@ -153,7 +153,7 @@ $
 ```sh
 $ module load openmpi omb
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_bw -x 10 -i 10 -m 268435456:268435456
-[inst-xsyjo-x9-ol905:263198] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-aaaaa-x9:263198] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
@@ -170,7 +170,7 @@ $
 ```sh
 $ module load openmpi omb
 $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_allreduce -x 10 -i 10 -m 4:268435456
-[inst-ztgl1-x9-ol810:227754] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-aaaaa-x9:227754] SET UCX_NET_DEVICES=mlx5_2:1
 
 # OSU MPI Allreduce Latency Test v7.5
 # Datatype: MPI_INT.
@@ -213,7 +213,7 @@ $
 ```sh
 $ module load openmpi omb
 $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH osu_init
-[inst-ntoae-x9-ol810:19647] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-aaaaa-x9:19647] SET UCX_NET_DEVICES=mlx5_2:1
 # OSU MPI Init Test v7.5
 nprocs: 144, min: 2170 ms, max: 2216 ms, avg: 2187 ms
 $

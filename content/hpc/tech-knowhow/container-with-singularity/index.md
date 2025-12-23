@@ -19,7 +19,7 @@ params:
 
 ※1）以降"コンテナユーザ"と呼称します。
 
-本テクニカルTipsは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間接続するHPC/GPUクラスタ上に **SingularityCE** で構築されたコンテナ環境でMPI並列アプリケーションを実行することを念頭に、計算/GPUノードに **SingularityCE** をインストールし、ここで起動する **Ubuntu** のコンテナに **[OpenMPI](https://www.open-mpi.org/)** ・ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** ・ **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** 等のソフトウェアをインストールしてHPC/GPUクラスタで有用な **SIF** のカスタムコンテナイメージを作成、このコンテナイメージを使用して2ノード間のレイテンシと帯域幅を計測します。  
+本テクニカルTipsは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** でノード間接続するHPC/GPUクラスタ上に **SingularityCE** で構築されたコンテナ環境でMPI並列アプリケーションを実行することを念頭に、計算/GPUノードに **SingularityCE** をインストールし、ここで起動する **Ubuntu** のコンテナに **[OpenMPI](https://www.open-mpi.org/)** ・ **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** ・ **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** 等のソフトウェアをインストールしてHPC/GPUクラスタで有用な **SIF** のカスタムコンテナイメージを作成、このコンテナイメージを使用して性能検証を含めた稼働確認を実施します。  
 またこの計測を **[Slurm](https://slurm.schedmd.com/)** 環境で実行し、コンテナ上で実行するMPI並列アプリケーションがバッチジョブでも実行できることを確認します。
 
 本テクニカルTipsは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster/)** の手順に従う等で予め **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続する少なくとも2ノードの計算/GPUノードを有するHPC/GPUクラスタが作成されており、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従い予め **Slurm** 環境が構築されている（※2）ことを前提に、計算/GPUノードに **SingularityCE** をインストールしてコンテナ環境を構築する手順を以下の順に解説します。
@@ -33,7 +33,7 @@ params:
 
 ※2）コンテナ上で実行するMPI並列アプリケーションをバッチジョブで実行する必要がない場合は、 **Slurm** 環境が予め構築されている必要はありません。
 
-本テクニカルTipsは、以下の環境を前提とします。
+本テクニカルTipsは、以下の環境を前提とし、
 
 - 計算ノード
   - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
@@ -46,7 +46,7 @@ params:
 ※3）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
 ※4）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.15** です。
 
-以降では、対象がHPCクラスタかGPUクラスタかで異なる箇所は、その都度注釈を加えます。
+対象がHPCクラスタかGPUクラスタかで手順の異なる箇所は、都度記載の注釈でどの手順を実行するかを判断します。
 
 また本テクニカルTipsは、コンテナユーザのホームディレクトリが全ての計算ノードで共有されていることを前提に記載します。
 
@@ -448,7 +448,7 @@ $ mkdir -p ~/singularity && singularity build ~/singularity/ubuntu_noble_gpu.sif
     **OSU Micro-Benchmarks** を使用し、  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介する2ノード間のレイテンシと帯域幅を計測、その結果がホストOS上のものと同等であることを確認します。
     3. **[Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認](#6-1-3-slurm環境バッチジョブでのmpi並列アプリケーション稼働確認)**  
     **2.** と同様の稼働確認を **Slurm** 環境のバッチジョブとして実施し、MPI並列アプリケーションを **Slurm** 環境で実行できることを確認します。
-2. **[GPUクラスタ向け稼働確認項目](#6-2-gpuクラスタ向け稼働確認)**
+2. **[GPUクラスタ向け稼働確認](#6-2-gpuクラスタ向け稼働確認)**
     1. **[CUDA SamplesによるNVIDIA CUDA稼働確認](#6-2-1-cuda-samplesによるnvidia-cuda稼働確認)**  
     **NVIDIA CUDA** に含まれるCUDAコンパイラを使用して **CUDA Samples** をコンパイル・実行し、 **NVIDIA CUDA** の稼働確認を実施します。
     2. **[OpenACCサンプルプログラムによるNVIDIA HPC SDK稼働確認](#6-2-2-openaccサンプルプログラムによるnvidia-hpc-sdk稼働確認)**  
@@ -461,8 +461,6 @@ OpenACCのディレクティブを含むMPIプログラムをコンパイル・�
     **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の **All-Reduce** 通信性能を計測し、その結果がホストOS上のものと同等であることを確認します。
     6. **[Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認](#6-2-6-slurm環境バッチジョブでのmpi並列アプリケーション稼働確認)**  
     **4.** と同様の稼働確認を **Slurm** 環境のバッチジョブとして実施し、MPI並列アプリケーションを **Slurm** 環境で実行できることを確認します。
-
-以降では、HPCクラスタ向けとGPUクラスタ向けに分けてその手順を解説します。
 
 なお、コマンドブロック中の **Singularity>** はコンテナ内のプロンプトを表しており、これに続くコマンドは起動したコンテナ上で実行することを意味します。
 
@@ -490,12 +488,12 @@ int main(int argc, char **argv) {
 }
 ```
 
-次に、以下コマンドを計算ノードのコンテナユーザで実行し、 **OpenMPI** の稼働確認を実施します。
+次に、以下コマンドを計算ノードのコンテナユーザで実行し、このサンプルプログラムをコンパイル・実行します。
 
 ```sh
-$ singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif mpicc -o mpi_hello mpi_hello.c
+$ mkdir -p ~/`hostname` && singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif mpicc -o ~/`hostname`/mpi_hello mpi_hello.c
 $ module load openmpi
-$ mpirun -n 2 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ./mpi_hello
+$ mpirun -n 2 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ~/`hostname`/mpi_hello
 Hello world! I am 1 of 2
 Hello world! I am 0 of 2
 $
@@ -503,7 +501,7 @@ $
 
 ### 6-1-2. OSU Micro-Benchmarksによるノード間レイテンシ・帯域幅計測
 
-以下コマンドを何れかの計算ノードのコンテナユーザで実行し、 **OSU Micro-Benchmarks** でノード間レイテンシ・帯域幅の計測します。
+以下コマンドを何れかの計算ノードのコンテナユーザで実行し、 **OSU Micro-Benchmarks** で2ノード間のレイテンシと帯域幅を計測します。
 
 ```sh
 $ module load openmpi
@@ -522,10 +520,12 @@ $ SINGULARITYENV_UCX_NET_DEVICES=mlx5_2:1 mpirun -n 2 -N 1 --hostfile ~/hostlist
 $
 ```
 
+以上の計測に関する詳細とホストOS上の性能値は、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb-hpc/)** を参照してください。
+
 ### 6-1-3. Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認
 
 以下のファイルをSlurmクライアントに **slurm.sh** で作成します。  
-このファイルは、 **OSU Micro-Benchmarks** でノード間レイテンシ・帯域幅の計測を行う **Slurm** に投入するジョブスクリプトです。
+このファイルは、 **OSU Micro-Benchmarks** で2ノード間のレイテンシと帯域幅の計測を行う **Slurm** に投入するジョブスクリプトです。
 
 ```sh
 #!/bin/bash
@@ -582,7 +582,6 @@ Singularity> unzip v12.9.zip
 Singularity> export PATH=/usr/local/cuda-12.9/bin:${PATH}
 Singularity> cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j 64; echo $?
 Singularity> exit
-$
 ```
 
 次に、以下コマンドをGPUノードのコンテナユーザで実行し、 **CUDA Samples** を実行します。  
@@ -617,7 +616,7 @@ int main() {
 次に、以下コマンドをGPUノードのコンテナユーザで実行し、このサンプルプログラムをコンパイル・実行します。
 
 ```sh
-$ singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif nvc -acc -gpu=cc80 -o ~/`hostname`/gpu.exe test.c
+$ mkdir -p ~/`hostname` && singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif nvc -acc -gpu=cc80 -o ~/`hostname`/gpu.exe test.c
 $ singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif bash -c "~/`hostname`/gpu.exe & sleep 1; nvidia-smi | tail -3"
 Success!
 |=========================================================================================|
@@ -714,14 +713,14 @@ $
 
 ```sh
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
-[inst-wth6t-ao-ol905:101107] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
+[inst-aaaaa-ao:101107] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Latency Test v7.5
 # Datatype: MPI_CHAR.
 # Size       Avg Latency(us)
 1                       3.89
 $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif osu_bw -x 10 -i 10 -m 268435456:268435456 -d cuda D D
-[inst-wth6t-ao-ol905:101229] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
+[inst-aaaaa-ao:101229] SET UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 
 # OSU MPI-CUDA Bandwidth Test v7.5
 # Datatype: MPI_CHAR.
@@ -730,7 +729,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_6:1,mlx5_7:1
 $
 ```
 
-以上の計測に関する詳細は、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** を参照してください。
+以上の計測に関する詳細とホストOS上の性能値は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** を参照してください。
 
 ### 6-2-5. NCCL TestsによるNCCL通信性能計測
 
@@ -741,7 +740,6 @@ $ singularity run --nv ~/singularity/ubuntu_noble_gpu.sif
 Singularity> mkdir -p ~/`hostname` && cd ~/`hostname` && git clone https://github.com/NVIDIA/nccl-tests.git
 Singularity> cd nccl-tests && make -j 64 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl; echo $?
 Singularity> exit
-$
 ```
 
 次に、以下コマンドをGPUノードのコンテナユーザで実行し、1ノード8GPUの **NCCL** の **All-Reduce** 通信性能を **NCCL Tests** で計測します。
@@ -777,31 +775,31 @@ $ mpirun -n 8 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ~/`hostna
 
 ```sh
 $ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x NCCL_IB_QPS_PER_CONNECTION=4 -x NCCL_IB_GID_INDEX=3 -x UCX_NET_DEVICES=eth0 -x NCCL_IB_HCA="mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17" singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ~/`hostname`/nccl-tests/build/all_reduce_perf -b 10G -e 10G -t 1 -g 1
-[inst-wth6t-ao-ol905:87032] SET NCCL_IB_QPS_PER_CONNECTION=4
-[inst-wth6t-ao-ol905:87032] SET NCCL_IB_GID_INDEX=3
-[inst-wth6t-ao-ol905:87032] SET UCX_NET_DEVICES=eth0
-[inst-wth6t-ao-ol905:87032] SET NCCL_IB_HCA=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17
+[inst-aaaaa-ao:87032] SET NCCL_IB_QPS_PER_CONNECTION=4
+[inst-aaaaa-ao:87032] SET NCCL_IB_GID_INDEX=3
+[inst-aaaaa-ao:87032] SET UCX_NET_DEVICES=eth0
+[inst-aaaaa-ao:87032] SET NCCL_IB_HCA=mlx5_0,mlx5_1,mlx5_2,mlx5_3,mlx5_6,mlx5_7,mlx5_8,mlx5_9,mlx5_10,mlx5_11,mlx5_12,mlx5_13,mlx5_14,mlx5_15,mlx5_16,mlx5_17
 # nccl-tests version 2.17.6 nccl-headers=22605 nccl-library=22605
 # Collective test starting: all_reduce_perf
 # nThread 1 nGpus 1 minBytes 10737418240 maxBytes 10737418240 step: 1048576(bytes) warmup iters: 1 iters: 20 agg iters: 1 validation: 1 graph: 0
 #
 # Using devices
-#  Rank  0 Group  0 Pid  87266 on inst-wth6t-ao-ol905 device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB
-#  Rank  1 Group  0 Pid  87197 on inst-wth6t-ao-ol905 device  1 [0000:15:00] NVIDIA A100-SXM4-40GB
-#  Rank  2 Group  0 Pid  87196 on inst-wth6t-ao-ol905 device  2 [0000:51:00] NVIDIA A100-SXM4-40GB
-#  Rank  3 Group  0 Pid  87250 on inst-wth6t-ao-ol905 device  3 [0000:54:00] NVIDIA A100-SXM4-40GB
-#  Rank  4 Group  0 Pid  87230 on inst-wth6t-ao-ol905 device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB
-#  Rank  5 Group  0 Pid  87216 on inst-wth6t-ao-ol905 device  5 [0000:92:00] NVIDIA A100-SXM4-40GB
-#  Rank  6 Group  0 Pid  87202 on inst-wth6t-ao-ol905 device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB
-#  Rank  7 Group  0 Pid  87288 on inst-wth6t-ao-ol905 device  7 [0000:da:00] NVIDIA A100-SXM4-40GB
-#  Rank  8 Group  0 Pid  87901 on inst-0seu6-ao-ol905 device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB
-#  Rank  9 Group  0 Pid  87853 on inst-0seu6-ao-ol905 device  1 [0000:15:00] NVIDIA A100-SXM4-40GB
-#  Rank 10 Group  0 Pid  87866 on inst-0seu6-ao-ol905 device  2 [0000:51:00] NVIDIA A100-SXM4-40GB
-#  Rank 11 Group  0 Pid  87854 on inst-0seu6-ao-ol905 device  3 [0000:54:00] NVIDIA A100-SXM4-40GB
-#  Rank 12 Group  0 Pid  87904 on inst-0seu6-ao-ol905 device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB
-#  Rank 13 Group  0 Pid  87948 on inst-0seu6-ao-ol905 device  5 [0000:92:00] NVIDIA A100-SXM4-40GB
-#  Rank 14 Group  0 Pid  87903 on inst-0seu6-ao-ol905 device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB
-#  Rank 15 Group  0 Pid  87870 on inst-0seu6-ao-ol905 device  7 [0000:da:00] NVIDIA A100-SXM4-40GB
+#  Rank  0 Group  0 Pid  87266 on inst-aaaaa-ao device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB
+#  Rank  1 Group  0 Pid  87197 on inst-aaaaa-ao device  1 [0000:15:00] NVIDIA A100-SXM4-40GB
+#  Rank  2 Group  0 Pid  87196 on inst-aaaaa-ao device  2 [0000:51:00] NVIDIA A100-SXM4-40GB
+#  Rank  3 Group  0 Pid  87250 on inst-aaaaa-ao device  3 [0000:54:00] NVIDIA A100-SXM4-40GB
+#  Rank  4 Group  0 Pid  87230 on inst-aaaaa-ao device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB
+#  Rank  5 Group  0 Pid  87216 on inst-aaaaa-ao device  5 [0000:92:00] NVIDIA A100-SXM4-40GB
+#  Rank  6 Group  0 Pid  87202 on inst-aaaaa-ao device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB
+#  Rank  7 Group  0 Pid  87288 on inst-aaaaa-ao device  7 [0000:da:00] NVIDIA A100-SXM4-40GB
+#  Rank  8 Group  0 Pid  87901 on inst-bbbbb-ao device  0 [0000:0f:00] NVIDIA A100-SXM4-40GB
+#  Rank  9 Group  0 Pid  87853 on inst-bbbbb-ao device  1 [0000:15:00] NVIDIA A100-SXM4-40GB
+#  Rank 10 Group  0 Pid  87866 on inst-bbbbb-ao device  2 [0000:51:00] NVIDIA A100-SXM4-40GB
+#  Rank 11 Group  0 Pid  87854 on inst-bbbbb-ao device  3 [0000:54:00] NVIDIA A100-SXM4-40GB
+#  Rank 12 Group  0 Pid  87904 on inst-bbbbb-ao device  4 [0000:8d:00] NVIDIA A100-SXM4-40GB
+#  Rank 13 Group  0 Pid  87948 on inst-bbbbb-ao device  5 [0000:92:00] NVIDIA A100-SXM4-40GB
+#  Rank 14 Group  0 Pid  87903 on inst-bbbbb-ao device  6 [0000:d6:00] NVIDIA A100-SXM4-40GB
+#  Rank 15 Group  0 Pid  87870 on inst-bbbbb-ao device  7 [0000:da:00] NVIDIA A100-SXM4-40GB
 #
 #                                                              out-of-place                       in-place          
 #       size         count      type   redop    root     time   algbw   busbw  #wrong     time   algbw   busbw  #wrong 
@@ -815,7 +813,7 @@ $ mpirun -n 16 -N 8 -hostfile ~/hostlist.txt -x NCCL_IB_QPS_PER_CONNECTION=4 -x 
 $
 ```
 
-以上の計測に関する詳細は、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）](../../benchmark/run-nccltests/)** を参照してください。
+以上の計測に関する詳細とホストOS上の性能値は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[NCCL Tests実行方法（BM.GPU4.8/BM.GPU.A100-v2.8 Oracle Linux編）](../../benchmark/run-nccltests/)** を参照してください。
 
 ### 6-2-6. Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認
 
@@ -832,7 +830,7 @@ $
 #SBATCH -o stdout.%J
 #SBATCH -e stderr.%J
 
-export UCX_NET_DEVICES=mlx5_0:1,mlx5_1:1
+export SINGULARITYENV_UCX_NET_DEVICES=mlx5_0:1,mlx5_1:1
 
 echo "Start osu_latency"
 srun singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif osu_latency -x 1000 -i 10000 -m 1:1 -d cuda D D
