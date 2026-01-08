@@ -48,7 +48,7 @@ params:
 
 対象がHPCクラスタかGPUクラスタかで手順の異なる箇所は、都度記載の注釈でどの手順を実行するかを判断します。
 
-また本テクニカルTipsは、コンテナユーザのホームディレクトリが全ての計算ノードで共有されていることを前提に記載します。
+また本テクニカルTipsは、コンテナユーザのホームディレクトリが全ての計算/GPUノードで共有されていることを前提に記載します。
 
 # 1. OpenMPIインストール
 
@@ -66,8 +66,7 @@ params:
 
 本章は、計算/GPUノードに **SingularityCE** をインストールします。
 
-以下コマンドをopcユーザで実行し、 **SingularityCE** をインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+以下コマンドをopcユーザで実行し、 **SingularityCE** をインストールします。
 
 ```sh
 $ sudo yum-config-manager --enable ol9_codeready_builder
@@ -77,7 +76,7 @@ $ sudo tar -C /usr/local/ -xvf ./go1.25.4.linux-amd64.tar.gz
 $ export PATH=/usr/local/go/bin:$PATH
 $ wget https://github.com/sylabs/singularity/releases/download/v4.3.4/singularity-ce-4.3.4.tar.gz
 $ tar -xvf singularity-ce-4.3.4.tar.gz
-$ cd singularity-ce-4.3.4 && ./mconfig && make -j 36 -C builddir && sudo make -C builddir install; echo $?
+$ cd singularity-ce-4.3.4 && ./mconfig && make -j -C builddir && sudo make -C builddir install; echo $?
 ```
 
 # 4. コンテナユーザ作成
@@ -149,8 +148,7 @@ $ module purge
 $ singularity run --writable --fakeroot --bind /mnt/localdisk/usera:/mnt/localdisk/root ubuntu_noble_ompi/
 ```
 
-次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** の前提ソフトウェアを **sandbox** コンテナにインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** の前提ソフトウェアを **sandbox** コンテナにインストールします。
 
 ```sh
 Singularity> apt update
@@ -160,33 +158,32 @@ Singularity> DEBIAN_FRONTEND=noninteractive apt install -y tzdata wget build-ess
 Singularity> mkdir /mnt/localdisk/root/`hostname` && cd /mnt/localdisk/root/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 Singularity> tar -xvf ./libevent-2.1.12-stable.tar.gz --no-same-owner
 Singularity> cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 Singularity> tar -xvf ./hwloc-2.12.2.tar.gz --no-same-owner
 Singularity> cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 Singularity> tar -xvf ./pmix-5.0.8.tar.gz --no-same-owner
 Singularity> cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 Singularity> tar -xvf ./ucx-1.19.0.tar.gz --no-same-owner
 Singularity> cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
 Singularity> tar -xvf ./v1.5.0.tar.gz --no-same-owner
 Singularity> cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 ```
 
-次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** を **sandbox** コンテナの **/opt/openmpi** にインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** を **sandbox** コンテナの **/opt/openmpi** にインストールします。
 
 ```sh
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
 Singularity> tar -xvf ./openmpi-5.0.8.tar.gz --no-same-owner
 Singularity> cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> mkdir -p /usr/share/Modules
 Singularity> ln -s /usr/share/modules/modulefiles /usr/share/Modules/modulefiles
 Singularity> ln -s /usr/lib/x86_64-linux-gnu /usr/share/Modules/libexec
@@ -230,7 +227,7 @@ Singularity> cd /mnt/localdisk/root/`hostname` && wget https://mvapich.cse.ohio-
 Singularity> tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz --no-same-owner
 Singularity> module load openmpi
 Singularity> cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb
-Singularity> make -j 36 && make install; echo $?
+Singularity> make -j && make install; echo $?
 ```
 
 次に、以下のファイルを **sandbox** コンテナ上の **/usr/share/Modules/modulefiles/omb** で作成します。  
@@ -313,47 +310,42 @@ Singularity> ln -s /usr/lib/x86_64-linux-gnu /usr/share/Modules/libexec
 Singularity> cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/Modules/modulefiles/nvhpc
 ```
 
-次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** の前提ソフトウェアを **sandbox** コンテナにインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** の前提ソフトウェアを **sandbox** コンテナにインストールします。
 
 ```sh
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 Singularity> tar -xvf ./libevent-2.1.12-stable.tar.gz --no-same-owner
 Singularity> cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 Singularity> tar -xvf ./hwloc-2.12.2.tar.gz --no-same-owner
 Singularity> cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc --with-cuda=/usr/local/cuda
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 Singularity> tar -xvf ./pmix-5.0.8.tar.gz --no-same-owner
 Singularity> cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.1.tar.gz
 Singularity> tar -xvf ./v2.5.1.tar.gz --no-same-owner
-Singularity> cd gdrcopy-2.5.1 && make -j 64 CUDA=/usr/local/cuda all && make prefix=/opt/gdrcopy install; echo $?
+Singularity> cd gdrcopy-2.5.1 && make -j CUDA=/usr/local/cuda all && make prefix=/opt/gdrcopy install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
 Singularity> tar -xvf ./ucx-1.19.0.tar.gz --no-same-owner
 Singularity> cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-cuda=/usr/local/cuda -with-gdrcopy=/opt/gdrcopy
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
 Singularity> tar -xvf ./v1.5.0.tar.gz --no-same-owner
 Singularity> cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx --with-cuda=/usr/local/cuda --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 ```
 
-次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** を **sandbox** コンテナの **/opt/openmpi** にインストールします。  
-なお、makeコマンドの並列数は当該ノードのコア数に合わせて調整します。
+次に、以下コマンドをコンテナユーザで実行し、 **OpenMPI** を **sandbox** コンテナの **/opt/openmpi** にインストールします。
 
 ```sh
 Singularity> cd /mnt/localdisk/root/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
 Singularity> tar -xvf ./openmpi-5.0.8.tar.gz --no-same-owner
 Singularity> module load nvhpc
 Singularity> cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm --with-cuda=/usr/local/cuda CC=nvc CXX=nvc++ FC=nvfortran
-Singularity> make -j 64 && make install; echo $?
-Singularity> mkdir -p /usr/share/Modules
-Singularity> ln -s /usr/share/modules/modulefiles /usr/share/Modules/modulefiles
-Singularity> ln -s /usr/lib/x86_64-linux-gnu /usr/share/Modules/libexec
+Singularity> make -j && make install; echo $?
 ```
 
 次に、以下のファイルを **sandbox** コンテナ上の **/usr/share/Modules/modulefiles/openmpi** で作成します。  
@@ -394,7 +386,7 @@ Singularity> cd /mnt/localdisk/root/`hostname` && wget https://mvapich.cse.ohio-
 Singularity> tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz --no-same-owner
 Singularity> module load nvhpc openmpi
 Singularity> cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda/include --with-cuda-libpath=/usr/local/cuda/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
-Singularity> make -j 64 && make install; echo $?
+Singularity> make -j && make install; echo $?
 ```
 
 次に、以下のファイルを **sandbox** コンテナ上の **/usr/share/Modules/modulefiles/omb** で作成します。  
@@ -445,7 +437,7 @@ $ mkdir -p ~/singularity && singularity build ~/singularity/ubuntu_noble_gpu.sif
     1. **[OpenMPI稼働確認](#6-1-1-openmpi稼働確認)**  
     MPIのサンプルプログラムをコンパイル・実行することで、 **OpenMPI** の稼働確認を実施します。
     2. **[OSU Micro-Benchmarksによるノード間レイテンシ・帯域幅計測](#6-1-2-osu-micro-benchmarksによるノード間レイテンシ帯域幅計測)**  
-    **OSU Micro-Benchmarks** を使用し、  **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介する2ノード間のレイテンシと帯域幅を計測、その結果がホストOS上のものと同等であることを確認します。
+    **OSU Micro-Benchmarks** で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介するホストメモリ間のレイテンシと帯域幅を計測し、その結果がホストOS上のものと同等であることを確認します。
     3. **[Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認](#6-1-3-slurm環境バッチジョブでのmpi並列アプリケーション稼働確認)**  
     **2.** と同様の稼働確認を **Slurm** 環境のバッチジョブとして実施し、MPI並列アプリケーションを **Slurm** 環境で実行できることを確認します。
 2. **[GPUクラスタ向け稼働確認](#6-2-gpuクラスタ向け稼働確認)**
@@ -456,7 +448,7 @@ $ mkdir -p ~/singularity && singularity build ~/singularity/ubuntu_noble_gpu.sif
     3. **[OpenACC/MPIハイブリッドプログラムによるCUDA-aware OpenMPI稼働確認](#6-2-3-openaccmpiハイブリッドサンプルプログラムによるcuda-aware-openmpi稼働確認)**  
 OpenACCのディレクティブを含むMPIプログラムをコンパイル・実行し、CUDA-aware **OpenMPI** の稼働確認を実施します。
     4. **[OSU Micro-Benchmarksによるデバイスメモリ間レイテンシ・帯域幅計測](#6-2-4-osu-micro-benchmarksによるデバイスメモリ間レイテンシ帯域幅計測)**  
-    **OSU Micro-Benchmarks** で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介する2ノード間のレイテンシと帯域幅を計測し、その結果がホストOS上のものと同等であることを確認します。
+    **OSU Micro-Benchmarks** で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** を介するデバイスメモリ間のレイテンシと帯域幅を計測し、その結果がホストOS上のものと同等であることを確認します。
     5. **[NCCL TestsによるNCCL通信性能計測](#6-2-5-nccl-testsによるnccl通信性能計測)**  
     **[NCCL Tests](https://github.com/nvidia/nccl-tests)** で **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の **All-Reduce** 通信性能を計測し、その結果がホストOS上のものと同等であることを確認します。
     6. **[Slurm環境バッチジョブでのMPI並列アプリケーション稼働確認](#6-2-6-slurm環境バッチジョブでのmpi並列アプリケーション稼働確認)**  
@@ -580,7 +572,7 @@ Singularity> module purge
 Singularity> mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v12.9.zip
 Singularity> unzip v12.9.zip
 Singularity> export PATH=/usr/local/cuda-12.9/bin:${PATH}
-Singularity> cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j 64; echo $?
+Singularity> cd cuda-samples-12.9 && mkdir build && cd build && cmake .. && make -j; echo $?
 Singularity> exit
 ```
 
@@ -738,7 +730,7 @@ $
 ```Sh
 $ singularity run --nv ~/singularity/ubuntu_noble_gpu.sif
 Singularity> mkdir -p ~/`hostname` && cd ~/`hostname` && git clone https://github.com/NVIDIA/nccl-tests.git
-Singularity> cd nccl-tests && make -j 64 MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl; echo $?
+Singularity> cd nccl-tests && make -j MPI=1 MPI_HOME=/opt/openmpi CUDA_HOME=/usr/local/cuda NCCL_HOME=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl; echo $?
 Singularity> exit
 ```
 
@@ -769,6 +761,8 @@ $ mpirun -n 8 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ~/`hostna
 # Avg bus bandwidth    : 233.291 
 #
 # Collective test concluded: all_reduce_perf
+
+$
 ```
 
 次に、以下コマンドを何れかのGPUノードのコンテナユーザで実行し、2ノード16GPUの **NCCL** の **All-Reduce** 通信性能を **NCCL Tests** で計測します。

@@ -54,15 +54,14 @@ params:
 
 本章は、 **OSU Micro-Benchmarks** を **OpenMPI** でコンパイルし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
-以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
 
 ```sh
 $ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
 $ tar -xvf ./osu-micro-benchmarks-7.5.1.tar.gz
 $ module load openmpi
 $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb
-$ make -j 36 && sudo make install
+$ make -j && sudo make install
 ```
 
 次に、以下のファイルを **/usr/share/Modules/modulefiles/omb** で作成します。  
