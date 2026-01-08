@@ -1,6 +1,6 @@
 ---
 title: "OpenFOAMインストール・利用方法"
-description: "OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群をHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。"
+description: "OpenFOAMは、CAE分野で多くの利用実績を持つオープンソースのCFDソフトウェアです。OpenFOAMは、メッシュ作成等のプリ処理、ソルバーによる解析処理、及び解析結果を可視化するポスト処理の全てのCFD解析フローを、自身が提供するツール群と外部のツール群を組合せてオープンソースソフトウェアで完結することが可能です。またOpenFOAMが提供するソルバーは、MPIで並列化されており、1万コアを超える並列実行の実績も報告されています。本テクニカルTipsは、OpenFOAMとこれを中核とするCFD解析フローに有用なオープンソースのツール群をHPCワークロードの実行に最適なベアメタルインスタンスにインストールし、これを利用する方法を解説します。"
 weight: "3506"
 tags:
 - hpc
@@ -10,13 +10,11 @@ params:
 
 # 0. 概要
 
-**[OpenFOAM](https://www.openfoam.com/)** は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのツール類と連携し、自身の解析用途に合わせた最適な流体解析シミュレーションを実施することが可能です。  
-この際、外部のツールと連携して **OpenFOAM** を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。
+オープンソースのCFDソフトウェアである **[OpenFOAM](https://www.openfoam.com/)** は、プリ処理・解析処理・ポスト処理の全てのCFD解析フローを様々なオープンソースのソフトウェア群と連携して実行することが可能で、自身の解析用途に合わせた最適な流体解析シミュレーションを無償のソフトウェアで完結することが可能です。  
+この際、外部のソフトウェアと連携して **OpenFOAM** を利用するためには、ビルド時にこれを意識した構築手順を踏む必要があります。
 
-本テクニカルTipsは、以下の外部ツールと連係動作する **OpenFOAM** 実行環境を構築します。
+本テクニカルTipsは、以下の外部ソフトウェアと連係動作する **OpenFOAM** 実行環境を構築します。
 
-- **[OpenMPI](https://www.open-mpi.org/)**  
-MPI言語規格に準拠するMPI実装
 - **[PETSc](https://www.mcs.anl.gov/petsc/)**  
 偏微分方程式で記述された問題をMPIで並列計算するための数値計算ライブラリ
 - **[FFTW](http://www.fftw.org/)**  
@@ -29,7 +27,7 @@ MPI言語規格に準拠するMPI実装
 **ParaView** でin-situシミュレーションを行うためのツールキット
 - **[MESA](https://www.mesa3d.org/)**  
 **ParaView** でOff-screenレンダリングを行うためのグラフィックライブラリ
-- **[METIS](http://glaros.dtc.umn.edu/gkhome/metis/metis/overview)**  
+- **[METIS](https://github.com/KarypisLab/METIS)**  
 メッシュを並列計算用に領域分割するツール
 - **[SCOTCH](https://www.labri.fr/perso/pelegrin/scotch/)**  
 メッシュを並列計算用に領域分割するツール
@@ -37,11 +35,11 @@ MPI言語規格に準拠するMPI実装
 メッシュを並列計算用に領域分割するツール
 - **[CGAL](https://www.cgal.org/)**  
 幾何形状を取り扱うライブラリー
-- **[ADIOS](https://csmd.ornl.gov/adios)**  
+- **[ADIOS2](https://github.com/ornladios/ADIOS2)**  
 大規模データを効率よく可視化・解析するためのフレームワーク
 
 また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。  
-この際、 **OpenFOAM** が提供するツールによるプリ処理と **OpenFOAM** が提供するソルバーによる解析処理を **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 対応のベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** でデプロイする計算ノードで、 **ParaView** によるポスト処理を **[VM.Optimized3.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** でデプロイするフロントエンド用途のBastionノードで実行することとし、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。  
+この際、 **OpenFOAM** が提供するツール・ソルバーによるプリ・解析処理を **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 対応のベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** で作成する計算ノードで、 **ParaView** によるポスト処理を **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** で作成するフロントエンド用途のBastionノードで実行し、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。  
 また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と **[Slurm](https://slurm.schedmd.com/)** 環境でのバッチ実行を念頭に置いて、以下4パターンを解説します。
 
 - 非並列実行（小規模構成・大規模構成の何れでも可能）
@@ -51,29 +49,22 @@ MPI言語規格に準拠するMPI実装
 
 ※1） **BM.Optimized3.36** が内蔵するNVMe SSDローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、高並列実行の場合や計算結果の出力頻度が高い場合にスケーラビリティを改善出来る場合があります。
 
-構築する環境は、以下を前提とします。
+構築する環境は、以下の環境を前提とします。
 
-[計算ノード]
-- シェイプ ： **BM.Optimized3.36**
-- OS ： **Oracle Linux** 8.9（※2）/ **Oracle Linux** 8.9ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※3）
+- 計算ノード
+    - シェイプ ： **BM.Optimized3.36**
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
+    - NVMe SSDローカルディスクマウントポイント ： **/mnt/localdisk** （※3）
+- Bastionノード
+    - シェイプ ： **VM.Standard.E5.Flex**
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
 - ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
-- NVMe SSDローカルディスクマウントポイント ： **/mnt/localdisk** （※5）
+- **OpenFOAM** ： v2512
+- **ParaView** ： 6.0.1
 
-[Bastionノード]
-- シェイプ ： **VM.Optimized3.Flex**
-- OS ： **Oracle Linux** 8.9
-- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
-
-[ソフトウェア]
-- **OpenFOAM** ： v2312
-- **OpenMPI** ： 5.0.3
-- **ParaView** ： 5.11.2
-
-※2）小規模構成の場合です。  
-※3）大規模構成の場合で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.1** です。  
-※4）詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
-※5）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](../../tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。
-  
+※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
+※3）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](../../tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。  
+※4）詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
@@ -81,27 +72,27 @@ MPI言語規格に準拠するMPI実装
 
 以降では、以下の順に **OpenFOAM** のインストール・利用方法を解説します。
 
-1. HPCクラスタ構築
-2. **OpenFOAM** インストール
-3. VNC接続環境構築
-4. CFD解析フロー実行
+1. **[HPCクラスタ構築](#1-hpcクラスタ構築)**
+2. **[OpenFOAMインストール](#2-openfoamインストール)**
+3. **[VNC接続環境構築](#3-vnc接続環境構築)**
+4. **[CFD解析フロー実行](#4-cfd解析フロー実行)**
 
 # 1. HPCクラスタ構築
 
 本章は、本テクニカルTipsで使用するHPCクラスタを構築します。
 
-この構築手順は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** か **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** の手順に従い実施します。  
-なお小規模構成の場合は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** をデプロイする代わりに単一の計算ノードをデプロイします。
+この構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で実施します。  
+なお小規模構成の場合は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** の代わりに単一の計算ノードを作成します。
 
 この際、計算ノードとBastionノードを以下のように構成します。
 
 - 計算ノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
 - Bastionノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- 計算ノードSMT : 無効（※6）
+- 計算ノードSMT : 無効（※5）
 
-※6）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
+※5）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
-なお、バッチ実行の場合の **Slurm** 環境は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築されたものとします。
+なお、バッチ実行の場合の **Slurm** 環境は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築されたものとし、このテクニカルTipsの **[2. 環境構築](../../tech-knowhow/setup-slurm-cluster/#2-環境構築)** の計算ノードに対する手順を実施することで、計算ノードを **Slurm** 環境に登録します。
 
 # 2. OpenFOAMインストール
 
@@ -109,135 +100,44 @@ MPI言語規格に準拠するMPI実装
 
 本章は、 **OpenFOAM** のインストールを以下の順に実施します。
 
-- インストール事前準備
-- **PETSc** インストール
-- **ParaView** インストール
-- **OpenFOAM** インストール
+1. **[OpenMPIインストール](#2-1-openmpiインストール)**
+2. **[インストール事前準備](#2-2-インストール事前準備)**
+3. **[PETScインストール](#2-3-petscインストール)**
+4. **[VTKインストール](#2-4-vtkインストール)**
+5. **[ParaViewインストール](#2-5-paraviewインストール)**
+6. **[OpenFOAMインストール](#2-6-openfoamインストール)**
 
 これらの手順は、Bastionノードと全ての計算ノードで実施します。  
 なお、バッチ実行の場合の **Slurm** 環境に於けるSlurmクライアントも、これらの手順を実施します。
 
-## 2-1. インストール事前準備
+## 2-1. OpenMPIインストール
 
-本章は、 **OpenFOAM** をインストールするための事前準備として、以下の作業を実施します。
+**[OpenMPI](https://www.open-mpi.org/)** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
 
-- 前提ソフトウェア・rpmパッケージのインストール
-- **OpenFOAM** と外部ツールのソースプログラムのダウンロード・展開
+## 2-2. インストール事前準備
 
-前提ソフトウェアの **OpenMPI** をインストール・セットアップします。  
-この方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** を参照してください。
-
-次に、以下コマンドをopcユーザで実行し、前提rpmパッケージを提供するyumレポジトリを追加します。
+以下コマンドをopcユーザで実行し、前提RPMパッケージをインストールします。
 
 ```sh
-$ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
-```
-
-なお、上記コマンド実行時に以下のメッセージが出力される場合、
-
-```sh
-This system is receiving updates from OSMS server.
-Error: No matching repo to modify: ol8_developer_EPEL.
-```
-
-OSのパッケージ管理が **[OS管理サービス](https://docs.oracle.com/ja-jp/iaas/os-management/index.html)** で行われているため、以下コマンドをopcユーザで実行し、これを解除した後に再度yumレポジトリを追加します。  
-ここで実施する **OS管理サービス** の解除は、10分程度の時間が経過すると自動的に **OS管理サービス** 管理に戻ります。
-
-```sh
-$ sudo osms unregister
-$ sudo yum-config-manager --enable ol8_codeready_builder ol8_developer_EPEL
-```
-
-次に、以下コマンドをopcユーザで実行し、前提rpmパッケージをインストールします。
-
-```sh
-$ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel boost boost-devel fftw gmp-c++ gmp-devel mpfr-devel blas blas-devel lapack lapack-devel jasper-devel python3.11-devel python36-devel
+$ sudo yum-config-manager --enable ol9_codeready_builder
+$ sudo dnf install -y blas blas-devel lapack lapack-devel fftw qt5 qt5-qtbase-devel qt5-qttools-devel qt5-qtsvg-devel gmp-c++ gmp-devel mpfr-devel mesa-libGL-devel libXcursor-devel
 ```
 
 次に、以下コマンドをrootユーザで実行し、 **OpenFOAM** と外部ツールをダウンロード・展開します。
 
 ```sh
 $ mkdir /opt/OpenFOAM && cd /opt/OpenFOAM
-$ wget https://dl.openfoam.com/source/v2312/OpenFOAM-v2312.tgz
-$ wget https://dl.openfoam.com/source/v2312/ThirdParty-v2312.tgz
-$ tar --no-same-owner -xvf ./OpenFOAM-v2312.tgz
-$ tar --no-same-owner -xvf ./ThirdParty-v2312.tgz
-$ cd ThirdParty-v2312/sources
-$ wget https://github.com/xijunke/METIS-1/raw/master/metis-5.1.0.tar.gz
-$ wget https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.19.2.tar.gz
-$ wget https://download.qt.io/archive/qt/5.12/5.12.11/single/qt-everywhere-src-5.12.11.tar.xz
-$ tar --no-same-owner -xvf ./metis-5.1.0.tar.gz
-$ tar --no-same-owner -xvf ./petsc-lite-3.19.2.tar.gz
-$ tar --no-same-owner -xvf ./qt-everywhere-src-5.12.11.tar.xz
-$ mv qt-everywhere-src-5.12.11 qt-everywhere-opensource-src-5.12.11
+$ wget https://dl.openfoam.com/source/v2512/OpenFOAM-v2512.tgz && tar --no-same-owner -xvf ./OpenFOAM-v2512.tgz
+$ wget https://dl.openfoam.com/source/v2512/ThirdParty-v2512.tar.gz && tar --no-same-owner -xvf ./ThirdParty-v2512.tar.gz
+$ module load openmpi
+$ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
+$ cd $WM_THIRD_PARTY_DIR
+$ mkdir sources/metis && wget -P sources/metis https://github.com/xijunke/METIS-1/raw/master/metis-5.1.0.tar.gz && tar -C sources/metis -xvf sources/metis/metis-5.1.0.tar.gz
+$ mkdir sources/petsc && wget -P sources/petsc https://web.cels.anl.gov/projects/petsc/download/release-snapshots/petsc-lite-3.24.3.tar.gz && tar -C sources/petsc -xvf sources/petsc/petsc-lite-3.24.3.tar.gz
+$ mkdir sources/vtk && wget -P sources/vtk https://www.vtk.org/files/release/9.5/VTK-9.5.2.tar.gz && tar -C sources/vtk -xvf sources/vtk/VTK-9.5.2.tar.gz
 ```
 
-## 2-2. **PETSc** インストール
-
-以下コマンドをrootユーザで実行し、 **PETSc** をインストールします。  
-この際、以下コマンド出力で正しくインストールされたことを確認します。
-
-```sh
-$ export PATH=$PATH:/opt/openmpi-5.0.3/bin
-$ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
-No completions for /home/opc/OpenFOAM-v2312/platforms/linux64GccDPInt32Opt/bin
-[ignore if OpenFOAM is not yet compiled]
-$ cd /opt/OpenFOAM/ThirdParty-v2312
-$ ./makePETSC
-    :
-    :
-    :
-Installed: petsc-3.19.2   <--- この出力
-$
-```
-
-## 2-3. ParaViewインストール
-
-以下コマンドをrootユーザで実行し、 **ParaView** の前提ソフトウェアである **[Qt](https://www.qt.io/)** をインストールします。  
-この際、以下コマンド出力で正しくインストールされたことを確認します。  
-本手順は、8コアのVMインスタンスで15分程度を要します。
-
-```sh
-$ ./makeQt 5.12.11
-    :
-    :
-    :
-Built: qt-5.12.11   <--- この出力
-Create/Edit files to ease later relocation of a QT installation
-    created qt.conf
-Adjust pkgconfig locations : /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11
-    lib/pkgconfig/*.pc  (edited 62)
-$
-```
-
-次に、以下コマンドをrootユーザで実行し、 **ParaView** をインストールします。  
-この際、以下コマンド出力で正しくインストールされたことを確認します。  
-本手順は、8コアのVMインスタンスで20分程度を要します。
-
-```sh
-$ ./makeParaView -qt-5.12.11 -mpi -python3
-    :
-    :
-    :
-Installation complete for paraview-5.11.2 with qt-5.12.11   <--- この出力
-    ParaView_DIR=/opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/ParaView-5.11.2
-
-You may need to update the OpenFOAM environment by running:
-    wmRefresh
-
-Your LD_LIBRARY_PATH may require adjustment to include the following:
-    /opt/OpenFOAM/ThirdParty-v2312/platforms/linux64Gcc/qt-5.12.11/lib
-====
-
-Done
-$
-```
-
-## 2-4. OpenFOAMインストール
-
-本章は、 **OpenFOAM** をインストールします。
-
-以下コマンドをrootユーザで実行し、 **OpenFOAM** のインストール条件を満たしていることを確認します。
+次に、以下コマンドをrootユーザで実行し、 **OpenFOAM** インストールの事前チェックを実行、その結果を確認します。
 
 ```sh
 $ foamSystemCheck
@@ -245,24 +145,84 @@ $ foamSystemCheck
 Checking basic system...
 -------------------------------------------------------------------------------
 Shell:       bash
-Host:        openfoam
-OS:          Linux version 5.15.0-205.149.5.1.el8uek.x86_64
+Host:        frend
+OS:          Linux version 5.14.0-503.40.1.el9_5.x86_64
 
 System check: PASS
 ==================
 Can continue to OpenFOAM installation.
+
 $
 ```
 
-次に、以下コマンドをrootユーザで実行し、 **OpenFOAM** をインストールします。  
-この際、最後に実行するコマンドの出力を注意深く確認し、 **[0. 概要](#0-概要)** にリストアップされている外部ツールが **OpenFOAM** に組み込まれたことを確認します。なおこのコマンド出力は、カレントディレクトリにファイル名 **log.linux64GccDPInt32Opt** としても出力されます。  
-本手順は、8コアのVMインスタンスで45分程度を要します。
+## 2-3. PETScインストール
+
+以下コマンドをrootユーザで実行し、 **PETSc** をインストールします。  
+この際、以下コマンド出力で正しくインストールされたことを確認します。
 
 ```sh
-$ export ParaView_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/ParaView-5.11.2
-$ export Qt5_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/qt-5.12.11
-$ cd /opt/OpenFOAM/OpenFOAM-v2312
-$ ./Allwmake -j -s -q -l
+$ sed -i 's/petsc-3.21.2/petsc-3.24.3/g' $WM_PROJECT_DIR/etc/config.sh/petsc
+$ wmRefresh
+$ ./makePETSC | tee ./makePETSC.log
+    :
+    :
+    :
+Installed: petsc-3.24.3   <--- この出力
+$
+```
+
+## 2-4. VTKインストール
+
+以下コマンドをrootユーザで実行し、 **VTK** をインストールします。  
+この際、以下コマンド出力で正しくインストールされたことを確認します。
+
+```sh
+$ ./makeVTK -mpi -DVTK_USE_MPI=ON -DVTK_MODULE_ENABLE_VTK_ParallelMPI=YES -DVTK_USE_RENDERING=YES -DVTK_MODULE_ENABLE_VTK_RenderingParallel=YES -DVTK_MODULE_ENABLE_VTK_RenderingParallel:STRING=YES -DVTK_MODULE_ENABLE_VTK_RenderingExternal:STRING=YES -mesa-include /usr/include/GL -mesa-lib /usr/lib64/libGLX_mesa.so.0 9.5.2 | tee ./makeVTK.log
+    :
+    :
+    :
+Installation complete for vtk-9.5.2 as   <--- この出力
+    VTK_DIR=/opt/OpenFOAM/ThirdParty-v2512/platforms/linux64Gcc/VTK-9.5.2
+====
+
+Done
+$
+```
+
+## 2-5. ParaViewインストール
+
+以下コマンドをrootユーザで実行し、 **ParaView** をインストールします。  
+この際、以下コマンド出力で正しくインストールされたことを確認します。  
+本手順は、 **BM.Optimized3.36** で10分程度を要します。
+
+```sh
+$ export PATH=/usr/lib64/qt5/bin:$PATH
+$ ./makeParaView -qt -mpi -python3 | tee ./makeParaView.log
+    :
+    :
+    :
+====
+Installation complete for paraview-6.0.1 with qt-5.15.9   <--- この出力
+    ParaView_DIR=/opt/OpenFOAM/ThirdParty-v2512/platforms/linux64Gcc/ParaView-6.0.1
+
+You may need to update the OpenFOAM environment by running:
+    wmRefresh
+====
+
+Done
+$
+```
+
+## 2-6. OpenFOAMインストール
+
+以下コマンドをrootユーザで実行し、 **OpenFOAM** をインストールします。  
+この際、最後に実行するコマンドの出力を注意深く確認し、 **[0. 概要](#0-概要)** にリストアップされている外部ツールが **OpenFOAM** に組み込まれたことを確認します。なおこのコマンド出力は、カレントディレクトリにファイル名 **log.linux64GccDPInt32Opt** としても出力されます。  
+本手順は、 **BM.Optimized3.36** で30分程度を要します。
+
+```sh
+$ export VTK_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/VTK-9.5.2
+$ export ParaView_DIR=$WM_THIRD_PARTY_DIR/platforms/linux64Gcc/ParaView-6.0.1
+$ cd $WM_PROJECT_DIR && ./Allwmake -j -s -q -l
 ```
 
 次に、以下コマンドをrootユーザで実行し、 **OpenFOAM** のインストールをテストします。
@@ -289,12 +249,12 @@ $
 1. GNOMEデスクトップインストール・セットアップ（Bastionノード）
 2. VNCサーバインストール・セットアップ（Bastionノード）
 3. SSHポートフォワードセッション確立（ParaView操作端末）
-4. VCN接続（ParaView操作端末）
+4. VNC接続（ParaView操作端末）
 
-本テクニカルTipsは、VCNサーバに **[TigerVNC](https://tigervnc.org/)** 、VCNクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
+本テクニカルTipsは、VNCサーバに **[TigerVNC](https://tigervnc.org/)** 、VNCクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
 
-以下コマンドをopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。  
-なお、最初のインストールコマンドは、15分程度を要します。
+以下コマンドをBastionノードのopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。  
+本手順は、再起動が完了してログインできるまでに30分程度を要します。
 
 ```sh
 $ sudo dnf groupinstall -y "Server with GUI"
@@ -303,13 +263,13 @@ $ sudo sed -i 's/^#WaylandEnable=false/WaylandEnable=false/g' /etc/gdm/custom.co
 $ sudo shutdown -r now
 ```
 
-次に、以下コマンドをopcユーザで実行し、 **TigerVNC** をインストールします。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、 **TigerVNC** をインストールします。  
 
 ```sh
 $ sudo dnf install -y tigervnc-server tigervnc-server-module
 ```
 
-次に、以下コマンドをopcユーザで実行し、 **TigerVNC** にユーザを登録します。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、 **TigerVNC** にユーザを登録します。  
 このユーザは、VNC接続時に使用するユーザであり、CFD解析ユーザでもあります。  
 ここでは、 **usera** を1番で登録しており、このユーザをOSのユーザとして予め登録しインターネット経由でSSHログインできるようにしておきます。
 
@@ -317,13 +277,13 @@ $ sudo dnf install -y tigervnc-server tigervnc-server-module
 $ echo :1=usera | sudo tee -a /etc/tigervnc/vncserver.users
 ```
 
-次に、以下コマンドをopcユーザで実行し、VNC接続時の解像度を設定します。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、VNC接続時の解像度を設定します。  
 
 ```sh
 $ echo geometry=1280x1024 | sudo tee -a /etc/tigervnc/vncserver-config-defaults
 ```
 
-次に、 **TigerVNC** のsystemd設定ファイルを以下のように修正します。  
+次に、Bastionノードの **TigerVNC** のsystemd設定ファイルを以下のように修正し、 **[Service]** セクションに設定を追加します。  
 
 ```sh
 $ diff /usr/lib/systemd/system/vncserver@.service_org /usr/lib/systemd/system/vncserver@.service
@@ -332,7 +292,7 @@ $ diff /usr/lib/systemd/system/vncserver@.service_org /usr/lib/systemd/system/vn
 $
 ```
 
-次に、以下コマンドをopcユーザで実行し、 **TigerVNC** を起動します。  
+次に、以下コマンドをBastionノードのopcユーザで実行し、 **TigerVNC** を起動します。  
 なお、systemdサービスを起動する際のサービス名に含まれる番号は、先に作成したVNC接続ユーザ登録時に指定した番号に一致させます。この番号をユーザ登録時の番号に合わせることで、複数のVNCユーザ向けのサービスを起動することが可能です。
 
 ```sh
@@ -340,7 +300,7 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl enable --now vncserver@:1.service
 ```
 
-次に、以下コマンドを実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートにインターネット経由でSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。  
+次に、以下コマンドをParaView操作端末で実行し、ParaView操作端末の5901番ポートからBastionノードの5901番ポートにインターネット経由でSSHポートフォワードセッションを確立、その後このユーザのVNC接続パスワードを設定します。  
 なおこのポート番号の1桁目は、先に登録したVNCユーザの番号に一致します。（例：2番のユーザ用ポート番号は、5902番です。）
 
 ```sh
@@ -353,39 +313,35 @@ A view-only password is not used
 $
 ```
 
-次に、以下のようにParaView操作端末でVCNクライアントを起動し、接続先に **localhost:5901** を指定して接続します。
+次に、以下のようにParaView操作端末でVNCクライアントを起動し、接続先に **localhost:5901** を指定して接続します。
 
-![画面ショット](ultravcn_page01.png)
+![画面ショット](ultravnc_page01.png)
 
-次に、以下画面で先の手順 **3.** で設定したVCN接続用パスワードを入力してログインを完了すると、
+次に、以下画面で先の手順 **3.** で設定したVNC接続用パスワードを入力してログインを完了すると、
 
-![画面ショット](ultravcn_page02.png)
+![画面ショット](ultravnc_page02.png)
 
 以下画面のようにGNOMEデスクトップへのログインが完了します。
 
-![画面ショット](ultravcn_page03.png)
+![画面ショット](ultravnc_page03.png)
 
 次に、以下GNOMEデスクトップ画面で、GNOMEの設定画面を表示するボタンをクリックします。
 
 ![画面ショット](GNOME_page01.png)
 
-次に、表示される以下GNOME設定画面で、前の画面に戻るボタンをクリックします。
+次に、表示される以下GNOME設定画面で、 **Privacy** メニューをクリックします。
 
 ![画面ショット](GNOME_page02.png)
 
-次に、以下GNOME設定画面で、 **Privacy** メニューをクリックします。
+次に、表示される以下GNOME設定画面で、 **Screen Lock** メニューをクリックします。
 
 ![画面ショット](GNOME_page03.png)
 
-次に、以下GNOME設定画面で、 **Screen Lock** メニューをクリックします。
+次に、表示される以下GNOME設定画面で、 **Automatic Screen Lock** を **OFF** に設定します。
 
 ![画面ショット](GNOME_page04.png)
 
-次に、表示される以下 **Screen Lock** 画面で、 **Automatic Screen Lock** ボタンをクリックして **OFF** に設定します。
-
-![画面ショット](GNOME_page05.png)
-
-この設定は、GNOMEデスクトップのログインに使用するユーザがパスワード認証を無効にしている場合、スクリーンロックがかかった場合にロック解除が出来なくなることを防止します。
+この設定は、GNOMEデスクトップのログインに使用するユーザがパスワード認証を無効にしている場合、スクリーンロックがかかった際ロックを解除出来なくなることを防止します。
 
 # 4. CFD解析フロー実行
 
@@ -402,10 +358,11 @@ $
 
 Bastionノードを経由して計算ノードのうちの1ノード（バッチジョブの場合はSlurmクライアント）にCFD解析ユーザでSSHログインします。
 
-次に、以下コマンドを実行して **OpenFOAM** の環境設定を読み込みます。
+次に、以下コマンドを実行して **OpenMPI** と **OpenFOAM** の環境設定を読み込みます。
 
 ```sh
-$ source /opt/OpenFOAM/OpenFOAM-v2312/etc/bashrc
+$ module load openmpi
+$ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 ```
 
 次に、以下コマンドを実行して **OpenFOAM** に同梱されているチュートリアルのうち **pitzDaily** と **motorBike** のディレクトリを作業ディレクトリにコピーします。
@@ -446,12 +403,13 @@ rsync_cmd="rsync -au -e \"ssh -o StrictHostKeyChecking=no\" $incl_opt --exclude=
 eval $rsync_cmd
 ```
 
-これを以下のディレクトリに配置します。
+これを以下のディレクトリに配置して実行権を付与します。
 
 ```sh
 $ run
-$ ls rsync_inneed.sh
-rsync_inneed.sh
+$ chmod 755 rsync_inneed.sh
+$ ls -l rsync_inneed.sh
+-rwxr-xr-x 1 usera usera 653 Jan  8 18:33 rsync_inneed.sh
 $
 ```
 
@@ -462,9 +420,9 @@ $
 本章は、 **[4-1. 事前準備](#4-1-事前準備)** を行った計算ノードでインタラクティブにプリ処理・解析処理を実行します。  
 この際の解析処理は、以下3種類の方法を解説します。
 
-1. 1コアを使用する非並列実行
-2. 1ノード32コアを使用するノード内並列実行
-3. 4ノード128コアを使用するノード間並列実行
+1. **[1コアを使用する非並列実行](#4-2-1-1コアを使用する非並列実行)**
+2. **[1ノード32コアを使用するノード内並列実行](#4-2-2-1ノード32コアを使用するノード内並列実行)**
+3. **[4ノード128コアを使用するノード間並列実行](#4-2-3-4ノード128コアを使用するノード間並列実行)**
 
 本章のインタラクティブ実行は、バックステップ乱流シミュレーション（**incompressible/simpleFoam/pitzDaily**）を使用して解説します。
 
@@ -583,7 +541,7 @@ $
 次に、以下コマンドを実行して4ノードの **BM.Optimized3.36** に搭載する128コアを使用するノード間並列の解析処理を実行します。
 
 ```sh
-$ mpirun -n 128 -N 32 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 simpleFoam -parallel
+$ mpirun -n 128 -N 32 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 bash -c "module load openmpi; source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc; simpleFoam -parallel"
 ```
 
 次に、以下コマンドを実行して計算結果を統合します。
@@ -848,15 +806,17 @@ $ sbatch submit_motorBike.sbatch
 
 先にBastionノードにVNC接続したGNOMEデスクトップ画面で、以下のメニューを辿り、
 
-![画面ショット](ultravcn_page04.png)
+![画面ショット](GNOME_page05.png)
 
 以下のようターミナルを開きます。
 
-![画面ショット](ultravcn_page05.png)
+![画面ショット](GNOME_page06.png)
 
 次に、開いたターミナルで以下コマンドを実行し、 **ParaView** を起動します。
 
 ```sh
+$ module load openmpi
+$ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ run
 $ cd ./pitzDaily 
 $ touch para.foam

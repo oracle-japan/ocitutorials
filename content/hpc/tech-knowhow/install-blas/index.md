@@ -34,7 +34,7 @@ params:
 なお、本テクニカルTipsで使用するインスタンスを作成する手順は、 **[OCIチュートリアル](https://oracle-japan.github.io/ocitutorials/)** の  **[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance)** を参照してください。  
 またこのインスタンスは、スレッド並列実行時の性能を最大化するためSMTを無効化して作成しますが、BIOS設定でこれを適用する場合は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
-# 1. BLAS・OpenBLASインストール・セットアップ
+# 1. BLAS・OpenBLASインストール
 
 本章は、 **BLAS** と **OpenBLAS** をインストールします。
 

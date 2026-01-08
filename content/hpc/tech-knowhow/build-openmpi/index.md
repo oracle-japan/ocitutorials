@@ -100,52 +100,49 @@ params:
 
 ### 1-1-1. libeventインストール
 
-以下コマンドをopcユーザで実行し、 **libevent** を **/opt/libevent** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドをopcユーザで実行し、 **libevent** を **/opt/libevent** ディレクトリにインストールします。
 
 ```sh
 $ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
 $ tar -xvf ./libevent-2.1.12-stable.tar.gz
 $ cd libevent-2.1.12-stable && ./configure --prefix=/opt/libevent
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 ### 1-1-2. hwlocインストール
 
 以下コマンドをopcユーザで実行し、 **hwloc** を **/opt/hwloc** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
+なお、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/hwloc/v2.12/hwloc-2.12.2.tar.gz
 $ tar -xvf ./hwloc-2.12.2.tar.gz
 $ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc # For HPC
 $ cd hwloc-2.12.2 && ./configure --prefix=/opt/hwloc --with-cuda=/usr/local/cuda # For GPU
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 ### 1-1-3. OpenPMIxインストール
 
-以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt/pmix** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドをopcユーザで実行し、 **OpenPMIx** を **/opt/pmix** ディレクトリにインストールします。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openpmix/openpmix/releases/download/v5.0.8/pmix-5.0.8.tar.gz
 $ tar -xvf ./pmix-5.0.8.tar.gz
 $ cd pmix-5.0.8 && ./configure --prefix=/opt/pmix --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 ### 1-1-4. XPMEMインストール
 
 本章で実施する **XPMEM** のインストールは、 **Oracle Linux** 8.10の場合のみ実施します。
 
-以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt/xpmem** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドをopcユーザで実行し、 **XPMEM** を **/opt/xpmem** ディレクトリにインストールします。
 
 ```sh
 $ cd ~/`hostname` && git clone https://github.com/hpc/xpmem.git
 $ cd xpmem && ./autogen.sh && ./configure --prefix=/opt/xpmem
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 次に、以下コマンドをopcユーザで実行し、 **XPMEM** をカーネルモジュールとしてインストールします。
@@ -161,8 +158,7 @@ $ sudo modprobe xpmem
 
 本章で実施する **GDRCopy** のインストールは、GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** の場合のみ実施します。
 
-以下コマンドをopcユーザで実行し、 **GDRCopy** を **/opt/gdrcopy** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。
+以下コマンドをopcユーザで実行し、 **GDRCopy** を **/opt/gdrcopy** ディレクトリにインストールします。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/NVIDIA/gdrcopy/archive/refs/tags/v2.5.1.tar.gz
@@ -200,7 +196,7 @@ $ sudo systemctl enable --now gdrcopy
 ### 1-1-6. OpenUCXインストール
 
 以下コマンドをopcユーザで実行し、 **OpenUCX** を **/opt/ucx** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージが **Oracle Linux** 8.10 / 9.05ベースのHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のうちどれかにより実行するコマンドが異なる点に留意します。
+なお、インストール対象のイメージが **Oracle Linux** 8.10 / 9.05ベースのHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のうちどれかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucx/releases/download/v1.19.0/ucx-1.19.0.tar.gz
@@ -208,33 +204,33 @@ $ tar -xvf ./ucx-1.19.0.tar.gz
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-xpmem=/opt/xpmem # For Oracle Linux 8 HPC
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx # For Oracle Linux 9 HPC
 $ cd ucx-1.19.0 && ./contrib/configure-release --prefix=/opt/ucx --with-cuda=/usr/local/cuda -with-gdrcopy=/opt/gdrcopy # For Oracle Linux 9 GPU
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 ### 1-1-7. UCCインストール
 
 以下コマンドをopcユーザで実行し、 **UCC** を **/opt/ucc** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
+なお、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://github.com/openucx/ucc/archive/refs/tags/v1.5.0.tar.gz
 $ tar -xvf ./v1.5.0.tar.gz
 $ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx # For HPC
 $ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/opt/ucx --with-cuda=/usr/local/cuda --with-nccl # For GPU
-$ make -j 36 && sudo make install; echo $?
+$ make -j && sudo make install; echo $?
 ```
 
 ## 1-2. OpenMPIインストール
 
 以下コマンドをopcユーザで実行し、 **OpenMPI** を **/opt/openmpi** ディレクトリにインストールします。  
-なおmakeコマンドの並列数は、当該ノードのコア数に合わせて調整します。また、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
+なお、インストール対象のイメージがHPC / GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** のどちらかにより実行するコマンドが異なる点に留意します。
 
 ```sh
 $ cd ~/`hostname` && wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.8.tar.gz
 $ tar -xvf ./openmpi-5.0.8.tar.gz
 $ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm # For HPC
 $ cd openmpi-5.0.8 && ./configure --prefix=/opt/openmpi --with-libevent=/opt/libevent --with-hwloc=/opt/hwloc --with-pmix=/opt/pmix --with-ucx=/opt/ucx --with-ucc=/opt/ucc --with-slurm --with-cuda=/usr/local/cuda # For GPU
-$ make -j 36 all && sudo make install; echo $?
+$ make -j all && sudo make install; echo $?
 ```
 
 ## 1-3. セットアップ
