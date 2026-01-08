@@ -64,7 +64,7 @@ params:
 
 ※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
 ※3）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](../../tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。  
-※4）詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[コストパフォーマンスの良いファイル共有ストレージ構築方法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※4）詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
@@ -102,9 +102,10 @@ params:
 
 1. **[OpenMPIインストール](#2-1-openmpiインストール)**
 2. **[インストール事前準備](#2-2-インストール事前準備)**
-3. **[PETScインストール](#2-3-petsc-インストール)**
-4. **[ParaViewインストール](#2-4-paraviewインストール)**
-5. **[OpenFOAMインストール](#2-5-openfoamインストール)**
+3. **[PETScインストール](#2-3-petscインストール)**
+4. **[VTKインストール](#2-4-vtkインストール)**
+5. **[ParaViewインストール](#2-5-paraviewインストール)**
+6. **[OpenFOAMインストール](#2-6-openfoamインストール)**
 
 これらの手順は、Bastionノードと全ての計算ノードで実施します。  
 なお、バッチ実行の場合の **Slurm** 環境に於けるSlurmクライアントも、これらの手順を実施します。
