@@ -23,13 +23,11 @@ SELECT AIについては[111: SELECT AIを試してみよう](https://oracle-jap
 **前提条件 :**
 + [101:Always Freeで23aiのADBインスタンスを作成してみよう](/ocitutorials/ai-vector-search/ai-vector101-always-free-adb/)の記事を参考に、Oracle Database 23aiの準備が完了していること。
 
-+ OCI GenAI Serviceをご利用いただけるリージョンはサブスクリプション済みであること。
-
-  ※リージョン一覧は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/pretrained-models.htm)をご参照ください。
-
-  SELECT AIではデフォルトでシカゴリージョンのOCI GenAIサービスを使用しますが、本チュートリアルでは大阪リージョンのOCI GenAIサービスを使用しますので、大阪リージョンがサブスクライブされていることが前提となります。
++ OCI生成AIサービスを使用可能な大阪リージョン、シカゴリージョン等をホーム・リージョン、若しくはサブスクライブしてあること（本チュートリアルではシカゴリージョンを使用します）。詳しくは、[Pretrained Foundational Models in Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#)をご確認ください。
   
-  本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm)から確認のうえ、最新のモデルを使用することを推奨します。本チュートリアルでは、エンベッディングモデルにcohere.embed-v4.0、テキスト生成モデルにcohere.command-a-03-2025を使用します。これらが最新になっているか上記リンクよりご確認ください。
+  本チュートリアルで使用するテキスト生成モデル、エンベッディングモデルについては、将来的にモデルの廃止が行われることがあるため、廃止日や置換モデルのリリース情報を[こちら](https://docs.oracle.com/ja-jp/iaas/Content/generative-ai/deprecating.htm)から確認のうえ、最新のモデルを使用することを推奨します。
+  
+  本チュートリアルでは、エンベッディングモデルにcohere.embed-v4.0、テキスト生成モデルにxai.grok-code-fast-1を使用します（2026年1月時点では大阪リージョン等では提供されていないため、大阪リージョン等を使用される場合はcohere.command-a-03-2025等をご使用ください）。これらが最新になっているか上記リンクよりご確認ください。
 
   - OCI アカウントのAPI署名キーの生成は完了であること
   <br>以下の情報を取得してください。必要があれば、[API署名キーの生成方法](https://docs.oracle.com/ja-jp/iaas/Content/API/Concepts/apisigningkey.htm#two)をご参照ください。
@@ -108,12 +106,12 @@ GRANT EXECUTE ON DBMS_CLOUD_AI TO vector_user;
 
 # 3. SELECT AI with RAG使用の準備
 
-## 3-1. OCI生成AIサービスのクレデンシャル作成
-DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、OCI生成AIサービスに接続するためのクレデンシャルを作成します。
+## 3-1. クレデンシャル作成
+DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、OCI生成AIサービスとオブジェクトストレージに接続するためのクレデンシャルを作成します。
 以下の通りにOCID等を置き換え、プロシージャを実行します。
 
 OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：
-- **credential_name**：任意（本チュートリアルではOCI_GENAI_CREDとしています）
+- **credential_name**：任意（本チュートリアルではOCI_CREDとしています）
 - **user_ocid**：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力
 - **tenancy_ocid**：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力
 - **private_key**：先程取得した秘密キーの内容をコピー&ペースト
@@ -122,7 +120,7 @@ OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設
 ```sql
 BEGIN
     DBMS_CLOUD.CREATE_CREDENTIAL(
-        credential_name => 'OCI_GENAI_CRED',
+        credential_name => 'OCI_CRED',
         user_ocid       => 'ocid1.user.oc1..axxxxxxxxxxxxxxxxq',
         tenancy_ocid    => 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa',
         private_key     => '-----BEGIN PRIVATE KEY-----
@@ -135,55 +133,29 @@ END;
 ```
 これでクレデンシャルを作成する事が出来ました。このクレデンシャルは、この後プロファイルを作成する際に繰り返し使用しますので、credential_nameをメモしておきます。
 
-## 3-2. オブジェクトストレージのクレデンシャル作成
-DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、オブジェクトストレージに接続するためのクレデンシャルを作成します。
-以下の通りにOCID等を置き換え、プロシージャを実行します。
-
-OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：
-- **credential_name**：任意（本チュートリアルではOBS_CREDとしています）
-- **user_ocid**：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力
-- **tenancy_ocid**：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力
-- **private_key**：先程取得した秘密キーの内容をコピー&ペースト
-- **fingerprint**：先ほどメモを取った構成ファイルを参照し、フィンガープリントを入力
-
-```sql
-BEGIN
-    DBMS_CLOUD.CREATE_CREDENTIAL(
-        credential_name => 'OBS_CRED',
-        user_ocid       => 'ocid1.user.oc1..axxxxxxxxxxxxxxxxq',
-        tenancy_ocid    => 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa',
-        private_key     => '-----BEGIN PRIVATE KEY-----
-        MIIEvAIBADANBgkqhkiGQEFA＜中略＞1D3iheu1ct50SB0aIQz9Ow==
-        -----END PRIVATE KEY-----',
-        fingerprint     => 'xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx'
-    );
-END;
-/
-```
-
-## 3-3. プロファイルの作成
+## 3-2. プロファイルの作成
 DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、プロファイルを作成します。
 
-- **プロファイル名**：OCIGENAI_ORACLE（任意）
+- **プロファイル名**：RAG_PROFILE（任意）
 - **provider**：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）
-- **credential_name**：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）
+- **credential_name**：OCI_CRED（先ほど作成したクレデンシャル名を指定）
 - **vector_index_name**：MY_INDEX（任意）
 - **embedding_model**：cohere.embed-v4.0
 - **temperature**：0（任意）
-- **region** : ap-osaka-1(指定しない場合はus-chicago-1となります。大阪リージョンがサブスクライブされていない場合エラーとなります。)
-- **model**：cohere.command-a-03-2025
+- **region** : us-chicago-1(サブスクライブされていないリージョンを指定した場合、エラーとなります)
+- **model**：xai.grok-code-fast-1（大阪リージョン等使用される場合には、cohere.command-a-03-2025等をご使用ください）
 
 ```sql
 BEGIN
   DBMS_CLOUD_AI.CREATE_PROFILE(
-        profile_name =>'OCIGENAI_ORACLE',
+        profile_name =>'RAG_PROFILE',
         attributes   =>'{"provider": "oci",
-          "credential_name": "OCI_GENAI_CRED",
+          "credential_name": "OCI_CRED",
           "vector_index_name": "MY_INDEX",
           "embedding_model": "cohere.embed-v4.0",
           "temperature": 0,
-          "region": "ap-osaka-1",
-          "model": "cohere.command-a-03-2025"
+          "region": "us-chicago-1",
+          "model": "xai.grok-code-fast-1"
         }');
 end;
 /
@@ -193,9 +165,9 @@ DBMS_CLOUD_AI.CREATE_VECTOR_INDEXプロシージャを使用して、ベクト�
 
 - **索引名**：MY_INDEX（プロファイル作成時に指定した索引名）
 - **vector_db_provider**：oracle
-- **location**：先程作成したオブジェクトストレージのURI
-- **object_storage_credential_name**：OBS_CRED（先ほど作成したオブジェクトストレージのクレデンシャル）
-- **profile_name**：OCIGENAI_ORACLE（先程作成したプロファイル名）
+- **location**：先程作成したオブジェクトストレージのURI（ファイル名は含めず、/o/までを指定します）
+- **object_storage_credential_name**：OCI_CRED（先ほど作成したオブジェクトストレージのクレデンシャル）
+- **profile_name**：RAG_PROFILE（先程作成したプロファイル名）
 - **vector_dimension**：1536
 - **vector_distance_metric**：cosine
 - **chunk_overlap**：128
@@ -208,8 +180,8 @@ BEGIN
          index_name  => 'MY_INDEX',
          attributes  => '{"vector_db_provider": "oracle",
                           "location": "https://objectstorage.ap-tokyo-1.oraclecloud.com/n/xxxxxxxxx/b/xxxxxxxxxx/o/",
-                          "object_storage_credential_name": "OBS_CRED",
-                          "profile_name": "OCIGENAI_ORACLE",
+                          "object_storage_credential_name": "OCI_CRED",
+                          "profile_name": "RAG_PROFILE",
                           "vector_dimension": 1536,
                           "vector_distance_metric": "cosine",
                           "chunk_overlap":128,
@@ -222,10 +194,10 @@ END;
 
 ## 3-5. プロファイルのセット
 
-DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したOCIGENAI_ORACLEを指定します。
+DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したRAG_PROFILEを指定します。
 
 ```sql
-EXEC DBMS_CLOUD_AI.SET_PROFILE('OCIGENAI_ORACLE');
+EXEC DBMS_CLOUD_AI.SET_PROFILE('RAG_PROFILE');
 ```
 これで準備が終わりました。
 
@@ -343,7 +315,7 @@ rocket.txtファイルをアップロードした時と同じように、作成�
 
   ```sql
   SELECT DBMS_CLOUD_AI.GENERATE(prompt     => 'AetherFlowsの電力消費量はどの程度ですか？',
-                              profile_name => 'OCIGENAI_ORACLE',
+                              profile_name => 'RAG_PROFILE',
                               action       => 'narrate')
   FROM dual;
   ```
@@ -369,7 +341,7 @@ rocket.txtファイルをアップロードした時と同じように、作成�
 
   ```sql
   SELECT DBMS_CLOUD_AI.GENERATE(prompt     => 'AetherFlowsの電力消費量はどの程度ですか？',
-                              profile_name => 'OCIGENAI_ORACLE',
+                              profile_name => 'RAG_PROFILE',
                               action       => 'chat')
   FROM dual;
   ```
