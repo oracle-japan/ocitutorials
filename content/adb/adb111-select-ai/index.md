@@ -30,7 +30,7 @@ Select AIで大規模言語モデル(LLM)を使用することで、ユーザー
 
 - [101: ADBインスタンスを作成してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb101-provisioning/)を参考に、ADBインスタンスが作成済みであること
 - [104: クレデンシャル・ウォレットを利用して接続してみよう](https://oracle-japan.github.io/ocitutorials/adb/adb104-connect-using-wallet/)を参考に、SQL Developerを使ってADBに接続出来ること
-- OCI生成AIサービスを使用可能なOsakaリージョン、Chicagoリージョン、Frankfurtリージョン、Londonリージョン、Sao Pauloリージョンのいずれかをホーム・リージョン、若しくはサブスクライブしてあること。詳しくは、[Pretrained Foundational Models in Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#)をご確認ください。
+- OCI生成AIサービスを使用可能な大阪リージョン、シカゴリージョン等をホーム・リージョン、若しくはサブスクライブしてあること（本チュートリアルではシカゴリージョンを使用します）。詳しくは、[Pretrained Foundational Models in Generative AI](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm#)をご確認ください。
 
 
 <br>
@@ -40,7 +40,7 @@ Select AIで大規模言語モデル(LLM)を使用することで、ユーザー
 <br>
 
 # 1. OCI生成AIサービスのAPIキー取得
-Select AIでは、2024年9月現在、OpenAI、Cohere、Azure OpenAI Service、OCI Generative AI Service、およびGoogle GeminiをAIプロバイダーとして使用することが出来ます。
+Select AIでは、OCI生成AIサービス、OpenAI、Azure OpenAI Service、Google Gemini等様々なAIプロバイダーを使用することが出来ます。
 
 本記事では、OCI生成AIサービスをAIプロバイダーとして使用したいと思います。
 
@@ -187,7 +187,7 @@ DBMS_CLOUD.CREATE_CREDENTIALプロシージャを使用して、OCI生成AIサ�
 以下の通りにOCID等を置き換え、プロシージャを実行します。
 
 OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設定します：
-- **credential_name**：任意（本チュートリアルではOCI_GENAI_CREDとしています）
+- **credential_name**：任意（本チュートリアルではOCI_CREDとしています）
 - **user_ocid**：先ほどメモを取った構成ファイルを参照し、ユーザーのOCIDを入力
 - **tenancy_ocid**：先ほどメモを取った構成ファイルを参照し、使用しているテナンシーのOCIDを入力
 - **private_key**：先程取得した秘密キーの内容をコピー&ペースト
@@ -196,7 +196,7 @@ OCI生成AIサービスを利用可能なOCIユーザのAPIキーの情報を設
 ```sql
 BEGIN
     DBMS_CLOUD.CREATE_CREDENTIAL(
-        credential_name => 'OCI_GENAI_CRED',
+        credential_name => 'OCI_CRED',
         user_ocid       => 'ocid1.user.oc1..axxxxxxxxxxxxxxxxq',
         tenancy_ocid    => 'ocid1.tenancy.oc1..aaxxxxxxxxxxxxa',
         private_key     => '-----BEGIN PRIVATE KEY-----
@@ -213,24 +213,22 @@ END;
 ## 2-4. プロファイルの作成
 
 DBMS_CLOUD_AI.CREATE_PROFILEプロシージャを使用して、AIプロファイルを作成します。
-- **プロファイル名**：GENAI_COHERE_COMMAND_R（任意）
+- **プロファイル名**：SELECT_AI_PROFILE（任意）
 - **provider**：oci（本チュートリアルではOCI生成AIサービスをAIプロバイダーとして使用）
-- **credential_name**：OCI_GENAI_CRED（先ほど作成したクレデンシャル名を指定）
-- **model**：cohere.command-r-08-2024（プロバイダーをOCIとし、モデルを指定しない場合は、meta.llama-3-70b-instructが使用されます）
-- **oci_apiformat**：COHERE（OCIチャットモデルを使用し、Cohereのモデルを指定する場合はoci_apiformatとしてCOHEREと指定）
-- **region**: ap-osaka-1（このregionパラメータを指定することで、指定したリージョンのOCI GenAIサービスを利用します。今回は大阪リージョンを使用します。指定しない場合、デフォルトではChicagoリージョンのエンドポイントが使用されます。）
+- **credential_name**：OCI_CRED（先ほど作成したクレデンシャル名を指定）
+- **model**：xai.grok-code-fast-1（大阪リージョン等では提供されていないため、大阪リージョンのOCI生成AIサービスを使用する場合は、別のモデルを使用する必要があります）
+- **region**: us-chicago-1（指定したリージョンのOCI生成AIサービスを利用します。大阪リージョンを使用する場合は**ap-osaka-1**と指定します。）
 - **object_list**：このプロファイルで使用するスキーマ・オブジェクトの所有者（本チュートリアルではselect_ai_user）とオブジェクト名（本チュートリアルではhighschools_view）を指定
 
 ```sql
 BEGIN
     DBMS_CLOUD_AI.CREATE_PROFILE(
-        'GENAI_COHERE_COMMAND_R',
+        'SELECT_AI_PROFILE',
         '{
             "provider": "oci",
-            "credential_name": "OCI_GENAI_CRED",
-            "model":"cohere.command-r-08-2024",
-            "oci_apiformat":"COHERE",
-            "region": "ap-osaka-1",
+            "credential_name": "OCI_CRED",
+            "model":"xai.grok-code-fast-1",
+            "region": "us-chicago-1",
             "object_list": [
                     {"owner": "select_ai_user", "name": "highschools_view"}
             ]
@@ -242,14 +240,20 @@ END;
 
 これでAIプロファイルが作成できました。
 
+> 補足
+> - リージョンによって提供されているLLMが異なるため、AIプロファイルで指定したモデルが、使用する（サブスクライブ済みの）リージョンで提供されているか、今一度ご確認下さい。提供されていない場合にはエラーが出てしまいます。
+[こちら](https://docs.oracle.com/en-us/iaas/Content/generative-ai/pretrained-models.htm)からOCI生成AIサービスで提供しているモデルをご参照いただけます。
+> - 使用するリージョンは、リージョン識別子で指定します。リージョン毎の識別子は[こちら](https://docs.oracle.com/ja-jp/iaas/Content/General/Concepts/regions.htm)をご参照ください。
+
+
 <a id="anchor3"></a>
 # 3. SELECT AIを試してみる
 
 ## 3-1. コメント無しの場合
 
-1．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したGENAI_COHERE_COMMAND_Rを指定します。
+1．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとして、先程作成したSELECT_AI_PROFILEを指定します。
 ```sql
-EXEC DBMS_CLOUD_AI.SET_PROFILE('GENAI_COHERE_COMMAND_R');
+EXEC DBMS_CLOUD_AI.SET_PROFILE('SELECT_AI_PROFILE');
 ```
 
 2.　先ずは、高校は全部で何校あるか聞いてみます。
@@ -325,18 +329,17 @@ COMMENT ON COLUMN highschools_view.ADDTL_INFO1 IS '追加情報';
 
 2．コメントを追加したので、新たにプロファイルを作成します。
 
-プロファイル名をGENAI_COHERE_COMMAND_R_COMMENTSとし、LLMに送信するメタデータにコメントを含めるために"comments":"true"を追加します。
+プロファイル名をSELECT_AI_PROFILE_COMMENTSとし、LLMに送信するメタデータにコメントを含めるために"comments":"true"を追加します。
 
 ```sql
 BEGIN
     DBMS_CLOUD_AI.CREATE_PROFILE(
-        'GENAI_COHERE_COMMAND_R_COMMENTS',
+        'SELECT_AI_PROFILE_COMMENTS',
         '{
             "provider": "oci",
-            "credential_name": "OCI_GENAI_CRED",
-            "model":"cohere.command-r-08-2024",
-            "oci_apiformat":"COHERE",
-            "region": "ap-osaka-1",
+            "credential_name": "OCI_CRED",
+            "model":"xai.grok-code-fast-1",
+            "region": "us-chicago-1",
             "comments":"true", 
             "object_list": [
                     {"owner": "select_ai_user", "name": "highschools_view"}
@@ -347,9 +350,9 @@ END;
 /
 ```
 
-3．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとしてGENAI_COHERE_COMMAND_Rを指定します。
+3．DBMS_CLOUD_AI.SET_PROFILEプロシージャを使用して、セッションで使用するAIプロファイルとしてSELECT_AI_PROFILE_COMMENTSを指定します。
 
-    EXEC DBMS_CLOUD_AI.SET_PROFILE('GENAI_COHERE_COMMAND_R_COMMENTS');
+    EXEC DBMS_CLOUD_AI.SET_PROFILE('SELECT_AI_PROFILE_COMMENTS');
 
 
 4.　再度、マンハッタン市内にある高校の総数を聞いてみます。
@@ -387,7 +390,7 @@ SELECT AI 中国語の授業がある高校一覧;
 コメントを付けてLLMに送信するメタデータを補足すると、結果の精度が向上することが分かりました。
 
 ## 3-3. パラメータ
-SELECT AIでは使用出来るactionパラメータがいくつかあります。以下が使用可能なパラメータです。
+SELECT AIでは使用出来るactionパラメータがいくつかあります。以下が使用可能なパラメータの一部です。
 
 - **runsql** - 結果セットを返す（指定しない時のデフォルト）
 - **showsql** - 生成されたSQLを返す
