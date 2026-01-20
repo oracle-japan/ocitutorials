@@ -308,7 +308,7 @@ ATPインスタンスをプロビジョニングします。
     >    </tr>
     >   </table>
     > ご自身の環境に合わせた適切なアクセスタイプをご選択ください。
-    > 認証方法についての詳細な情報は<a href="https://docs.oracle.com/cd/E83857_01/paas/autonomous-database/adbsa/connect-introduction.html#GUID-CD4C10A6-1C1E-4969-8F67-1433B6CE626A">こちら</a>のドキュメントを参照ください。
+    > 認証方法についての詳細な情報は<a href="https://docs.oracle.com/ja-jp/iaas/autonomous-database-serverless/doc/gs-security-and-authentation-autonomous-database.html">こちら</a>のドキュメントを参照ください。
     >
 
 1. 全て入力できたことを確認し、**Autonomous Databaseの作成** をクリックします。  
