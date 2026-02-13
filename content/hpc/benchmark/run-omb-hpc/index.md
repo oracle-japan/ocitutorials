@@ -10,29 +10,30 @@ params:
 
 # 0. 概要
 
-本ドキュメントで解説する **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** は、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルしたバイナリを使用して以下4種類の性能指標を計測する実行方法を解説します。
+本ドキュメントは、HPCクラスタのノード間接続インターコネクトを介するMPI通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルした **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** を使用し、以下の性能指標を計測する方法を解説します。
 
-1. **[1ノード内全コアを使用するAlltoall](#3-1-1ノード内全コアを使用するalltoall)**
-2. **[2ノード間のレイテンシ](#3-2-2ノード間のレイテンシ)**
-3. **[2ノード間の帯域幅](#3-3-2ノード間の帯域幅)**
-4. **[4ノード間のAllreduce](#3-4-4ノード間のallreduce)**
-5. **[4ノード間のMPI_Init所要時間](#3-5-4ノード間のmpi_init所要時間)**
+1. **[1ノード内全コアを使用するAlltoall](#4-1-1ノード内全コアを使用するalltoall)**
+2. **[2ノード間のレイテンシ](#4-2-2ノード間のレイテンシ)**
+3. **[2ノード間の帯域幅](#4-3-2ノード間の帯域幅)**
+4. **[4ノード間のAllreduce](#4-4-4ノード間のallreduce)**
+5. **[4ノード間のMPI_Init所要時間](#4-5-4ノード間のmpi_init所要時間)**
 
-本ドキュメントは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** に従い予め **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続されたHPCクラスタが作成されていることを前提に、その計算ノードに **OSU Micro-Benchmarks** をインストールする手順を以下の順に解説します。
+以降では、計測環境の構築から各性能指標の計測方法まで、以下の順に解説します。
 
-1. **[OpenMPIインストール](#1-openmpiインストール)**
-2. **[OSU Micro-Benchmarksインストール](#2-osu-micro-benchmarksインストール)**
-3. **[OSU Micro-Benchmarks実行](#3-osu-micro-benchmarks実行)**
+1. **[HPCクラスタ構築](#1-hpcクラスタ構築)**
+2. **[OpenMPIインストール](#2-openmpiインストール)**
+3. **[OSU Micro-Benchmarksインストール](#3-osu-micro-benchmarksインストール)**
+4. **[OSU Micro-Benchmarks実行](#4-osu-micro-benchmarks実行)**
 
 本ドキュメントは、以下の環境で **OSU Micro-Benchmarks** を実行し、
 
 - 計算ノード
-  - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
-  - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
-  - ノード数： 2 / 4
+    - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+    - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+    - ノード数： 2 / 4
 - ノード間接続インターコネクト
-  - **クラスタ・ネットワーク**
-  - リンク速度： 100 Gbps
+    - **クラスタ・ネットワーク**
+    - リンク速度： 100 Gbps
 - **OpenMPI** ： 5.0.8（※2）
 - **OSU Micro-Benchmarks** ： 7.5.1
 
@@ -44,13 +45,15 @@ params:
 - 2ノード間のレイテンシ: 1.67 usec
 - 2ノード間の帯域幅（256 MiBメッセージサイズ）: 12,254 MB/s
 
-# 1. OpenMPIインストール
+# 1. HPCクラスタ構築
 
-本章は、 **OpenMPI** をインストールします。
+HPCクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[HPCクラスタを構築する(基礎インフラ自動構築編)](../../spinup-hpc-cluster-withterraform/)** 等の手順に従い実施します。
+
+# 2. OpenMPIインストール
 
 **OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
 
-# 2. OSU Micro-Benchmarksインストール
+# 3. OSU Micro-Benchmarksインストール
 
 本章は、 **OSU Micro-Benchmarks** を **OpenMPI** でコンパイルし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
@@ -84,9 +87,9 @@ set ver       7.5.1
 prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$pkg_root/mpi/one-sided:$pkg_root/mpi/pt2pt:$pkg_root/mpi/startup
 ```
 
-# 3. OSU Micro-Benchmarks実行
+# 4. OSU Micro-Benchmarks実行
 
-## 3-1. 1ノード内全コアを使用するAlltoall
+## 4-1. 1ノード内全コアを使用するAlltoall
 
 以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
 ここでは、1ノード36プロセスのAlltoall所要時間をメッセージサイズ1バイト～64 MiBで計測しています。
@@ -127,7 +130,7 @@ $ mpirun -n 36 osu_alltoall -x 10 -i 10 -m 1:67108864
 $
 ```
 
-## 3-2. 2ノード間のレイテンシ
+## 4-2. 2ノード間のレイテンシ
 
 以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
 この出力は、2ノード間のメッセージサイズ1バイトの片道所要時間で、この結果（ここでは **1.67 usec** ）を2ノード間のレイテンシとします。
@@ -144,7 +147,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH 
 $
 ```
 
-## 3-3. 2ノード間の帯域幅
+## 4-3. 2ノード間の帯域幅
 
 以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
 この出力は、2ノード間のメッセージサイズ256 MiBの帯域幅で、この結果（ここでは **12,254,16 MB/s** ）を2ノード間の帯域幅とします。
@@ -161,7 +164,7 @@ $ mpirun -n 2 -N 1 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH 
 $
 ```
 
-## 3-4. 4ノード間のAllreduce
+## 4-4. 4ノード間のAllreduce
 
 以下コマンドを **OSU Micro-Benchmarks** を実行するユーザで何れか1ノードで実行します。  
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したAllreduceの所要時間をメッセージサイズ4バイト～256 MiBで計測しています。
@@ -204,7 +207,7 @@ $ mpirun -n 144 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PA
 $
 ```
 
-## 3-5. 4ノード間のMPI_Init所要時間
+## 4-5. 4ノード間のMPI_Init所要時間
 
 以下コマンドを **OSU Micro-Benchmarks** を実行するユーザで何れか1ノードで実行します。  
 ここでは、4ノード144プロセス（ノードあたり36プロセス）を使用したMPI_Initの所要時間を計測しています。

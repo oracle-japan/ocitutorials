@@ -40,31 +40,28 @@ params:
 
 また本テクニカルTipsは、 **OpenFOAM** に同梱されるチュートリアルを使用し、構築した環境でプリ処理・解析処理・ポスト処理のCFD解析フローを実行する手順を解説します。  
 この際、 **OpenFOAM** が提供するツール・ソルバーによるプリ・解析処理を **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 対応のベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** で作成する計算ノードで、 **ParaView** によるポスト処理を **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** で作成するフロントエンド用途のBastionノードで実行し、解析処理がノード内に収まるワークロードを想定する計算ノード1ノードの小規模構成と、複数ノードに跨るワークロードを想定する **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で接続された2ノード以上の計算ノードを持つ大規模構成から選択し、自身のワークロードに合わせて環境を構築します。  
-また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と **[Slurm](https://slurm.schedmd.com/)** 環境でのバッチ実行を念頭に置いて、以下4パターンを解説します。
+また計算ノードで実行するプリ処理と解析処理は、インタラクティブ実行と **[Slurm](https://slurm.schedmd.com/)** 環境でのバッチ実行を念頭に置いて、以下3パターンを解説します。
 
 - 非並列実行（小規模構成・大規模構成の何れでも可能）
 - ノード内並列実行（小規模構成・大規模構成の何れでも可能）
 - ノード間並列実行（大規模構成で可能）
-- ノード間並列実行でローカルディスクを活用（※1）（大規模構成で可能）
 
-※1） **BM.Optimized3.36** が内蔵するNVMe SSDローカルディスクをデータ領域として使用する方法で、他のファイル共有ストレージを使用する方法と比較して、高並列実行の場合や計算結果の出力頻度が高い場合にスケーラビリティを改善出来る場合があります。
-
-構築する環境は、以下の環境を前提とします。
+構築する環境は、以下を前提とします。
 
 - 計算ノード
     - シェイプ ： **BM.Optimized3.36**
-    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
-    - NVMe SSDローカルディスクマウントポイント ： **/mnt/localdisk** （※3）
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
 - Bastionノード
     - シェイプ ： **VM.Standard.E5.Flex**
-    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※2）
-- ファイル共有ストレージ ： **ブロック・ボリューム** NFSサーバ / **ファイル・ストレージ** （※4）でBastionノードと全計算ノードのCFD解析ユーザのホームディレクトリをNFSでファイル共有
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※1）
+- ファイル共有ストレージ
+    - NFSでサービスする任意のファイル共有ストレージ（※2）
+    - Bastionノードと全計算ノードのCFD解析ユーザホームディレクトリをファイル共有
 - **OpenFOAM** ： v2512
 - **ParaView** ： 6.0.1
 
-※2）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
-※3）このファイルシステム作成方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[ベアメタルインスタンスのNVMe SSDローカルディスク領域ファイルシステム作成方法](../../tech-knowhow/nvme-filesystem/)** を参照してください。また、CFD解析ユーザをオーナーとするディレクトリ **/mnt/localdisk/openfoam** が全ての計算ノードで予め作成されているものとします。  
-※4）詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
+※2）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
@@ -88,9 +85,9 @@ params:
 
 - 計算ノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
 - Bastionノード **ブート・ボリューム** サイズ ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- 計算ノードSMT : 無効（※5）
+- 計算ノードSMT : 無効（※3）
 
-※5）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
+※3）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
 
 なお、バッチ実行の場合の **Slurm** 環境は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築されたものとし、このテクニカルTipsの **[2. 環境構築](../../tech-knowhow/setup-slurm-cluster/#2-環境構築)** の計算ノードに対する手順を実施することで、計算ノードを **Slurm** 環境に登録します。
 
@@ -372,45 +369,7 @@ $ mkdir -p $FOAM_RUN
 $ run
 $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDaily .
 $ cp -pR $FOAM_TUTORIALS/incompressible/simpleFoam/motorBike .
-```
-
-次に、バッチ実行の際に使用する、ヘッドノードとその他ノードのNVMe SSDローカルディスクのデータを同期させるスクリプト **rsync_inneed.sh** を以下の内容で作成し、
-
-```sh
-#!/bin/bash
-head_node=`echo $1 | cut -d, -f 1`
-child_lst=`echo $1 | cut -d, -f 2-`
-my_hostname=`hostname`
-proc_pernode=$2
-cur_mpirank=$2
-for node in `echo $child_lst | sed 's/,/ /g'`
-do
-  if [ $node == $my_hostname ]
-  then
-    sta_mpirank=$cur_mpirank
-    end_mpirank=$(expr $cur_mpirank + $proc_pernode - 1)
-    break
-  else
-    cur_mpirank=$(expr $cur_mpirank + $proc_pernode)
-  fi
-done
-incl_opt="--include=\"/*\""
-for mpirank in `seq $sta_mpirank $end_mpirank`
-do
-  incl_opt=$incl_opt" --include=\"processor"$mpirank"/**\""
-done
-rsync_cmd="rsync -au -e \"ssh -o StrictHostKeyChecking=no\" $incl_opt --exclude=\"*\" $3 $head_node:$3"
-eval $rsync_cmd
-```
-
-これを以下のディレクトリに配置して実行権を付与します。
-
-```sh
-$ run
-$ chmod 755 rsync_inneed.sh
-$ ls -l rsync_inneed.sh
--rwxr-xr-x 1 usera usera 653 Jan  8 18:33 rsync_inneed.sh
-$
+$ mkdir -p ./motorBike/constant/triSurface && cp -f $FOAM_TUTORIALS/resources/geometry/motorBike.obj.gz ./motorBike/constant/triSurface/
 ```
 
 ## 4-2. プリ処理・解析処理のインタラクティブ実行
@@ -487,7 +446,7 @@ End
 $
 ```
 
-次に、以下コマンドを実行して **BM.Optimized3.36** に搭載する32コアを使用するノード内並列の解析処理を実行します。
+次に、以下コマンドで **BM.Optimized3.36** に搭載する32コアを使用するノード内並列の解析処理を実行します。
 
 ```sh
 $ mpirun -n 32 simpleFoam -parallel
@@ -538,7 +497,7 @@ End
 $
 ```
 
-次に、以下コマンドを実行して4ノードの **BM.Optimized3.36** に搭載する128コアを使用するノード間並列の解析処理を実行します。
+次に、以下コマンドで4ノードの **BM.Optimized3.36** にノード当たり32コアを割り当てる128コアを使用するノード間並列の解析処理を実行します。
 
 ```sh
 $ mpirun -n 128 -N 32 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 bash -c "module load openmpi; source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc; simpleFoam -parallel"
@@ -555,29 +514,11 @@ $ reconstructPar
 ### 4-3-0. 概要
 
 本章は、 **OpenFOAM** にチュートリアルとして付属しているバックステップ乱流シミュレーション（**incompressible/simpleFoam/pitzDaily**）とオートバイ走行時乱流シミュレーション（**incompressible/simpleFoam/motorBike**）を使用し、これらをバッチジョブとして実行する手順を解説します。  
-この際、並列化に対応している解析ステップは、 **BM.Optimized3.36** の4ノード128コアを使用するノード間並列で実行し、NVMe SSDローカルディスクをストレージ領域に活用します。
+この際、並列化に対応している解析ステップは、4ノードの **BM.Optimized3.36** にノード当たり32コアを割り当てる128コアを使用するノード間並列で実行します。
 
-これらの処理は、共有ストレージとNMVe SSDローカルディスクの間でrsyncを使用してデータを同期しながら以下のステップで実行し、ストレージ領域へのアクセスに高速なNMVe SSDローカルディスクを極力使用するよう配慮します。
-
-1. ヘッドノードで "共有ストレージ -> NVMe SSDローカルディスク" 方向のデータ同期
-2. ヘッドノードのNVMe SSDローカルディスク上でプリ処理
-3. "ヘッドノードのNVMe SSDローカルディスク -> その他ノードのNVMe SSDローカルディスク" 方向のデータ同期（※7）
-4. 各ノードのNVMe SSDローカルディスクを使用して並列実行で解析処理
-5. "その他ノードのNVMe SSDローカルディスク -> ヘッドノードのNVMe SSDローカルディスク" 方向のデータ同期（※7）（※8）
-6. ヘッドノードのNVMe SSDローカルディスク上で解析結果統合処理
-7. ヘッドノードで "NVMe SSDローカルディスク -> 共有ストレージ" 方向のデータ同期（※9）
-
-※7）この同期は、その他ノードのノード数（本テクニカルTipsでは3ノード）分だけ同時に実行することで、所要時間の短縮を図ります。  
-※8）この同期は、128個のMPIプロセスが解析結果を格納する **processorxx** ディレクトリとその配下のファイルのうち、当該ノード上で計算されたもののみ同期させるため、事前に用意したスクリプト **rsync_inneed.sh** を使用します。  
-※9）この同期は、128個のMPIプロセスが解析結果を格納する **processorxx** ディレクトリとその配下のファイルを除外し、ポスト処理に必要なファイルだけを同期することで、所要時間を短縮します。
-
-このように、ストレージ領域にNVMe SSDローカルディスクを活用することで、共有ストレージ（ **ファイル・ストレージ** サービスを使用した場合）のみを使用する場合と比較して、特に大規模並列実行のケースやシミュレーション結果の書き込み頻度が高いケースで、シミュレーション所要時間を短縮することが可能になります。
-
-なお、ヘッドノードとその他ノードのNVMe SSDローカルディスクのデータ同期をその他ノードのノード数分だけ同時実行する際 **[pdsh](https://github.com/chaos/pdsh)** を使用するため、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../../tech-knowhow/cluster-with-pdsh/)** の **[1. pdshインストール・セットアップ](../../tech-knowhow/cluster-with-pdsh/#1-pdshインストールセットアップ)** の手順を実施し、予め全ての計算ノードに **pdsh** をインストール・セットアップします。
+本章の手順は、Slurmクライアントで実行します。
 
 ### 4-3.1. バックステップ乱流シミュレーションのバッチ実行
-
-以降の手順は、Slurmクライアントで実行します。
 
 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
@@ -599,19 +540,6 @@ $ diff system/decomposeParDict_org system/decomposeParDict
 <     n           (2 2 1);
 ---
 >     n           (16 8 1);
-24a25,101
-> 
-> distributed  yes;
-> roots
->     127
->     (
->        "/mnt/localdisk/openfoam"
->        "/mnt/localdisk/openfoam"
-    :
-    :  127行続きます
-    :
->        "/mnt/localdisk/openfoam"
->     );
 $
 ```
 
@@ -622,52 +550,30 @@ $
 #SBATCH -p sltest
 #SBATCH -n 128
 #SBATCH -N 4
-#SBATCH --ntasks-per-node=32
 #SBATCH -J pitzDaily
 #SBATCH -o pitzDaily_out.%J
 #SBATCH -e pitzDaily_err.%J
 
 # Change the following variables according to your environment
-model_dir="pitzDaily"
-local_disk="/mnt/localdisk/openfoam"
+modl_dir="pitzDaily"
+work_dsk=${FOAM_RUN}
 
 # Set file/directroy variables
-shared_dir=$FOAM_RUN/$model_dir/
-local_dir=$local_disk/$model_dir/
-rsync_script=$FOAM_RUN"/rsync_inneed.sh" 
+work_dir=${work_dsk}/${modl_dir}
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
 
-# Get job infomation
-head_node=`hostname`
-proc_pernode=$(expr $SLURM_NTASKS / $SLURM_JOB_NUM_NODES)
-child_node_list=`echo $SLURM_JOB_NODELIST | cut -d, -f 2-`
-
-# Copy model files from shared storage to NVMe local disk on head node
-rsync -a --delete $shared_dir $local_dir
-
-# Pre-process on head node NVMe local disk
-cd $local_dir
+# Pre-process on head node
+cd ${work_dir}
 blockMesh
 decomposePar
-
-# Concurrently sync model files on head node NVMe local disk with others
-pdsh_cmd="PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=no\" pdsh -w $child_node_list 'rsync -a --delete -e \"ssh -o StrictHostKeyChecking=no\" $head_node:$local_dir $local_dir'"
-eval $pdsh_cmd
 
 # Run solver in parallel
 srun --cpu-bind=verbose,cores simpleFoam -parallel
 
-# Concurrently sync model files on other node NVMe local disk with head node's
-pdsh_cmd="PDSH_SSH_ARGS_APPEND=\"-o StrictHostKeyChecking=no\" pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
-eval $pdsh_cmd
-
-# Reconstruct decomposed partitions on head node NVMe local disk
+# Reconstruct decomposed partitions on head node
 reconstructPar
-
-# Sync model files necessary for post process on head node NVMe local disk with shared storage
-rsync -a --delete --exclude='processor*/' $local_dir $shared_dir
 ```
 
 次に、以下コマンドを実行し、バッチジョブを投入します。
@@ -680,20 +586,18 @@ $ sbatch submit_pitzDaily.sbatch
 
 ### 4-3.2. オートバイ走行時乱流シミュレーションのバッチ実行
 
-以降の手順は、Slurmクライアントで実行します。
-
 以下コマンドを実行し、メッシュの領域分割方法を指示するファイルを他のチュートリアルからコピーします。
 
 ```sh
 $ run
 $ cd ./motorBike
-$ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/decomposeParDict_nvme.128
+$ cp $FOAM_TUTORIALS/incompressible/simpleFoam/pitzDailyExptInlet/system/decomposeParDict ./system/
 ```
 
 次に、コピーしたファイルを以下のように修正します。
 
 ```sh
-$ diff system/decomposeParDict_nvme.128_org system/decomposeParDict_nvme.128
+$ diff system/decomposeParDict_org system/decomposeParDict
 17c17
 < numberOfSubdomains 4;
 ---
@@ -702,19 +606,6 @@ $ diff system/decomposeParDict_nvme.128_org system/decomposeParDict_nvme.128
 <     n           (2 2 1);
 ---
 >     n           (16 8 1);
-24a25,101
-> 
-> distributed  yes;
-> roots
->     127
->     (
->        "/mnt/localdisk/openfoam"
->        "/mnt/localdisk/openfoam"
-    :
-    :  127行続きます
-    :
->        "/mnt/localdisk/openfoam"
->     );
 $
 ```
 
@@ -725,70 +616,43 @@ $
 #SBATCH -p sltest
 #SBATCH -n 128
 #SBATCH -N 4
-#SBATCH --ntasks-per-node=32
 #SBATCH -J motorBike
 #SBATCH -o motorBike_out.%J
 #SBATCH -e motorBike_err.%J
  
 # Change the following variables according to your environment
-model_dir="motorBike"
-local_disk="/mnt/localdisk/openfoam"
+modl_dir="motorBike"
+work_dsk=${FOAM_RUN}
 
 # Set file/directroy variables
-shared_dir=$FOAM_RUN/$model_dir/
-local_dir=$local_disk/$model_dir/
-decompDict="-decomposeParDict system/decomposeParDict_nvme.128"
-rsync_script=$FOAM_RUN"/rsync_inneed.sh" 
+work_dir=${work_dsk}/${modl_dir}
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
- 
+
 # Read tutorial run functions
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions
 
-# Get job infomation
-head_node=`hostname`
-proc_pernode=$(expr $SLURM_NTASKS / $SLURM_JOB_NUM_NODES)
-child_node_list=`echo $SLURM_JOB_NODELIST | cut -d, -f 2-`
-
-# Copy motorbike surface from resources directory to shared storage
-cd $shared_dir
-mkdir -p constant/triSurface && cp -f "$FOAM_TUTORIALS"/resources/geometry/motorBike.obj.gz constant/triSurface/
-
-# Copy model files from shared storage to NVMe local disk on head node
-rsync -a --delete $shared_dir $local_dir
-
-# Pre-process on head node NVMe local disk
-cd $local_dir
+# Pre-process on head node
+cd ${work_dir}
 runApplication surfaceFeatureExtract
 runApplication blockMesh
-runApplication $decompDict decomposePar
+runApplication decomposePar
 
-# Concurrently sync model files on head node NVMe local disk with others
-pdsh_cmd="pdsh -w $child_node_list 'rsync -a --delete $head_node:$local_dir $local_dir'"
-eval $pdsh_cmd
-
-# Pre-process stage 2 in parallel
-srun --cpu-bind=verbose,cores snappyHexMesh -parallel $decompDict -overwrite
-srun --cpu-bind=verbose,cores topoSet -parallel $decompDict
+# Run potentialFoam in parallel
+srun --cpu-bind=cores snappyHexMesh -parallel -overwrite
+srun --cpu-bind=cores topoSet -parallel
 srun -n $SLURM_JOB_NUM_NODES --ntasks-per-node=1 bash -c ". ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions; restore0Dir -processor"
-srun --cpu-bind=verbose,cores patchSummary -parallel $decompDict
-srun --cpu-bind=verbose,cores potentialFoam -parallel $decompDict -writephi
-srun --cpu-bind=verbose,cores checkMesh -parallel $decompDict -writeFields '(nonOrthoAngle)' -constant
+srun --cpu-bind=cores patchSummary -parallel
+srun --cpu-bind=cores potentialFoam -parallel -writephi
+srun --cpu-bind=cores checkMesh -parallel -writeFields '(nonOrthoAngle)' -constant
 
-# Run solver in parallel
-srun --cpu-bind=verbose,cores simpleFoam -parallel $decompDict
+# Run simpleFoam in parallel
+srun --cpu-bind=cores simpleFoam -parallel
 
-# Concurrently sync model files on other node NVMe local disk with head node's
-pdsh_cmd="pdsh -w $child_node_list '$rsync_script $SLURM_JOB_NODELIST $proc_pernode $local_dir'"
-eval $pdsh_cmd
-
-# Reconstruct decomposed partitions on head node NVMe local disk
+# Reconstruct decomposed partitions on head node
 runApplication reconstructParMesh -constant
 runApplication reconstructPar
-
-# Sync model files necessary for post process on head node NVMe local disk with shared storage
-rsync -a --delete --exclude='processor*/' $local_dir $shared_dir
 ```
 
 次に、以下コマンドを実行し、バッチジョブを投入します。
