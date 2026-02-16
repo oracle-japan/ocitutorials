@@ -12,10 +12,10 @@ params:
 
 本ドキュメントは、ノード内・ノード間のGPUデバイスメモリ（以降 **D** と呼称します。）・ホストメモリ（以降 **H** と呼称します。）間のMPIと **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルした **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** を使用し、以下の性能指標を計測する方法を解説します。
 
-1. **[ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ・帯域幅](#2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ帯域幅)**
-2. **[2ノードに跨るGPUデバイスメモリ間レイテンシ・帯域幅](#2-2-2ノードに跨るgpuデバイスメモリ間レイテンシ帯域幅)**
-3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
-4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#2-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
+1. **[ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ・帯域幅](#3-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ帯域幅)**
+2. **[2ノードに跨るGPUデバイスメモリ間レイテンシ・帯域幅](#3-2-2ノードに跨るgpuデバイスメモリ間レイテンシ帯域幅)**
+3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#3-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
+4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#3-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
 
 以降では、計測環境の構築から各性能指標の計測方法まで、以下の順に解説します。
 
@@ -59,13 +59,13 @@ params:
 
 # 1. GPUクラスタ構築
 
-GPUクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** 等の手順に従い実施します。
+GPUクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[GPUクラスタを構築する(Ubuntu OS編)](../../spinup-gpu-cluster-withubuntu/)** の手順に従い実施します。
 
 # 2. OSU Micro-Benchmarksインストール
 
 本章は、 **NVIDIA CUDA** と **NCCL** を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **OpenMPI** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
-以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行します。
+以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行します。
 
 ```sh
 $ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
@@ -74,8 +74,7 @@ $ module load nvhpc openmpi
 $ cd osu-micro-benchmarks-7.5.1 && ./configure CC=mpicc CXX=mpicxx --prefix=/opt/openmpi/tests/omb --enable-cuda --with-cuda-include=/usr/local/cuda/include --with-cuda-libpath=/usr/local/cuda/lib64 --enable-ncclomb --with-nccl=/opt/nvidia/hpc_sdk/Linux_x86_64/25.7/comm_libs/nccl
 ```
 
-次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+次に、カレントディレクトリに作成されたファイル **libtool** を以下のように修正します。
 
 ```sh
 $ diff libtool_org libtool
@@ -84,7 +83,7 @@ $ diff libtool_org libtool
 $
 ```
 
-次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
+次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
 
 ```sh
 $ make -j && sudo make install; echo $?
@@ -193,8 +192,7 @@ $
 
 ### 3-1-2. 帯域幅
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
 
 ```sh
 $ module load nvhpc openmpi omb

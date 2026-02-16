@@ -83,7 +83,7 @@ $ icx -DSTREAM_TYPE=double -DSTREAM_ARRAY_SIZE=268435456 -O3 -mcmodel=medium -qo
 
 本章は、先に作成した **STREAM** を実行するインスタンス上で、先に作成した **STREAM** の実行バイナリを使用し、 **STREAM** を実行します。
 
-以下コマンドをopcユーザで実行し、 **STREAM** の性能向上を目的としてメモリ領域初期化のためのOS再起動を行います。
+以下コマンドをopcユーザで実行し、メモリ領域初期化による **STREAM** の性能向上を目的とするOS再起動を行います。
 
 ```sh
 $ sudo shutdown -r now

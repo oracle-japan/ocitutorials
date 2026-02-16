@@ -12,10 +12,10 @@ params:
 
 本ドキュメントは、ノード内・ノード間のGPUデバイスメモリ（以降 **D** と呼称します。）・ホストメモリ（以降 **H** と呼称します。）間のMPIと **[NCCL（NVIDIA Collective Communication Library）](https://developer.nvidia.com/nccl)** の通信性能の評価を念頭に、 **[OpenMPI](https://www.open-mpi.org/)** でコンパイルした **[OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/)** を使用し、以下の性能指標を計測する方法を解説します。
 
-1. **[ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ・帯域幅](#2-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ帯域幅)**
-2. **[2ノードに跨るGPUデバイスメモリ間レイテンシ・帯域幅](#2-2-2ノードに跨るgpuデバイスメモリ間レイテンシ帯域幅)**
-3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#2-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
-4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#2-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
+1. **[ノード内ホストメモリ・GPUデバイスメモリ間レイテンシ・帯域幅](#4-1-ノード内ホストメモリgpuデバイスメモリ間レイテンシ帯域幅)**
+2. **[2ノードに跨るGPUデバイスメモリ間レイテンシ・帯域幅](#4-2-2ノードに跨るgpuデバイスメモリ間レイテンシ帯域幅)**
+3. **[ノード内8個のGPUを使用するNCCL Allreduce通信性能](#4-3-ノード内8個のgpuを使用するnccl-allreduce通信性能)**
+4. **[2ノードに跨る16個のGPUを使用するNCCL Allreduce通信性能](#4-4-2ノードに跨る16個のgpuを使用するnccl-allreduce通信性能)**
 
 以降では、計測環境の構築から各性能指標の計測方法まで、以下の順に解説します。
 
@@ -73,7 +73,7 @@ GPUクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-
 
 本章は、 **NVIDIA CUDA** と **NCCL** を利用できるよう **OSU Micro-Benchmarks** をCUDA-awareな **OpenMPI** でビルドし、これを **/opt/openmpi/tests/omb** にインストールした後、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **omb** を登録します。
 
-以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行します。
+以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行します。
 
 ```sh
 $ mkdir -p ~/`hostname` && cd ~/`hostname` && wget https://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-7.5.1.tar.gz
@@ -91,7 +91,7 @@ $ diff libtool_org libtool
 $
 ```
 
-次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopc/ubuntuユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
+次に、以下コマンドを **OSU Micro-Benchmarks** を実行する全てのノードのopcユーザで実行し、 **OSU Micro-Benchmarks** をインストールします。
 
 ```sh
 $ make -j && sudo make install; echo $?
@@ -135,8 +135,7 @@ prepend-path PATH $pkg_root:$pkg_root/mpi/collective:$pkg_root/mpi/congestion:$p
 
 ### 4-1-1. レイテンシ
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
 
 ```sh
 $ module load openmpi omb
@@ -201,8 +200,7 @@ $
 
 ### 4-1-2. 帯域幅
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。
 
 ```sh
 $ module load openmpi omb
@@ -276,8 +274,7 @@ $
 
 ### 4-2-1. レイテンシ
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。   
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。 
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。
 
 ```sh
 $ module load openmpi omb
@@ -293,8 +290,7 @@ $
 
 ### 4-2-2. 帯域幅
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。
 
 ```sh
 $ module load openmpi omb
@@ -312,8 +308,7 @@ $
 
 本章は、ノード内の8枚のGPUを使用する **NCCL** のAllReduce通信性能を、メッセージサイズ1 GiBバイトでの所要時間で計測します。
 
-以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを対象ノードで **OSU Micro-Benchmarks** 実行ユーザで実行します
 
 ```sh
 $ module load openmpi omb
@@ -338,8 +333,7 @@ $
 
 本章は、2ノードに跨る16枚のGPUを使用する **NCCL** のAllReduce通信性能を、メッセージサイズ1 GiBバイトでの所要時間で計測します。
 
-以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。  
-なお、インストール対象のイメージが **Oracle Linux** / **Ubuntu** のどちらかにより実行するコマンドが異なる点に留意します。
+以下コマンドを何れか1ノードで **OSU Micro-Benchmarks** を実行するユーザで実行します。
 
 ```sh
 $ module load openmpi omb
