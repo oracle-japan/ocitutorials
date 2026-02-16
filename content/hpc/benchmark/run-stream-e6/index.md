@@ -82,7 +82,7 @@ $ clang -O3 -fopenmp  -mcmodel=large -DSTREAM_TYPE=double -mavx2 -DSTREAM_ARRAY_
 1. OS再起動（※3）
 2. **STREAM** 実行
 
-※3）OS起動直後の状態でメモリ性能を計測する目的で実施します。
+※3）メモリ領域初期化による **STREAM** の性能向上のために実施します。
 
 ## 3-1. OS再起動
 

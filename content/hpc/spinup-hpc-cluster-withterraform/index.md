@@ -15,7 +15,7 @@ table, th, td {
 
 # 0. 概要
 
-本チュートリアルは、HPCワークロード向け **Intel Ice Lake** / **AMD EPYC 第4世代** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
+本チュートリアルは、 **Intel Ice Lake** / **AMD EPYC 第4世代** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36 / BM.HPC.E5.144](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続する、HPCワークロードを実行するためのHPCクラスタを構築する際のベースとなるインフラストラクチャを、予め用意された **[Terraform](../#5-12-terraform)** スクリプトを活用して自動構築し、そのインターコネクト性能を検証します。  
 この自動構築は、 **Terraform** スクリプトを **[リソース・マネージャ](../#5-2-リソースマネージャ)** に読み込ませて作成する **[スタック](../#5-3-スタック)** を使用する方法と、 **Terraform** 実行環境を用意して **Terraform** CLIを使用する方法から選択することが出来ます。
 
 このチュートリアルで作成する環境は、ユーザ管理、ホスト名管理、ファイル共有ストレージ、プログラム開発環境、ジョブスケジューラ等、必要なソフトウェア環境をこの上に整備し、ご自身の要件に沿ったHPCクラスタを構築する際の基礎インフラストラクチャとして利用することが可能です。  

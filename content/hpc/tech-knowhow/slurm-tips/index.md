@@ -25,7 +25,8 @@ params:
 
 本Tipsは、ジョブ実行の前後で **Slurm** が自動的にスクリプトを実行する機能である **[Prolog/Epilog](https://slurm.schedmd.com/prolog_epilog.html)** を設定する方法を解説します。
 
-ここでは、PrologとEpilogで以下の処理を行うことを想定します。
+ここでは、PrologとEpilogで以下の処理を行うことを想定します。  
+なお、複数ジョブが計算/GPUノードに混在する環境で以下の **Prolog/Epilog** を適用した場合、あるジョブの開始・終了により他のジョブに影響が発生し得る点に留意します。
 
 [Prolog]
 
@@ -49,11 +50,11 @@ log_file=/var/log/slurm/clean_memory.log
 
 [Epilog]
 
-以下のスクリプトを使用し、ジョブがNVMe SSDローカルディスク領域のファイルシステム（マウントポイント  **/mnt/localdisk** ）に残したファイルをジョブ終了直後に全て削除します。
+以下のスクリプトを使用し、ジョブがNVMe SSDローカルディスク領域のファイルシステムマウントポイント（ここでは **/mnt/localdisk** とします。）直下のディレクトリ以下に残したファイルをジョブ終了直後に全て削除します。
 
 ```sh
 #!/bin/bash
-/bin/rm -rf /mnt/localdisk/*
+/bin/rm -rf /mnt/localdisk/*/*
 ```
 
 ## 1-1. 設定手順
@@ -242,20 +243,20 @@ HPC/GPUクラスタは、構成する計算/GPUノードが異なるリソース
 
 | パーティション名 | 割当てられるノード名                                                                                | NPS      | SMT | デフォルトパーティション<br>（※2） |
 | :------: | :---------------------------------------------------------------------------------------: | :------: | :-: | :--------------: |
-| all      | inst-aaaaa-x9 inst-bbbbb-x9<br>inst-ccccc-x9 inst-ddddd-x9<br>inst-eeeee-x9 inst-fffff-x9 | -        | -   | Yes              |
-| nps1     | inst-aaaaa-x9 inst-bbbbb-x9                                                               | **NPS1** | 無効  | No               |
-| nps2     | inst-ccccc-x9 inst-ddddd-x9                                                               | **NPS2** | 無効  | No               |
-| smte     | inst-eeeee-x9 inst-fffff-x9smt                                                            | **NPS1** | 有効  | No               |
+| all      | inst-aaaaa-x9<br>inst-bbbbb-x9<br>inst-ccccc-x9<br>inst-ddddd-x9<br>inst-eeeee-x9<br>inst-fffff-x9 | -        | -   | Yes              |
+| nps1     | inst-aaaaa-x9<br>inst-bbbbb-x9                                                               | **NPS1** | 無効  | No               |
+| nps2     | inst-ccccc-x9<br>inst-ddddd-x9                                                               | **NPS2** | 無効  | No               |
+| smte     | inst-eeeee-x9<br>inst-fffff-x9                                                            | **NPS1** | 有効  | No               |
 
 ※1）**NPS** と **SMT** を指定したインスタンスの作成方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
 ※2）パーティション名を指定せずに投入したジョブが割当てられるパーティションです。
   
 これにより、以下の割り当て制御が可能になります。
 
-- **NPS** にこだわらないジョブはパーティションを指定せずに投入（デフォルトの **all** に投入される）
+- **NPS** / **SMT** にこだわらないジョブはパーティションを指定せずに投入（ **all** に投入される）
 - **NPS1** で **SMT** が無効の計算ノードで実行するジョブはパーティション **nps1** に投入
-- **NPS2** の計算ノードで実行するジョブはパーティション **nps2** に投入
-- **SMT** が有効の計算ノードで実行するジョブはパーティション **smt** に投入
+- **NPS2** で **SMT** が無効の計算ノードで実行するジョブはパーティション **nps2** に投入
+- **NPS1** で **SMT** が有効の計算ノードで実行するジョブはパーティション **smte** に投入
 
 ## 3-1. 設定手順
 
@@ -263,16 +264,16 @@ Slurmマネージャ、Slurmクライアント、及び全ての計算/GPUノー
 この設定は、 **BM.Optimized3.36** がノード当たり2ソケットでソケット当たり18コアでコア当たり2ハードウェアスレッドを搭載することを念頭に、 **NPS1** と **NPS2** と **SMT** 有効・無効の計算ノードを異なるリソース定義の **NodeName** フィールドで定義しています。（※3）
 
 ```sh
-NodeName=inst-aaaaa-x9,inst-bbbbb-x9 CPUs=36 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
-NodeName=inst-ccccc-x9,inst-ddddd-x9 CPUs=36 Boards=1 SocketsPerBoard=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
-NodeName=inst-eeeee-x9,inst-fffff-x9 CPUs=72 Boards=1 SocketsPerBoard=2 CoresPerSocket=18 ThreadsPerCore=2 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-aaaaa-x9,inst-bbbbb-x9 Sockets=2 CoresPerSocket=18 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-ccccc-x9,inst-ddddd-x9 Sockets=4 CoresPerSocket=9 ThreadsPerCore=1 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
+NodeName=inst-eeeee-x9,inst-fffff-x9 Sockets=2 CoresPerSocket=18 ThreadsPerCore=2 RealMemory=500000 TmpDisk=10000 State=UNKNOWN
 PartitionName=all Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 PartitionName=nps1 Nodes=inst-aaaaa-x9,inst-bbbbb-x9 MaxTime=INFINITE State=UP
 PartitionName=nps2 Nodes=inst-ccccc-x9,inst-ddddd-x9 MaxTime=INFINITE State=UP
 PartitionName=smte Nodes=inst-eeeee-x9,inst-fffff-x9 MaxTime=INFINITE State=UP
 ```
 
-※3）**slurm.conf** 中の **Socket** は、NUMA（Non-Umiform Memory Access）ノードに相当するため、 **NPS2** の場合は **Socket** がノード当たり4個として定義します。
+※3）**slurm.conf** 中の **Sockets** は、NUMAノードに相当するため **NPS2** の場合は **Sockets** がノード当たり4個として定義します。
 
 次に、Slurmマネージャのopcユーザで以下のコマンドを実行し、 **slurm.conf** ファイルの変更を反映します。
 

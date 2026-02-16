@@ -1,6 +1,6 @@
 ---
 title: "SingularityによるHPCワークロード向けコンテナ環境構築方法"
-description: "HPCワークロードのためのコンテナ環境は、インターコネクトやGPU等のリソースをコンテナから容易に利用できたり、マルチユーザ環境での利用を前提とするHPCシステムで非特権ユーザのコンテナ実行をネイティブにサポートしている等の理由から、Singularityが広く利用されています。このSingularityは、可搬性に優れたSIFを採用しつつOCIイメージフォーマットのコンテナイメージにも対応しており、HPCワークロード実行に求められる性能・セキュリティ・利便性に優れたコンテナ環境を可能にします。本テクニカルTipsは、SingurarityのオープンソースエディションであるSingularityCEを利用し、クラスタ・ネットワーク対応のベアメタル・シェイプで構築するHPCクラスタにコンテナ環境を構築する方法を解説します。"
+description: "HPCワークロードのためのコンテナ環境は、インターコネクトやGPU等のリソースをコンテナから容易に利用できたり、マルチユーザ環境での利用を前提とするHPCシステムで非特権ユーザのコンテナ実行をネイティブにサポートしている等の理由から、Singularityが広く利用されています。このSingularityは、可搬性に優れたSIFを採用しつつOCIイメージフォーマットのコンテナイメージにも対応しており、HPCワークロード実行に求められる性能・セキュリティ・利便性に優れたコンテナ環境を可能にします。本テクニカルTipsは、SingurarityのオープンソースエディションであるSingularityCEを利用し、クラスタ・ネットワーク対応のベアメタル・シェイプで構築するHPC/GPUクラスタにコンテナ環境を構築する方法を解説します。"
 weight: "3508"
 tags:
 - hpc
@@ -483,9 +483,9 @@ int main(int argc, char **argv) {
 次に、以下コマンドを計算ノードのコンテナユーザで実行し、このサンプルプログラムをコンパイル・実行します。
 
 ```sh
-$ mkdir -p ~/`hostname` && singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif mpicc -o ~/`hostname`/mpi_hello mpi_hello.c
+$ mkdir -p ~/`hostname` && singularity exec ~/singularity/ubuntu_noble_ompi.sif mpicc -o ~/`hostname`/mpi_hello mpi_hello.c
 $ module load openmpi
-$ mpirun -n 2 singularity exec --nv ~/singularity/ubuntu_noble_gpu.sif ~/`hostname`/mpi_hello
+$ mpirun -n 2 singularity exec ~/singularity/ubuntu_noble_ompi.sif ~/`hostname`/mpi_hello
 Hello world! I am 1 of 2
 Hello world! I am 0 of 2
 $

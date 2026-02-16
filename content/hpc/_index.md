@@ -208,7 +208,7 @@ HPCアプリケーションのパフォーマンス解析やチューニング�
 | 1   | **HPL**                  | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**              | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux** | **[ここ](benchmark/run-hpl/)**<br>**[ここ](benchmark/run-hpl-e5/)**<br>**[ここ](benchmark/run-hpl-e6/)**                         |
 | 2   | **STREAM**               | **BM.Optimized3.36**<br>**BM.Standard.E5.192**<br>**BM.Standard.E6.256**              | **Oracle LInux**<br>**Oracle LInux**<br> **Oracle LInux** | **[ここ](benchmark/run-stream/)**<br>**[ここ](benchmark/run-stream-e5/)**<br>**[ここ](benchmark/run-stream-e6/)**                |
 | 3   | **Intel MPI Benchmarks** | **BM.Optimized3.36**                                                                  | **Oracle LInux**                                          | **[ここ](benchmark/run-imb/)**                                                                                               |
-| 4   | **OSU Micro-Benchmarks** | **BM.Optimized3.36**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**                                | **Oracle LInux**<br>**Oracle LInux** / **Ubuntu**         | **[ここ](benchmark/run-omb-hpc/)**<br>**[ここ](benchmark/run-omb-gpu/)**                                                       |
+| 4   | **OSU Micro-Benchmarks** | **BM.Optimized3.36**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**                                | **Oracle LInux**<br>**Oracle LInux**<br>**Ubuntu**         | **[ここ](benchmark/run-omb-hpc/)**<br>**[ここ](benchmark/run-omb-gpu/)**<br>**[ここ](benchmark/run-omb-gpu-ubuntu/)**                                                       |
 | 5   | **NCCL Tests**           | **BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.A100-v2.8/BM.GPU4.8**<br>**BM.GPU.H100.8** | **Oracle LInux**<br>**Ubuntu**<br> **Oracle LInux**       | **[ここ](benchmark/run-nccltests/)**<br>**[ここ](benchmark/run-nccltests-ubuntu/)**<br>**[ここ](benchmark/run-nccltests-h100/)** |
 
 ## 2-2. パフォーマンス関連Tips集
@@ -229,9 +229,9 @@ HPCアプリケーションのパフォーマンス解析やチューニング�
 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** は、業界標準のRoCEv2を採用する高帯域・低遅延のRDMA対応インターコネクトネットワークサービスで、そのトポロジーがFat treeのため同一リーフスイッチに接続するノード間とスパインスイッチを介して異なるリーフスイッチに接続するノード間で、ノード間通信のレイテンシが大きく異なります。このため、この特性を意識して適切な計算/GPUノードにジョブを配置することで、レイテンシに影響を受け易いワークロードの性能や高並列実行時のスケーラビリティを改善できる場合があります。  
 本パフォーマンス関連Tipsは、この **クラスタ・ネットワーク** のレイテンシ特性を生かしてマルチノードジョブをクラスタ内に配置することで、ノード間通信性能を最適化する方法を解説します。
 
-- **[CFD解析フローのコストパフォーマンを向上させるOpenFOAM関連Tips](benchmark/openfoam-tuning/)**  
-**[OpenFOAM](https://www.openfoam.com/)** は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を大きく向上させることが可能です。  
-本パフォーマンス関連Tipsは、HPCワークロードの実行に最適なベアメタルインスタンス **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **OpenFOAM** を使用する際、CFD解析フローをコストパフォーマンス良く実行するという観点で有益なTipsを解説します。
+- **[CFD解析フローのトータルコストパフォーマンを最適化するOpenFOAM実行方法](benchmark/openfoam-tuning/)**  
+**[OpenFOAM](https://www.openfoam.com/)** は、CAE分野で多くの利用実績を持つオープンソースのCFDアプリケーションで、計算時に多くのメモリ帯域を使用したり実行中に多くのデータをファイルシステムに書き出したりする特性があるため、これらを考慮した実行方法を採用することでその性能を向上させることが可能です。  
+本パフォーマンス関連Tipsは、 **Intel Ice Lake** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタで **OpenFOAM** を実行する際、CFD解析フローのトータルコストパフォーマンスを最適化するための実行方法を解説します。
 
 - **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](benchmark/openmpi-perftips/)**  
 **[OpenMPI](https://www.open-mpi.org/)** は、最新のMPI言語規格に準拠し、HPC/機械学習ワークロード実行に必要とされる様々な機能を備えたオープンソースのMPI実装です。  
@@ -459,7 +459,7 @@ HPC/機械学習ワークロード実行のためのGPU搭載ノードは、NVID
 - **[SingularityによるHPCワークロード向けコンテナ環境構築方法](tech-knowhow/container-with-singularity/)**  
 HPCワークロードのためのコンテナ環境は、インターコネクトやGPU等のリソースをコンテナから容易に利用できたり、マルチユーザ環境での利用を前提とするHPCシステムで非特権ユーザのコンテナ実行をネイティブにサポートしている等の理由から、 **Singularity** が広く利用されています。  
 この **Singularity** は、可搬性に優れた **SIF** を採用しつつ **OCI** イメージフォーマットのコンテナイメージにも対応しており、HPCワークロード実行に求められる性能・セキュリティ・利便性に優れたコンテナ環境を可能にします。  
-本テクニカルTipsは、 **Singurarity** のオープンソースエディションである **[SingularityCE](https://sylabs.io/singularity/)** を利用し、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 対応のベアメタル・シェイプで構築するHPCクラスタにコンテナ環境を構築する方法を解説します。
+本テクニカルTipsは、 **Singurarity** のオープンソースエディションである **[SingularityCE](https://sylabs.io/singularity/)** を利用し、 **[クラスタ・ネットワーク](#5-1-クラスタネットワーク)** 対応のベアメタル・シェイプで構築するHPC/GPUクラスタにコンテナ環境を構築する方法を解説します。
 
 ## 3-6. その他
 

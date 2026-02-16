@@ -10,9 +10,8 @@ params:
 
 # 0. 概要
 
-本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上に作成する方法で、HPCワークロード向け **Intel Ice Lake** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** で検証します。  
+本チュートリアルは、OCIコンソールから必要なリソースを順次OCI上に作成する方法で、 **Intel Ice Lake** プロセッサを搭載するベアメタルシェイプ **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するHPCクラスタを構築し、そのインターコネクト性能を **[Intel MPI Benchmarks](https://github.com/intel/mpi-benchmarks)** で検証します。  
 また、環境構築後により大規模な計算を実施する必要が生じたり、メンテナンスによりノードを入れ替える必要が生じることを想定し、既存の **クラスタ・ネットワーク** に計算ノードを追加する方法と、特定の計算ノードを入れ替える方法も学習します。
-
 
 本チュートリアルで構築するHPCクラスタの構成を以下に示します。
 
