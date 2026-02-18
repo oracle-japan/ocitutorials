@@ -16,7 +16,7 @@ header:
 <a id="anchor0"></a>
 
 # はじめに
-**Oracle Cloud Infrastructure (OCI) GoldenGate**はフルマネージド型のリアルタイムデータ連携サービスとなっています。
+**Oracle Cloud Infrastructure (OCI) GoldenGate**はフルマネージド型のリアルタイムデータレプリケーションサービスとなっています。
 OCI GoldenGateサービスは、構成、ワークロード・スケーリング、パッチ適用などの多くの機能を自動化しており、従量課金制で利用することが可能です。そのため時間や場所を選ばずに、低コストでデータの連携、分析ができるようになります。
 
 この章では、OCI GoldenGateの作成とBaseDBからADBへのデータ連携の設定について紹介します。
