@@ -42,7 +42,7 @@ $
 
 # 2. BM.GPU4.8/BM.GPU.A100-v2.8用ファイルシステム作成手順
 
-**BM.GPU4.8/BM.GPU.A100-v2.8** は、6.4 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
+**BM.GPU4.8/BM.GPU.A100-v2.8** は、6.8 TBのNVMe SSDローカルディスクを4ドライブ内蔵するため、以下の手順を該当するノードのopcユーザで実行し、ファイルシステムを作成・マウントします。
 
 ```sh
 $ sudo vgcreate nvme /dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1 /dev/nvme3n1
