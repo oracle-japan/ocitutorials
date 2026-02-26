@@ -1,6 +1,6 @@
 ---
-title: "Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集"
-description: "OCIの管理エージェントには、PrometheusのNode Exporterを利用したメトリックの収集機能が用意されています。こちらを使うことで標準では提供されていないメトリックの項目（Disk使用量など）をモニタリングで可視化したり、オンプレミスのサーバーのメトリックをモニタリングで可視化することが可能となります。"
+title: "Prometheus Node Exporterを利用した管理エージェントによるOCIインスタンスのモニタリング"
+description: "OCIの管理エージェントには、Prometheus Node Exporterを利用したメトリックの収集機能が用意されています。こちらを使うことで標準では提供されていないメトリック（Disk使用量など）をモニタリングしたり、オンプレミスのサーバーのメトリックをモニタリングすることが可能となります。"
 weight: "155"
 tags:
 - 運用管理・監視
@@ -9,120 +9,141 @@ images:
 ---
 
 **チュートリアル概要説明**  
-このチュートリアルでは、Node Exporterが収集したOCIインスタンスのメトリックをモニタリングで可視化するまでのステップをご紹介します。
-本チュートリアルは[こちらのドキュメント](https://docs.oracle.com/ja-jp/iaas/management-agents/doc/deploy-management-agents-prometheus.html)を補足する内容となりますので、あわせてご参照ください。
+Prometheus Node Exporterが収集したOCIインスタンスのメトリックをOCI Monitoringで表示するまでのステップをご紹介します。
+このチュートリアルは[OCIドキュメント](https://docs.oracle.com/ja-jp/iaas/management-agents/doc/set-management-agents-collect-prometheus-metrics.html#OCIAG-GUID-7DBE4880-9E73-44C5-AB0E-3CEF93B8DDFD)を補足する内容となりますので、あわせてご参照ください。
 
 **所要時間 :** 約30分
 
 **前提条件 :**
 + 監視対象となるコンピュート・インスタンスの作成  
   参考：[その3 - インスタンスを作成する](https://oracle-japan.github.io/ocitutorials/beginners/creating-compute-instance/)
-+ OSはOracle Linux 7.9
++ OSはOracle Linux 9
 + 管理エージェントはOracle Cloud Agentプラグインを使用
 + 構成のイメージ
-  ![画面ショット1](prom1.png)
 
-**必要な権限 :** 以下の権限設定が最低限必要となります。
+![画面ショット](prom1.png)
+
+**必要な権限 :**  
+以下の権限設定が最低限必要となります。OCIユーザーはテナント管理者を想定しています。
 + 動的グループ
 ```
-all {resource.type = 'managementagent', resource.compartment.id ='<your compartment id>'}
+all {resource.type='managementagent' resource.compartment.id='<compartment name>'}
 ```
   動的グループの概要と設定方法については以下を参照ください。  
-  参考：[OCI活用資料集：IDおよびアクセス管理 (IAM) 詳細](https://oracle-japan.github.io/ocidocs/services/governance%20and%20administration/iam-200/)
+  OCIドキュメント：[動的グループの管理](https://docs.oracle.com/ja-jp/iaas/Content/Identity/Tasks/managingdynamicgroups.htm)
 
 + ポリシー
 ```
-allow service loganalytics to read loganalytics-features-family in tenancy
-allow dynamic-group <your dynamic-group-name> to use metrics in tenancy / compartment <your compartment name>
+allow dynamic-group Management-Agent-Dynamic-Group to use metrics in compartment <compartment name> where target.metrics.namespace = '<namespace name>'
 ```
 
-> チュートリアル内の画面ショットについては現在のコンソール画面と異なっている場合があります。
-<br>
+{{< hint type=important >}}
+コンパートメントはエージェントがあるコンパートメント名を、ネームスペースには任意のネームスペース名を入力します。6章で設定する管理エージェントのUIで指定する名前と一致させる必要があります。
+{{< /hint >}}
 
 <a id="anchor1"></a>
 
 # 1. Oracle Cloud Agent プラグインの有効化
-+ コンピュートインスタンスの詳細画面で管理エージェントのプラグインを有効にします。
-  ![画面ショット2](prom2.png)
++ コンピュートインスタンスの詳細画面で管理エージェントのプラグインを有効にします。  
+
+![画面ショット](image01.png)
 <br><br>
 
 <a id="anchor2"></a>
 
-# 2. 管理エージェント ステータスの確認
-+ 監視および管理 > 管理エージェント > エージェント
-  ![画面ショット3](prom3.png)
-
-+ 有効化が完了していればアクティブとして表示されます。
-  ![画面ショット4](prom4.png)
-<br><br>
-
-<a id="anchor3"></a>
-
-# 3. Node Exporter ダウンロード
-+ コンピュート・インスタンスにSSHでログインし、OPCユーザーで以下コマンドを実行します。※2022年9月時点でNode Exporterの最新版はv1.3.1
+# 2. Node Exporter ダウンロード
++ コンピュート・インスタンスにSSHでログインし、OPCユーザーで以下コマンドを実行します。
 ```
-wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz
+wget https://github.com/prometheus/node_exporter/releases/download/v1.10.2/node_exporter-1.10.2.linux-amd64.tar.gz
 ```
-+ または、[Github](https://github.com/prometheus/node_exporter/releases)から直接ダウンロードし、SCPツール等で監視対象サーバーにコピーします。
-  ![画面ショット5](prom5.png)
++ または、[Github](https://github.com/prometheus/node_exporter/releases)から直接ダウンロードし、SCPツール等で監視対象サーバーにコピーします。  
+
+![画面ショット](image04.png)
+
+{{< hint type=note >}}
+2026年2月時点でNode Exporterの最新版はv1.10.2となります。  
+使用するバージョンにあわせてコマンドのファイル名を変更してください。
+{{< /hint >}}
 <br><br>
 
 <a id="anchor4"></a>
 
-# 4. Node Exporter インストールの確認
+# 3. Node Exporter インストールの確認
 + 解凍した後、インストール確認のためNode_Exporterを実行します。
 ```
-tar xvfz node_exporter-1.3.1.linux-amd64.tar.gz
+tar xvfz node_exporter-1.10.2.linux-amd64.tar.gz
 ```
 ```
-cd node_exporter-1.3.1.linux-amd64
+cd node_exporter-1.10.2.linux-amd64
+```
+```
+sudo cp node_exporter /usr/local/bin
+```
+```
+cd /usr/local/bin
 ```
 ```
 ./node_exporter
 ```
 + 実行するとNode Exporterが起動し、以下のようなメッセージが出力されますのでそのままにしておきます。※停止するにはCtl+C
-  ![画面ショット6](prom6.png)
+
+![画面ショット6](prom6.png)
+
 + Node Exporterを起動したまま、別のターミナル画面を開いて以下コマンドを実行します。
 ```
 curl http://localhost:9100/metrics
 ```
 + 以下のように収集されたメトリック一覧が表示されれば、インストールは成功です。
-  ![画面ショット7](prom7.png)
+
+![画面ショット7](prom7.png)
 <br><br>
 
 <a id="anchor5"></a>
 
-# 5. SElinux モード変更
+# 4. SElinux モード変更
 + Node Exporterが自動起動するようにサービス化するため、SELinuxのモードを変更しておきます。
 ```
 sudo vi /etc/selinux/config
 ```
 + コンフィグファイルで enforcing > permissive へ変更し、OSを再起動します。
-  ![画面ショット8](prom8.png)
+
+![画面ショット8](prom8.png)
 
 + getenforceコマンドでモードがpermissiveに変更されていることを確認します。
 <br><br>
 
+{{< hint type=note >}}
+この記事では便宜的にSELinuxをPermissiveにしていますが、本番環境等ではセキュリティの観点からEnforcingとすることが推奨されます。
+{{< /hint >}}
+
 <a id="anchor6"></a>
 
-# 6. Node Exporter サービス化
+# 5. Node Exporter サービス化
 + Systemdのユニット定義ファイルを作成します
 ```
 sudo vi /etc/systemd/system/node_exporter.service
 ```
 
 + 記述例
-  ```
-  [Unit]
-  Description=Node Exporter
+```
+[Unit]
+Description=Node Exporter
+After=network.target
 
-  [Service]
-  User=opc
-  ExecStart=/home/opc/node_exporter-1.3.1.linux-amd64/node_exporter
+[Service]
+User=opc
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+Restart=always
+RestartSec=5
 
-  [Install]
-  WantedBy=multi-user.target
-  ```
+[Install]
+WantedBy=multi-user.target
+```
+
+{{< hint type=note >}}
+この記事では便宜的にNode Exporterの実行ユーザーをopcとしていますが、本番環境等ではセキュリティの観点から専用ユーザーを作成することが推奨されます。
+{{< /hint >}}
 
 + ユニット定義ファイルのリロード
 ```
@@ -147,88 +168,72 @@ sudo systemctl status node_exporter
 
 <a id="anchor7"></a>
 
-# 7. 管理エージェント 構成ファイルの作成
-+ 管理エージェントの検出ディレクトリに構成ファイルを配置します。拡張子は必ず .properties とします。
-```
-sudo vi /var/lib/oracle-cloud-agent/plugins/oci-managementagent/polaris/agent_inst/discovery/PrometheusEmitter/<任意の名前>.properties
-```
+# 6. 管理エージェント データソースの作成
++ 管理エージェント > エージェントとゲートウェイ > 対象のエージェントへ進み「データソースの管理」をクリックします。
 
-+ 管理エージェントを個別インストールするケース、例えばオンプレミスのサーバーに個別でインストールする場合などは、PrometheusEmitterがあるディレクトリは以下のようになります。
-```
-/opt/oracle/mgmt_agent/agent_inst/discovery/PrometheusEmitter/
-```
+![画面ショット](image03.png)
 
-+ 管理エージェントの個別インストールの詳細については[ドキュメント](https://docs.oracle.com/ja-jp/iaas/management-agents/doc/install-management-agent-chapter.html)を参照ください。
++ 「データソースの追加」をクリックし、必要項目を入力します。
 
-+ 以下は必須項目になります。
-```
-url= http://<インスタンスのプライベートIP>:9100/metrics
-namespace= 任意のネームスペース名　※アルファベット小文字とアンダースコアのみ、”oci_”はモニタリングで予約済のため使用不可
-compartmentId= コンパートメントのOCID
-```
+![画面ショット](image05.png)
 
-+ 以下はオプションになります。
-```
-nodeName= インスタンスのホスト名
-metricDimensions= 任意のディメンション名
-allowMetrics= 必要なメトリックをカンマ区切りで記載することで、メトリックをフィルタリング可能
-```
+  **データソース・タイプ**：Prometheusuで固定  
+  **名前**：任意  
+  **メトリック・コンパートメント**：ポリシーで指定したコンパートメント  
+  **メトリック・ネームスペース**：任意、ポリシーで指定したコンパートメント  
+  **URL**：http://localhost:9100/metrics
 
-+ 構成ファイルのパラメータ詳細については[ドキュメント](https://docs.oracle.com/ja-jp/iaas/management-agents/doc/configure-management-agent-collect-metrics-using-prometheus-node-exporter.html)を参照ください。
+![画面ショット](image06.png)
 
-+ 記述例
-```
-url=http://10.0.0.237:9100/metrics
-namespace=demo_prometheus
-nodeName=demo-instance
-metricDimensions=nodeName
-allowMetrics=node_cpu_seconds_total,node_memory_Active_bytes,node_filesystem_avail_bytes
-compartmentId=ocid1.compartment.oc1..aaaaaaaa3ypj2e4upj5hebkivdksna2nkelu3pjmimyemkgvwexarpppvyrq
-```
+  **カスタム・メトリック・ディメンション**：この記事では使用しません  
+  **オプションのプロパティ**：この記事ではメトリックのフィルタリングのため allowMetrics のみ使用します  
 
-+ この例では以下のメトリックのアップロードを許可しています。
+  この例では以下のメトリックのアップロードを許可しています。
   - node_cpu_seconds_total（CPU時間）  
   - node_memory_Active_bytes（メモリ使用量）  
   - node_filesystem_avail_bytes（ファイルシステム使用量）
 <br><br>
 
+{{< hint type=note >}}
+オプションのプロパティ詳細についてはOCIドキュメント：[オプション・データソース・プロパティ](https://docs.oracle.com/ja-jp/iaas/management-agents/doc/set-management-agents-collect-prometheus-metrics.html#OCIAG-GUID-7DBE4880-9E73-44C5-AB0E-3CEF93B8DDFD)を参照ください。
+{{< /hint >}}
+
 <a id="anchor8"></a>
 
-# 8. モニタリングでメトリックを確認
-+ 構成ファイルを配置すると、1分程度でメトリックが反映されます。
-  ![画面ショット9](prom9.png)
+# 7. モニタリングでメトリックを確認
++ データソースを作成すると、1分程度でメトリックが反映されます。  
 
-+ ネームスペースやメトリック名で構成ファイルで定義したメトリックを選択できるようになっています。
-  ![画面ショット11](prom11.PNG)
-  ![画面ショット12](prom12.png)
+![画面ショット9](prom9.png)
+
++ ネームスペースやメトリックを選択できるようになっています。  
+
+![画面ショット11](prom11.PNG)
+
+![画面ショット12](prom12.png)
 <br><br>
 
 <a id="anchor9"></a>
 
 # 参考：メトリックのフィルタリングについて
-+ Node Exporterでは多くのメトリックがデフォルトで有効になっており、大量のデータがOCIに送信されます。カスタムメトリックのInjectionは課金対象となるため、「allowMetrics」で必要なメトリックのみ許可する設定をお勧めします。メトリックの種類については公開された情報がないようですので、Node Exporterを起動して確認してください。※参照：[4. Node Exporter インストールの確認](#anchor4)
-  ![画面ショット10](prom10.png)
-<br><br>
-
-<a id="anchor10"></a>
-
-# 参考：コレクタによるフィルタリング
-+ Node Exporterにはコレクタという概念があり、メトリックの種類ごとにカテゴリ分けがされています。Node Exporter起動時にコレクタを有効化・無効化することができますので、こちらを使ってメトリックをフィルタリングすることも可能です。
++ Node Exporterでは多くのメトリックがデフォルトで有効になっており、そのままでは大量のデータがOCIに送信されます。カスタムメトリックのInjectionは課金対象となるため、「allowMetrics」で必要なメトリックのみ許可する設定をお勧めします。
++ Node Exporterにはコレクタという概念があり、メトリックの種類ごとにカテゴリ分けがされています。Node Exporter起動時にコレクタを有効化・無効化することができますので、こちらを使ってより効率的に細かくメトリックをフィルタリングすることも可能です。コレクタについては[GitHub](https://github.com/prometheus/node_exporter#collectors)に公開されていますので、フィルタリングの参考にしてください。
   
-+ ユニット定義ファイルの記述例
-  ```
-  [Unit]
-  Description=Node Exporter
+- ユニット定義ファイルの記述例
+```
+[Unit]
+Description=Node Exporter
+After=network.target
 
-  [Service]
-  User=opc
-  ExecStart=/home/opc/node_exporter-1.3.1.linux-amd64/node_exporter --collector.disable-defaults --collector.cpu --collector.meminfo --collector.filesystem
+[Service]
+User=opc
+Type=simple
+ExecStart=/usr/local/bin/node_exporter --collector.disable-defaults --collector.cpu --collector.meminfo --collector.filesystem
+Restart=always
+RestartSec=5
 
-  [Install]
-  WantedBy=multi-user.target
-  ```
-
-+ コレクタの種類と有効化・無効化の設定詳細については[Node Exporterのドキュメント](https://github.com/prometheus/node_exporter/blob/master/README.md)を参照ください。
+[Install]
+WantedBy=multi-user.target
+```
 <br><br>
 
 <a id="anchor11"></a>
