@@ -24,6 +24,7 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 
 
 ## Stack Monitoring
+**Stack Monitoringは2026/1/22以降非推奨となることが発表され、使用可能期間は2027/1/23までとなりましたのでご注意ください。**
 + **[Stack Monitoring オンボーディング](/ocitutorials/management/stack_monitoring_onboarding/)**
 + **[Stack Monitoring を使用して OCI Compute のメトリックを可視化する](/ocitutorials/management/stack_monitoring_install/)**
 + **[Stack Monitoring を使用して BaseDB のメトリックを可視化する](/ocitutorials/management/stack_monitoring_basedb/)**
@@ -56,4 +57,4 @@ OCIには、OCI Observability and Management Platform(O&M)と呼ばれるOCIに�
 
 
 ## その他
-+ **[Prometheus Node Exporterを利用した管理エージェントによるインスタンスのメトリック収集](/ocitutorials/management/monitoring_prometheus/)**
++ **[Prometheus Node Exporterを利用した管理エージェントによるOCIインスタンスのモニタリング](/ocitutorials/management/monitoring_prometheus/)**
