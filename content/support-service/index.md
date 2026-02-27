@@ -10,14 +10,11 @@ aliases: "/support-service/tips-support-cust-success/"
 <a id="anchor0"></a>
 **本資料の目的 :** この文書は、お客様がトラブル解決のために技術サポート（Support RequestまたはService Request、以下SRと略します）を効果的に活用するためのポイント、記載すべき項目、伝える際の注意事項をまとめたものです。サポート側は、個々の問い合わせに誠実に取り組み、解決に向けて最善の努力を尽くします。サポート側とお客様が協力し合うことは、トラブルの早期解決に寄与します。これらはすべて任意の内容ですので、必ずしも全てを実施しなければならないわけではありません。なにをどこまで参考にするかはそれぞれのご判断で取り入れていただけますようお願いします
 
-**前提条件 :** OCIを利用するお客様・パートナー様のエンジニア向け。ただし技術サポートツールの「操作方法」については本文書には含みませんので、下記各種ガイドをご参照ください
+**前提条件 :** OCIを利用するお客様・パートナー様のエンジニア向け。下記の窓口とドキュメントをご参照ください
 
+([製品別サポート窓口](https://www.oracle.com/jp/support/support-services-list/ "製品別サポート窓口"))
 
-([製品別サポート窓口／ご利用ガイド](https://www.oracle.com/jp/support/support-services-list/ "製品別サポート窓口／ご利用ガイド"))
-
-([新クラウドサポートポータル (My Oracle Cloud Support) のご案内（PDF)](https://www.oracle.com/jp/a/ocom/docs/customer-portal-experience-jp.pdf "新クラウドサポートポータル (My Oracle Cloud Support) のご案内（PDF)"))
-
-([Oracle Cloud Supportご利用ガイド（PDF)](https://www.oracle.com/jp/a/ocom/docs/oracle-cloud-support-userguide-jp.pdf "Oracle Cloud Supportご利用ガイド（PDF)"))
+([My Oracle Support - ポータル・ドキュメント](https://support.oracle.com/knowledgefs/?lang=ja_JP&docId=MC1 "My Oracle Support - ポータル・ドキュメント"))
 
 <br>
 
@@ -126,10 +123,10 @@ aliases: "/support-service/tips-support-cust-success/"
 **待ち時間が長引いていると感じた場合** 
 1. **「今対応できることがあるかどうか」を確認：** 
     - 催促や事象の伝達、認識合わせを目的として、サポートエンジニアにZOOMや電話での相談を希望します
-1. **「マネジメント支援リクエスト」の依頼：** 
-    - 特特定の期限内に解決が必要で、重要な問題に関して、マネージャが対応に関与するように依頼できます。詳細は、以下資料内の「SRに対するマネジメント支援依頼」の項目をご覧ください
-     ([Oracle Cloud Supportご利用ガイド（PDF)](https://www.oracle.com/jp/a/ocom/docs/oracle-cloud-support-userguide-jp.pdf "Oracle Cloud Supportご利用ガイド（PDF)"))
-2. **ナレッジの検索：** 
+2. **「マネージャー対応」を依頼：** 
+    - 特定の期限内に解決が必要で、重要な問題に関して、マネージャーが対応に関与するように依頼できます。以下ドキュメントの「サービス・リクエストのマネージャー対応を依頼」の項目ご覧ください
+([My Oracle Support - ポータル・ドキュメント](https://support.oracle.com/knowledgefs/?lang=ja_JP&docId=MC1 "My Oracle Support - ポータル・ドキュメント"))
+3. **ナレッジの検索：** 
     - ナレッジ（既存情報）がOracle Cloud Supportにて公開されています。既存の情報で解決できるかもしれませんので、ナレッジ検索もご利用ください
 　
 
