@@ -346,7 +346,7 @@ $ cube
 
 ## 3-0. 概要
 
-本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるデータを実施します。  
+本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるデータを取得します。  
 ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。  
 この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを **PAPI** による浮動小数点演算数を含まない場合と含む場合で取得するため、以下の手順で実施します。
 
@@ -375,12 +375,8 @@ $ module load openmpi papi
 $ make bt-mz CLASS=D
 $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wo_scorep
 $ sed -i 's/^FC = mpif90/FC = scorep-mpif90/g' config/make.def
-$ diff config/make.def.template config/make.def
-32c32
-< FC = mpif90
----
-> FC = scorep-mpif90
 $ make clean
+$ module load scorep
 $ make bt-mz CLASS=D
 $ mv bin/bt-mz.D.x bin/bt-mz.D.x_wi_scorep
 ```
@@ -397,7 +393,7 @@ $
 この実行により、カレントディレクトリにディレクトリ **scorep_bt-mz_18p36xO_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
-$ module load scorep scalasca
+$ module load scalasca
 $ scalasca -analyze mpirun -n 36 -N 18 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x OMP_NUM_THREADS=2" "-x LD_LIBRARY_PATH" "-bind-to none" ./bin/bt-mz.D.x_wi_scorep 2>&1 | grep "Time in seconds"
  Time in seconds =                   359.84
 $
