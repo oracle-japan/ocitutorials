@@ -1,6 +1,6 @@
 ---
 title: "トンネル検査構成でOCI Network Firewallを構築する"
-description: "本チュートリアルでは「OCI Network Firewall」をトンネル検査構成で構築を行います"
+description: "既存のネットワーク構成を変えずに、通信をミラーリングすることで、Network FirewallでIDS/IDPを行う流れを解説します"
 weight: "110"
 tags:
 - セキュリティ
