@@ -140,30 +140,30 @@ params:
 
 本章は、プロファイリングツールとその前提条件ソフトウェアのインストールを以下の順に実施します。
 
-1. **[OpenMPIインストール](#2-1-openmpiインストール)**
-2. **[PAPIインストール](#2-2-papiインストール)**
-3. **[Score-Pインストール](#2-3-score-pインストール)**
-4. **[Scalascaインストール](#2-4-scalascaインストール)**
-5. **[CubeGUIインストール](#2-5-cubeguiインストール)**
+1. **[OpenMPIインストール](#2-1-openmpiインストール)** （全ての計算ノード）
+2. **[PAPIインストール](#2-2-papiインストール)** （全ての計算ノード）
+3. **[Score-Pインストール](#2-3-score-pインストール)** （全ての計算ノード）
+4. **[Scalascaインストール](#2-4-scalascaインストール)** （全ての計算ノード）
+5. **[CubeGUIインストール](#2-5-cubeguiインストール)** （Bastionノード）
 
 ## 2-1. OpenMPIインストール
 
-**OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い、全ての計算ノードに実施します。
+**OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
 
 ## 2-2. PAPIインストール
 
-**PAPI** のインストールは、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[PAPIでHPCアプリケーションをプロファイリング](../papi-profiling/)** の **[2-2. PAPIインストール](../papi-profiling/#2-2-papiインストール)** の手順に従い、全ての計算ノードに実施します。
+**PAPI** のインストールは、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[PAPIでHPCアプリケーションをプロファイリング](../papi-profiling/)** の **[2-2. PAPIインストール](../papi-profiling/#2-2-papiインストール)** の手順に従い実施します。
 
 ## 2-3. Score-Pインストール
 
-以下コマンドを全ての計算ノードのopcユーザで実行し、 **Score-P** の前提条件ソフトウェアをインストールします。
+以下コマンドをopcユーザで実行し、 **Score-P** の前提条件ソフトウェアをインストールします。
 
 ```sh
 $ sudo yum-config-manager --enable ol9_codeready_builder ol9_developer_EPEL
 $ sudo dnf install -y binutils-devel libunwind libunwind-devel gcc-plugin-devel llvm-devel clang-devel cmake gcc-plugin-devel
 ```
 
-次に、以下コマンドを全ての計算ノードのrootユーザで実行し、 **Score-P** をインストールします。  
+次に、以下コマンドをrootユーザで実行し、 **Score-P** をインストールします。  
 これにより、 **Score-P** が **/opt/scorep** にインストールされます。
 
 ```sh
@@ -190,38 +190,6 @@ module-whatis "Score-P for OpenMPI"
 
 set pkg_root  /opt/scorep
 set ver       9.4
-
-prepend-path PATH   $pkg_root/bin
-```
-
-## 2-4. Scalascaインストール
-
-以下コマンドを全ての計算ノードのrootユーザで実行し、 **Scalasca** をインストールします。  
-これにより、 **Scalasca** が **/opt/scalasca** にインストールされます。
-
-```sh
-$ cd ~/`hostname` && wget https://apps.fz-juelich.de/scalasca/releases/scalasca/2.6/dist/scalasca-2.6.2.tar.gz
-$ tar -xvf ./scalasca-2.6.2.tar.gz
-$ cd scalasca-2.6.2 && ./configure
-$ make -j && make install; echo $?
-```
-
-次に、以下のファイルを **/usr/share/Modules/modulefiles/scalasca** で作成します。  
-このファイルは、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **scalasca** を登録し、これをロードすることで **Scalasca** 利用環境の設定を可能にします
-
-```sh
-#%Module1.0
-##
-## Scalasca for OpenMPI
-
-proc ModulesHelp { } {
-        puts stderr "Scalasca for OpenMPI\n"
-}
-
-module-whatis "Scalasca for OpenMPI"
-
-set pkg_root  /opt/scalasca
-set ver       2.6.2
 
 prepend-path PATH   $pkg_root/bin
 ```
@@ -257,17 +225,49 @@ SendEnv SCOREP_* SCAN_*
 $
 ```
 
+## 2-4. Scalascaインストール
+
+以下コマンドをrootユーザで実行し、 **Scalasca** をインストールします。  
+これにより、 **Scalasca** が **/opt/scalasca** にインストールされます。
+
+```sh
+$ cd ~/`hostname` && wget https://apps.fz-juelich.de/scalasca/releases/scalasca/2.6/dist/scalasca-2.6.2.tar.gz
+$ tar -xvf ./scalasca-2.6.2.tar.gz
+$ cd scalasca-2.6.2 && ./configure
+$ make -j && make install; echo $?
+```
+
+次に、以下のファイルを **/usr/share/Modules/modulefiles/scalasca** で作成します。  
+このファイルは、 **[Environment Modules](https://envmodules.io/)** にモジュール名 **scalasca** を登録し、これをロードすることで **Scalasca** 利用環境の設定を可能にします
+
+```sh
+#%Module1.0
+##
+## Scalasca for OpenMPI
+
+proc ModulesHelp { } {
+        puts stderr "Scalasca for OpenMPI\n"
+}
+
+module-whatis "Scalasca for OpenMPI"
+
+set pkg_root  /opt/scalasca
+set ver       2.6.2
+
+prepend-path PATH   $pkg_root/bin
+```
+
 ## 2-5. CubeGUIインストール
 
-以下コマンドをBastionノードのopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **[Qt](https://www.qt.io/)** の前提条件ソフトウェアをインストールします。
+以下コマンドをopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **[Qt](https://www.qt.io/)** の前提条件ソフトウェアをインストールします。
 
 ```sh
 $ sudo yum-config-manager --enable ol9_codeready_builder ol9_developer_EPEL
 $ sudo dnf install -y cmake mesa-libGL mesa-libGL-devel mesa-dri-drivers git xauth xcb-proto xcb-util-devel xcb-util-wm xcb-util-wm-devel xcb-util-cursor xcb-util-cursor-devel libXrender-devel xcb-util-keysyms xcb-util-keysyms-devel libxkbcommon-devel libxkbcommon-x11 libxkbcommon-x11-devel fontconfig-devel freetype-devel libXext-devel libSM-devel libICE-devel
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **Qt** をインストールします。  
-これにより、 **Qt** が **/usr/local/Qt-5.15.18** にインストールされます。
+次に、以下コマンドをopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **Qt** をインストールします。  
+これにより、 **Qt** が **/usr/local/Qt-5.15.18** にインストールされます。  
 本手順は、8コアのVMインスタンスで40分程度を要します。
 
 ```sh
@@ -275,10 +275,10 @@ $ mkdir -p ~/`hostname` && cd ~/`hostname` && git clone https://code.qt.io/qt/qt
 $ cd qt5 && git checkout 5.15
 $ perl init-repository
 $ ./configure -opensource -confirm-license -nomake examples -nomake tests
-$ make -j && sudo make install
+$ make -j && sudo make install; echo $?
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **CubeLib** をインストールします。
+次に、以下コマンドをopcユーザで実行し、 **CubeGUI** の前提条件ソフトウェアである **CubeLib** をインストールします。
 
 ```sh
 $ cd ~/`hostname` && wget https://apps.fz-juelich.de/scalasca/releases/cube/4.9/dist/cubelib-4.9.1.tar.gz
@@ -287,7 +287,7 @@ $ cd cubelib-4.9.1 && ./configure
 $ make -j && sudo make install; echo $?
 ```
 
-次に、以下コマンドをBastionノードのopcユーザで実行し、 **CubeGUI** をインストールします。  
+次に、以下コマンドをopcユーザで実行し、 **CubeGUI** をインストールします。  
 これにより、 **CubeGUI** が **/opt/cubegui** にインストールされます。
 
 ```sh
@@ -346,7 +346,7 @@ $ cube
 
 ## 3-0. 概要
 
-本章は、**NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるデータを取得します。  
+本章は、 **NAS Parallel Benchmarks** をプロファイリング対象とし、 **Scalasca** から起動する **Score-P** でプロファイリング手法によるデータを取得します。  
 ここでは、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用することから、36 MPIプロセス・2 OpenMPスレッドの組み合わせを使用します。  
 この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを **PAPI** による浮動小数点演算数を含まない場合と含む場合で取得するため、以下の手順で実施します。
 
@@ -445,10 +445,9 @@ flt     type     max_buf[B]          visits  time[s] time[%] time/visit[us]  reg
 $
 ```
 
-この出力から、呼び出された回数を示す **visits** 列の値が大きい **region** 列を特定し、これに従いプロファイリング対象からこれらの **region** を除外する以下のフィルタを作成します。
+この出力から、呼び出された回数を示す **visits** 列の値が大きい **region** 列を特定し、これに従いプロファイリング対象からこれらの **region** を除外する以下のフィルタをファイル名 **scorep.filt** で作成します。
 
 ```sh
-$ cat ./scorep.filt
 SCOREP_REGION_NAMES_BEGIN
     EXCLUDE
         binvcrhs
@@ -458,7 +457,6 @@ SCOREP_REGION_NAMES_BEGIN
         binvrhs
         exact_solution
 SCOREP_REGION_NAMES_END
-$
 ```
 
 次に、以下コマンドを何れかの計算ノードのプロファイリング利用ユーザで実行し、先のプロファイリングデータを格納するディレクトリを次の実行に備えて別名に変更します。
