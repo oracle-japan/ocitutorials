@@ -61,7 +61,7 @@ params:
 - **ParaView** ： 6.0.1
 
 ※1）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
-※2）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※2）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 なお、ポスト処理に使用するX11ベースの **ParaView** は、これが動作するBastionノードでGNOMEデスクトップとVNCサーバを起動し、VNCクライアントをインストールした自身の端末からVNC接続して操作します。
 
@@ -83,11 +83,23 @@ params:
 
 この際、計算ノードとBastionノードを以下のように構成します。
 
-- 計算ノード **ブート・ボリューム** サイズ： 100GB以上（インストールするソフトウェアの容量確保のため）
-- 計算ノードSMT： 無効（※3）
-- Bastionノード **ブート・ボリューム** サイズ： 100GB以上（インストールするソフトウェアの容量確保のため）
+- 計算ノード
+    - シェイプ ： **BM.Optimized3.36**
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※3）
+    - **ブート・ボリューム** サイズ： 100GB以上（インストールするソフトウェアの容量確保のため）
+    - SMT： 無効（※4）
+- Bastionノード
+    - シェイプ ： **VM.Standard.E5.Flex** （ 8コア以上（※5））
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※3）
+    - **ブート・ボリューム** サイズ： 100GB以上（インストールするソフトウェアの容量確保のため）
 
-※3）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。
+※3）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
+※4）SMTを無効化する方法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** を参照してください。  
+※5） **OpenFOAM** ・ **ParaView** のインストール作業時間を並列コンパイルで短縮するために多めのコアで作成します。
+
+また、Bastionノードと全計算ノードのCFD解析ユーザホームディレクトリをNFSでサービスする任意のファイル共有ストレージでファイル共有するよう構築します。（※6）
+
+※6）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。
 
 なお、バッチ実行の場合の **Slurm** 環境は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurmによるリソース管理・ジョブ管理システム構築方法](../../tech-knowhow/setup-slurm-cluster/)** に従って構築されたものとし、このテクニカルTipsの **[2. 環境構築](../../tech-knowhow/setup-slurm-cluster/#2-環境構築)** の計算ノードに対する手順を実施することで、計算ノードを **Slurm** 環境に登録します。
 
@@ -250,11 +262,10 @@ $
 
 本テクニカルTipsは、VNCサーバに **[TigerVNC](https://tigervnc.org/)** 、VNCクライアントにWindowsで動作する **[UltraVNC](https://uvnc.com/)** を使用します。
 
-以下コマンドをBastionノードのopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。  
-本手順は、再起動が完了してログインできるまでに30分程度を要します。
+以下コマンドをBastionノードのopcユーザで実行し、GNOMEデスクトップをインストール・セットアップし、OS再起動でこれを有効化します。
 
 ```sh
-$ sudo dnf groupinstall -y "Server with GUI"
+$ sudo dnf install -y gnome-classic-session gnome-terminal nautilus
 $ sudo systemctl set-default graphical
 $ sudo sed -i 's/^#WaylandEnable=false/WaylandEnable=false/g' /etc/gdm/custom.conf
 $ sudo shutdown -r now
@@ -326,15 +337,7 @@ $
 
 ![画面ショット](GNOME_page01.png)
 
-次に、表示される以下GNOME設定画面で、 **Privacy** メニューをクリックします。
-
-![画面ショット](GNOME_page02.png)
-
-次に、表示される以下GNOME設定画面で、 **Screen Lock** メニューをクリックします。
-
-![画面ショット](GNOME_page03.png)
-
-次に、表示される以下GNOME設定画面で、 **Automatic Screen Lock** を **OFF** に設定します。
+次に、表示される以下GNOME設定画面で、 **Automatic Screen Lock** が **OFF** となっていることを確認します。
 
 ![画面ショット](GNOME_page04.png)
 
@@ -557,15 +560,18 @@ $
 # Change the following variables according to your environment
 modl_dir="pitzDaily"
 work_dsk=${FOAM_RUN}
+#work_dsk="/mnt/localdisk/usera"
 
 # Set file/directroy variables
-work_dir=${work_dsk}/${modl_dir}
+case_dir=${work_dsk}/${modl_dir}
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
 
+# Change directory to case dir
+cd ${case_dir}
+
 # Pre-process on head node
-cd ${work_dir}
 blockMesh
 decomposePar
 
@@ -619,13 +625,14 @@ $
 #SBATCH -J motorBike
 #SBATCH -o motorBike_out.%J
 #SBATCH -e motorBike_err.%J
- 
+
 # Change the following variables according to your environment
 modl_dir="motorBike"
 work_dsk=${FOAM_RUN}
+#work_dsk="/mnt/localdisk/usera"
 
 # Set file/directroy variables
-work_dir=${work_dsk}/${modl_dir}
+case_dir=${work_dsk}/${modl_dir}
 
 # Set OCI specific environment variables
 export UCX_NET_DEVICES=mlx5_2:1
@@ -633,8 +640,10 @@ export UCX_NET_DEVICES=mlx5_2:1
 # Read tutorial run functions
 . ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions
 
+# Change directory to case dir
+cd ${case_dir}
+
 # Pre-process on head node
-cd ${work_dir}
 runApplication surfaceFeatureExtract
 runApplication blockMesh
 runApplication decomposePar
