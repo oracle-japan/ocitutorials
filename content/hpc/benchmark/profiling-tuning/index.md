@@ -1,6 +1,6 @@
 ---
 title: "プロファイリング情報に基づく並列アプリケーションチューニング方法"
-description: "並列アプリケーションは、実行時のプロセス間通信に要する時間が性能に悪影響を及ぼしますが、プロファイリングツールから収集する情報で最も時間を要している通信を特定し、この通信パターンに応じたチューニングを適用することで、その性能を改善できる場合があります。本パフォーマンス・プロファイリング関連Tipsは、MPI並列アプリケーションをオープンソースのプロファイリングツールでプロファイリングし、収集した情報からMPI通信パターンに応じたチューニングを適用、その性能を改善する方法を解説します。"
+description: "並列アプリケーションは、実行時のプロセス間通信に要する時間が性能に悪影響を及ぼしますが、プロファイリングツールから収集する情報で最も時間を要している通信を特定し、この通信パターンに応じたチューニングを適用することで、その性能を改善できる場合があります。本パフォーマンス・プロファイリング関連Tipsは、MPI並列アプリケーションをオープンソースのプロファイリングツールであるScore-P、Scalasca、及びCubeGUIでプロファイリングし、収集した情報からMPI通信パターンに応じたチューニングを適用、その性能を改善する方法を解説します。"
 weight: "2212"
 tags:
 - hpc
@@ -8,7 +8,6 @@ params:
   author: Tsutomu Miyashita
 ---
 
-***
 # 0. 概要
 
 並列アプリケーションのチューニングは、以下のステップを経て行われることが一般的です。
@@ -49,18 +48,16 @@ params:
 2. **[プロファイリング](#2-プロファイリング)**
 3. **[チューニング](#3-チューニング)**
 
-***
 # 1. プロファイリング・チューニング環境構築
 
 本章は、本プロファイリング・チューニング関連Tipsで使用する環境を構築します。
 
-この構築は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の **[1. プロファイリング環境構築](../../benchmark/scorep-profiling/#1-プロファイリング環境構築)** の手順に従い実施します。
+この構築は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の手順に従い実施します。
 
 本プロファイリング・チューニング関連Tipsは、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** の同一リーフスイッチに接続する8ノードの計算ノードを使用しているため、その他の構成では以降のプロファイリング・チューニングの結果が異なります。（※3）
 
 ※3）**クラスタ・ネットワーク** の同一リーフスイッチに接続するインスタンス間のノード間接続に於ける効果は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[クラスタ・ネットワークのトポロジーを考慮したノード間通信最適化方法](../../benchmark/topology-aware-cn-tuning/)** を参照してください。
 
-***
 # 2. プロファイリング
 
 ## 2-0. 概要
@@ -84,19 +81,17 @@ params:
 以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、 **NPB** の **FT Class D** のプロファイリング未取得用バイナリ（**ft.D.x_wo_scorep**）とプロファイリング取得用バイナリ（**ft.D.x_wi_scorep**）を作成します。
 
 ```sh
-$ mkdir ~/`hostname` && cd ~/`hostname` && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3.tar.gz
+$ export OCIHPC_WORK=~/ocihpc_2212
+$ mkdir $OCIHPC_WORK && cd $OCIHPC_WORK && wget https://www.nas.nasa.gov/assets/npb/NPB3.4.3.tar.gz
 $ tar -xvf ./NPB3.4.3.tar.gz
 $ cd NPB3.4.3/NPB3.4-MPI
 $ cp config/make.def.template config/make.def
+$ module load openmpi
 $ make ft CLASS=D
 $ mv bin/ft.D.x bin/ft.D.x_wo_scorep
 $ sed -i 's/^MPIFC = mpif90/MPIFC = scorep-mpif90/g' config/make.def
-$ diff config/make.def.template config/make.def
-32c32
-< MPIFC = mpif90
----
-> MPIFC = scorep-mpif90
 $ make clean
+$ module load papi scorep
 $ make ft CLASS=D
 $ mv bin/ft.D.x bin/ft.D.x_wi_scorep
 ```
@@ -113,14 +108,15 @@ $
 この実行により、カレントディレクトリにディレクトリ **scorep_ft_256_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
-$ scalasca -analyze mpirun -n 256 -machinefile ~/hostlist.txt "--bind-to core" "--map-by ppr:16:package" "--rank-by fill" "-x UCX_NET_DEVICES=mlx5_2:1" ./bin/ft.D.x_wi_scorep 2>&1 | grep "Time in seconds ="
+$ module load scalasca
+$ scalasca -analyze mpirun -n 256 -machinefile ~/hostlist.txt "--bind-to core" "--map-by ppr:16:package" "--rank-by fill" "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" ./bin/ft.D.x_wi_scorep 2>&1 | grep "Time in seconds ="
  Time in seconds =                    32.74
 $
 ```
 
 以上より、 **asis** とプロファイリング取得時の  **所要時間** に大きな差が無い（32.41秒と32.74秒）ことが確認できました。  
 もし両者に大きな差がある場合は、プロファイリングのオーバーヘッドの原因を調査し、プロファイリング対象を限定するフィルタを作成し、これを使用してプロファイリングのオーバーヘッドを排除します。  
-この手順は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の **[2-1. 事前準備](../../benchmark/scorep-profiling/#2-1-事前準備)** を参照してください。
+この手順は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../../benchmark/scorep-profiling/)** の **[3-1. 事前準備](../../benchmark/scorep-profiling/#3-1-事前準備)** を参照してください。
 
 
 次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング情報を作成します。
@@ -182,15 +178,16 @@ $
 次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリを次の実行に備えて別名に変更します。
 
 ```sh
-$ mv scorep_ft_256_sum scorep_ft_256_sum_def
+$ mv scorep_ft_256_sum scorep_ft_256_sum_asis
 ```
 
-以降は、Bastionノードの **CubeGUI** でプロファイリングを継続するため、計算ノードのディレクトリ **scorep_ft_256_sum_def** をBastionノードにコピーします。
+以降は、Bastionノードの **CubeGUI** でプロファイリングを継続するため、計算ノードのディレクトリ **scorep_ft_256_sum_asis** をBastionノードにコピーします。
 
 次に、以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、 **CubeGUI** を起動します。
 
 ```sh
-$ cube path_to_dir/scorep_ft_256_sum_def/profile.cubex
+$ module load cubegui
+$ cube path_to_dir/scorep_ft_256_sum_asis/profile.cubex
 ```
 
 次に、評価指標軸の **Time** をクリックします。
@@ -241,7 +238,6 @@ $ cube path_to_dir/scorep_ft_256_sum_def/profile.cubex
 
 ![画面ショット](cubegui_page12.png)
 
-***
 # 3. チューニング
 
 ## 3-0. 概要
@@ -294,7 +290,9 @@ $ cube path_to_dir/scorep_ft_256_sum_def/profile.cubex
 この実行により、カレントディレクトリにディレクトリ **scorep_ft_256_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
-$ scalasca -analyze mpirun -n 256 -machinefile ~/hostlist.txt "--map-by pe-list=`for i in \`seq 0 15\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered" "--mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" ./bin/ft.D.x_wi_scorep
+$ cd ~/ocihpc_2212/NPB3.4.3/NPB3.4-MPI
+$ module load openmpi papi scorep scalasca
+$ scalasca -analyze mpirun -n 256 -machinefile ~/hostlist.txt "--map-by pe-list=`for i in \`seq 0 15\`; do seq -s, $i 18 35 | tr '\n' ','; done | sed 's/,$//g'`:ordered" "--mca coll_hcoll_enable 0" "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" ./bin/ft.D.x_wi_scorep
 ```
 
 次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング情報を作成します。
