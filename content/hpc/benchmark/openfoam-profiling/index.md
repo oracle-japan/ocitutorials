@@ -79,7 +79,7 @@ params:
 # 1. OpenFOAM環境構築
 
 本章は、プロファイリング対応 **OpenFOAM** をインストールする際のベースとなる **OpenFOAM** 環境を構築します。  
-ここでインストールされるプロファイリング機能を持たない **OpenFOAM** は、オーバーヘッドを伴うプロファイリングの影響を排除した比較用の性能計測に用いたり、プロファイリング・チューニング後のプロダクション実行時に使用します。
+ここでインストールするプロファイリング機能を持たない **OpenFOAM** は、オーバーヘッドを伴うプロファイリングの影響を排除した比較用の性能計測に用いたり、プロファイリング・チューニング後のプロダクション実行時に使用します。
 
 この構築は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の手順に従い実施します。
 
@@ -162,15 +162,15 @@ $
 
 ## 3-2. PETScインストール
 
-**PETSc** のインストールは、、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-3. PETScインストール](../../tech-knowhow/install-openfoam/#2-3-petscインストール)** の手順に従い実施します。
+**PETSc** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-3. PETScインストール](../../tech-knowhow/install-openfoam/#2-3-petscインストール)** の手順に従い実施します。
 
 ## 3-3. VTKインストール
 
-**VTK** のインストールは、、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-4. VTKインストール](../../tech-knowhow/install-openfoam/#2-4-vtkインストール)** の手順に従い実施します。
+**VTK** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-4. VTKインストール](../../tech-knowhow/install-openfoam/#2-4-vtkインストール)** の手順に従い実施します。
 
 ## 3-4. ParaViewインストール
 
-**ParaView** のインストールは、、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-5. ParaViewインストール](../../tech-knowhow/install-openfoam/#2-5-paraviewインストール)** の手順に従い実施します。
+**ParaView** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** の **[2-5. ParaViewインストール](../../tech-knowhow/install-openfoam/#2-5-paraviewインストール)** の手順に従い実施します。
 
 ## 3-5. プロファイリング対応OpenFOAMインストール
 
@@ -517,7 +517,7 @@ $
 
 - MPI通信と **simpleFoam** で総所要時間のほぼ全て（ **99.8%** ）を占めている
     - MPI通信時間： 52.6%
-    - **simpleFoam** ： 47.2%*
+    - **simpleFoam** ： 47.2%
 - 以下のMPI通信関数は総所要時間の一割以上を占める
     - **MPI_Waitall** ： 16.1%
     - **MPI_Allreduce** ： 15.8%
@@ -541,7 +541,7 @@ $ cube ./prof_wifl_wofp/profile.cubex
 
 ![画面ショット](cubegui_page03.png)
 
-次に、以下画面のコールツリー軸で **MPI_Isend** をクリックし、システム位置軸を1階層下がり、この **MPI_Isend** の総データ量が2台の計算ノードから **92.0Gバイト** づつ均等に送信されていることを確認します。
+次に、以下画面のコールツリー軸で **MPI_Isend** をクリックし、システム位置軸を1階層下がり、この **MPI_Isend** の総データ量が2台の計算ノードから **92.2Gバイト** づつ均等に送信されていることを確認します。
 
 ![画面ショット](cubegui_page04.png)
 
