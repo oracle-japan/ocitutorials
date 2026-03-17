@@ -47,7 +47,7 @@ PRETTY_NAME="Oracle Linux Server 9.5"
 $
 ```
 
-※1）この詳細は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../../tech-knowhow/cluster-with-pdsh/)** を参照して下さい。
+※1）この詳細は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[pdshで効率的にクラスタ管理オペレーションを実行](../../tech-knowhow/cluster-with-pdsh/)** を参照して下さい。
 
 またMPIプログラムを実行する際も、起動コマンド（ **mpirun** 等）への実行ノード指示（ **--hostfile** オプション）にこのホスト名のホストリストを使用することが出来ます。
 
