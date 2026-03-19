@@ -12,7 +12,7 @@ params:
 
 **[OpenFOAM](https://www.openfoam.com/)** は、そのソースコード体系が大規模・複雑なため、 **OpenFOAM** 自身をソースコードレベルでプロファイリング・チューニングすることは容易ではありませんが、並列計算時に使用するMPI通信にフォーカスすることで、 **OpenFOAM** そのものには手を付けずに性能向上を検討することが可能です。
 
-ここでMPI通信の性能向上に寄与する実行時パラメータは、以下のMPI通信特性に合わせて選定する必要があるため、MPI通信にフォーカスしたプロファイリング・チューニングを実施するためには、 **OpenFOAM** 実行時にこれらの情報を取得する必要があります。
+ここでMPI通信の性能向上に寄与する実行時パラメータは、MPI通信特性に合わせて選定する必要があるため、MPI通信にフォーカスしたプロファイリング・チューニングを実施するためには、 **OpenFOAM** 実行時に以下の情報を取得する必要があります。
 
 - 総所要時間に占める割合の大きなMPI通信関数
 - 上記MPI通信関数呼び出し時のメッセージサイズ
@@ -21,7 +21,7 @@ params:
 
 - プロファイリング
     - **asis** （※1）の所要時間計測
-    - プロファイリング取得時の所要時間計測
+    - **asis** のプロファイリング取得時の所要時間計測
     - 両者に差が無く精度の良いプロファイリング情報を取得出来ていることを確認
     - プロファイリング情報から **ホットスポット** （※2）のMPI通信関数を特定
 - チューニング
@@ -66,7 +66,7 @@ params:
 
 ## 2-1. プロファイリング手法データの取得
 
-この取得は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIでOpenFOAMをプロファイリング](../../benchmark/openfoam-profiling/)** の **[4. プロファイリング手法データの取得](../../benchmark/openfoam-profiling/#4-プロファイリング手法データの取得)** の手順のうち、3. **[4-3. 浮動小数点演算数を含むプロファイリング手法データの取得](../../benchmark/openfoam-profiling/#4-3-浮動小数点演算数を含むプロファイリング手法データの取得)** を除く手順に従い実施します。
+この取得は、 **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIでOpenFOAMをプロファイリング](../../benchmark/openfoam-profiling/)** の **[4. プロファイリング手法データの取得](../../benchmark/openfoam-profiling/#4-プロファイリング手法データの取得)** の手順のうち、 **[4-3. 浮動小数点演算数を含むプロファイリング手法データの取得](../../benchmark/openfoam-profiling/#4-3-浮動小数点演算数を含むプロファイリング手法データの取得)** を除く手順に従い実施します。
 
 ## 2-2. プロファイリング手法データの確認
 
@@ -133,7 +133,7 @@ $ cube ./prof_wofp/profile.cubex
 
 ![画面ショット](cubegui_page01.png)
 
-次に、コールツリー軸領域の任意の箇所をクリックしたのちに **Ctrl-F** キーを入力し、表示される検索フィールドに **MPI_Allreduce** と入力し、表示された **MPI_Allreduce** プルダウンメニューを選択すると、
+次に、コールツリー軸領域の任意の箇所をクリックしたのちに **Ctrl-F** キーを入力し、表示される検索フィールドに **MPI_Allreduce** と入力し、表示される **MPI_Allreduce** プルダウンメニューを選択すると、
 
 ![画面ショット](cubegui_page02.png)
 
@@ -159,8 +159,8 @@ $ cube ./prof_wofp/profile.cubex
 - **ホットスポット** に対するチューニング手法検討
 - チューニング適用時のプロファイリング取得
 - プロファイリング情報から **ホットスポット** に対するチューニングの効果を確認
-- チューニング適用時の  **所要時間** 計測
-- **asis** とチューニング適用時の  **所要時間** 比較・チューニング効果確認
+- チューニング適用時の所要時間計測
+- **asis** とチューニング適用時の所要時間比較・チューニング効果確認
 
 ## 3-1. チューニング手順
 
@@ -168,8 +168,8 @@ $ cube ./prof_wofp/profile.cubex
 
 - 所要時間上位のMPI関数は **MPI_Waitall** と **MPI_Allreduce** でこれを **ホットスポット** と特定
 - **ホットスポット** の **MPI_Allreduce** は以下の特性を有する
-    - 72個のMPIプロセスから均等に **108 MB** のデータが送信されている
-    - 72個のMPIプロセスから均等に **166,000回** 呼び出している
+    - 72個のMPIプロセスが均等に **108 MB** のデータを送信している
+    - 72個のMPIプロセスが均等に **166,000回** 呼び出している
 
 ここで、 **ホットスポット** の **MPI_Allreduce** が各回とも同一メッセージサイズであると仮定し、このメッセージサイズを以下の計算式から求めます。
 
@@ -188,17 +188,18 @@ $ cube ./prof_wofp/profile.cubex
 
 最も所要時間の短い紫色のグラフである以下のパラメータ設定が適していると判断、これをチューニング手法として採用します。
 
-- UCX_TLS： self,sm,rc
-- UCX_RNDV_THRESH： intra:128kb,inter:128kb
-- UCX_ZCOPY_THRESH： 128kb
-- **NPS**： 1（ **asis** と同じ設定です。）
-- プロセス配置： ブロック分割（デフォルトのため **asis** と同じ設定です。）
-- coll_hcoll_enable： 1（デフォルトのため **asis** と同じ設定です。）
+- **UCX_TLS**： **self,sm,rc**
+- **UCX_RNDV_THRESH**： **intra:128kb,inter:128kb**
+- **UCX_ZCOPY_THRESH**： **128kb**
+- **NPS**： 1（ **asis** にも適用されています。）
+- プロセス配置： ブロック分割（デフォルトのため **asis** にも適用されています。）
+- **coll_hcoll_enable**： 1（デフォルトのため **asis** にも適用されています。）
 
 次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、チューニング手法適用時のプロファイリングを取得します。  
 この実行により、カレントディレクトリにディレクトリ **scorep_simpleFoam_36p72xP_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
 
 ```sh
+$ cd /mnt/localdisk/usera/motorBike
 $ module load openmpi papi scorep scalasca
 $ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
 $ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:128kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_witn
@@ -210,7 +211,7 @@ $ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.
 $ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_witn
 ```
 
-以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
+次に、以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
 
 ```sh
 $ module load openmpi papi scorep scalasca
@@ -219,7 +220,7 @@ $ run
 $ scalasca -examine -s -x "-s totaltime" ./prof_wofp_witn
 /opt/scorep/bin/scorep-score  -s totaltime -r ./prof_wofp_witn/profile.cubex > ./prof_wofp_witn/scorep.score
 INFO: Score report written to ./prof_wofp_witn/scorep.score
-[usera@bast-of run]$ head -n 35 ./prof_wofp_witn/scorep.score
+$ head -n 35 ./prof_wofp_witn/scorep.score
 
 Estimated aggregate size of event trace:                   18GB
 Estimated requirements for largest trace buffer (max_buf): 362MB
@@ -258,9 +259,9 @@ flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
 $
 ```
 
-この出力から、 **MPI_Allreduce** の時間が271秒から237秒に減少しており、チューニングの効果が確認できます。
+この出力から、 **MPI_Allreduce** の 所要時間が271秒から237秒に減少しており、チューニングの効果が確認できます。
 
-次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、チューニング適用時の  **所要時間** を計測します。
+次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、チューニング適用時の所要時間を計測します。
 
 ```sh
 $ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:128kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_witn
@@ -273,9 +274,9 @@ ExecutionTime = 15.97 s  ClockTime = 17 s
 $
 ```
 
-この結果から、 **asis** とチューニング適用時の  **所要時間** を比較し、チューニングの効果を確認します。
+この結果から、 **asis** とチューニング適用時の所要時間を比較し、チューニングの効果を確認します。
 
-以下は、本プロファイリング・チューニング関連Tips環境で  **所要時間** を計測した結果です。  
+以下は、本プロファイリング・チューニング関連Tips環境で所要時間を計測した結果です。  
 この計測結果は、 **asis** とチューニング適用時をそれぞれ5回計測した最大値と最小値を除く3回の算術平均です。
 
 |asis|チューニング適用時|性能向上比|

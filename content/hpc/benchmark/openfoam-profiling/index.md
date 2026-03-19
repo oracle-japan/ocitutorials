@@ -286,6 +286,7 @@ SCOREP_REGION_NAMES_END
 この際、その所要時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（17.76秒）と比較し、両者に大きな隔たりが無いことを確認します。
 
 ```sh
+$ cd /mnt/localdisk/usera/motorBike
 $ module load openmpi papi scorep scalasca
 $ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
 $ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wofp
@@ -359,6 +360,7 @@ $ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp
 以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含むプロファイリング手法データを取得します。
 
 ```sh
+$ cd /mnt/localdisk/usera/motorBike
 $ module load openmpi papi scorep scalasca
 $ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
 $ SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wifp
