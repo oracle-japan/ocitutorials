@@ -153,7 +153,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 8 processes](ata_01_08_step2.png)
 
@@ -214,7 +214,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 8 processes](aga_01_08_step2.png)
 
@@ -275,7 +275,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 8 processes](are_01_08_step2.png)
 
@@ -342,7 +342,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 16 processes](ata_01_16_step2.png)
 
@@ -403,7 +403,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 16 processes](aga_01_16_step2.png)
 
@@ -464,7 +464,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 16 processes](are_01_16_step2.png)
 
@@ -531,7 +531,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 32 processes](ata_01_32_step2.png)
 
@@ -592,7 +592,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 32 processes](aga_01_32_step2.png)
 
@@ -653,7 +653,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 32 processes](are_01_32_step2.png)
 
@@ -720,7 +720,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 1 node 36 processes](ata_01_36_step2.png)
 
@@ -781,7 +781,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 1 node 36 processes](aga_01_36_step2.png)
 
@@ -842,7 +842,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 1 node 36 processes](are_01_36_step2.png)
 
@@ -961,7 +961,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 2 node 8 ppn](ata_02_08_step3.png)
 
@@ -1019,7 +1019,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 2 node 8 ppn](aga_02_08_step3.png)
 
@@ -1077,7 +1077,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 2 node 8 ppn](are_02_08_step3.png)
 
@@ -1151,7 +1151,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 2 node 16 ppn](ata_02_16_step3.png)
 
@@ -1209,7 +1209,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 2 node 16 ppn](aga_02_16_step3.png)
 
@@ -1267,7 +1267,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 2 node 16 ppn](are_02_16_step3.png)
 
@@ -1341,7 +1341,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 2 node 32 ppn](ata_02_32_step3.png)
 
@@ -1399,7 +1399,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 2 node 32 ppn](aga_02_32_step3.png)
 
@@ -1457,7 +1457,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 2 node 32 ppn](are_02_32_step3.png)
 
@@ -1531,7 +1531,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 2 node 36 ppn](ata_02_36_step3.png)
 
@@ -1589,7 +1589,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 2 node 36 ppn](aga_02_36_step3.png)
 
@@ -1647,7 +1647,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 2 node 36 ppn](are_02_36_step3.png)
 
@@ -1766,7 +1766,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 4 node 8 ppn](ata_04_08_step3.png)
 
@@ -1824,7 +1824,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 4 node 8 ppn](aga_04_08_step3.png)
 
@@ -1882,7 +1882,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 4 node 8 ppn](are_04_08_step3.png)
 
@@ -1956,7 +1956,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 4 node 16 ppn](ata_04_16_step3.png)
 
@@ -2014,7 +2014,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 4 node 16 ppn](aga_04_16_step3.png)
 
@@ -2072,7 +2072,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 4 node 16 ppn](are_04_16_step3.png)
 
@@ -2146,7 +2146,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 4 node 32 ppn](ata_04_32_step3.png)
 
@@ -2204,7 +2204,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 4 node 32 ppn](aga_04_32_step3.png)
 
@@ -2262,7 +2262,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 4 node 32 ppn](are_04_32_step3.png)
 
@@ -2336,7 +2336,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 4 node 36 ppn](ata_04_36_step3.png)
 
@@ -2394,7 +2394,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 4 node 36 ppn](aga_04_36_step3.png)
 
@@ -2452,7 +2452,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 4 node 36 ppn](are_04_36_step3.png)
 
@@ -2571,7 +2571,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 8 node 8 ppn](ata_08_08_step3.png)
 
@@ -2629,7 +2629,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 8 node 8 ppn](aga_08_08_step3.png)
 
@@ -2687,7 +2687,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 8 node 8 ppn](are_08_08_step3.png)
 
@@ -2761,7 +2761,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 8 node 16 ppn](ata_08_16_step3.png)
 
@@ -2819,7 +2819,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 8 node 16 ppn](aga_08_16_step3.png)
 
@@ -2877,7 +2877,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 8 node 16 ppn](are_08_16_step3.png)
 
@@ -2951,7 +2951,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 8 node 32 ppn](ata_08_32_step3.png)
 
@@ -3009,7 +3009,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 8 node 32 ppn](aga_08_32_step3.png)
 
@@ -3067,7 +3067,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|サイクリック分割|サイクリック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 8 node 32 ppn](are_08_32_step3.png)
 
@@ -3141,7 +3141,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|サイクリック分割|サイクリック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Alltoall 8 node 36 ppn](ata_08_36_step3.png)
 
@@ -3199,7 +3199,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allgather 8 node 36 ppn](aga_08_36_step3.png)
 
@@ -3257,7 +3257,7 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 |MPIプロセス分割方法|ブロック分割|ブロック分割|ブロック分割|
 
 集合通信コンポーネントを比較したものが以下のグラフです。  
-ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
+ここでは、チューニングを全く適用しなかった場合と比較するため、全パラメータがデフォルトの組合せ（ **UCX_TLS=all** ・ **UCX_RNDV_THRESH=auto** ・ **UCX_ZCOPY_THRESH=auto** ・ **coll_hcoll_enable=1** ・ **coll_ucc_enable=0** ）を含めています。
 
 ![Allreduce 8 node 36 ppn](are_08_36_step3.png)
 

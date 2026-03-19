@@ -34,7 +34,9 @@ params:
     - 計算ノード毎の浮動小数点演算数
     - MPIプロセスごとの浮動小数点演算数
 
-以上を踏まえて本プロファイリング関連Tipsは、インターコネクトでノード間接続するHPCクラスタの計算ノードに **Score-P** でプロファイリング情報を取得できるようにコンパイルした **OpenFOAM** をインストールし、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのプロファイリング情報を取得、これを **CubeGUI** をインストールしたBastionノードで解析する手順を解説します。
+ここで本プロファイリング関連Tipsは、ソースコード体系が大規模・複雑なことから **OpenFOAM** 自身をソースコードレベルでプロファイリング・チューニングすることを対象としません。
+
+以上を踏まえて本プロファイリング関連Tipsは、インターコネクトでノード間接続するHPCクラスタの計算ノードに **Score-P** でプロファイリング情報を取得できるようにコンパイルした **OpenFOAM** をインストールし、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのソルバー（ **simpleFoam** ）実行部分をMPI通信と浮動小数点演算にフォーカスしてプロファイリング情報を取得、これを **CubeGUI** をインストールしたBastionノードで解析する手順を解説します。
 
 本プロファイリング関連Tipsは、以下の環境を前提とします。
 
@@ -67,6 +69,8 @@ params:
 ※7） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 ![システム構成図](architecture_diagram.png)
+
+なお、本プロファイリング関連Tipsで構築したプロファイリング環境を使用して **OpenFOAM** にプロファイリング・チューニングを適用する実例は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[プロファイリング情報に基づくOpenFOAMチューニング方法](../profiling-tuning-openfoam/)** を参照してください。
 
 以降では、以下の順に解説します。
 
@@ -205,22 +209,20 @@ $
 
 ## 4-0. 概要
 
-本章は、 **OpenFOAM** に同梱されるチュートリアルのオートバイ走行時乱流シミュレーション（**incompressible/simpleFoam/motorBike**）をプロファイリング対象とし、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用する72 MPIプロセス実行時のプロファイリング手法によるデータを取得します。  
+本章は、 **OpenFOAM** に同梱されるチュートリアルのオートバイ走行時乱流シミュレーション（**incompressible/simpleFoam/motorBike**）のソルバー（ **simpleFoam** ）実行部分をプロファイリング対象とし、ノードあたり36コアを搭載する **BM.Optimized3.36** を2ノード使用する72 MPIプロセス実行時のプロファイリング手法によるデータをMPI通信と浮動小数点演算にフォーカスして取得します。  
 この際、プロファイリングによるオーバーヘッドを考慮した精度の良いプロファイリングを **PAPI** による浮動小数点演算数を含まない場合と含む場合で取得するため、以下の手順で実施します。
 
 1. **[事前準備](#4-1-事前準備)**
     - オートバイ走行時乱流シミュレーションケースディレクトリ作成
-    - プロファイリングを実施しない場合の実行時間を計測
-    - プロファイリングを実施する場合の実行時間を計測
-    - 両者に隔たりがある場合プロファイリング対象を限定するフィルタを作成
+    - プロファイリングを実施しない場合の所要時間を計測
+    - **Score-P** 用フィルタファイル作成
 2. **[浮動小数点演算数を含まないプロファイリング手法データの取得](#4-2-浮動小数点演算数を含まないプロファイリング手法データの取得)**
-    - フィルタを適用して浮動小数点演算数を含まないプロファイリングを実施
-    - 先の実行時間の隔たりが解消していることを確認
+    - 浮動小数点演算数を含まないプロファイリングを実施
+    - プロファイリング取得の有無で所要時間に大きな差が無いことを確認
 3. **[浮動小数点演算数を含むプロファイリング手法データの取得](#4-3-浮動小数点演算数を含むプロファイリング手法データの取得)**
-    - フィルタを適用して浮動小数点演算数を含むプロファイリングを実施
-    - 先の実行時間の隔たりが解消していることを確認
+    - 浮動小数点演算数を含むプロファイリングを実施
 
-ここでプロファイリング実行時は、ストレージ領域へのアクセスによる影響を極力排除したプロファイリング結果を得るため、NVMe SSDローカルディスクをケースディレクトリのストレージ領域に使用します。
+ここでソルバー実行は、ストレージ領域へのアクセスによる影響を極力排除したプロファイリング結果を得るため、NVMe SSDローカルディスクをケースディレクトリのストレージ領域に使用して行います。
 
 ## 4-1. 事前準備
 
@@ -258,95 +260,19 @@ $ mpirun -n 72 -N 36 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 bas
 $ cp -pR ${FOAM_RUN}/motorBike /mnt/localdisk/usera
 ```
 
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、　プロファイリングを実施しない場合の **simpleFoam** の実行時間を標準出力中の **ExecutionTime** の表示から確認します。
+次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、　プロファイリングを実施しない場合の **simpleFoam** の所要時間を標準出力中の **ExecutionTime** の表示から確認します。
 
 ```sh
 $ cd /mnt/localdisk/usera/motorBike
-$ mpirun -n 72 -N 36 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel > ./log.simpleFoam_wofl_wofp_wosc
+$ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
+$ mpirun -n 72 -N 36 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel > ./log.simpleFoam_wosc
 [inst-cjujs-x9-ol905-n2:48554] SET UCX_NET_DEVICES=mlx5_2:1
-$ grep ^ExecutionTime ./log.simpleFoam_wofl_wofp_wosc | tail -1
-ExecutionTime = 17.97 s  ClockTime = 18 s
+$ grep ^ExecutionTime ./log.simpleFoam_wosc | tail -1
+ExecutionTime = 17.76 s  ClockTime = 18 s
 $
 ```
 
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、プロファイリングを実施して **simpleFoam** を実行します。  
-ここで、 **Score-P** がプロファイリング情報格納メモリ領域（ **SCOREP_TOTAL_MEMORY** で指定します。）が足りない旨の以下メッセージを出力していることを確認します。
-
-```sh
-$ module load papi scorep scalasca
-$ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
-$ scalasca -analyze mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel
-:
-[Score-P] src/measurement/SCOREP_Memory.c:187: Error: No free memory page available: Out of memory. Please increase SCOREP_TOTAL_MEMORY=16375808 and try again.
-:
-$
-```
-
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、先の実行により作成されたプロファイリングデータ格納ディレクトリを削除後、プロファイリングを実施した場合の **simpleFoam** の実行時間を標準出力中の **ExecutionTime** の表示から確認します。  
-この際、プロファイリング情報格納メモリ領域に先のメッセージで指示された値よりやや大きな32 MBを指定していることに留意します。
-この実行により、カレントディレクトリにディレクトリ **scorep_simpleFoam_36p72xP_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
-
-```sh
-$ rm -rf ./scorep_simpleFoam_36p72xP_sum/
-$ SCOREP_TOTAL_MEMORY=32M scalasca -analyze mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wofl_wofp_wisc
-S=C=A=N: Scalasca 2.6.2 runtime summarization
-S=C=A=N: ./scorep_simpleFoam_36p72xP_sum experiment archive
-S=C=A=N: Tue Mar 10 14:29:28 2026: Collect start
-/opt/openmpi/bin/mpirun -n 72 -N 36 -machinefile /mnt/home/usera/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x LD_LIBRARY_PATH -x WM_PROJECT_DIR /opt/OpenFOAM-prof/OpenFOAM-v2512/platforms/linux64GccDPInt32Opt/bin/simpleFoam -parallel
-S=C=A=N: Tue Mar 10 14:30:53 2026: Collect done (status=0) 85s
-S=C=A=N: ./scorep_simpleFoam_36p72xP_sum complete.
-$ grep ^ExecutionTime ./log.simpleFoam_wofl_wofp_wisc | tail -1
-ExecutionTime = 70.79 s  ClockTime = 72 s
-$
-```
-
-次に、両者の実行時間に大きな隔たりがあるため、以下のコマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、プロファイリングのオーバーヘッドの原因を調査します。
-
-```sh
-$ scalasca -examine -s ./scorep_simpleFoam_36p72xP_sum
-INFO: Post-processing runtime summarization report (profile.cubex)...
-/opt/scorep/bin/scorep-score  -r ./scorep_simpleFoam_36p72xP_sum/profile.cubex > ./scorep_simpleFoam_36p72xP_sum/scorep.score
-INFO: Score report written to ./scorep_simpleFoam_36p72xP_sum/scorep.score
-$ head -n 35 ./scorep_simpleFoam_36p72xP_sum/scorep.score
-
-Estimated aggregate size of event trace:                   432GB
-Estimated requirements for largest trace buffer (max_buf): 11GB
-Estimated memory requirements (SCOREP_TOTAL_MEMORY):       11GB
-(warning: The memory requirements cannot be satisfied by Score-P to avoid
- intermediate flushes when tracing. Set SCOREP_TOTAL_MEMORY=4G to get the
- maximum supported memory or reduce requirements using USR regions filters.)
-
-flt     type     max_buf[B]         visits time[s] time[%] time/visit[us]  region
-         ALL 11,466,352,515 17,383,129,905 5549.29   100.0           0.32  ALL
-         USR 11,117,543,164 16,173,339,257 2149.42    38.7           0.13  USR
-         COM    482,730,430    927,139,156  351.31     6.3           0.38  COM
-         MPI    373,398,257    276,099,731 3042.98    54.8          11.02  MPI
-     PTHREAD      2,790,814      6,551,689    5.57     0.1           0.85  PTHREAD
-      SCOREP             46             72    0.01     0.0         102.94  SCOREP
-
-         USR    813,510,074  1,756,784,573  147.34     2.7           0.08  void* malloc(size_t)
-         USR    746,468,086     28,710,311    2.64     0.0           0.09  void Foam::vtk::foamVtkBase64Layer::write(const char*, std::streamsize)
-         USR    746,468,086     28,710,311    2.15     0.0           0.07  void Foam::base64Layer::write(const char*, std::streamsize)
-         USR    674,481,002     25,941,577    2.36     0.0           0.09  virtual void Foam::vtk::foamVtkBase64Layer::write(double)
-         USR    674,481,002     25,941,577    2.34     0.0           0.09  virtual void Foam::vtk::foamVtkBase64Layer::write(float)
-         USR    459,877,080     17,687,580    0.78     0.0           0.04  virtual std::ostream& Foam::OFstream::stdStream()
-         USR    433,888,078    132,810,408    6.26     0.1           0.05  bool Foam::IOstream::fatalCheck(const char*) const
-         USR    374,457,434     14,402,209    0.67     0.0           0.05  void Foam::ensightFile::newline()
-         USR    349,137,438     13,428,363    1.48     0.0           0.11  virtual Foam::Ostream& Foam::ensightFile::write(float)
-         USR    270,177,674    682,020,701   49.48     0.9           0.07  Foam::List<T>::~List() [with T = double]
-         USR    226,422,352    599,653,464   28.39     0.5           0.05  Foam::label Foam::Detail::PtrListDetail<T>::find_next(Foam::label) const [with T = Foam::fvPatchField<double>]
-         USR    219,142,898    582,210,656   56.35     1.0           0.10  unsigned int Foam::Hasher(const void*, size_t, unsigned int)
-         USR    219,142,898    582,210,656   34.57     0.6           0.06  unsigned int jenkins_hashlittle(const void*, size_t, unsigned int)
-         USR    201,444,568    217,174,683   10.71     0.2           0.05  virtual const faceList& Foam::polyMesh::faces() const
-         MPI    156,089,268     84,176,201  109.29     2.0           1.30  MPI_Isend
-         MPI    156,087,933     84,176,201   66.76     1.2           0.79  MPI_Irecv
-         USR    146,770,000    159,592,500    7.99     0.1           0.05  Foam::scalarField& Foam::lduMatrix::upper()
-         USR    142,833,132    149,394,822    7.41     0.1           0.05  virtual const pointField& Foam::polyMesh::points() const
-         USR    139,328,150    123,644,144    6.12     0.1           0.05  virtual const labelList& Foam::polyMesh::faceOwner() const
-$
-```
-
-この出力から、呼び出された回数を示す **visits** 列の値が大きい **region** 列に **simpleFoam** を構成する関数等が多数存在しこれらが大きなオーバーヘッドとなっていることが予想されるため、プロファイリング対象からこれらを除く以下のフィルタをファイル名 **scorep.filt** で作成し、これを全ての計算ノードの **/mnt/localdisk/usera/motorBike** ディレクトリに配置します。
+次に、 **simpleFoam** 自身をプロファイリングすることによるオーバーヘッドを除外してMPI通信にフォーカスしたプロファイリング情報を取得するため、以下の **Score-P** 用フィルタをファイル名 **scorep.filt** で作成し、これを全ての計算ノードの **/mnt/localdisk/usera/motorBike** ディレクトリに配置します。
 
 ```sh
 SCOREP_REGION_NAMES_BEGIN
@@ -356,20 +282,21 @@ SCOREP_REGION_NAMES_END
 
 ## 4-2. 浮動小数点演算数を含まないプロファイリング手法データの取得
 
-以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、先の実行により作成されたプロファイリングデータ格納ディレクトリを削除後、フィルタを適用して浮動小数点演算数を含まないプロファイリング手法データを取得します。  
-この際、その実行時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（17.97秒）と比較し、両者の隔たりが解消していることを確認します。
+以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含まないプロファイリング手法データを取得します。  
+この際、その所要時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（17.76秒）と比較し、両者に大きな隔たりが無いことを確認します。
 
 ```sh
-$ rm -rf ./scorep_simpleFoam_36p72xP_sum/
-$ SCOREP_TOTAL_MEMORY=32M scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wifl_wofp_wisc
+$ module load openmpi papi scorep scalasca
+$ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wofp
 S=C=A=N: Scalasca 2.6.2 runtime summarization
 S=C=A=N: ./scorep_simpleFoam_36p72xP_sum experiment archive
 S=C=A=N: Tue Mar 10 14:43:43 2026: Collect start
 /opt/openmpi/bin/mpirun -n 72 -N 36 -machinefile /mnt/home/usera/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x LD_LIBRARY_PATH -x WM_PROJECT_DIR /opt/OpenFOAM-prof/OpenFOAM-v2512/platforms/linux64GccDPInt32Opt/bin/simpleFoam -parallel
 S=C=A=N: Tue Mar 10 14:44:08 2026: Collect done (status=0) 25s
 S=C=A=N: ./scorep_simpleFoam_36p72xP_sum complete.
-$ grep ^ExecutionTime ./log.simpleFoam_wifl_wofp_wisc | tail -1
-ExecutionTime = 21.27 s  ClockTime = 22 s
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wofp | tail -1
+ExecutionTime = 21.75 s  ClockTime = 22 s
 $
 ```
 
@@ -424,37 +351,23 @@ $
 次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリをNVMe SSDローカルディスクからファイル共有ストレージに移動します。
 
 ```sh
-$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wifl_wofp
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp
 ```
 
 ## 4-3. 浮動小数点演算数を含むプロファイリング手法データの取得
 
-以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、フィルタを適用して浮動小数点演算数を含むプロファイリング手法データを取得します。  
-この際、その実行時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（17.97秒）と比較し、両者に大きな隔たりが無いことを確認します。
+以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含むプロファイリング手法データを取得します。
 
 ```sh
-$ SCOREP_METRIC_PAPI=PAPI_FP_OPS SCOREP_TOTAL_MEMORY=32M scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wifl_wifp_wisc
-S=C=A=N: Scalasca 2.6.2 runtime summarization
-S=C=A=N: ./scorep_simpleFoam_36p72xP_sum experiment archive
-S=C=A=N: Tue Mar 10 14:47:16 2026: Collect start
-/opt/openmpi/bin/mpirun -n 72 -N 36 -machinefile /mnt/home/usera/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x LD_LIBRARY_PATH -x WM_PROJECT_DIR /opt/OpenFOAM-prof/OpenFOAM-v2512/platforms/linux64GccDPInt32Opt/bin/simpleFoam -parallel
-S=C=A=N: Tue Mar 10 14:47:44 2026: Collect done (status=0) 28s
-S=C=A=N: ./scorep_simpleFoam_36p72xP_sum complete.
-$ grep ^ExecutionTime ./log.simpleFoam_wifl_wifp_wisc | tail -1
-ExecutionTime = 24.89 s  ClockTime = 25 s
-$
-```
-
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含むプロファイリングレポートを作成します。
-
-```sh
-$ scalasca -examine -s scorep_simpleFoam_36p72xP_sum
+$ module load openmpi papi scorep scalasca
+$ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
+$ SCOREP_METRIC_PAPI=PAPI_FP_OPS scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wifp
 ```
 
 次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリをNVMe SSDローカルディスクからファイル共有ストレージに移動します。
 
 ```sh
-$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wifl_wifp
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wifp
 ```
 
 # 5. プロファイリング手法データの確認
@@ -471,10 +384,10 @@ $ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wifl_wifp
 $ module load openmpi papi scorep scalasca cubegui
 $ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ run
-$ scalasca -examine -s -x "-s totaltime" ./prof_wifl_wofp
-/opt/scorep/bin/scorep-score  -s totaltime -r ./prof_wifl_wofp/profile.cubex > ./prof_wifl_wofp/scorep.score
-INFO: Score report written to ./prof_wifl_wofp/scorep.score
-$ head -n 35 ./prof_wifl_wofp/scorep.score
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp
+/opt/scorep/bin/scorep-score  -s totaltime -r ./prof_wofp/profile.cubex > ./prof_wofp/scorep.score
+INFO: Score report written to ./prof_wofp/scorep.score
+$ head -n 35 ./prof_wofp/scorep.score
 
 Estimated aggregate size of event trace:                   18GB
 Estimated requirements for largest trace buffer (max_buf): 358MB
@@ -483,44 +396,44 @@ Estimated memory requirements (SCOREP_TOTAL_MEMORY):       368MB
  or reduce requirements using USR regions filters.)
 
 flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
-         ALL 374,857,337 280,274,902 1685.70   100.0           6.01  ALL
-         MPI 373,397,191 276,097,403  886.03    52.6           3.21  MPI
-      SCOREP          46          72  794.87    47.2    11039821.05  SCOREP
-     PTHREAD   1,767,532   4,177,427    4.81     0.3           1.15  PTHREAD
+         ALL 375,260,969 280,526,204 1707.00   100.0           6.08  ALL
+         MPI 373,397,529 276,096,980  900.45    52.8           3.26  MPI
+      SCOREP          46          72  801.67    47.0    11134355.68  SCOREP
+     PTHREAD   1,863,394   4,429,152    4.88     0.3           1.10  PTHREAD
 
-      SCOREP          46          72  794.87    47.2    11039821.05  simpleFoam
-         MPI   4,156,230  11,495,788  271.20    16.1          23.59  MPI_Waitall
-         MPI  11,272,292  11,935,368  265.92    15.8          22.28  MPI_Allreduce
-         MPI 156,089,268  84,176,201   93.79     5.6           1.11  MPI_Isend
-         MPI      46,308      48,122   73.91     4.4        1535.92  MPI_Bcast
-         MPI          84          72   70.10     4.2      973649.03  MPI_Init_thread
-         MPI 156,087,933  84,176,201   53.39     3.2           0.63  MPI_Irecv
-         MPI     125,355      68,389   22.33     1.3         326.45  MPI_Send
-         MPI  45,324,994  83,676,912   11.21     0.7           0.13  MPI_Test
-         MPI      15,028      15,912    9.17     0.5         576.28  MPI_Allgather
-         MPI     525,174      22,158    6.43     0.4         290.37  MPI_Probe
-         MPI       1,020       1,080    5.73     0.3        5307.25  MPI_Alltoall
-     PTHREAD       5,486      12,173    4.03     0.2         331.27  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
-         MPI      67,964     132,182    1.50     0.1          11.32  MPI_Waitsome
-         MPI     260,644     275,976    0.66     0.0           2.39  MPI_Gather
-         MPI          84          72    0.39     0.0        5427.65  MPI_Finalize
-     PTHREAD     836,238   1,956,483    0.38     0.0           0.19  int pthread_mutex_lock( pthread_mutex_t* )
-     PTHREAD     836,238   1,956,483    0.32     0.0           0.16  int pthread_mutex_unlock( pthread_mutex_t* )
-         MPI         168         144    0.10     0.0         685.38  MPI_Comm_create_group
-         MPI   4,040,030      68,389    0.10     0.0           1.40  MPI_Recv
-         MPI       6,214       2,705    0.09     0.0          32.72  MPI_Wait
-     PTHREAD      77,376     192,266    0.05     0.0           0.24  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
+      SCOREP          46          72  801.67    47.0    11134355.68  simpleFoam
+         MPI   4,156,230  11,495,788  276.63    16.2          24.06  MPI_Waitall
+         MPI  11,272,292  11,935,368  271.21    15.9          22.72  MPI_Allreduce
+         MPI 156,089,268  84,176,201   95.05     5.6           1.13  MPI_Isend
+         MPI      46,308      48,122   73.78     4.3        1533.27  MPI_Bcast
+         MPI          84          72   72.72     4.3     1009981.74  MPI_Init_thread
+         MPI 156,087,933  84,176,201   53.75     3.1           0.64  MPI_Irecv
+         MPI     125,355      68,389   22.17     1.3         324.15  MPI_Send
+         MPI  45,324,994  83,676,912   11.17     0.7           0.13  MPI_Test
+         MPI      15,028      15,912    8.86     0.5         556.65  MPI_Allgather
+         MPI     525,174      22,158    6.21     0.4         280.16  MPI_Probe
+         MPI       1,020       1,080    5.23     0.3        4841.93  MPI_Alltoall
+     PTHREAD       5,486      12,252    4.05     0.2         330.84  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
+         MPI      67,574     131,759    2.22     0.1          16.84  MPI_Waitsome
+         MPI     260,644     275,976    0.75     0.0           2.71  MPI_Gather
+         MPI          84          72    0.41     0.0        5705.50  MPI_Finalize
+     PTHREAD     883,792   2,082,306    0.38     0.0           0.18  int pthread_mutex_lock( pthread_mutex_t* )
+     PTHREAD     883,792   2,082,306    0.36     0.0           0.17  int pthread_mutex_unlock( pthread_mutex_t* )
+         MPI         168         144    0.10     0.0         694.01  MPI_Comm_create_group
+         MPI   4,040,030      68,389    0.09     0.0           1.34  MPI_Recv
+         MPI       6,214       2,705    0.09     0.0          33.33  MPI_Wait
+     PTHREAD      77,376     192,266    0.05     0.0           0.25  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
 $
 ```
 
 この出力から、以下のことがわかります。
 
 - MPI通信と **simpleFoam** で総所要時間のほぼ全て（ **99.8%** ）を占めている
-    - MPI通信時間： 52.6%
-    - **simpleFoam** ： 47.2%
+    - MPI通信時間： 52.8%
+    - **simpleFoam** ： 47.0%
 - 以下のMPI通信関数は総所要時間の一割以上を占める
-    - **MPI_Waitall** ： 16.1%
-    - **MPI_Allreduce** ： 15.8%
+    - **MPI_Waitall** ： 16.2%
+    - **MPI_Allreduce** ： 15.9%
 
 次に、以下コマンドをParaView/CubeGUI操作端末に表示されているBastionノードのプロファイリング利用ユーザのGNOMEデスクトップ上のターミナルで実行し、浮動小数点演算数を含まないプロファイリング手法データを読み込んで **CubeGUI** を起動します。
 
@@ -528,7 +441,7 @@ $
 $ module load openmpi cubegui
 $ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ run
-$ cube ./prof_wifl_wofp/profile.cubex
+$ cube ./prof_wofp/profile.cubex
 ```
 
 ![画面ショット](cubegui_page01.png)
@@ -561,7 +474,7 @@ $ cube ./prof_wifl_wofp/profile.cubex
 $ module load openmpi cubegui
 $ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ run
-$ cube ./prof_wifl_wifp/profile.cubex
+$ cube ./prof_wifp/profile.cubex
 ```
 
 ![画面ショット](cubegui_page07.png)
