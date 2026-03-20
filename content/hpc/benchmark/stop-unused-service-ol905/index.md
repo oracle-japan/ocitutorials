@@ -121,7 +121,7 @@ $ sudo sa -ca /var/account/pacct-20260319 | head -11
 $
 ```
 
-この出力から、対象期間中最も多くCPU時間を消費した（約30%）プロセスが **xz** であり、以下コマンドをopcユーザで実行した結果、このプロセスがユーザ **pcp** で実行されており、このプロセスがパフォーマンス監視や記録のために使用する **Performance Co-Pilot** に関連するものであるため、不要サービスと判定します。
+この出力から、対象期間中最も多くCPU時間を消費した（約30%）プロセスが **xz** であり、以下コマンドをopcユーザで実行した結果、このプロセスがユーザ **pcp** で実行されており、このプロセスがパフォーマンス監視や記録のために使用する **[Performance Co-Pilot](https://pcp.io/)** に関連するものであるため、不要サービスと判定します。
 
 ```sh
 $ sudo lastcomm -f /var/account/pacct-20260319 --pid | grep ^xz
@@ -331,43 +331,43 @@ OSが起動したら、ここまでに停止した不要サービスが起動し
 
 # 4. 不要サービス停止による効果確認
 
-本章は、先に不要サービスを停止した状態で取得したプロセスアカウンティング情報を基に、以下の手順でその効果を確認します。
+本章は、調査用HPCクラスタの計算ノード上で、不要サービスを停止した状態で取得したプロセスアカウンティング情報を基に、以下の手順でその効果を確認します。
 
-不要サービスを停止した翌々日早朝まで放置し、停止した翌日一日分のアカウンティング情報（以下の例ではpacct-20231029）が作成されているのを確認します。
+不要サービスを停止した翌々日早朝まで放置し、停止した翌日一日分のアカウンティング情報（以下の例では **pacct-20260321** です。）が作成されているのを確認します。
 
 ```sh
-    $ ls -l /var/account/pacct*
--rw------- 1 root root   34496 Oct 30 09:45 /var/account/pacct
--rw-r--r-- 1 root root 1069509 Oct 26 03:32 /var/account/pacct-20231026.gz
--rw------- 1 root root 2346813 Oct 27 03:33 /var/account/pacct-20231027.gz
--rw------- 1 root root 1581661 Oct 28 03:48 /var/account/pacct-20231028.gz
--rw------- 1 root root   16006 Oct 29 03:29 /var/account/pacct-20231029
+$ ls -l /var/account/pacct*
+-rw------- 1 root root 223040 Mar 21 07:29 /var/account/pacct
+-rw-r--r-- 1 root root 182590 Mar 18 00:00 /var/account/pacct-20260318.gz
+-rw------- 1 root root 447338 Mar 19 00:00 /var/account/pacct-20260319.gz
+-rw------- 1 root root 503366 Mar 20 00:00 /var/account/pacct-20260320.gz
+-rw------- 1 root root 655104 Mar 21 00:00 /var/account/pacct-20260321
 $ 
 ```
 
-以下コマンドをのopcユーザで実行し、CPU時間を消費している上位10プロセスを特定します。
+次に、以下コマンドをopcユーザで実行し、CPU時間を消費している上位10プロセスを特定します。
 
 ```sh
-$ sudo sa -ca /var/account/pacct-20231029 | head -11
-    1865  100.00%   46226.87re  100.00%       0.03cp  100.00%         0avio     14329k
-     698   37.43%   46203.15re   99.95%       0.02cp   69.05%         0avio         0k   kworker/dying*
-      24    1.29%       0.01re    0.00%       0.01cp   23.21%         0avio    552581k   wlp-agent
-       1    0.05%       0.00re    0.00%       0.00cp    2.98%         0avio      1221k   sar
-       1    0.05%       0.00re    0.00%       0.00cp    2.38%         0avio      2396k   updatedb
-       2    0.11%       0.34re    0.00%       0.00cp    1.19%         0avio     22368k   systemd
-       1    0.05%       0.00re    0.00%       0.00cp    1.19%         0avio    638336k   Finalizer
-     314   16.84%       0.00re    0.00%       0.00cp    0.00%         0avio     14641k   rpm
-     165    8.85%       0.00re    0.00%       0.00cp    0.00%         0avio     19776k   systemd-cgroups
-     145    7.77%       0.00re    0.00%       0.00cp    0.00%         0avio      2630k   sadc
-      89    4.77%       0.00re    0.00%       0.00cp    0.00%         0avio     20560k   systemctl
+$ sudo sa -ca /var/account/pacct-20260321 | head -11
+   10236  100.00%   57721.90re  100.00%       0.30cp  100.00%         0avio     53281k
+     727    7.10%   57701.46re   99.96%       0.29cp   96.19%         0avio         0k   kworker/dying*
+       2    0.02%       0.03re    0.00%       0.01cp    2.15%         0avio     55264k   updatedb
+       4    0.04%       0.68re    0.00%       0.00cp    0.66%         0avio      5504k   systemd
+       1    0.01%       0.00re    0.00%       0.00cp    0.39%         0avio       843k   gzip
+       2    0.02%       0.00re    0.00%       0.00cp    0.22%         0avio    963456k   C1 CompilerThre
+       1    0.01%       0.00re    0.00%       0.00cp    0.11%         0avio    963456k   Reference Handl
+       1    0.01%       0.00re    0.00%       0.00cp    0.11%         0avio    963456k   Finalizer
+       1    0.01%       0.00re    0.00%       0.00cp    0.11%         0avio    963456k   GC task thread#
+       1    0.01%       0.00re    0.00%       0.00cp    0.06%         0avio     55504k   logrotate
+    5758   56.25%       0.00re    0.00%       0.00cp    0.00%         0avio     56272k   pgrep
 $
 ```
 
 不要サービスを停止する前の結果と比較し、停止したサービスによるCPU時間の消費が無いことを確認します。  
-本パフォーマンス関連Tipsの環境では、今回のサービス停止で1日当たり約5秒（4.99秒 - 0.03秒）の不要サービスによるCPU消費を抑えられることが確認できました。
+本パフォーマンス関連Tipsの環境では、適用したサービス停止で1日当たり約6秒（5.98秒 - 0.30秒）の不要サービスによるCPU消費を抑えられることが確認できました。
 
 # 5. プロダクション用HPCクラスタ構築
 
 本章は、不要サービスを停止した調査用HPCクラスタの計算ノードのうちの1ノードで **[カスタム・イメージ](../../#5-6-カスタムイメージ)** を取得し、これを元に必要なノード数の計算ノードを持つ、不要サービスが停止されているプロダクション用のHPCクラスタを構築します。
 
-この手順は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノード作成時の効果的なOSカスタマイズ方法](../../tech-knowhow/compute-os-customization)** の **[2. カスタム・イメージを使用したOSカスタマイズ](../../tech-knowhow/compute-os-customization/#2-カスタムイメージを使用したosカスタマイズ)** の手順に従います。  
+この構築は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[計算/GPUノード作成時の効果的なOSカスタマイズ方法](../../tech-knowhow/compute-os-customization)** の **[2. カスタム・イメージを使用したOSカスタマイズ](../../tech-knowhow/compute-os-customization/#2-カスタムイメージを使用したosカスタマイズ)** の手順に従い実施します。
