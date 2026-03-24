@@ -175,11 +175,16 @@ ORMスタックで作成できるリソースは以下の通りです。
 
 >**`Note`**  
 >
->- Windows 10/11の場合はOracleからイメージ提供されていないため、利用したい場合には以下のドキュメントを参考にイメージを準備してください。また、Windows 10/11の場合はOSライセンス持ち込み(BYOL)が必要です。
->  - https://docs.oracle.com/ja-jp/iaas/secure-desktops/windows-image.htm 
+>- Windows 10/11を利用する場合はOracleからOSライセンスの提供は行われていないため、お客様にてOSライセンス持ち込み(BYOL)が必要です。
+>- Oracleから提供されているセキュア・デスクトップ用Windowsイメージを利用するためには、以下のドキュメントを参照してサポート・リクエストを起票して入手する必要があります。
+>  - https://docs.oracle.com/ja-jp/iaas/secure-desktops/supported-images.htm
+>  - [KB172258 ](https://support.oracle.com/support/?kmContentId=10213132)[：](https://support.oracle.com/support/?kmContentId=10213132)[OCI Secure Desktops: How to Use a Pre-Authenticated Request (PAR) to create a Secure Desktops pool using Windows](https://support.oracle.com/support/?kmContentId=10213132)
+> - 手動でWindowsイメージを作成する手順は以下のドキュメントを参照してください。
+>   - https://docs.oracle.com/ja-jp/iaas/secure-desktops/windows-image.htm 
 >
->- イメージ・ビルダーを利用してWindowsイメージを作成することも可能です。イメージ・ビルダーについては以下のサポート・ドキュメントを参照してください。 
->  - Reference OCI Secure Desktops: How To Create a Windows Image For Use With OCI Secure Desktops Using the OCI Secure Desktops Image Builder (MOS Doc ID 3004854.1)
+>- イメージ・ビルダーやレディネス・チェッカーを利用してWindowsイメージを準備することも可能です。イメージ・ビルダーについては以下のサポート・ドキュメントを参照してください。 
+>  - [KB91837](https://support.oracle.com/support/?kmContentId=3004854)[：](https://support.oracle.com/support/?kmContentId=3004854)[OCI Secure Desktops: How To Create a Windows Image For Use With OCI Secure Desktops Using the OCI Secure Desktops Image Builder](https://support.oracle.com/support/?kmContentId=3004854)
+>  - [KB100881](https://support.oracle.com/support/?kmContentId=3010275)[：](https://support.oracle.com/support/?kmContentId=3010275)[OCI Secure Desktops: How To Confirm Compliance Using The OCI Secure Desktops Image Readiness Checker](https://support.oracle.com/support/?kmContentId=3010275)
 
 
 
