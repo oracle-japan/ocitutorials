@@ -1141,7 +1141,7 @@ outputArtifacts:
 
 「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
 
-![4-001.jpg](4-001.jpg)
+![alt text](image-22.png)
 
 一覧にある![4-002.jpg](4-002.jpg)をクリックします。
 
@@ -1289,7 +1289,7 @@ outputArtifacts:
 
 「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
 
-![4-001.jpg](4-001.jpg)
+![alt text](image-23.png)
 
 一覧にある![4-002.jpg](4-002.jpg)をクリックします。
 
@@ -1344,7 +1344,7 @@ outputArtifacts:
 
 「開発者サービス」の「コンテナとアーティファクト」カテゴリにある「アーティファクト・レジストリ」をクリックします。
 
-![5-001.jpg](5-001.jpg)
+![alt text](image-24.png)
 
 ![5-002.jpg](5-002.jpg)をクリックします。
 
@@ -1547,7 +1547,7 @@ oci artifacts generic artifact upload-by-path
 
 「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
 
-![4-001.jpg](4-001.jpg)
+![alt text](image-15.png)
 
 一覧にある![4-002.jpg](4-002.jpg)をクリックします。
 
@@ -1619,7 +1619,7 @@ oci artifacts generic artifact upload-by-path
 
 「開発者サービス」の「DevOps」カテゴリにある「プロジェクト」をクリックします。
 
-![4-001.jpg](4-001.jpg)
+![alt text](image-15.png)
 
 次に、「DevOpsプロジェクト・リソース」にある「デプロイメント」をクリックします。
 
