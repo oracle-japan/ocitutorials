@@ -392,5 +392,5 @@ Allow group <グループ名> to manage recovery-service-family in tenancy
 
 - [ブログ] [Zero Data Loss Autonomous Recovery Service (ZRCV) を Exadata Cloud Service へ設定してみてみた](https://qiita.com/shirok/items/c257d52984442a7977f8)
 
-- [ブログ] [Autonomous Recovery Service セットアップ・チェックリスト](https://blogs.oracle.com/oracle4engineer/post/autonomous-recovery-servicercvzrcv)
+- [ブログ] [Autonomous Recovery Service Checklist](https://blogs.oracle.com/infrastructure/autonomous-recovery-service-checklist)
   <br>
