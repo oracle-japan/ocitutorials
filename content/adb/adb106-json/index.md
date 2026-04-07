@@ -130,12 +130,11 @@ select json_serialize(json_document) from emp ;
 ![img](img09.png)
       <br>
 
-   > **26aiのインスタンスをお使いの場合**
-      > 
-      > * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
-       > ```
-       >select json_serialize(data) from emp;
-       >```
+   > 
+       * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
+       
+      select json_serialize(data) from emp;
+       
 
     
 
@@ -150,12 +149,11 @@ from emp e ;
 ```
 ![img](img10.png)
 
-   > **26aiのインスタンスをお使いの場合**
-      > 
-      > * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
-      > ```
-       >select e.data.name, e.data.job, e.data.salary from emp e;
-       >```
+   > 
+       * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
+       
+       select e.data.name, e.data.job, e.data.salary from emp e;
+       
     
     
 
@@ -169,12 +167,10 @@ group by e.json_document.job ;
 ```
 ![img](img11.png)
 
-   > **26aiのインスタンスをお使いの場合**
-      > 
-      > * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
-      > ```
-       >select e.data.job , count(*) from emp e group >by e.data.job ;
-       >```
+   >  
+       * 26aiのインスタンスを構築している場合はSQLを以下のように変更して、実行をお願いします。
+      select e.data.job , count(*) from emp e group >by e.data.job ;
+       
       
 
 <br>
