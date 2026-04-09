@@ -40,8 +40,8 @@ params:
 ※2） **UCX** のパラメータで、2ノード以上の **計測条件** で使用します。詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-4. UCX_TLS](../../benchmark/openmpi-perftips/#3-4-ucx_tls)** を参照してください。  
 ※3） **UCX** のパラメータで、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-6. UCX_RNDV_THRESH](../../benchmark/openmpi-perftips/#3-6-ucx_rndv_thresh)** を参照してください。  
 ※4） **UCX** のパラメータで、2ノード以上の **計測条件** で使用します。詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-7. UCX_ZCOPY_THRESH](../../benchmark/openmpi-perftips/#3-7-ucx_zcopy_thresh)** を参照してください。  
-※5） **MCA** のパラメータで、MPI集合通信関数の **Exchange** 以外の計測条件で使用します。詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-1. coll_hcoll_enable](../../benchmark/openmpi-perftips/#3-1-coll_hcoll_enable)** を参照してください。  
-※6） **MCA** のパラメータで、MPI集合通信関数の **Exchange** 以外の計測条件で使用します。詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-9. coll_ucc_enable](../../benchmark/openmpi-perftips/#3-9-coll_ucc_enable)** を参照してください。  
+※5） **MCA** のパラメータで、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-1. coll_hcoll_enable](../../benchmark/openmpi-perftips/#3-1-coll_hcoll_enable)** を参照してください。なお **Exchange** は **HCOLL** の影響を受けないため、 **coll_hcoll_enable** の評価を行いません。  
+※6） **MCA** のパラメータで、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-9. coll_ucc_enable](../../benchmark/openmpi-perftips/#3-9-coll_ucc_enable)** を参照してください。なお **Exchange** は **UCC** の影響を受けないため、 **coll_ucc_enable** の評価を行いません。  
 ※7）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。  
 
 本パフォーマンス関連Tipsで使用する環境を以下に示します。
@@ -100,8 +100,8 @@ $ numactl -l IMB-MPI1 -msglog 0:xx -mem 2.3G -off_cache 39,64 -npmin num_of_proc
 本章は、1ノードに8・16・32・36のMPIプロセスを割当てる場合の **Alltoall** ・ **Allgather** ・ **Allreduce** ・ **Exchange** の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
 
 - **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
-- **coll_hcoll_enable** ： **0** ・ **1**
-- **coll_ucc_enable** ： **0** ・ **1**
+- **coll_hcoll_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
+- **coll_ucc_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
 - **NPS** ：  **NPS1** ・ **NPS2**
 
@@ -612,9 +612,9 @@ a
 
 ![Alltoall 1 node 32 processes no coll](ata_01_32_no.png)
 
-![Alltoall 1 node 32 processes UCC](ata_01_32_uc.png)
-
 ![Alltoall 1 node 32 processes HCOLL](ata_01_32_hc.png)
+
+![Alltoall 1 node 32 processes UCC](ata_01_32_uc.png)
 
 以上より、 **NPS** とMPIプロセス分割方法を下表の設定とした場合が最も性能が良いと判断してこれを固定、 
 
@@ -1018,10 +1018,10 @@ a
 - **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
 - **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※13）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
-- **coll_hcoll_enable** ： **0** ・ **1**
-- **coll_ucc_enable** ： **0** ・ **1**
+- **coll_hcoll_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
+- **coll_ucc_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
-- **NPS** ：  **1** ・ **2**
+- **NPS** ：  **NPS1** ・ **NPS2**
 
 ※13） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1-1ノード)** で判明した最適値、ノード間はこの7種類を使用し、以下8個の組合せを検証します。
 
@@ -1050,11 +1050,9 @@ a
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ3
-    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定（※14）
+    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
     - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
-
-※14） **Exchange** は、 **coll_hcoll_enable** と **coll_ucc_enable** の影響を受けないため、これらの値をデフォルトの **1** と **0** に固定します。
 
 ## 2-1. ノード当たり8 MPIプロセス
 
@@ -1067,11 +1065,11 @@ a
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
 | **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto            |
+| **Allreduce** | self,sm,ud | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:32kb,inter:128kb | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 2-1-1. Alltoall
 
@@ -1297,11 +1295,11 @@ a
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
 | **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto             |
+| **Allreduce** | self,sm,ud | intra:128kb,inter:128kb | 64kb             |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 2-2-1. Alltoall
 
@@ -1527,11 +1525,11 @@ a
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
 | **Alltoall**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | auto             |
+| **Allreduce** | self,sm,ud | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 2-3-1. Alltoall
 
@@ -1754,14 +1752,14 @@ a
 
 下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
-| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
-| :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH        | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :--------------------: | :--------------: |
+| **Alltoall**  | self,sm,rc | intra:16kb,inter:128kb | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb | auto             |
+| **Allreduce** | self,sm,ud | intra:64kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 2-4-1. Alltoall
 
@@ -1983,14 +1981,14 @@ a
 本章は、4ノードにノード当たり8・16・32・36、トータル32・64・128・144のMPIプロセスを割当てる場合の **Alltoall** ・ **Allgather** ・ **Allreduce** ・ **Exchange** の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
 
 - **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
-- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※15）
+- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※14）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
-- **coll_hcoll_enable** ： **0** ・ **1**
-- **coll_ucc_enable** ： **0** ・ **1**
+- **coll_hcoll_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
+- **coll_ucc_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
-- **NPS** ：  **1** ・ **2**
+- **NPS** ：  **NPS1** ・ **NPS2**
 
-※15） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1-1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
+※14） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1-1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
 
 - **intra:auto,inter:auto**
 - **intra:optimal_value,inter:auto**
@@ -2017,11 +2015,9 @@ a
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ3
-    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定（※16）
+    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
     - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
-
-※16） **Exchange** は、 **coll_hcoll_enable** と **coll_ucc_enable** の影響を受けないため、これらの値をデフォルトの **1** と **0** に固定します。
 
 ## 3-1. ノード当たり8 MPIプロセス
 
@@ -2033,12 +2029,12 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:32kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
+| **Alltoall**  | self,sm,rc | intra:32kb,inter:32kb   | 16kb             |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto             |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 3-1-1. Alltoall
 
@@ -2263,12 +2259,12 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:32kb,inter:32kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Alltoall**  | self,sm,ud | intra:32kb,inter:32kb   | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto             |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 3-2-1. Alltoall
 
@@ -2493,19 +2489,19 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:32kb   | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | auto             |
+| **Allreduce** | self,sm,ud | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 3-3-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の **HCOLL** の結果から16KBとしています。
 
 ![Alltoall 4 node 32 ppn all step1](ata_04_32_step1_all.png)
 
@@ -2562,7 +2558,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の **HCOLL** の結果から16KBとしています。
 
 ![Allgather 4 node 32 ppn all step1](aga_04_32_step1_all.png)
 
@@ -2619,7 +2615,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の **HCOLL** の結果から128KBとしています。
 
 ![Allreduce 4 node 32 ppn all step1](are_04_32_step1_all.png)
 
@@ -2721,21 +2717,21 @@ a
 
 下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
-| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
-| :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH        | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :--------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:32kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb | auto             |
+| **Allreduce** | self,sm,rc | intra:64kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 3-4-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の **HCOLL** の結果から16KBとしています。
 
 ![Alltoall 4 node 36 ppn all step1](ata_04_36_step1_all.png)
 
@@ -2792,7 +2788,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の **HCOLL** の結果から16KBとしています。
 
 ![Allgather 4 node 36 ppn all step1](aga_04_36_step1_all.png)
 
@@ -2849,7 +2845,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から64KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の **HCOLL** の結果から64KBとしています。
 
 ![Allreduce 4 node 36 ppn all step1](are_04_36_step1_all.png)
 
@@ -2950,14 +2946,14 @@ a
 本章は、8ノードにノード当たり8・16・32・36、トータル64・128・256・288のMPIプロセスを割当てる場合の **Alltoall** ・ **Allgather** ・ **Allreduce** ・ **Exchange** の通信性能について、以下の **実行時パラメータ** の最適な組み合わせを検証します。
 
 - **UCX_TLS** ： **all** ・ **self,sm,rc** ・ **self,sm,ud** ・ **self,sm,dc**
-- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※17）
+- **UCX_RNDV_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb** （※15）
 - **UCX_ZCOPY_THRESH** ： **auto** ・ **4kb** ・ **8kb** ・ **16kb** ・ **32kb** ・ **64kb** ・ **128kb**
-- **coll_hcoll_enable** ： **0** ・ **1**
-- **coll_ucc_enable** ： **0** ・ **1**
+- **coll_hcoll_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
+- **coll_ucc_enable** ： **0** ・ **1** （ **Exchange** を除きます。）
 - MPIプロセス分割方法 ： ブロック分割・サイクリック分割
-- **NPS** ：  **1** ・ **2**
+- **NPS** ：  **NPS1** ・ **NPS2**
 
-※17） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1-1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
+※15） **UCX_RNDV_THRESH** は、ノード内は **auto** と **[1. 1ノード](#1-1ノード)** で判明した最適値、ノード間はここに記載の7種類を使用し、以下8個の組合せを検証します。
 
 - **intra:auto,inter:auto**
 - **intra:optimal_value,inter:auto**
@@ -2984,11 +2980,9 @@ a
     - MPIプロセス分割方法はブロック分割に固定
     - **NPS** は **NPS1** に固定
 - ステップ3
-    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定（※18）
+    - **coll_hcoll_enable** / **coll_ucc_enable** / MPIプロセス分割方法 / **NPS** を組合せた12パターンを検証してこれらの最適値を決定
     - **UCX_TLS** と **UCX_RNDV_THRESH** はステップ1で決定した最適値を使用
     - **UCX_ZCOPY_THRESH** はステップ2で決定した最適値を使用
-
-※18） **Exchange** は、 **coll_hcoll_enable** と **coll_ucc_enable** の影響を受けないため、これらの値をデフォルトの **1** と **0** に固定します。
 
 ## 4-1. ノード当たり8 MPIプロセス
 
@@ -3000,19 +2994,19 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | 128kb            |
+| **Alltoall**  | self,sm,ud | intra:32kb,inter:32kb   | 16kb             |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto             |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 4-1-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の結果から32KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-1 Alltoall](#1-1-1-alltoall)** の **HCOLL** の結果から32KBとしています。
 
 ![Alltoall 8 node 8 ppn all step1](ata_08_08_step1_all.png)
 
@@ -3069,7 +3063,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の結果から64KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-1-2 Allgather](#1-1-2-allgather)** の **HCOLL** の結果から64KBとしています。
 
 ![Allgather 8 node 8 ppn all step1](aga_08_08_step1_all.png)
 
@@ -3230,19 +3224,19 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:32kb,inter:128kb  | 128kb            |
+| **Alltoall**  | self,sm,ud | intra:32kb,inter:32kb   | 128kb            |
+| **Allgather** | self,sm,rc | intra:64kb,inter:128kb  | auto             |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 4-2-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の結果から32KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-1 Alltoall](#1-2-1-alltoall)** の **HCOLL** の結果から32KBとしています。
 
 ![Alltoall 8 node 16 ppn all step1](ata_08_16_step1_all.png)
 
@@ -3299,7 +3293,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の結果から64KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-2 Allgather](#1-2-2-allgather)** の **HCOLL** の結果から64KBとしています。
 
 ![Allgather 8 node 16 ppn all step1](aga_08_16_step1_all.png)
 
@@ -3356,7 +3350,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の結果から128KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-2-3 Allreduce](#1-2-3-allreduce)** の **HCOLL** の結果から128KBとしています。
 
 ![Allreduce 8 node 16 ppn all step1](are_08_16_step1_all.png)
 
@@ -3460,19 +3454,19 @@ a
 
 | MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
 | :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:16kb   | 16kb             |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | auto             |
 | **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 4-3-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-1 Alltoall](#1-3-1-alltoall)** の **HCOLL** の結果から16KBとしています。
 
 ![Alltoall 8 node 32 ppn all step1](ata_08_32_step1_all.png)
 
@@ -3529,7 +3523,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-2 Allgather](#1-3-2-allgather)** の **HCOLL** の結果から16KBとしています。
 
 ![Allgather 8 node 32 ppn all step1](aga_08_32_step1_all.png)
 
@@ -3586,7 +3580,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の結果から128KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-3-3 Allreduce](#1-3-3-allreduce)** の **HCOLL** の結果から128KBとしています。
 
 ![Allreduce 8 node 32 ppn all step1](are_08_32_step1_all.png)
 
@@ -3688,21 +3682,21 @@ a
 
 下表は、各MPI集合通信関数の最適な **UCX_TLS** 、 **UCX_RNDV_THRESH** 、及び **UCX_ZCOPY_THRESH** を示しており、この設定値を使用することでデフォルト値に対して性能が向上します。
 
-| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH         | UCX_ZCOPY_THRESH |
-| :-----------: | :--------: | :---------------------: | :--------------: |
-| **Alltoall**  | self,sm,ud | intra:16kb,inter:128kb  | 128kb            |
-| **Allgather** | self,sm,rc | intra:16kb,inter:128kb  | 128kb            |
-| **Allreduce** | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
-| **Exchange**  | self,sm,rc | intra:128kb,inter:128kb | 128kb            |
+| MPI集合通信関数     | UCX_TLS    | UCX_RNDV_THRESH        | UCX_ZCOPY_THRESH |
+| :-----------: | :--------: | :--------------------: | :--------------: |
+| **Alltoall**  | self,sm,ud | intra:16kb,inter:16kb  | 128kb            |
+| **Allgather** | self,sm,rc | intra:16kb,inter:128kb | auto             |
+| **Allreduce** | self,sm,rc | intra:64kb,inter:128kb | 128kb            |
+| **Exchange**  | self,sm,rc | intra:16kb,inter:128kb | 128kb            |
 
-**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照ください。
+**HCOLL** / **UCC** / MPIプロセス分割方法 / **NPS** に関する傾向は、各MPI集合関数のセクションを参照して下さい。
 
 ### 4-4-1. Alltoall
 
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Alltoall** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-1 Alltoall](#1-4-1-alltoall)** の **HCOLL** の結果から16KBとしています。
 
 ![Alltoall 8 node 36 ppn all step1](ata_08_36_step1_all.png)
 
@@ -3759,7 +3753,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allgather** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の結果から16KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-2 Allgather](#1-4-2-allgather)** の **HCOLL** の結果から16KBとしています。
 
 ![Allgather 8 node 36 ppn all step1](aga_08_36_step1_all.png)
 
@@ -3816,7 +3810,7 @@ a
 [ステップ1]
 
 以下のグラフは、 **UCX_RNDV_THRESH** を変化させたときの **Allreduce** の結果を、 **UCX_TLS** の設定値毎に示しています。  
-ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の結果から64KBとしています。
+ノード内の **UCX_RNDV_THRESH** の最適値は、 **[1-4-3 Allreduce](#1-4-3-allreduce)** の **HCOLL** の結果から64KBとしています。
 
 ![Allreduce 8 node 36 ppn all step1](are_08_36_step1_all.png)
 
