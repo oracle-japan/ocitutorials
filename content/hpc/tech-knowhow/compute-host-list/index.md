@@ -71,6 +71,10 @@ $ cat update_agent_config.json
       "desiredState": "DISABLED"
     },
     {
+      "name": "Cloud Guard Workload Protection",
+      "desiredState": "DISABLED"
+    },
+    {
       "name": "Compute HPC RDMA Authentication",
       "desiredState": "ENABLED"
     },
