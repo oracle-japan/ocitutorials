@@ -264,11 +264,10 @@ $ cp -pR ${FOAM_RUN}/motorBike /mnt/localdisk/usera
 
 ```sh
 $ cd /mnt/localdisk/usera/motorBike
-$ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ mpirun -n 72 -N 36 -machinefile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel > ./log.simpleFoam_wosc
-[inst-cjujs-x9-ol905-n2:48554] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-pu5fo-x9-ol905-n1:09513] SET UCX_NET_DEVICES=mlx5_2:1
 $ grep ^ExecutionTime ./log.simpleFoam_wosc | tail -1
-ExecutionTime = 17.76 s  ClockTime = 18 s
+ExecutionTime = 18 s  ClockTime = 18 s
 $
 ```
 
@@ -283,7 +282,7 @@ SCOREP_REGION_NAMES_END
 ## 4-2. 浮動小数点演算数を含まないプロファイリング手法データの取得
 
 以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、浮動小数点演算数を含まないプロファイリング手法データを取得します。  
-この際、その所要時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（17.76秒）と比較し、両者に大きな隔たりが無いことを確認します。
+この際、その所要時間を **[4.1. 事前準備](#4-1-事前準備)** のプロファイリングを実施しない場合のもの（18秒）と比較し、両者に大きな隔たりが無いことを確認します。
 
 ```sh
 $ cd /mnt/localdisk/usera/motorBike
@@ -297,7 +296,7 @@ S=C=A=N: Tue Mar 10 14:43:43 2026: Collect start
 S=C=A=N: Tue Mar 10 14:44:08 2026: Collect done (status=0) 25s
 S=C=A=N: ./scorep_simpleFoam_36p72xP_sum complete.
 $ grep ^ExecutionTime ./log.simpleFoam_wisc_wofp | tail -1
-ExecutionTime = 21.75 s  ClockTime = 22 s
+ExecutionTime = 22.53 s  ClockTime = 24 s
 $
 ```
 
@@ -313,39 +312,39 @@ $ scalasca -examine -s scorep_simpleFoam_36p72xP_sum
 $ head -n 35 scorep_simpleFoam_36p72xP_sum/scorep.score
 
 Estimated aggregate size of event trace:                   18GB
-Estimated requirements for largest trace buffer (max_buf): 358MB
-Estimated memory requirements (SCOREP_TOTAL_MEMORY):       368MB
-(hint: When tracing set SCOREP_TOTAL_MEMORY=368MB to avoid intermediate flushes
+Estimated requirements for largest trace buffer (max_buf): 360MB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       370MB
+(hint: When tracing set SCOREP_TOTAL_MEMORY=370MB to avoid intermediate flushes
  or reduce requirements using USR regions filters.)
 
 flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
-         ALL 374,857,337 280,274,902 1685.70   100.0           6.01  ALL
-         MPI 373,397,191 276,097,403  886.03    52.6           3.21  MPI
-     PTHREAD   1,767,532   4,177,427    4.81     0.3           1.15  PTHREAD
-      SCOREP          46          72  794.87    47.2    11039821.05  SCOREP
+         ALL 376,634,203 282,682,028 1916.23   100.0           6.78  ALL
+         MPI 373,398,205 276,097,498 1003.25    52.4           3.63  MPI
+     PTHREAD   3,519,074   6,584,458    5.43     0.3           0.82  PTHREAD
+      SCOREP          46          72  907.56    47.4    12605046.59  SCOREP
 
-         MPI 156,089,268  84,176,201   93.79     5.6           1.11  MPI_Isend
-         MPI 156,087,933  84,176,201   53.39     3.2           0.63  MPI_Irecv
-         MPI  45,324,994  83,676,912   11.21     0.7           0.13  MPI_Test
-         MPI  11,272,292  11,935,368  265.92    15.8          22.28  MPI_Allreduce
-         MPI   4,156,230  11,495,788  271.20    16.1          23.59  MPI_Waitall
+         MPI 156,089,268  84,176,201   94.01     4.9           1.12  MPI_Isend
+         MPI 156,087,933  84,176,201   53.52     2.8           0.64  MPI_Irecv
+         MPI  45,324,994  83,676,912   11.11     0.6           0.13  MPI_Test
+         MPI  11,272,292  11,935,368  289.20    15.1          24.23  MPI_Allreduce
+         MPI   4,156,230  11,495,788  270.64    14.1          23.54  MPI_Waitall
          MPI   4,040,030      68,389    0.10     0.0           1.40  MPI_Recv
-     PTHREAD     836,238   1,956,483    0.38     0.0           0.19  int pthread_mutex_lock( pthread_mutex_t* )
-     PTHREAD     836,238   1,956,483    0.32     0.0           0.16  int pthread_mutex_unlock( pthread_mutex_t* )
-         MPI     525,174      22,158    6.43     0.4         290.37  MPI_Probe
-         MPI     260,644     275,976    0.66     0.0           2.39  MPI_Gather
-         MPI     125,355      68,389   22.33     1.3         326.45  MPI_Send
-     PTHREAD      77,376     192,266    0.05     0.0           0.24  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
-         MPI      67,964     132,182    1.50     0.1          11.32  MPI_Waitsome
-         MPI      46,308      48,122   73.91     4.4        1535.92  MPI_Bcast
-         MPI      15,028      15,912    9.17     0.5         576.28  MPI_Allgather
-     PTHREAD      11,180      27,676    0.02     0.0           0.79  int pthread_cond_broadcast( pthread_cond_t* )
-     PTHREAD       8,216      21,110    0.00     0.0           0.11  int pthread_cond_init( pthread_cond_t*, const pthread_condattr_t* )
-         MPI       6,214       2,705    0.09     0.0          32.72  MPI_Wait
-     PTHREAD       5,486      12,173    4.03     0.2         331.27  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
-     PTHREAD       2,678       7,276    0.00     0.0           0.19  int pthread_mutex_destroy( pthread_mutex_t* )
-     PTHREAD       1,274       3,528    0.00     0.0           0.10  int pthread_cond_destroy( pthread_cond_t* )
-         MPI       1,020       1,080    5.73     0.3        5307.25  MPI_Alltoall
+     PTHREAD   1,711,502   3,159,641    0.52     0.0           0.16  int pthread_mutex_lock( pthread_mutex_t* )
+     PTHREAD   1,711,502   3,159,641    0.35     0.0           0.11  int pthread_mutex_unlock( pthread_mutex_t* )
+         MPI     525,174      22,158    6.43     0.3         290.29  MPI_Probe
+         MPI     260,644     275,976    0.69     0.0           2.50  MPI_Gather
+         MPI     125,355      68,389   22.17     1.2         324.21  MPI_Send
+     PTHREAD      77,376     192,266    0.06     0.0           0.30  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
+         MPI      67,834     132,277    1.82     0.1          13.75  MPI_Waitsome
+         MPI      46,308      48,122   74.01     3.9        1537.95  MPI_Bcast
+         MPI      15,028      15,912    9.31     0.5         585.24  MPI_Allgather
+     PTHREAD      11,180      27,676    0.02     0.0           0.86  int pthread_cond_broadcast( pthread_cond_t* )
+     PTHREAD       8,216      21,110    0.00     0.0           0.12  int pthread_cond_init( pthread_cond_t*, const pthread_condattr_t* )
+         MPI       6,214       2,705    0.09     0.0          32.80  MPI_Wait
+     PTHREAD       5,226      12,888    4.46     0.2         346.02  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
+     PTHREAD       2,678       7,276    0.00     0.0           0.23  int pthread_mutex_destroy( pthread_mutex_t* )
+     PTHREAD       1,274       3,528    0.00     0.0           0.13  int pthread_cond_destroy( pthread_cond_t* )
+         MPI       1,020       1,080    5.02     0.3        4644.08  MPI_Alltoall
 $
 ```
 
@@ -392,50 +391,50 @@ INFO: Score report written to ./prof_wofp/scorep.score
 $ head -n 35 ./prof_wofp/scorep.score
 
 Estimated aggregate size of event trace:                   18GB
-Estimated requirements for largest trace buffer (max_buf): 358MB
-Estimated memory requirements (SCOREP_TOTAL_MEMORY):       368MB
-(hint: When tracing set SCOREP_TOTAL_MEMORY=368MB to avoid intermediate flushes
+Estimated requirements for largest trace buffer (max_buf): 360MB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       370MB
+(hint: When tracing set SCOREP_TOTAL_MEMORY=370MB to avoid intermediate flushes
  or reduce requirements using USR regions filters.)
 
 flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
-         ALL 375,260,969 280,526,204 1707.00   100.0           6.08  ALL
-         MPI 373,397,529 276,096,980  900.45    52.8           3.26  MPI
-      SCOREP          46          72  801.67    47.0    11134355.68  SCOREP
-     PTHREAD   1,863,394   4,429,152    4.88     0.3           1.10  PTHREAD
+         ALL 376,634,203 282,682,028 1916.23   100.0           6.78  ALL
+         MPI 373,398,205 276,097,498 1003.25    52.4           3.63  MPI
+      SCOREP          46          72  907.56    47.4    12605046.59  SCOREP
+     PTHREAD   3,519,074   6,584,458    5.43     0.3           0.82  PTHREAD
 
-      SCOREP          46          72  801.67    47.0    11134355.68  simpleFoam
-         MPI   4,156,230  11,495,788  276.63    16.2          24.06  MPI_Waitall
-         MPI  11,272,292  11,935,368  271.21    15.9          22.72  MPI_Allreduce
-         MPI 156,089,268  84,176,201   95.05     5.6           1.13  MPI_Isend
-         MPI      46,308      48,122   73.78     4.3        1533.27  MPI_Bcast
-         MPI          84          72   72.72     4.3     1009981.74  MPI_Init_thread
-         MPI 156,087,933  84,176,201   53.75     3.1           0.64  MPI_Irecv
-         MPI     125,355      68,389   22.17     1.3         324.15  MPI_Send
-         MPI  45,324,994  83,676,912   11.17     0.7           0.13  MPI_Test
-         MPI      15,028      15,912    8.86     0.5         556.65  MPI_Allgather
-         MPI     525,174      22,158    6.21     0.4         280.16  MPI_Probe
-         MPI       1,020       1,080    5.23     0.3        4841.93  MPI_Alltoall
-     PTHREAD       5,486      12,252    4.05     0.2         330.84  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
-         MPI      67,574     131,759    2.22     0.1          16.84  MPI_Waitsome
-         MPI     260,644     275,976    0.75     0.0           2.71  MPI_Gather
-         MPI          84          72    0.41     0.0        5705.50  MPI_Finalize
-     PTHREAD     883,792   2,082,306    0.38     0.0           0.18  int pthread_mutex_lock( pthread_mutex_t* )
-     PTHREAD     883,792   2,082,306    0.36     0.0           0.17  int pthread_mutex_unlock( pthread_mutex_t* )
-         MPI         168         144    0.10     0.0         694.01  MPI_Comm_create_group
-         MPI   4,040,030      68,389    0.09     0.0           1.34  MPI_Recv
-         MPI       6,214       2,705    0.09     0.0          33.33  MPI_Wait
-     PTHREAD      77,376     192,266    0.05     0.0           0.25  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
+      SCOREP          46          72  907.56    47.4    12605046.59  simpleFoam
+         MPI  11,272,292  11,935,368  289.20    15.1          24.23  MPI_Allreduce
+         MPI   4,156,230  11,495,788  270.64    14.1          23.54  MPI_Waitall
+         MPI          84          72  164.58     8.6     2285835.79  MPI_Init_thread
+         MPI 156,089,268  84,176,201   94.01     4.9           1.12  MPI_Isend
+         MPI      46,308      48,122   74.01     3.9        1537.95  MPI_Bcast
+         MPI 156,087,933  84,176,201   53.52     2.8           0.64  MPI_Irecv
+         MPI     125,355      68,389   22.17     1.2         324.21  MPI_Send
+         MPI  45,324,994  83,676,912   11.11     0.6           0.13  MPI_Test
+         MPI      15,028      15,912    9.31     0.5         585.24  MPI_Allgather
+         MPI     525,174      22,158    6.43     0.3         290.29  MPI_Probe
+         MPI       1,020       1,080    5.02     0.3        4644.08  MPI_Alltoall
+     PTHREAD       5,226      12,888    4.46     0.2         346.02  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
+         MPI      67,834     132,277    1.82     0.1          13.75  MPI_Waitsome
+         MPI     260,644     275,976    0.69     0.0           2.50  MPI_Gather
+     PTHREAD   1,711,502   3,159,641    0.52     0.0           0.16  int pthread_mutex_lock( pthread_mutex_t* )
+         MPI          84          72    0.43     0.0        5905.75  MPI_Finalize
+     PTHREAD   1,711,502   3,159,641    0.35     0.0           0.11  int pthread_mutex_unlock( pthread_mutex_t* )
+         MPI         168         144    0.10     0.0         699.08  MPI_Comm_create_group
+         MPI   4,040,030      68,389    0.10     0.0           1.40  MPI_Recv
+         MPI       6,214       2,705    0.09     0.0          32.80  MPI_Wait
+     PTHREAD      77,376     192,266    0.06     0.0           0.30  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
 $
 ```
 
 この出力から、以下のことがわかります。
 
 - MPI通信と **simpleFoam** で総所要時間のほぼ全て（ **99.8%** ）を占めている
-    - MPI通信時間： 52.8%
-    - **simpleFoam** ： 47.0%
+    - MPI通信時間： 52.4%
+    - **simpleFoam** ： 47.4%
 - 以下のMPI通信関数は総所要時間の一割以上を占める
-    - **MPI_Waitall** ： 16.2%
-    - **MPI_Allreduce** ： 15.9%
+    - **MPI_Allreduce** ： 15.1%
+    - **MPI_Waitall** ： 14.1%
 
 次に、以下コマンドをParaView/CubeGUI操作端末に表示されているBastionノードのプロファイリング利用ユーザのGNOMEデスクトップ上のターミナルで実行し、浮動小数点演算数を含まないプロファイリング手法データを読み込んで **CubeGUI** を起動します。
 
