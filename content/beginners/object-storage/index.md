@@ -29,7 +29,7 @@ tags:
 
 - **参考動画：** 本チュートリアルの内容をベースとした定期ハンズオン Webinar の録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。
 
-  - [Oracle Cloud Infrastructure ハンズオン - 7.オブジェクト・ストレージ](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+7.%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%83%BB%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/1_ovnt141g/163691342)
+  - [Oracle Cloud Infrastructure ハンズオン - 7.オブジェクト・ストレージ](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+7.%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%83%BB%E3%82%B9%E3%83%88%E3%83%AC%E3%83%BC%E3%82%B8/1_ovnt141g)
 
 <a id="1_ObjectStorage_about"></a>
 
