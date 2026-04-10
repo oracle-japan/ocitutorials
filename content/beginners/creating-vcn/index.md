@@ -30,7 +30,7 @@ tags:
 
    **参考動画：** 本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。
 
-   - [Oracle Cloud Infrastructure ハンズオン - 2.仮想クラウドネットワーク](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+2.%E4%BB%AE%E6%83%B3%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/1_wkkm6sru)
+   - [Oracle Cloud Infrastructure ハンズオン - 2.仮想クラウドネットワーク](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+3.%E4%BB%AE%E6%83%B3%E3%82%AF%E3%83%A9%E3%82%A6%E3%83%89%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF/1_d9kv1sm7/163691342)
 
 
 <a id="anchor1"></a>
