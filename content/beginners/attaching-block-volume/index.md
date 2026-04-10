@@ -35,7 +35,7 @@ tags:
 
 **参考動画：** 本チュートリアルの内容をベースとした定期ハンズオンWebinarの録画コンテンツです。操作の流れや解説を動画で確認したい方はご参照ください。
 
-- [Oracle Cloud Infrastructure ハンズオン - 4.ブロック・ボリューム](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+4.%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0/1_9jgr5164)
+- [Oracle Cloud Infrastructure ハンズオン - 4.ブロック・ボリューム](https://videohub.oracle.com/media/Oracle+Cloud+Infrastructure+%E3%83%8F%E3%83%B3%E3%82%BA%E3%82%AA%E3%83%B3+-+5.%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E3%83%BB%E3%83%9C%E3%83%AA%E3%83%A5%E3%83%BC%E3%83%A0/1_6kaih6xg/163691342)
 
 <a id="anchor1"></a>
 
