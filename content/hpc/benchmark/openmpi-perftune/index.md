@@ -25,7 +25,7 @@ params:
 - ノード当たりMPIプロセス数 ： **8** ・ **16** ・ **32** ・ **36**
 - MPI集合通信関数 ： **Alltoall** ・ **Allgather** ・ **Allreduce** ・ **Exchange** （※1）
 
-※1）MPI集合通信関数ではありませんが、 **Intel MPI Benchmarks** で **Parallel Transfer** に分類される **MPI_Isend** ・ **MPI_recv** ・ **MPI_Waitall** を組み合わせたベンチマークで、実アプリケーションで頻繁に出現する領域分割境界のデータ交換に使用される通信パターンです。
+※1） **Exchange** はMPI集合通信関数ではありませんが、 **Intel MPI Benchmarks** で **Parallel Transfer** に分類される **MPI_Isend** ・ **MPI_recv** ・ **MPI_Waitall** を組み合わせたベンチマークで、実アプリケーションで頻繁に出現する解析モデル領域分割境界のデータ交換に使用される通信パターンです。
 
 [**実行時パラメータ**]
 
@@ -42,7 +42,7 @@ params:
 ※4） **UCX** のパラメータで、2ノード以上の **計測条件** で使用します。詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-7. UCX_ZCOPY_THRESH](../../benchmark/openmpi-perftips/#3-7-ucx_zcopy_thresh)** を参照してください。  
 ※5） **MCA** のパラメータで、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-1. coll_hcoll_enable](../../benchmark/openmpi-perftips/#3-1-coll_hcoll_enable)** を参照してください。なお **Exchange** は **HCOLL** の影響を受けないため、 **coll_hcoll_enable** の評価を行いません。  
 ※6） **MCA** のパラメータで、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI通信性能に影響するパラメータとその関連Tips](../../benchmark/openmpi-perftips/)** の **[3-9. coll_ucc_enable](../../benchmark/openmpi-perftips/#3-9-coll_ucc_enable)** を参照してください。なお **Exchange** は **UCC** の影響を受けないため、 **coll_ucc_enable** の評価を行いません。  
-※7）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。  
+※7）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。
 
 本パフォーマンス関連Tipsで使用する環境を以下に示します。
 
