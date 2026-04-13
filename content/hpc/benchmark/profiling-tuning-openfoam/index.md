@@ -22,7 +22,7 @@ params:
 - プロファイリング
     - **asis** （※1）の所要時間計測
     - **asis** のプロファイリング取得時の所要時間計測
-    - 両者に差が無く精度の良いプロファイリング情報を取得出来ていることを確認
+    - 両者に大きな差が無く精度の良いプロファイリング情報を取得出来ていることを確認
     - プロファイリング情報から **ホットスポット** （※2）のMPI通信関数を特定
 - チューニング
     - **ホットスポット** のMPI通信関数に対する最適な実行時パラメータ検討
@@ -40,11 +40,36 @@ params:
 - **[Scalasca](https://www.scalasca.org/)**
 - **[CubeGUI](https://www.scalasca.org/scalasca/software/cube-4.x/download.html)**
 
-以上を踏まえて本パフォーマンス・プロファイリング関連Tipsは、プロファイリングツールに **Score-P** 、 **Scalasca** 、及び **CubeGUI** を使用し、 **OpenFOAM** のプロファイリング情報をMPI通信にフォーカスして取得し得られた **ホットスポット** のMPI通信関数にフォーカスしてチューニングを適用、その性能を向上させる手順を解説します。  
-
-本手順は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** で相互接続する **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)** を計算ノードとするHPCクラスタ環境で実行することを前提とし、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのソルバー（ **simpleFoam** ）実行部分をプロファイリング・チューニング対象に使用します。
+以上を踏まえて本パフォーマンス・プロファイリング関連Tipsは、プロファイリングツールに **Score-P** 、 **Scalasca** 、及び **CubeGUI** を使用し、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのソルバー実行部分のプロファイリング情報をMPI通信にフォーカスして取得、 **ホットスポット** のMPI通信関数にフォーカスしてチューニングを適用、その性能を向上させる手順を解説します。  
 
 またMPI通信関数のチューニング手法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** で得られた結果を元に検討します。
+
+本パフォーマンス・プロファイリング関連Tipsは、以下の環境を前提とします。
+
+- 計算ノード
+    - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+    - ノード数： 2ノード
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※3）
+- ノード間接続インターコネクト
+    - **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** 
+    - リンク速度： 100 Gbps
+- Bastionノード
+    - シェイプ ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
+    - イメージ： **Oracle Linux** 9.05ベースのHPC **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** （※3）
+- ファイル共有ストレージ
+    - NFSでサービスする任意のファイル共有ストレージ（※4）
+    - Bastionノードと全計算ノードのCFD解析ユーザホームディレクトリをファイル共有
+- **OpenFOAM** ： v2512（※5）
+- **Score-P** ：9.4（※6）
+- **Scalasca** ：2.6.2（※6）
+- **CubeGUI** ：4.9.1（※6）
+- MPI： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8（※7）
+
+※3）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
+※4）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
+※5） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** をプロダクション実行用途で用意し、同じバージョンを本プロファイリング関連Tipsの手順に従いプロファイリング用途で追加インストールします。  
+※6） **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../scorep-profiling/)** に従って構築された **Score-P** 、 **Scalasca** 、及び **CubeGUI** です。  
+※7） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 以降では、以下の順に解説します。
 
@@ -70,7 +95,7 @@ params:
 
 ## 2-2. プロファイリング手法データの確認
 
-以下コマンドをプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
+以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
 
 ```sh
 $ module load openmpi papi scorep scalasca cubegui
@@ -118,9 +143,10 @@ flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
 $
 ```
 
-この出力から、MPI通信にフォーカスした場合のホットスポットは **MPI_Allreduce** と **MPI_Waitall** で、それぞれ総所要時間の **15.1%** と **14.1%** を占めていることがわかります。
+この出力から、MPI通信にフォーカスした場合のホットスポットは **MPI_Allreduce** と **MPI_Waitall** で、それぞれ総所要時間の **15.1%** と **14.1%** を占めていることがわかります。  
+ここで **MPI_Waitall** は、 **11.5 M** 回呼び出されており、これを上回る **84.2 M** 回呼び出されている **MPI_Isend** ・ **MPI_Irecv** と組み合わせた解析モデル領域分割境界のデータ交換に使用される、 **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** で言うところの **Exchange** 型通信パターンで使用されていると特定します。
 
-そこで、MPI通信の性能向上に寄与する実行時パラメータが判明している **MPI_Allreduce** をチューニング対象とし、続いてその呼び出し時メッセージサイズを調査します。
+そこで、 **MPI_Allreduce** と **Exchange** 型通信パターンをチューニング対象とし、続いてその呼び出し時メッセージサイズを調査します。
 
 以下コマンドをParaView/CubeGUI操作端末に表示されているBastionノードのプロファイリング利用ユーザのGNOMEデスクトップ上のターミナルで実行し、プロファイリング手法データを読み込んで **CubeGUI** を起動します。
 
@@ -131,24 +157,53 @@ $ run
 $ cube ./prof_wofp/profile.cubex
 ```
 
+次に、評価指標軸の **Time (sec)** をクリックし、
+
 ![画面ショット](cubegui_page01.png)
 
-次に、コールツリー軸領域の任意の箇所をクリックしたのちに **Ctrl-F** キーを入力し、表示される検索フィールドに **MPI_Allreduce** と入力し、表示される **MPI_Allreduce** プルダウンメニューを選択すると、
+コールツリー軸領域の任意の箇所をクリックしたのちに **Ctrl-F** キーを入力し、表示される検索フィールドに **MPI_Allreduce** と入力し、表示される **MPI_Allreduce** プルダウンメニューを選択すると、
 
 ![画面ショット](cubegui_page02.png)
 
-コールツリー軸に **simpleFoam** から呼ばれた **MPI_Allreduce** が表示されます。
+コールツリー軸に **simpleFoam** から呼ばれた **MPI_Allreduce** が所要時間の上位として色付きで表示されます。
 
 ![画面ショット](cubegui_page03.png)
 
-
-次に、コールツリー軸に表示された **MPI_Allreduce** をクリックして1階層下がりシステム位置軸を2階層下ると、各MPIプロセスが **MPI_Allreduce** を均等に **166,000回** 呼び出していることがわかります。
+次に、評価指標軸の **Visits (occ)** をクリックし、
 
 ![画面ショット](cubegui_page04.png)
 
-次に、評価指標軸の **bytes_sent** をクリックすると、各MPIプロセスが **MPI_Allreduce** で均等に **108 MB** 送信していることがわかります。
+コールツリー軸に表示されている **MPI_Allreduce** をクリックして1階層下がりシステム位置軸を2階層下ると、各MPIプロセスが **MPI_Allreduce** を均等に **166,000回** 呼び出していることがわかります。
 
 ![画面ショット](cubegui_page05.png)
+
+次に、評価指標軸の **bytes_sent (bytes)** をクリックすると、各MPIプロセスが **MPI_Allreduce** で均等に **108 MB** 送信していることがわかります。
+
+![画面ショット](cubegui_page06.png)
+
+以上で、 **MPI_Allreduce** のメッセージサイズ算出に必要な情報が取得できました。
+
+次に、評価指標軸の **Visits (occ)** をクリックし、
+
+![画面ショット](cubegui_page07.png)
+
+コールツリー軸に表示されている検索フィールドに **MPI_Isend** と入力し、表示される **MPI_Isend** プルダウンメニューを選択すると、
+
+![画面ショット](cubegui_page08.png)
+
+コールツリー軸に **simpleFoam** から呼ばれた **MPI_Isend** が呼び出し回数 **84.2 M** 回で表示されます。
+
+![画面ショット](cubegui_page09.png)
+
+次に、評価指標軸の **bytes_sent (bytes)** をクリックし、
+
+![画面ショット](cubegui_page10.png)
+
+コールツリー軸に表示されている **MPI_Isend** をクリックして1階層下がると、 **MPI_Isend** の送信データ量が **184 GB** であることがわかります。
+
+![画面ショット](cubegui_page11.png)
+
+以上で、 **Exchange** 型通信パターンのメッセージサイズ算出に必要な情報が取得できました。
 
 # 3. チューニング
 
@@ -156,131 +211,275 @@ $ cube ./prof_wofp/profile.cubex
 
 本章は、先に取得したプロファイリング情報を元に、以下の手順でチューニングを実施します。
 
-- **ホットスポット** に対するチューニング手法検討
-- チューニング適用時のプロファイリング取得
-- プロファイリング情報から **ホットスポット** に対するチューニングの効果を確認
-- チューニング適用時の所要時間計測
-- **asis** とチューニング適用時の所要時間比較・チューニング効果確認
+1. **[チューニング手法検討](#3-1-チューニング手法検討)**  
+ここでは、特定した **ホットスポット** に対するチューニング手法を検討します。
+2. **[チューニング適用時プロファイリング取得](#3-2-チューニング適用時プロファイリング取得)**  
+ここでは、チューニングを適用した状態でプロファイリングを実施し、取得したプロファイリング情報から **ホットスポット** に対するチューニングの効果を確認します。
+3. **[チューニング適用時所要時間計測](#3-3-チューニング適用時所要時間計測)**  
+ここでは、チューニングを適用した状態の所要時間を計測し、 **asis** とチューニング適用時の所要時間を比較してチューニングの最終的な効果を確認します。
 
-## 3-1. チューニング手順
+## 3-1. チューニング手法検討
 
 先の **[2. プロファイリング](#2-プロファイリング)** の結果から、以下のことが判明しました。
 
-- 所要時間上位のMPI関数は **MPI_Waitall** と **MPI_Allreduce** でこれを **ホットスポット** と特定
+- 所要時間上位のMPI関数は **MPI_Allreduce** と **MPI_Waitall** でそれぞれ総所要時間の **15.1%** と **14.1%** を占めこれらを **ホットスポット** と特定
 - **ホットスポット** の **MPI_Allreduce** は以下の特性を有する
-    - 72個のMPIプロセスが均等に **108 MB** のデータを送信している
     - 72個のMPIプロセスが均等に **166,000回** 呼び出している
+    - 72個のMPIプロセスが均等に **108 MB** のデータを送信している
+- **ホットスポット** の **MPI_Waitall** は **MPI_Isend** ・ **MPI_Irecv** と組み合わせた **Exchange** 型通信パターンで実行されていると特定
+- **MPI_Waitall** を含む **Exchange** 型通信パターンは以下の特性を有する
+    - **84.2 M** 回実行されている
+    - **184 GB** のデータを送信している
 
-ここで、 **ホットスポット** の **MPI_Allreduce** が各回とも同一メッセージサイズであると仮定し、このメッセージサイズを以下の計算式から求めます。
+ここで、 **ホットスポット** の **MPI_Allreduce** が全て同一メッセージサイズで呼び出されていると仮定し、このメッセージサイズを以下の計算式から求めます。
 
 108 (MB) / 166,000 (回) / 72 (MPIプロセス) = **9.0 B**
 
-以上の情報から、 **OpenMPI** の以下MPI通信をターゲットにチューニング手法を検討します。
+また、 **ホットスポット** の **MPI_Waitall** を含む **Exchange** 型通信パターンが全て同一メッセージサイズで行われていると仮定し、このメッセージサイズを以下の計算式から求めます。
 
-- MPI関数： **MPI_Allreduce**
-- ノード数： 2ノード
-- ノード当たりプロセス数： 36
-- メッセージサイズ： 9.0 B
+184 (GB) / 84.2 (M回) = **2,185.3 B**
+
+以上の情報から、以下2通りの **OpenMPI** のMPI通信をターゲットにチューニング手法を検討します。
+
+- **MPI_Allreduce**
+    - ノード数： 2ノード
+    - ノード当たりプロセス数： 36
+    - メッセージサイズ： 9.0 B
+- **Exchange** 型通信
+    - ノード数： 2ノード
+    - ノード当たりプロセス数： 36
+    - メッセージサイズ： 2,185.3 B
 
 ここで、 **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** の当該箇所である **[2-4-3. Allreduce](../../benchmark/openmpi-perftune/#2-4-3-allreduce)** の最後に記載されている以下グラフに於いて、実際のメッセージサイズである **9.0 B** に最も近いの **8 B** メッセージサイズ部分を確認し、
 
-![Alltoall 8 node 32 ppn](are_02_36_step3.png)
+![Allreduce 2 node 36 ppn](are_02_36_step3.png)
 
-最も所要時間の短い紫色のグラフである以下のパラメータ設定が適していると判断、これをチューニング手法として採用します。
+緑色と紫色のグラフがほぼ同じ値で所要時間が短いため以下2種類のパラメータ設定が適していると判断、これを **MPI_Allreduce** に対するチューニング手法として採用します。
+
+- **UCX_TLS**： **self,sm,ud**
+- **UCX_RNDV_THRESH**： **intra:64kb,inter:128kb**
+- **UCX_ZCOPY_THRESH**： **128kb**
+- **NPS**： **NPS2**
+- MPIプロセス分割方法： ブロック分割（※8）（デフォルトのため **asis** にも適用されています。）
+- **coll_hcoll_enable**： 0 / 1（デフォルトのため **asis** にも適用されています。）
+- **coll_ucc_enable**： 1 / 0（デフォルトのため **asis** にも適用されています。）
+
+※8）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。
+
+次に、 **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** の当該箇所である **[2-4-4. Exchange](../../benchmark/openmpi-perftune/#2-4-4-exchange)** の最後に記載されている以下グラフに於いて、実際のメッセージサイズである **2,185.3 B** に最も近いの **2,048 B** メッセージサイズ部分を確認し、
+
+![Exchange 2 node 36 ppn](exc_02_36_step3.png)
+
+最も所要時間の短い緑色のグラフである以下のパラメータ設定が適していると判断、これを **Exchange** 型通信に対するチューニング手法として採用します。
 
 - **UCX_TLS**： **self,sm,rc**
-- **UCX_RNDV_THRESH**： **intra:128kb,inter:128kb**
+- **UCX_RNDV_THRESH**： **intra:16kb,inter:128kb**
 - **UCX_ZCOPY_THRESH**： **128kb**
-- **NPS**： 1（ **asis** にも適用されています。）
-- プロセス配置： ブロック分割（デフォルトのため **asis** にも適用されています。）
-- **coll_hcoll_enable**： 1（デフォルトのため **asis** にも適用されています。）
+- **NPS**： **NPS2**
+- MPIプロセス分割方法： ブロック分割（デフォルトのため **asis** にも適用されています。）
 
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、チューニング手法適用時のプロファイリングを取得します。  
-この実行により、カレントディレクトリにディレクトリ **scorep_simpleFoam_36p72xP_sum** が作成され、ここに取得したプロファイリングデータが格納されます。
+以上より、 **MPI_Allreduce** と **Exchange** 型通信に対する最適なパラメーター設定が異なるため、以降では以下8通りのパラメータの組み合わせを検証します。
+
+| No. | UCX_TLS        | UCX_RNDV_THRESH            | coll_hcoll_enable | coll_ucc_enable |
+| :-: | :------------: | :------------------------: | :---------------: | :-------------: |
+| 1.  | **self,sm,rc** | **intra:16kb,inter:128kb** | **1**             | **0**           |
+| 2.  | **self,sm,rc** | **intra:64kb,inter:128kb** | **1**             | **0**           |
+| 3.  | **self,sm,ud** | **intra:16kb,inter:128kb** | **1**             | **0**           |
+| 4.  | **self,sm,ud** | **intra:64kb,inter:128kb** | **1**             | **0**           |
+| 5.  | **self,sm,rc** | **intra:16kb,inter:128kb** | **0**             | **1**           |
+| 6.  | **self,sm,rc** | **intra:64kb,inter:128kb** | **0**             | **1**           |
+| 7.  | **self,sm,ud** | **intra:16kb,inter:128kb** | **0**             | **1**           |
+| 8.  | **self,sm,ud** | **intra:64kb,inter:128kb** | **0**             | **1**           |
+
+なお、以下は全組み合わせ共通のパラメータです。
+
+- **UCX_ZCOPY_THRESH**： **128kb**
+- **NPS**： **NPS2**
+- MPIプロセス分割方法： ブロック分割
+
+## 3-2. チューニング適用時プロファイリング取得
+
+以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、チューニングを適用した時のプロファイリングを取得してその所要時間をプロファイリングを実施しない場合のもの（18秒）と比較して両者に大きな隔たりが無いことを確認、その後プロファイリングデータを格納しているディレクトリ **scorep_simpleFoam_36p72xP_sum** をNVMe SSDローカルディスクからファイル共有ストレージに移動、これを8通りのパラメータの組み合わせだけ繰り返します。
 
 ```sh
 $ cd /mnt/localdisk/usera/motorBike
 $ module load openmpi papi scorep scalasca
 $ source /opt/OpenFOAM-prof/OpenFOAM-v2512/etc/bashrc
-$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:128kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_witn
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 1" "--mca coll_ucc_enable 0" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wihc_tlrc_rt16
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wihc_tlrc_rt16 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wihc_tlrc_rt16
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 1" "--mca coll_ucc_enable 0" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:64kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wihc_tlrc_rt64
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wihc_tlrc_rt64 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wihc_tlrc_rt64
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 1" "--mca coll_ucc_enable 0" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wihc_tlud_rt16
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wihc_tlud_rt16 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wihc_tlud_rt16
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 1" "--mca coll_ucc_enable 0" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:64kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wihc_tlud_rt64
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wihc_tlud_rt64 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wihc_tlud_rt64
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 0" "--mca coll_ucc_enable 1" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wiuc_tlrc_rt16
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wiuc_tlrc_rt16 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wiuc_tlrc_rt16
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 0" "--mca coll_ucc_enable 1" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,rc" "-x UCX_RNDV_THRESH=intra:64kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wiuc_tlrc_rt64
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wiuc_tlrc_rt64 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wiuc_tlrc_rt64
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 0" "--mca coll_ucc_enable 1" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:16kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wiuc_tlud_rt16
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wiuc_tlud_rt16 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wiuc_tlud_rt16
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ scalasca -analyze -f ./scorep.filt mpirun -n 72 -N 36 -machinefile ~/hostlist.txt "--mca coll_hcoll_enable 0" "--mca coll_ucc_enable 1" "--mca coll_ucc_priority 100" "-x UCX_NET_DEVICES=mlx5_2:1" "-x UCX_TLS=self,sm,ud" "-x UCX_RNDV_THRESH=intra:64kb,inter:128kb" "-x UCX_ZCOPY_THRESH=128kb" "-x LD_LIBRARY_PATH" "-x WM_PROJECT_DIR" `which simpleFoam` -parallel > ./log.simpleFoam_wisc_wiuc_tlud_rt64
+$ grep ^ExecutionTime ./log.simpleFoam_wisc_wiuc_tlud_rt64 | tail -1
+$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_wiuc_tlud_rt64
 ```
 
-次に、以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、プロファイリングデータ格納ディレクトリをNVMe SSDローカルディスクからファイル共有ストレージに移動します。
-
-```sh
-$ mv scorep_simpleFoam_36p72xP_sum ${FOAM_RUN}/prof_wofp_witn
-```
-
-次に、以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示します。
+次に、以下コマンドをBastionノードのプロファイリング利用ユーザで実行し、トータル時間を評価指標としたプロファイリング結果を表示、これを8通りのパラメータの組み合わせだけ繰り返します。
 
 ```sh
 $ module load openmpi papi scorep scalasca
 $ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
 $ run
-$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_witn
-INFO: Post-processing runtime summarization report (profile.cubex)...
-/opt/scorep/bin/scorep-score  -s totaltime -r ./prof_wofp_witn/profile.cubex > ./prof_wofp_witn/scorep.score
-INFO: Score report written to ./prof_wofp_witn/scorep.score
-$ head -n 35 ./prof_wofp_witn/scorep.score
-
-Estimated aggregate size of event trace:                   18GB
-Estimated requirements for largest trace buffer (max_buf): 360MB
-Estimated memory requirements (SCOREP_TOTAL_MEMORY):       370MB
-(hint: When tracing set SCOREP_TOTAL_MEMORY=370MB to avoid intermediate flushes
- or reduce requirements using USR regions filters.)
-
-flt     type  max_buf[B]      visits time[s] time[%] time/visit[us]  region
-         ALL 377,075,171 286,005,780 1633.49   100.0           5.71  ALL
-         MPI 373,396,411 276,094,596  821.46    50.3           2.98  MPI
-      SCOREP          46          72  806.55    49.4    11202145.32  SCOREP
-     PTHREAD   4,697,420   9,911,112    5.47     0.3           0.55  PTHREAD
-
-      SCOREP          46          72  806.55    49.4    11202145.32  simpleFoam
-         MPI  11,272,292  11,935,368  219.19    13.4          18.36  MPI_Allreduce
-         MPI   4,156,230  11,495,788  200.58    12.3          17.45  MPI_Waitall
-         MPI 156,089,268  84,176,201  118.66     7.3           1.41  MPI_Isend
-         MPI          84          72  100.25     6.1     1392375.69  MPI_Init_thread
-         MPI      46,308      48,122   75.07     4.6        1559.99  MPI_Bcast
-         MPI 156,087,933  84,176,201   52.79     3.2           0.63  MPI_Irecv
-         MPI     125,355      68,389   24.13     1.5         352.83  MPI_Send
-         MPI  45,324,994  83,676,912   11.11     0.7           0.13  MPI_Test
-         MPI      15,028      15,912    7.98     0.5         501.79  MPI_Allgather
-         MPI     260,644     275,976    4.44     0.3          16.10  MPI_Gather
-     PTHREAD       5,018      12,585    4.35     0.3         345.41  int pthread_cond_wait( pthread_cond_t*, pthread_mutex_t* )
-         MPI     525,174      22,158    3.82     0.2         172.30  MPI_Probe
-         MPI      66,352     129,375    1.55     0.1          12.00  MPI_Waitsome
-         MPI       1,020       1,080    1.22     0.1        1133.97  MPI_Alltoall
-     PTHREAD   2,298,452   4,819,780    0.59     0.0           0.12  int pthread_mutex_lock( pthread_mutex_t* )
-     PTHREAD   2,298,452   4,819,780    0.44     0.0           0.09  int pthread_mutex_unlock( pthread_mutex_t* )
-         MPI          84          72    0.41     0.0        5743.86  MPI_Finalize
-         MPI         168         144    0.09     0.0         658.89  MPI_Comm_create_group
-         MPI   4,040,030      68,389    0.08     0.0           1.22  MPI_Recv
-     PTHREAD      77,324     192,122    0.05     0.0           0.27  int pthread_mutex_init( pthread_mutex_t*, const pthread_mutexattr_t* )
-         MPI       6,214       2,705    0.05     0.0          17.79  MPI_Wait
-$
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wihc_tlrc_rt16
+$ head -n 35 ./prof_wofp_wihc_tlrc_rt16/scorep.score
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wihc_tlrc_rt64
+$ head -n 35 ./prof_wofp_wihc_tlrc_rt64/scorep.score
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wihc_tlud_rt16
+$ head -n 35 ./prof_wofp_wihc_tlud_rt16/scorep.score
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wihc_tlud_rt64
+$ head -n 35 ./prof_wofp_wihc_tlud_rt64/scorep.score
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wiuc_tlrc_rt16
+$ head -n 35 ./prof_wofp_wiuc_tlrc_rt16/scorep.score
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wiuc_tlrc_rt64
+$ head -n 35 ./prof_wofp_wiuc_tlrc_rt64/scorep.score
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wiuc_tlud_rt16
+$ head -n 35 ./prof_wofp_wiuc_tlud_rt16/scorep.score
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ scalasca -examine -s -x "-s totaltime" ./prof_wofp_wiuc_tlud_rt64
+$ head -n 35 ./prof_wofp_wiuc_tlud_rt64/scorep.score
 ```
 
-この出力から、 **MPI_Allreduce** の 所要時間が289秒から219秒に減少しており、チューニングの効果が確認できます。
+この出力から、 **MPI_Allreduce** と **MPI_Waitall** の所要時間がそれぞれ289.20 秒と270.64 秒から以下のように減少しており、何れの8通りのパラメータの組み合わせに於いてもチューニングの効果が確認できます。
 
-次に、以下コマンドを計算ノードのプロファイリング利用ユーザで実行し、チューニング適用時の所要時間を計測します。
+| No. | MPI_Allreduce | MPI_Waitall |
+| :-: | ------------: | ----------: |
+| 1.  | 220.83 秒      | 206.66 秒    |
+| 2.  | 222.09 秒      | 196.84 秒    |
+| 3.  | 249.35 秒      | 222.44 秒    |
+| 4.  | 253.69 秒      | 204.80 秒    |
+| 5.  | 237.45 秒      | 207.93 秒    |
+| 6.  | 236.96 秒      | 200.65 秒    |
+| 7.  | 273.76 秒      | 222.60 秒    |
+| 8.  | 273.30 秒      | 220.28 秒    |
+
+## 3-3. チューニング適用時所要時間計測
+
+以下コマンドを1番目の計算ノードのプロファイリング利用ユーザで実行し、チューニング適用時の所要時間を計測、これを8通りのパラメータの組み合わせだけ繰り返します。
 
 ```sh
 $ source /opt/OpenFOAM/OpenFOAM-v2512/etc/bashrc
-$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:128kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_witn
-[inst-pu5fo-x9-ol905-n1:13653] SET UCX_NET_DEVICES=mlx5_2:1
-[inst-pu5fo-x9-ol905-n1:13653] SET UCX_TLS=self,sm,rc
-[inst-pu5fo-x9-ol905-n1:13653] SET UCX_RNDV_THRESH=intra:128kb,inter:128kb
-[inst-pu5fo-x9-ol905-n1:13653] SET UCX_ZCOPY_THRESH=128kb
-$ grep ^ExecutionTime ./log.simpleFoam_wosc_witn | tail -1
-ExecutionTime = 16.08 s  ClockTime = 17 s
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 1 --mca coll_ucc_enable 0 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:16kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wihc_tlrc_rt16
+[inst-oqqrv-x9-ol905-n2:12658] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:12658] SET UCX_TLS=self,sm,rc
+[inst-oqqrv-x9-ol905-n2:12658] SET UCX_RNDV_THRESH=intra:16kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:12658] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wihc_tlrc_rt16 | tail -1
+ExecutionTime = 15.7 s  ClockTime = 16 s
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 1 --mca coll_ucc_enable 0 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:64kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wihc_tlrc_rt64
+[inst-oqqrv-x9-ol905-n2:12882] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:12882] SET UCX_TLS=self,sm,rc
+[inst-oqqrv-x9-ol905-n2:12882] SET UCX_RNDV_THRESH=intra:64kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:12882] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wihc_tlrc_rt64 | tail -1
+ExecutionTime = 15.66 s  ClockTime = 16 s
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with HCOLL
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 1 --mca coll_ucc_enable 0 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,ud -x UCX_RNDV_THRESH=intra:16kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wihc_tlud_rt16
+[inst-oqqrv-x9-ol905-n2:13102] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:13102] SET UCX_TLS=self,sm,ud
+[inst-oqqrv-x9-ol905-n2:13102] SET UCX_RNDV_THRESH=intra:16kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:13102] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wihc_tlud_rt16 | tail -1
+ExecutionTime = 16.13 s  ClockTime = 17 s
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with HCOLL
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 1 --mca coll_ucc_enable 0 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,ud -x UCX_RNDV_THRESH=intra:64kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wihc_tlud_rt64
+[inst-oqqrv-x9-ol905-n2:13327] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:13327] SET UCX_TLS=self,sm,ud
+[inst-oqqrv-x9-ol905-n2:13327] SET UCX_RNDV_THRESH=intra:64kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:13327] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wihc_tlud_rt64 | tail -1
+ExecutionTime = 16.11 s  ClockTime = 17 s
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 0 --mca coll_ucc_enable 1 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:16kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wiuc_tlrc_rt16
+[inst-oqqrv-x9-ol905-n2:13565] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:13565] SET UCX_TLS=self,sm,rc
+[inst-oqqrv-x9-ol905-n2:13565] SET UCX_RNDV_THRESH=intra:16kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:13565] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wiuc_tlrc_rt16 | tail -1
+ExecutionTime = 16.03 s  ClockTime = 16 s
+# UCX_TLS=self,sm,rc UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 0 --mca coll_ucc_enable 1 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,rc -x UCX_RNDV_THRESH=intra:64kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wiuc_tlrc_rt64
+[inst-oqqrv-x9-ol905-n2:13795] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:13795] SET UCX_TLS=self,sm,rc
+[inst-oqqrv-x9-ol905-n2:13795] SET UCX_RNDV_THRESH=intra:64kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:13795] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wiuc_tlrc_rt64 | tail -1
+ExecutionTime = 16.03 s  ClockTime = 16 s
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:16kb,inter:128kb with UCC
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 0 --mca coll_ucc_enable 1 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,ud -x UCX_RNDV_THRESH=intra:16kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wiuc_tlud_rt16
+[inst-oqqrv-x9-ol905-n2:14031] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:14031] SET UCX_TLS=self,sm,ud
+[inst-oqqrv-x9-ol905-n2:14031] SET UCX_RNDV_THRESH=intra:16kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:14031] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wiuc_tlud_rt16 | tail -1
+ExecutionTime = 16.43 s  ClockTime = 18 s
+# UCX_TLS=self,sm,ud UCX_RNDV_THRESH=intra:64kb,inter:128kb with UCC
+$ mpirun -n 72 -N 36 -hostfile ~/hostlist.txt --mca coll_hcoll_enable 0 --mca coll_ucc_enable 1 --mca coll_ucc_priority 100 -x UCX_NET_DEVICES=mlx5_2:1 -x UCX_TLS=self,sm,ud -x UCX_RNDV_THRESH=intra:64kb,inter:128kb -x UCX_ZCOPY_THRESH=128kb -x PATH -x LD_LIBRARY_PATH -x WM_PROJECT_DIR simpleFoam -parallel  > ./log.simpleFoam_wosc_wiuc_tlud_rt64
+[inst-oqqrv-x9-ol905-n2:14301] SET UCX_NET_DEVICES=mlx5_2:1
+[inst-oqqrv-x9-ol905-n2:14301] SET UCX_TLS=self,sm,ud
+[inst-oqqrv-x9-ol905-n2:14301] SET UCX_RNDV_THRESH=intra:64kb,inter:128kb
+[inst-oqqrv-x9-ol905-n2:14301] SET UCX_ZCOPY_THRESH=128kb
+$ grep ^ExecutionTime ./log.simpleFoam_wosc_wiuc_tlud_rt64 | tail -1
+ExecutionTime = 16.6 s  ClockTime = 18 s
 $
 ```
 
-この結果から、 **asis** とチューニング適用時の所要時間を比較し、チューニングの効果を確認します。
+この結果から、 **asis** と8通りのパラメータの組み合わせの所要時間を比較し、最も性能の良いパラメータの組み合わせを選定します。
 
 以下は、本プロファイリング・チューニング関連Tips環境で所要時間を計測した結果です。  
 この計測結果は、 **asis** とチューニング適用時をそれぞれ5回計測した最大値と最小値を除く3回の算術平均です。
 
-|asis|チューニング適用時|性能向上比|
-|:-:|:-:|:-:|
-|18.08秒|16.22秒|**11.5％**|
+| No.  | 所要時間     | 性能向上比      |
+| :--: | -------: | ---------: |
+| asis | 18.08 秒  | -          |
+| 1.   | 15.617 秒 | **15.77％** |
+| 2.   | 15.623 秒 | **15.73％** |
+| 3.   | 16.10 秒  | **12.3％**  |
+| 4.   | 16.15 秒  | **12.0％**  |
+| 5.   | 16.18 秒  | **11.7％**  |
+| 6.   | 16.14 秒  | **12.0％**  |
+| 7.   | 16.54 秒  | **9.3％**   |
+| 8.   | 16.59 秒  | **9.0％**   |
+
+以上より、 **No.1** の以下パラメータの組み合わせが最適と判断できます。
+
+- **UCX_TLS**： **self,sm,rc**
+- **UCX_RNDV_THRESH**： **intra:16kb,inter:128kb**
+- **UCX_ZCOPY_THRESH**： **128kb**
+- **NPS**： **NPS2**
+- MPIプロセス分割方法： ブロック分割
+- **coll_hcoll_enable**： 1
+- **coll_ucc_enable**： 0
