@@ -22,7 +22,7 @@ params:
 - プロファイリング
     - **asis** （※1）の所要時間計測
     - **asis** のプロファイリング取得時の所要時間計測
-    - 両者に差が無く精度の良いプロファイリング情報を取得出来ていることを確認
+    - 両者に大きな差が無く精度の良いプロファイリング情報を取得出来ていることを確認
     - プロファイリング情報から **ホットスポット** （※2）のMPI通信関数を特定
 - チューニング
     - **ホットスポット** のMPI通信関数に対する最適な実行時パラメータ検討
@@ -40,7 +40,7 @@ params:
 - **[Scalasca](https://www.scalasca.org/)**
 - **[CubeGUI](https://www.scalasca.org/scalasca/software/cube-4.x/download.html)**
 
-以上を踏まえて本パフォーマンス・プロファイリング関連Tipsは、プロファイリングツールに **Score-P** 、 **Scalasca** 、及び **CubeGUI** を使用し、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのソルバー実行部分のプロファイリング情報をMPI通信にフォーカスして取得し、 **ホットスポット** のMPI通信関数にフォーカスしてチューニングを適用、その性能を向上させる手順を解説します。  
+以上を踏まえて本パフォーマンス・プロファイリング関連Tipsは、プロファイリングツールに **Score-P** 、 **Scalasca** 、及び **CubeGUI** を使用し、 **OpenFOAM** のチュートリアルに含まれるオートバイ走行時乱流シミュレーションのソルバー実行部分のプロファイリング情報をMPI通信にフォーカスして取得、 **ホットスポット** のMPI通信関数にフォーカスしてチューニングを適用、その性能を向上させる手順を解説します。  
 
 またMPI通信関数のチューニング手法は、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** で得られた結果を元に検討します。
 
@@ -60,19 +60,16 @@ params:
     - NFSでサービスする任意のファイル共有ストレージ（※4）
     - Bastionノードと全計算ノードのCFD解析ユーザホームディレクトリをファイル共有
 - **OpenFOAM** ： v2512（※5）
-- **ParaView** ： 6.0.1（※5）
 - **Score-P** ：9.4（※6）
 - **Scalasca** ：2.6.2（※6）
 - **CubeGUI** ：4.9.1（※6）
-- **PAPI** ：7.2.0（※7）
-- MPI： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8（※8）
+- MPI： **[OpenMPI](https://www.open-mpi.org/)** 5.0.8（※7）
 
 ※3）**[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** です。  
 ※4）このファイル共有ストレージの選定・構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
-※5） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** と **ParaView** をプロダクション実行用途で用意し、同じバージョンを本プロファイリング関連Tipsの手順に従いプロファイリング用途で追加インストールします。  
+※5） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[OpenFOAMインストール・利用方法](../../tech-knowhow/install-openfoam/)** に従って構築された **OpenFOAM** をプロダクション実行用途で用意し、同じバージョンを本プロファイリング関連Tipsの手順に従いプロファイリング用途で追加インストールします。  
 ※6） **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[Score-P・Scalasca・CubeGUIで並列アプリケーションをプロファイリング](../scorep-profiling/)** に従って構築された **Score-P** 、 **Scalasca** 、及び **CubeGUI** です。  
-※7） **[OCI HPCプロファイリング関連Tips集](../../#2-3-プロファイリング関連tips集)** の **[PAPIでHPCアプリケーションをプロファイリング](../papi-profiling/)** に従って構築された **PAPI** です。  
-※8） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
+※7） **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** に従って構築された **OpenMPI** です。
 
 以降では、以下の順に解説します。
 
@@ -147,7 +144,7 @@ $
 ```
 
 この出力から、MPI通信にフォーカスした場合のホットスポットは **MPI_Allreduce** と **MPI_Waitall** で、それぞれ総所要時間の **15.1%** と **14.1%** を占めていることがわかります。  
-ここで **MPI_Waitall** は、約11M回呼び出されており、これを上回る約84M回呼び出されている **MPI_Isend** と **MPI_Irecv** と組み合わせた解析モデル領域分割境界のデータ交換に使用される、 **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** で言うところの **Exchange** 型通信パターンで使用されていると想定します。
+ここで **MPI_Waitall** は、 **11.5 M** 回呼び出されており、これを上回る **84.2 M** 回呼び出されている **MPI_Isend** ・ **MPI_Irecv** と組み合わせた解析モデル領域分割境界のデータ交換に使用される、 **[Intel MPI Benchmarks](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-mpi-benchmarks.html)** で言うところの **Exchange** 型通信パターンで使用されていると特定します。
 
 そこで、 **MPI_Allreduce** と **Exchange** 型通信パターンをチューニング対象とし、続いてその呼び出し時メッセージサイズを調査します。
 
@@ -227,28 +224,28 @@ $ cube ./prof_wofp/profile.cubex
 
 - 所要時間上位のMPI関数は **MPI_Allreduce** と **MPI_Waitall** でそれぞれ総所要時間の **15.1%** と **14.1%** を占めこれらを **ホットスポット** と特定
 - **ホットスポット** の **MPI_Allreduce** は以下の特性を有する
-    - 72個のMPIプロセスが均等に **108 MB** のデータを送信している
     - 72個のMPIプロセスが均等に **166,000回** 呼び出している
+    - 72個のMPIプロセスが均等に **108 MB** のデータを送信している
 - **ホットスポット** の **MPI_Waitall** は **MPI_Isend** ・ **MPI_Irecv** と組み合わせた **Exchange** 型通信パターンで実行されていると特定
 - **MPI_Waitall** を含む **Exchange** 型通信パターンは以下の特性を有する
-    - **184 GB** のデータを送信している
     - **84.2 M** 回実行されている
+    - **184 GB** のデータを送信している
 
-ここで、 **ホットスポット** の **MPI_Allreduce** が各回とも同一メッセージサイズであると仮定し、このメッセージサイズを以下の計算式から求めます。
+ここで、 **ホットスポット** の **MPI_Allreduce** が全て同一メッセージサイズで呼び出されていると仮定し、このメッセージサイズを以下の計算式から求めます。
 
 108 (MB) / 166,000 (回) / 72 (MPIプロセス) = **9.0 B**
 
-また、 **ホットスポット** の **MPI_Waitall** を含む **Exchange** 型通信パターンが各回とも同一メッセージサイズであると仮定し、このメッセージサイズを以下の計算式から求めます。
+また、 **ホットスポット** の **MPI_Waitall** を含む **Exchange** 型通信パターンが全て同一メッセージサイズで行われていると仮定し、このメッセージサイズを以下の計算式から求めます。
 
 184 (GB) / 84.2 (M回) = **2,185.3 B**
 
 以上の情報から、以下2通りの **OpenMPI** のMPI通信をターゲットにチューニング手法を検討します。
 
-- MPI関数： **MPI_Allreduce**
+- **MPI_Allreduce**
     - ノード数： 2ノード
     - ノード当たりプロセス数： 36
     - メッセージサイズ： 9.0 B
-- MPI関数： **Exchange** 型通信
+- **Exchange** 型通信
     - ノード数： 2ノード
     - ノード当たりプロセス数： 36
     - メッセージサイズ： 2,185.3 B
@@ -257,17 +254,17 @@ $ cube ./prof_wofp/profile.cubex
 
 ![Allreduce 2 node 36 ppn](are_02_36_step3.png)
 
-最も所要時間の短い緑色のグラフである以下のパラメータ設定が適していると判断、これを **MPI_Allreduce** に対するチューニング手法として採用します。
+緑色と紫色のグラフがほぼ同じ値で所要時間が短いため以下2種類のパラメータ設定が適していると判断、これを **MPI_Allreduce** に対するチューニング手法として採用します。
 
 - **UCX_TLS**： **self,sm,ud**
 - **UCX_RNDV_THRESH**： **intra:64kb,inter:128kb**
 - **UCX_ZCOPY_THRESH**： **128kb**
 - **NPS**： **NPS2**
-- MPIプロセス分割方法： ブロック分割（※9）（デフォルトのため **asis** にも適用されています。）
-- **coll_hcoll_enable**： 0
-- **coll_ucc_enable**： 1
+- MPIプロセス分割方法： ブロック分割（※8）（デフォルトのため **asis** にも適用されています。）
+- **coll_hcoll_enable**： 0 / 1（デフォルトのため **asis** にも適用されています。）
+- **coll_ucc_enable**： 1 / 0（デフォルトのため **asis** にも適用されています。）
 
-※9）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。
+※8）NUMAノードに対するMPIプロセスの分割方法で、詳細は **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスを考慮したプロセス・スレッドのコア割当て指定方法（BM.Optimized3.36編）](../../benchmark/cpu-binding/)** を参照してください。
 
 次に、 **[OpenMPIのMPI集合通信チューニング方法（BM.Optimized3.36編）](../../benchmark/openmpi-perftune/)** の当該箇所である **[2-4-4. Exchange](../../benchmark/openmpi-perftune/#2-4-4-exchange)** の最後に記載されている以下グラフに於いて、実際のメッセージサイズである **2,185.3 B** に最も近いの **2,048 B** メッセージサイズ部分を確認し、
 
@@ -280,8 +277,6 @@ $ cube ./prof_wofp/profile.cubex
 - **UCX_ZCOPY_THRESH**： **128kb**
 - **NPS**： **NPS2**
 - MPIプロセス分割方法： ブロック分割（デフォルトのため **asis** にも適用されています。）
-- **coll_hcoll_enable**： 0（デフォルトのため **asis** にも適用されています。）
-- **coll_ucc_enable**： 1（デフォルトのため **asis** にも適用されています。）
 
 以上より、 **MPI_Allreduce** と **Exchange** 型通信に対する最適なパラメーター設定が異なるため、以降では以下8通りのパラメータの組み合わせを検証します。
 
