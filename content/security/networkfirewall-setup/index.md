@@ -276,19 +276,6 @@ packages:
 
 runcmd:
   - systemctl enable --now httpd
-  - systemctl start httpd
-  - firewall-offline-cmd --permanent --add-service=http
-  - systemctl restart firewalld
-  - curl https://secure.eicar.org/eicar.com.txt > /var/www/html/eicar.html
-```
-
-```
-#cloud-config
-packages:
-  - httpd
-
-runcmd:
-  - systemctl enable --now httpd
   - firewall-cmd --add-service=http --permanent
   - firewall-cmd --reload
   - curl https://secure.eicar.org/eicar.com.txt > /var/www/html/eicar.html
