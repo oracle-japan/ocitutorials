@@ -32,13 +32,14 @@ table, th, td {
 
 ここで **サイト間VPN** によるオンプレミスとOCIの拠点間接続は、いくつかの接続形態が用意されており、オンプレミス側の現状や各接続形態の特徴を考慮し、接続作業の第一ステップとしてどの接続形態を採用するかを決定する必要があります。
 
-また本テクニカルTipsは、拠点間が想定通り接続されていることを確認するため、オンプレミス側のプライベートネットワークに接続するライセンスサーバ相当のインスタンスとOCI側のプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通確認を行います。
+また本テクニカルTipsは、拠点間が想定通り接続されていることとそのネットワーク帯域を確認するため、オンプレミス側のプライベートネットワークに接続するライセンスサーバ相当のインスタンスとOCI側のプライベートサブネットに接続する計算ノード相当のインスタンス間でpingとSSHによる疎通とiperf3によるネットワーク帯域の確認を行います。
 
 以上より、次章以降では以下の順に解説を進めます。
 
 1. **[接続形態の決定](#1-接続形態の決定)**
 2. **[拠点間接続の作成](#2-拠点間接続の作成)**
 3. **[ライセンスサーバ・計算ノード間疎通確認](#3-ライセンスサーバ計算ノード間疎通確認)**
+4. **[ライセンスサーバ・計算ノード間ネットワーク帯域確認](#4-ライセンスサーバ計算ノード間ネットワーク帯域確認)**
 
 **注意 :** 本コンテンツ内の画面ショットは、現在のOCIコンソール画面と異なっている場合があります。
 
@@ -273,6 +274,7 @@ table, th, td {
 - ソース/宛先チェックのスキップ（※10）
 - パケット転送を許可するためのカーネルパラメータ設定追加
 - 接続する右側サイトのサブネットアドレスからのアクセスをfirewalldに許可
+- TCPコネクション開始時のパケットフラグメンテーション問題回避のためのTCP Maximum Segment Size低減
 
 ※10）デフォルトで許可されていない **VNIC** のパケット転送設定を変更し、これを許可します。このソース/宛先チェックのスキップは、OCIのインスタンスを使用する場合の手順のため、オンプレミスで使用するサーバでの手順に置き換えて実施します。
 
@@ -322,7 +324,7 @@ $
 $ sudo sysctl -p
 ```
 
-次に、Libreswan用インスタンスのopcユーザで以下コマンドを実行し、拠点間接続で接続する右側サイトのサブネットアドレス（ここではプライベートサブネットの **10.0.1.0/24**）からのアクセスをfirewalldに許可し、その設定を確認します。  
+次に、Libreswan用インスタンスのopcユーザで以下コマンドを実行し、拠点間接続で接続する右側サイトのサブネットアドレス（ここではプライベートサブネットの **10.0.0.0/16**）と左側サイトのサブネットアドレス（ここではプライベートサブネットの **192.168.0.0/16**）からのアクセスをfirewalldに許可し、その設定を確認します。  
 なお本手順は、 **接続形態3** であればプライベートサブネット接続であることを理由に、firewalldを停止することでも代用可能です。
 
 ```sh
@@ -350,6 +352,16 @@ trusted (active)
   icmp-blocks: 
   rich rules: 
 $ 
+```
+
+次に、Libreswan用インスタンスのopcユーザで以下コマンドを実行し、 **IPSec** 接続を介したTCPコネクション開始時のパケットフラグメンテーション問題を回避するためにTCP Maximum Segment Sizeを1,360バイトに低減する設定を追加します。
+
+```sh
+$ sudo firewall-cmd --permanent --direct --add-passthrough ipv4 -t mangle -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1360
+success
+$ sudo firewall-cmd --reload
+success
+$
 ```
 
 ## 2-5. 拠点間接続関連OCIリソース作成
@@ -975,6 +987,84 @@ PING 192.168.2.bbb (192.168.2.bbb) 56(84) bytes of data.
 rtt min/avg/max/mdev = 168.001/168.001/168.001/0.000 ms
 $ ssh 192.168.2.bbb hostname
 lic-srv
+$
+```
+
+# 4. ライセンスサーバ・計算ノード間ネットワーク帯域確認
+
+## 4-0. 概要
+
+本章は、左側サイトのライセンスサーバに相当するインスタンスの **lic-srv** と右側サイトの計算ノードに相当するインスタンスの **compute** を使用し、これらインスタンス間のiperf3によるネットワーク帯域を確認します。
+
+本テクニカルTipsのテスト環境では、 **接続形態3** を採用する東京・大阪リージョン間で1.6Gbps程度のネットワーク帯域を観測しました。
+
+## 4-1. ライセンスサーバ -> 計算ノード方向ネットワーク帯域確認  
+
+右側サイトのインスタンス **compute** のopcユーザで以下コマンドを実行し、iperf3をサーバモードで起動します。
+
+```sh
+$ iperf3 -s
+```
+
+次に、左側サイトのインスタンス **lic-srv** のopcユーザで以下コマンドを実行し、iperf3をクライアントモードで起動して右側サイトのインスタンス **compute** とのネットワーク帯域を確認します。  
+ここでIPアドレスは、自身のインスタンス **compute** のIPアドレスに置き換えて実行します。
+
+```sh
+$ iperf3 -c 10.0.1.ccc
+Connecting to host 10.0.1.ccc, port 5201
+[  5] local 192.168.2.bbb port 41464 connected to 10.0.1.ccc port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   148 MBytes  1.24 Gbits/sec    8   2.63 MBytes       
+[  5]   1.00-2.00   sec   161 MBytes  1.35 Gbits/sec    0   2.67 MBytes       
+[  5]   2.00-3.00   sec   196 MBytes  1.65 Gbits/sec    1   2.00 MBytes       
+[  5]   3.00-4.00   sec   200 MBytes  1.68 Gbits/sec    0   2.17 MBytes       
+[  5]   4.00-5.00   sec   205 MBytes  1.72 Gbits/sec    0   2.31 MBytes       
+[  5]   5.00-6.00   sec   209 MBytes  1.75 Gbits/sec    0   2.43 MBytes       
+[  5]   6.00-7.00   sec   208 MBytes  1.74 Gbits/sec    0   2.51 MBytes       
+[  5]   7.00-8.00   sec   184 MBytes  1.54 Gbits/sec   88   1.87 MBytes       
+[  5]   8.00-9.00   sec   189 MBytes  1.58 Gbits/sec    0   1.96 MBytes       
+[  5]   9.00-10.00  sec   195 MBytes  1.64 Gbits/sec    0   2.03 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.85 GBytes  1.59 Gbits/sec   97             sender
+[  5]   0.00-10.04  sec  1.85 GBytes  1.58 Gbits/sec                  receiver
+
+iperf Done.
+$
+```
+
+## 4-2. 計算ノード -> ライセンスサーバ方向ネットワーク帯域確認  
+
+左側サイトのインスタンス **lic-srv** のopcユーザで以下コマンドを実行し、iperf3をサーバモードで起動します。
+
+```sh
+$ iperf3 -s
+```
+
+次に、右側サイトのインスタンス **compute** のopcユーザで以下コマンドを実行し、iperf3をクライアントモードで起動して右側サイトのインスタンス **lic-srv** とのネットワーク帯域を確認します。  
+ここでIPアドレスは、自身のインスタンス **lic-srv** のIPアドレスに置き換えて実行します。
+
+```sh
+$ iperf3 -c 192.168.2.bbb
+Connecting to host 192.168.2.bbb, port 5201
+[  5] local 10.0.1.ccc port 34318 connected to 192.168.2.bbb port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   160 MBytes  1.34 Gbits/sec  416   1.53 MBytes       
+[  5]   1.00-2.00   sec   165 MBytes  1.38 Gbits/sec    0   1.61 MBytes       
+[  5]   2.00-3.00   sec   172 MBytes  1.45 Gbits/sec    0   1.67 MBytes       
+[  5]   3.00-4.00   sec   176 MBytes  1.48 Gbits/sec    0   1.72 MBytes       
+[  5]   4.00-5.00   sec   182 MBytes  1.53 Gbits/sec    0   1.79 MBytes       
+[  5]   5.00-6.00   sec   190 MBytes  1.59 Gbits/sec    0   1.86 MBytes       
+[  5]   6.00-7.00   sec   196 MBytes  1.65 Gbits/sec    0   1.94 MBytes       
+[  5]   7.00-8.00   sec   202 MBytes  1.70 Gbits/sec    0   2.01 MBytes       
+[  5]   8.00-9.00   sec   208 MBytes  1.74 Gbits/sec    0   2.07 MBytes       
+[  5]   9.00-10.00  sec   214 MBytes  1.79 Gbits/sec    0   2.15 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec  1.82 GBytes  1.57 Gbits/sec  416             sender
+[  5]   0.00-10.04  sec  1.82 GBytes  1.56 Gbits/sec                  receiver
+
+iperf Done.
 $
 ```
 
