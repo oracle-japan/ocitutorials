@@ -361,7 +361,7 @@ $ sudo apt-get install -y wpasupplicant mstflint ifupdown
 }
 ```
 
-次に、OCIコンソールにログインし、以下対象の計算/GPUノードの **インスタンスの詳細** 画面で **管理** タブをクリックし、 **Compute HPC RDMA Auto-Configuration** プラグインと **Compute HPC RDMA Authentication** プラグインの **有効化** ボタンをクリックします。
+次に、OCIコンソールにログインし、対象の計算/GPUノードの **インスタンスの詳細** 画面の **管理** タブの以下 **Oracle Cloudエージェント** フィールドで **Compute HPC RDMA Auto-Configuration** プラグインと **Compute HPC RDMA Authentication** プラグインの **有効化** ボタンをクリックします。
 
 ![画面ショット](console_page06.png)
 
