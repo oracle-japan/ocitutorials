@@ -78,7 +78,7 @@ params:
 
 本章は、本テクニカルTipsで使用するHPCクラスタを構築します。
 
-この構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従う等で実施します。  
+この構築は、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** の手順に従い実施します。  
 なお小規模構成の場合は、 **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** の代わりに単一の計算ノードを作成します。
 
 この際、計算ノードとBastionノードを以下のように構成します。
@@ -121,7 +121,7 @@ params:
 
 ## 2-1. OpenMPIインストール
 
-**[OpenMPI](https://www.open-mpi.org/)** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
+**[OpenMPI](https://www.open-mpi.org/)** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[2. OpenMPIインストール](../../tech-knowhow/build-openmpi/#2-openmpiインストール)** と **[3. 稼働確認](../../tech-knowhow/build-openmpi/#3-稼働確認)** の手順に従い実施します。
 
 ## 2-2. インストール事前準備
 
