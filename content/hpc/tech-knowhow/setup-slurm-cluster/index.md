@@ -62,11 +62,11 @@ table, th, td {
 ※3）本テクニカルTipsは、 **クラスタ・ネットワーク** に接続する2ノードの **[BM.GPU4.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** を、 **[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[パフォーマンスに関連するベアメタルインスタンスのBIOS設定方法](../../benchmark/bios-setting/)** の手順に従い、 **SMT** を無効化して使用します。  
 ※4）**ファイル・ストレージ** やベア・メタル・インスタンスNFSサーバ等、任意の手法で構築されたNFSサーバです。NFSでサービスするファイル共有ストレージ構築方法は、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[HPC/GPUクラスタ向けファイル共有ストレージの最適な構築手法](../../tech-knowhow/howto-configure-sharedstorage/)** を参照してください。  
 ※5）NFSサーバがサービスするジョブ投入ユーザのホームディレクトリは、Slurmクライアントと計算/GPUノードでNFSマウントします。  
-※6）**Oracle Linux** 9.5ベースのHPC/GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** （HPCクラスタの場合です。）/ **No.15** （GPUクラスタの場合です。）です。Slurmマネージャは、計算/GPUノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは、計算/GPUノードのアプリケーション開発環境の役割を担うため、計算/GPUノードと同じOSを採用します。
+※6）**Oracle Linux** 9.5ベースのHPC/GPU **[クラスタネットワーキングイメージ](../../#5-13-クラスタネットワーキングイメージ)** で、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.13** （HPCクラスタの場合です。）/ **No.15** （GPUクラスタの場合です。）で、Slurmマネージャは計算/GPUノードにインストールする **Slurm** のRPMをビルドするため、Slurmクライアントは計算/GPUノードのアプリケーション開発環境の役割を担うため、計算/GPUノードと同じOSを採用します。
 
-Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の **[1. インストール・セットアップ](../build-openmpi/#1-インストールセットアップ)** の手順に従い、 **OpenMPI** をインストールします。
+Slurmクライアントは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の **[2. OpenMPIインストール](../../tech-knowhow/build-openmpi/#2-openmpiインストール)** と **[3. 稼働確認](../../tech-knowhow/build-openmpi/#3-稼働確認)** の手順に従い、 **OpenMPI** をインストールします。
 
-計算/GPUノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPC/GPUクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の **[1. インストール・セットアップ](../build-openmpi/#1-インストールセットアップ)** の手順に従い、 **OpenMPI** をインストールします。
+計算/GPUノードは、 **[OCI HPCチュートリアル集](../../#1-oci-hpcチュートリアル集)** の **[HPCクラスタを構築する(基礎インフラ手動構築編)](../../spinup-cluster-network/)** / **[GPUクラスタを構築する(基礎インフラ自動構築編)](../../spinup-gpu-cluster/)** の手順に従う等で **[クラスタ・ネットワーク](../../#5-1-クラスタネットワーク)** に接続するHPC/GPUクラスタを構築し、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../build-openmpi/)** の **[2. OpenMPIインストール](../../tech-knowhow/build-openmpi/#2-openmpiインストール)** と **[3. 稼働確認](../../tech-knowhow/build-openmpi/#3-稼働確認)** の手順に従い、 **OpenMPI** をインストールします。
 
 またSlurmクライアントと計算/GPUノードは、**[OCI HPCパフォーマンス関連情報](../../#2-oci-hpcパフォーマンス関連情報)** の **[OSU Micro-Benchmarks実行方法（BM.Optimized3.36編）](../../benchmark/run-omb-hpc/)** / **[OSU Micro-Benchmarks実行方法（BM.GPU4.8/BM.GPU.A100-v2.8編）](../../benchmark/run-omb-gpu/)** の **[2. OSU Micro-Benchmarksインストール](../../benchmark/run-omb-hpc/#2-osu-micro-benchmarksインストール)** / **[1. OSU Micro-Benchmarksインストール](../../benchmark/run-omb-gpu/#1-osu-micro-benchmarksインストール)** の手順に従い、 **[3. 稼働確認](#3-稼働確認)** で使用する **OSU Micro-Benchmarks** をインストールします。
 
@@ -359,8 +359,7 @@ $ sudo mkdir /opt/slurm/etc && sudo chown slurm:slurm /opt/slurm/etc
 
 ## 2-7. Slurm設定ファイル作成
 
-本章は、以下5種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリに配布します。  
-この際、これらファイルのオーナーユーザ・オーナーグループを **slurm** とします。  
+以下5種類の **Slurm** 設定ファイルを作成し、これらを各サブシステムの **/opt/slurm/etc** ディレクトリにオーナーユーザ・オーナーグループを **slurm** で配布します。  
 また、 **slurmdbd.conf** のパーミッションを **600** に設定します。
 
 - **slurm.conf**（全てのサブシステム）

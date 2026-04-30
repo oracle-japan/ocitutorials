@@ -67,7 +67,7 @@ GPUクラスタの構築は、 **[OCI HPCチュートリアル集](../../#1-oci-
 
 本章は、 **OSU Micro-Benchmarks** をインストール・実行する際に使用する **OpenMPI** をインストールします。
 
-**OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[1. インストール・セットアップ](../../tech-knowhow/build-openmpi/#1-インストールセットアップ)** の手順に従い実施します。
+**OpenMPI** のインストールは、 **[OCI HPCテクニカルTips集](../../#3-oci-hpcテクニカルtips集)** の **[Slurm環境での利用を前提とするUCX通信フレームワークベースのOpenMPI構築方法](../../tech-knowhow/build-openmpi/)** の **[2. OpenMPIインストール](../../tech-knowhow/build-openmpi/#2-openmpiインストール)** と **[3. 稼働確認](../../tech-knowhow/build-openmpi/#3-稼働確認)** の手順に従い実施します。
 
 # 3. OSU Micro-Benchmarksインストール
 
