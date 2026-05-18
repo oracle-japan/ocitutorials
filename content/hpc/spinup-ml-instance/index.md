@@ -107,9 +107,7 @@ $
 
 ## 2-0. 概要
 
-本章は、Python仮想環境に機械学習環境を構築する方法を解説します。
-
-以降では、以下の順に解説を進めます。
+本章は、Python仮想環境に機械学習環境を構築する方法を以下の順に解説します。
 
 1. **[Python仮想環境構築](#2-1-python仮想環境構築)**
 2. **[TenforFlow・JupyterLab稼働確認](#2-2-tenforflowjupyterlab稼働確認)**
@@ -372,9 +370,7 @@ Shut down this Jupyter server (y/[n])? y <--- 入力
 
 ## 3-0. 概要
 
-本章は、 **containerd** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用するコンテナ実行環境で起動するコンテナ上に機械学習環境を構築する方法を解説します。
-
-以降では、以下の順に解説を進めます。
+本章は、 **containerd** と **[NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html)** を使用するコンテナ実行環境で起動するコンテナ上に機械学習環境を構築する方法を以下の順に解説します。
 
 1. **[コンテナ環境構築](#3-1-コンテナ環境構築)**
 2. **[TenforFlow・JupyterLab稼働確認](#3-2-tenforflowjupyterlab稼働確認)**
