@@ -15,14 +15,16 @@ params:
 
 本チュートリアルで構築するHPCクラスタの構成を以下に示します。
 
-[計算ノード]
-- **シェイプ** ： **BM.Optimized3.36**
-- ノード間接続インターコネクト ： **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** （100 Gbps x 1）
-- **イメージ** ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
-
-[Bastionノード]
-- **シェイプ** ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
-- **イメージ** ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
+- 計算ノード
+    - シェイプ： **[BM.Optimized3.36](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-hpc-optimized)**
+    - ノード数： 2ノード（後の手順で4ノードに増えます。）
+    - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
+- ノード間接続インターコネクト
+    - **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 
+    - リンク速度： 100 Gbps
+- Bastionノード
+    - シェイプ ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)**
+    - イメージ： **Oracle Linux** 8.10 / 9.05ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
 
 ※1）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。
 
@@ -75,10 +77,10 @@ Bastionノードの作成は、 **[OCIチュートリアル](https://oracle-japa
 本チュートリアルは、以下属性のインスタンスをBastionノードとして作成します。
 
 - **シェイプ** ： **[VM.Standard.E5.Flex](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#flexible)** （任意のコア数・メモリ容量）
-- **イメージ** ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※1）
+- **イメージ** ： **Oracle Linux** 8.10 / 9.5ベースのHPC **[クラスタネットワーキングイメージ](../#5-13-クラスタネットワーキングイメージ)** （※2）
 - **SSHキーの追加** ： Bastionノードにログインする際使用するSSH秘密鍵に対応する公開鍵
 
-※1）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。
+※2）**[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[クラスタネットワーキングイメージの選び方](../tech-knowhow/osimage-for-cluster/)** の **[1. クラスタネットワーキングイメージ一覧](../tech-knowhow/osimage-for-cluster/#1-クラスタネットワーキングイメージ一覧)** のイメージ **No.12** / **No.13** です。
 
 次に、このBastionノード上でSSHの鍵ペアを作成します。このSSH鍵は、Bastionノードから計算ノードにログインする際に使用します。  
 先のチュートリアル **インスタンスを作成する** に記載のインスタンスへの接続方法に従い、BastionノードにopcユーザでSSHログインして以下コマンドでSSH鍵ペアを作成、作成された公開鍵を後の **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** 作成手順で指定します。
@@ -507,15 +509,13 @@ $
 
 # 6. MPIプログラム実行（4ノード編）
 
-## 6-0. MPIプログラム実行（4ノード編）概要
+## 6-0. 概要
 
 本章は、追加した2ノードを含めた計4ノードで **Intel MPI Benchmarks** のAll-Reduceを実行します。
 
 ## 6-1. 計算ノード間SSH接続環境構築
 
-本章は、追加した2ノードを含めた4ノードの計算ノード間で、パスフレーズ無しのSSH接続ができる環境を構築します。
-
-具体的な手順は、 **[4-1. 計算ノード間SSH接続環境構築](#4-1-計算ノード間ssh接続環境構築)** を参照してください。
+**[4-1. 計算ノード間SSH接続環境構築](#4-1-計算ノード間ssh接続環境構築)** の手順に従い、４ノードの計算ノード間でSSH接続環境を構築します。
 
 ## 6-2. Intel MPI Benchmarks All-Reduce実行
 

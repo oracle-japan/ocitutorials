@@ -195,7 +195,7 @@ $ sudo apt install -y nvhpc-25-7-cuda-multi environment-modules
 $ sudo cp -p /opt/nvidia/hpc_sdk/modulefiles/nvhpc/25.7 /usr/share/modules/modulefiles/nvhpc
 ```
 
-# 3. OpenMPIインストール・セットアップ
+# 3. OpenMPIインストール
 
 ## 3-0. 概要
 
@@ -321,7 +321,7 @@ $ cd ./ucc-1.5.0/ && ./autogen.sh && ./configure --prefix=/opt/ucc --with-ucx=/o
 $ make -j 128 && sudo make install
 ```
 
-## 3-2. インストール
+## 3-2. OpenMPIインストール
 
 以下コマンドをGPUインスタンスのubuntuユーザで実行します。
 
@@ -349,11 +349,7 @@ $
 $ make -j 128 all && sudo make install
 ```
 
-## 3-3. セットアップ
-
-本章は、GPU環境利用ユーザが **OpenMPI** を利用するために必要な環境のセットアップを行います。
-
-以下のファイルを **/usr/share/modules/modulefiles/openmpi** で作成します。  
+次に、以下のファイルを **/usr/share/modules/modulefiles/openmpi** で作成します。  
 このファイルは、 **Environment modules** にモジュール名 **openmpi** を登録し、これをロードすることで **OpenMPI** 利用環境の設定が可能になります
 
 ```sh
