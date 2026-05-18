@@ -145,7 +145,7 @@ $ source venv_name/bin/activate
 
 ```sh
 ((venv_name) ) $ pip install --upgrade pip
-((venv_name) ) $ pip install tensorflow[and-cuda] jupyterlab matplotlib
+((venv_name) ) $ pip install tensorflow[and-cuda] jupyterlab jupytext matplotlib 
 ```
 
 次に、以下コマンドをGPUインスタンスの機械学習ワークロード実行ユーザで実行し、 **JupyterLab** にログインする際のパスワードを初期化します。
@@ -165,159 +165,52 @@ Verify password:  <-- パスワード入力
 $
 ```
 
-次に、以下2個のファイルをカレントディレクトリにそれぞれファイル名 **num_gpu.ipynb** （※2）と **celsious2fahrenheit.ipynb** （※3）で作成します。  
+次に、以下2個のファイルをカレントディレクトリにそれぞれファイル名 **num_gpu.py** （※2）と **celsious2fahrenheit.py** （※3）で作成します。  
 
-※2）**TensorFlow** が認識するGPUの枚数を出力するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
-※3）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。このファイルは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
+※2）**TensorFlow** が認識するGPUの枚数を出力するPythonスクリプトです。  
+※3）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonスクリプトです。このスクリプトは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
 
-```json
-{
-   "cells": [
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "import os\n",
-      "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
-      "import tensorflow as tf\n",
-      "print(\"Num GPUs Available: \", len(tf.config.list_physical_devices('GPU')))"
-      ]
-   }
-   ],
-   "metadata": {
-   "kernelspec": {
-      "display_name": "Python 3",
-      "language": "python",
-      "name": "python3"
-   },
-   "language_info": {
-      "codemirror_mode": {
-      "name": "ipython",
-      "version": 3
-      },
-      "file_extension": ".py",
-      "mimetype": "text/x-python",
-      "name": "python",
-      "nbconvert_exporter": "python",
-      "pygments_lexer": "ipython3",
-      "version": "3.6.8"
-   }
-   },
-   "nbformat": 4,
-   "nbformat_minor": 4
-}
+```python
+#!/usr/bin/python
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+import tensorflow as tf
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 ```
 
-```json
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import os\n",
-    "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
-    "import tensorflow as tf"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import numpy as np\n",
-    "import logging\n",
-    "logger = tf.get_logger()\n",
-    "logger.setLevel(logging.ERROR)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38,  45],  dtype=float)\n",
-    "fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100, 113],  dtype=float)\n",
-    "\n",
-    "for i,c in enumerate(celsius_q):\n",
-    "  print(\"{} degrees Celsius = {} degrees Fahrenheit\".format(c, fahrenheit_a[i]))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = tf.keras.Sequential([\n",
-    "  tf.keras.Input(shape=[1]),\n",
-    "  tf.keras.layers.Dense(units=1)\n",
-    "])\n",
-    "model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(0.1))\n",
-    "history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "print(\"Finished training the model\")"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import matplotlib.pyplot as plt\n",
-    "plt.xlabel('Epoch Number')\n",
-    "plt.ylabel(\"Loss Magnitude\")\n",
-    "plt.plot(history.history['loss'])"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "temp_c = 100.0\n",
-    "prediction_input = np.array([temp_c], dtype=float)\n",
-    "print(model.predict(prediction_input))"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.11"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
-}
+```python
+#!/usr/bin/python
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+import tensorflow as tf
+
+import numpy as np
+import logging
+logger = tf.get_logger()
+logger.setLevel(logging.ERROR)
+
+celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38,  45],  dtype=float)
+fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100, 113],  dtype=float)
+for i,c in enumerate(celsius_q):
+  print("{} degrees Celsius = {} degrees Fahrenheit".format(c, fahrenheit_a[i]))
+
+model = tf.keras.Sequential([
+  tf.keras.Input(shape=[1]),
+  tf.keras.layers.Dense(units=1)
+])
+model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(0.1))
+history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)
+
+print("Finished training the model")
+
+import matplotlib.pyplot as plt
+plt.xlabel('Epoch Number')
+plt.ylabel("Loss Magnitude")
+plt.plot(history.history['loss'])
+
+temp_c = 100.0
+prediction_input = np.array([temp_c], dtype=float)
+print(model.predict(prediction_input))
 ```
 
 ## 2-2. TenforFlow・JupyterLab稼働確認
@@ -336,9 +229,13 @@ $ source venv_name/bin/activate
 
 ![画面ショット](Jupyter_page01.png)
 
-次に、以下ブラウザ画面に表示される、先に作成した稼働確認プログラム **num_gpu.ipynb** をダブルクリックし、
+次に、以下ブラウザ画面に表示される、先に作成した稼働確認プログラム **num_gpu.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックし、
 
 ![画面ショット](Jupyter_page02.png)
+
+表示される以下ブラウザ画面の **Always start the preferred kernel** チェックボックスをチェックして **Select** ボタンをクリックし、
+
+![画面ショット](Jupyter_page02-1.png)
 
 表示される以下ブラウザ画面の **Run this cell and advance** ボタンをクリックして稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
 
@@ -371,11 +268,11 @@ $ source venv_name/bin/activate
 ((venv_name) ) $ jupyter-lab
 ```
 
-次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.ipynb** をダブルクリックします。
+次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックし、
 
 ![画面ショット](Jupyter_page04.png)
 
-次に、表示される以下ブラウザ画面の **Restart the kernel and run all cells** ボタンをクリックします。
+表示される以下ブラウザ画面の **Restart the kernel and run all cells** ボタンをクリックします。
 
 ![画面ショット](Jupyter_page05.png)
 
@@ -414,9 +311,9 @@ $ source venv_name/bin/activate
 ((venv_name) ) $ jupyter-lab
 ```
 
-次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.ipynb** をダブルクリックします。
+次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックします。
 
-![画面ショット](Jupyter_page08.png)
+![画面ショット](Jupyter_page04.png)
 
 次に、表示される以下ブラウザ画面の1番目のセルの **Insert a cell below** ボタンをクリックして1番目と2番目のセルの間に新たなセルを作成します。
 
@@ -512,148 +409,53 @@ Verify password:  <-- パスワード入力
 $
 ```
 
-次に、以下2個のファイルをGPUインスタンスで起動したコンテナ上のカレントディレクトリにそれぞれファイル名 **num_gpu.ipynb** （※5）と **celsious2fahrenheit.ipynb** （※6）で作成します。  
+次に、以下2個のファイルをGPUインスタンスで起動したコンテナ上のカレントディレクトリにそれぞれファイル名 **num_gpu.py** （※5）と **celsious2fahrenheit.py** （※6）で作成します。  
 
-※5）**TensorFlow** が認識するGPUの枚数を出力するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。  
-※6）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonプログラムを含む、 **JupyterLab** に読み込ませるJSON形式のファイルです。このファイルは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
+※5）**TensorFlow** が認識するGPUの枚数を出力するPythonスクリプトです。  
+※6）既知の摂氏・華氏対応データからその変換式を学習して未知の摂氏表記温度から対応する華氏を予測するPythonスクリプトです。このファイルは、 **[ここ](https://github.com/justingrammens/machine_learning/blob/master/celsius_to_fahrenheit.ipynb)** のGitHubから公開されているものを元に、一部改変を加えて作成しています。
 
 
-```json
-{
-   "cells": [
-   {
-      "cell_type": "code",
-      "execution_count": null,
-      "metadata": {},
-      "outputs": [],
-      "source": [
-      "import os\n",
-      "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
-      "import tensorflow as tf\n",
-      "print(\"Num GPUs Available: \", len(tf.config.list_physical_devices('GPU')))"
-      ]
-   }
-   ],
-   "metadata": {
-   "kernelspec": {
-      "display_name": "Python 3",
-      "language": "python",
-      "name": "python3"
-   },
-   "language_info": {
-      "codemirror_mode": {
-      "name": "ipython",
-      "version": 3
-      },
-      "file_extension": ".py",
-      "mimetype": "text/x-python",
-      "name": "python",
-      "nbconvert_exporter": "python",
-      "pygments_lexer": "ipython3",
-      "version": "3.6.8"
-   }
-   },
-   "nbformat": 4,
-   "nbformat_minor": 4
-}
+```python
+#!/usr/bin/python
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+import tensorflow as tf
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 ```
 
-```json
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import os\n",
-    "os.environ['TF_CPP_MIN_LOG_LEVEL']='2'\n",
-    "import tensorflow as tf"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import numpy as np\n",
-    "import logging\n",
-    "logger = tf.get_logger()\n",
-    "logger.setLevel(logging.ERROR)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38,  45],  dtype=float)\n",
-    "fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100, 113],  dtype=float)\n",
-    "\n",
-    "for i,c in enumerate(celsius_q):\n",
-    "  print(\"{} degrees Celsius = {} degrees Fahrenheit\".format(c, fahrenheit_a[i]))"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "model = tf.keras.Sequential([\n",
-    "  tf.keras.Input(shape=[1]),\n",
-    "  tf.keras.layers.Dense(units=1)\n",
-    "])\n",
-    "model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(0.1))\n",
-    "history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "print(\"Finished training the model\")"
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "temp_c = 100.0\n",
-    "prediction_input = np.array([temp_c], dtype=float)\n",
-    "print(model.predict(prediction_input))"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.3"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 4
-}
+```python
+#!/usr/bin/python
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+import tensorflow as tf
+
+import numpy as np
+import logging
+logger = tf.get_logger()
+logger.setLevel(logging.ERROR)
+
+celsius_q    = np.array([-40, -10,  0,  8, 15, 22,  38,  45],  dtype=float)
+fahrenheit_a = np.array([-40,  14, 32, 46, 59, 72, 100, 113],  dtype=float)
+for i,c in enumerate(celsius_q):
+  print("{} degrees Celsius = {} degrees Fahrenheit".format(c, fahrenheit_a[i]))
+
+model = tf.keras.Sequential([
+  tf.keras.Input(shape=[1]),
+  tf.keras.layers.Dense(units=1)
+])
+model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(0.1))
+history = model.fit(celsius_q, fahrenheit_a, epochs=500, verbose=False)
+
+print("Finished training the model")
+
+import matplotlib.pyplot as plt
+plt.xlabel('Epoch Number')
+plt.ylabel("Loss Magnitude")
+plt.plot(history.history['loss'])
+
+temp_c = 100.0
+prediction_input = np.array([temp_c], dtype=float)
+print(model.predict(prediction_input))
 ```
 
 ## 3-2. TenforFlow・JupyterLab稼働確認
@@ -668,9 +470,13 @@ $ jupyter-lab
 
 ![画面ショット](Jupyter_page01.png)
 
-次に、以下ブラウザ画面に表示される、先に作成した稼働確認プログラム **num_gpu.ipynb** をダブルクリックし、
+次に、以下ブラウザ画面に表示される、先に作成した稼働確認プログラム **num_gpu.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックし、
 
 ![画面ショット](Jupyter_page02.png)
+
+表示される以下ブラウザ画面の **Always start the preferred kernel** チェックボックスをチェックして **Select** ボタンをクリックし、
+
+![画面ショット](Jupyter_page02-1.png)
 
 表示される以下ブラウザ画面の **Run this cell and advance** ボタンをクリックして稼働確認プログラムを実行、"Num GPUs Available:"の値が使用するGPUシェイプに搭載されるGPU枚数に一致することを確認します。
 
@@ -702,15 +508,15 @@ $
 $ jupyter-lab
 ```
 
-次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.ipynb** をダブルクリックします。
+次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックし、
 
 ![画面ショット](Jupyter_page04.png)
 
-次に、表示される以下ブラウザ画面の **Restart the kernel and run all cells** ボタンをクリックします。
+表示される以下ブラウザ画面の **Restart the kernel and run all cells** ボタンをクリックします。
 
 ![画面ショット](Jupyter_page05.png)
 
-次に、表示される以下ブラウザ画面の **Restart** ボタンをクリックして機械学習プログラムを実行し、
+次に、表示される以下ブラウザ画面の **Restart** ボタンをクリックしてサンプル機械学習プログラムを実行し、
 
 ![画面ショット](Jupyter_page06.png)
 
@@ -744,9 +550,9 @@ $
 $ jupyter-lab
 ```
 
-次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.ipynb** をダブルクリックします。
+次に、自身の端末で起動するブラウザのアドレスに **http://localhost:8888** を指定して **JupyterLab** にアクセスし、以下画面に表示される、先に作成したサンプル機械学習プログラム **celsious2fahrenheit.py** を右クリックして表示されるメニューで **Open With** メニュー → **Notebook** メニューをクリックします。
 
-![画面ショット](Jupyter_page08.png)
+![画面ショット](Jupyter_page04.png)
 
 次に、表示される以下ブラウザ画面の1番目のセルの **Insert a cell below** ボタンをクリックして1番目と2番目のセルの間に新たなセルを作成します。
 

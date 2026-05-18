@@ -10,7 +10,7 @@ params:
 
 # 0. 概要
 
-本チュートリアルは、8枚の **NVIDIA A100** GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **Ubuntu** を組み合わせたGPUノードを **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するGPUクラスタを構築し、以下のGPUアプリケーション開発環境ソフトウェアのインストール・セットアップと
+本チュートリアルは、8枚の **NVIDIA A100** GPUと16ポートの100 Gbps RDMA対応ネットワークインタフェースを搭載するベアメタルシェイプ **[BM.GPU4.8/BM.GPU.A100-v2.8](https://docs.oracle.com/ja-jp/iaas/Content/Compute/References/computeshapes.htm#bm-gpu)** と **Ubuntu** を組み合わせたGPUノードを **[クラスタ・ネットワーク](../#5-1-クラスタネットワーク)** でノード間接続するGPUクラスタを構築し、以下のGPUアプリケーション開発環境ソフトウェアのインストールと
 
 - **[NVIDIA Driver](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#)** : NVIDIA製GPUドライバソフトウェア
 - **[NVIDIA CUDA](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/contents.html)** : CUDAライブラリ
@@ -18,7 +18,7 @@ params:
 - **[NVIDIA HPC SDK](https://developer.nvidia.com/hpc-sdk)** ： NVIDIA製GPU向けHPC/機械学習アプリケーション開発環境
 - CUDA-aware MPIライブラリ： **CUDA IPC** / **GPUDirect RDMA** 対応のデバイスメモリアドレッシング可能なMPIライブラリ
 
-以下の **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストール・セットアップを行い、
+以下の **クラスタ・ネットワーク** 接続に必要なソフトウェアのインストールを行い、
 
 - **[NVIDIA DOCA](https://docs.nvidia.com/doca/sdk/index.html)** ： **クラスタ・ネットワーク** 接続NIC（**NVIDIA Mellanox ConnectX**）ドライバーソフトウェア
 - WPAサプリカント： **クラスタ・ネットワーク** 接続時の802.1X認証クライアントソフトウェア
@@ -33,7 +33,7 @@ params:
 - OpenACC/MPIハイブリッドサンプルプログラム
 - **[NCCL Tests](https://github.com/nvidia/nccl-tests)**
 
-ここで紹介する構築手順は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の以下2本のコンテンツを組合せ、 **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** の **Ubuntu** にGPUアプリケーション開発環境ソフトウェアと **クラスタ・ネットワーク** 接続に必要なソフトウェアをインストール・セットアップします。
+ここで紹介する構築手順は、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の以下2本のコンテンツを組合せ、 **[プラットフォーム・イメージ](../#5-17-プラットフォームイメージ)** の **Ubuntu** にGPUアプリケーション開発環境ソフトウェアと **クラスタ・ネットワーク** 接続に必要なソフトウェアをインストールします。
 
 - **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../tech-knowhow/gpu-with-ubuntu/)**
 - **[クラスタ・ネットワーク非対応OSイメージを使ったクラスタ・ネットワーク接続方法](../tech-knowhow/howto-create-cnenabled-osimage/)**
@@ -112,9 +112,9 @@ params:
 
 # 4. GPUアプリケーション開発環境ソフトウェア環境構築
 
-本章は、GPUノードにGPUアプリケーション開発環境ソフトウェアをインストール・セットアップします。
+本章は、GPUノードにGPUアプリケーション開発環境ソフトウェアをインストールします。
 
-このGPUアプリケーション開発環境ソフトウェアのインストール・セットアップは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../tech-knowhow/gpu-with-ubuntu/)** の **[2. NVIDIA GPU関連ソフトウェアインストール](../tech-knowhow/gpu-with-ubuntu/#2-nvidia-gpu関連ソフトウェアインストール)** と **[3. OpenMPIインストール・セットアップ](../tech-knowhow/gpu-with-ubuntu/#3-openmpiインストールセットアップ)** と **[4. 動作確認](../tech-knowhow/gpu-with-ubuntu/#4-動作確認)** を2台のGPUノードの何れにも実施します。
+このGPUアプリケーション開発環境ソフトウェアのインストールは、 **[OCI HPCテクニカルTips集](../#3-oci-hpcテクニカルtips集)** の **[UbuntuをOSとするHPC/機械学習ワークロード向けGPUインスタンス構築方法](../tech-knowhow/gpu-with-ubuntu/)** の **[2. NVIDIA GPU関連ソフトウェアインストール](../tech-knowhow/gpu-with-ubuntu/#2-nvidia-gpu関連ソフトウェアインストール)** と **[3. OpenMPIインストール](../tech-knowhow/gpu-with-ubuntu/#3-openmpiインストール)** と **[4. 動作確認](../tech-knowhow/gpu-with-ubuntu/#4-動作確認)** を2台のGPUノードの何れにも実施します。
 
 # 5. ノードを跨るデバイスメモリ間通信GPUアプリケーション動作確認
 
