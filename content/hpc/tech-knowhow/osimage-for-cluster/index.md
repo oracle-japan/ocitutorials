@@ -9,7 +9,7 @@ params:
 ---
 <style>
 table, th, td {
-    font-size: 80%;
+    font-size: 70%;
 }
 </style>
 
