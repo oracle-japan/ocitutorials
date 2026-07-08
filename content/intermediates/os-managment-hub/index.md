@@ -8,7 +8,7 @@ tags:
 - 脆弱性・脅威検知
 
 images:
-- /intermediates/os-managment-hub/img4.png
+- /intermediates/os-managment-hub/thumbnail.png
 ---
 
 **応用編のチュートリアル一覧に戻る :** [OCI応用編](./..)
