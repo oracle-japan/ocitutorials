@@ -527,6 +527,7 @@ Database Actionsからのユーザー作成方法については、[101: ADBイ�
 Database Actionsの開発カテゴリのSQLのツールにて以下のように設定し、DOCUSERに対して必要な権限を付与します。
   ```sql
   grant connect, ctxapp, dwrole to docuser;
+  alter user docuser default role connect, dwrole, resource, ctxapp;
   grant execute on DBMS_CLOUD to docuser;
   grant execute on DBMS_CLOUD_AI to docuser;
   grant execute on DBMS_VECTOR to docuser;
