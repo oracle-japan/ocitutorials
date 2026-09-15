@@ -388,3 +388,84 @@ div.wrapper.is_home {
 .nav-next__div {
   margin: .2rem;
 }
+
+
+/* ----------------------------- */
+/* -- 画像の拡大表示  */
+/* ----------------------------- */
+.gdoc-markdown img.oci-image-zoom-target {
+  cursor: zoom-in;
+}
+
+.gdoc-markdown img.oci-image-zoom-target:focus-visible {
+  outline: 3px solid var(--link-color, #1b5376);
+  outline-offset: 4px;
+}
+
+/* 拡大中は背景ページのスクロールを止める */
+html.oci-image-zoom-open,
+html.oci-image-zoom-open body {
+  overflow: hidden;
+}
+
+/* 全画面の拡大表示領域 */
+#oci-image-zoom {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 4rem 1rem;
+  border: 0;
+  background: transparent;
+  overflow: hidden;
+  cursor: zoom-out;
+}
+
+/* 閉じているときの非表示を維持するため、[open] に限定 */
+#oci-image-zoom[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#oci-image-zoom::backdrop {
+  background: rgb(0 0 0 / 85%);
+}
+
+#oci-image-zoom > img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* 閉じるボタンを非表示にする */
+#oci-image-zoom .oci-image-zoom-close {
+  display: none;
+}
+
+#oci-image-zoom .oci-image-zoom-close:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+
+/* 印刷時は拡大画面を出さない */
+@media print {
+  #oci-image-zoom,
+  #oci-image-zoom::backdrop {
+    display: none !important;
+  }
+
+  html.oci-image-zoom-open,
+  html.oci-image-zoom-open body {
+    overflow: visible !important;
+  }
+}
