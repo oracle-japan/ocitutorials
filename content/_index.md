@@ -104,11 +104,6 @@ OCI Search Service with OpenSearchに関して学習できます。
 
 ---
 
-<h3> {{< icon-oci "contentmanagement" >}} &nbsp;<a href="./content-management">コンテンツ管理編</a></h3>
-セキュアな情報共有とインテリジェントなコンテンツ管理基盤であるOracle Content Management（OCM）を学習できます。
-
----
-
 <h3> {{< icon-oci "blockchain" >}} &nbsp;<a href="./blockchain">ブロックチェーン編</a></h3>
 オープン・ソースのHyperledger Fabric上に構築された業界をリードするマネージド・エンタープライズ・ブロックチェーン・サービスであるOracle Blockchain Platform Cloud Serviceを学習できます。
 
