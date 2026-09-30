@@ -12,84 +12,13 @@ params:
 
 **応用編201〜204へ進む場合、手順1・2まで実施し、手順3以降の主DB削除は実施しません。** 主DB、教材データ、必要な接続設定を保持して201へ進み、204終了後にこの章へ戻ってください。基礎編で終了する場合だけ、そのまま削除へ進みます。
 
-## 接続の再開（Cloud Shell）
-
-101の終了時には転送を閉じています。Cloud Shellで101と同じネットワーク経路を選び、OSプロンプトで次を再設定します。値は今回の主DBとComputeの記録から置き換えてください。ファイルが残っていても変数やプロセスが残っているとは限りません。
-
-```bash
-# 目的: 導入済みCommunity版と検証済みホスト鍵、今回の接続先を再設定する。
-MHW_SHELL="$HOME/mysql-shell-community-26.7.1-el8/usr/bin/mysqlsh"
-MHW_KNOWN_HOSTS="$HOME/.ssh/mhw-learning-known-hosts"
-MHW_KEY="$HOME/.ssh/mhw-learning.key"
-MHW_COMPUTE_IP='COMPUTE_PUBLIC_IP'
-MHW_OS_USER='opc'
-MHW_DB_IP='CURRENT_MAIN_DB_PRIVATE_IP'
-MHW_ADMIN='tutorial_admin'
-# 目的: 実行ファイルと鍵関連ファイルの存在を確認する。
-if test -x "$MHW_SHELL" && test -s "$MHW_KNOWN_HOSTS" && test -f "$MHW_KEY"; then
-  printf '%s\n' '前提ファイル: OK'
-else
-  printf '%s\n' '前提ファイル: NG。ここで止め、101章の準備を確認してください。'
-fi
-```
-
-成功した場合だけ進みます。不足していれば[101](../101-create-connect/)の導入・ホスト鍵検証へ戻ります。ホスト鍵検証を無効化しません。新しいCloud Shell端末を開いた場合も、この変数設定を行ってください。
-
-```bash
-# 目的: 主DB用の既存待受を確認する。LISTEN行がある場合は新規起動しない。
-ss -ltn 'sport = :13306'
-```
-
-LISTEN行がある場合は、今回の主DB用として記録した制御ソケットの絶対パスを次の変数へ戻します。パスの記録がない、または用途が分からない場合はここで止め、既存転送の対象を確認します。別プロセスの終了や新規起動は行いません。
-
-```bash
-# 目的: 記録済みの主DB用ソケットを新しい端末へ引き継ぐ。
-MHW_SOCKET='/tmp/mhw-tunnel-RECORDED/control'
-# 目的: ソケットの存在と制御接続を確認する。失敗した場合は再利用しない。
-test -S "$MHW_SOCKET" && ssh -F /dev/null -S "$MHW_SOCKET" -O check "$MHW_OS_USER@$MHW_COMPUTE_IP"
-```
-
-成功し、記録した転送先が現在の主DBであることを照合できた場合は、新規起動の枠を飛ばして、その下の確認・SQL接続へ進みます。SQL接続後にもUUIDを照合します。
-
-LISTEN行がない場合だけ、次の枠で新規起動します。
-
-```bash
-# 目的: 専用ソケットで主DBへ転送だけを開始する。
-MHW_TUNNEL_DIR=$(mktemp -d /tmp/mhw-tunnel-XXXXXX)
-MHW_SOCKET="$MHW_TUNNEL_DIR/control"
-ssh -F /dev/null -4 -fN -T -M -S "$MHW_SOCKET" \
- -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$MHW_KNOWN_HOSTS" \
- -o IdentitiesOnly=yes -o ForwardAgent=no -o ExitOnForwardFailure=yes \
- -o ConnectTimeout=10 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
- -i "$MHW_KEY" -L "127.0.0.1:13306:$MHW_DB_IP:3306" \
- "$MHW_OS_USER@$MHW_COMPUTE_IP"
-```
-
-秘密鍵のパスフレーズが必要な場合は非表示入力に入力します。起動に成功してから、制御ソケットのパスを記録し、次を確認します。
-
-```bash
-# 目的: 転送プロセスとloopback待受を照合する。DBへの接続成功は後で確認する。
-printf 'MHW_SOCKET=%s\n' "$MHW_SOCKET"
-ssh -F /dev/null -S "$MHW_SOCKET" -O check "$MHW_OS_USER@$MHW_COMPUTE_IP"
-ss -ltn 'sport = :13306'
-# 目的: Community版から主DBへClassic protocolとTLSで接続する。
-"$MHW_SHELL" --mysql --sql --host=127.0.0.1 --port=13306 --user="$MHW_ADMIN" \
-  --ssl-mode=REQUIRED --password
-```
-
-パスワード値を引数へ付けません。後のOSコマンドを実行するときは、まずMySQL Shellで `\quit` を実行してください。再開したソケットはこの章だけでなく後続章でも対象を確認して再利用できます。
-
 ## 1. DBを監視する
 
 対象DBのOCID、リージョン、監視する時間帯を記録します。OCIコンソールのDB詳細でMonitoringタブのMetricsを開き、CPU利用率、現在の接続、ステートメント数などを確認します。指標ごとの単位、集計方法、表示間隔を確認し、異なる時間帯のグラフを直接比較しません。[MySQLメトリック](https://docs.oracle.com/iaas/mysql-database/doc/mysql-database-metrics.html)
 
 ![Monitoringタブの現在の接続数とアクティブ接続の推移](images/M10601.png)
 
-DBが「更新中」の接続数の監視例です。グラフの表示は処理完了を意味しないため、作業リクエストの結果も確認します。ここでは両指標の統計を「最大」、間隔を「自動」にしています。
-
 ![CPU使用率とメモリー使用率の時系列グラフ](images/M10602.png)
-
-同じ観測期間のCPU使用率は「最大」、メモリー使用率は「平均」です。HAの構成変更や切替を含む時間帯ですが、グラフだけからCPU変化の原因を断定しません。
 
 作業リクエストの成功・失敗や保守時間と照らし合わせます。グラフの空白をCPU使用率0と解釈せず、対象・期間・メトリック収集・権限を確認してください。瞬間的な低負荷だけで容量が十分とは判断しません。高負荷を作るために共有DBへ無制限のクエリーを送る必要はありません。
 
@@ -128,32 +57,32 @@ Billing & Cost ManagementからCost Analysisを開きます。費用閲覧権限
 
 ## 4. DBを削除する前に確認する
 
+監視と費用確認にはSQL接続は不要でした。この段階でのみ、接続が閉じていれば[101章の転送とTLS接続](../101-create-connect/)を再開します。既に削除済みなら再接続せず、削除結果と残存資源の確認へ進んでください。
+
 応用のSQLオブジェクトを整理する必要がある場合、DB接続がまだ可能な段階で各章の手順に従います。未知のスキーマを一括DROPしません。削除する主DBへ接続したMySQL ShellのSQLモードで最終状態を記録します。
 
 応用編で使った専用スキーマは`mhw_analytics_lab`、`mhw_lakehouse_lab`、`mhw_ml_lab`です。AutoMLモデルは本人のモデルカタログに保存されるため、203章で記録したハンドルも確認します。専用主DBを削除する場合は、最終記録を取る前に各スキーマやモデルカタログを個別削除する必要はありません。主DBを保持して教材だけを整理する場合も、共有の`ML_SCHEMA_ユーザー名`全体を削除しないでください。
 
 ```sql
--- 目的: 削除前に確認しているDBのUUIDを台帳と照合する。
 SELECT @@server_uuid AS server_uuid,VERSION() AS server_version\G
--- 目的: 演習の基準データが保持されている状態を記録する。
 SELECT (SELECT COUNT(*) FROM mhw_learning.items) AS items_count,
        COUNT(*) AS loans_count,SUM(fee_cents) AS total_fee_cents FROM mhw_learning.loans;
--- 目的: 完了した章のマーカーを最後に記録する。
 SELECT checkpoint_id,note FROM mhw_learning.checkpoints ORDER BY checkpoint_id;
 ```
 
 記録後にクライアントを閉じ、演習専用の転送プロセスを終了します。必要なバックアップを保持するか、演習データを完全に消すかを確定します。
 
-MySQL Shellで `\quit` を実行してから、Cloud ShellのOSプロンプトで次を実行します。冒頭で確認した主DB用ソケットだけが対象です。
+MySQL Shellを終了し、前面転送を開始したタブでCtrl+Cを押します。別の転送があれば、その専用タブも同様に終了します。他用途のプロセスは終了しません。
 
-```bash
-# 目的: この演習の主DB用バックグラウンド転送だけを終了する。
-ssh -F /dev/null -S "$MHW_SOCKET" -O exit "$MHW_OS_USER@$MHW_COMPUTE_IP"
-# 目的: 主DB用13306のLISTEN行が消えたことを確認する。
-ss -ltn 'sport = :13306'
+```text
+\quit
 ```
 
-Ctrl+Cだけでは `-fN` で起動したバックグラウンド転送は終了しません。ソケットが不明なら他のプロセスを終了せず、記録したパスと用途を確認します。103・105で前面起動した別の転送が残っていれば、その転送を開始した端末で終了します。
+OSで主DBの待受が消えたことを確認します。残る場合は所有を確認し、無関係なプロセスを停止しません。
+
+```bash
+ss -ltn 'sport = :13306'
+```
 
 OCIで対象DBのDeleteを選び、削除計画のAutomatic backup retentionとFinal backupを確認します。前者のRetainはバックアップ保持、後者のRequireは削除前の最終バックアップ作成を意味します。不要な演習バックアップまで残すつもりがなければ、対象と方針を照合してDelete/Skipを選びます。保存が必要な場合は保持と費用を台帳へ記録します。削除保護を解除する場合も専用対象だけです。
 
@@ -176,27 +105,25 @@ Read endpointも最後のレプリカを削除しただけで消えたと判断�
 今回保存したMySQL Shell資格情報は、記録した接続URLだけを削除します。たとえばCloud ShellのMySQL ShellをJSモードで開き、今回の管理ユーザーと転送ポートのURLを確認して操作します。
 
 ```bash
-# 目的: 資格情報管理のためCommunity版を接続なしのJSモードで開く。
-"$MHW_SHELL" --js
+"$HOME/mysql-shell-community-26.7.1-el8/usr/bin/mysqlsh" --js
 ```
 
+JSモードで保存接続名を確認します。
+
 ```javascript
-// 目的: 保存済み接続名だけを確認し、秘密値を取り出さない。
 shell.listCredentials();
 ```
 
 一覧の対象が廃止した主DB用である場合だけ実行します。tutorial_admin以外の管理ユーザーを使った場合は、一覧で照合した実際の接続URL1件へ置き換えます。
 
 ```javascript
-// 目的: 廃止した主DBの保存認証1件だけを削除する。
 shell.deleteCredential('tutorial_admin@127.0.0.1:13306');
-// 目的: 対象1件が一覧から消えたことを確認する。
 shell.listCredentials();
 ```
 
 保存していなければ不要です。13307〜13310などに保存したURLも個別に確認します。同じURLを他用途で再利用している場合は、所有と用途を確認してから整理します。全資格情報の一括削除は行いません。
 
-専用dumpや設定ファイルは正確な絶対パスと中身の用途を確認してから削除します。homeや共有ディレクトリ全体、名前のワイルドカードだけを根拠に削除しません。共用Compute、VCN、既存のSSH鍵、Cloud Shell標準ソフトは保持します。
+204のプロンプト・台帳・応答を保存した専用ディレクトリも削除対象です。比較記録が不要になったことを確認し、記録した絶対パスを1件ずつ指定します。専用dumpや設定ファイルは正確な絶対パスと中身の用途を確認してから削除します。homeや共有ディレクトリ全体、名前のワイルドカードだけを根拠に削除しません。共用Compute、VCN、既存のSSH鍵、Cloud Shell標準ソフトは保持します。
 
 完了票には「削除済み」「意図して保持」「削除予定待ち」を分け、対象ID、確認時刻、残る費用、次の確認日を記載します。完全な後片付けは、今回削除対象とした資源の残存がなくなった時点です。費用画面の反映が遅れている場合は、資源削除の確認と後日の請求照合を別項目にしてください。
 
