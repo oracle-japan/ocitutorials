@@ -6,7 +6,12 @@
 {{ $current.Scratch.Set "nextPage" false }}
 {{ $current.Scratch.Set "prevPage" false }}
 
-{{ template "menu-filetree-np" dict "sect" .Site.Home.Sections "current" $current "site" $site }}
+{{ $navigationSections := .Site.Home.Sections }}
+{{/* Keep the self-contained MySQL HeatWave course within its own section. */}}
+{{ if eq .Section "mysqlheatwave" }}
+  {{ $navigationSections = slice .FirstSection }}
+{{ end }}
+{{ template "menu-filetree-np" dict "sect" $navigationSections "current" $current "site" $site }}
 
 {{ define "menu-filetree-np" }}
   {{ $current := .current }}
