@@ -49,6 +49,12 @@ ADB で DBMS_CLOUD を利用する方法は[202: コマンドラインから大�
 
 # 1. 事前準備　
 
+{{< hint type=note title="Oracle AI Database 26ai（23.7）以降をご利用の場合" >}}
+Oracle AI Database 26ai（23.7）以降では、Oracle Homeに同梱された `catclouduser.sql` および `dbms_cloud_install.sql` を使用して、DBMS_CLOUDパッケージ・ファミリをインストールできます。
+
+該当バージョンをご利用の場合は、本チュートリアルで配布するインストール用SQLファイルではなく、公式ドキュメント[DBMS_CLOUDパッケージ・ファミリ](https://docs.oracle.com/cd/G47991_01/sutil/dbms_cloud-family-packages.html)に従ってインストールと構成を行ってください。
+{{< /hint >}}
+
 ## 1. 関連ファイルのダウンロードと保存先の作成
 
 まずは使用するファイルとそれらの保存先を作成します。  
@@ -112,6 +118,8 @@ OCI のコンソールに移り、画面右上の人型のマークが表示さ�
 <br>
 
 # 2. DBMS_CLOUD PL/SQL パッケージのインストール
+
+Oracle AI Database 26ai（23.7）以降をご利用の場合は、前述の公式ドキュメント[DBMS_CLOUDパッケージ・ファミリ](https://docs.oracle.com/cd/G47991_01/sutil/dbms_cloud-family-packages.html)を参照してください。
 
 ## 1. DBMS_CLOUD PL/SQL パッケージをインストールします。
 
