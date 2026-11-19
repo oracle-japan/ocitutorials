@@ -60,11 +60,6 @@ Oracle AI Database関連サービスのチュートリアル
 - [Full Stack Disaster Recovery(FSDR)編](./fsdr)  
   FSDR を使えば、世界中どこからでもワンクリックで OCI リージョン間のコンピュート、データベース、アプリケーション移行やリカバリが可能です。複数のビジネスシステムのリカバリ作業を自動化でき、特別な管理サーバーや既存システムの再設計は不要。既存環境のまま、簡単・安心に災害対策を実現できます。
 
----
-
-<h3> {{< icon-oci "mysql" >}} &nbsp;<a href="./mysql">MySQL HeatWave編</a></h3>
-オラクルMySQLチームが開発、管理およびサポートする、MySQLサーバーに分析処理の高速化、機械学習の自動化、生成AIの実行基盤を統合したMySQL HeatWaveを学習できます。
-
 <--->
 
 <h3> {{< icon-oci "security" >}} &nbsp;<a href="./security">セキュリティ編</a></h3>
@@ -96,6 +91,11 @@ OCIが提供するベアメタルインスタンス、GPUインスタンス、�
 <h3> {{< icon-oci "cloudnative" >}} &nbsp;<a href="./cloud-native">Cloud Native編</a></h3>
 OCIで提供するCloud Native関連サービスのチュートリアルです。
 マネージドのKubernetesサービスであるOKEやマネージドのFaaS(Functions as a Service)であるOracle Functionsを学習できます。
+
+---
+
+<h3> {{< icon-oci "mysql" >}} &nbsp;<a href="./mysql">MySQL HeatWave編</a></h3>
+オラクルMySQLチームが開発、管理およびサポートする、MySQLサーバーに分析処理の高速化、機械学習の自動化、生成AIの実行基盤を統合したMySQL HeatWaveを学習できます。
 
 ---
 
