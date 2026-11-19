@@ -3,7 +3,9 @@ title: "201: ProducerとConsumerのIAM権限を分離する"
 description: "OCI Queueの管理、送信、取得を最小権限のIAMポリシーへ分離して設計します。"
 weight: 201
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 Queue管理者、Producer、Consumerの役割を分離し、必要な権限を理解します。

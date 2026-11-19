@@ -3,7 +3,9 @@ title: "205: Cloud ShellスクリプトでQueue操作を自動化する"
 description: "OCI CLIを使ったQueueの作成、送信、取得、削除を安全なシェルスクリプトとして再現します。"
 weight: 205
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 コンソールで学んだQueue操作をOCI CLIで再現します。資格情報や実OCIDはスクリプトへ埋め込みません。

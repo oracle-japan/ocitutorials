@@ -3,7 +3,9 @@ title: "105: 状態・統計を確認しリソースを削除する"
 description: "Queueの統計とメトリック、作業リクエストを確認し、キューを安全に削除します。"
 weight: 105
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 キューの状態を運用視点で確認し、後片付けの手順を学びます。

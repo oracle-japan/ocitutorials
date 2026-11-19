@@ -3,7 +3,9 @@ title: "102: メッセージを送信・取得・削除する"
 description: "OCI Queueへテストメッセージを送信し、Cloud Shellから取得してreceiptで削除します。"
 weight: 102
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 Producerが送信したメッセージをConsumerが取得し、処理済みのreceiptを使って削除する基本フローを体験します。
