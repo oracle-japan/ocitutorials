@@ -3,7 +3,9 @@ title: "101: キューを作成する"
 description: "OCIコンソールからデフォルト構成のキューを作成し、状態と主要設定を確認します。"
 weight: 101
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 OCI Queueの基本単位となるキューを作成します。本章ではOracle管理キーとデフォルト構成を使用します。

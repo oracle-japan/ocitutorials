@@ -3,7 +3,9 @@ title: "103: 可視性タイムアウトを確認する"
 description: "取得中のメッセージが一時的に非表示になり、未削除なら再配信される動作を確認します。"
 weight: 103
 tags:
-- Queue
+   - メッセージング
+params:
+  author: rkajiyama
 ---
 
 Queueでは、取得しただけではメッセージは削除されません。可視性タイムアウトとreceipt更新の関係を確認します。

@@ -1,9 +1,6 @@
 ---
 title: "OCI Queue"
 description: "OCI Queueの作成、メッセージ操作、障害処理、コンシューマ・グループ、IAMおよび自動化を実際に学ぶチュートリアルです。"
-weight: 40
-tags:
-- Queue
 ---
 
 OCI Queueは、アプリケーション間を疎結合にし、非同期でメッセージを受け渡すためのフルマネージド・サービスです。
