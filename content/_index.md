@@ -67,11 +67,6 @@ Oracle AI Database関連サービスのチュートリアル
 
 <--->
 
-<h3> {{< icon-oci "security" >}} &nbsp;<a href="./security">セキュリティ編</a></h3>
-OCIにおける各種セキュリティ関連サービスを学習できるチュートリアルです。基本的なセキュリティ機能からデータベースのセキュリティ対策、ネットワーク防御、暗号化、脅威検知まで、幅広いサービスをご紹介します。
-
----
-
 <h3> {{< icon-oci "observability" >}} &nbsp;<a href="./management">監視・管理編</a></h3>
 OCIにおけるさまざまな運用・管理関連サービスを学習できるチュートリアルです。システムの監視やログ管理、アラート設定など、安定した運用を実現するための機能について幅広く取り上げています。
 
@@ -96,6 +91,11 @@ OCIが提供するベアメタルインスタンス、GPUインスタンス、�
 <h3> {{< icon-oci "cloudnative" >}} &nbsp;<a href="./cloud-native">Cloud Native編</a></h3>
 OCIで提供するCloud Native関連サービスのチュートリアルです。
 マネージドのKubernetesサービスであるOKEやマネージドのFaaS(Functions as a Service)であるOracle Functionsを学習できます。
+
+---
+
+<h3> {{< icon-oci "security" >}} &nbsp;<a href="./security">セキュリティ編</a></h3>
+OCIにおける各種セキュリティ関連サービスを学習できるチュートリアルです。基本的なセキュリティ機能からデータベースのセキュリティ対策、ネットワーク防御、暗号化、脅威検知まで、幅広いサービスをご紹介します。
 
 ---
 
