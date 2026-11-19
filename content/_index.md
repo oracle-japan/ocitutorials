@@ -99,6 +99,11 @@ OCIで提供するCloud Native関連サービスのチュートリアルです�
 
 ---
 
+<h3> {{< icon-oci "postgresql" >}} &nbsp;<a href="./postgresql">PostgreSQL編</a></h3>
+OCI Database with PostgreSQLはPostgreSQL互換のデータベースを利用できるフルマネージド・サービスです。DBシステムの作成、高可用性構成の設定、バックアップ、拡張機能の追加などを学習できます。
+
+---
+
 <h3> {{< icon-oci "opensearch" >}} &nbsp;<a href="./opensearch">OpenSearch編</a></h3>
 OCI Search Service with OpenSearchに関して学習できます。
 
